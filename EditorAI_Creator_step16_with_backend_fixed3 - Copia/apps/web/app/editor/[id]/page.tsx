@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
-import { api } from "../../lib/api";
+import { api } from "../../../lib/api";
 import { EditorShell, EditorTab } from "../../../components/editor/EditorShell";
 
 type Project = { id: string; title: string; kind: string; data?: any };
@@ -461,3 +461,4 @@ function stepBox(): React.CSSProperties {
     background: "rgba(0,0,0,0.15)"
   };
 }
+
