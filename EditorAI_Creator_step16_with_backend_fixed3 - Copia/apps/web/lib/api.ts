@@ -1,10 +1,456 @@
-import { createApiClient } from "@estalen/sdk";
 import { supabase } from "./supabaseClient";
 
-export const api = createApiClient({
-  baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000",
-  getAccessToken: async () => {
-    const { data } = await supabase.auth.getSession();
-    return data.session?.access_token ?? null;
+const DEV_DEFAULT_API_URL = "http://127.0.0.1:3000";
+const DEV_FALLBACK_API_URL = "http://127.0.0.1:3100";
+const IS_DEV = process.env.NODE_ENV !== "production";
+
+function trimTrailingSlash(url: string) {
+  return url.replace(/\/+$/, "");
+}
+
+function buildUrl(path: string, baseUrl: string) {
+  if (/^https?:\/\//i.test(path)) return path;
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  return `${baseUrl}${normalizedPath}`;
+}
+
+export const API_URL = trimTrailingSlash(
+  process.env.NEXT_PUBLIC_API_BASE_URL || process.env.NEXT_PUBLIC_API_URL || (IS_DEV ? DEV_DEFAULT_API_URL : "")
+);
+
+export async function apiFetch(path: string, options: RequestInit = {}) {
+  const headers = new Headers(options.headers || {});
+  if (!headers.has("Accept")) headers.set("Accept", "application/json");
+
+  const requestOptions: RequestInit = {
+    ...options,
+    headers,
+  };
+
+  const primaryUrl = buildUrl(path, API_URL);
+
+  try {
+    return await fetch(primaryUrl, requestOptions);
+  } catch (error) {
+    const canRetryInDev = IS_DEV && API_URL === DEV_DEFAULT_API_URL;
+    if (canRetryInDev) {
+      const fallbackUrl = buildUrl(path, DEV_FALLBACK_API_URL);
+      try {
+        return await fetch(fallbackUrl, requestOptions);
+      } catch {
+        throw new Error("Não foi possível conectar com a API (3000/3100).");
+      }
+    }
+
+    throw new Error("Não foi possível conectar com a API.");
   }
-});
+}
+
+async function readJsonSafe(res: Response) {
+  return res.json().catch(() => null);
+}
+
+async function apiJson(path: string, options: RequestInit = {}) {
+  const res = await apiFetch(path, options);
+  const payload = await readJsonSafe(res);
+  if (!res.ok) {
+    throw new Error(payload?.error || payload?.message || "Erro ao comunicar com a API");
+  }
+  return payload;
+}
+
+async function getSessionAccessToken() {
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  return session?.access_token || null;
+}
+
+async function authJson(path: string, options: RequestInit = {}) {
+  const token = await getSessionAccessToken();
+  if (!token) throw new Error("Not authenticated");
+
+  const headers = new Headers(options.headers || {});
+  headers.set("Authorization", `Bearer ${token}`);
+  return apiJson(path, { ...options, headers });
+}
+
+async function getRequiredToken() {
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  if (!session?.access_token) throw new Error("Not authenticated");
+  return session.access_token;
+}
+
+async function downloadWithAuth(path: string, filename: string) {
+  const token = await getRequiredToken();
+  const res = await apiFetch(path, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) {
+    const payload = await readJsonSafe(res);
+    throw new Error(payload?.error || "admin_export_failed");
+  }
+
+  const blob = await res.blob();
+  const href = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = href;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(href);
+}
+
+export const api = {
+  async getDashboard() {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    if (!session?.access_token) {
+      throw new Error("Not authenticated");
+    }
+
+    const authHeaders = {
+      Authorization: `Bearer ${session.access_token}`,
+    };
+
+    const [subscription, balance, projects] = await Promise.allSettled([
+      apiJson("/api/subscriptions/me", { headers: authHeaders }),
+      apiJson("/api/coins/balance", { headers: authHeaders }),
+      apiJson("/api/projects", { headers: authHeaders }),
+    ]);
+
+    const planCode =
+      subscription.status === "fulfilled"
+        ? String(subscription.value?.plan_code || "FREE").toUpperCase()
+        : "FREE";
+
+    const wallet =
+      balance.status === "fulfilled" ? balance.value?.wallet || null : null;
+
+    const items =
+      projects.status === "fulfilled" ? projects.value?.items || [] : [];
+
+    return {
+      ok: true,
+      user: {
+        id: session.user.id,
+        email: session.user.email || "",
+      },
+      plan: planCode,
+      wallet,
+      projects: Array.isArray(items) ? items : [],
+    };
+  },
+
+  async myPlan() {
+    const dashboard = await this.getDashboard();
+    return { plan_code: dashboard.plan };
+  },
+
+  async coinsBalance() {
+    const dashboard = await this.getDashboard();
+    return { wallet: dashboard.wallet };
+  },
+
+  async listProjects() {
+    const dashboard = await this.getDashboard();
+    return { data: dashboard.projects };
+  },
+
+  async createProject(body: { title: string; kind: string; data?: any }) {
+    return authJson("/api/projects", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+  },
+
+  async getProject(id: string) {
+    return authJson(`/api/projects/${id}`);
+  },
+
+  async updateProject(id: string, body: { title?: string; kind?: string; data?: any }) {
+    return authJson(`/api/projects/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+  },
+
+  async aiTextGenerate(body: { prompt: string }) {
+    return authJson("/api/ai/text-generate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+  },
+
+  async aiFactCheck(body: { claim: string; query?: string }) {
+    return authJson("/api/ai/fact-check", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+  },
+
+  async createCheckoutSession(body: {
+    plan_code: "EDITOR_FREE" | "EDITOR_PRO" | "EDITOR_ULTRA";
+    mode?: "subscription" | "payment";
+    success_url: string;
+    cancel_url: string;
+  }) {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    if (!session?.access_token || !session?.user?.id) {
+      throw new Error("Not authenticated");
+    }
+
+    const res = await apiFetch("/api/stripe/checkout/session", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.access_token}`,
+      },
+      body: JSON.stringify(body),
+    });
+
+    const payload = await readJsonSafe(res);
+    if (!res.ok) {
+      const errorCode = String(payload?.error || payload?.message || "stripe_checkout_failed");
+      const errorReason = String(payload?.reason || "").trim();
+      throw new Error(errorReason ? `${errorCode}:${errorReason}` : errorCode);
+    }
+
+    return payload;
+  },
+
+  async createBillingPortalSession(body: { return_url: string; locale?: string }) {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    if (!session?.access_token) throw new Error("Not authenticated");
+
+    return apiJson("/api/stripe/portal/session", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.access_token}`,
+      },
+      body: JSON.stringify(body),
+    });
+  },
+
+  async getStripeMe() {
+    return authJson("/api/stripe/me");
+  },
+
+  async getStripePlans() {
+    return authJson("/api/stripe/plans");
+  },
+
+  async refreshStripeSubscription() {
+    return authJson("/api/stripe/subscription/refresh", {
+      method: "POST",
+    });
+  },
+
+  async quoteCoinsPackage(body: {
+    package_total: number;
+    breakdown: { common: number; pro: number; ultra: number };
+  }) {
+    return authJson("/api/coins/packages/quote", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+  },
+
+  async createCoinsPackageCheckout(body: {
+    quote_id?: string;
+    package_total?: number;
+    breakdown?: { common: number; pro: number; ultra: number };
+    success_url?: string;
+    cancel_url?: string;
+    metadata?: Record<string, string | number | boolean>;
+  }) {
+    return authJson("/api/coins/packages/checkout/create", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+  },
+
+  async getUsageLimits() {
+    return authJson("/api/usage/limits");
+  },
+
+  async getUsageSummary(month?: string) {
+    const qs = month ? `?month=${encodeURIComponent(month)}` : "";
+    return authJson(`/api/usage/summary${qs}`);
+  },
+
+  async getCoinsTransactions(limit = 30) {
+    return authJson(`/api/coins/transactions?limit=${encodeURIComponent(String(limit))}`);
+  },
+
+  async convertCoins(body: {
+    from: "common" | "pro" | "ultra";
+    to: "common" | "pro" | "ultra";
+    amount: number;
+    idempotency_key?: string;
+  }) {
+    return authJson("/api/coins/convert", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+  },
+
+  async requestBetaAccess(body: {
+    email: string;
+    metadata?: Record<string, any>;
+  }) {
+    return apiJson("/api/beta-access/request", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+  },
+
+  async betaAccessMe() {
+    return authJson("/api/beta-access/me");
+  },
+
+  async adminBetaAccessRequests(params?: { status?: "pending" | "approved" | "rejected"; limit?: number }) {
+    const search = new URLSearchParams();
+    if (params?.status) search.set("status", params.status);
+    if (params?.limit) search.set("limit", String(params.limit));
+    const qs = search.toString();
+    return authJson(`/api/beta-access/admin/requests${qs ? `?${qs}` : ""}`);
+  },
+
+  async adminBetaAccessUpdate(
+    requestId: string,
+    body: { status: "pending" | "approved" | "rejected"; admin_note?: string }
+  ) {
+    return authJson(`/api/beta-access/admin/requests/${encodeURIComponent(requestId)}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+  },
+
+  async supportCreateRequest(body: {
+    category: "duvida" | "problema_tecnico" | "pedido_financeiro" | "outro";
+    subject: string;
+    message: string;
+    metadata?: Record<string, any>;
+  }) {
+    return authJson("/api/support/requests", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+  },
+
+  async supportMyRequests(limit = 50) {
+    return authJson(`/api/support/requests/me?limit=${encodeURIComponent(String(limit))}`);
+  },
+
+  async adminSupportRequests(params?: { status?: string; category?: string; limit?: number }) {
+    const search = new URLSearchParams();
+    if (params?.status) search.set("status", params.status);
+    if (params?.category) search.set("category", params.category);
+    if (params?.limit) search.set("limit", String(params.limit));
+    const qs = search.toString();
+    return authJson(`/api/support/admin/requests${qs ? `?${qs}` : ""}`);
+  },
+
+  async adminSupportUpdateStatus(
+    requestId: string,
+    body: { status: "open" | "in_review" | "resolved"; admin_note?: string }
+  ) {
+    return authJson(`/api/support/admin/requests/${encodeURIComponent(requestId)}/status`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+  },
+
+  async liveCutsCreateSession(body: {
+    source_label?: string;
+    mode: "timed" | "continuous";
+    requested_duration_minutes?: number;
+    estimate_preview_minutes?: number;
+    intensity?: "basic" | "balanced" | "aggressive";
+    preferred_moments?: Array<"engracado" | "marcante" | "impactante" | "highlights_gerais" | "outro">;
+    auto_post_enabled?: boolean;
+    notes?: string;
+    metadata?: Record<string, any>;
+  }) {
+    return authJson("/api/live-cuts/sessions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+  },
+
+  async liveCutsListSessions(limit = 50) {
+    return authJson(`/api/live-cuts/sessions?limit=${encodeURIComponent(String(limit))}`);
+  },
+
+  async liveCutsGetSession(sessionId: string) {
+    return authJson(`/api/live-cuts/sessions/${encodeURIComponent(sessionId)}`);
+  },
+
+  async liveCutsUpdateSessionStatus(
+    sessionId: string,
+    body: { status: "active" | "paused" | "ended" | "canceled"; accepted_estimate?: boolean }
+  ) {
+    return authJson(`/api/live-cuts/sessions/${encodeURIComponent(sessionId)}/status`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+  },
+
+  async adminOverview(days = 7) {
+    return authJson(`/api/admin/overview?days=${encodeURIComponent(String(days))}`);
+  },
+
+  async adminVisibility() {
+    return authJson("/api/admin/visibility");
+  },
+
+  async adminSearchUsers(q: string) {
+    return authJson(`/api/admin/users/search?q=${encodeURIComponent(q)}`);
+  },
+
+  async adminUserTimeline(userId: string, days = 30, limit = 200) {
+    return authJson(
+      `/api/admin/user/${encodeURIComponent(userId)}/timeline?days=${encodeURIComponent(String(days))}&limit=${encodeURIComponent(String(limit))}`
+    );
+  },
+
+  async adminExportUsageCsv(days = 30, feature?: string) {
+    const qs = feature
+      ? `?days=${encodeURIComponent(String(days))}&feature=${encodeURIComponent(feature)}`
+      : `?days=${encodeURIComponent(String(days))}`;
+    return downloadWithAuth(`/api/admin/export/usage.csv${qs}`, `usage-${days}d.csv`);
+  },
+
+  async adminExportCoinsCsv(days = 30) {
+    return downloadWithAuth(`/api/admin/export/coins.csv?days=${encodeURIComponent(String(days))}`, `coins-${days}d.csv`);
+  },
+};
+
+
