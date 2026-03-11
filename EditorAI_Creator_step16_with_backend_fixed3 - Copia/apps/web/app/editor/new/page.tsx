@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { api } from "../../lib/api";
+import { api } from "../../../lib/api";
 
 type Kind = "video" | "text" | "automation" | "course" | "website";
 
@@ -51,7 +51,11 @@ export default function NewEditorProjectPage() {
         <p style={{ margin: 0, opacity: 0.85 }}>Criar um novo projeto no editor (estrutura base)</p>
       </div>
 
-      {err && <div style={card()}><p style={{ margin: 0, color: "#34F5FF" }}>{err}</p></div>}
+      {err && (
+        <div style={card()}>
+          <p style={{ margin: 0, color: "#34F5FF" }}>{err}</p>
+        </div>
+      )}
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: 12 }}>
         <button style={btn()} onClick={() => create("video")} disabled={!!creating}>
