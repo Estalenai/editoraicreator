@@ -1,0 +1,19 @@
+{
+  "name": "editor-ai-creator",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:api": "npm --workspace apps/api run dev",
+    "start:api": "npm --workspace apps/api run start",
+    "dev:web": "npm --workspace apps/web run dev",
+    "dev:mobile": "npm --workspace apps/mobile run start",
+    "dev:all": "concurrently -k -n API,WEB,MOBILE \"npm run dev:api\" \"npm run dev:web\" \"npm run dev:mobile\"",
+    "lint:web": "npm --workspace apps/web run lint"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1"
+  }
+}

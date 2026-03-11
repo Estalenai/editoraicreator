@@ -1,0 +1,18 @@
+{
+  "expo": {
+    "name": "Editor AI Creator",
+    "slug": "editor-ai-creator",
+    "scheme": "editor-aicreator",
+    "version": "0.1.0",
+    "sdkVersion": "51.0.0",
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "extra": {
+      "supabaseUrl": "${EXPO_PUBLIC_SUPABASE_URL}",
+      "supabaseAnonKey": "${EXPO_PUBLIC_SUPABASE_ANON_KEY}",
+      "apiBaseUrl": "${EXPO_PUBLIC_API_BASE_URL}"
+    }
+  }
+}
