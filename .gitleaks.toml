@@ -1,0 +1,16 @@
+title = "editoraicreator"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Allow safe example env files and docs that mention secret variable names"
+paths = [
+  '''(^|/)\.env\.example$''',
+  '''^apps/api/\.env\.example$''',
+  '''^apps/api/\.env\.examplenode$''',
+  '''^apps/mobile/\.env\.example$''',
+  '''^packages/sdk/\.env\.example$''',
+  '''^README_STEP15\.md$''',
+  '''^README_STEP16\.md$'''
+]
