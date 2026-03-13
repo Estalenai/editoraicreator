@@ -41,30 +41,92 @@ export function EditorShell({
       ],
     []
   );
+  const activeTab = useMemo(
+    () => tabs.find((item) => item.id === tab) ?? tabs[0],
+    [tab, tabs]
+  );
 
   return (
-    <div style={{ display: "grid", gridTemplateRows: "auto auto 1fr auto", height: "calc(100vh - 32px)", gap: 12 }}>
-      <header style={card()}>
-        <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center" }}>
-          <div>
-            <h2 style={{ margin: 0 }}>{title}</h2>
-            <p style={{ margin: 0, opacity: 0.8, fontSize: 12 }}>Autocrie.ai • Editor AI Creator</p>
+    <div className="editor-shell-root">
+      <header className="premium-card editor-shell-header">
+        <div className="editor-shell-header-grid">
+          <div className="editor-shell-title-panel">
+            <div className="hero-title-stack editor-shell-title-stack">
+              <p className="section-kicker">Workspace editorial</p>
+              <h2 style={{ margin: 0 }}>{title}</h2>
+              <p className="editor-shell-note editor-shell-title-copy">
+                EditexAI no centro do projeto: contexto salvo, apoio IA lateral e continuidade sem sair do editor.
+              </p>
+            </div>
+            <div className="hero-meta-row">
+              <span className="premium-badge premium-badge-phase">Area ativa: {activeTab.label}</span>
+              <span className="premium-badge premium-badge-soon">Projeto com contexto salvo</span>
+            </div>
           </div>
-          <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-            <Toggle label="Modo Professor" value={professorMode} onClick={onToggleProfessor} />
-            <Toggle label="Modo Transparente" value={transparentMode} onClick={onToggleTransparent} />
-            <a href="/dashboard" style={linkBtn()}>Dashboard</a>
+
+          <div className="editor-shell-status-panel">
+            <div className="editor-shell-status-grid">
+              <div className="editor-shell-status-item">
+                <span>Fluxo</span>
+                <strong>Editar, revisar e salvar</strong>
+              </div>
+              <div className="editor-shell-status-item">
+                <span>Visibilidade</span>
+                <strong>{transparentMode ? "Passo a passo ativo" : "Detalhes sob demanda"}</strong>
+              </div>
+              <div className="editor-shell-status-item">
+                <span>Modo professor</span>
+                <strong>{professorMode ? "Explicacao ligada" : "Opcional para apoio"}</strong>
+              </div>
+              <div className="editor-shell-status-item">
+                <span>Proxima acao</span>
+                <strong>{activeTab.id === "library" ? "Validar e registrar no projeto" : "Refinar a peca principal"}</strong>
+              </div>
+            </div>
+            <div className="hero-actions-row editor-shell-header-actions">
+              <Toggle label="Modo Professor" value={professorMode} onClick={onToggleProfessor} />
+              <Toggle label="Modo Transparente" value={transparentMode} onClick={onToggleTransparent} />
+              <a href="/dashboard" className="btn-link-ea btn-ghost btn-sm">Dashboard</a>
+            </div>
+          </div>
+        </div>
+
+        <div className="editor-shell-trust-grid">
+          <div className="premium-card-soft trust-note editor-shell-trust-card">
+            <strong>Documento vivo</strong>
+            <span>O projeto continua editavel e pronto para novas iteracoes sem perder a base salva.</span>
+          </div>
+          <div className="premium-card-soft trust-note editor-shell-trust-card">
+            <strong>IA com clareza</strong>
+            <span>Professor e Transparencia ajudam a acompanhar o que a EditexAI fez em cada passo.</span>
+          </div>
+          <div className="premium-card-soft trust-note editor-shell-trust-card">
+            <strong>Workspace continuo</strong>
+            <span>Creators, projeto salvo e editor trabalham no mesmo fluxo operacional.</span>
           </div>
         </div>
       </header>
 
-      <nav style={card()}>
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+      <nav className="premium-card editor-shell-toolbar toolbar-surface">
+        <div className="editor-shell-toolbar-head">
+          <div className="editor-shell-toolbar-copy">
+            <p className="section-kicker">Fluxo do editor</p>
+            <p className="helper-text-ea">Troque de area sem perder o contexto salvo do projeto.</p>
+          </div>
+          <div className="editor-shell-toolbar-meta">
+            <span className="premium-badge premium-badge-phase">{professorMode ? "Professor ativo" : "Professor opcional"}</span>
+            <span className="premium-badge premium-badge-warning">{transparentMode ? "Transparencia ativa" : "Transparencia opcional"}</span>
+          </div>
+        </div>
+        <div className="editor-shell-tab-row" role="tablist" aria-label="Areas do editor">
           {tabs.map(t => (
             <button
               key={t.id}
               onClick={() => onTab(t.id)}
-              style={tabBtn(t.id === tab)}
+              className={`btn-ea btn-sm ${t.id === tab ? "btn-primary" : "btn-ghost"}`}
+              role="tab"
+              aria-selected={t.id === tab}
+              tabIndex={t.id === tab ? 0 : -1}
             >
               {t.label}
             </button>
@@ -72,16 +134,16 @@ export function EditorShell({
         </div>
       </nav>
 
-      <div style={{ display: "grid", gridTemplateColumns: "280px 1fr 340px", gap: 12, minHeight: 0 }}>
-        <aside style={{ ...card(), overflow: "auto" }}>{left}</aside>
-        <main style={{ ...card(), overflow: "auto" }}>{center}</main>
-        <aside style={{ ...card(), overflow: "auto" }}>{right}</aside>
+      <div className="editor-shell-grid">
+        <aside className="premium-card editor-shell-panel editor-shell-panel-secondary">{left}</aside>
+        <main className="premium-card editor-shell-panel editor-shell-panel-primary">{center}</main>
+        <aside className="premium-card editor-shell-panel editor-shell-panel-secondary editor-shell-panel-support">{right}</aside>
       </div>
 
-      <footer style={{ ...card(), display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center" }}>
+      <footer className="premium-card editor-shell-footer">
         {footer ?? (
-          <p style={{ margin: 0, opacity: 0.8, fontSize: 12 }}>
-            Dica: ative o Modo Transparente para ver o passo a passo da Autocrie em tempo real.
+          <p className="editor-shell-note">
+            Dica: ative o Modo Transparente para ver o passo a passo da EditexAI em tempo real.
           </p>
         )}
       </footer>
@@ -91,51 +153,9 @@ export function EditorShell({
 
 function Toggle({ label, value, onClick }: { label: string; value: boolean; onClick: () => void }) {
   return (
-    <button onClick={onClick} style={toggleBtn(value)}>
-      <span style={{ opacity: 0.9 }}>{label}</span>
-      <span style={{ marginLeft: 8, fontWeight: 700 }}>{value ? "ON" : "OFF"}</span>
+    <button onClick={onClick} className={`btn-ea btn-sm editor-shell-toggle ${value ? "btn-secondary" : "btn-ghost"}`}>
+      <span className="editor-shell-toggle-label">{label}</span>
+      <span className="editor-shell-toggle-state">{value ? "ON" : "OFF"}</span>
     </button>
   );
-}
-
-function card(): React.CSSProperties {
-  return {
-    padding: 14,
-    borderRadius: 16,
-    border: "1px solid rgba(255,255,255,0.14)",
-    background: "rgba(255,255,255,0.06)"
-  };
-}
-
-function tabBtn(active: boolean): React.CSSProperties {
-  return {
-    padding: "10px 12px",
-    borderRadius: 12,
-    border: "1px solid rgba(255,255,255,0.14)",
-    background: active ? "linear-gradient(90deg,#00AEEF,#6B5BFF)" : "rgba(0,0,0,0.15)",
-    color: "#fff",
-    cursor: "pointer"
-  };
-}
-
-function toggleBtn(active: boolean): React.CSSProperties {
-  return {
-    padding: "10px 12px",
-    borderRadius: 12,
-    border: "1px solid rgba(255,255,255,0.14)",
-    background: active ? "rgba(52,245,255,0.18)" : "rgba(255,255,255,0.08)",
-    color: "#fff",
-    cursor: "pointer"
-  };
-}
-
-function linkBtn(): React.CSSProperties {
-  return {
-    padding: "10px 12px",
-    borderRadius: 12,
-    border: "1px solid rgba(255,255,255,0.14)",
-    background: "rgba(255,255,255,0.08)",
-    color: "#fff",
-    textDecoration: "none"
-  };
 }

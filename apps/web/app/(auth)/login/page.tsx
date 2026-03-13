@@ -1,71 +1,248 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { supabase } from "../../../lib/supabaseClient";
+import { toUserFacingError } from "../../../lib/uiFeedback";
 
-export default function LoginPage() {
+function LoginPageContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const initialMode = searchParams.get("mode") === "signup" ? "signup" : "login";
+
+  const [mode, setMode] = useState<"login" | "signup">(initialMode);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [msg, setMsg] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
-  async function onLogin(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setMsg(null);
     setLoading(true);
+    setError(null);
+    setSuccess(null);
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (mode === "signup") {
+      if (password.length < 6) {
+        setError("A senha precisa ter no mínimo 6 caracteres.");
+        setLoading(false);
+        return;
+      }
+      if (password !== confirmPassword) {
+        setError("As senhas não conferem.");
+        setLoading(false);
+        return;
+      }
 
-    setLoading(false);
-    if (error) return setMsg(error.message);
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+      });
 
-    window.location.href = "/dashboard";
+      if (signUpError) {
+        setError(toUserFacingError(signUpError.message, "Não foi possível criar sua conta agora."));
+        setLoading(false);
+        return;
+      }
+
+      if (data.session) {
+        router.push("/dashboard");
+        return;
+      }
+
+      setSuccess(
+        "Conta criada com sucesso. Agora faça login e aguarde a aprovação no beta fechado para acessar o dashboard."
+      );
+      setMode("login");
+      setConfirmPassword("");
+      setLoading(false);
+      return;
+    }
+
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (signInError) {
+      setError(toUserFacingError(signInError.message, "Não foi possível concluir o login agora."));
+      setLoading(false);
+      return;
+    }
+
+    router.push("/dashboard");
   }
 
   return (
-    <div style={card()}>
-      <h2 style={{ marginTop: 0 }}>Login</h2>
-      <form onSubmit={onLogin} style={{ display: "grid", gap: 10 }}>
-        <input value={email} onChange={(e)=>setEmail(e.target.value)} placeholder="email" style={inp()} />
-        <input value={password} onChange={(e)=>setPassword(e.target.value)} placeholder="senha" type="password" style={inp()} />
-        <button disabled={loading} style={btn()}>
-          {loading ? "Entrando..." : "Entrar"}
-        </button>
-        {msg && <p style={{ margin: 0, color: "#34F5FF" }}>{msg}</p>}
-      </form>
-      <p style={{ opacity: 0.8, marginBottom: 0 }}>
-        O acesso usa Supabase Auth e o backend valida via Bearer access_token.
-      </p>
+    <div className="auth-entry-shell">
+      <section className="premium-hero auth-entry-frame">
+        <div className="auth-entry-grid">
+          <div className="auth-entry-hero">
+            <div className="section-stack">
+              <p className="section-kicker">Acesso a plataforma</p>
+              <h1 className="auth-entry-title">
+                {mode === "signup" ? "Crie sua conta para entrar no beta fechado" : "Entre no Editor AI Creator"}
+              </h1>
+              <p className="auth-entry-copy">
+                {mode === "signup"
+                  ? "Cadastre sua conta, entre na fila de aprovacao e prepare o acesso ao workspace."
+                  : "Use seu acesso aprovado para abrir uma plataforma clara, segura e pronta para operacao."}
+              </p>
+            </div>
+
+            <div className="hero-meta-row">
+              <span className="premium-badge premium-badge-phase">Beta fechado</span>
+              <span className="premium-badge premium-badge-warning">Acesso controlado</span>
+            </div>
+
+            <div className="auth-entry-note-grid">
+              <div className="premium-card-soft trust-note">
+                <strong>Entrada segura</strong>
+                <span>O acesso permanece controlado enquanto o beta evolui com operacao monitorada.</span>
+              </div>
+              <div className="premium-card-soft trust-note">
+                <strong>Fluxo claro</strong>
+                <span>Crie conta, acompanhe aprovacao e entre no workspace quando o acesso estiver liberado.</span>
+              </div>
+            </div>
+          </div>
+
+          <form onSubmit={handleSubmit} className="premium-card auth-entry-card">
+            <div className="section-stack">
+              <p className="section-kicker">Acesso a plataforma</p>
+              <h2 className="auth-entry-card-title">
+                {mode === "signup" ? "Criar conta" : "Entrar"}
+              </h2>
+              <p className="meta-text-ea">
+                {mode === "signup"
+                  ? "Use um e-mail valido para solicitar liberacao e acompanhar a aprovacao."
+                  : "Entre com seu e-mail e senha para abrir o workspace."}
+              </p>
+            </div>
+
+            <div className="auth-entry-toggle" role="tablist" aria-label="Modo de acesso">
+              <button
+                type="button"
+                onClick={() => {
+                  setMode("login");
+                  setError(null);
+                  setSuccess(null);
+                }}
+                className={`btn-ea ${mode === "login" ? "btn-primary" : "btn-ghost"}`}
+              >
+                Entrar
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setMode("signup");
+                  setError(null);
+                  setSuccess(null);
+                }}
+                className={`btn-ea ${mode === "signup" ? "btn-primary" : "btn-ghost"}`}
+              >
+                Criar conta
+              </button>
+            </div>
+
+            <div className="auth-entry-form">
+              <label className="field-label-ea">
+                <span>E-mail</span>
+                <input
+                  type="email"
+                  placeholder="voce@empresa.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="field-ea"
+                />
+              </label>
+
+              <label className="field-label-ea">
+                <span>Senha</span>
+                <input
+                  type="password"
+                  placeholder={mode === "signup" ? "Minimo de 6 caracteres" : "Digite sua senha"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="field-ea"
+                />
+              </label>
+
+              {mode === "signup" ? (
+                <label className="field-label-ea">
+                  <span>Confirmar senha</span>
+                  <input
+                    type="password"
+                    placeholder="Repita sua senha"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
+                    className="field-ea"
+                  />
+                </label>
+              ) : null}
+            </div>
+
+            <div className="auth-entry-support-note">
+              <strong>{mode === "signup" ? "Aprovacao manual no beta" : "Acesso liberado"}</strong>
+              <span>
+                {mode === "signup"
+                  ? "Depois do cadastro, sua conta entra na fila de analise. Voce sera avisado quando o acesso estiver pronto."
+                  : "Se sua conta ja foi aprovada, o login leva voce direto para o dashboard."}
+              </span>
+            </div>
+
+            {error ? (
+              <div className="state-ea state-ea-error">
+                <p className="state-ea-title">Nao foi possivel continuar</p>
+                <div className="state-ea-text">{error}</div>
+              </div>
+            ) : null}
+            {success ? (
+              <div className="state-ea state-ea-success">
+                <p className="state-ea-title">Conta criada</p>
+                <div className="state-ea-text">{success}</div>
+              </div>
+            ) : null}
+
+            <button type="submit" disabled={loading} className="btn-ea btn-primary auth-entry-submit">
+              {loading ? "Processando..." : mode === "signup" ? "Criar conta" : "Entrar"}
+            </button>
+
+            <div className="auth-entry-links">
+              <div className="auth-entry-link-row">
+                <span>Sem acesso ainda?</span>
+                <Link href="/" className="text-link-ea">Entrar na fila de espera</Link>
+              </div>
+              <div className="auth-entry-link-row">
+                <span>Primeiro acesso?</span>
+                <Link href="/how-it-works" className="text-link-ea">Ver guia rapido</Link>
+              </div>
+            </div>
+          </form>
+        </div>
+      </section>
     </div>
   );
 }
 
-function card(): React.CSSProperties {
-  return {
-    maxWidth: 420,
-    padding: 16,
-    borderRadius: 16,
-    border: "1px solid rgba(255,255,255,0.14)",
-    background: "rgba(255,255,255,0.06)"
-  };
-}
-function inp(): React.CSSProperties {
-  return {
-    padding: "10px 12px",
-    borderRadius: 12,
-    border: "1px solid rgba(255,255,255,0.14)",
-    background: "rgba(0,0,0,0.22)",
-    color: "#fff",
-    outline: "none"
-  };
-}
-function btn(): React.CSSProperties {
-  return {
-    padding: "10px 12px",
-    borderRadius: 12,
-    border: "1px solid rgba(255,255,255,0.14)",
-    background: "linear-gradient(90deg,#00AEEF,#6B5BFF)",
-    color: "#fff",
-    cursor: "pointer"
-  };
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="auth-entry-shell">
+          <div className="premium-card auth-entry-loading">
+            Carregando acesso...
+          </div>
+        </div>
+      }
+    >
+      <LoginPageContent />
+    </Suspense>
+  );
 }

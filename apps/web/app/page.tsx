@@ -1,29 +1,33 @@
 import Link from "next/link";
+import { ClosedBetaAccessCard } from "../components/waitlist/ClosedBetaAccessCard";
 
 export default function HomePage() {
   return (
-    <div style={{ display: "grid", gap: 12 }}>
-      <h1 style={{ margin: 0, fontSize: 28 }}>Bem-vindo ao Editor AI Creator</h1>
-      <p style={{ margin: 0, opacity: 0.9 }}>
-        Faça login para acessar seu dashboard (planos, coins e projetos).
-      </p>
+    <div className="page-shell beta-entry-page">
+      <section className="premium-hero beta-entry-hero">
+        <div className="premium-badge premium-badge-phase beta-entry-badge">
+          Beta fechado
+        </div>
+        <h1 className="beta-entry-title">Acesso antecipado</h1>
+        <p className="beta-entry-copy">
+          O Editor AI Creator esta em beta fechado. Solicite acesso antecipado para liberar sua conta e acompanhar a evolucao da EditexAI.
+        </p>
+        <div className="hero-actions-row">
+          <Link href="/login" className="btn-link-ea btn-primary">Já tenho acesso</Link>
+          <Link href="/login?mode=signup" className="btn-link-ea btn-secondary">Criar conta</Link>
+          <Link href="/how-it-works" className="btn-link-ea btn-ghost">Como funciona</Link>
+        </div>
+      </section>
 
-      <div style={{ display: "flex", gap: 12 }}>
-        <Link href="/login" style={btn()}>Entrar</Link>
-        <Link href="/dashboard" style={btn(true)}>Dashboard</Link>
+      <ClosedBetaAccessCard
+        compact
+        title="Fila de espera"
+        description="Informe seu e-mail para entrar na fila de liberação do beta fechado."
+      />
+
+      <div className="helper-text-ea">
+        Plataforma: Editor AI Creator • Assistente interno: EditexAI
       </div>
     </div>
   );
-}
-
-function btn(secondary = false): React.CSSProperties {
-  return {
-    display: "inline-flex",
-    padding: "10px 14px",
-    borderRadius: 12,
-    textDecoration: "none",
-    color: secondary ? "#fff" : "#0A0F24",
-    background: secondary ? "rgba(255,255,255,0.12)" : "#34F5FF",
-    border: "1px solid rgba(255,255,255,0.14)"
-  };
 }
