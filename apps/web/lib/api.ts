@@ -2,7 +2,9 @@ import { supabase } from "./supabaseClient";
 
 const DEV_DEFAULT_API_URL = "http://127.0.0.1:3000";
 const DEV_FALLBACK_API_URL = "http://127.0.0.1:3100";
+const PROD_PROXY_API_PREFIX = "/api-proxy";
 const IS_DEV = process.env.NODE_ENV !== "production";
+const PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || process.env.NEXT_PUBLIC_API_URL || "";
 
 function trimTrailingSlash(url: string) {
   return url.replace(/\/+$/, "");
@@ -14,9 +16,7 @@ function buildUrl(path: string, baseUrl: string) {
   return `${baseUrl}${normalizedPath}`;
 }
 
-export const API_URL = trimTrailingSlash(
-  process.env.NEXT_PUBLIC_API_BASE_URL || process.env.NEXT_PUBLIC_API_URL || (IS_DEV ? DEV_DEFAULT_API_URL : "")
-);
+export const API_URL = trimTrailingSlash(PUBLIC_API_URL || (IS_DEV ? DEV_DEFAULT_API_URL : PROD_PROXY_API_PREFIX));
 
 export async function apiFetch(path: string, options: RequestInit = {}) {
   const headers = new Headers(options.headers || {});

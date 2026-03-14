@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "../../../lib/supabaseClient";
@@ -16,8 +16,40 @@ function LoginPageContent() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [checkingSession, setCheckingSession] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+
+    supabase.auth.getSession().then(({ data }) => {
+      if (!active) return;
+
+      if (data.session) {
+        router.replace("/dashboard");
+        return;
+      }
+
+      setCheckingSession(false);
+    });
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        router.replace("/dashboard");
+        return;
+      }
+
+      if (active) {
+        setCheckingSession(false);
+      }
+    });
+
+    return () => {
+      active = false;
+      authListener.subscription.unsubscribe();
+    };
+  }, [router]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -49,7 +81,7 @@ function LoginPageContent() {
       }
 
       if (data.session) {
-        router.push("/dashboard");
+        router.replace("/dashboard");
         return;
       }
 
@@ -73,7 +105,15 @@ function LoginPageContent() {
       return;
     }
 
-    router.push("/dashboard");
+    router.replace("/dashboard");
+  }
+
+  if (checkingSession) {
+    return (
+      <div className="auth-entry-shell">
+        <div className="premium-card" style={{ padding: 20 }}>Verificando sessao...</div>
+      </div>
+    );
   }
 
   return (

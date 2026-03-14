@@ -52,7 +52,7 @@ export function useDashboardBootstrap(options: Options = {}) {
     const session = data.session;
 
     if (!session) {
-      router.push("/login");
+      router.replace("/login");
       setLoading(false);
       return;
     }
@@ -155,7 +155,13 @@ export function useDashboardBootstrap(options: Options = {}) {
 
   const onLogout = useCallback(async () => {
     await supabase.auth.signOut();
-    router.push("/login");
+
+    if (typeof window !== "undefined") {
+      window.location.assign("/");
+      return;
+    }
+
+    router.replace("/");
   }, [router]);
 
   const onSyncSubscription = useCallback(async () => {
