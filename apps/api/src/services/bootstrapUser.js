@@ -1,5 +1,16 @@
 import supabaseAdmin, { isSupabaseAdminEnabled } from "../config/supabaseAdmin.js";
 
+async function insertIfMissing(table, values, onConflict) {
+  const { error } = await supabaseAdmin
+    .from(table)
+    .upsert(values, {
+      onConflict,
+      ignoreDuplicates: true,
+    });
+
+  if (error) throw error;
+}
+
 /**
  * Garante que o usuário tenha:
  * - profile
@@ -13,52 +24,59 @@ export async function bootstrapUser({ userId, email }) {
   if (!userId) return;
 
   try {
-    // profiles
-    await supabaseAdmin
-      .from("profiles")
-      .upsert(
-        {
-          id: userId,
-          email: email || null,
-          display_name: null,
-          plan_code: "FREE",
-        },
-        { onConflict: "id" }
-      );
+    await insertIfMissing(
+      "profiles",
+      {
+        id: userId,
+        email: email || null,
+        display_name: null,
+        plan_code: "FREE",
+      },
+      "id"
+    );
   } catch {
     // ignore
   }
 
   try {
-    // carteira
-    await supabaseAdmin
-      .from("creator_coins_wallet")
-      .upsert(
+    await insertIfMissing(
+      "creator_coins_wallet",
+      {
+        user_id: userId,
+        common: 0,
+        pro: 0,
+        ultra: 0,
+      },
+      "user_id"
+    );
+  } catch {
+    try {
+      await insertIfMissing(
+        "creator_coins_wallet",
         {
           user_id: userId,
           common_balance: 0,
           pro_balance: 0,
           ultra_balance: 0,
         },
-        { onConflict: "user_id" }
+        "user_id"
       );
-  } catch {
-    // ignore
+    } catch {
+      // ignore
+    }
   }
 
   try {
-    // limites (pode não existir em ambientes antigos)
-    await supabaseAdmin
-      .from("credits_limits")
-      .upsert(
-        {
-          user_id: userId,
-          daily_common_limit: 100,
-          daily_pro_limit: 25,
-          daily_ultra_limit: 0,
-        },
-        { onConflict: "user_id" }
-      );
+    await insertIfMissing(
+      "credits_limits",
+      {
+        user_id: userId,
+        daily_common_limit: 100,
+        daily_pro_limit: 25,
+        daily_ultra_limit: 0,
+      },
+      "user_id"
+    );
   } catch {
     // ignore
   }

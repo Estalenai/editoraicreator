@@ -252,12 +252,41 @@ function buildCreditPayload(coinType, amount) {
   return { common, pro, ultra };
 }
 
-function getDefaultCheckoutBaseUrl() {
-  return String(process.env.WEB_URL || process.env.WEB_APP_URL || "http://localhost:3001").replace(/\/+$/, "");
+function normalizeAbsoluteBaseUrl(value) {
+  const raw = String(value || "").trim();
+  if (!raw) return null;
+  try {
+    const url = new URL(raw);
+    return `${url.protocol}//${url.host}`;
+  } catch {
+    return null;
+  }
 }
 
-function buildPackageCheckoutUrls(body = {}) {
-  const base = getDefaultCheckoutBaseUrl();
+function getDefaultCheckoutBaseUrl(req) {
+  const referer = req?.headers?.referer;
+  const origin = req?.headers?.origin;
+  const candidates = [
+    origin,
+    referer,
+    process.env.WEB_URL,
+    process.env.WEB_APP_URL,
+    process.env.NEXT_PUBLIC_WEB_URL,
+    process.env.NEXT_PUBLIC_SITE_URL,
+    process.env.NEXT_PUBLIC_APP_URL,
+    "http://localhost:3001",
+  ];
+
+  for (const candidate of candidates) {
+    const normalized = normalizeAbsoluteBaseUrl(candidate);
+    if (normalized) return normalized;
+  }
+
+  return "http://localhost:3001";
+}
+
+function buildPackageCheckoutUrls(req, body = {}) {
+  const base = getDefaultCheckoutBaseUrl(req);
   return {
     successUrl: body.success_url || `${base}/dashboard?coins_package=success`,
     cancelUrl: body.cancel_url || `${base}/dashboard?coins_package=cancel`,
@@ -1188,7 +1217,7 @@ router.post("/packages/checkout/create", generateLimiter, async (req, res) => {
       return res.json(replayPayload);
     }
 
-    const checkoutUrls = buildPackageCheckoutUrls(parsed.data);
+    const checkoutUrls = buildPackageCheckoutUrls(req, parsed.data);
     const lineItems = buildPackageCheckoutLineItems(quote);
     if (lineItems.length === 0) {
       return res.status(400).json({ error: "package_breakdown_required", message: t(lang, "package_breakdown_required") });

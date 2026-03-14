@@ -301,8 +301,11 @@ export function CreditsPackagesCard({ wallet }: Props) {
           ? packageQuote
           : await requestCoinsPackageQuote();
 
+      const baseUrl = window.location.origin;
       const response = await api.createCoinsPackageCheckout({
         quote_id: quote.quote_id,
+        success_url: `${baseUrl}/dashboard?coins_package=success`,
+        cancel_url: `${baseUrl}/dashboard?coins_package=cancel`,
       });
       const checkoutUrl = String(response?.checkout?.url || "");
       if (!checkoutUrl) throw new Error("checkout_url_missing");

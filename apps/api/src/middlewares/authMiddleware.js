@@ -1,4 +1,5 @@
 import supabase from "../config/supabaseClient.js";
+import { bootstrapUser } from "../services/bootstrapUser.js";
 import { isAdminUser } from "../utils/adminAuth.js";
 import { getBetaAccessStateForUser, isClosedBetaEnabled } from "../utils/betaAccess.js";
 import { logger } from "../utils/logger.js";
@@ -58,6 +59,18 @@ export const authMiddleware = async (req, res, next) => {
         });
         return res.status(503).json({ error: "beta_access_check_failed" });
       }
+    }
+
+    try {
+      await bootstrapUser({
+        userId: data.user.id,
+        email: data.user.email,
+      });
+    } catch (bootstrapError) {
+      logger.warn("bootstrap_user_failed", {
+        userId: data.user.id,
+        message: bootstrapError?.message || "unknown_error",
+      });
     }
 
     return next();
