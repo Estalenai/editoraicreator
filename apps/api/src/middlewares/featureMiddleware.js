@@ -1,3 +1,5 @@
+import { resolveLang, t } from "../utils/i18n.js";
+
 /**
  * Feature gating baseado no plano.
  *
@@ -28,12 +30,14 @@ export function requireFeature(featureKey, { minTierFallback = 1 } = {}) {
     // fallback por tier (PRO ou acima por padrão)
     const tier = Number(plan.tier ?? 0);
     if (Number.isFinite(tier) && tier >= minTierFallback) return next();
+    const lang = resolveLang(req);
 
     return res.status(403).json({
-      error: "Recurso não disponível no seu plano",
+      error: "feature_not_available_for_plan",
+      message: t(lang, "feature_not_available_for_plan"),
       feature: featureKey,
       plan: plan.code,
-      hint: "Faça upgrade para acessar este recurso."
+      hint: t(lang, "feature_upgrade_hint"),
     });
   };
 }

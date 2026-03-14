@@ -1,5 +1,7 @@
 import express from "express";
 import supabase from "../config/supabaseClient.js";
+import { bootstrapUser } from "../services/bootstrapUser.js";
+import { recordProductEvent } from "../utils/eventsStore.js";
 
 const router = express.Router();
 
@@ -20,6 +22,29 @@ router.post("/login", async (req, res) => {
     }
 
     const { user, session } = data;
+
+    // best-effort bootstrap (não bloqueia login)
+    bootstrapUser({ userId: user.id, email: user.email }).catch(() => {});
+
+    try {
+      recordProductEvent({
+        event: "user.login",
+        userId: user.id,
+        plan: null,
+        additional: { source: "auth.login" },
+      });
+      const createdAtMs = Date.parse(user?.created_at || "");
+      if (Number.isFinite(createdAtMs) && Date.now() - createdAtMs <= 5 * 60 * 1000) {
+        recordProductEvent({
+          event: "user.signup",
+          userId: user.id,
+          plan: null,
+          additional: { source: "auth.login_recent_created_at" },
+        });
+      }
+    } catch {
+      // metrics/event logging should never block login
+    }
 
     return res.json({
       message: "Login realizado com sucesso!",

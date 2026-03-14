@@ -39,6 +39,7 @@ router.get("/", async (req, res) => {
     const { data, error } = await supabase
       .from("projects")
       .select("*")
+      .eq("user_id", req.user.id)
       .order("created_at", { ascending: false });
 
     if (error) return badRequest(res, error.message);
@@ -59,6 +60,7 @@ router.get("/:id", async (req, res) => {
       .from("projects")
       .select("*")
       .eq("id", req.params.id)
+      .eq("user_id", req.user.id)
       .maybeSingle();
 
     if (error) return badRequest(res, error.message);
@@ -84,7 +86,7 @@ router.post(
       const insert = {
         user_id: req.user.id,
         title: body.title,
-        kind: body.kind,
+        kind: (body.kind === "post" || body.kind === "creator_post") ? "text" : body.kind,
         data: body.data ?? {}
       };
 
@@ -115,6 +117,7 @@ router.patch("/:id", async (req, res) => {
       .from("projects")
       .update(body)
       .eq("id", req.params.id)
+      .eq("user_id", req.user.id)
       .select("*")
       .maybeSingle();
 
@@ -138,6 +141,7 @@ router.delete("/:id", async (req, res) => {
       .from("projects")
       .delete()
       .eq("id", req.params.id)
+      .eq("user_id", req.user.id)
       .select("id")
       .maybeSingle();
 

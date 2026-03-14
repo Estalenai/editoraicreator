@@ -1,0 +1,457 @@
+function nowIso() {
+  return new Date().toISOString();
+}
+
+export const userManualPT = {
+  version: "v1-beta",
+  updated_at: nowIso(),
+  title: "Manual do Usuário - Editor AI Creator (V1 Beta)",
+  sections: [
+    {
+      id: "getting-started",
+      title: "Visão geral da plataforma",
+      summary: "O que é a plataforma, para quem é e como funciona o fluxo básico.",
+      content: [
+        { type: "p", text: "O Editor AI Creator é uma plataforma para criar conteúdo com IA em texto, imagem, vídeo, música, voz, slides e Avatar Preview." },
+        { type: "p", text: "Ela atende do nível iniciante ao creator, com planos e limites diferentes por recurso." },
+        {
+          type: "list",
+          items: [
+            "1) Faça login e obtenha um Bearer token.",
+            "2) Chame o endpoint da feature desejada com Idempotency-Key.",
+            "3) Receba resposta imediata (síncrona) ou um jobId para polling de status.",
+            "4) Reaproveite a mesma key somente para retry do mesmo payload.",
+          ],
+        },
+      ],
+      keywords: ["visão-geral", "beta", "onboarding"],
+    },
+    {
+      id: "launch-metrics-onboarding",
+      title: "Lançamento, onboarding e métricas",
+      summary: "Endpoints para status, onboarding guiado, eventos e dashboards.",
+      content: [
+        { type: "p", text: "Para validar readiness de lançamento, use GET /api/status para conferir uptime, guardrails e defaults de roteamento." },
+        { type: "p", text: "Para onboarding guiado por API, use GET /api/onboarding/schema e siga as etapas sugeridas." },
+        { type: "list", items: ["GET /api/usage/summary?group_by=feature|plan|date", "GET /api/dashboard/usage", "GET /api/dashboard/errors", "GET /api/dashboard/routing", "GET /api/events/recent?limit=20"] },
+        { type: "p", text: "Alertas internos relevantes de lançamento usam prefixo alert.* (ex.: alert.budget_limit_reached, alert.risk_high, alert.kill_switch_active)." },
+        { type: "p", text: "Importante: GET /api/status, /api/dashboard/* e /api/events/* são endpoints internos e exigem perfil admin." },
+      ],
+      keywords: ["lançamento", "métricas", "dashboard", "onboarding"],
+    },
+    {
+      id: "account-auth-security",
+      title: "Conta, login e segurança",
+      summary: "Boas práticas para uso do token de autenticação.",
+      content: [
+        { type: "p", text: "As rotas protegidas exigem header Authorization: Bearer <token>." },
+        { type: "list", items: ["Não compartilhe token em prints ou tickets.", "Evite salvar token em arquivos versionados.", "Se suspeitar de vazamento, gere nova sessão."] },
+        {
+          type: "code",
+          lang: "powershell",
+          code: "$env:ACCESS_TOKEN=\"SEU_TOKEN\"\ncurl.exe -s \"http://127.0.0.1:3000/api/coins/balance\" -H \"Authorization: Bearer $env:ACCESS_TOKEN\"",
+        },
+      ],
+      keywords: ["auth", "bearer", "segurança"],
+    },
+    {
+      id: "provider-mode",
+      title: "Providers reais vs mock",
+      summary: "Como funciona o modo de execução por feature.",
+      content: [
+        { type: "p", text: "Cada feature pode operar em provider real ou mock, conforme rollout e disponibilidade de integração." },
+        { type: "list", items: ["Header de resposta: X-AI-Provider-Mode = mock|real|n/a.", "Se provider real falhar repetidamente, o circuito pode abrir e o fluxo volta para mock temporariamente.", "Se a integração real não estiver habilitada/configurada (ex.: ambiente no_keys), quality/economy fazem fallback automático para mock com routing.fallback_reason=provider_unavailable_fallback."] },
+      ],
+      keywords: ["provider", "mock", "real", "fallback", "circuit-breaker"],
+    },
+    {
+      id: "mult-ai-routing",
+      title: "Mult AI (roteamento inteligente)",
+      summary: "Como selecionar quality, economy ou manual.",
+      content: [
+        { type: "p", text: "Mult AI fica ativo por padrão em mode=quality (recomendado), priorizando melhor qualidade dentro da policy do seu plano." },
+        { type: "list", items: ["quality: prioriza qualidade.", "economy: prioriza menor custo/latência.", "manual: provider/model explícito, sempre validado pela policy do plano."] },
+        { type: "p", text: "Nos modos quality/economy, quando um modelo alvo não é permitido pelo plano, ocorre downgrade automático com routing.fallback_used=true e routing.fallback_reason=policy_downgrade." },
+        { type: "p", text: "Nos modos quality/economy, se o provider real estiver indisponível/não configurado, ocorre fallback automático para mock com routing.fallback_reason=provider_unavailable_fallback." },
+        { type: "p", text: "No modo manual, se provider/model solicitado violar a policy, a API retorna 403 com error=model_not_allowed." },
+        { type: "p", text: "As respostas de IA incluem routing.mode, routing.selected_provider, routing.selected_model e routing.fallback_used para rastreabilidade." },
+        { type: "p", text: "Header adicional: X-AI-Routing-Mode = quality|economy|manual." },
+      ],
+      keywords: ["mult ai", "routing", "quality", "economy", "manual"],
+    },
+    {
+      id: "credits",
+      title: "Sistema de créditos",
+      summary: "Como funcionam Common, Pro e Ultra.",
+      content: [
+        { type: "p", text: "A plataforma usa três tipos de crédito: common, pro e ultra. Isso separa custo de operações leves e avançadas." },
+        {
+          type: "list",
+          items: [
+            "Texto e fact-check: geralmente common/pro.",
+            "Imagem: common ou pro, dependendo da qualidade/modo.",
+            "Vídeo, música, voz e slides: normalmente pro/ultra.",
+          ],
+        },
+        { type: "p", text: "Conversão de créditos: qualquer combinação entre common, pro e ultra é permitida, exceto origem=destino. A taxa varia conforme seu plano." },
+        { type: "p", text: "Para listar planos e badges sem depender de billing, use GET /api/plans/catalog (opcionalmente com ?lang=pt-BR|en-US)." },
+        { type: "p", text: "No Beta, o plano FREE pode vir no catálogo com visible=false para não aparecer na vitrine de assinatura." },
+        { type: "p", text: "Os cards Empresarial e Enterprise podem aparecer como em breve (coming_soon=true/purchasable=false), sem checkout liberado." },
+        { type: "code", lang: "json", code: "{\n  \"from\": \"common\",\n  \"to\": \"pro\",\n  \"amount\": 100\n}" },
+        { type: "p", text: "Créditos avulsos (Beta): use /api/coins/purchase/quote -> /create -> /confirm. Dependendo do ambiente, o fluxo pode ser mock." },
+        { type: "p", text: "Pacotes avulsos com mix customizável: use /api/coins/packages/quote e depois /api/coins/packages/checkout/create. Você pode usar presets (300/1200/3000) ou total personalizado livre a partir de 100, sempre em passos de 10, com breakdown common/pro/ultra somando exatamente o total." },
+        { type: "p", text: "A cotação retorna pricing por tipo (unit_amounts common/pro/ultra), subtotal_base, fees_total e total_amount; o checkout reutiliza exatamente esses valores. A cotação expira em ~10 minutos." },
+        { type: "p", text: "Fee de compra avulsa no Beta: 3% somente para plano FREE; planos pagos usam fee de compra 0% (a conversion fee segue a regra atual de cada plano)." },
+      ],
+      keywords: ["créditos", "common", "pro", "ultra", "conversão", "purchase"],
+    },
+    {
+      id: "enterprise-coming-soon",
+      title: "Enterprise (em breve)",
+      summary: "Fluxo Enterprise preparado, mas bloqueado por feature flag no Beta.",
+      content: [
+        { type: "p", text: "Os planos Empresarial/Enterprise permanecem bloqueados no início do Beta (feature flag enterprise.enabled=false)." },
+        { type: "p", text: "Quando liberado, a compra Enterprise usa 3 campos independentes: common_qty, pro_qty e ultra_qty." },
+        { type: "list", items: ["Mínimo por tipo selecionado: 50.000 créditos.", "Step padrão: múltiplos de 1.000 por tipo.", "O backend sempre recalcula preços e valida regras antes de criar o checkout."] },
+        { type: "p", text: "Créditos são liberados somente após confirmação de pagamento no webhook Stripe (não no return_url)." },
+        { type: "p", text: "Após o pagamento, a liberação pode levar alguns minutos dependendo da entrega do webhook." },
+      ],
+      keywords: ["enterprise", "em-breve", "checkout", "webhook"],
+    },
+    {
+      id: "pricing-beta-note",
+      title: "Nota sobre preços (Beta -> V1)",
+      summary: "Transparência sobre possíveis ajustes de preço e disponibilidade.",
+      content: [
+        {
+          type: "p",
+          text: "Preços e disponibilidade de planos podem mudar na transição do Beta para a V1 oficial. No Beta, os valores exibidos no catálogo são os vigentes.",
+        },
+      ],
+      keywords: ["preços", "beta", "v1", "catálogo"],
+    },
+    {
+      id: "idempotency",
+      title: "Idempotência (obrigatório em rotas críticas)",
+      summary: "Como evitar execução duplicada e cobrança em dobro.",
+      content: [
+        { type: "p", text: "Use Idempotency-Key para retries seguros." },
+        { type: "list", items: ["Mesmo payload + mesma key: replay 200 com replay:true.", "Mesma key com payload diferente: 409 idempotency_conflict."] },
+        {
+          type: "code",
+          lang: "powershell",
+          code: "@'\n{\"prompt\":\"Teste idempotencia\",\"language\":\"pt-BR\"}\n'@ | Set-Content .\\req.json\n$key = \"txt-\" + (Get-Date -Format \"yyyyMMddHHmmss\")\ncurl.exe -s -X POST \"http://127.0.0.1:3000/api/ai/text-generate\" `\n  -H \"Authorization: Bearer $env:ACCESS_TOKEN\" `\n  -H \"Content-Type: application/json\" `\n  -H \"Idempotency-Key: $key\" `\n  --data-binary \"@req.json\"",
+        },
+        {
+          type: "code",
+          lang: "bash",
+          code: "curl -s -X POST http://127.0.0.1:3000/api/ai/text-generate \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Idempotency-Key: txt-12345678\" \\\n  -d '{\"prompt\":\"Teste\"}'",
+        },
+      ],
+      keywords: ["idempotência", "replay", "409"],
+    },
+    {
+      id: "limits",
+      title: "Rate limit e anti-abuso",
+      summary: "Por que existem limites por feature.",
+      content: [
+        { type: "p", text: "A API aplica limites por minuto por usuário (ou IP fallback) para estabilidade e controle de custo." },
+        { type: "list", items: ["Excesso de chamadas retorna 429.", "Os limites variam por feature.", "Esses limites protegem sua conta e a plataforma."] },
+        { type: "p", text: "Features pesadas podem retornar 429 com error=risk_throttled ou error=budget_limit_reached quando os guardrails anti-abuso entram em ação." },
+        { type: "p", text: "As respostas de IA podem incluir o header X-Abuse-Risk com low|medium|high para indicar risco de abuso calculado." },
+      ],
+      keywords: ["rate-limit", "quota", "429"],
+    },
+    {
+      id: "feature-quickstart",
+      title: "Guia rápido por feature",
+      summary: "Resumo dos endpoints principais.",
+      content: [
+        { type: "faq", q: "Text Generate", a: "POST /api/ai/text-generate. Retorna ok, text, provider, model, usage." },
+        { type: "faq", q: "Fact Check", a: "POST /api/ai/fact-check. Retorna verdict, confidence e citations/sources quando aplicável." },
+        { type: "faq", q: "Image Generate / Variation", a: "Use aspectRatio, quality e count. Variation usa imageUrl + prompt." },
+        { type: "faq", q: "Video / Music / Voice / Slides", a: "Generate retorna jobId. Status consulta andamento/resultado." },
+      ],
+      keywords: ["text", "fact-check", "image", "video", "music", "voice", "slides"],
+    },
+    {
+      id: "avatar-preview",
+      title: "Avatar Preview (V1 Beta)",
+      summary: "Regras do recurso no Beta.",
+      content: [
+        { type: "list", items: ["Avatares fixos: ava_01, ava_02, ava_03.", "1 sessão por dia.", "120 segundos por sessão.", "Voz opcional (quando habilitada)."] },
+        { type: "p", text: "Ao atingir o limite de 120s, a API preserva snapshot/estado da sessão para continuidade sem perder progresso." },
+        { type: "faq", q: "Erros comuns", a: "daily_limit_reached, not_available_for_plan, invalid_avatar_start_request." },
+      ],
+      keywords: ["avatar", "preview", "daily-limit"],
+    },
+    {
+      id: "troubleshooting",
+      title: "Troubleshooting",
+      summary: "Erros comuns e interpretação rápida.",
+      content: [
+        { type: "faq", q: "401", a: "Token inválido/ausente/expirado." },
+        { type: "faq", q: "403", a: "Plano insuficiente para a operação." },
+        { type: "faq", q: "403 (model_not_allowed)", a: "No modo manual, provider/model solicitado não é permitido para o plano." },
+        { type: "faq", q: "409", a: "Conflito de idempotência (mesma key com payload diferente)." },
+        { type: "faq", q: "429", a: "Rate limit/quota excedido." },
+        { type: "faq", q: "429 (budget_limit_reached)", a: "Orçamento diário de custo interno atingido (escopo user ou global)." },
+        { type: "faq", q: "502", a: "Falha de provider. Em quality/economy, o fallback para mock é automático quando possível; no modo manual, a validação é estrita e pode manter erro." },
+        { type: "faq", q: "503 (feature_temporarily_disabled)", a: "Kill-switch ativo para a feature/provider; aguarde reativação." },
+        { type: "p", text: "Para verificar plano/assinatura, use endpoint de status de assinatura disponível no projeto (ex.: /api/stripe/me)." },
+      ],
+      keywords: ["401", "403", "409", "429", "502"],
+    },
+    {
+      id: "faq",
+      title: "FAQ",
+      summary: "Perguntas frequentes da V1 Beta.",
+      content: [
+        { type: "faq", q: "Por que minha requisição foi replay?", a: "A mesma Idempotency-Key já tinha sido processada para o mesmo payload." },
+        { type: "faq", q: "Posso usar a mesma key?", a: "Somente para retry do mesmo payload." },
+        { type: "faq", q: "Como economizar créditos?", a: "Use qualidade menor no rascunho e aumente só na versão final." },
+        { type: "faq", q: "O que acontece se eu atingir o limite diário do Avatar?", a: "Novas sessões ficam bloqueadas até a próxima janela diária." },
+        { type: "faq", q: "Como comprar créditos?", a: "Use quote/create/confirm em /api/coins/purchase/*." },
+        { type: "faq", q: "Posso converter créditos?", a: "Sim. No Beta, você pode converter entre common, pro e ultra (exceto origem=destino), com taxa por plano." },
+        { type: "faq", q: "O Beta usa providers reais?", a: "Depende das flags de rollout. O mock continua disponível como fallback." },
+        { type: "faq", q: "Quais dados ficam salvos?", a: "Metadados operacionais para uso, replay e auditoria técnica." },
+        { type: "faq", q: "Como reportar bug?", a: "Informe endpoint, horário, key (prefixo) e payload sem dados sensíveis." },
+        { type: "faq", q: "Como funciona reembolso automático em falhas?", a: "Fluxos com débito podem executar compensação idempotente quando o provider falha." },
+        {
+          type: "faq",
+          q: "Qual é o nome do assistente interno da plataforma?",
+          a: "O nome interno atual do assistente é EditexAI (pode mudar no futuro). Esse nome não impacta o uso da plataforma e é apenas uma referência interna.",
+        },
+      ],
+      keywords: ["faq", "beta", "suporte"],
+    },
+  ],
+};
+
+export const userManualEN = {
+  version: "v1-beta",
+  updated_at: nowIso(),
+  title: "User Manual - Editor AI Creator (V1 Beta)",
+  sections: [
+    {
+      id: "getting-started",
+      title: "Platform overview",
+      summary: "What the platform is and the basic usage flow.",
+      content: [
+        { type: "p", text: "Editor AI Creator is a platform to create AI content for text, image, video, music, voice, slides, and Avatar Preview." },
+        { type: "p", text: "It supports users from beginner to creator levels, with different plans and limits." },
+        {
+          type: "list",
+          items: [
+            "1) Sign in and get a Bearer token.",
+            "2) Call the target feature endpoint with an Idempotency-Key.",
+            "3) Receive a direct response or a jobId for status polling.",
+            "4) Reuse the same key only for retrying the same payload.",
+          ],
+        },
+      ],
+      keywords: ["overview", "beta", "onboarding"],
+    },
+    {
+      id: "launch-metrics-onboarding",
+      title: "Launch, onboarding, and metrics",
+      summary: "Status, guided onboarding, event stream, and dashboard endpoints.",
+      content: [
+        { type: "p", text: "Use GET /api/status for launch readiness checks (uptime, guardrails, routing defaults)." },
+        { type: "p", text: "Use GET /api/onboarding/schema for a machine-readable onboarding flow." },
+        { type: "list", items: ["GET /api/usage/summary?group_by=feature|plan|date", "GET /api/dashboard/usage", "GET /api/dashboard/errors", "GET /api/dashboard/routing", "GET /api/events/recent?limit=20"] },
+        { type: "p", text: "Launch-critical alerts are logged with alert.* prefixes (for example alert.budget_limit_reached, alert.risk_high, alert.kill_switch_active)." },
+        { type: "p", text: "Important: GET /api/status, /api/dashboard/*, and /api/events/* are internal endpoints and require admin access." },
+      ],
+      keywords: ["launch", "metrics", "dashboard", "onboarding"],
+    },
+    {
+      id: "account-auth-security",
+      title: "Account, login, and security",
+      summary: "Best practices for token usage.",
+      content: [
+        { type: "p", text: "Protected routes require Authorization: Bearer <token>." },
+        { type: "list", items: ["Do not share tokens in screenshots or tickets.", "Do not commit tokens to repositories.", "If leakage is suspected, rotate the session."] },
+        {
+          type: "code",
+          lang: "powershell",
+          code: "$env:ACCESS_TOKEN=\"YOUR_TOKEN\"\ncurl.exe -s \"http://127.0.0.1:3000/api/coins/balance\" -H \"Authorization: Bearer $env:ACCESS_TOKEN\"",
+        },
+      ],
+      keywords: ["auth", "bearer", "security"],
+    },
+    {
+      id: "provider-mode",
+      title: "Real providers vs mock",
+      summary: "How runtime provider mode is selected per feature.",
+      content: [
+        { type: "p", text: "Each feature can run on a real provider or mock depending on rollout flags and integration availability." },
+        { type: "list", items: ["Response header: X-AI-Provider-Mode = mock|real|n/a.", "If a real provider fails repeatedly, circuit breaker may open and traffic falls back to mock temporarily.", "If real integration is not enabled/configured (for example in no_keys environments), quality/economy automatically fall back to mock with routing.fallback_reason=provider_unavailable_fallback."] },
+      ],
+      keywords: ["provider", "mock", "real", "fallback", "circuit-breaker"],
+    },
+    {
+      id: "mult-ai-routing",
+      title: "Mult AI (smart routing)",
+      summary: "How to choose quality, economy, or manual mode.",
+      content: [
+        { type: "p", text: "Mult AI is enabled by default with mode=quality (recommended), prioritizing best quality within your plan policy." },
+        { type: "list", items: ["quality: prioritizes quality.", "economy: prioritizes lower cost/latency.", "manual: explicit provider/model, always validated against plan policy."] },
+        { type: "p", text: "In quality/economy modes, when a target model is blocked by plan policy, the API auto-downgrades and returns routing.fallback_used=true with routing.fallback_reason=policy_downgrade." },
+        { type: "p", text: "In quality/economy modes, if the real provider is unavailable/not configured, the API automatically falls back to mock with routing.fallback_reason=provider_unavailable_fallback." },
+        { type: "p", text: "In manual mode, if requested provider/model violates policy, the API returns 403 with error=model_not_allowed." },
+        { type: "p", text: "AI responses include routing.mode, routing.selected_provider, routing.selected_model, and routing.fallback_used for traceability." },
+        { type: "p", text: "Additional response header: X-AI-Routing-Mode = quality|economy|manual." },
+      ],
+      keywords: ["mult ai", "routing", "quality", "economy", "manual"],
+    },
+    {
+      id: "credits",
+      title: "Credit system",
+      summary: "How Common, Pro, and Ultra credits work.",
+      content: [
+        { type: "p", text: "The platform uses three credit types: common, pro, and ultra." },
+        {
+          type: "list",
+          items: [
+            "Text and fact-check usually consume common/pro.",
+            "Image may consume common or pro depending on quality/mode.",
+            "Video, music, voice, and slides usually consume pro/ultra.",
+          ],
+        },
+        { type: "p", text: "Credit conversion supports all combinations across common, pro, and ultra, except same source and destination. Conversion fee depends on your active plan." },
+        { type: "p", text: "To list plan cards and badges without billing dependencies, use GET /api/plans/catalog (optionally with ?lang=pt-BR|en-US)." },
+        { type: "p", text: "In Beta, the FREE plan can be returned with visible=false so it stays hidden from subscription storefront cards." },
+        { type: "p", text: "Business and Enterprise cards may appear as coming soon (coming_soon=true/purchasable=false), with checkout still blocked." },
+        { type: "code", lang: "json", code: "{\n  \"from\": \"common\",\n  \"to\": \"pro\",\n  \"amount\": 100\n}" },
+        { type: "p", text: "One-time credit purchase flow uses /api/coins/purchase/quote -> /create -> /confirm. In Beta, this may run in mock mode." },
+        { type: "p", text: "Custom mixed credit packages are available through /api/coins/packages/quote then /api/coins/packages/checkout/create. You can use preset totals (300/1200/3000) or a free custom total starting at 100, always in steps of 10, with common/pro/ultra breakdown matching the total exactly." },
+        { type: "p", text: "Quote responses include per-type pricing (unit_amounts for common/pro/ultra), subtotal_base, fees_total, and total_amount; checkout reuses the same values. Quotes expire in ~10 minutes." },
+        { type: "p", text: "Beta one-time purchase fee: 3% only for FREE plan; paid plans use 0% purchase fee (conversion fee still follows each plan's existing rule)." },
+      ],
+      keywords: ["credits", "common", "pro", "ultra", "conversion", "purchase"],
+    },
+    {
+      id: "enterprise-coming-soon",
+      title: "Enterprise (coming soon)",
+      summary: "Enterprise purchase flow is implemented but blocked by feature flag during Beta.",
+      content: [
+        { type: "p", text: "Enterprise plans remain blocked at Beta start (feature flag enterprise.enabled=false)." },
+        { type: "p", text: "When enabled, Enterprise checkout uses three independent inputs: common_qty, pro_qty, and ultra_qty." },
+        { type: "list", items: ["Minimum per selected type: 50,000 credits.", "Default step: multiples of 1,000 per type.", "Backend always recalculates prices and validates all rules before creating checkout."] },
+        { type: "p", text: "Credits are released only after Stripe webhook payment confirmation (never on return_url)." },
+        { type: "p", text: "After payment, credit release may take a few minutes depending on webhook delivery." },
+      ],
+      keywords: ["enterprise", "coming-soon", "checkout", "webhook"],
+    },
+    {
+      id: "pricing-beta-note",
+      title: "Pricing note (Beta -> V1)",
+      summary: "Transparent note on potential plan price and availability adjustments.",
+      content: [
+        {
+          type: "p",
+          text: "Plan prices and availability may change when moving from Beta to the official V1 release. During Beta, the catalog values are the current ones.",
+        },
+      ],
+      keywords: ["pricing", "beta", "v1", "catalog"],
+    },
+    {
+      id: "idempotency",
+      title: "Idempotency",
+      summary: "Safe retry behavior and conflict rules.",
+      content: [
+        { type: "p", text: "Use Idempotency-Key on critical operations." },
+        { type: "list", items: ["Same payload + same key: replay 200 with replay:true.", "Same key + different payload: 409 idempotency_conflict."] },
+        {
+          type: "code",
+          lang: "bash",
+          code: "curl -s -X POST http://127.0.0.1:3000/api/ai/text-generate \\\n  -H \"Authorization: Bearer $ACCESS_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Idempotency-Key: txt-12345678\" \\\n  -d '{\"prompt\":\"Test\"}'",
+        },
+      ],
+      keywords: ["idempotency", "replay", "409"],
+    },
+    {
+      id: "limits",
+      title: "Rate limits and abuse protection",
+      summary: "Why quotas and limits exist.",
+      content: [
+        { type: "p", text: "The API applies per-feature limits to protect service stability and cost predictability." },
+        { type: "list", items: ["Per-minute limits are applied.", "Authenticated requests are keyed by user.", "Over-limit returns 429."] },
+        { type: "p", text: "Heavy features may return 429 with error=risk_throttled or error=budget_limit_reached when anti-abuse guardrails are triggered." },
+        { type: "p", text: "AI responses may include header X-Abuse-Risk with low|medium|high to indicate computed abuse risk." },
+      ],
+      keywords: ["rate-limit", "quota", "429"],
+    },
+    {
+      id: "feature-quickstart",
+      title: "Quick feature guide",
+      summary: "Short request/response notes per feature.",
+      content: [
+        { type: "faq", q: "Text Generate", a: "POST /api/ai/text-generate returns ok, text, provider, model, usage." },
+        { type: "faq", q: "Fact Check", a: "POST /api/ai/fact-check returns verdict, confidence, and optional citations/sources." },
+        { type: "faq", q: "Image Generate / Variation", a: "Use aspectRatio, quality, count. Variation also uses imageUrl." },
+        { type: "faq", q: "Video / Music / Voice / Slides", a: "Generate returns a jobId. Status endpoints poll progress/result." },
+      ],
+      keywords: ["text", "fact-check", "image", "video", "music", "voice", "slides"],
+    },
+    {
+      id: "avatar-preview",
+      title: "Avatar Preview (V1 Beta)",
+      summary: "Current Beta constraints.",
+      content: [
+        { type: "list", items: ["Fixed avatars: ava_01, ava_02, ava_03.", "1 session/day.", "120 seconds per session.", "Optional voice (when enabled)."] },
+        { type: "p", text: "When the 120s limit is reached, the API preserves a state snapshot so work can continue without progress loss." },
+        { type: "faq", q: "Common errors", a: "daily_limit_reached, not_available_for_plan, invalid_avatar_start_request." },
+      ],
+      keywords: ["avatar", "preview", "daily-limit"],
+    },
+    {
+      id: "troubleshooting",
+      title: "Troubleshooting",
+      summary: "Common errors and quick diagnostics.",
+      content: [
+        { type: "faq", q: "401", a: "Invalid, missing, or expired token." },
+        { type: "faq", q: "403", a: "Plan does not allow the requested feature." },
+        { type: "faq", q: "403 (model_not_allowed)", a: "In manual mode, requested provider/model is not allowed for the current plan." },
+        { type: "faq", q: "409", a: "Idempotency conflict (same key, different payload)." },
+        { type: "faq", q: "429", a: "Rate limit/quota exceeded." },
+        { type: "faq", q: "429 (budget_limit_reached)", a: "Daily internal cost budget reached (user or global scope)." },
+        { type: "faq", q: "502", a: "Provider error. In quality/economy, automatic fallback to mock is used when possible; in manual mode, strict behavior may keep the error." },
+        { type: "faq", q: "503 (feature_temporarily_disabled)", a: "Kill switch active for the feature/provider; retry later." },
+        { type: "p", text: "To inspect plan/subscription state, use the subscription status endpoint available in this project (for example /api/stripe/me)." },
+      ],
+      keywords: ["401", "403", "409", "429", "502"],
+    },
+    {
+      id: "faq",
+      title: "FAQ",
+      summary: "V1 Beta frequently asked questions.",
+      content: [
+        { type: "faq", q: "Why was my request replayed?", a: "The same Idempotency-Key was already processed with the same payload." },
+        { type: "faq", q: "Can I reuse the same key?", a: "Only for retrying the same payload." },
+        { type: "faq", q: "How can I save credits?", a: "Use lower quality in drafts and increase quality only for final outputs." },
+        { type: "faq", q: "What happens if I hit Avatar daily limit?", a: "New avatar sessions are blocked until the next daily window." },
+        { type: "faq", q: "How do I buy credits?", a: "Use /api/coins/purchase/quote, then /create, then /confirm." },
+        { type: "faq", q: "Can I convert credits?", a: "Yes. In Beta, you can convert across common, pro, and ultra (except same source and destination), with a plan-based fee." },
+        { type: "faq", q: "Does Beta use real providers?", a: "It depends on rollout flags. Mock remains available as fallback." },
+        { type: "faq", q: "What data is stored?", a: "Operational metadata for usage, replay, and technical audit." },
+        { type: "faq", q: "How do I report a bug?", a: "Provide endpoint, timestamp, key prefix, and sanitized payload." },
+        { type: "faq", q: "How does automatic refund work on failures?", a: "Debit+execute flows can run idempotent compensation on provider failures." },
+        {
+          type: "faq",
+          q: "What is the internal assistant name?",
+          a: "The current internal assistant name is EditexAI (it may change in the future). This name does not affect platform usage and is only an internal reference.",
+        },
+      ],
+      keywords: ["faq", "beta", "support"],
+    },
+  ],
+};
+
+export function getUserManual(lang) {
+  return String(lang || "").toLowerCase().startsWith("en") ? userManualEN : userManualPT;
+}
+
+export const userManual = userManualPT;
+

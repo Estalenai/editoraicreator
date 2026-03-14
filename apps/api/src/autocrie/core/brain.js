@@ -1,24 +1,22 @@
+// apps/api/src/autocrie/core/brain.js
 // Núcleo do Autocrie – inteligência interna (PASSO 10)
 // Orquestra múltiplos provedores e ferramentas (busca web, checagem, geração etc.)
+// Fonte de verdade de IA: ../../ai/index.js (dispatcher)
 
-import { openaiGenerateText } from "../../ai/providers/openaiProvider.js";
-import { geminiGenerateText } from "../../ai/providers/geminiProvider.js";
-import { anthropicGenerateText } from "../../ai/providers/anthropicProvider.js";
+import { generateText } from "../../aiProviders/index.js";
 import { webSearch } from "../../ai/search/index.js";
 
-function pickLLM() {
-  const p = (process.env.AI_DEFAULT_PROVIDER || "openai").toLowerCase();
-  if (p === "openai") return "openai";
-  if (p === "gemini") return "gemini";
-  if (p === "anthropic") return "anthropic";
-  return "openai";
+function isMockEnabled() {
+  const v = String(process.env.AI_MOCK || "").trim().toLowerCase();
+  return v === "true" || v === "1" || v === "yes";
 }
 
-async function callLLM(provider, args) {
-  if (provider === "openai") return openaiGenerateText(args);
-  if (provider === "gemini") return geminiGenerateText(args);
-  if (provider === "anthropic") return anthropicGenerateText(args);
-  return openaiGenerateText(args);
+function mockUsage() {
+  return {
+    prompt_tokens: 5,
+    completion_tokens: 20,
+    total_tokens: 25,
+  };
 }
 
 export class AutocrieBrain {
@@ -38,16 +36,96 @@ export class AutocrieBrain {
   }
 
   static async textGenerate({ input }) {
-    const provider = pickLLM();
-    const system = "Você é a Autocrie.ai (Editor AI Creator). Gere uma resposta direta e útil.";
-    const prompt = input?.prompt || "";
+    if (isMockEnabled()) {
+      const promptText = String(input?.prompt || "");
+      const lowerPrompt = promptText.toLowerCase();
+      const isPromptBuilder =
+        lowerPrompt.includes("finalprompt") || lowerPrompt.includes("promptbuilder");
+      const isCreatorPost =
+        promptText.includes("\"caption\"") ||
+        promptText.includes("platformChecklist") ||
+        promptText.includes("hashtags");
 
-    const r = await callLLM(provider, { prompt, system, temperature: 0.7, maxOutputTokens: 700 });
+      if (isPromptBuilder) {
+        const payload = {
+          finalPrompt:
+            "Gere um post completo seguindo o checklist da plataforma e responda em JSON estrito.",
+          notes: ["Inclua CTA claro.", "Use hashtags adequadas a plataforma."],
+          estimatedOutput: "caption|hashtags|cta|checklist",
+        };
+
+        return {
+          output: { text: JSON.stringify(payload) },
+          provider: "mock",
+          model: "mock-model",
+          meta: { usage: mockUsage() },
+        };
+      }
+
+      if (isCreatorPost) {
+        const payload = {
+          caption: "Legenda mock para Creator Post.",
+          hashtags: ["#autocrie", "#creator", "#socialmedia"],
+          cta: "Comente o que achou e compartilhe com um amigo.",
+          mediaSuggestion: "Sugestao de imagem mock relacionada ao tema.",
+          variations: [
+            "Variacao 1: legenda alternativa para teste.",
+            "Variacao 2: outra alternativa de legenda.",
+          ],
+          platformChecklist: ["Hook inicial forte.", "Hashtags no final.", "CTA claro."],
+        };
+
+        return {
+          output: { text: JSON.stringify(payload) },
+          provider: "mock",
+          model: "mock-model",
+          meta: { usage: mockUsage() },
+        };
+      }
+
+      return {
+        output: { text: "Resposta mock: geracao de texto simulada." },
+        provider: "mock",
+        model: "mock-model",
+        meta: { usage: mockUsage() },
+      };
+    }
+
+    const system = "Você é a Autocrie.ai (Editor AI Creator). Gere uma resposta direta e útil.";
+    const prompt = String(input?.prompt || "").trim();
+
+    if (!prompt) {
+      return {
+        output: { text: "" },
+        provider: "none",
+        model: "none",
+        meta: { error: "prompt é obrigatório" },
+      };
+    }
+
+    // Como o dispatcher pode não aceitar "system" separado, embutimos no prompt.
+    const combinedPrompt = `${system}\n\n${prompt}`;
+
+    const r = await generateText({
+      prompt: combinedPrompt,
+      language: input?.language || "pt-BR",
+      maxTokens: 700,
+      meta: { feature: "autocrie_text_generate" },
+    });
+
+    // Normalização defensiva (caso o dispatcher mude o shape do retorno)
+    const text =
+      typeof r?.text === "string"
+        ? r.text
+        : typeof r?.output?.text === "string"
+          ? r.output.text
+          : "";
+
     return {
-      output: { text: r.text },
-      provider,
-      model: r.model,
-      meta: { usage: r.usage || null }
+      output: { text },
+      provider: r?.provider || "unknown",
+      model: r?.model || "unknown",
+      meta: { usage: r?.usage || null },
     };
   }
 
@@ -57,9 +135,34 @@ export class AutocrieBrain {
    * - Pede ao LLM para classificar e justificar citando as fontes (URLs)
    */
   static async factCheck({ input }) {
+    if (isMockEnabled()) {
+      const claim = String(input?.claim || "").trim();
+      const summary = claim
+        ? "Resumo mock: verificacao simulada sem fontes."
+        : "claim e obrigatorio";
+
+      return {
+        output: {
+          verdict: "INSUFFICIENT",
+          confidence: 0,
+          summary,
+          sources: [],
+          citations: [],
+        },
+        provider: "mock",
+        model: "mock-model",
+        meta: { usage: mockUsage(), search_provider: "mock" },
+      };
+    }
+
     const claim = String(input?.claim || "").trim();
     if (!claim) {
-      return { output: { verdict: "unknown", confidence: 0, summary: "claim é obrigatório", sources: [] }, provider: "none", model: "none", meta: {} };
+      return {
+        output: { verdict: "INSUFFICIENT", confidence: 0, summary: "claim é obrigatório", sources: [], citations: [] },
+        provider: "none",
+        model: "none",
+        meta: {},
+      };
     }
 
     const searchQuery = input?.query || claim;
@@ -69,23 +172,22 @@ export class AutocrieBrain {
     const search = await webSearch({ q: searchQuery, limit: Math.max(6, limit) });
 
     const sources = (search.items || [])
-      .filter(s => isAllowedUrl(s.url, disallowDomains))
+      .filter((s) => isAllowedUrl(s.url, disallowDomains))
       .slice(0, limit)
-      .map(s => ({
-      title: s.title,
-      url: s.url,
-      snippet: s.snippet,
-      source: s.source
-    }));
+      .map((s) => ({
+        title: s.title,
+        url: s.url,
+        snippet: s.snippet,
+        source: s.source,
+      }));
 
-    const provider = pickLLM();
     const system = [
       "Você é a Autocrie.ai. Sua tarefa é checar veracidade de afirmações.",
       "Regras:",
       "- Não invente fatos.",
       "- Use APENAS as fontes fornecidas (URLs e snippets) para justificar.",
       "- Se as fontes não forem suficientes, responda 'INSUFFICIENT'.",
-      "- Retorne JSON estrito com campos: verdict (TRUE|FALSE|MIXED|INSUFFICIENT), confidence (0-100), summary, citations (array de urls)."
+      "- Retorne JSON estrito com campos: verdict (TRUE|FALSE|MIXED|INSUFFICIENT), confidence (0-100), summary, citations (array de urls).",
     ].join("\n");
 
     const prompt = [
@@ -94,17 +196,33 @@ export class AutocrieBrain {
       "FONTES (use como evidência):",
       ...sources.map((s, i) => `${i + 1}. ${s.title}\n${s.url}\n${s.snippet}`),
       "",
-      "Responda somente com JSON."
+      "Responda somente com JSON.",
     ].join("\n");
 
-    const r = await callLLM(provider, { prompt, system, temperature: 0.2, maxOutputTokens: 550 });
+    const combinedPrompt = `${system}\n\n${prompt}`;
 
-    const parsed = safeJsonParse(r.text);
+    const r = await generateText({
+      prompt: combinedPrompt,
+      language: input?.language || "pt-BR",
+      maxTokens: 550,
+      meta: { feature: "autocrie_fact_check", sources_count: sources.length },
+    });
+
+    const rawText =
+      typeof r?.text === "string"
+        ? r.text
+        : typeof r?.output?.text === "string"
+          ? r.output.text
+          : "";
+
+    const parsed = safeJsonParse(rawText);
     const verdict = normalizeVerdict(parsed?.verdict);
     const confidence = clampInt(parsed?.confidence, 0, 100);
-    const summary = typeof parsed?.summary === "string" ? parsed.summary : r.text;
+    const summary = typeof parsed?.summary === "string" ? parsed.summary : rawText;
 
-    const citations = Array.isArray(parsed?.citations) ? parsed.citations.filter(u => typeof u === "string") : [];
+    const citations = Array.isArray(parsed?.citations)
+      ? parsed.citations.filter((u) => typeof u === "string")
+      : [];
 
     return {
       output: {
@@ -112,11 +230,11 @@ export class AutocrieBrain {
         confidence,
         summary,
         sources,
-        citations
+        citations,
       },
-      provider,
-      model: r.model,
-      meta: { usage: r.usage || null, search_provider: process.env.SEARCH_PROVIDER || "serper" }
+      provider: r?.provider || "unknown",
+      model: r?.model || "unknown",
+      meta: { usage: r?.usage || null, search_provider: process.env.SEARCH_PROVIDER || "serper" },
     };
   }
 }
@@ -124,7 +242,6 @@ export class AutocrieBrain {
 function safeJsonParse(text) {
   try {
     const t = String(text || "").trim();
-    // tenta extrair primeiro bloco JSON
     const m = t.match(/\{[\s\S]*\}/);
     if (!m) return null;
     return JSON.parse(m[0]);
@@ -149,7 +266,10 @@ function isAllowedUrl(url, disallowDomains) {
   try {
     const u = new URL(String(url));
     const host = u.hostname.toLowerCase();
-    return !disallowDomains.some(d => host === String(d).toLowerCase() || host.endsWith(`.${String(d).toLowerCase()}`));
+    return !disallowDomains.some((d) => {
+      const dd = String(d).toLowerCase();
+      return host === dd || host.endsWith(`.${dd}`);
+    });
   } catch {
     return false;
   }
