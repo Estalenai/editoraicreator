@@ -3303,6 +3303,226 @@ textarea:focus {
   box-shadow: 0 0 0 2px rgba(52, 245, 255, 0.18);
 }
 
+
+.dashboard-hero-signal-strip,
+.plans-hero-signal-strip,
+.credits-hero-signal-strip {
+  margin-top: 4px;
+}
+
+.dashboard-hero-signal-strip .signal-chip,
+.plans-hero-signal-strip .signal-chip,
+.credits-hero-signal-strip .signal-chip {
+  min-height: 92px;
+}
+
+.hero-kpi-grid-compact {
+  grid-template-columns: repeat(auto-fit, minmax(172px, 1fr));
+}
+
+.dashboard-summary-grid {
+  gap: var(--ea-space-4);
+  padding-bottom: var(--ea-space-3);
+}
+
+.dashboard-quick-link {
+  gap: 10px;
+  min-height: 138px;
+  padding: 14px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  background:
+    radial-gradient(180px 72px at 100% 0%, rgba(127, 183, 255, 0.08), transparent 72%),
+    linear-gradient(155deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.024));
+}
+
+.dashboard-quick-link-kicker {
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(226, 244, 255, 0.58);
+}
+
+.dashboard-quick-link-copy {
+  max-width: 28ch;
+}
+
+.dashboard-quick-link-footer {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ea-space-2);
+}
+
+.dashboard-quick-link-cta {
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--ea-text-strong);
+}
+
+.dashboard-quick-link:hover .dashboard-quick-link-cta {
+  color: #d9fbff;
+}
+
+.plans-summary-grid {
+  gap: var(--ea-space-4);
+  padding-bottom: var(--ea-space-4);
+}
+
+.plans-confidence-strip {
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background:
+    radial-gradient(220px 88px at 100% 0%, rgba(127, 183, 255, 0.08), transparent 74%),
+    linear-gradient(160deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.024));
+}
+
+.plans-confidence-note {
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.plans-catalog-badge {
+  white-space: nowrap;
+}
+
+.plan-card {
+  position: relative;
+  gap: var(--ea-space-4);
+  box-shadow: 0 12px 26px rgba(2, 6, 23, 0.2);
+}
+
+.plan-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  border-radius: 14px 14px 0 0;
+  opacity: 0.88;
+}
+
+.plan-card-default::before {
+  background: linear-gradient(90deg, rgba(127, 183, 255, 0.66), rgba(52, 245, 255, 0.18));
+}
+
+.plan-card-current::before {
+  background: linear-gradient(90deg, rgba(52, 245, 255, 0.9), rgba(127, 183, 255, 0.46));
+}
+
+.plan-card-featured::before {
+  background: linear-gradient(90deg, rgba(255, 214, 10, 0.82), rgba(248, 180, 75, 0.34));
+}
+
+.plan-card-top {
+  padding-bottom: var(--ea-space-2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.plan-card-support-note {
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.plan-card-cta {
+  margin-top: auto;
+}
+
+.credits-summary-grid {
+  gap: var(--ea-space-3);
+}
+
+.credits-guide-card,
+.credits-guide-note,
+.credits-summary-card,
+.credits-history-item,
+.quote-summary-card {
+  box-shadow: var(--ea-shadow-card);
+}
+
+.credits-guide-card,
+.credits-guide-note {
+  background:
+    radial-gradient(160px 64px at 100% 0%, rgba(127, 183, 255, 0.07), transparent 72%),
+    linear-gradient(155deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.022));
+}
+
+.credits-purchase-card {
+  background:
+    radial-gradient(220px 96px at 100% 0%, rgba(127, 183, 255, 0.08), transparent 72%),
+    linear-gradient(160deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.024));
+}
+
+.credits-purchase-checkout-note {
+  margin-top: -2px;
+  margin-bottom: 2px;
+}
+
+.credits-coin-card {
+  position: relative;
+  padding-left: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.credits-coin-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 12px;
+  bottom: 12px;
+  width: 3px;
+  border-radius: 999px;
+}
+
+.credits-coin-card-common {
+  border-color: rgba(107, 226, 142, 0.28);
+}
+
+.credits-coin-card-common::before {
+  background: rgba(107, 226, 142, 0.9);
+}
+
+.credits-coin-card-pro {
+  border-color: rgba(85, 195, 255, 0.3);
+}
+
+.credits-coin-card-pro::before {
+  background: rgba(85, 195, 255, 0.92);
+}
+
+.credits-coin-card-ultra {
+  border-color: rgba(248, 180, 75, 0.32);
+}
+
+.credits-coin-card-ultra::before {
+  background: rgba(248, 180, 75, 0.92);
+}
+
+.purchase-summary-card {
+  gap: var(--ea-space-2);
+}
+
+.purchase-summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ea-space-3);
+  font-size: 13px;
+  color: var(--ea-text-soft);
+}
+
+.purchase-summary-row strong {
+  color: var(--ea-text-strong);
+}
+
+.quote-summary-card {
+  border: 1px solid rgba(123, 207, 255, 0.2);
+  background:
+    radial-gradient(220px 90px at 100% 0%, rgba(123, 207, 255, 0.08), transparent 74%),
+    linear-gradient(160deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.024));
+}
+
 @media (min-width: 1024px) {
   .app-shell-body {
     flex-direction: row;

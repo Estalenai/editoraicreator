@@ -257,12 +257,26 @@ export default function CreditsPage() {
               <p className="section-kicker">Transparência de consumo</p>
               <h1 className="heading-reset">Créditos</h1>
               <p className="section-header-copy hero-copy-compact">
-                Saldo, conversão, compras e histórico organizados para você entender o que tem e o que pode fazer agora.
+                Saldo, conversão e histórico organizados para decidir compra ou uso em segundos.
               </p>
             </div>
             <div className="hero-meta-row hero-meta-row-compact">
               <span className="premium-badge premium-badge-phase">Plano: {planLabel ?? "—"}</span>
               <span className="premium-badge premium-badge-warning">Histórico confirma o consumo real</span>
+            </div>
+            <div className="signal-strip credits-hero-signal-strip">
+              <div className="signal-chip signal-chip-sober">
+                <strong>Saldo por tipo</strong>
+                <span>Comum, Pro e Ultra permanecem visíveis no mesmo painel.</span>
+              </div>
+              <div className="signal-chip signal-chip-sober">
+                <strong>Conversão previsível</strong>
+                <span>Débito, taxa e destino aparecem antes da confirmação.</span>
+              </div>
+              <div className="signal-chip signal-chip-sober">
+                <strong>Histórico auditável</strong>
+                <span>Compras, conversões e consumo entram no registro final.</span>
+              </div>
             </div>
           </div>
           <div className="premium-card-soft hero-side-panel credits-hero-panel">
@@ -270,11 +284,11 @@ export default function CreditsPage() {
             <div className="hero-side-list hero-side-list-compact">
               <div className="hero-side-note">
                 <strong>Saldo por tipo</strong>
-                <span>Comum, Pro e Ultra permanecem separados para facilitar uso, compra e conversão.</span>
+                <span>Comum, Pro e Ultra seguem separados para facilitar uso, compra e conversão.</span>
               </div>
               <div className="hero-side-note">
-                <strong>Histórico e checkout previsíveis</strong>
-                <span>Compras, débitos e conversões aparecem em fluxo separado e depois no histórico real.</span>
+                <strong>Checkout e histórico previsíveis</strong>
+                <span>Compras, débitos e conversões aparecem primeiro na operação e depois no histórico real.</span>
               </div>
             </div>
             <div className="hero-actions-row">
@@ -290,7 +304,7 @@ export default function CreditsPage() {
             </div>
           </div>
         </div>
-        <div className="hero-kpi-grid">
+        <div className="hero-kpi-grid hero-kpi-grid-compact">
           <div className="premium-card-soft hero-kpi">
             <span className="hero-kpi-label">Saldo total</span>
             <strong className="hero-kpi-value">{totalWalletAmount.toLocaleString("pt-BR")}</strong>
@@ -314,7 +328,7 @@ export default function CreditsPage() {
       <section className="premium-card credits-guide-section">
         <div className="section-header-ea">
           <h3 className="heading-reset">Como ler seus créditos</h3>
-          <p className="helper-text-ea">Referência curta para saldo, estimativa e histórico real.</p>
+          <p className="helper-text-ea">Saldo, estimativa e histórico em três sinais.</p>
         </div>
         <div className="credits-guide-grid">
           {CREDIT_GUIDE.map((item) => (
@@ -326,10 +340,10 @@ export default function CreditsPage() {
         </div>
         <div className="credits-guide-notes">
           <div className="premium-card-soft credits-guide-note">
-            <strong>Estimativa nos Creators:</strong> prévia para tomada de decisão antes da geração.
+            <strong>Estimativa nos Creators:</strong> prévia antes de gastar saldo.
           </div>
           <div className="premium-card-soft credits-guide-note">
-            <strong>Histórico de créditos:</strong> movimentação real debitada, creditada ou convertida após processamento.
+            <strong>Histórico de créditos:</strong> consumo e compra confirmados após processamento.
           </div>
         </div>
       </section>
@@ -367,7 +381,7 @@ export default function CreditsPage() {
           <p className="executive-eyebrow">Estimativa x consumo real</p>
           <p className="executive-value metric-value-compact">Clareza total</p>
           <p className="executive-detail">
-            Creators mostram estimativa antes da geração. O histórico registra o débito ou crédito final após processamento.
+            Creators estimam antes da geração; o histórico confirma o movimento final.
           </p>
         </div>
       </section>
@@ -376,7 +390,7 @@ export default function CreditsPage() {
         <div className="section-head">
           <div className="section-header-ea">
             <h3 className="heading-reset">Conversão de créditos</h3>
-            <p className="helper-text-ea">Veja o que sai, a taxa aplicada e o que entra antes de confirmar.</p>
+            <p className="helper-text-ea">Veja débito, taxa e saldo estimado antes de confirmar.</p>
           </div>
           <span className={`premium-badge ${conversionEnabled ? "premium-badge-phase" : "premium-badge-warning"}`}>
             {conversionEnabled ? `Taxa atual: ${conversionFeePercent}%` : "Indisponível no plano atual"}
@@ -400,15 +414,11 @@ export default function CreditsPage() {
             <div className="trust-grid credits-conversion-notes">
               <div className="premium-card-soft trust-note">
                 <strong>Origem e destino claros</strong>
-                <span>Você escolhe qualquer combinação válida entre Comum, Pro e Ultra, exceto origem = destino.</span>
+                <span>Escolha qualquer combinação válida entre Comum, Pro e Ultra, exceto origem = destino.</span>
               </div>
               <div className="premium-card-soft trust-note">
                 <strong>Débito previsível</strong>
-                <span>A tela mostra taxa, total debitado e saldo estimado antes da confirmação.</span>
-              </div>
-              <div className="premium-card-soft trust-note">
-                <strong>Histórico como fonte real</strong>
-                <span>Depois da execução, a movimentação final aparece no histórico de créditos.</span>
+                <span>Taxa, total debitado e saldo estimado aparecem antes da confirmação.</span>
               </div>
             </div>
 
@@ -447,9 +457,8 @@ export default function CreditsPage() {
             </div>
 
             <div className="helper-text-ea">
-              Pares disponíveis: Comum, Pro e Ultra (exceto origem = destino).
+              Pares válidos entre Comum, Pro e Ultra. A taxa é aplicada na origem e o histórico confirma o movimento final.
             </div>
-            <div className="helper-text-ea">A taxa é aplicada sobre a origem e o histórico confirma o movimento final.</div>
             <div className="conversion-metrics-grid credits-conversion-metrics">
               <div className="conversion-metric-card">
                 <span className="helper-text-ea">Saldo disponível em {coinTypeLabel(conversionFrom)}</span>
@@ -550,7 +559,7 @@ export default function CreditsPage() {
         <div className="section-head">
           <div className="section-header-ea">
             <h3 className="heading-reset">Histórico recente de créditos</h3>
-            <p className="helper-text-ea">Fonte de verdade operacional para consumo real, compras aprovadas e conversões processadas.</p>
+            <p className="helper-text-ea">Fonte de verdade para consumo real, compras aprovadas e conversões processadas.</p>
           </div>
           <button onClick={loadTransactions} disabled={txLoading} className="btn-ea btn-ghost btn-sm">
             {txLoading ? "Atualizando..." : "Atualizar histórico"}

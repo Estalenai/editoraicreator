@@ -331,17 +331,20 @@ export function CreditsPackagesCard({ wallet }: Props) {
         </div>
       ) : null}
       <p className="section-header-copy">
-        Monte a compra por pacotes ou personalize total e mix sem perder previsibilidade.
+        Escolha um pacote ou defina o total livre com mix por tipo.
       </p>
       <div className="trust-grid credits-purchase-notes">
         <div className="premium-card-soft trust-note">
-          <strong>Cotação antes do checkout</strong>
-          <span>Subtotal, taxa e total final aparecem antes de seguir para o pagamento seguro.</span>
+          <strong>Cotação clara</strong>
+          <span>Subtotal, taxa e total aparecem antes de sair para o pagamento.</span>
         </div>
         <div className="premium-card-soft trust-note">
-          <strong>Mix livre com checkout protegido</strong>
-          <span>No modo personalizado, você define o total e distribui entre Comum, Pro e Ultra antes de seguir para a Stripe.</span>
+          <strong>Mix configurável</strong>
+          <span>Distribua o total entre Comum, Pro e Ultra antes de abrir a Stripe.</span>
         </div>
+      </div>
+      <div className="helper-note-inline credits-purchase-checkout-note">
+        Pagamento externo via Stripe com retorno ao dashboard para confirmação.
       </div>
       <a href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm state-ea-spaced">
         Ver histórico de consumo
@@ -350,10 +353,7 @@ export function CreditsPackagesCard({ wallet }: Props) {
         {PACKAGE_COIN_ORDER.map((coinType) => (
           <div
             key={coinType}
-            className="premium-card-soft credits-coin-card"
-            style={{
-              border: `1px solid ${PACKAGE_COIN_INFO[coinType].accent}55`,
-            }}
+            className={`premium-card-soft credits-coin-card credits-coin-card-${coinType}`}
           >
             <strong>{PACKAGE_COIN_INFO[coinType].title}</strong>
             <div className="helper-text-ea">{PACKAGE_COIN_INFO[coinType].description}</div>
@@ -377,7 +377,7 @@ export function CreditsPackagesCard({ wallet }: Props) {
               </button>
             </div>
             <p className="section-header-copy">
-              Veja subtotal, taxa e total final antes de seguir para o checkout seguro da Stripe.
+              Confirme subtotal, taxa e total antes de abrir o checkout seguro da Stripe.
             </p>
             <div className="trust-grid credits-modal-notes">
               <div className="premium-card-soft trust-note">
@@ -386,7 +386,7 @@ export function CreditsPackagesCard({ wallet }: Props) {
               </div>
               <div className="premium-card-soft trust-note">
                 <strong>Resumo financeiro claro</strong>
-                <span>A cotação mostra subtotal, taxa e total final antes de abrir o pagamento externo.</span>
+                <span>A cotação mostra subtotal, taxa e total final antes do pagamento externo.</span>
               </div>
             </div>
 
@@ -448,7 +448,7 @@ export function CreditsPackagesCard({ wallet }: Props) {
                   />
                 </label>
                 <div className="helper-text-ea">
-                  Digite qualquer total válido. Regras: mínimo de {PACKAGE_MIN_TOTAL} créditos e valores em múltiplos de {PACKAGE_STEP}.
+                  Use mínimo de {PACKAGE_MIN_TOTAL} créditos e valores em múltiplos de {PACKAGE_STEP}.
                 </div>
               </div>
             )}
@@ -500,8 +500,14 @@ export function CreditsPackagesCard({ wallet }: Props) {
             </div>
 
             <div className="creator-context-zone purchase-summary-card">
-              <div><strong>Total selecionado:</strong> {activePackageTotal} créditos</div>
-              <div><strong>Soma atual:</strong> {packageSum} créditos</div>
+              <div className="purchase-summary-row">
+                <span>Total selecionado</span>
+                <strong>{activePackageTotal} créditos</strong>
+              </div>
+              <div className="purchase-summary-row">
+                <span>Soma atual do mix</span>
+                <strong>{packageSum} créditos</strong>
+              </div>
               {packageMixValid ? (
                 <div className="inline-alert inline-alert-success">Mix fechado corretamente. Pronto para cotação.</div>
               ) : null}
@@ -562,12 +568,12 @@ export function CreditsPackagesCard({ wallet }: Props) {
             </div>
 
             <div className="helper-text-ea">
-              Você será redirecionado para o checkout seguro da Stripe para concluir o pagamento.
+              Depois do pagamento, você volta ao dashboard com confirmação do checkout.
             </div>
 
             {packageQuote ? (
               <div className="premium-card-soft quote-summary-card">
-                <strong>Resumo da cotação</strong>
+                <strong>Cotação pronta</strong>
                 <div className="quote-breakdown-grid state-ea-spaced">
                   <div className="quote-row">
                     <span className="quote-row-label">Subtotal</span>

@@ -354,12 +354,26 @@ function PlansPageContent() {
               <p className="section-kicker">Assinatura e disponibilidade</p>
               <h1 className="heading-reset">Planos</h1>
               <p className="section-header-copy hero-copy-compact">
-                Compare valor, créditos e progressão real antes de decidir upgrade ou ativação.
+                Compare valor, créditos e taxa de conversão antes de decidir upgrade ou ativação.
               </p>
             </div>
             <div className="hero-meta-row hero-meta-row-compact">
               <span className="premium-badge premium-badge-phase">Plano atual: {planLabel ?? "—"}</span>
               <span className="premium-badge premium-badge-warning">Checkout self-serve quando disponível</span>
+            </div>
+            <div className="signal-strip plans-hero-signal-strip">
+              <div className="signal-chip signal-chip-sober">
+                <strong>Escolha objetiva</strong>
+                <span>Preço, créditos e taxa aparecem sem abrir telas extras.</span>
+              </div>
+              <div className="signal-chip signal-chip-sober">
+                <strong>Checkout seguro</strong>
+                <span>Planos self-serve seguem para a Stripe; os demais continuam assistidos.</span>
+              </div>
+              <div className="signal-chip signal-chip-sober">
+                <strong>Progressão visível</strong>
+                <span>Entrada, operação recorrente e escala ficam lado a lado.</span>
+              </div>
             </div>
           </div>
           <div className="premium-card-soft hero-side-panel plans-hero-panel">
@@ -367,7 +381,7 @@ function PlansPageContent() {
             <div className="hero-side-list hero-side-list-compact">
               <div className="hero-side-note">
                 <strong>Checkout protegido</strong>
-                <span>Planos self-serve seguem por checkout dedicado; os demais mantêm fluxo assistido.</span>
+                <span>Planos self-serve seguem por checkout dedicado; os demais ficam em ativação assistida.</span>
               </div>
               <div className="hero-side-note">
                 <strong>Progressão objetiva</strong>
@@ -410,10 +424,10 @@ function PlansPageContent() {
         <div className={`state-ea ${checkoutNotice.tone === "success" ? "state-ea-success" : checkoutNotice.tone === "warning" ? "state-ea-warning" : ""}`}>
           <p className="state-ea-title">
             {checkoutNotice.tone === "success"
-              ? "Checkout em andamento"
+              ? "Checkout confirmado"
               : checkoutNotice.tone === "warning"
                 ? "Atenção no checkout"
-                : "Plano atual"}
+                : "Plano selecionado"}
           </p>
           <div className="state-ea-text">{checkoutNotice.message}</div>
         </div>
@@ -442,7 +456,7 @@ function PlansPageContent() {
           <p className="executive-value metric-value-compact">
             {currentPlanCredits.length > 0 ? currentPlanCredits.join(" • ") : "Consulte o catálogo"}
           </p>
-          <p className="executive-detail">Detalhamento completo disponível no catálogo abaixo.</p>
+          <p className="executive-detail">Detalhamento completo no catálogo abaixo.</p>
         </div>
         <div className="premium-card executive-card plans-summary-card">
           <p className="executive-eyebrow">Conversão entre tipos</p>
@@ -456,11 +470,15 @@ function PlansPageContent() {
       <section className="premium-card-soft plans-confidence-strip">
         <div className="plans-confidence-note">
           <strong>Checkout claro</strong>
-          <span>Planos self-serve seguem para assinatura imediata; planos assistidos continuam via suporte.</span>
+          <span>Planos self-serve seguem para assinatura imediata; os assistidos continuam via suporte.</span>
         </div>
         <div className="plans-confidence-note">
           <strong>Controle comercial</strong>
           <span>Preço, disponibilidade e diferenças principais ficam expostos sem leitura longa.</span>
+        </div>
+        <div className="plans-confidence-note">
+          <strong>Sincronização pós-checkout</strong>
+          <span>Depois da compra, atualize o plano para refletir benefícios e disponibilidade.</span>
         </div>
       </section>
 
@@ -468,9 +486,9 @@ function PlansPageContent() {
         <div className="section-head">
           <div className="section-header-ea">
             <h3 className="heading-reset">Catálogo de planos</h3>
-            <p className="helper-text-ea">Entrada, operação recorrente, escala criativa e ativação assistida em uma progressão direta.</p>
+            <p className="helper-text-ea">Entrada, operação recorrente e escala criativa em uma progressão curta.</p>
           </div>
-          <span className="premium-badge premium-badge-phase">Entrada → escala → assistido</span>
+          <span className="premium-badge premium-badge-phase plans-catalog-badge">Escolha com contexto</span>
         </div>
         {catalogLoading ? (
           <div className="plan-catalog-grid plan-catalog-grid-spaced">
@@ -521,7 +539,7 @@ function PlansPageContent() {
                 : comingSoon
                   ? "Em breve"
                   : hasInteractiveCheckout
-                    ? "Disponível para assinatura"
+                    ? "Checkout imediato"
                     : "Ativação assistida";
               const isMostPopular = String(item.highlight || "").toLowerCase() === "most_popular";
               const isLoadingCheckout = checkoutLoadingCode === normalizedCatalogCode;
@@ -530,7 +548,7 @@ function PlansPageContent() {
                 : comingSoon
                   ? "Em breve"
                   : checkoutSupported
-                    ? (isLoadingCheckout ? "Abrindo checkout..." : "Assinar")
+                    ? (isLoadingCheckout ? "Abrindo checkout..." : "Abrir checkout")
                     : "Solicitar ativação";
 
               return (
@@ -576,7 +594,7 @@ function PlansPageContent() {
                   </div>
                   {convertEnabled ? (
                     <div className="plan-card-support-note">
-                      Na conversão entre tipos de crédito, este plano aplica taxa de {convertFee}%.
+                      Conversão entre tipos com taxa de {convertFee}% neste plano.
                     </div>
                   ) : null}
                   {creditsIncluded.length > 0 ? (

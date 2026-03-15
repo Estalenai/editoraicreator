@@ -13,40 +13,54 @@ type UsageItem = { feature: string; used: number; limit: number };
 
 type QuickLinkItem = {
   href: string;
+  tag: string;
   title: string;
   description: string;
+  cta: string;
 };
 
 const QUICK_LINKS: QuickLinkItem[] = [
   {
     href: "/creators",
+    tag: "Workspace",
     title: "Creators",
-    description: "Abra os módulos Creator em abas dedicadas, sem scroll caótico.",
+    description: "Abra um creator com briefing, estimativa e resultado em um fluxo único.",
+    cta: "Abrir workspace",
   },
   {
     href: "/projects",
+    tag: "Continuidade",
     title: "Projetos",
-    description: "Acesse seus projetos recentes e continue no editor.",
+    description: "Retome entregas salvas e siga direto para o editor com contexto.",
+    cta: "Ver projetos",
   },
   {
     href: "/credits",
+    tag: "Financeiro",
     title: "Créditos",
-    description: "Veja saldo e compre créditos avulsos com mix personalizado.",
+    description: "Acompanhe saldo, conversão e compra avulsa sem ruído operacional.",
+    cta: "Abrir créditos",
   },
   {
     href: "/plans",
+    tag: "Assinatura",
     title: "Planos",
-    description: "Consulte plano atual, catálogo beta e opções de upgrade.",
+    description: "Compare níveis, taxa de conversão e checkout com leitura objetiva.",
+    cta: "Revisar planos",
   },
   {
     href: "/support",
+    tag: "Suporte",
     title: "Suporte",
-    description: "Envie solicitações no Support Assistant e acompanhe status.",
+    description: "Acione ajuda assistida quando precisar de ativação ou orientação.",
+    cta: "Falar com suporte",
   },
   {
     href: "/how-it-works",
+    tag: "Guia",
     title: "Como funciona",
-    description: "Guia rápido para entender Creators, créditos e continuidade em projetos.",
+    description: "Recapitule creators, créditos e continuidade em poucos passos.",
+    cta: "Ler guia",
   },
 ];
 
@@ -183,17 +197,31 @@ export default function DashboardPage() {
               <span className="premium-badge premium-badge-phase">Plano: {planLabel ?? "—"}</span>
               <span className="premium-badge premium-badge-warning">Histórico confirma o consumo real</span>
             </div>
+            <div className="signal-strip dashboard-hero-signal-strip">
+              <div className="signal-chip signal-chip-sober">
+                <strong>Saldo e uso visíveis</strong>
+                <span>Plano, créditos e atividade recente aparecem na mesma leitura.</span>
+              </div>
+              <div className="signal-chip signal-chip-sober">
+                <strong>Próxima ação clara</strong>
+                <span>Retome um projeto ou entre em Creators sem perder contexto.</span>
+              </div>
+              <div className="signal-chip signal-chip-sober">
+                <strong>Histórico confiável</strong>
+                <span>Estimativa antes da ação e confirmação no consumo real.</span>
+              </div>
+            </div>
           </div>
           <div className="premium-card-soft hero-side-panel dashboard-hero-panel">
             <span className="plan-card-section-label">Operação</span>
             <div className="hero-side-list">
               <div className="hero-side-note">
                 <strong>Plano sincronizado</strong>
-                <span>Atualize a assinatura após checkout para refletir benefícios e catálogo.</span>
+                <span>Atualize após checkout para refletir benefícios e disponibilidade.</span>
               </div>
               <div className="hero-side-note">
                 <strong>Créditos auditáveis</strong>
-                <span>Estimativas aparecem antes da geração e o consumo final fica no histórico.</span>
+                <span>Compra, conversão e débito aparecem com trilhas previsíveis.</span>
               </div>
               <div className="hero-side-note">
                 <strong>Beta controlado</strong>
@@ -218,7 +246,7 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
-        <div className="hero-kpi-grid">
+        <div className="hero-kpi-grid hero-kpi-grid-compact">
           <div className="premium-card-soft hero-kpi">
             <span className="hero-kpi-label">Saldo total</span>
             <strong className="hero-kpi-value">{walletSummary}</strong>
@@ -329,7 +357,7 @@ export default function DashboardPage() {
         <div className="section-head">
           <div className="section-header-ea">
             <h3 className="heading-reset">Transparência de consumo</h3>
-            <p className="helper-text-ea">Estimativa antes da geração e confirmação no histórico.</p>
+            <p className="helper-text-ea">Estimativa antes da ação e confirmação no histórico.</p>
           </div>
           <Link href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
             Ver histórico completo
@@ -352,7 +380,7 @@ export default function DashboardPage() {
         <div className="section-head">
           <div className="section-header-ea">
             <h3 className="heading-reset">Projetos recentes</h3>
-            <p className="helper-text-ea">Retome uma entrega recente com contexto preservado.</p>
+            <p className="helper-text-ea">Retome uma entrega recente sem reconstruir contexto.</p>
           </div>
           <Link href="/projects" className="btn-link-ea btn-ghost btn-sm">Abrir página de projetos</Link>
         </div>
@@ -414,7 +442,7 @@ export default function DashboardPage() {
       <section className="premium-card dashboard-section-card">
         <div className="section-header-ea">
           <h3 className="heading-reset">Acessos rápidos</h3>
-          <p className="helper-text-ea">Módulos organizados para navegação rápida sem perder o contexto.</p>
+          <p className="helper-text-ea">Atalhos operacionais para seguir do painel direto para a ação.</p>
         </div>
         <div className="dashboard-quick-links-grid">
           {QUICK_LINKS.map((item) => (
@@ -423,8 +451,12 @@ export default function DashboardPage() {
               href={item.href}
               className="premium-card-soft dashboard-quick-link"
             >
+              <div className="dashboard-quick-link-kicker">{item.tag}</div>
               <div className="dashboard-project-link-title">{item.title}</div>
-              <div className="helper-text-ea">{item.description}</div>
+              <div className="dashboard-quick-link-copy helper-text-ea">{item.description}</div>
+              <div className="dashboard-quick-link-footer">
+                <span className="dashboard-quick-link-cta">{item.cta}</span>
+              </div>
             </Link>
           ))}
         </div>
@@ -433,7 +465,7 @@ export default function DashboardPage() {
       <section className="premium-card dashboard-section-card">
         <div className="section-header-ea">
           <h3 className="heading-reset">Uso por feature</h3>
-          <p className="helper-text-ea">Consumo por módulo para ajustar rotina, plano e próximos passos.</p>
+          <p className="helper-text-ea">Consumo por módulo para ajustar ritmo, plano e próxima ação.</p>
         </div>
         {loading || usageLoading ? (
           <div className="dashboard-section-body">
