@@ -9,6 +9,13 @@ type Project = { id: string; title: string; kind: string; data?: any };
 
 type AiStep = { id: string; ts: string; title: string; details?: string };
 
+type CreatorSnapshot = {
+  source: string;
+  summary: string;
+  details: string;
+  prefillText?: string;
+};
+
 type EditorDoc = {
   mode: { professor: boolean; transparent: boolean };
   doc: { text: string };
@@ -64,6 +71,188 @@ function ensureEditor(project: Project): EditorDoc {
   };
 }
 
+function parseCreatorProjectData(project: Project): any | null {
+  const rawData = project.data;
+  if (!rawData || typeof rawData !== "object") return null;
+
+  if (typeof rawData.content === "string") {
+    try {
+      const parsed = JSON.parse(rawData.content);
+      if (parsed && typeof parsed === "object") return parsed;
+    } catch {
+      return {
+        type: "legacy_content",
+        raw_text: String(rawData.content || "").trim(),
+      };
+    }
+  }
+
+  if (
+    rawData.type ||
+    rawData.generated ||
+    rawData.result ||
+    rawData.projectName ||
+    rawData.clipIdea
+  ) {
+    return rawData;
+  }
+
+  return null;
+}
+
+function normalizeStringList(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((item) => (typeof item === "string" ? item.trim() : ""))
+    .filter(Boolean);
+}
+
+function buildCreatorSnapshot(project: Project): CreatorSnapshot | null {
+  const payload = parseCreatorProjectData(project);
+  if (!payload || typeof payload !== "object") return null;
+
+  if (payload.type === "creator_post") {
+    const result = payload.result || {};
+    const caption = String(result.caption || "").trim();
+    const cta = String(result.cta || "").trim();
+    const hashtags = normalizeStringList(result.hashtags).join(" ");
+    const variations = normalizeStringList(result.variations);
+    return {
+      source: "Creator Post",
+      summary: "Post salvo a partir de Creators com contexto pronto para continuidade.",
+      details: [
+        caption ? `Legenda\n${caption}` : "",
+        hashtags ? `Hashtags\n${hashtags}` : "",
+        cta ? `CTA\n${cta}` : "",
+        variations.length ? `Variacoes\n- ${variations.join("\n- ")}` : "",
+      ]
+        .filter(Boolean)
+        .join("\n\n"),
+      prefillText: [caption, hashtags, cta ? `CTA: ${cta}` : ""].filter(Boolean).join("\n\n"),
+    };
+  }
+
+  if (payload.type === "creator_music") {
+    const result = payload.result || {};
+    const lyrics = String(result.lyrics || "").trim();
+    const audioUrl = String(result.audio_url || "").trim();
+    return {
+      source: "Creator Music",
+      summary: "Trilha salva a partir de Creators com metadados e referencia de audio.",
+      details: [
+        result.title ? `Titulo\n${String(result.title).trim()}` : "",
+        audioUrl ? `Audio\n${audioUrl}` : "",
+        result.provider ? `Provedor\n${String(result.provider).trim()}` : "",
+        lyrics ? `Letras / direcao\n${lyrics}` : "",
+      ]
+        .filter(Boolean)
+        .join("\n\n"),
+      prefillText: [
+        result.title ? `Titulo: ${String(result.title).trim()}` : "",
+        audioUrl ? `Audio: ${audioUrl}` : "",
+        lyrics,
+      ]
+        .filter(Boolean)
+        .join("\n\n"),
+    };
+  }
+
+  if (payload.type === "creator_scripts") {
+    const generated = payload.generated || {};
+    const structured = generated.structured || {};
+    const finalScript = String(structured.final_script || generated.raw_text || "").trim();
+    return {
+      source: "Creator Scripts",
+      summary: "Roteiro salvo a partir de Creators para continuar refinando no editor.",
+      details: [
+        structured.title ? `Titulo\n${String(structured.title).trim()}` : "",
+        finalScript ? `Roteiro final\n${finalScript}` : "",
+        structured.cta ? `CTA\n${String(structured.cta).trim()}` : "",
+      ]
+        .filter(Boolean)
+        .join("\n\n"),
+      prefillText: finalScript,
+    };
+  }
+
+  if (payload.type === "creator_ads") {
+    const generated = payload.generated || {};
+    const structured = generated.structured || {};
+    const fullVersion = String(structured.full_version || generated.raw_text || "").trim();
+    return {
+      source: "Creator Ads",
+      summary: "Peca de anuncio salva a partir de Creators com copy pronta para refinamento.",
+      details: [
+        structured.headline ? `Headline\n${String(structured.headline).trim()}` : "",
+        fullVersion ? `Versao completa\n${fullVersion}` : "",
+        structured.cta ? `CTA\n${String(structured.cta).trim()}` : "",
+      ]
+        .filter(Boolean)
+        .join("\n\n"),
+      prefillText: fullVersion,
+    };
+  }
+
+  if (payload.type === "creator_clips") {
+    const generated = payload.generated || {};
+    const result = generated.result || {};
+    const clipUrl = String(generated.clip_url || result?.output?.video_url || "").trim();
+    return {
+      source: "Creator Clips",
+      summary: "Job de video salvo a partir de Creators com status e referencia do clipe.",
+      details: [
+        payload.clipIdea ? `Ideia do clipe\n${String(payload.clipIdea).trim()}` : "",
+        result.jobId ? `Job ID\n${String(result.jobId).trim()}` : "",
+        result.status ? `Status\n${String(result.status).trim()}` : "",
+        clipUrl ? `URL do video\n${clipUrl}` : "",
+        generated.prompt_used ? `Prompt usado\n${String(generated.prompt_used).trim()}` : "",
+      ]
+        .filter(Boolean)
+        .join("\n\n"),
+      prefillText: [
+        payload.clipIdea ? `Ideia: ${String(payload.clipIdea).trim()}` : "",
+        clipUrl ? `Video: ${clipUrl}` : "",
+      ]
+        .filter(Boolean)
+        .join("\n\n"),
+    };
+  }
+
+  if (payload.type === "creator_no_code") {
+    const generated = payload.generated || {};
+    const structured = generated.structured || {};
+    const overview = String(structured.product_overview || generated.raw_text || "").trim();
+    const modules = normalizeStringList(structured.core_modules);
+    return {
+      source: "Creator No Code",
+      summary: "Blueprint salvo a partir de Creators com estrutura inicial do produto.",
+      details: [
+        payload.projectName ? `Projeto\n${String(payload.projectName).trim()}` : "",
+        overview ? `Visao do produto\n${overview}` : "",
+        modules.length ? `Modulos principais\n- ${modules.join("\n- ")}` : "",
+      ]
+        .filter(Boolean)
+        .join("\n\n"),
+      prefillText: [payload.projectName ? `Projeto: ${String(payload.projectName).trim()}` : "", overview]
+        .filter(Boolean)
+        .join("\n\n"),
+    };
+  }
+
+  if (payload.type === "legacy_content") {
+    const rawText = String(payload.raw_text || "").trim();
+    if (!rawText) return null;
+    return {
+      source: "Contexto importado",
+      summary: "Projeto salvo antes da estrutura atual do editor.",
+      details: rawText,
+      prefillText: rawText,
+    };
+  }
+
+  return null;
+}
+
 function pushStep(list: AiStep[], title: string, details?: string): AiStep[] {
   return [
     { id: cryptoId(), ts: new Date().toISOString(), title, details },
@@ -89,6 +278,7 @@ export default function EditorProjectPage() {
   const [err, setErr] = useState<string | null>(null);
 
   const [project, setProject] = useState<Project | null>(null);
+  const [creatorSnapshot, setCreatorSnapshot] = useState<CreatorSnapshot | null>(null);
   const [tab, setTab] = useState<EditorTab>("text");
 
   const [professorMode, setProfessorMode] = useState(false);
@@ -107,11 +297,13 @@ export default function EditorProjectPage() {
         const p = await api.getProject(id);
         const proj = extractProjectPayload(p);
         setProject(proj);
+        const snapshot = buildCreatorSnapshot(proj);
+        setCreatorSnapshot(snapshot);
 
         const ed = ensureEditor(proj);
         setProfessorMode(ed.mode.professor);
         setTransparentMode(ed.mode.transparent);
-        setText(ed.doc.text);
+        setText(ed.doc.text || snapshot?.prefillText || "");
         setAiSteps(ed.aiSteps);
 
         // Escolhe aba inicial baseada no kind
@@ -282,6 +474,17 @@ export default function EditorProjectPage() {
                 <a href="/projects" className="btn-link-ea btn-ghost btn-sm">Projetos</a>
               </div>
             </section>
+
+            {creatorSnapshot ? (
+              <section className="editor-shell-inline-card">
+                <div className="editor-shell-panel-head">
+                  <p className="section-kicker">Contexto importado</p>
+                  <h4>{creatorSnapshot.source}</h4>
+                  <p className="editor-shell-note">{creatorSnapshot.summary}</p>
+                </div>
+                <pre className="editor-shell-pre editor-shell-pre-compact">{creatorSnapshot.details}</pre>
+              </section>
+            ) : null}
 
             <section className="editor-shell-inline-card">
               <div className="editor-shell-panel-head">
