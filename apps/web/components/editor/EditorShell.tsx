@@ -91,6 +91,21 @@ export function EditorShell({
           </div>
         </div>
 
+        <div className="signal-strip editor-shell-signal-strip">
+          <div className="signal-chip signal-chip-sober">
+            <strong>Origem conectada</strong>
+            <span>Creators, projetos e editor compartilham a mesma continuidade.</span>
+          </div>
+          <div className="signal-chip signal-chip-sober">
+            <strong>Apoio lateral</strong>
+            <span>A EditexAI acelera etapas sem competir com a peca principal.</span>
+          </div>
+          <div className="signal-chip signal-chip-sober">
+            <strong>Controle editorial</strong>
+            <span>Salvar, revisar e iterar continuam visiveis em um shell unico.</span>
+          </div>
+        </div>
+
         <div className="editor-shell-trust-grid">
           <div className="premium-card-soft trust-note editor-shell-trust-card">
             <strong>Documento vivo</strong>

@@ -193,6 +193,21 @@ function CreatorsPageContent() {
               <span className="premium-badge premium-badge-soon">Resultado pronto para salvar em projeto</span>
             </div>
 
+            <div className="signal-strip creators-hero-signal-strip">
+              <div className="signal-chip signal-chip-creative">
+                <strong>Briefing</strong>
+                <span>Campos objetivos e estimativa antes de qualquer geracao.</span>
+              </div>
+              <div className="signal-chip signal-chip-creative">
+                <strong>Geracao</strong>
+                <span>Feedback curto, loading claro e erro legivel durante a execucao.</span>
+              </div>
+              <div className="signal-chip signal-chip-creative">
+                <strong>Continuidade</strong>
+                <span>Salvar em projeto e seguir para o editor no mesmo fluxo.</span>
+              </div>
+            </div>
+
             <div className="hero-kpi-grid creators-hero-metrics creators-hero-metrics-compact">
               <div className="premium-card-soft hero-kpi creators-hero-metric">
                 <span className="hero-kpi-label">Ferramenta ativa</span>

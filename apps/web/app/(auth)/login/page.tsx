@@ -138,14 +138,18 @@ function LoginPageContent() {
               <span className="premium-badge premium-badge-warning">Acesso controlado</span>
             </div>
 
-            <div className="auth-entry-note-grid">
-              <div className="premium-card-soft trust-note">
-                <strong>Entrada segura</strong>
-                <span>O acesso permanece controlado enquanto o beta evolui com operacao monitorada.</span>
+            <div className="signal-strip auth-entry-signal-strip">
+              <div className="signal-chip signal-chip-creative">
+                <strong>Conta protegida</strong>
+                <span>Autenticacao e liberacao de acesso continuam sob controle no beta.</span>
               </div>
-              <div className="premium-card-soft trust-note">
-                <strong>Fluxo claro</strong>
-                <span>Crie conta, acompanhe aprovacao e entre no workspace quando o acesso estiver liberado.</span>
+              <div className="signal-chip signal-chip-creative">
+                <strong>Fluxo curto</strong>
+                <span>Cadastro, aprovacao e entrada no workspace sem ruido desnecessario.</span>
+              </div>
+              <div className="signal-chip signal-chip-creative">
+                <strong>Produto vivo</strong>
+                <span>Creators, editor e operacao compartilham a mesma base visual e funcional.</span>
               </div>
             </div>
           </div>
