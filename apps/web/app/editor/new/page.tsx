@@ -87,7 +87,7 @@ export default function NewEditorProjectPage() {
               <p className="section-kicker">Entrada do editor</p>
               <h1 style={{ margin: 0, letterSpacing: -0.3 }}>Abra um projeto com contexto pronto</h1>
               <p className="editor-new-lead">
-                Escolha o formato mais proximo do seu fluxo e entre no editor com base inicial, landmarks claros e continuidade salva.
+                Escolha o formato mais proximo do seu fluxo e entre no editor com base inicial, landmarks claros e contexto salvo.
               </p>
             </div>
             <div className="hero-meta-row">
@@ -133,7 +133,7 @@ export default function NewEditorProjectPage() {
 
       {err ? (
         <div className="state-ea state-ea-error">
-          <p className="state-ea-title">Nao foi possivel abrir o editor</p>
+          <p className="state-ea-title">Nao foi possivel abrir o editor agora</p>
           <div className="state-ea-text">{err}</div>
         </div>
       ) : null}

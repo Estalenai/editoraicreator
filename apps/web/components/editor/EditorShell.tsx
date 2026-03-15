@@ -55,7 +55,7 @@ export function EditorShell({
               <p className="section-kicker">Workspace editorial</p>
               <h2 style={{ margin: 0 }}>{title}</h2>
               <p className="editor-shell-note editor-shell-title-copy">
-                EditexAI no centro do projeto: contexto salvo, apoio IA lateral e continuidade sem sair do editor.
+                EditexAI no centro do projeto: contexto salvo, apoio lateral e continuidade sem sair do editor.
               </p>
             </div>
             <div className="hero-meta-row">
@@ -126,7 +126,7 @@ export function EditorShell({
         <div className="editor-shell-toolbar-head">
           <div className="editor-shell-toolbar-copy">
             <p className="section-kicker">Fluxo do editor</p>
-            <p className="helper-text-ea">Troque de area sem perder o contexto salvo do projeto.</p>
+            <p className="helper-text-ea">Troque de area sem perder o contexto salvo.</p>
           </div>
           <div className="editor-shell-toolbar-meta">
             <span className="premium-badge premium-badge-phase">{professorMode ? "Professor ativo" : "Professor opcional"}</span>

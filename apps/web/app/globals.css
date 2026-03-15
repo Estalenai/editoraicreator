@@ -3523,6 +3523,92 @@ textarea:focus {
     linear-gradient(160deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.024));
 }
 
+
+.projects-page {
+  gap: clamp(20px, 2.6vw, 30px);
+}
+
+.projects-loading-stack,
+.editor-loading-shell {
+  display: grid;
+  gap: 10px;
+}
+
+.editor-loading-shell {
+  padding: 16px;
+}
+
+.section-header-copy,
+.meta-text-ea {
+  color: rgba(230, 243, 250, 0.82);
+}
+
+.helper-text-ea {
+  color: rgba(223, 236, 244, 0.78);
+}
+
+.app-nav-link-meta,
+.creator-tab-meta,
+.dashboard-project-link-meta,
+.editor-kind-meta,
+.editor-shell-note {
+  color: rgba(229, 244, 255, 0.74);
+}
+
+.btn-secondary {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  color: #ebf8ff !important;
+  box-shadow: 0 8px 18px rgba(2, 6, 23, 0.18);
+}
+
+.btn-ghost {
+  color: rgba(235, 247, 255, 0.92) !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+}
+
+.text-link-ea {
+  color: #b5f2ff;
+  border-color: rgba(181, 242, 255, 0.36);
+}
+
+.state-ea {
+  box-shadow: 0 12px 24px rgba(2, 6, 23, 0.18);
+}
+
+.state-ea-text {
+  color: rgba(240, 248, 255, 0.9);
+}
+
+.state-ea-warning .state-ea-title {
+  color: #ffe3a1;
+}
+
+.state-ea-error .state-ea-title {
+  color: #ffd0d0;
+}
+
+.state-ea-success .state-ea-title {
+  color: #b5ffd9;
+}
+
+.premium-badge-soon {
+  color: rgba(242, 247, 255, 0.92);
+}
+
+.app-nav-links,
+.editor-shell-tab-row {
+  scrollbar-width: thin;
+}
+
+.creator-tab-btn {
+  min-height: 96px;
+}
+
+.editor-shell-pre {
+  font-size: 12px;
+  line-height: 1.6;
+}
+
 @media (min-width: 1024px) {
   .app-shell-body {
     flex-direction: row;
@@ -3661,11 +3747,17 @@ textarea:focus {
     flex-wrap: nowrap;
     overflow-x: auto;
     padding-bottom: 2px;
+    scroll-snap-type: x proximity;
   }
 
   .app-nav-link {
     flex: 0 0 auto;
-    min-width: 158px;
+    min-width: 146px;
+    scroll-snap-align: start;
+  }
+
+  .creators-sidebar-group-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -3719,12 +3811,23 @@ textarea:focus {
   }
 
   .editor-shell-status-grid,
-  .editor-new-flow {
+  .editor-new-flow,
+  .creators-hero-metrics {
     grid-template-columns: minmax(0, 1fr);
   }
 
   .editor-shell-grid {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .editor-shell-tab-row {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .editor-shell-tab-row > * {
+    flex: 0 0 auto;
   }
 
   .creator-workspace-grid {
@@ -3741,6 +3844,11 @@ textarea:focus {
     gap: var(--ea-space-3);
   }
 
+  .editor-shell-header-actions > *,
+  .editor-shell-toolbar-meta > * {
+    flex: 1 1 170px;
+  }
+
   .credits-modal {
     max-height: 92vh;
     padding: var(--ea-card-padding);
@@ -3749,6 +3857,12 @@ textarea:focus {
   .credits-modal .surface-toolbar > *,
   .credits-modal .hero-actions-row > * {
     flex-basis: calc(50% - var(--ea-space-2));
+  }
+
+  .credits-modal .hero-actions-row {
+    padding-top: 12px;
+    margin-top: 4px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
   }
 
   .credits-package-grid,
@@ -3783,8 +3897,17 @@ textarea:focus {
     padding-bottom: 8px;
   }
 
+  .app-top-nav-text {
+    display: none;
+  }
+
   .hero-actions-row {
     width: 100%;
+  }
+
+  .hero-actions-row > * {
+    flex: 1 1 160px;
+    justify-content: center;
   }
 
   .summary-grid,
@@ -3803,7 +3926,8 @@ textarea:focus {
 
   .creators-hero-metrics,
   .creators-sidebar-nav,
-  .creators-sidebar-stack {
+  .creators-sidebar-stack,
+  .creators-sidebar-group-list {
     grid-template-columns: minmax(0, 1fr);
   }
 
@@ -3822,6 +3946,16 @@ textarea:focus {
   .editor-shell-header-actions,
   .editor-shell-cta-group {
     width: 100%;
+  }
+
+  .auth-entry-card,
+  .beta-entry-side-card,
+  .dashboard-section-card,
+  .plans-catalog-section,
+  .credits-section-card,
+  .credits-purchase-card,
+  .editor-new-selection {
+    padding: clamp(16px, 4vw, 20px);
   }
 
   .credits-modal-backdrop {
@@ -3843,5 +3977,16 @@ textarea:focus {
   .credits-modal-notes,
   .credits-coin-grid {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .projects-loading-stack,
+  .editor-loading-shell {
+    gap: 8px;
+  }
+
+  .purchase-summary-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
   }
 }

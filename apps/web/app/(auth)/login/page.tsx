@@ -111,7 +111,7 @@ function LoginPageContent() {
   if (checkingSession) {
     return (
       <div className="auth-entry-shell">
-        <div className="premium-card" style={{ padding: 20 }}>Verificando sessao...</div>
+        <div className="premium-card auth-entry-loading">Verificando acesso...</div>
       </div>
     );
   }
@@ -128,8 +128,8 @@ function LoginPageContent() {
               </h1>
               <p className="auth-entry-copy">
                 {mode === "signup"
-                  ? "Cadastre sua conta, entre na fila de aprovacao e prepare o acesso ao workspace."
-                  : "Use seu acesso aprovado para abrir uma plataforma clara, segura e pronta para operacao."}
+                  ? "Cadastre sua conta, entre na fila de aprovacao e prepare seu acesso ao workspace."
+                  : "Use seu acesso aprovado para abrir um workspace seguro e pronto para operacao."}
               </p>
             </div>
 
@@ -162,7 +162,7 @@ function LoginPageContent() {
               </h2>
               <p className="meta-text-ea">
                 {mode === "signup"
-                  ? "Use um e-mail valido para solicitar liberacao e acompanhar a aprovacao."
+                  ? "Use um e-mail valido para entrar na fila de liberacao."
                   : "Entre com seu e-mail e senha para abrir o workspace."}
               </p>
             </div>
@@ -236,7 +236,7 @@ function LoginPageContent() {
               <strong>{mode === "signup" ? "Aprovacao manual no beta" : "Acesso liberado"}</strong>
               <span>
                 {mode === "signup"
-                  ? "Depois do cadastro, sua conta entra na fila de analise. Voce sera avisado quando o acesso estiver pronto."
+                  ? "Depois do cadastro, sua conta entra na fila de analise. Avisaremos quando o acesso estiver pronto."
                   : "Se sua conta ja foi aprovada, o login leva voce direto para o dashboard."}
               </span>
             </div>

@@ -12,7 +12,7 @@ export default function HomePage() {
             </div>
             <h1 className="beta-entry-title">Acesso antecipado</h1>
             <p className="beta-entry-copy">
-              O Editor AI Creator esta em beta fechado. Solicite acesso antecipado para liberar sua conta e acompanhar a evolucao da EditexAI.
+              O Editor AI Creator esta em beta fechado. Solicite acesso antecipado para liberar sua conta e acompanhar a evolucao da plataforma.
             </p>
             <div className="hero-actions-row">
               <Link href="/login" className="btn-link-ea btn-primary">Ja tenho acesso</Link>

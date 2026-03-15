@@ -410,7 +410,7 @@ export default function EditorProjectPage() {
   if (loading) {
     return (
       <div className="page-shell">
-        <div className="premium-card" style={{ padding: 16, display: "grid", gap: 10 }}>
+        <div className="premium-card editor-loading-shell">
           <div className="premium-skeleton premium-skeleton-line" style={{ width: "40%" }} />
           <div className="premium-skeleton premium-skeleton-line" style={{ width: "76%" }} />
           <div className="premium-skeleton premium-skeleton-card" style={{ height: 160 }} />
@@ -469,7 +469,7 @@ export default function EditorProjectPage() {
 
               <div className="editor-shell-cta-group">
                 <button onClick={save} disabled={saving} className="btn-ea btn-primary">
-                  {saving ? "Salvando..." : "Salvar agora"}
+                  {saving ? "Salvando..." : "Salvar projeto"}
                 </button>
                 <a href="/projects" className="btn-link-ea btn-ghost btn-sm">Projetos</a>
               </div>
@@ -548,7 +548,7 @@ export default function EditorProjectPage() {
                   <p className="section-kicker">Edicao principal</p>
                   <h3>Editor de Video</h3>
                   <p className="editor-shell-note">
-                    Base do fluxo pronta para continuidade. Timeline e importação/exportação entram na próxima etapa.
+                    Base do fluxo pronta para continuidade. Timeline completa entra na proxima etapa.
                   </p>
                 </div>
                 <div className="editor-shell-placeholder editor-shell-placeholder-muted">
@@ -622,7 +622,7 @@ export default function EditorProjectPage() {
                   <div className="editor-shell-panel-head">
                     <h4>Fact-check (Anti Fake News)</h4>
                     <p className="editor-shell-note">
-                      Cole uma afirmacao, valide o resultado e preserve o contexto dentro do projeto.
+                      Cole uma afirmacao, valide o resultado e mantenha o contexto no projeto.
                     </p>
                   </div>
                   <label className="field-label-ea">
@@ -656,7 +656,7 @@ export default function EditorProjectPage() {
                           <strong>{factConfidence || "Nao informada"}</strong>
                         </div>
                         <p className="editor-shell-note editor-shell-result-note">
-                          O resumo acima ajuda na decisão rápida. O retorno completo permanece disponível abaixo.
+                          O resumo acima ajuda na decisao rapida. O retorno completo permanece logo abaixo.
                         </p>
                       </div>
                       <pre className="editor-shell-pre editor-shell-pre-compact">{JSON.stringify(factResult, null, 2)}</pre>
@@ -727,7 +727,7 @@ export default function EditorProjectPage() {
                 )) : (
                   <div className="editor-shell-empty-note">
                     <strong>Sem passos registrados</strong>
-                    <span>Ative modos de apoio ou salve um bloco para registrar novas acoes no projeto.</span>
+                    <span>Salve um bloco ou execute uma acao IA para registrar novos passos aqui.</span>
                   </div>
                 )}
               </div>

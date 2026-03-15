@@ -38,15 +38,15 @@ export default function ProjectsPage() {
   }
 
   return (
-    <div className="page-shell">
+    <div className="page-shell projects-page">
       <section className="premium-hero">
         <div className="hero-split">
           <div className="hero-copy">
             <div className="hero-title-stack">
               <p className="section-kicker">Continuidade</p>
               <h1 style={{ margin: 0, letterSpacing: -0.3 }}>Projetos</h1>
-              <p className="hero-copy-compact">
-                Abra um projeto salvo no editor ou comece um novo workspace com contexto pronto.
+              <p className="section-header-copy hero-copy-compact">
+                Abra um projeto salvo ou inicie um novo workspace com contexto pronto.
               </p>
             </div>
             <div className="hero-meta-row">
@@ -65,7 +65,7 @@ export default function ProjectsPage() {
               </div>
               <div className="hero-side-note">
                 <strong>Fluxo curto</strong>
-                <span>Creators gera contexto, Projetos organiza continuidade e o editor finaliza.</span>
+                <span>Creators gera contexto, Projetos organiza a continuidade e o editor finaliza.</span>
               </div>
             </div>
 
@@ -83,7 +83,7 @@ export default function ProjectsPage() {
 
       {error ? (
         <div className="state-ea state-ea-error">
-          <p className="state-ea-title">Nao foi possivel carregar seus projetos</p>
+          <p className="state-ea-title">Nao foi possivel carregar os projetos</p>
           <div className="state-ea-text">{error}</div>
           <div className="state-ea-actions">
             <button onClick={refresh} className="btn-ea btn-secondary btn-sm">
@@ -98,7 +98,7 @@ export default function ProjectsPage() {
           <div className="section-header-ea">
             <h2 className="heading-reset">Abrir no editor</h2>
             <p className="helper-text-ea">
-              Selecione um projeto existente ou crie um novo para entrar no editor com o contexto salvo.
+              Selecione um projeto existente ou crie um novo para entrar no editor com contexto salvo.
             </p>
           </div>
           <Link href="/editor/new" className="btn-link-ea btn-secondary btn-sm">
@@ -107,7 +107,7 @@ export default function ProjectsPage() {
         </div>
 
         {loading ? (
-          <div className="state-ea-spaced" style={{ display: "grid", gap: 10 }}>
+          <div className="state-ea-spaced projects-loading-stack">
             {Array.from({ length: 3 }).map((_, index) => (
               <div key={index} className="premium-skeleton premium-skeleton-card" />
             ))}
@@ -116,7 +116,7 @@ export default function ProjectsPage() {
           <div className="state-ea state-ea-spaced">
             <p className="state-ea-title">Nenhum projeto salvo ainda</p>
             <div className="state-ea-text">
-              Comece por Creators ou abra um novo projeto direto no editor para criar sua primeira base.
+              Comece em Creators ou abra um novo projeto direto no editor para criar sua primeira base.
             </div>
             <div className="state-ea-actions">
               <Link href="/editor/new" className="btn-link-ea btn-primary btn-sm">

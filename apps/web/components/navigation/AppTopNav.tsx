@@ -72,7 +72,7 @@ export function AppTopNav() {
       <div className="app-top-nav-head">
         <p className="app-top-nav-title">Workspace</p>
         <p className="app-top-nav-text">
-          Navegação principal do EditexAI para operação diária, crédito e assinatura.
+          Operacao diaria, creditos e assinatura em uma navegacao unica.
         </p>
       </div>
       <div className="app-nav-links">

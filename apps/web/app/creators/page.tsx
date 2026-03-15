@@ -184,7 +184,7 @@ function CreatorsPageContent() {
               <p className="section-kicker">Workspace de criação</p>
               <h1 style={{ margin: 0, letterSpacing: -0.35 }}>Creators</h1>
               <p className="creators-hero-lead">
-                Configure com clareza, gere com previsibilidade e siga para o editor com o contexto preservado.
+                Configure com clareza, gere com previsibilidade e siga para o editor com contexto preservado.
               </p>
             </div>
 
@@ -269,7 +269,7 @@ function CreatorsPageContent() {
       {error ? (
         <div className="state-ea state-ea-error">
           <p className="state-ea-title">Não foi possível carregar o workspace de Creators</p>
-          <div className="state-ea-text">{toUserFacingError(error, "Atualize a página para tentar novamente.")}</div>
+          <div className="state-ea-text">{toUserFacingError(error, "Atualize o workspace e tente novamente.")}</div>
           <div className="state-ea-actions">
             <button onClick={refresh} className="btn-ea btn-secondary btn-sm">Atualizar</button>
             <Link href="/support" className="btn-link-ea btn-ghost btn-sm">Pedir ajuda</Link>
@@ -316,7 +316,7 @@ function CreatorsPageContent() {
 
             <div className="creators-side-note creators-wallet-panel">
               <strong>Saldo disponível</strong>
-              <span>Cada Creator mostra a estimativa antes da geração. O histórico em Créditos registra o consumo real.</span>
+              <span>Cada Creator mostra a estimativa antes da geracao. O historico em Creditos confirma o consumo real.</span>
               <div className="creators-wallet-stack">
                 {walletByType.map((item) => (
                   <div key={item.coinType} className="creators-wallet-row">
@@ -334,7 +334,7 @@ function CreatorsPageContent() {
 
             <div className="creators-side-note">
               <strong>Contexto rápido</strong>
-              <span>Revise fluxo, créditos e próximos passos sem sair do workspace.</span>
+              <span>Revise fluxo, creditos e proximo passo sem sair do workspace.</span>
               <Link href="/how-it-works" className="btn-link-ea btn-ghost btn-sm">
                 Abrir guia rápido
               </Link>
@@ -355,7 +355,7 @@ function CreatorsPageContent() {
               {loading ? (
                 <div className="premium-card-soft creators-inline-note">
                   <strong>Atualização em segundo plano</strong>
-                  <span>Saldo e plano estão sendo atualizados enquanto você continua trabalhando.</span>
+                  <span>Saldo e plano estao sendo atualizados enquanto voce continua no briefing.</span>
                 </div>
               ) : null}
               <div className="premium-card-soft creator-active-panel">
