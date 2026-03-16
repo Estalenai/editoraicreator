@@ -111,7 +111,7 @@ function LoginPageContent() {
   if (checkingSession) {
     return (
       <div className="auth-entry-shell">
-        <div className="premium-card auth-entry-loading">Verificando acesso...</div>
+        <div className="premium-card auth-entry-loading">Verificando sessão...</div>
       </div>
     );
   }
@@ -122,14 +122,14 @@ function LoginPageContent() {
         <div className="auth-entry-grid">
           <div className="auth-entry-hero">
             <div className="section-stack">
-              <p className="section-kicker">Acesso a plataforma</p>
+              <p className="section-kicker">Acesso à plataforma</p>
               <h1 className="auth-entry-title">
                 {mode === "signup" ? "Crie sua conta para entrar no beta fechado" : "Entre no Editor AI Creator"}
               </h1>
               <p className="auth-entry-copy">
                 {mode === "signup"
-                  ? "Cadastre sua conta, entre na fila de aprovacao e prepare seu acesso ao workspace."
-                  : "Use seu acesso aprovado para abrir um workspace seguro e pronto para operacao."}
+                  ? "Cadastre sua conta, entre na fila de aprovação e prepare seu acesso ao workspace."
+                  : "Use seu acesso aprovado para abrir um workspace seguro, pronto para gerar, editar e exportar."}
               </p>
             </div>
 
@@ -141,28 +141,28 @@ function LoginPageContent() {
             <div className="signal-strip auth-entry-signal-strip">
               <div className="signal-chip signal-chip-creative">
                 <strong>Conta protegida</strong>
-                <span>Autenticacao e liberacao de acesso continuam sob controle no beta.</span>
+                <span>Autenticação e liberação de acesso continuam sob controle no beta.</span>
               </div>
               <div className="signal-chip signal-chip-creative">
                 <strong>Fluxo curto</strong>
-                <span>Cadastro, aprovacao e entrada no workspace sem ruido desnecessario.</span>
+                <span>Cadastro, aprovação e entrada no workspace sem ruído desnecessário.</span>
               </div>
               <div className="signal-chip signal-chip-creative">
                 <strong>Produto vivo</strong>
-                <span>Creators, editor e operacao compartilham a mesma base visual e funcional.</span>
+                <span>Creators, editor e operação compartilham a mesma base visual e funcional.</span>
               </div>
             </div>
           </div>
 
           <form onSubmit={handleSubmit} className="premium-card auth-entry-card">
             <div className="section-stack">
-              <p className="section-kicker">Acesso a plataforma</p>
+              <p className="section-kicker">Acesso à plataforma</p>
               <h2 className="auth-entry-card-title">
                 {mode === "signup" ? "Criar conta" : "Entrar"}
               </h2>
               <p className="meta-text-ea">
                 {mode === "signup"
-                  ? "Use um e-mail valido para entrar na fila de liberacao."
+                  ? "Use um e-mail válido para entrar na fila de liberação."
                   : "Entre com seu e-mail e senha para abrir o workspace."}
               </p>
             </div>
@@ -209,7 +209,7 @@ function LoginPageContent() {
                 <span>Senha</span>
                 <input
                   type="password"
-                  placeholder={mode === "signup" ? "Minimo de 6 caracteres" : "Digite sua senha"}
+                  placeholder={mode === "signup" ? "Mínimo de 6 caracteres" : "Digite sua senha"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -233,17 +233,17 @@ function LoginPageContent() {
             </div>
 
             <div className="auth-entry-support-note">
-              <strong>{mode === "signup" ? "Aprovacao manual no beta" : "Acesso liberado"}</strong>
+              <strong>{mode === "signup" ? "Aprovação manual no beta" : "Acesso liberado"}</strong>
               <span>
                 {mode === "signup"
-                  ? "Depois do cadastro, sua conta entra na fila de analise. Avisaremos quando o acesso estiver pronto."
-                  : "Se sua conta ja foi aprovada, o login leva voce direto para o dashboard."}
+                  ? "Depois do cadastro, sua conta entra na fila de análise. Avisaremos quando o acesso estiver pronto."
+                  : "Se sua conta já foi aprovada, o login leva você direto para o dashboard."}
               </span>
             </div>
 
             {error ? (
               <div className="state-ea state-ea-error">
-                <p className="state-ea-title">Nao foi possivel continuar</p>
+                <p className="state-ea-title">Não foi possível continuar</p>
                 <div className="state-ea-text">{error}</div>
               </div>
             ) : null}
@@ -265,7 +265,7 @@ function LoginPageContent() {
               </div>
               <div className="auth-entry-link-row">
                 <span>Primeiro acesso?</span>
-                <Link href="/how-it-works" className="text-link-ea">Ver guia rapido</Link>
+                <Link href="/how-it-works" className="text-link-ea">Ver guia rápido</Link>
               </div>
             </div>
           </form>

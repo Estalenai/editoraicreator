@@ -103,22 +103,27 @@
 
 .app-nav-links {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   flex-wrap: wrap;
+  scroll-padding-inline: 10px;
 }
 
 .app-nav-link {
   position: relative;
+  display: grid;
+  gap: 2px;
+  flex: 1 1 176px;
+  min-width: min(100%, 176px);
   text-decoration: none;
-  padding: 11px 12px 11px 14px;
+  padding: 12px 13px 12px 15px;
   border-radius: 13px;
   font-weight: 650;
   font-size: 13px;
   border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.04);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.028));
   color: var(--ea-text-strong);
   overflow: hidden;
-  min-height: 56px;
+  min-height: 60px;
   transition:
     transform 0.14s ease,
     box-shadow 0.16s ease,
@@ -153,9 +158,10 @@
 }
 
 .app-nav-link:hover {
-  border-color: rgba(255, 255, 255, 0.24);
-  background: rgba(255, 255, 255, 0.06);
-  box-shadow: 0 10px 20px rgba(2, 6, 23, 0.2);
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.26);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.034));
+  box-shadow: 0 12px 24px rgba(2, 6, 23, 0.22);
 }
 
 .app-nav-link-active {
@@ -802,7 +808,9 @@
 }
 
 .editor-kind-card:hover:not(:disabled) {
+  transform: translateY(-2px);
   border-color: rgba(52, 245, 255, 0.34) !important;
+  box-shadow: 0 16px 30px rgba(2, 6, 23, 0.24);
 }
 
 .editor-kind-card-loading {
@@ -1173,8 +1181,8 @@
 
 .creator-tab-btn:hover {
   transform: translateY(-1px);
-  border-color: rgba(255, 255, 255, 0.26);
-  box-shadow: 0 10px 20px rgba(2, 6, 23, 0.24);
+  border-color: rgba(255, 255, 255, 0.28);
+  box-shadow: 0 12px 22px rgba(2, 6, 23, 0.24);
 }
 
 .creator-tab-btn[data-active="true"] {
@@ -1403,6 +1411,9 @@
   padding: var(--ea-card-padding);
   border-radius: 14px;
   min-height: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  box-shadow: var(--ea-shadow-soft);
 }
 
 .hero-kpi-label {
@@ -1824,11 +1835,14 @@
 .dashboard-quick-link {
   display: grid;
   gap: 6px;
-  min-height: 112px;
-  padding: 13px 14px;
+  min-height: 116px;
+  min-width: 0;
+  padding: 14px 15px;
   border-radius: 14px;
   color: inherit;
   text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.028));
 }
 
 .dashboard-section-card {
@@ -1915,11 +1929,13 @@
 }
 
 .plan-card {
+  position: relative;
   display: grid;
   gap: var(--ea-space-3);
   padding: var(--ea-card-padding);
   border-radius: 14px;
   min-height: 100%;
+  min-width: 0;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.16);
   box-shadow: 0 8px 18px rgba(2, 6, 23, 0.16);
@@ -2000,6 +2016,13 @@
   font-size: 12px;
   line-height: 1.55;
   color: var(--ea-text-subtle);
+}
+
+.plan-card-total {
+  margin-top: 2px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: rgba(230, 246, 255, 0.8);
 }
 
 .credits-summary-grid {
@@ -2164,22 +2187,26 @@
   justify-content: center;
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding: 18px;
+  padding: clamp(12px, 2vw, 18px);
   background: rgba(0, 0, 0, 0.72);
 }
 
 .credits-modal {
   --credits-modal-pad: var(--ea-card-padding-lg);
-  width: min(760px, 100%);
+  width: min(820px, 100%);
   max-height: 90vh;
   overflow-y: auto;
+  overflow-x: hidden;
   display: grid;
   gap: var(--ea-space-4);
   border-radius: 16px;
   padding: var(--credits-modal-pad);
-  background: #111833;
+  background:
+    radial-gradient(220px 120px at 100% 0%, rgba(52, 245, 255, 0.08), transparent 70%),
+    #111833;
   border: 1px solid rgba(255, 255, 255, 0.18);
   box-shadow: var(--ea-shadow-lg);
+  scrollbar-gutter: stable both-edges;
 }
 
 .credits-modal-head {
@@ -2213,6 +2240,7 @@
 
 .credits-modal-actions {
   margin-top: 4px;
+  padding-top: 4px;
 }
 
 .purchase-summary-card {
@@ -2344,6 +2372,8 @@
 
 .dashboard-project-link {
   display: flex;
+  width: 100%;
+  min-width: 0;
   align-items: center;
   justify-content: space-between;
   gap: var(--ea-space-3);
@@ -2356,6 +2386,15 @@
     box-shadow 0.16s ease,
     border-color 0.14s ease,
     background 0.16s ease;
+}
+
+.dashboard-summary-card-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.card-cta-link-inline {
+  margin-top: auto;
 }
 
 .dashboard-project-link-main {

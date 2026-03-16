@@ -55,11 +55,11 @@ export function EditorShell({
               <p className="section-kicker">Workspace editorial</p>
               <h2 style={{ margin: 0 }}>{title}</h2>
               <p className="editor-shell-note editor-shell-title-copy">
-                EditexAI no centro do projeto: video, foto, texto e ativos visuais seguem no mesmo workspace.
+                EditexAI no centro do projeto: vídeo, foto, texto e ativos visuais seguem no mesmo workspace.
               </p>
             </div>
             <div className="hero-meta-row">
-              <span className="premium-badge premium-badge-phase">Area ativa: {activeTab.label}</span>
+              <span className="premium-badge premium-badge-phase">Área ativa: {activeTab.label}</span>
               <span className="premium-badge premium-badge-soon">Projeto com contexto salvo</span>
             </div>
           </div>
@@ -76,11 +76,11 @@ export function EditorShell({
               </div>
               <div className="editor-shell-status-item">
                 <span>Modo professor</span>
-                <strong>{professorMode ? "Explicacao ligada" : "Opcional para apoio"}</strong>
+                <strong>{professorMode ? "Explicação ligada" : "Opcional para apoio"}</strong>
               </div>
               <div className="editor-shell-status-item">
-                <span>Proxima acao</span>
-                <strong>{activeTab.id === "library" ? "Validar e registrar no projeto" : "Refinar a peca principal"}</strong>
+                <span>Próxima ação</span>
+                <strong>{activeTab.id === "library" ? "Validar e registrar no projeto" : "Refinar a peça principal"}</strong>
               </div>
             </div>
             <div className="hero-actions-row editor-shell-header-actions">
@@ -94,30 +94,30 @@ export function EditorShell({
         <div className="signal-strip editor-shell-signal-strip">
           <div className="signal-chip signal-chip-sober">
             <strong>Origem conectada</strong>
-            <span>Creators, projetos e editor compartilham continuidade para video, foto e outras pecas.</span>
+            <span>Creators, projetos e editor compartilham continuidade para vídeo, foto e outras peças.</span>
           </div>
           <div className="signal-chip signal-chip-sober">
             <strong>Apoio lateral</strong>
-            <span>A EditexAI acelera etapas sem competir com a peca principal.</span>
+            <span>A EditexAI acelera etapas sem competir com a peça principal.</span>
           </div>
           <div className="signal-chip signal-chip-sober">
             <strong>Controle editorial</strong>
-            <span>Salvar, revisar e iterar continuam visiveis em um shell unico.</span>
+            <span>Salvar, revisar e iterar continuam visíveis em um shell único.</span>
           </div>
         </div>
 
         <div className="editor-shell-trust-grid">
           <div className="premium-card-soft trust-note editor-shell-trust-card">
             <strong>Documento vivo</strong>
-            <span>O projeto continua editavel e pronto para novas iteracoes sem perder a base salva.</span>
+            <span>O projeto continua editável e pronto para novas iterações sem perder a base salva.</span>
           </div>
           <div className="premium-card-soft trust-note editor-shell-trust-card">
             <strong>IA com clareza</strong>
-            <span>Professor e Transparencia ajudam a acompanhar o que a EditexAI fez em cada passo.</span>
+            <span>Professor e Transparência ajudam a acompanhar o que a EditexAI fez em cada passo.</span>
           </div>
           <div className="premium-card-soft trust-note editor-shell-trust-card">
-            <strong>Saida controlada</strong>
-            <span>Fluxo padrao de entrega: exporte no dispositivo. Storage conectado entra na proxima fase.</span>
+            <strong>Saída controlada</strong>
+            <span>Fluxo padrão de entrega: exporte no dispositivo. Storage conectado entra na próxima fase.</span>
           </div>
         </div>
       </header>
@@ -126,14 +126,14 @@ export function EditorShell({
         <div className="editor-shell-toolbar-head">
           <div className="editor-shell-toolbar-copy">
             <p className="section-kicker">Fluxo do editor</p>
-            <p className="helper-text-ea">Troque de area sem perder o contexto salvo.</p>
+            <p className="helper-text-ea">Troque de área sem perder o contexto salvo.</p>
           </div>
           <div className="editor-shell-toolbar-meta">
             <span className="premium-badge premium-badge-phase">{professorMode ? "Professor ativo" : "Professor opcional"}</span>
-            <span className="premium-badge premium-badge-warning">{transparentMode ? "Transparencia ativa" : "Transparencia opcional"}</span>
+            <span className="premium-badge premium-badge-warning">{transparentMode ? "Transparência ativa" : "Transparência opcional"}</span>
           </div>
         </div>
-        <div className="editor-shell-tab-row" role="tablist" aria-label="Areas do editor">
+        <div className="editor-shell-tab-row" role="tablist" aria-label="Áreas do editor">
           {tabs.map(t => (
             <button
               key={t.id}

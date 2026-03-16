@@ -7,6 +7,7 @@ import { coinTypeLabel } from "../../lib/coinTypeLabel";
 type Props = {
   email: string;
   wallet: any | null;
+  loading?: boolean;
 };
 
 const ONBOARDING_VERSION = "v2";
@@ -15,8 +16,9 @@ function onboardingStorageKey(email: string): string {
   return `ea:onboarding:${ONBOARDING_VERSION}:${email.trim().toLowerCase()}`;
 }
 
-function walletSummary(wallet: any | null): string {
-  if (!wallet) return "0 Comum • 0 Pro • 0 Ultra";
+function walletSummary(wallet: any | null, loading = false): string {
+  if (loading) return "Saldo em atualização";
+  if (!wallet) return "Sem saldo sincronizado";
   return `${wallet.common ?? 0} Comum • ${wallet.pro ?? 0} Pro • ${wallet.ultra ?? 0} Ultra`;
 }
 
@@ -51,7 +53,7 @@ const OBJECTIVE_PATHS = [
   },
 ];
 
-export function ApprovedBetaOnboardingCard({ email, wallet }: Props) {
+export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: Props) {
   const [ready, setReady] = useState(false);
   const [visible, setVisible] = useState(false);
 
@@ -72,7 +74,7 @@ export function ApprovedBetaOnboardingCard({ email, wallet }: Props) {
     }
   }, [email]);
 
-  const summary = useMemo(() => walletSummary(wallet), [wallet]);
+  const summary = useMemo(() => walletSummary(wallet, loading), [wallet, loading]);
 
   function dismiss() {
     if (!email) {
@@ -114,8 +116,8 @@ export function ApprovedBetaOnboardingCard({ email, wallet }: Props) {
           <span>Cada geração mostra estimativa prévia de consumo antes de debitar saldo.</span>
         </div>
         <div className="premium-card-soft trust-note">
-          <strong>3) Salve e continue</strong>
-          <span>Projetos é o hub central: salve, retome no editor e mantenha continuidade.</span>
+          <strong>3) Salve, edite e exporte</strong>
+          <span>Projetos é o hub central: salve, retome no editor e avance para exportação.</span>
         </div>
       </div>
 
@@ -124,7 +126,7 @@ export function ApprovedBetaOnboardingCard({ email, wallet }: Props) {
           <p className="section-kicker">Escolha seu objetivo inicial</p>
           <h4 style={{ margin: 0 }}>Comece por uma tarefa clara</h4>
           <p className="helper-text-ea">
-            Cada entrada abaixo abre o creator certo para o primeiro fluxo sem excesso de decisao.
+            Cada entrada abaixo abre o creator certo para o primeiro fluxo sem excesso de decisão.
           </p>
         </div>
         <div className="onboarding-objective-grid">
@@ -147,9 +149,9 @@ export function ApprovedBetaOnboardingCard({ email, wallet }: Props) {
 
       <div className="premium-card-soft onboarding-credit-panel">
         <div className="section-stack">
-          <strong>Creditos no seu fluxo</strong>
+          <strong>Créditos no seu fluxo</strong>
           <div className="helper-text-ea">
-          Saldo atual: {summary}. Estimativa aparece antes da ação e o débito final no histórico.
+            Saldo atual: {summary}. A estimativa aparece antes da ação e o débito final fica no histórico.
           </div>
         </div>
         <div className="hero-meta-row">
@@ -161,7 +163,7 @@ export function ApprovedBetaOnboardingCard({ email, wallet }: Props) {
 
       <div className="onboarding-action-row">
         <Link href="/creators?tab=post" onClick={dismiss} className="btn-link-ea btn-primary">
-          Iniciar fluxo gerar → salvar
+          Iniciar fluxo gerar → editar → exportar
         </Link>
         <Link href="/credits" onClick={dismiss} className="btn-link-ea btn-secondary">
           Entender créditos

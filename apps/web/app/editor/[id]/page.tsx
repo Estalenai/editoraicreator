@@ -28,9 +28,9 @@ type EditorDoc = {
 };
 
 const PROJECT_KIND_LABEL: Record<string, string> = {
-  video: "Projeto de Video",
+  video: "Projeto de Vídeo",
   text: "Projeto de Texto",
-  automation: "Projeto de Automacao",
+  automation: "Projeto de Automação",
   course: "Projeto de Curso",
   website: "Projeto de Site"
 };
@@ -205,12 +205,12 @@ function buildCreatorSnapshot(project: Project): CreatorSnapshot | null {
     const clipUrl = String(generated.clip_url || result?.output?.video_url || "").trim();
     return {
       source: "Creator Clips",
-      summary: "Job de video salvo a partir de Creators com status e referencia do clipe.",
+      summary: "Job de vídeo salvo a partir de Creators com status e referência do clipe.",
       details: [
         payload.clipIdea ? `Ideia do clipe\n${String(payload.clipIdea).trim()}` : "",
         result.jobId ? `Job ID\n${String(result.jobId).trim()}` : "",
         result.status ? `Status\n${String(result.status).trim()}` : "",
-        clipUrl ? `URL do video\n${clipUrl}` : "",
+        clipUrl ? `URL do vídeo\n${clipUrl}` : "",
         generated.prompt_used ? `Prompt usado\n${String(generated.prompt_used).trim()}` : "",
       ]
         .filter(Boolean)
@@ -471,7 +471,7 @@ export default function EditorProjectPage() {
                 </div>
                 <div className="editor-shell-fact">
                   <span className="editor-shell-fact-label">Apoio IA</span>
-                  <strong>{professorMode ? "Explicacao ativa" : "Explicacao opcional"}</strong>
+                  <strong>{professorMode ? "Explicação ativa" : "Explicação opcional"}</strong>
                 </div>
               </div>
 
@@ -496,7 +496,7 @@ export default function EditorProjectPage() {
 
             <section className="editor-shell-inline-card">
               <div className="editor-shell-panel-head">
-                <p className="section-kicker">Guia rapido</p>
+                <p className="section-kicker">Guia rápido</p>
                 <h4>Como usar este editor</h4>
                 <p className="editor-shell-note">
                   Mantenha a mesma cadencia em qualquer aba para evoluir o projeto sem perder contexto.
@@ -517,7 +517,7 @@ export default function EditorProjectPage() {
               <ul className="editor-shell-checklist">
                 <li>Texto: escreva, refine e consolide a base principal do projeto.</li>
                 <li>Biblioteca IA: valide afirmacoes e registre o resultado no contexto do projeto.</li>
-                <li>Modo Transparente: acompanhe o passo a passo quando houver execucao IA.</li>
+                <li>Modo Transparente: acompanhe o passo a passo quando houver execução de IA.</li>
               </ul>
             </section>
           </div>
@@ -538,7 +538,7 @@ export default function EditorProjectPage() {
                   <span className="premium-badge premium-badge-soon">Salve ao concluir um bloco</span>
                 </div>
                 <label className="field-label-ea">
-                  <span>Conteudo em edicao</span>
+                  <span>Conteúdo em edição</span>
                   <textarea
                     className="field-ea editor-shell-textarea"
                     value={text}
@@ -554,9 +554,9 @@ export default function EditorProjectPage() {
               <section className="editor-shell-section editor-shell-focus-card">
                 <div className="editor-shell-panel-head">
                   <p className="section-kicker">Edicao principal</p>
-                  <h3>Editor de Video</h3>
+                  <h3>Editor de Vídeo</h3>
                   <p className="editor-shell-note">
-                    Base do fluxo pronta para continuidade. Timeline completa entra na proxima etapa.
+                    Base do fluxo pronta para continuidade. Timeline completa entra na próxima etapa.
                   </p>
                 </div>
                 <div className="editor-shell-placeholder editor-shell-placeholder-muted">
@@ -620,7 +620,7 @@ export default function EditorProjectPage() {
               <section className="editor-shell-section editor-shell-focus-card">
                 <div className="editor-shell-panel-head">
                   <p className="section-kicker">Biblioteca IA</p>
-                  <h3>Validacao e apoio editorial</h3>
+                  <h3>Validação e apoio editorial</h3>
                   <p className="editor-shell-note">
                     Use fact-check e registre o resultado no mesmo contexto do projeto.
                   </p>
@@ -634,7 +634,7 @@ export default function EditorProjectPage() {
                     </p>
                   </div>
                   <label className="field-label-ea">
-                    <span>Afirmacao para verificar</span>
+                    <span>Afirmação para verificar</span>
                     <textarea
                       className="field-ea editor-shell-textarea editor-shell-textarea-sm"
                       value={claim}
@@ -661,10 +661,10 @@ export default function EditorProjectPage() {
                         </div>
                         <div className="editor-shell-fact">
                           <span className="editor-shell-fact-label">Confiança</span>
-                          <strong>{factConfidence || "Nao informada"}</strong>
+                          <strong>{factConfidence || "Não informada"}</strong>
                         </div>
                         <p className="editor-shell-note editor-shell-result-note">
-                          O resumo acima ajuda na decisao rapida. O retorno completo permanece logo abaixo.
+                          O resumo acima ajuda na decisão rápida. O retorno completo permanece logo abaixo.
                         </p>
                       </div>
                       <pre className="editor-shell-pre editor-shell-pre-compact">{JSON.stringify(factResult, null, 2)}</pre>
@@ -682,7 +682,7 @@ export default function EditorProjectPage() {
                 <p className="section-kicker">Assistente lateral</p>
                 <h3>EditexAI</h3>
                 <p className="editor-shell-note">
-                  Acione a IA sem sair do fluxo principal. O painel lateral serve como apoio, nao como distracao.
+                  Acione a IA sem sair do fluxo principal. O painel lateral serve como apoio, não como distração.
                 </p>
               </div>
               <div className="editor-shell-cta-group">
@@ -706,11 +706,11 @@ export default function EditorProjectPage() {
               <div className="editor-shell-status-grid editor-shell-status-grid-compact">
                 <div className="editor-shell-status-item">
                   <span>Professor</span>
-                  <strong>{professorMode ? "Explicacao ativa" : "Explicacao opcional"}</strong>
+                  <strong>{professorMode ? "Explicação ativa" : "Explicação opcional"}</strong>
                 </div>
                 <div className="editor-shell-status-item">
-                  <span>Transparencia</span>
-                  <strong>{transparentMode ? "Passos visiveis" : "Passos sob demanda"}</strong>
+                  <span>Transparência</span>
+                  <strong>{transparentMode ? "Passos visíveis" : "Passos sob demanda"}</strong>
                 </div>
               </div>
             </section>
@@ -720,7 +720,7 @@ export default function EditorProjectPage() {
                 <p className="section-kicker">Log do projeto</p>
                 <h4>Passos registrados</h4>
                 <p className="editor-shell-note">
-                  Historico rapido do que ja foi salvo ou executado no contexto deste editor.
+                  Histórico rápido do que já foi salvo ou executado no contexto deste editor.
                 </p>
               </div>
               <div className="editor-shell-log-list">
@@ -735,7 +735,7 @@ export default function EditorProjectPage() {
                 )) : (
                   <div className="editor-shell-empty-note">
                     <strong>Sem passos registrados</strong>
-                    <span>Salve um bloco ou execute uma acao IA para registrar novos passos aqui.</span>
+                    <span>Salve um bloco ou execute uma ação IA para registrar novos passos aqui.</span>
                   </div>
                 )}
               </div>
@@ -748,7 +748,7 @@ export default function EditorProjectPage() {
               <p className="section-kicker">Projeto atual</p>
               <strong className="editor-shell-footer-title">{title}</strong>
               <p className="editor-shell-note">
-                Continue salvando blocos-chave. Saida padrao: exportacao no dispositivo; storage conectado entra na proxima fase.
+                Continue salvando blocos-chave. Saída padrão: exportação no dispositivo; storage conectado entra na próxima fase.
               </p>
             </div>
             <div className="editor-shell-cta-group">

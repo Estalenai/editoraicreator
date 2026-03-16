@@ -14,7 +14,7 @@ const KIND_LABEL: Record<Kind, string> = {
 };
 
 const KIND_HELP: Record<Kind, string> = {
-  video: "Estrutura inicial para timeline, cortes e ativos visuais de video e foto.",
+  video: "Estrutura inicial para timeline, cortes e ativos visuais de vídeo e foto.",
   text: "Base para post, copy e evolução no editor de texto.",
   automation: "Projeto inicial para fluxo e automação com IA.",
   course: "Estrutura para aulas, módulos e progressão de conteúdo.",
@@ -24,9 +24,9 @@ const KIND_HELP: Record<Kind, string> = {
 const KIND_USE_CASE: Record<Kind, string> = {
   video: "Ideal para continuidade de roteiro, cenas, timeline e refinamento visual.",
   text: "Melhor para copy, post, artigo e refinamento editorial.",
-  automation: "Abre uma base pronta para mapear automacoes e etapas IA.",
-  course: "Organiza modulos, secoes e trilhas de conteudo.",
-  website: "Prepara estrutura de paginas, blocos e narrativas de site."
+  automation: "Abre uma base pronta para mapear automações e etapas com IA.",
+  course: "Organiza módulos, seções e trilhas de conteúdo.",
+  website: "Prepara estrutura de páginas, blocos e narrativas de site.",
 };
 
 function extractProjectId(payload: any): string {
@@ -88,29 +88,29 @@ export default function NewEditorProjectPage() {
               <p className="section-kicker">Entrada do editor</p>
               <h1 style={{ margin: 0, letterSpacing: -0.3 }}>Abra um projeto com contexto pronto</h1>
               <p className="editor-new-lead">
-                Escolha o formato mais proximo do seu fluxo e entre no editor com base inicial para video, foto, texto ou automacao.
+                Escolha o formato mais próximo do seu fluxo e entre no editor com base inicial para vídeo, foto, texto ou automação.
               </p>
             </div>
             <div className="hero-meta-row">
               <span className="premium-badge premium-badge-phase">5 formatos de projeto</span>
-              <span className="premium-badge premium-badge-soon">Pronto para editar e exportar</span>
+              <span className="premium-badge premium-badge-soon">Pronto para editar, salvar e exportar</span>
             </div>
           </div>
 
           <div className="hero-side-panel">
-            <p className="section-kicker">Como comeca</p>
+            <p className="section-kicker">Como começa</p>
             <div className="hero-side-list">
               <div className="hero-side-note">
                 <strong>Escolha o formato certo</strong>
-                <span>O editor abre ja orientado para o tipo de projeto que voce quer desenvolver.</span>
+                <span>O editor abre já orientado para o tipo de projeto que você quer desenvolver.</span>
               </div>
               <div className="hero-side-note">
-                <strong>Entre com estrutura minima pronta</strong>
-                <span>Texto, video, foto, automacao, curso ou site com base salva desde o primeiro passo.</span>
+                <strong>Entre com estrutura mínima pronta</strong>
+                <span>Texto, vídeo, foto, automação, curso ou site com base salva desde o primeiro passo.</span>
               </div>
               <div className="hero-side-note">
                 <strong>Continue no mesmo workspace</strong>
-                <span>Salve, refine com IA e siga para exportacao local sem quebrar o contexto do projeto.</span>
+                <span>Salve, refine com IA e siga para exportação local sem quebrar o contexto do projeto.</span>
               </div>
             </div>
           </div>
@@ -119,7 +119,7 @@ export default function NewEditorProjectPage() {
         <div className="hero-kpi-grid editor-new-kpi-grid">
           <div className="premium-card-soft hero-kpi">
             <span className="hero-kpi-label">Escolha inicial</span>
-            <strong className="hero-kpi-value">Formato mais proximo do fluxo</strong>
+            <strong className="hero-kpi-value">Formato mais próximo do fluxo</strong>
           </div>
           <div className="premium-card-soft hero-kpi">
             <span className="hero-kpi-label">Continuidade</span>
@@ -127,14 +127,14 @@ export default function NewEditorProjectPage() {
           </div>
           <div className="premium-card-soft hero-kpi">
             <span className="hero-kpi-label">Pronto para editar</span>
-            <strong className="hero-kpi-value">Entrada guiada para editar e continuar</strong>
+            <strong className="hero-kpi-value">Entrada guiada para editar e exportar</strong>
           </div>
         </div>
       </section>
 
       {err ? (
         <div className="state-ea state-ea-error">
-          <p className="state-ea-title">Nao foi possivel abrir o editor agora</p>
+          <p className="state-ea-title">Não foi possível abrir o editor agora</p>
           <div className="state-ea-text">{err}</div>
         </div>
       ) : null}
@@ -142,9 +142,9 @@ export default function NewEditorProjectPage() {
       <section className="premium-card editor-new-selection">
         <div className="section-header-ea">
           <p className="section-kicker">Escolha inicial</p>
-          <h2 style={{ margin: 0 }}>Selecione o formato mais proximo do seu trabalho</h2>
+          <h2 style={{ margin: 0 }}>Selecione o formato mais próximo do seu trabalho</h2>
           <p className="section-header-copy">
-            Cada opcao abre um workspace pronto para continuidade, com estrutura base e apoio lateral da EditexAI.
+            Cada opção abre um workspace pronto para continuidade, com estrutura base e apoio lateral da EditexAI.
           </p>
         </div>
 
@@ -174,11 +174,11 @@ export default function NewEditorProjectPage() {
           </div>
           <div className="premium-card-soft editor-new-flow-note">
             <strong>2. Edite com apoio da IA</strong>
-            <span>Use o painel lateral para acelerar ajustes e preparar a peca para entrega.</span>
+            <span>Use o painel lateral para acelerar ajustes e preparar a peça para entrega.</span>
           </div>
           <div className="premium-card-soft editor-new-flow-note">
             <strong>3. Salve, refine e exporte</strong>
-            <span>O padrao atual e exportar no dispositivo; storage conectado entra como proxima fase.</span>
+            <span>O padrão atual é exportar no dispositivo; storage conectado entra como próxima fase.</span>
           </div>
         </div>
         <a href="/dashboard" className="btn-link-ea btn-ghost btn-sm">Voltar ao dashboard</a>

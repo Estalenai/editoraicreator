@@ -47,6 +47,11 @@ function formatCreditsIncluded(credits?: CatalogPlan["credits"]): string[] {
   ];
 }
 
+function totalCreditsIncluded(credits?: CatalogPlan["credits"]): number {
+  if (!credits) return 0;
+  return Number(credits.common || 0) + Number(credits.pro || 0) + Number(credits.ultra || 0);
+}
+
 type PlanNarrative = {
   audience: string;
   valueBullets: string[];
@@ -96,7 +101,7 @@ function planNarrative(code: string): PlanNarrative {
       valueBullets: [
         "Capacidade ampliada para múltiplos perfis de uso.",
         "Estrutura voltada para coordenação de equipe e governança.",
-        "Conversao entre tipos com taxa 0% para preservar credito liquido da equipe.",
+        "Conversão entre tipos com taxa 0% para preservar crédito líquido da equipe.",
       ],
       limits: ["Roadmap enterprise", "Entrada assistida"],
     };
@@ -211,10 +216,40 @@ function PlansPageContent() {
     () => formatCreditsIncluded(currentCatalogPlan?.credits || undefined),
     [currentCatalogPlan]
   );
+  const currentPlanCreditsTotal = useMemo(
+    () => totalCreditsIncluded(currentCatalogPlan?.credits || undefined),
+    [currentCatalogPlan]
+  );
   const currentPlanNarrative = useMemo(
     () => planNarrative(currentPlanCodeNormalized),
     [currentPlanCodeNormalized]
   );
+  const planLabelDisplay = loading ? "Sincronizando plano" : planLabel ?? "—";
+  const currentPlanCreditsValue = loading
+    ? "Créditos em sincronização"
+    : currentPlanCreditsTotal > 0
+      ? `${currentPlanCreditsTotal} créditos totais`
+      : "Consulte o catálogo";
+  const currentPlanCreditsDetail = loading
+    ? "A composição do plano aparece assim que o catálogo for sincronizado."
+    : currentPlanCredits.length > 0
+      ? currentPlanCredits.join(" • ")
+      : "Detalhamento completo no catálogo abaixo.";
+  const currentPlanFeeValue = loading
+    ? "..."
+    : currentPlanFeePercent != null
+      ? `${currentPlanFeePercent}%`
+      : "—";
+  const currentPlanFeeDetail = loading
+    ? "Sincronizando regras do plano e benefícios de conversão."
+    : currentPlanFeePercent === 0
+      ? "Taxa zero na conversão entre tipos: todo o crédito líquido permanece com a equipe."
+      : currentPlanFeePercent != null
+        ? "Quanto menor a taxa, mais crédito líquido você mantém ao converter entre Comum, Pro e Ultra."
+        : "Este plano não habilita conversão entre tipos.";
+  const currentPlanAudience = loading
+    ? "Sincronizando benefícios, créditos e disponibilidade do plano."
+    : currentPlanNarrative.audience;
 
   useEffect(() => {
     if (!loading && !betaBlocked) {
@@ -358,7 +393,7 @@ function PlansPageContent() {
               </p>
             </div>
             <div className="hero-meta-row hero-meta-row-compact">
-              <span className="premium-badge premium-badge-phase">Plano atual: {planLabel ?? "—"}</span>
+              <span className="premium-badge premium-badge-phase">Plano atual: {planLabelDisplay}</span>
               <span className="premium-badge premium-badge-warning">Checkout self-serve quando disponível</span>
             </div>
             <div className="signal-strip plans-hero-signal-strip">
@@ -448,22 +483,18 @@ function PlansPageContent() {
       <section className="summary-grid plans-summary-grid">
         <div className="premium-card executive-card plans-summary-card">
           <p className="executive-eyebrow">Plano atual</p>
-          <p className="executive-value">{planLabel ?? "—"}</p>
-          <p className="executive-detail">{currentPlanNarrative.audience}</p>
+          <p className="executive-value">{planLabelDisplay}</p>
+          <p className="executive-detail">{currentPlanAudience}</p>
         </div>
         <div className="premium-card executive-card plans-summary-card">
           <p className="executive-eyebrow">Créditos incluídos</p>
-          <p className="executive-value metric-value-compact">
-            {currentPlanCredits.length > 0 ? currentPlanCredits.join(" • ") : "Consulte o catálogo"}
-          </p>
-          <p className="executive-detail">Detalhamento completo no catálogo abaixo.</p>
+          <p className="executive-value metric-value-compact">{currentPlanCreditsValue}</p>
+          <p className="executive-detail">{currentPlanCreditsDetail}</p>
         </div>
         <div className="premium-card executive-card plans-summary-card">
           <p className="executive-eyebrow">Conversão entre tipos</p>
-          <p className="executive-value">{currentPlanFeePercent != null ? `${currentPlanFeePercent}%` : "—"}</p>
-          <p className="executive-detail">
-            Quanto menor a taxa, mais crédito líquido você mantém ao converter entre Comum, Pro e Ultra.
-          </p>
+          <p className="executive-value">{currentPlanFeeValue}</p>
+          <p className="executive-detail">{currentPlanFeeDetail}</p>
         </div>
       </section>
 
@@ -527,6 +558,7 @@ function PlansPageContent() {
               const priceLabel = comingSoon ? "Em breve" : hasPrice ? `R$ ${rawAmount.toFixed(2)}/mês` : "Preço sob consulta";
               const badgeText = resolvePlanBadgeLabel(item.badge_label) || (comingSoon ? "Em breve" : "");
               const creditsIncluded = formatCreditsIncluded(item?.credits || undefined);
+              const creditsTotal = totalCreditsIncluded(item?.credits || undefined);
               const topBenefits = Array.isArray(item?.features)
                 ? item.features.filter((feature) => feature?.enabled).map((feature) => String(feature?.label || "").trim()).filter(Boolean).slice(0, 3)
                 : [];
@@ -584,7 +616,7 @@ function PlansPageContent() {
                     </span>
                     {convertEnabled ? (
                       <span className="premium-badge premium-badge-warning plan-pill">
-                        Taxa de conversão: {convertFee}%
+                        {convertFee === 0 ? "Conversão com taxa 0%" : `Taxa de conversão: ${convertFee}%`}
                       </span>
                     ) : (
                       <span className="premium-badge premium-badge-soon plan-pill">
@@ -594,7 +626,9 @@ function PlansPageContent() {
                   </div>
                   {convertEnabled ? (
                     <div className="plan-card-support-note">
-                      Conversão entre tipos com taxa de {convertFee}% neste plano.
+                      {convertFee === 0
+                        ? "Conversão entre tipos com taxa 0% neste plano."
+                        : `Conversão entre tipos com taxa de ${convertFee}% neste plano.`}
                     </div>
                   ) : null}
                   {creditsIncluded.length > 0 ? (
@@ -610,6 +644,7 @@ function PlansPageContent() {
                           </span>
                         ))}
                       </div>
+                      <div className="plan-card-total">Total agregado: {creditsTotal} créditos</div>
                     </div>
                   ) : null}
                   <div className="plan-card-bullets">

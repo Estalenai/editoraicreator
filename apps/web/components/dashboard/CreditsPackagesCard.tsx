@@ -127,9 +127,10 @@ function normalizeMixInput(value: string): number {
 
 type Props = {
   wallet: any | null;
+  loading?: boolean;
 };
 
-export function CreditsPackagesCard({ wallet }: Props) {
+export function CreditsPackagesCard({ wallet, loading = false }: Props) {
   const [coinsPanelOpen, setCoinsPanelOpen] = useState(false);
   const [coinsPackageMode, setCoinsPackageMode] = useState<CoinsPackageMode>("packages");
   const [selectedPackage, setSelectedPackage] = useState<number>(300);
@@ -180,10 +181,10 @@ export function CreditsPackagesCard({ wallet }: Props) {
   const hasFee = quoteFee > 0 && quoteFeePercent > 0;
 
   const walletSummary = useMemo(
-    () => `${wallet?.common ?? 0} Comum • ${wallet?.pro ?? 0} Pro • ${wallet?.ultra ?? 0} Ultra`,
-    [wallet]
+    () => (loading ? "Saldo em atualização" : `${wallet?.common ?? 0} Comum • ${wallet?.pro ?? 0} Pro • ${wallet?.ultra ?? 0} Ultra`),
+    [wallet, loading]
   );
-  const walletUpdatedAt = useMemo(() => formatDateTime(wallet?.updated_at), [wallet]);
+  const walletUpdatedAt = useMemo(() => (loading ? "—" : formatDateTime(wallet?.updated_at)), [wallet, loading]);
 
   function updatePackageBreakdown(field: keyof PackageBreakdown, rawValue: string) {
     const normalizedValue = normalizeMixInput(rawValue);
@@ -331,7 +332,9 @@ export function CreditsPackagesCard({ wallet }: Props) {
         </div>
       ) : null}
       <p className="section-header-copy">
-        Escolha um pacote ou defina o total livre com mix por tipo.
+        {loading
+          ? "Saldo e regras de compra estão sendo sincronizados antes da cotação."
+          : "Escolha um pacote ou defina o total livre com mix por tipo."}
       </p>
       <div className="trust-grid credits-purchase-notes">
         <div className="premium-card-soft trust-note">
@@ -344,7 +347,9 @@ export function CreditsPackagesCard({ wallet }: Props) {
         </div>
       </div>
       <div className="helper-note-inline credits-purchase-checkout-note">
-        Pagamento externo via Stripe com retorno ao dashboard para confirmação.
+        {loading
+          ? "Aguarde a sincronização do saldo para abrir uma cotação segura."
+          : "Pagamento externo via Stripe com retorno ao dashboard para confirmação."}
       </div>
       <a href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm state-ea-spaced">
         Ver histórico de consumo
@@ -360,8 +365,8 @@ export function CreditsPackagesCard({ wallet }: Props) {
           </div>
         ))}
       </div>
-      <button onClick={() => setCoinsPanelOpen(true)} className="btn-ea btn-primary credits-purchase-cta">
-        Comprar créditos avulsos
+      <button onClick={() => setCoinsPanelOpen(true)} disabled={loading} className="btn-ea btn-primary credits-purchase-cta">
+        {loading ? "Carregando saldo..." : "Comprar créditos avulsos"}
       </button>
 
       {coinsPanelOpen ? (
@@ -555,8 +560,8 @@ export function CreditsPackagesCard({ wallet }: Props) {
                 {packageCheckoutLoading
                   ? "Abrindo checkout seguro..."
                   : packageLoading
-                    ? "Atualizando cotacao..."
-                    : "Cotacao pronta. Revise o resumo antes de seguir para o pagamento."}
+                    ? "Atualizando cotação..."
+                    : "Cotação pronta. Revise o resumo antes de seguir para o pagamento."}
               </div>
             ) : null}
 

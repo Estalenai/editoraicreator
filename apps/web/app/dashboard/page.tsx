@@ -170,6 +170,16 @@ export default function DashboardPage() {
     : usageItems.length === 0
       ? "Sem consumo registrado neste mês."
       : `${usageItems.length} feature(s) com atividade monitorada no período.`;
+  const planLabelDisplay = loading ? "Sincronizando plano" : planLabel ?? "—";
+  const emailDisplay = loading ? "Sincronizando conta..." : email || "—";
+  const walletSummaryDisplay = loading ? "Saldo em atualização" : walletSummary;
+  const recentUsageValueDisplay = loading || usageLoading ? "Carregando..." : recentUsageValue;
+  const recentUsageDetailDisplay = loading ? "Sincronizando métricas, saldo e histórico recente." : recentUsageDetail;
+  const nextActionTitleDisplay = loading ? "Preparando seu próximo passo" : nextAction.title;
+  const nextActionCtaDisplay = loading ? "Aguarde a sincronização" : nextAction.cta;
+  const nextActionDescriptionDisplay = loading
+    ? "Estamos sincronizando saldo, plano, projetos e próximos passos do workspace."
+    : nextAction.description;
 
   if (betaBlocked) {
     return (
@@ -190,12 +200,12 @@ export default function DashboardPage() {
               <p className="section-kicker">Painel executivo</p>
               <h1 className="heading-reset">Dashboard</h1>
               <p className="section-header-copy hero-copy-compact">
-                Plano, saldo e uso recente organizados para leitura rápida. Conta ativa: {email || "—"}.
+                Plano, saldo, uso recente e saída organizada para leitura rápida. Conta ativa: {emailDisplay}.
               </p>
             </div>
             <div className="hero-meta-row">
-              <span className="premium-badge premium-badge-phase">Plano: {planLabel ?? "—"}</span>
-              <span className="premium-badge premium-badge-warning">Histórico confirma o consumo real</span>
+              <span className="premium-badge premium-badge-phase">Plano: {planLabelDisplay}</span>
+              <span className="premium-badge premium-badge-warning">{loading ? "Conta em sincronização" : "Histórico confirma o consumo real"}</span>
             </div>
             <div className="signal-strip dashboard-hero-signal-strip">
               <div className="signal-chip signal-chip-sober">
@@ -204,7 +214,7 @@ export default function DashboardPage() {
               </div>
               <div className="signal-chip signal-chip-sober">
                 <strong>Próxima ação clara</strong>
-                <span>Retome um projeto ou entre em Creators sem perder contexto.</span>
+                <span>Retome um projeto, refine no editor e avance para exportação sem perder contexto.</span>
               </div>
               <div className="signal-chip signal-chip-sober">
                 <strong>Histórico confiável</strong>
@@ -249,18 +259,18 @@ export default function DashboardPage() {
         <div className="hero-kpi-grid hero-kpi-grid-compact">
           <div className="premium-card-soft hero-kpi">
             <span className="hero-kpi-label">Saldo total</span>
-            <strong className="hero-kpi-value">{walletSummary}</strong>
-            <span className="helper-text-ea">Distribuição pronta para operação e conversão.</span>
+            <strong className="hero-kpi-value">{walletSummaryDisplay}</strong>
+            <span className="helper-text-ea">{loading ? "Saldo e distribuição estão sendo sincronizados." : "Distribuição pronta para operação e conversão."}</span>
           </div>
           <div className="premium-card-soft hero-kpi">
             <span className="hero-kpi-label">Uso recente</span>
-            <strong className="hero-kpi-value">{recentUsageValue}</strong>
-            <span className="helper-text-ea">{recentUsageDetail}</span>
+            <strong className="hero-kpi-value">{recentUsageValueDisplay}</strong>
+            <span className="helper-text-ea">{recentUsageDetailDisplay}</span>
           </div>
           <div className="premium-card-soft hero-kpi">
             <span className="hero-kpi-label">Próxima decisão</span>
-            <strong className="hero-kpi-value">{nextAction.title}</strong>
-            <span className="helper-text-ea">{nextAction.cta}</span>
+            <strong className="hero-kpi-value">{nextActionTitleDisplay}</strong>
+            <span className="helper-text-ea">{nextActionCtaDisplay}</span>
           </div>
         </div>
       </section>
@@ -321,14 +331,14 @@ export default function DashboardPage() {
               </Link>
             </div>
 
-            <div className="premium-card executive-card dashboard-summary-card dashboard-summary-card-action">
+            <Link href={nextAction.href} className="premium-card executive-card dashboard-summary-card dashboard-summary-card-action dashboard-summary-card-link">
               <p className="executive-eyebrow">Próxima ação</p>
-              <p className="executive-value metric-value-compact">{nextAction.title}</p>
-              <p className="executive-detail">{nextAction.description}</p>
-              <Link href={nextAction.href} className="card-cta-link">
-                {nextAction.cta}
-              </Link>
-            </div>
+              <p className="executive-value metric-value-compact">{nextActionTitleDisplay}</p>
+              <p className="executive-detail">{nextActionDescriptionDisplay}</p>
+              <span className="card-cta-link card-cta-link-inline">
+                {nextActionCtaDisplay}
+              </span>
+            </Link>
 
             <div className="premium-card executive-card dashboard-summary-card dashboard-summary-card-secondary">
               <p className="executive-eyebrow">Plano atual</p>
@@ -351,7 +361,7 @@ export default function DashboardPage() {
         )}
       </section>
 
-      <ApprovedBetaOnboardingCard email={email} wallet={wallet} />
+      <ApprovedBetaOnboardingCard email={email} wallet={wallet} loading={loading} />
 
       <section className="premium-card dashboard-section-card">
         <div className="section-head">

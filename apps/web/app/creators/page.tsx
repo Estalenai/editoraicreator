@@ -28,7 +28,7 @@ type CreatorGroupId = "content" | "media" | "product";
 
 const CREATOR_GROUPS: Array<{ id: CreatorGroupId; title: string; subtitle: string }> = [
   { id: "content", title: "Conteúdo", subtitle: "Ideias, roteiro e copy para distribuição." },
-  { id: "media", title: "Vídeo e música", subtitle: "Video, foto, trilha e clipes para acelerar publicacao." },
+  { id: "media", title: "Vídeo e música", subtitle: "Vídeo, foto, trilha e clipes para acelerar publicação." },
   { id: "product", title: "Produto e automação", subtitle: "Estruture uma base de produto para evoluir no editor." },
 ];
 
@@ -106,7 +106,7 @@ function parseTab(raw: string | null): CreatorTab {
 
 export default function CreatorsPage() {
   return (
-    <Suspense fallback={<div className="page-shell"><div className="premium-card" style={{ padding: 16 }}>Carregando creators...</div></div>}>
+    <Suspense fallback={<div className="page-shell"><div className="premium-card" style={{ padding: 16 }}>Carregando Creators...</div></div>}>
       <CreatorsPageContent />
     </Suspense>
   );
@@ -147,10 +147,12 @@ function CreatorsPageContent() {
     () =>
       CREATOR_CREDIT_GUIDE.map((item) => ({
         ...item,
-        amount: Number(wallet?.[item.coinType] ?? 0),
+        amount: loading && !wallet ? null : Number(wallet?.[item.coinType] ?? 0),
       })),
-    [wallet]
+    [wallet, loading]
   );
+  const planLabelDisplay = loading ? "Sincronizando plano" : planLabel ?? "—";
+  const walletSummaryDisplay = loading && !wallet ? "Saldo em atualização" : walletSummary;
 
   const activeTabMeta = useMemo(
     () => CREATOR_TABS.find((tab) => tab.id === activeTab) || CREATOR_TABS[0],
@@ -184,27 +186,27 @@ function CreatorsPageContent() {
               <p className="section-kicker">Workspace de criação</p>
               <h1 style={{ margin: 0, letterSpacing: -0.35 }}>Creators</h1>
               <p className="creators-hero-lead">
-                Configure com clareza, gere base para video, foto e conteudo e siga para o editor com contexto preservado.
+                Configure com clareza, gere base para vídeo, foto e conteúdo e siga para o editor com contexto preservado.
               </p>
             </div>
 
             <div className="hero-meta-row hero-meta-row-compact">
-              <span className="premium-badge premium-badge-phase">Plano: {planLabel ?? "—"}</span>
+              <span className="premium-badge premium-badge-phase">Plano: {planLabelDisplay}</span>
               <span className="premium-badge premium-badge-soon">Resultado pronto para salvar em projeto</span>
             </div>
 
             <div className="signal-strip creators-hero-signal-strip">
               <div className="signal-chip signal-chip-creative">
                 <strong>Briefing</strong>
-                <span>Campos objetivos e estimativa antes de qualquer geracao.</span>
+                <span>Campos objetivos e estimativa antes de qualquer geração.</span>
               </div>
               <div className="signal-chip signal-chip-creative">
-                <strong>Geracao</strong>
-                <span>Feedback curto, loading claro e erro legivel durante a execucao.</span>
+                <strong>Geração</strong>
+                <span>Feedback curto, loading claro e erro legível durante a execução.</span>
               </div>
               <div className="signal-chip signal-chip-creative">
                 <strong>Continuidade</strong>
-                <span>Salvar em projeto, editar no workspace e preparar exportacao sem perder contexto.</span>
+                <span>Salvar em projeto, editar no workspace e preparar exportação sem perder contexto.</span>
               </div>
             </div>
 
@@ -216,13 +218,13 @@ function CreatorsPageContent() {
               </div>
               <div className="premium-card-soft hero-kpi creators-hero-metric">
                 <span className="hero-kpi-label">Saldo para operar</span>
-                <strong className="hero-kpi-value">{walletSummary}</strong>
-                <span className="hero-kpi-text">Estimativa antes da geração. Consumo real em Créditos.</span>
+                <strong className="hero-kpi-value">{walletSummaryDisplay}</strong>
+                <span className="hero-kpi-text">{loading ? "Saldo e plano estão sendo sincronizados." : "Estimativa antes da geração. Consumo real em Créditos."}</span>
               </div>
               <div className="premium-card-soft hero-kpi creators-hero-metric">
                 <span className="hero-kpi-label">Próximo passo</span>
                 <strong className="hero-kpi-value">Gerar → editar → exportar</strong>
-                <span className="hero-kpi-text">Projeto salvo, refinamento no editor e exportacao local quando a peca estiver pronta.</span>
+                <span className="hero-kpi-text">Projeto salvo, refinamento no editor e exportação local quando a peça estiver pronta.</span>
               </div>
             </div>
           </div>
@@ -232,7 +234,7 @@ function CreatorsPageContent() {
               <p className="section-kicker">Controle operacional</p>
               <h2 style={{ margin: 0 }}>Criatividade com estrutura</h2>
               <p className="meta-text-ea">
-                Briefing, configuração, ação e resultado ficam separados para reduzir ruído e aumentar previsibilidade.
+                Briefing, configuração, ação e resultado ficam separados para reduzir ruído, acelerar leitura e manter previsibilidade.
               </p>
             </div>
 
@@ -243,7 +245,7 @@ function CreatorsPageContent() {
               </div>
               <div className="hero-side-note">
                 <strong>Continuidade pronta</strong>
-                <span>Depois de gerar, salve em projeto, refine no editor e prepare a exportacao no dispositivo.</span>
+                <span>Depois de gerar, salve em projeto, refine no editor e prepare a exportação no dispositivo.</span>
               </div>
             </div>
 
@@ -316,14 +318,14 @@ function CreatorsPageContent() {
 
             <div className="creators-side-note creators-wallet-panel">
               <strong>Saldo disponível</strong>
-              <span>Cada Creator mostra a estimativa antes da geracao. O historico em Creditos confirma o consumo real.</span>
+              <span>Cada Creator mostra a estimativa antes da geração. O histórico em Créditos confirma o consumo real.</span>
               <div className="creators-wallet-stack">
                 {walletByType.map((item) => (
                   <div key={item.coinType} className="creators-wallet-row">
                     <span>
                       {coinTypeLabel(item.coinType)} • {item.description}
                     </span>
-                    <strong>{item.amount}</strong>
+                    <strong>{item.amount == null ? "…" : item.amount}</strong>
                   </div>
                 ))}
               </div>
@@ -334,7 +336,7 @@ function CreatorsPageContent() {
 
             <div className="creators-side-note">
               <strong>Contexto rápido</strong>
-              <span>Revise fluxo, creditos e proximo passo sem sair do workspace.</span>
+              <span>Revise fluxo, créditos e próximo passo sem sair do workspace.</span>
               <Link href="/how-it-works" className="btn-link-ea btn-ghost btn-sm">
                 Abrir guia rápido
               </Link>
@@ -355,7 +357,7 @@ function CreatorsPageContent() {
               {loading ? (
                 <div className="premium-card-soft creators-inline-note">
                   <strong>Atualização em segundo plano</strong>
-                  <span>Saldo e plano estao sendo atualizados enquanto voce continua no briefing.</span>
+                  <span>Saldo e plano estão sendo atualizados enquanto você continua no briefing.</span>
                 </div>
               ) : null}
               <div className="premium-card-soft creator-active-panel">
@@ -366,8 +368,8 @@ function CreatorsPageContent() {
                     <p className="creator-active-panel-copy">{activeTabMeta.bestFor}</p>
                   </div>
                   <div className="creator-active-panel-meta">
-                    <span className="premium-badge premium-badge-phase">Plano {planLabel ?? "—"}</span>
-                    <span className="premium-badge premium-badge-warning">Saldo {walletSummary}</span>
+                    <span className="premium-badge premium-badge-phase">Plano {planLabelDisplay}</span>
+                    <span className="premium-badge premium-badge-warning">Saldo {walletSummaryDisplay}</span>
                   </div>
                 </div>
                 <div className="hero-actions-row creator-active-panel-actions">

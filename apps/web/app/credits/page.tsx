@@ -160,6 +160,19 @@ export default function CreditsPage() {
   const latestTransactionLabel = latestTransaction
     ? `${txReasonLabel(latestTransaction)} • ${formatDateTime(latestTransaction.created_at)}`
     : "Sem movimentações recentes";
+  const planLabelDisplay = loading ? "Sincronizando plano" : planLabel ?? "—";
+  const walletSummaryDisplay = loading ? "Saldo em atualização" : walletSummary;
+  const totalWalletDisplay = loading ? "..." : totalWalletAmount.toLocaleString("pt-BR");
+  const conversionFeeDisplay = loading ? "..." : conversionEnabled ? `${conversionFeePercent}%` : "—";
+  const conversionFeeHelper = loading
+    ? "Regras do plano em sincronização."
+    : conversionEnabled
+      ? conversionFeePercent === 0
+        ? "Seu plano converte com taxa zero entre tipos."
+        : "Aplicada na origem durante a conversão entre tipos."
+      : "Seu plano atual não habilita conversão.";
+  const latestTransactionCountDisplay = loading ? "..." : transactions.length.toLocaleString("pt-BR");
+  const latestTransactionDisplay = loading ? "Histórico em sincronização." : latestTransactionLabel;
 
   const loadTransactions = useCallback(async () => {
     setTxLoading(true);
@@ -261,7 +274,7 @@ export default function CreditsPage() {
               </p>
             </div>
             <div className="hero-meta-row hero-meta-row-compact">
-              <span className="premium-badge premium-badge-phase">Plano: {planLabel ?? "—"}</span>
+              <span className="premium-badge premium-badge-phase">Plano: {planLabelDisplay}</span>
               <span className="premium-badge premium-badge-warning">Histórico confirma o consumo real</span>
             </div>
             <div className="signal-strip credits-hero-signal-strip">
@@ -307,20 +320,18 @@ export default function CreditsPage() {
         <div className="hero-kpi-grid hero-kpi-grid-compact">
           <div className="premium-card-soft hero-kpi">
             <span className="hero-kpi-label">Saldo total</span>
-            <strong className="hero-kpi-value">{totalWalletAmount.toLocaleString("pt-BR")}</strong>
-            <span className="helper-text-ea">{walletSummary}</span>
+            <strong className="hero-kpi-value">{totalWalletDisplay}</strong>
+            <span className="helper-text-ea">{walletSummaryDisplay}</span>
           </div>
           <div className="premium-card-soft hero-kpi">
             <span className="hero-kpi-label">Taxa no plano atual</span>
-            <strong className="hero-kpi-value">{conversionEnabled ? `${conversionFeePercent}%` : "—"}</strong>
-            <span className="helper-text-ea">
-              {conversionEnabled ? "Aplicada na origem durante a conversão entre tipos." : "Seu plano atual não habilita conversão."}
-            </span>
+            <strong className="hero-kpi-value">{conversionFeeDisplay}</strong>
+            <span className="helper-text-ea">{conversionFeeHelper}</span>
           </div>
           <div className="premium-card-soft hero-kpi">
             <span className="hero-kpi-label">Última movimentação</span>
-            <strong className="hero-kpi-value">{transactions.length.toLocaleString("pt-BR")}</strong>
-            <span className="helper-text-ea">{latestTransactionLabel}</span>
+            <strong className="hero-kpi-value">{latestTransactionCountDisplay}</strong>
+            <span className="helper-text-ea">{latestTransactionDisplay}</span>
           </div>
         </div>
       </section>
@@ -351,31 +362,33 @@ export default function CreditsPage() {
       <section className="credits-summary-grid">
         <div className="premium-card credits-summary-card credits-summary-card-primary">
           <p className="executive-eyebrow">Saldo por tipo</p>
-          <p className="executive-value metric-value-compact">{walletSummary}</p>
+          <p className="executive-value metric-value-compact">{walletSummaryDisplay}</p>
           <div className="credits-balance-list">
             {CREDIT_GUIDE.map((item) => (
               <div key={item.coinType} className="credits-balance-row">
                 <span>{item.title} • {item.description}</span>
-                <strong>{Number(wallet?.[item.coinType] ?? 0)}</strong>
+                <strong>{loading ? "…" : Number(wallet?.[item.coinType] ?? 0)}</strong>
               </div>
             ))}
           </div>
         </div>
         <div className="premium-card credits-summary-card credits-summary-card-action">
           <p className="executive-eyebrow">Conversão no plano atual</p>
-          <p className="executive-value">
-            {conversionEnabled ? `${conversionFeePercent}%` : "—"}
-          </p>
+          <p className="executive-value">{conversionFeeDisplay}</p>
           <p className="executive-detail">
-            {conversionEnabled
-              ? "A taxa é aplicada sobre a origem. Planos maiores preservam mais crédito líquido."
-              : "Seu plano atual ainda não habilita conversão entre tipos de crédito."}
+            {loading
+              ? "Sincronizando regras de conversão do seu plano."
+              : conversionEnabled
+                ? conversionFeePercent === 0
+                  ? "Taxa zero na conversão entre tipos: todo o crédito líquido permanece com você."
+                  : "A taxa é aplicada sobre a origem. Planos maiores preservam mais crédito líquido."
+                : "Seu plano atual ainda não habilita conversão entre tipos de crédito."}
           </p>
         </div>
         <div className="premium-card credits-summary-card">
           <p className="executive-eyebrow">Última movimentação</p>
-          <p className="executive-value metric-value-compact">{transactions.length}</p>
-          <p className="executive-detail">{latestTransactionLabel}</p>
+          <p className="executive-value metric-value-compact">{latestTransactionCountDisplay}</p>
+          <p className="executive-detail">{latestTransactionDisplay}</p>
         </div>
         <div className="premium-card credits-summary-card">
           <p className="executive-eyebrow">Estimativa x consumo real</p>
@@ -397,7 +410,14 @@ export default function CreditsPage() {
           </span>
         </div>
 
-        {!conversionEnabled ? (
+        {loading ? (
+          <div className="state-ea state-ea-spaced">
+            <p className="state-ea-title">Carregando saldo e regras do plano</p>
+            <div className="state-ea-text">
+              A conversão fica disponível assim que plano, carteira e histórico forem sincronizados.
+            </div>
+          </div>
+        ) : !conversionEnabled ? (
           <div className="state-ea state-ea-warning state-ea-spaced">
             <p className="state-ea-title">Conversão bloqueada para este plano</p>
             <div className="state-ea-text">
@@ -552,7 +572,7 @@ export default function CreditsPage() {
       ) : null}
 
       <section id="credits-packages">
-        <CreditsPackagesCard wallet={wallet} />
+        <CreditsPackagesCard wallet={wallet} loading={loading} />
       </section>
 
       <section id="credits-history" className="premium-card credits-section-card">

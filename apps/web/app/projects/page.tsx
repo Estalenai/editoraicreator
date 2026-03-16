@@ -26,12 +26,17 @@ export default function ProjectsPage() {
     () =>
       projects.map((project: any) => ({
         id: getProjectId(project),
-        title: project?.name || project?.title || project?.id || "Projeto sem titulo",
+        title: project?.name || project?.title || project?.id || "Projeto sem título",
         kind: String(project?.kind || project?.type || "projeto"),
         updatedAt: project?.updated_at || project?.created_at || null,
       })),
     [projects]
   );
+
+  const planLabelDisplay = loading ? "Sincronizando plano" : planLabel ?? "—";
+  const projectCountLabel = loading
+    ? "Projetos em sincronização"
+    : `${normalizedProjects.length} projeto(s) disponível(is)`;
 
   if (betaBlocked) {
     return <BetaAccessBlockedView email={email} status={betaAccess?.status} onLogout={onLogout} />;
@@ -46,14 +51,12 @@ export default function ProjectsPage() {
               <p className="section-kicker">Continuidade</p>
               <h1 style={{ margin: 0, letterSpacing: -0.3 }}>Projetos</h1>
               <p className="section-header-copy hero-copy-compact">
-                Abra um projeto salvo ou inicie um novo workspace com contexto pronto.
+                Abra um projeto salvo ou inicie um novo workspace com contexto pronto para editar e exportar.
               </p>
             </div>
             <div className="hero-meta-row">
-              <span className="premium-badge premium-badge-phase">Plano: {planLabel ?? "—"}</span>
-              <span className="premium-badge premium-badge-soon">
-                {normalizedProjects.length} projeto(s) disponivel(is)
-              </span>
+              <span className="premium-badge premium-badge-phase">Plano: {planLabelDisplay}</span>
+              <span className="premium-badge premium-badge-soon">{projectCountLabel}</span>
             </div>
           </div>
 
@@ -65,7 +68,7 @@ export default function ProjectsPage() {
               </div>
               <div className="hero-side-note">
                 <strong>Fluxo curto</strong>
-                <span>Creators gera contexto, Projetos organiza a continuidade e o editor finaliza.</span>
+                <span>Creators gera contexto, Projetos organiza continuidade e o editor finaliza até a exportação.</span>
               </div>
             </div>
 
@@ -83,7 +86,7 @@ export default function ProjectsPage() {
 
       {error ? (
         <div className="state-ea state-ea-error">
-          <p className="state-ea-title">Nao foi possivel carregar os projetos</p>
+          <p className="state-ea-title">Não foi possível carregar os projetos</p>
           <div className="state-ea-text">{error}</div>
           <div className="state-ea-actions">
             <button onClick={refresh} className="btn-ea btn-secondary btn-sm">
