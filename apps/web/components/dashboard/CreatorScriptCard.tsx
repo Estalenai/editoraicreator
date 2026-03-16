@@ -159,6 +159,8 @@ export function CreatorScriptCard({ walletCommon, onRefetch }: Props) {
   const [resultText, setResultText] = useState("");
   const [resultStructured, setResultStructured] = useState<ScriptStructuredResult | null>(null);
   const [savedProjectId, setSavedProjectId] = useState<string | null>(null);
+  const [resultProvider, setResultProvider] = useState<string | null>(null);
+  const [resultModel, setResultModel] = useState<string | null>(null);
 
   const estimatedCommon = useMemo(() => {
     const notesUnits = Math.max(1, Math.ceil(notes.trim().length / 300));
@@ -205,6 +207,8 @@ export function CreatorScriptCard({ walletCommon, onRefetch }: Props) {
     setError(null);
     setResultText("");
     setResultStructured(null);
+    setResultProvider(null);
+    setResultModel(null);
 
     try {
       const token = await getAccessToken();
@@ -231,6 +235,8 @@ export function CreatorScriptCard({ walletCommon, onRefetch }: Props) {
       const text = String(payload?.text || "");
       setResultText(text);
       setResultStructured(extractStructuredResult(text));
+      setResultProvider(typeof payload?.provider === "string" ? payload.provider : null);
+      setResultModel(typeof payload?.model === "string" ? payload.model : null);
       setLastPromptUsed(finalPrompt);
       await onRefetch();
     } catch (e: any) {
@@ -621,6 +627,13 @@ export function CreatorScriptCard({ walletCommon, onRefetch }: Props) {
             <p className="creator-result-copy">
               Confira estrutura, título e CTA antes de salvar o material.
             </p>
+            {resultProvider ? (
+              <div className={resultProvider === "mock" ? "inline-alert inline-alert-warning" : "helper-note-inline"}>
+                {resultProvider === "mock"
+                  ? "Resposta entregue em modo beta simulado. Ative o provedor real para versão final."
+                  : `Gerado via ${resultProvider}${resultModel ? ` · ${resultModel}` : ""}.`}
+              </div>
+            ) : null}
           </div>
 
           <div className="creator-output-grid">

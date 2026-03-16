@@ -1,4 +1,5 @@
 import { supabase } from "./supabaseClient";
+import { createIdempotencyKey } from "./idempotencyKey";
 
 const DEV_DEFAULT_API_URL = "http://127.0.0.1:3000";
 const DEV_FALLBACK_API_URL = "http://127.0.0.1:3100";
@@ -188,7 +189,10 @@ export const api = {
   async aiTextGenerate(body: { prompt: string }) {
     return authJson("/api/ai/text-generate", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Idempotency-Key": createIdempotencyKey("editor_ai_text"),
+      },
       body: JSON.stringify(body),
     });
   },
@@ -196,7 +200,10 @@ export const api = {
   async aiFactCheck(body: { claim: string; query?: string }) {
     return authJson("/api/ai/fact-check", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Idempotency-Key": createIdempotencyKey("editor_ai_fact_check"),
+      },
       body: JSON.stringify(body),
     });
   },

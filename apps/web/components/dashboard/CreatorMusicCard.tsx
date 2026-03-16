@@ -10,6 +10,10 @@ import { toUserFacingError } from "../../lib/uiFeedback";
 
 type CreatorMusicResult = {
   provider?: string;
+  model?: string;
+  status?: string;
+  job_id?: string;
+  preview_url?: string;
   type?: string;
   title?: string;
   prompt_used?: string;
@@ -41,6 +45,40 @@ function extractApiErrorMessage(payload: any, fallback: string) {
   return fallback;
 }
 
+function buildMusicPrompt({ theme, mood, bpm, duration, language }: { theme: string; mood: string; bpm: number; duration: number; language: string }) {
+  return `Crie uma musica no estilo ${theme}, humor ${mood}, ${bpm} BPM, duracao de ${duration} segundos em ${language}.`;
+}
+
+function normalizeMusicResult(payload: any, fallback: { theme: string; mood: string; bpm: number; duration: number; prompt: string }): CreatorMusicResult | null {
+  const source = payload?.result && typeof payload.result === "object" ? payload.result : payload;
+  if (!source || typeof source !== "object") return null;
+
+  const audioUrl = String(source?.audio_url || payload?.output?.audio_url || "").trim();
+  const previewUrl = String(source?.preview_url || payload?.assets?.preview_url || source?.assets?.preview_url || "").trim();
+  const provider = String(source?.provider || payload?.provider || "").trim();
+  const model = String(source?.model || payload?.model || "").trim();
+  const jobId = String(source?.job_id || source?.jobId || payload?.jobId || "").trim();
+  const status = String(source?.status || payload?.status || (audioUrl ? "succeeded" : jobId ? "queued" : "")).trim();
+
+  if (!provider && !audioUrl && !previewUrl && !jobId && !status) return null;
+
+  return {
+    title: String(source?.title || `${fallback.theme} (${fallback.mood})`).trim(),
+    provider: provider || undefined,
+    model: model || undefined,
+    status: status || undefined,
+    job_id: jobId || undefined,
+    preview_url: previewUrl || undefined,
+    audio_url: audioUrl || undefined,
+    prompt_used: String(source?.prompt_used || payload?.used_prompt || fallback.prompt || "").trim() || undefined,
+    lyrics: typeof source?.lyrics === "string" ? source.lyrics : undefined,
+    tags: Array.isArray(source?.tags) ? source.tags : undefined,
+    duration: Number(source?.duration ?? fallback.duration) || fallback.duration,
+    bpm: Number(source?.bpm ?? fallback.bpm) || fallback.bpm,
+    created_at: String(source?.created_at || new Date().toISOString()),
+  };
+}
+
 async function getAccessToken() {
   const { data } = await supabase.auth.getSession();
   return data.session?.access_token || null;
@@ -58,6 +96,7 @@ export function CreatorMusicCard({ walletCommon, onRefetch }: Props) {
 
   const [loadingPrompt, setLoadingPrompt] = useState(false);
   const [loadingGenerate, setLoadingGenerate] = useState(false);
+  const [loadingStatus, setLoadingStatus] = useState(false);
   const [saving, setSaving] = useState(false);
 
   const [error, setError] = useState<string | null>(null);
@@ -143,6 +182,7 @@ export function CreatorMusicCard({ walletCommon, onRefetch }: Props) {
       if (!token) throw new Error("Sessão expirada. Faça login novamente.");
 
       const idempotencyKey = createIdempotencyKey("creator_music_generate");
+      const promptToUse = generatedPrompt.trim() || buildMusicPrompt({ theme, mood, bpm, duration, language });
 
       const res = await apiFetch("/api/creator-music/generate", {
         method: "POST",
@@ -157,7 +197,7 @@ export function CreatorMusicCard({ walletCommon, onRefetch }: Props) {
           bpm,
           duration,
           language,
-          prompt: generatedPrompt.trim() || undefined,
+          prompt: promptToUse,
         }),
       });
 
@@ -166,26 +206,78 @@ export function CreatorMusicCard({ walletCommon, onRefetch }: Props) {
         throw new Error(extractApiErrorMessage(payload, "Falha ao gerar música."));
       }
 
-      const normalizedResult =
-        payload?.result ||
-        (payload?.musicUrl
-          ? {
-              audio_url: payload.musicUrl,
-              title: `${theme} (${mood})`,
-              provider: "mock",
-              bpm,
-              duration,
-              created_at: new Date().toISOString(),
-            }
-          : null);
+      const normalizedResult = normalizeMusicResult(payload, {
+        theme,
+        mood,
+        bpm,
+        duration,
+        prompt: promptToUse,
+      });
+      if (!normalizedResult) {
+        throw new Error("Falha ao interpretar a resposta da música.");
+      }
 
       setResult(normalizedResult);
-      setGeneratedPrompt(String(payload?.used_prompt || generatedPrompt));
+      setGeneratedPrompt(String(payload?.used_prompt || promptToUse));
       await onRefetch();
     } catch (e: any) {
       setError(e?.message || "Falha ao gerar música.");
     } finally {
       setLoadingGenerate(false);
+    }
+  }
+
+  async function onRefreshStatus() {
+    const jobId = String(result?.job_id || "").trim();
+    if (!jobId || loadingStatus) return;
+
+    setLoadingStatus(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const token = await getAccessToken();
+      if (!token) throw new Error("Sessão expirada. Faça login novamente.");
+
+      const res = await apiFetch("/api/ai/music-status", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          "Idempotency-Key": createIdempotencyKey("creator_music_status"),
+        },
+        body: JSON.stringify({ jobId }),
+      });
+
+      const payload = await res.json().catch(() => null);
+      if (!res.ok) {
+        throw new Error(extractApiErrorMessage(payload, "Falha ao consultar status da música."));
+      }
+
+      const normalizedResult = normalizeMusicResult(payload, {
+        theme,
+        mood,
+        bpm,
+        duration,
+        prompt: generatedPrompt.trim() || buildMusicPrompt({ theme, mood, bpm, duration, language }),
+      });
+      if (!normalizedResult) {
+        throw new Error("Falha ao interpretar o status retornado.");
+      }
+
+      setResult((prev) => ({
+        ...(prev || {}),
+        ...normalizedResult,
+        prompt_used: prev?.prompt_used || normalizedResult.prompt_used,
+      }));
+      if (normalizedResult.status === "succeeded" && normalizedResult.audio_url) {
+        setSuccess("Áudio final disponível para revisar e salvar.");
+      }
+      await onRefetch();
+    } catch (e: any) {
+      setError(e?.message || "Falha ao consultar status da música.");
+    } finally {
+      setLoadingStatus(false);
     }
   }
 
@@ -345,6 +437,12 @@ export function CreatorMusicCard({ walletCommon, onRefetch }: Props) {
             >
               {loadingGenerate ? "Gerando..." : "Gerar música"}
             </button>
+
+            {result?.job_id ? (
+              <button className="btn-ea btn-secondary" onClick={onRefreshStatus} disabled={loadingStatus}>
+                {loadingStatus ? "Atualizando..." : "Atualizar status"}
+              </button>
+            ) : null}
           </div>
 
           {(error || success || copyMsg) ? (
@@ -417,7 +515,14 @@ export function CreatorMusicCard({ walletCommon, onRefetch }: Props) {
             <div className="creator-result-header">
               <p className="section-kicker">Resultado</p>
               <div className="creator-result-title">Trilha pronta para revisar</div>
-              <p className="creator-result-copy">Confira metadados, link do áudio e próximos passos antes de salvar o projeto.</p>
+              <p className="creator-result-copy">Confira metadados, status do job e próximos passos antes de salvar o projeto.</p>
+              {result?.provider ? (
+                <div className={result.provider === "mock" ? "inline-alert inline-alert-warning" : "helper-note-inline"}>
+                  {result.provider === "mock"
+                    ? "Resultado entregue em modo beta simulado. Ative o provedor real para áudio final."
+                    : `Gerado via ${result.provider}${result.model ? ` · ${result.model}` : ""}.`}
+                </div>
+              ) : null}
             </div>
 
             <div className="creator-output-grid">
@@ -425,16 +530,27 @@ export function CreatorMusicCard({ walletCommon, onRefetch }: Props) {
                 <div className="creator-output-card-title">Resumo da faixa</div>
                 <div className="creator-output-card-stat-row"><span>Título</span><strong>{result.title || "—"}</strong></div>
                 <div className="creator-output-card-stat-row"><span>Provedor</span><strong>{result.provider || "—"}</strong></div>
+                <div className="creator-output-card-stat-row"><span>Status</span><strong>{result.status || "—"}</strong></div>
                 <div className="creator-output-card-stat-row"><span>BPM</span><strong>{result.bpm ?? bpm}</strong></div>
                 <div className="creator-output-card-stat-row"><span>Duração</span><strong>{result.duration ?? duration}s</strong></div>
               </div>
 
               <div className="creator-output-card">
-                <div className="creator-output-card-title">Link do áudio</div>
+                <div className="creator-output-card-title">Entrega do áudio</div>
                 {result.audio_url ? (
-                  <a href={result.audio_url} target="_blank" rel="noreferrer" className="creator-output-card-link">
-                    {result.audio_url}
-                  </a>
+                  <>
+                    <div className="creator-output-card-meta">Áudio final retornado pelo provedor.</div>
+                    <a href={result.audio_url} target="_blank" rel="noreferrer" className="creator-output-card-link">
+                      {result.audio_url}
+                    </a>
+                  </>
+                ) : result.preview_url ? (
+                  <>
+                    <div className="creator-output-card-meta">Prévia disponível enquanto o job continua em processamento.</div>
+                    <a href={result.preview_url} target="_blank" rel="noreferrer" className="creator-output-card-link">
+                      {result.preview_url}
+                    </a>
+                  </>
                 ) : (
                   <div className="creator-output-card-meta">Ainda sem link retornado pelo provedor.</div>
                 )}
@@ -472,6 +588,18 @@ export function CreatorMusicCard({ walletCommon, onRefetch }: Props) {
                       onClick={() => copyText(result.audio_url || "", "Link do áudio")}
                     >
                       Copiar link do áudio
+                    </button>
+                  ) : result.preview_url ? (
+                    <button
+                      className="btn-ea btn-ghost btn-sm"
+                      onClick={() => copyText(result.preview_url || "", "Link da prévia")}
+                    >
+                      Copiar link da prévia
+                    </button>
+                  ) : null}
+                  {result.job_id ? (
+                    <button className="btn-ea btn-secondary btn-sm" onClick={onRefreshStatus} disabled={loadingStatus}>
+                      {loadingStatus ? "Atualizando..." : "Atualizar status"}
                     </button>
                   ) : null}
                   <button

@@ -8,6 +8,8 @@ import { getUserPlanCode } from "../utils/planResolver.js";
 import { assertWithinQuota, QuotaExceededError } from "../utils/quotaEnforcer.js";
 import { generateLimiter, promptLimiter } from "../middlewares/rateLimit.js";
 import { logger } from "../utils/logger.js";
+import { runMusicGenerate } from "../aiProviders/index.js";
+import { debitThenExecuteOrRefund } from "../utils/debitThenExecuteOrRefund.js";
 
 const router = express.Router();
 router.use(authMiddleware);
@@ -445,19 +447,37 @@ router.post("/generate", generateLimiter, async (req, res) => {
       });
     }
 
-    const { error: debitError } = await db.rpc("coins_debit_v1", {
-      p_user_id: userId,
-      p_common: commonCost,
-      p_pro: 0,
-      p_ultra: 0,
-      p_feature: FEATURE_NAME,
-      p_idempotency_key: idempotencyKey,
-    });
+    const routing = {
+      mode: "quality",
+      selected_provider: "suno",
+      selected_model: null,
+      fallback_used: false,
+    };
 
-    if (debitError) {
-      const mapped = mapDebitError(debitError, commonCost, beforeWallet.common);
-
-      if (mapped.status === 409 && mapped.payload?.error === "idempotency_replay") {
+    let providerResult = null;
+    try {
+      providerResult = await debitThenExecuteOrRefund({
+        db,
+        userId,
+        feature: FEATURE_NAME,
+        idempotencyKey,
+        costCommon: commonCost,
+        executeFn: async () =>
+          runMusicGenerate({
+            input: {
+              prompt: usedPrompt,
+              lyrics: typeof body.lyrics === "string" ? body.lyrics : "",
+              style: body.theme,
+              durationSec: body.duration,
+              quality: complexity,
+            },
+            idempotencyKey,
+            routing,
+          }),
+      });
+    } catch (providerError) {
+      const errorCode = String(providerError?.code || providerError?.payload?.error || providerError?.message || "").toLowerCase();
+      if (errorCode === "idempotency_replay") {
         const replay = await readIdempotentResponse(db, userId, idempotencyKey).catch(() => null);
         if (replay) {
           await trackUsage({
@@ -515,6 +535,10 @@ router.post("/generate", generateLimiter, async (req, res) => {
         });
       }
 
+      const mapped = providerError?.payload
+        ? { status: Number(providerError.status || 400), payload: providerError.payload }
+        : mapRouteError(providerError, "creator_music_generate_failed");
+
       await trackUsage({
         db,
         userId,
@@ -523,7 +547,7 @@ router.post("/generate", generateLimiter, async (req, res) => {
         idempotencyKey,
         requestHash,
         costs: { common: 0, pro: 0, ultra: 0 },
-        meta: { error: mapped.payload?.error || "coins_debit_failed", details: mapped.payload?.details || null },
+        meta: { error: mapped.payload?.error || "creator_music_generate_failed", details: providerError?.message || null },
         status: "error",
       });
       return res.status(mapped.status).json(mapped.payload);
@@ -536,12 +560,18 @@ router.post("/generate", generateLimiter, async (req, res) => {
       ok: true,
       result: {
         title: `${body.theme} (${body.mood})`,
-        provider: "mock",
+        provider: providerResult?.provider || "mock",
+        model: providerResult?.model || null,
+        status: providerResult?.status || "queued",
+        job_id: providerResult?.jobId || null,
+        preview_url: providerResult?.assets?.preview_url || null,
+        audio_url: providerResult?.output?.audio_url || null,
         bpm: body.bpm,
         duration: body.duration,
-        audio_url: "https://exemplo.com/audio.mp3",
         created_at: createdAt,
         complexity,
+        tags: Array.isArray(body.tags) ? body.tags : [],
+        lyrics: typeof body.lyrics === "string" ? body.lyrics : undefined,
       },
       used_prompt: usedPrompt,
       cost: {

@@ -177,6 +177,8 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
 
   const [result, setResult] = useState<CreatorPostResult | null>(null);
   const [rawText, setRawText] = useState("");
+  const [resultProvider, setResultProvider] = useState<string | null>(null);
+  const [resultModel, setResultModel] = useState<string | null>(null);
 
   const [copyMsg, setCopyMsg] = useState<string | null>(null);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
@@ -255,6 +257,8 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
     setError(null);
     setResult(null);
     setRawText("");
+    setResultProvider(null);
+    setResultModel(null);
 
     try {
       const idempotencyKey = createIdempotencyKey("creator_post_generate");
@@ -295,6 +299,8 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
       }
       setResult(normalized);
       setRawText(normalized?.caption || text);
+      setResultProvider(typeof payload?.provider === "string" ? payload.provider : null);
+      setResultModel(typeof payload?.model === "string" ? payload.model : null);
 
       // ✅ transparência: guardar prompt usado
       setLastPromptUsed(finalPrompt);
@@ -785,6 +791,13 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
             <p className="creator-result-copy">
               Revise legenda, variações e próximos passos antes de levar a peça para o editor.
             </p>
+            {resultProvider ? (
+              <div className={resultProvider === "mock" ? "inline-alert inline-alert-warning" : "helper-note-inline"}>
+                {resultProvider === "mock"
+                  ? "Resposta entregue em modo beta simulado. Ative o provedor real para publicação final."
+                  : `Gerado via ${resultProvider}${resultModel ? ` · ${resultModel}` : ""}.`}
+              </div>
+            ) : null}
           </div>
 
           <div className="creator-output-grid">

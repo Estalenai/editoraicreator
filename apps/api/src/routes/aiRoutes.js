@@ -650,7 +650,6 @@ function buildMemCacheKey(userId, endpoint, key) {
 }
 
 function cleanupExpiredMemCache() {
-  if (!IS_DEV) return;
   const now = Date.now();
   for (const [key, entry] of aiIdemMemCache.entries()) {
     if (!entry?.expires_at || entry.expires_at <= now) aiIdemMemCache.delete(key);
@@ -658,7 +657,6 @@ function cleanupExpiredMemCache() {
 }
 
 function readMemReplay({ userId, endpoint, key }) {
-  if (!IS_DEV) return null;
   cleanupExpiredMemCache();
   const cacheKey = buildMemCacheKey(userId, endpoint, key);
   const entry = aiIdemMemCache.get(cacheKey) || null;
@@ -667,7 +665,7 @@ function readMemReplay({ userId, endpoint, key }) {
 }
 
 function writeMemReplay({ userId, endpoint, key, requestHash, response }) {
-  if (!IS_DEV) return;
+  cleanupExpiredMemCache();
   const cacheKey = buildMemCacheKey(userId, endpoint, key);
   aiIdemMemCache.set(cacheKey, {
     request_hash: requestHash || null,
@@ -747,7 +745,8 @@ async function saveIdempotentResponse(db, { userId, endpoint, key, requestHash, 
       user_id_mask: maskId(userId),
       ...normalizeSupabaseError({ message: "idempotency_db_unavailable" }),
     });
-    return { payload: response, writeOk: false };
+    writeMemReplay({ userId, endpoint, key, requestHash, response });
+    return { payload: response, writeOk: true, cacheFallback: "memory" };
   }
   const nowIso = new Date().toISOString();
   const payload = {
@@ -811,7 +810,8 @@ async function saveIdempotentResponse(db, { userId, endpoint, key, requestHash, 
       cacheWriteOk: false,
       ...normalizeSupabaseError(result.error),
     });
-    return { payload: response, writeOk: false };
+    writeMemReplay({ userId, endpoint, key, requestHash, response });
+    return { payload: response, writeOk: true, cacheFallback: "memory" };
   }
 
   logger.info("ai.idem.cache_write_ok", {
@@ -838,7 +838,8 @@ async function saveIdempotentResponse(db, { userId, endpoint, key, requestHash, 
       cacheReadBackOk: false,
       ...normalizeSupabaseError(readBackError),
     });
-    return { payload: response, writeOk: false };
+    writeMemReplay({ userId, endpoint, key, requestHash, response });
+    return { payload: response, writeOk: true, cacheFallback: "memory" };
   }
 
   const cacheReadBackOk = readBack?.status === "processed" && hasNonEmptyResponse(readBack?.response);
@@ -850,7 +851,8 @@ async function saveIdempotentResponse(db, { userId, endpoint, key, requestHash, 
       cacheReadBackOk: false,
       message: "cache_readback_empty",
     });
-    return { payload: response, writeOk: false };
+    writeMemReplay({ userId, endpoint, key, requestHash, response });
+    return { payload: response, writeOk: true, cacheFallback: "memory" };
   }
 
   logger.info("ai.idem.cache_readback_ok", {
@@ -890,19 +892,19 @@ async function saveIdempotentFailure(db, { userId, endpoint, key, requestHash, e
 }
 
 async function readReplayOrConflict(db, { userId, endpoint, key, requestHash }) {
-  if (!db) return { kind: IS_DEV ? "none" : "storage_failed" };
   let row = null;
-  try {
-    row = await readAIReplayRecord(db, { userId, endpoint, key });
-  } catch (error) {
-    logger.error("ai.idem.cache_read_failed", {
-      endpoint,
-      key: maskKey(key),
-      user_id_mask: maskId(userId),
-      ...normalizeSupabaseError(error),
-    });
-    if (!IS_DEV) return { kind: "storage_failed" };
-    row = null;
+  if (db) {
+    try {
+      row = await readAIReplayRecord(db, { userId, endpoint, key });
+    } catch (error) {
+      logger.error("ai.idem.cache_read_failed", {
+        endpoint,
+        key: maskKey(key),
+        user_id_mask: maskId(userId),
+        ...normalizeSupabaseError(error),
+      });
+      row = null;
+    }
   }
   if (row?.request_hash && requestHash && row.request_hash !== requestHash) {
     return { kind: "conflict" };

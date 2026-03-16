@@ -743,13 +743,18 @@ router.post("/generate", generateLimiter, async (req, res) => {
     }
 
     let result = buildMockResult(body);
+    let provider = "mock";
+    let model = "mock-creator-post";
     if (!isMockEnabled()) {
       const ai = await AutocrieBrain.execute({
         feature: "text_generate",
-        input: { prompt: usedPrompt },
+        input: { prompt: usedPrompt, language: body.language, idempotencyKey },
         user: req.user,
         plan: req.plan,
+        context: { idempotencyKey },
       });
+      provider = String(ai?.provider || "unknown");
+      model = String(ai?.model || "unknown");
       const aiText = String(ai?.output?.text || "").trim();
       const normalizedResult = buildCreatorPostResultFromOutput(body, aiText || body.brief);
       result = {
@@ -764,6 +769,8 @@ router.post("/generate", generateLimiter, async (req, res) => {
     const responsePayload = {
       ok: true,
       result,
+      provider,
+      model,
       used_prompt: usedPrompt,
       cost: { common: commonCost, breakdown: costData.breakdown },
       debit: { common: commonCost },

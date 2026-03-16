@@ -35,7 +35,7 @@ export class AutocrieBrain {
     }
   }
 
-  static async textGenerate({ input }) {
+  static async textGenerate({ input, user, plan, context = {} }) {
     if (isMockEnabled()) {
       const promptText = String(input?.prompt || "");
       const lowerPrompt = promptText.toLowerCase();
@@ -107,10 +107,15 @@ export class AutocrieBrain {
     const combinedPrompt = `${system}\n\n${prompt}`;
 
     const r = await generateText({
-      prompt: combinedPrompt,
-      language: input?.language || "pt-BR",
-      maxTokens: 700,
-      meta: { feature: "autocrie_text_generate" },
+      input: {
+        prompt: combinedPrompt,
+        language: input?.language || "pt-BR",
+        maxTokens: 700,
+        idempotencyKey: input?.idempotencyKey || context?.idempotencyKey || undefined,
+      },
+      user,
+      plan,
+      routing: context?.routing || null,
     });
 
     // Normalização defensiva (caso o dispatcher mude o shape do retorno)
@@ -134,7 +139,7 @@ export class AutocrieBrain {
    * - Busca em fontes diversas via provedor de pesquisa
    * - Pede ao LLM para classificar e justificar citando as fontes (URLs)
    */
-  static async factCheck({ input }) {
+  static async factCheck({ input, user, plan, context = {} }) {
     if (isMockEnabled()) {
       const claim = String(input?.claim || "").trim();
       const summary = claim
@@ -202,10 +207,15 @@ export class AutocrieBrain {
     const combinedPrompt = `${system}\n\n${prompt}`;
 
     const r = await generateText({
-      prompt: combinedPrompt,
-      language: input?.language || "pt-BR",
-      maxTokens: 550,
-      meta: { feature: "autocrie_fact_check", sources_count: sources.length },
+      input: {
+        prompt: combinedPrompt,
+        language: input?.language || "pt-BR",
+        maxTokens: 550,
+        idempotencyKey: input?.idempotencyKey || context?.idempotencyKey || undefined,
+      },
+      user,
+      plan,
+      routing: context?.routing || null,
     });
 
     const rawText =
