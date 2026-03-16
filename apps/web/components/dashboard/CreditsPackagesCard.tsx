@@ -365,12 +365,12 @@ export function CreditsPackagesCard({ wallet }: Props) {
       </button>
 
       {coinsPanelOpen ? (
-        <div className="credits-modal-backdrop">
-          <div className="premium-card credits-modal">
-            <div className="section-head">
+        <div className="credits-modal-backdrop" onClick={() => setCoinsPanelOpen(false)}>
+          <div className="premium-card credits-modal" role="dialog" aria-modal="true" aria-labelledby="credits-modal-title" onClick={(event) => event.stopPropagation()}>
+            <div className="section-head credits-modal-head">
               <div className="hero-title-stack section-stack-tight">
                 <p className="section-kicker">Compra segura</p>
-                <h3 className="heading-reset">Créditos avulsos</h3>
+                <h3 className="heading-reset" id="credits-modal-title">Créditos avulsos</h3>
               </div>
               <button onClick={() => setCoinsPanelOpen(false)} className="btn-ea btn-ghost btn-sm">
                 Fechar
@@ -550,7 +550,17 @@ export function CreditsPackagesCard({ wallet }: Props) {
               </div>
             ) : null}
 
-            <div className="hero-actions-row">
+            {(packageLoading || packageCheckoutLoading || packageQuote) ? (
+              <div className="helper-note-inline credits-modal-live-note">
+                {packageCheckoutLoading
+                  ? "Abrindo checkout seguro..."
+                  : packageLoading
+                    ? "Atualizando cotacao..."
+                    : "Cotacao pronta. Revise o resumo antes de seguir para o pagamento."}
+              </div>
+            ) : null}
+
+            <div className="hero-actions-row credits-modal-actions">
               <button
                 onClick={requestCoinsPackageQuote}
                 disabled={packageLoading || packageCheckoutLoading || !packageMixValid}

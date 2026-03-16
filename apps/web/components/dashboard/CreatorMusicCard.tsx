@@ -517,10 +517,18 @@ export function CreatorMusicCard({ walletCommon, onRefetch }: Props) {
               <div className="creator-result-title">Trilha pronta para revisar</div>
               <p className="creator-result-copy">Confira metadados, status do job e próximos passos antes de salvar o projeto.</p>
               {result?.provider ? (
-                <div className={result.provider === "mock" ? "inline-alert inline-alert-warning" : "helper-note-inline"}>
+                <div
+                  className={
+                    result.provider === "mock" || result.provider === "replay"
+                      ? "inline-alert inline-alert-warning"
+                      : "helper-note-inline"
+                  }
+                >
                   {result.provider === "mock"
                     ? "Resultado entregue em modo beta simulado. Ative o provedor real para áudio final."
-                    : `Gerado via ${result.provider}${result.model ? ` · ${result.model}` : ""}.`}
+                    : result.provider === "replay"
+                      ? "Geração anterior detectada. Atualize o status para recuperar o áudio final sem reenviar."
+                      : `Gerado via ${result.provider}${result.model ? ` · ${result.model}` : ""}.`}
                 </div>
               ) : null}
             </div>
@@ -551,6 +559,8 @@ export function CreatorMusicCard({ walletCommon, onRefetch }: Props) {
                       {result.preview_url}
                     </a>
                   </>
+                ) : result.status === "processing" ? (
+                  <div className="creator-output-card-meta">Processamento em andamento. Atualize o status para buscar o link final.</div>
                 ) : (
                   <div className="creator-output-card-meta">Ainda sem link retornado pelo provedor.</div>
                 )}

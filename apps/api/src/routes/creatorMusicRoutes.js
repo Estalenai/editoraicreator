@@ -254,13 +254,16 @@ async function buildReplayFromTransactions({ db, userId, idempotencyKey, body, c
     ok: true,
     result: {
       title: `${body.theme} (${body.mood})`,
-      provider: "mock",
+      provider: "replay",
+      status: "processing",
       bpm: body.bpm,
       duration: body.duration,
-      audio_url: "https://exemplo.com/audio.mp3",
+      audio_url: null,
+      preview_url: null,
       created_at: createdAt,
       complexity,
     },
+    message: "Geracao ja enviada anteriormente. Atualize o status para recuperar o audio final.",
     used_prompt: usedPrompt,
     cost: {
       common: costData.costCommon,

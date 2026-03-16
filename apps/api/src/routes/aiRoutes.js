@@ -3826,9 +3826,6 @@ router.post(
         key: idempotencyKey,
         requestHash,
       });
-      if (replay.kind === "storage_failed") {
-        return res.status(500).json({ error: "idempotency_storage_failed" });
-      }
       if (replay.kind === "conflict") {
         return res.status(409).json({
           error: "idempotency_conflict",
@@ -3925,22 +3922,11 @@ router.post(
         response: responsePayload,
       });
       if (!saveResult.writeOk) {
-        if (IS_DEV) {
-          writeMemReplay({
-            userId: req.user.id,
-            endpoint,
-            key: idempotencyKey,
-            requestHash,
-            response: responsePayload,
-          });
-          logger.warn("ai.idem.cache_mem_used", {
-            endpoint,
-            key: maskKey(idempotencyKey),
-            user_id_mask: maskId(req.user.id),
-          });
-        } else {
-          return res.status(500).json({ error: "idempotency_storage_failed" });
-        }
+        logger.warn("ai.idem.cache_write_bypassed", {
+          endpoint,
+          key: maskKey(idempotencyKey),
+          user_id_mask: maskId(req.user.id),
+        });
       }
 
       await trackAIUsage(req, {
@@ -3971,10 +3957,6 @@ router.post(
           key: idempotencyKey,
           requestHash,
         });
-        if (replay.kind === "storage_failed") {
-          return res.status(500).json({ error: "idempotency_storage_failed" });
-        }
-
         if (replay.kind === "replay") {
           await trackAIUsage(req, {
             feature: "text_generate",
@@ -4120,9 +4102,6 @@ router.post(
         key: idempotencyKey,
         requestHash,
       });
-      if (replay.kind === "storage_failed") {
-        return res.status(500).json({ error: "idempotency_storage_failed" });
-      }
       if (replay.kind === "conflict") {
         return res.status(409).json({
           error: "idempotency_conflict",
@@ -4247,22 +4226,11 @@ router.post(
         response: responsePayload,
       });
       if (!saveResult.writeOk) {
-        if (IS_DEV) {
-          writeMemReplay({
-            userId: req.user.id,
-            endpoint,
-            key: idempotencyKey,
-            requestHash,
-            response: responsePayload,
-          });
-          logger.warn("ai.idem.cache_mem_used", {
-            endpoint,
-            key: maskKey(idempotencyKey),
-            user_id_mask: maskId(req.user.id),
-          });
-        } else {
-          return res.status(500).json({ error: "idempotency_storage_failed" });
-        }
+        logger.warn("ai.idem.cache_write_bypassed", {
+          endpoint,
+          key: maskKey(idempotencyKey),
+          user_id_mask: maskId(req.user.id),
+        });
       }
       await trackAIUsage(req, {
         feature: "fact_check",
@@ -4291,10 +4259,6 @@ router.post(
           key: idempotencyKey,
           requestHash,
         });
-        if (replay.kind === "storage_failed") {
-          return res.status(500).json({ error: "idempotency_storage_failed" });
-        }
-
         if (replay.kind === "replay") {
           await trackAIUsage(req, {
             feature: "fact_check",
