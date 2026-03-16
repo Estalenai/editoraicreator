@@ -55,7 +55,7 @@ export function EditorShell({
               <p className="section-kicker">Workspace editorial</p>
               <h2 style={{ margin: 0 }}>{title}</h2>
               <p className="editor-shell-note editor-shell-title-copy">
-                EditexAI no centro do projeto: contexto salvo, apoio lateral e continuidade sem sair do editor.
+                EditexAI no centro do projeto: video, foto, texto e ativos visuais seguem no mesmo workspace.
               </p>
             </div>
             <div className="hero-meta-row">
@@ -68,7 +68,7 @@ export function EditorShell({
             <div className="editor-shell-status-grid">
               <div className="editor-shell-status-item">
                 <span>Fluxo</span>
-                <strong>Editar, revisar e salvar</strong>
+                <strong>Gerar, editar e exportar</strong>
               </div>
               <div className="editor-shell-status-item">
                 <span>Visibilidade</span>
@@ -94,7 +94,7 @@ export function EditorShell({
         <div className="signal-strip editor-shell-signal-strip">
           <div className="signal-chip signal-chip-sober">
             <strong>Origem conectada</strong>
-            <span>Creators, projetos e editor compartilham a mesma continuidade.</span>
+            <span>Creators, projetos e editor compartilham continuidade para video, foto e outras pecas.</span>
           </div>
           <div className="signal-chip signal-chip-sober">
             <strong>Apoio lateral</strong>
@@ -116,8 +116,8 @@ export function EditorShell({
             <span>Professor e Transparencia ajudam a acompanhar o que a EditexAI fez em cada passo.</span>
           </div>
           <div className="premium-card-soft trust-note editor-shell-trust-card">
-            <strong>Workspace continuo</strong>
-            <span>Creators, projeto salvo e editor trabalham no mesmo fluxo operacional.</span>
+            <strong>Saida controlada</strong>
+            <span>Fluxo padrao de entrega: exporte no dispositivo. Storage conectado entra na proxima fase.</span>
           </div>
         </div>
       </header>

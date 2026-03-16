@@ -24,6 +24,7 @@ type EditorDoc = {
   course: { sections: any[] };
   website: { blocks: any[] };
   aiSteps: AiStep[];
+  delivery: { exportTarget: "device" | "connected_storage"; connectedStorage: string | null; mediaRetention: "externalized" };
 };
 
 const PROJECT_KIND_LABEL: Record<string, string> = {
@@ -67,7 +68,12 @@ function ensureEditor(project: Project): EditorDoc {
     website: {
       blocks: Array.isArray(e.website?.blocks) ? e.website.blocks : []
     },
-    aiSteps: Array.isArray(e.aiSteps) ? e.aiSteps : []
+    aiSteps: Array.isArray(e.aiSteps) ? e.aiSteps : [],
+    delivery: {
+      exportTarget: e.delivery?.exportTarget === "connected_storage" ? "connected_storage" : "device",
+      connectedStorage: typeof e.delivery?.connectedStorage === "string" ? e.delivery.connectedStorage : null,
+      mediaRetention: "externalized",
+    }
   };
 }
 
@@ -346,7 +352,8 @@ export default function EditorProjectPage() {
         ...current,
         mode: { professor: professorMode, transparent: transparentMode },
         doc: { text },
-        aiSteps
+        aiSteps,
+        delivery: current.delivery
       };
 
       const updated = await api.updateProject(project.id, {
@@ -360,7 +367,8 @@ export default function EditorProjectPage() {
             workflow: next.workflow,
             course: next.course,
             website: next.website,
-            aiSteps: next.aiSteps
+            aiSteps: next.aiSteps,
+            delivery: next.delivery
           }
         }
       });
@@ -740,7 +748,7 @@ export default function EditorProjectPage() {
               <p className="section-kicker">Projeto atual</p>
               <strong className="editor-shell-footer-title">{title}</strong>
               <p className="editor-shell-note">
-                Continue salvando blocos-chave para manter o contexto pronto no workspace.
+                Continue salvando blocos-chave. Saida padrao: exportacao no dispositivo; storage conectado entra na proxima fase.
               </p>
             </div>
             <div className="editor-shell-cta-group">

@@ -33,7 +33,7 @@ function planShortDescription(code: string): string {
   if (code === "EDITOR_FREE") return "Entrada guiada para validar rotinas com IA sem sobrecarga.";
   if (code === "EDITOR_PRO") return "Operação recorrente com mais volume, previsibilidade e eficiência.";
   if (code === "EDITOR_ULTRA") return "Escala de criação intensiva para times que entregam em alta cadência.";
-  if (code === "EMPRESARIAL") return "Operação assistida para equipe com governança e atendimento dedicado.";
+  if (code === "EMPRESARIAL") return "Operação assistida para equipe com governança, atendimento dedicado e conversão sem taxa.";
   if (code === "ENTERPRISE") return "Implantação corporativa com controle avançado e suporte estratégico.";
   return "Plano disponível no catálogo beta.";
 }
@@ -96,7 +96,7 @@ function planNarrative(code: string): PlanNarrative {
       valueBullets: [
         "Capacidade ampliada para múltiplos perfis de uso.",
         "Estrutura voltada para coordenação de equipe e governança.",
-        "Onboarding e acompanhamento operacional dedicados.",
+        "Conversao entre tipos com taxa 0% para preservar credito liquido da equipe.",
       ],
       limits: ["Roadmap enterprise", "Entrada assistida"],
     };

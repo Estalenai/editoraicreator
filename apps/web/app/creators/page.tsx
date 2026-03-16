@@ -28,7 +28,7 @@ type CreatorGroupId = "content" | "media" | "product";
 
 const CREATOR_GROUPS: Array<{ id: CreatorGroupId; title: string; subtitle: string }> = [
   { id: "content", title: "Conteúdo", subtitle: "Ideias, roteiro e copy para distribuição." },
-  { id: "media", title: "Vídeo e música", subtitle: "Trilha, clipes e cortes para acelerar publicação." },
+  { id: "media", title: "Vídeo e música", subtitle: "Video, foto, trilha e clipes para acelerar publicacao." },
   { id: "product", title: "Produto e automação", subtitle: "Estruture uma base de produto para evoluir no editor." },
 ];
 
@@ -184,7 +184,7 @@ function CreatorsPageContent() {
               <p className="section-kicker">Workspace de criação</p>
               <h1 style={{ margin: 0, letterSpacing: -0.35 }}>Creators</h1>
               <p className="creators-hero-lead">
-                Configure com clareza, gere com previsibilidade e siga para o editor com contexto preservado.
+                Configure com clareza, gere base para video, foto e conteudo e siga para o editor com contexto preservado.
               </p>
             </div>
 
@@ -204,7 +204,7 @@ function CreatorsPageContent() {
               </div>
               <div className="signal-chip signal-chip-creative">
                 <strong>Continuidade</strong>
-                <span>Salvar em projeto e seguir para o editor no mesmo fluxo.</span>
+                <span>Salvar em projeto, editar no workspace e preparar exportacao sem perder contexto.</span>
               </div>
             </div>
 
@@ -221,8 +221,8 @@ function CreatorsPageContent() {
               </div>
               <div className="premium-card-soft hero-kpi creators-hero-metric">
                 <span className="hero-kpi-label">Próximo passo</span>
-                <strong className="hero-kpi-value">Gerar → salvar → editar</strong>
-                <span className="hero-kpi-text">Cada Creator já prepara a continuidade em projeto.</span>
+                <strong className="hero-kpi-value">Gerar → editar → exportar</strong>
+                <span className="hero-kpi-text">Projeto salvo, refinamento no editor e exportacao local quando a peca estiver pronta.</span>
               </div>
             </div>
           </div>
@@ -243,7 +243,7 @@ function CreatorsPageContent() {
               </div>
               <div className="hero-side-note">
                 <strong>Continuidade pronta</strong>
-                <span>Depois de gerar, salve em projeto e siga para o editor com o contexto preservado.</span>
+                <span>Depois de gerar, salve em projeto, refine no editor e prepare a exportacao no dispositivo.</span>
               </div>
             </div>
 

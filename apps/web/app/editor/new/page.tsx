@@ -14,7 +14,7 @@ const KIND_LABEL: Record<Kind, string> = {
 };
 
 const KIND_HELP: Record<Kind, string> = {
-  video: "Estrutura inicial para timeline e roteiro audiovisual.",
+  video: "Estrutura inicial para timeline, cortes e ativos visuais de video e foto.",
   text: "Base para post, copy e evolução no editor de texto.",
   automation: "Projeto inicial para fluxo e automação com IA.",
   course: "Estrutura para aulas, módulos e progressão de conteúdo.",
@@ -22,7 +22,7 @@ const KIND_HELP: Record<Kind, string> = {
 };
 
 const KIND_USE_CASE: Record<Kind, string> = {
-  video: "Ideal para continuidade de roteiro, cenas e timeline.",
+  video: "Ideal para continuidade de roteiro, cenas, timeline e refinamento visual.",
   text: "Melhor para copy, post, artigo e refinamento editorial.",
   automation: "Abre uma base pronta para mapear automacoes e etapas IA.",
   course: "Organiza modulos, secoes e trilhas de conteudo.",
@@ -60,7 +60,8 @@ export default function NewEditorProjectPage() {
             workflow: { nodes: [], edges: [] },
             course: { sections: [] },
             website: { blocks: [] },
-            aiSteps: []
+            aiSteps: [],
+            delivery: { exportTarget: "device", connectedStorage: null, mediaRetention: "externalized" }
           }
         }
       });
@@ -87,12 +88,12 @@ export default function NewEditorProjectPage() {
               <p className="section-kicker">Entrada do editor</p>
               <h1 style={{ margin: 0, letterSpacing: -0.3 }}>Abra um projeto com contexto pronto</h1>
               <p className="editor-new-lead">
-                Escolha o formato mais proximo do seu fluxo e entre no editor com base inicial, landmarks claros e contexto salvo.
+                Escolha o formato mais proximo do seu fluxo e entre no editor com base inicial para video, foto, texto ou automacao.
               </p>
             </div>
             <div className="hero-meta-row">
               <span className="premium-badge premium-badge-phase">5 formatos de projeto</span>
-              <span className="premium-badge premium-badge-soon">Workspace com contexto salvo</span>
+              <span className="premium-badge premium-badge-soon">Pronto para editar e exportar</span>
             </div>
           </div>
 
@@ -105,11 +106,11 @@ export default function NewEditorProjectPage() {
               </div>
               <div className="hero-side-note">
                 <strong>Entre com estrutura minima pronta</strong>
-                <span>Texto, video, automacao, curso ou site com base salva desde o primeiro passo.</span>
+                <span>Texto, video, foto, automacao, curso ou site com base salva desde o primeiro passo.</span>
               </div>
               <div className="hero-side-note">
                 <strong>Continue no mesmo workspace</strong>
-                <span>Salve, refine com IA e retome depois sem quebrar o contexto do projeto.</span>
+                <span>Salve, refine com IA e siga para exportacao local sem quebrar o contexto do projeto.</span>
               </div>
             </div>
           </div>
@@ -126,7 +127,7 @@ export default function NewEditorProjectPage() {
           </div>
           <div className="premium-card-soft hero-kpi">
             <span className="hero-kpi-label">Pronto para editar</span>
-            <strong className="hero-kpi-value">Entrada guiada no editor</strong>
+            <strong className="hero-kpi-value">Entrada guiada para editar e continuar</strong>
           </div>
         </div>
       </section>
@@ -173,11 +174,11 @@ export default function NewEditorProjectPage() {
           </div>
           <div className="premium-card-soft editor-new-flow-note">
             <strong>2. Edite com apoio da IA</strong>
-            <span>Use o painel lateral para acelerar etapas sem perder foco no projeto.</span>
+            <span>Use o painel lateral para acelerar ajustes e preparar a peca para entrega.</span>
           </div>
           <div className="premium-card-soft editor-new-flow-note">
-            <strong>3. Salve e continue</strong>
-            <span>Mantenha o contexto registrado para voltar ao editor ou seguir a partir de Creators.</span>
+            <strong>3. Salve, refine e exporte</strong>
+            <span>O padrao atual e exportar no dispositivo; storage conectado entra como proxima fase.</span>
           </div>
         </div>
         <a href="/dashboard" className="btn-link-ea btn-ghost btn-sm">Voltar ao dashboard</a>

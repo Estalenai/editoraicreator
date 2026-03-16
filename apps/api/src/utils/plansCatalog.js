@@ -75,7 +75,7 @@ const PLAN_DEFS = [
     avatarSessionsPerDay: 1,
     avatarSecondsPerSession: 120,
     purchaseFeePercentOverride: 1,
-    conversionFeePercentOverride: 5,
+    conversionFeePercentOverride: 0,
     comingSoon: true,
     purchasable: false,
   },
