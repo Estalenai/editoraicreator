@@ -226,12 +226,12 @@ export default function DashboardPage() {
             <span className="plan-card-section-label">Operação</span>
             <div className="hero-side-list">
               <div className="hero-side-note">
-                <strong>Plano sincronizado</strong>
-                <span>Atualize após checkout para refletir benefícios e disponibilidade.</span>
+                <strong>Assinatura via Stripe</strong>
+                <span>Checkout, sincronização do plano e atualização pós-pagamento seguem um fluxo dedicado e previsível.</span>
               </div>
               <div className="hero-side-note">
-                <strong>Créditos auditáveis</strong>
-                <span>Compra, conversão e débito aparecem com trilhas previsíveis.</span>
+                <strong>Projetos em Supabase</strong>
+                <span>Conta, saldo, projetos e continuidade operacional ficam persistidos para retomar o trabalho com contexto.</span>
               </div>
               <div className="hero-side-note">
                 <strong>Beta controlado</strong>

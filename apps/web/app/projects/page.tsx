@@ -70,6 +70,10 @@ export default function ProjectsPage() {
                 <strong>Fluxo curto</strong>
                 <span>Creators gera contexto, Projetos organiza continuidade e o editor finaliza até a exportação.</span>
               </div>
+              <div className="hero-side-note hero-side-note-trust">
+                <strong>Persistência com Supabase</strong>
+                <span>Projetos, histórico e continuidade da conta ficam persistidos em Supabase para retomar o trabalho sem perder contexto.</span>
+              </div>
             </div>
 
             <div className="hero-actions-row">

@@ -415,8 +415,8 @@ function PlansPageContent() {
             <span className="plan-card-section-label">Cobrança e segurança</span>
             <div className="hero-side-list hero-side-list-compact">
               <div className="hero-side-note">
-                <strong>Checkout protegido</strong>
-                <span>Planos self-serve seguem por checkout dedicado; os demais ficam em ativação assistida.</span>
+                <strong>Checkout via Stripe</strong>
+                <span>Planos self-serve seguem por Stripe com retorno controlado ao produto para sincronizar assinatura e disponibilidade.</span>
               </div>
               <div className="hero-side-note">
                 <strong>Progressão objetiva</strong>
@@ -505,7 +505,7 @@ function PlansPageContent() {
       <section className="premium-card-soft plans-confidence-strip">
         <div className="plans-confidence-note">
           <strong>Checkout claro</strong>
-          <span>Planos self-serve seguem para assinatura imediata; os assistidos continuam via suporte.</span>
+          <span>Planos self-serve seguem para assinatura imediata via Stripe; os assistidos continuam via suporte.</span>
         </div>
         <div className="plans-confidence-note">
           <strong>Controle comercial</strong>

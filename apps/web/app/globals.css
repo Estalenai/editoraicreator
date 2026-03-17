@@ -4794,6 +4794,32 @@ textarea:focus {
 }
 
 
+.infra-note {
+  display: grid;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(52, 245, 255, 0.18);
+  background:
+    radial-gradient(210px 82px at 100% 0%, rgba(52, 245, 255, 0.1), transparent 72%),
+    linear-gradient(160deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.024));
+}
+
+.infra-note strong {
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.infra-note span {
+  font-size: 12px;
+  line-height: 1.58;
+  color: var(--ea-text-muted);
+}
+
+.infra-note-inline {
+  margin-top: 2px;
+}
+
 .privacy-trust-note {
   display: grid;
   gap: 8px;

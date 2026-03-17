@@ -300,8 +300,12 @@ export default function CreditsPage() {
                 <span>Comum, Pro e Ultra seguem separados para facilitar uso, compra e conversão.</span>
               </div>
               <div className="hero-side-note">
-                <strong>Checkout e histórico previsíveis</strong>
-                <span>Compras, débitos e conversões aparecem primeiro na operação e depois no histórico real.</span>
+                <strong>Checkout via Stripe</strong>
+                <span>Compras avulsas seguem por Stripe e retornam ao produto com confirmação operacional no dashboard.</span>
+              </div>
+              <div className="hero-side-note hero-side-note-trust">
+                <strong>Histórico persistido</strong>
+                <span>Saldo, movimentos e continuidade da conta ficam persistidos para auditoria operacional e retomada segura.</span>
               </div>
             </div>
             <div className="hero-actions-row">

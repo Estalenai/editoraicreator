@@ -341,6 +341,10 @@ export function CreditsPackagesCard({ wallet, loading = false }: Props) {
           <strong>Cotação clara</strong>
           <span>Subtotal, taxa e total aparecem antes de sair para o pagamento.</span>
         </div>
+        <div className="premium-card-soft trust-note trust-note-privacy">
+          <strong>Pagamento via Stripe</strong>
+          <span>O checkout abre em Stripe e retorna ao produto para confirmar saldo e histórico do pacote.</span>
+        </div>
         <div className="premium-card-soft trust-note">
           <strong>Mix configurável</strong>
           <span>Distribua o total entre Comum, Pro e Ultra antes de abrir a Stripe.</span>
@@ -392,6 +396,10 @@ export function CreditsPackagesCard({ wallet, loading = false }: Props) {
               <div className="premium-card-soft trust-note">
                 <strong>Resumo financeiro claro</strong>
                 <span>A cotação mostra subtotal, taxa e total final antes do pagamento externo.</span>
+              </div>
+              <div className="premium-card-soft trust-note trust-note-privacy">
+                <strong>Retorno sincronizado</strong>
+                <span>Depois do Stripe, o produto confirma saldo e histórico no dashboard antes da próxima ação.</span>
               </div>
             </div>
 
