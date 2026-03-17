@@ -422,6 +422,10 @@ function PlansPageContent() {
                 <strong>Progressão objetiva</strong>
                 <span>Créditos, taxa de conversão e perfil de uso ficam visíveis antes da decisão.</span>
               </div>
+              <div className="hero-side-note hero-side-note-trust">
+                <strong>Confidencialidade empresarial</strong>
+                <span>Planos assistidos reforçam processamento isolado, dados fora de treino de modelos e governança para operações sensíveis.</span>
+              </div>
             </div>
             <div className="hero-actions-row">
               <button
@@ -510,6 +514,10 @@ function PlansPageContent() {
         <div className="plans-confidence-note">
           <strong>Sincronização pós-checkout</strong>
           <span>Depois da compra, atualize o plano para refletir benefícios e disponibilidade.</span>
+        </div>
+        <div className="plans-confidence-note plans-confidence-note-trust">
+          <strong>Privacidade aplicada</strong>
+          <span>Dados operacionais não são usados para treino de modelos e o processamento segue isolado por conta.</span>
         </div>
       </section>
 

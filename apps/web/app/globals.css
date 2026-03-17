@@ -4663,6 +4663,59 @@ textarea:focus {
 }
 
 
+.privacy-trust-note {
+  display: grid;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(127, 183, 255, 0.2);
+  background:
+    radial-gradient(200px 80px at 100% 0%, rgba(127, 183, 255, 0.12), transparent 72%),
+    linear-gradient(160deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.026));
+}
+
+.privacy-trust-note strong {
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.privacy-trust-note span {
+  font-size: 12px;
+  line-height: 1.58;
+  color: var(--ea-text-muted);
+}
+
+.privacy-trust-note-inline {
+  margin-top: 2px;
+}
+
+.hero-side-note-trust {
+  border-color: rgba(127, 183, 255, 0.2);
+  background:
+    radial-gradient(180px 72px at 100% 0%, rgba(127, 183, 255, 0.1), transparent 72%),
+    linear-gradient(150deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.024));
+}
+
+.trust-note-privacy {
+  border-color: rgba(127, 183, 255, 0.18);
+}
+
+.support-trust-note,
+.how-it-works-trust-note {
+  margin-top: calc(var(--ea-space-2) * -1);
+}
+
+.plans-confidence-note-trust {
+  border-color: rgba(127, 183, 255, 0.18);
+}
+
+@media (max-width: 768px) {
+  .support-trust-note,
+  .how-it-works-trust-note {
+    margin-top: 0;
+  }
+}
+
 /* Workspace controls consistency */
 .hero-actions-row,
 .surface-toolbar,

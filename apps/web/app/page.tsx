@@ -29,8 +29,8 @@ export default function HomePage() {
                 <span>Creators e editor trabalham no mesmo fluxo para vídeo, foto e conteúdo, sem perder o projeto.</span>
               </div>
               <div className="signal-chip signal-chip-creative">
-                <strong>Beta monitorado</strong>
-                <span>Acesso controlado enquanto a plataforma evolui com segurança.</span>
+                <strong>Privacidade real</strong>
+                <span>Seus dados não são usados para treinar modelos; o processamento segue isolado por conta.</span>
               </div>
             </div>
           </div>
@@ -46,9 +46,9 @@ export default function HomePage() {
                 <strong>Energia criativa</strong>
                 <span>Workspace de criação com personalidade própria, sem virar showcase visual.</span>
               </div>
-              <div className="hero-side-note">
-                <strong>Continuidade real</strong>
-                <span>Gere, edite, salve e prepare a exportação no dispositivo sem acumular mídia pesada no servidor.</span>
+              <div className="hero-side-note hero-side-note-trust">
+                <strong>Confidencialidade priorizada</strong>
+                <span>Fluxos de geração e edição preservam contexto da conta sem usar seus dados para treinar modelos.</span>
               </div>
             </div>
           </div>

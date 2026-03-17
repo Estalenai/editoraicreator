@@ -119,6 +119,10 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
           <strong>3) Salve, edite e exporte</strong>
           <span>Projetos é o hub central: salve, retome no editor e avance para exportação.</span>
         </div>
+        <div className="premium-card-soft trust-note trust-note-privacy">
+          <strong>4) Trabalhe com confidencialidade</strong>
+          <span>Seus dados não entram em treino de modelos; o processamento fica isolado e focado no seu workspace.</span>
+        </div>
       </div>
 
       <div className="onboarding-objective-shell">

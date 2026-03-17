@@ -148,8 +148,8 @@ function LoginPageContent() {
                 <span>Cadastro, aprovação e entrada no workspace sem ruído desnecessário.</span>
               </div>
               <div className="signal-chip signal-chip-creative">
-                <strong>Produto vivo</strong>
-                <span>Creators, editor e operação compartilham a mesma base visual e funcional.</span>
+                <strong>Privacidade operacional</strong>
+                <span>Seus dados não entram em treino de modelos; o processamento fica isolado e auditável no workspace.</span>
               </div>
             </div>
           </div>
@@ -197,7 +197,7 @@ function LoginPageContent() {
                 <span>E-mail</span>
                 <input
                   type="email"
-                  placeholder="voce@empresa.com"
+                  placeholder="você@empresa.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -239,6 +239,11 @@ function LoginPageContent() {
                   ? "Depois do cadastro, sua conta entra na fila de análise. Avisaremos quando o acesso estiver pronto."
                   : "Se sua conta já foi aprovada, o login leva você direto para o dashboard."}
               </span>
+            </div>
+
+            <div className="premium-card-soft privacy-trust-note privacy-trust-note-inline">
+              <strong>Segurança e confidencialidade</strong>
+              <span>Dados da sua conta não são usados para treinar modelos. O processamento segue isolado e com prioridade para privacidade.</span>
             </div>
 
             {error ? (

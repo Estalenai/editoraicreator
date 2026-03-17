@@ -56,6 +56,10 @@ export default function HowItWorksPage() {
                 <strong>Controle financeiro</strong>
                 <span>Plans e Credits mostram o que está disponível, o que foi usado e o que muda em cada decisão.</span>
               </div>
+              <div className="hero-side-note hero-side-note-trust">
+                <strong>Privacidade aplicada</strong>
+                <span>Os dados do projeto não são usados para treinar modelos e o processamento segue isolado por conta.</span>
+              </div>
             </div>
           </div>
         </div>
@@ -84,6 +88,11 @@ export default function HowItWorksPage() {
           </Link>{" "}
           e abra um projeto com contexto pronto para editar e exportar.
         </span>
+      </section>
+
+      <section className="premium-card-soft privacy-trust-note how-it-works-trust-note">
+        <strong>Privacidade sem ruído jurídico</strong>
+        <span>O produto prioriza processamento isolado, confidencialidade operacional e não usa os dados da sua conta para treinar modelos.</span>
       </section>
     </div>
   );

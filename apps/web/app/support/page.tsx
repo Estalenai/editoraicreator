@@ -46,6 +46,11 @@ export default function SupportPage() {
         ) : null}
       </section>
 
+      <section className="premium-card-soft privacy-trust-note support-trust-note">
+        <strong>Privacidade e confidencialidade</strong>
+        <span>Dados enviados em tickets e projetos não são usados para treinar modelos. O suporte opera com processamento isolado e foco em segurança operacional.</span>
+      </section>
+
       {loading ? (
         <div className="premium-card" style={{ padding: 14, display: "grid", gap: 8 }}>
           <div className="premium-skeleton premium-skeleton-line" style={{ width: "32%" }} />
