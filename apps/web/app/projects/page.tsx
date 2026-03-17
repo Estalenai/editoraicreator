@@ -44,7 +44,7 @@ export default function ProjectsPage() {
 
   return (
     <div className="page-shell projects-page">
-      <section className="premium-hero">
+      <section className="premium-hero projects-hero">
         <div className="hero-split">
           <div className="hero-copy">
             <div className="hero-title-stack">
@@ -96,7 +96,7 @@ export default function ProjectsPage() {
         </div>
       ) : null}
 
-      <section className="premium-card">
+      <section className="premium-card projects-list-section">
         <div className="section-head">
           <div className="section-header-ea">
             <h2 className="heading-reset">Abrir no editor</h2>

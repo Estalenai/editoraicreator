@@ -33,8 +33,8 @@ const STEPS = [
 
 export default function HowItWorksPage() {
   return (
-    <div className="page-shell">
-      <section className="premium-hero">
+    <div className="page-shell how-it-works-page">
+      <section className="premium-hero how-it-works-hero">
         <div className="hero-split">
           <div className="hero-copy">
             <div className="hero-title-stack">
@@ -61,9 +61,9 @@ export default function HowItWorksPage() {
         </div>
       </section>
 
-      <section className="summary-grid">
+      <section className="summary-grid how-it-works-grid">
         {STEPS.map((step) => (
-          <article key={step.title} className="summary-card">
+          <article key={step.title} className="premium-card summary-card how-it-works-step">
             <div className="section-stack-tight">
               <h2 className="heading-reset">{step.title}</h2>
               <p className="helper-text-ea">{step.description}</p>
@@ -75,7 +75,7 @@ export default function HowItWorksPage() {
         ))}
       </section>
 
-      <section className="premium-card-soft info-note">
+      <section className="premium-card-soft info-note how-it-works-note">
         <strong>Entrada rápida</strong>
         <span>
           Se você já sabe o formato do trabalho, vá direto para{" "}

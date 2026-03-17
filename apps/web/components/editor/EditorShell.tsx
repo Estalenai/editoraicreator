@@ -137,13 +137,15 @@ export function EditorShell({
           {tabs.map(t => (
             <button
               key={t.id}
+              type="button"
               onClick={() => onTab(t.id)}
-              className={`btn-ea btn-sm ${t.id === tab ? "btn-primary" : "btn-ghost"}`}
+              className="editor-shell-tab-trigger"
+              data-active={t.id === tab}
               role="tab"
               aria-selected={t.id === tab}
               tabIndex={t.id === tab ? 0 : -1}
             >
-              {t.label}
+              <span className="editor-shell-tab-trigger-label">{t.label}</span>
             </button>
           ))}
         </div>

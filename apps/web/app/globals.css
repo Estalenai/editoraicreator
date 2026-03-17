@@ -3678,6 +3678,598 @@ textarea:focus {
   line-height: 1.6;
 }
 
+
+@keyframes premium-surface-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes premium-backdrop-fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes premium-modal-pop {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.page-shell {
+  position: relative;
+  isolation: isolate;
+}
+
+.page-shell > * {
+  position: relative;
+  z-index: 1;
+}
+
+.beta-entry-hero,
+.auth-entry-frame,
+.creators-hero,
+.editor-new-hero,
+.projects-hero,
+.how-it-works-hero {
+  background:
+    radial-gradient(420px 160px at 88% -8%, rgba(255, 191, 107, 0.16), transparent 68%),
+    radial-gradient(520px 220px at 8% 0%, rgba(157, 139, 255, 0.18), transparent 72%),
+    radial-gradient(480px 180px at 50% -28px, rgba(52, 245, 255, 0.16), transparent 65%),
+    linear-gradient(165deg, rgba(10, 24, 58, 0.84), rgba(7, 15, 36, 0.7));
+}
+
+.dashboard-hero,
+.plans-hero,
+.credits-hero {
+  background:
+    radial-gradient(420px 160px at 100% -12%, rgba(127, 183, 255, 0.14), transparent 68%),
+    radial-gradient(480px 190px at 0% 0%, rgba(52, 245, 255, 0.1), transparent 70%),
+    linear-gradient(165deg, rgba(9, 21, 50, 0.84), rgba(7, 15, 36, 0.72));
+}
+
+.auth-entry-shell {
+  background:
+    radial-gradient(620px 240px at 50% -48px, rgba(52, 245, 255, 0.16), transparent 70%),
+    radial-gradient(420px 180px at 12% 0%, rgba(157, 139, 255, 0.16), transparent 72%),
+    linear-gradient(135deg, #0f172a, #020617);
+}
+
+.app-top-nav {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(240px 104px at 100% -10%, rgba(52, 245, 255, 0.16), transparent 72%),
+    radial-gradient(260px 120px at 0% 0%, rgba(157, 139, 255, 0.12), transparent 76%),
+    linear-gradient(170deg, rgba(10, 24, 58, 0.78), rgba(6, 14, 34, 0.58));
+  box-shadow: 0 16px 34px rgba(2, 6, 23, 0.34);
+}
+
+.app-top-nav::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(52, 245, 255, 0.58), rgba(157, 139, 255, 0.24), transparent 78%);
+  opacity: 0.92;
+}
+
+.app-top-nav::after,
+.premium-card::after,
+.premium-card-soft::after,
+.hero-side-panel::after,
+.signal-chip::after,
+.hero-kpi::after,
+.dashboard-quick-link::after,
+.dashboard-project-link::after,
+.purchase-option-card::after,
+.editor-kind-card::after,
+.creator-tab-btn::after,
+.editor-shell-panel::after,
+.editor-shell-toolbar::after,
+.credits-modal::after,
+.how-it-works-step::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  pointer-events: none;
+}
+
+.app-nav-link {
+  min-height: 68px;
+  padding: 13px 14px 13px 16px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.app-nav-link::after {
+  content: "";
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.16), transparent 72%);
+  opacity: 0;
+  transform: translateX(4px);
+  transition: opacity 0.16s ease, transform 0.16s ease;
+}
+
+.app-nav-link:hover,
+.app-nav-link-active {
+  transform: translateY(-2px);
+}
+
+.app-nav-link:hover::after,
+.app-nav-link-active::after {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.premium-card,
+.premium-card-soft,
+.hero-side-panel,
+.signal-chip,
+.hero-kpi,
+.dashboard-quick-link,
+.dashboard-project-link,
+.purchase-option-card,
+.editor-kind-card,
+.creator-tab-btn,
+.editor-shell-panel,
+.editor-shell-toolbar,
+.credits-modal,
+.how-it-works-step {
+  overflow: hidden;
+}
+
+.premium-hero,
+.app-top-nav,
+.auth-entry-card,
+.beta-entry-side-card,
+.dashboard-section-card,
+.plans-catalog-section,
+.credits-purchase-card,
+.editor-new-selection,
+.editor-shell-header,
+.editor-shell-toolbar,
+.editor-shell-panel,
+.projects-list-section,
+.how-it-works-step {
+  animation: premium-surface-rise 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.hero-side-panel {
+  border-color: rgba(196, 235, 255, 0.16);
+  box-shadow: 0 16px 34px rgba(2, 6, 23, 0.24);
+  background:
+    radial-gradient(260px 108px at 100% 0%, rgba(52, 245, 255, 0.1), transparent 70%),
+    linear-gradient(165deg, rgba(255, 255, 255, 0.085), rgba(255, 255, 255, 0.032));
+}
+
+.hero-side-note {
+  border-color: rgba(255, 255, 255, 0.12);
+  background:
+    radial-gradient(180px 72px at 100% 0%, rgba(255, 255, 255, 0.06), transparent 70%),
+    linear-gradient(150deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.hero-side-note:hover,
+.signal-chip:hover,
+.hero-kpi:hover,
+.dashboard-quick-link:hover,
+.dashboard-project-link:hover,
+.purchase-option-card:hover,
+.editor-kind-card:hover:not(:disabled),
+.creator-tab-btn:hover,
+.plan-card:hover,
+.how-it-works-step:hover {
+  transform: translateY(-2px);
+}
+
+.signal-chip {
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 12px 24px rgba(2, 6, 23, 0.2);
+}
+
+.hero-kpi {
+  border-color: rgba(196, 235, 255, 0.14);
+  background:
+    radial-gradient(180px 84px at 100% 0%, rgba(255, 255, 255, 0.08), transparent 72%),
+    linear-gradient(160deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.026));
+  box-shadow: 0 14px 30px rgba(2, 6, 23, 0.24);
+}
+
+.hero-kpi::before {
+  content: "";
+  position: absolute;
+  right: -18px;
+  top: -30px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.14), transparent 70%);
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+.executive-card,
+.dashboard-section-card,
+.plans-catalog-section,
+.credits-guide-section,
+.credits-section-card,
+.credits-purchase-card,
+.projects-list-section,
+.how-it-works-step {
+  box-shadow: 0 16px 34px rgba(2, 6, 23, 0.26);
+}
+
+.dashboard-section-card,
+.plans-catalog-section,
+.credits-guide-section,
+.credits-section-card,
+.credits-purchase-card,
+.projects-list-section,
+.how-it-works-step {
+  background:
+    radial-gradient(240px 96px at 100% 0%, rgba(127, 183, 255, 0.08), transparent 72%),
+    linear-gradient(162deg, rgba(255, 255, 255, 0.074), rgba(255, 255, 255, 0.024));
+}
+
+.dashboard-quick-link,
+.dashboard-project-link,
+.purchase-option-card,
+.plan-card,
+.credits-guide-card,
+.credits-guide-note,
+.credits-history-item,
+.quote-summary-card,
+.purchase-summary-card {
+  box-shadow: 0 14px 28px rgba(2, 6, 23, 0.2);
+}
+
+.dashboard-quick-link {
+  border-color: rgba(196, 235, 255, 0.14);
+}
+
+.dashboard-quick-link:nth-child(3n + 1) {
+  background:
+    radial-gradient(180px 72px at 100% 0%, rgba(52, 245, 255, 0.1), transparent 72%),
+    linear-gradient(155deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.024));
+}
+
+.dashboard-quick-link:nth-child(3n + 2) {
+  background:
+    radial-gradient(180px 72px at 100% 0%, rgba(157, 139, 255, 0.12), transparent 72%),
+    linear-gradient(155deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.026));
+}
+
+.dashboard-quick-link:nth-child(3n) {
+  background:
+    radial-gradient(180px 72px at 100% 0%, rgba(255, 191, 107, 0.11), transparent 72%),
+    linear-gradient(155deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.024));
+}
+
+.dashboard-project-link,
+.purchase-option-card {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background:
+    radial-gradient(180px 72px at 100% 0%, rgba(127, 183, 255, 0.08), transparent 72%),
+    linear-gradient(155deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.026));
+}
+
+.dashboard-project-link-cta,
+.dashboard-quick-link-cta,
+.editor-kind-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dashboard-project-link-cta::after,
+.dashboard-quick-link-cta::after,
+.editor-kind-action::after {
+  content: ">";
+  opacity: 0.72;
+}
+
+.plan-card {
+  border-color: rgba(196, 235, 255, 0.16);
+  background:
+    radial-gradient(220px 96px at 100% 0%, rgba(127, 183, 255, 0.08), transparent 72%),
+    linear-gradient(162deg, rgba(255, 255, 255, 0.074), rgba(255, 255, 255, 0.022));
+}
+
+.plan-card-total {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(196, 235, 255, 0.18);
+  background: rgba(255, 255, 255, 0.05);
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--ea-text-soft);
+}
+
+.credits-purchase-card {
+  background:
+    radial-gradient(260px 100px at 100% 0%, rgba(127, 183, 255, 0.12), transparent 72%),
+    radial-gradient(200px 90px at 0% 100%, rgba(255, 191, 107, 0.06), transparent 72%),
+    linear-gradient(160deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.024));
+}
+
+.credits-coin-card {
+  background:
+    radial-gradient(160px 64px at 100% 0%, rgba(255, 255, 255, 0.06), transparent 72%),
+    linear-gradient(160deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.022));
+}
+
+.purchase-option-card {
+  align-content: start;
+  border-radius: 14px !important;
+  padding: 14px 15px !important;
+}
+
+.purchase-option-card.btn-primary {
+  box-shadow: 0 16px 30px rgba(52, 245, 255, 0.22), 0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+}
+
+.credits-modal-backdrop {
+  animation: premium-backdrop-fade 180ms ease-out both;
+  backdrop-filter: blur(6px);
+}
+
+.credits-modal {
+  background:
+    radial-gradient(280px 120px at 100% 0%, rgba(127, 183, 255, 0.14), transparent 72%),
+    radial-gradient(180px 120px at 0% 100%, rgba(157, 139, 255, 0.08), transparent 72%),
+    #0f1730;
+  box-shadow: 0 24px 56px rgba(2, 6, 23, 0.48);
+  animation: premium-modal-pop 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.credits-modal-head {
+  backdrop-filter: blur(10px) saturate(1.08);
+}
+
+.credits-modal-live-note {
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(196, 235, 255, 0.14);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.creator-tab-btn {
+  min-height: 104px;
+  padding: 15px 15px 15px 16px !important;
+  border-radius: 14px !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+  background:
+    radial-gradient(190px 76px at 100% 0%, rgba(127, 183, 255, 0.08), transparent 72%),
+    linear-gradient(150deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.03)) !important;
+}
+
+.creator-tab-btn::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 12px;
+  bottom: 12px;
+  width: 3px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  opacity: 0.58;
+  transition: opacity 0.14s ease, background 0.14s ease;
+}
+
+.creator-tab-btn[data-active="true"] {
+  border-color: rgba(52, 245, 255, 0.62) !important;
+  background: linear-gradient(120deg, rgba(52, 245, 255, 0.18), rgba(52, 245, 255, 0.08)) !important;
+  box-shadow: 0 14px 28px rgba(52, 245, 255, 0.16);
+}
+
+.creator-tab-btn[data-active="true"]::before {
+  background: linear-gradient(180deg, rgba(52, 245, 255, 0.95), rgba(127, 183, 255, 0.72));
+  opacity: 1;
+}
+
+.editor-kind-card {
+  box-shadow: 0 18px 36px rgba(2, 6, 23, 0.26);
+}
+
+.editor-kind-card:nth-child(5n + 2) {
+  background:
+    radial-gradient(220px 100px at 100% -10%, rgba(157, 139, 255, 0.14), transparent 72%),
+    linear-gradient(165deg, rgba(11, 24, 58, 0.74), rgba(10, 18, 42, 0.58)) !important;
+}
+
+.editor-kind-card:nth-child(5n + 3) {
+  background:
+    radial-gradient(220px 100px at 100% -10%, rgba(255, 191, 107, 0.13), transparent 72%),
+    linear-gradient(165deg, rgba(11, 24, 58, 0.74), rgba(10, 18, 42, 0.58)) !important;
+}
+
+.editor-shell-toolbar {
+  border-color: rgba(196, 235, 255, 0.18);
+  background:
+    radial-gradient(220px 90px at 100% 0%, rgba(127, 183, 255, 0.1), transparent 72%),
+    linear-gradient(165deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+  box-shadow: 0 16px 34px rgba(2, 6, 23, 0.26);
+}
+
+.editor-shell-tab-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.editor-shell-tab-trigger {
+  appearance: none;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  min-width: 116px;
+  padding: 11px 14px 12px !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(196, 235, 255, 0.16) !important;
+  background:
+    radial-gradient(160px 72px at 100% 0%, rgba(255, 255, 255, 0.05), transparent 72%),
+    linear-gradient(150deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.024)) !important;
+  color: var(--ea-text-soft) !important;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transition: transform 0.14s ease, box-shadow 0.16s ease, border-color 0.14s ease, background 0.16s ease, color 0.14s ease;
+}
+
+.editor-shell-tab-trigger:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.26);
+  box-shadow: 0 12px 24px rgba(2, 6, 23, 0.22);
+}
+
+.editor-shell-tab-trigger[data-active="true"] {
+  color: #071126 !important;
+  border-color: rgba(52, 245, 255, 0.72) !important;
+  background: linear-gradient(135deg, #34f5ff, #7fb7ff 76%, #c2a9ff) !important;
+  box-shadow: 0 14px 30px rgba(52, 245, 255, 0.24);
+}
+
+.editor-shell-tab-trigger-label {
+  display: block;
+  line-height: 1.2;
+}
+
+.editor-shell-tab-trigger:focus-visible {
+  outline: 2px solid rgba(52, 245, 255, 0.72);
+  outline-offset: 2px;
+}
+
+.editor-shell-panel {
+  border-color: rgba(196, 235, 255, 0.16);
+  box-shadow: 0 16px 34px rgba(2, 6, 23, 0.24);
+}
+
+.editor-shell-panel-primary {
+  background:
+    radial-gradient(300px 120px at 100% -10%, rgba(52, 245, 255, 0.1), transparent 72%),
+    linear-gradient(165deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+}
+
+.editor-shell-panel-secondary {
+  background:
+    radial-gradient(220px 96px at 100% -10%, rgba(127, 183, 255, 0.08), transparent 72%),
+    linear-gradient(165deg, rgba(255, 255, 255, 0.072), rgba(255, 255, 255, 0.026));
+}
+
+.how-it-works-step {
+  display: grid;
+  gap: var(--ea-space-4);
+  min-height: 100%;
+}
+
+.how-it-works-note {
+  background:
+    radial-gradient(200px 80px at 100% 0%, rgba(127, 183, 255, 0.08), transparent 74%),
+    linear-gradient(160deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.024));
+}
+
+@media (max-width: 1200px) {
+  .dashboard-quick-links-grid,
+  .how-it-works-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .dashboard-quick-links-grid,
+  .how-it-works-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .editor-shell-tab-trigger {
+    min-width: 142px;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-top-nav {
+    box-shadow: 0 12px 26px rgba(2, 6, 23, 0.28);
+  }
+
+  .dashboard-quick-link,
+  .dashboard-project-link,
+  .purchase-option-card,
+  .how-it-works-step,
+  .projects-list-section {
+    box-shadow: 0 12px 24px rgba(2, 6, 23, 0.2);
+  }
+
+  .editor-shell-tab-trigger {
+    min-width: min(72vw, 220px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-top-nav,
+  .premium-hero,
+  .auth-entry-card,
+  .beta-entry-side-card,
+  .dashboard-section-card,
+  .plans-catalog-section,
+  .credits-purchase-card,
+  .editor-new-selection,
+  .editor-shell-header,
+  .editor-shell-toolbar,
+  .editor-shell-panel,
+  .projects-list-section,
+  .how-it-works-step,
+  .credits-modal,
+  .credits-modal-backdrop {
+    animation: none !important;
+  }
+
+  .app-nav-link,
+  .signal-chip,
+  .hero-side-note,
+  .hero-kpi,
+  .dashboard-quick-link,
+  .dashboard-project-link,
+  .purchase-option-card,
+  .plan-card,
+  .editor-kind-card,
+  .creator-tab-btn,
+  .editor-shell-tab-trigger {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
 @media (min-width: 1024px) {
   .app-shell-body {
     flex-direction: row;

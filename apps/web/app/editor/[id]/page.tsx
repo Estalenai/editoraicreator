@@ -417,7 +417,7 @@ export default function EditorProjectPage() {
 
   if (loading) {
     return (
-      <div className="page-shell">
+      <div className="page-shell editor-project-page">
         <div className="premium-card editor-loading-shell">
           <div className="premium-skeleton premium-skeleton-line" style={{ width: "40%" }} />
           <div className="premium-skeleton premium-skeleton-line" style={{ width: "76%" }} />
@@ -428,7 +428,7 @@ export default function EditorProjectPage() {
   }
 
   return (
-    <div className="page-shell">
+    <div className="page-shell editor-project-page">
       {err && (
         <div className="state-ea state-ea-error">
           <p className="state-ea-title">Falha no editor</p>
