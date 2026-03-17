@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import { api } from "../../../lib/api";
 import { EditorShell, EditorTab } from "../../../components/editor/EditorShell";
+import { GitHubWorkspaceCard } from "../../../components/projects/GitHubWorkspaceCard";
 
 type Project = { id: string; title: string; kind: string; data?: any };
 
@@ -743,19 +744,25 @@ export default function EditorProjectPage() {
           </div>
         }
         footer={
-          <div className="editor-shell-footer-wrap">
-            <div className="editor-shell-footer-copy">
-              <p className="section-kicker">Projeto atual</p>
-              <strong className="editor-shell-footer-title">{title}</strong>
-              <p className="editor-shell-note">
-                Continue salvando blocos-chave. Saída padrão: exportação no dispositivo; storage conectado entra na próxima fase.
-              </p>
+          <div className="editor-shell-footer-stack">
+            <div className="editor-shell-footer-wrap">
+              <div className="editor-shell-footer-copy">
+                <p className="section-kicker">Projeto atual</p>
+                <strong className="editor-shell-footer-title">{title}</strong>
+                <p className="editor-shell-note">
+                  Continue salvando blocos-chave. Saída padrão: exportação no dispositivo; o beta GitHub já prepara versões e bundle do projeto para app ou site.
+                </p>
+              </div>
+              <div className="editor-shell-cta-group">
+                <button className="btn-ea btn-ghost btn-sm" onClick={() => setAiSteps([])}>
+                  Limpar log
+                </button>
+              </div>
             </div>
-            <div className="editor-shell-cta-group">
-              <button className="btn-ea btn-ghost btn-sm" onClick={() => setAiSteps([])}>
-                Limpar log
-              </button>
-            </div>
+            <GitHubWorkspaceCard
+              variant="compact"
+              project={project ? { id: project.id, title, kind: project.kind, data: project.data } : null}
+            />
           </div>
         }
       />

@@ -112,6 +112,10 @@ export default function NewEditorProjectPage() {
                 <strong>Continue no mesmo workspace</strong>
                 <span>Salve, refine com IA e siga para exportação local sem quebrar o contexto do projeto.</span>
               </div>
+              <div className="hero-side-note">
+                <strong>GitHub para app ou site</strong>
+                <span>Na página Projetos, o beta já permite conectar a conta GitHub, definir owner/repositório e preparar o handoff do workspace.</span>
+              </div>
             </div>
           </div>
         </div>
@@ -177,8 +181,8 @@ export default function NewEditorProjectPage() {
             <span>Use o painel lateral para acelerar ajustes e preparar a peça para entrega.</span>
           </div>
           <div className="premium-card-soft editor-new-flow-note">
-            <strong>3. Salve, refine e exporte</strong>
-            <span>O padrão atual é exportar no dispositivo; storage conectado entra como próxima fase.</span>
+            <strong>3. Salve, exporte ou leve para GitHub</strong>
+            <span>O padrão atual é exportar no dispositivo. Para app/site, o beta já permite salvar a base GitHub e baixar snapshots do projeto.</span>
           </div>
         </div>
         <a href="/dashboard" className="btn-link-ea btn-ghost btn-sm">Voltar ao dashboard</a>

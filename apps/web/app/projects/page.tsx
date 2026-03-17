@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo } from "react";
 import { useDashboardBootstrap } from "../../hooks/useDashboardBootstrap";
 import { BetaAccessBlockedView } from "../../components/waitlist/BetaAccessBlockedView";
+import { GitHubWorkspaceCard } from "../../components/projects/GitHubWorkspaceCard";
 
 function getProjectId(project: any) {
   return String(project?.id || project?.project_id || "").trim();
@@ -51,7 +52,7 @@ export default function ProjectsPage() {
               <p className="section-kicker">Continuidade</p>
               <h1 style={{ margin: 0, letterSpacing: -0.3 }}>Projetos</h1>
               <p className="section-header-copy hero-copy-compact">
-                Abra um projeto salvo ou inicie um novo workspace com contexto pronto para editar e exportar.
+                Abra um projeto salvo ou inicie um novo workspace com contexto pronto para editar, exportar e continuar fora da plataforma quando fizer sentido.
               </p>
             </div>
             <div className="hero-meta-row">
@@ -65,6 +66,10 @@ export default function ProjectsPage() {
               <div className="hero-side-note">
                 <strong>Abra e continue</strong>
                 <span>Use a lista abaixo para retomar do ponto em que o projeto foi salvo.</span>
+              </div>
+              <div className="hero-side-note">
+                <strong>GitHub beta</strong>
+                <span>Conecte a conta, defina owner/repositório e prepare versões do projeto para app ou site fora da plataforma.</span>
               </div>
               <div className="hero-side-note">
                 <strong>Fluxo curto</strong>
@@ -99,6 +104,8 @@ export default function ProjectsPage() {
           </div>
         </div>
       ) : null}
+
+      <GitHubWorkspaceCard />
 
       <section className="premium-card projects-list-section">
         <div className="section-head">
