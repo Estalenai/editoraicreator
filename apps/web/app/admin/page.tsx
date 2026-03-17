@@ -499,7 +499,7 @@ export default function AdminPage() {
 
   if (forbidden) {
     return (
-      <div className="page-shell" style={{ maxWidth: 980, margin: "0 auto" }}>
+      <div className="page-shell admin-page admin-page-restricted">
         <h1>Acesso restrito</h1>
         <div className="state-ea state-ea-warning">
           <p className="state-ea-title">Sua conta não tem permissão de administrador</p>
@@ -516,8 +516,8 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="page-shell" style={{ maxWidth: 1080, margin: "0 auto" }}>
-      <div className="premium-hero" style={{ padding: "16px 18px", marginBottom: 14 }}>
+    <div className="page-shell admin-page">
+      <div className="premium-hero admin-hero">
         <p className="section-kicker">Console operacional</p>
         <h1 style={{ marginTop: 4, marginBottom: 12 }}>Admin</h1>
         <div className="surface-toolbar">

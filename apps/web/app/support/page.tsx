@@ -27,15 +27,15 @@ export default function SupportPage() {
   }
 
   return (
-    <div className="page-shell">
-      <section className="premium-hero" style={{ padding: 20 }}>
+    <div className="page-shell support-page">
+      <section className="premium-hero support-hero">
         <p className="section-kicker">Canal operacional</p>
         <h1 style={{ margin: "4px 0 0", letterSpacing: -0.35 }}>Suporte</h1>
         <div style={{ marginTop: 8, opacity: 0.82 }}>
           Canal oficial para dúvidas, problemas técnicos e solicitações operacionais.
         </div>
         {email ? (
-          <div className="surface-toolbar" style={{ marginTop: 12 }}>
+          <div className="surface-toolbar support-hero-toolbar">
             <span className="toolbar-label">Conta conectada</span>
             <span style={{ fontWeight: 600 }}>{email}</span>
             <span className="premium-badge premium-badge-phase">Resposta por fila interna</span>
@@ -52,7 +52,7 @@ export default function SupportPage() {
       </section>
 
       {loading ? (
-        <div className="premium-card" style={{ padding: 14, display: "grid", gap: 8 }}>
+        <div className="premium-card support-loading-card">
           <div className="premium-skeleton premium-skeleton-line" style={{ width: "32%" }} />
           <div className="premium-skeleton premium-skeleton-line" style={{ width: "70%" }} />
           <div className="premium-skeleton premium-skeleton-card" />
