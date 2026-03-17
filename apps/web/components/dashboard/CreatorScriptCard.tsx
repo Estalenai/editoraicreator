@@ -8,6 +8,7 @@ import { createIdempotencyKey } from "../../lib/idempotencyKey";
 import { runAutoPromptFlow } from "../../lib/autoPromptFlow";
 import { usePromptPreferences } from "../../hooks/usePromptPreferences";
 import { PremiumSelect } from "../ui/PremiumSelect";
+import { CreatorPlannerPanel } from "./CreatorPlannerPanel";
 import { toUserFacingError } from "../../lib/uiFeedback";
 
 type ScriptStructuredResult = {
@@ -159,6 +160,7 @@ export function CreatorScriptCard({ walletCommon, onRefetch }: Props) {
   const [resultText, setResultText] = useState("");
   const [resultStructured, setResultStructured] = useState<ScriptStructuredResult | null>(null);
   const [savedProjectId, setSavedProjectId] = useState<string | null>(null);
+  const [plannerOpen, setPlannerOpen] = useState(false);
   const [resultProvider, setResultProvider] = useState<string | null>(null);
   const [resultModel, setResultModel] = useState<string | null>(null);
 
@@ -169,6 +171,57 @@ export function CreatorScriptCard({ walletCommon, onRefetch }: Props) {
 
   const hasCredits = walletCommon >= estimatedCommon;
   const isBusy = loadingPrompt || loadingApply;
+
+  const plannerSteps = useMemo(
+    () => [
+      promptEnabled
+        ? autoApply
+          ? "Montar prompt otimizado e aplicar automaticamente ao briefing atual."
+          : "Montar prompt otimizado e abrir revisão manual antes da execução."
+        : "Usar o briefing atual como base direta para o roteiro.",
+      "Gerar estrutura com gancho, desenvolvimento, fechamento e CTA.",
+      "Entregar roteiro final pronto para revisão, salvamento e continuidade no editor.",
+    ],
+    [promptEnabled, autoApply]
+  );
+
+  const plannerSettings = useMemo(
+    () => [
+      { label: "Formato", value: format },
+      { label: "Tom", value: tone },
+      { label: "Público", value: audience.trim() || "A definir" },
+      { label: "Idioma", value: language },
+    ],
+    [format, tone, audience, language]
+  );
+
+  const plannerParameters = useMemo(
+    () => [
+      { label: "Tema", value: theme.trim() || "A definir" },
+      { label: "Objetivo", value: objective.trim() || "A definir" },
+      { label: "Duração", value: duration.trim() || "A definir" },
+      { label: "Prompt automático", value: promptEnabled ? "Ligado" : "Direto" },
+      { label: "Aplicação", value: promptEnabled ? (autoApply ? "Automática" : "Manual") : "Briefing direto" },
+      { label: "Estimativa", value: `${estimatedCommon} Comum` },
+    ],
+    [theme, objective, duration, promptEnabled, autoApply, estimatedCommon]
+  );
+
+  function openPlanner() {
+    if (!theme.trim() || !objective.trim() || loadingPrompt || loadingApply || !hasCredits) return;
+    setPlannerOpen(true);
+    setError(null);
+    window.requestAnimationFrame(() => {
+      document.getElementById("creator-scripts-planner")?.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+  }
+
+  function editPlanner() {
+    setPlannerOpen(false);
+    window.requestAnimationFrame(() => {
+      document.getElementById("creator-scripts-config")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
   const formatSelectOptions = useMemo(
     () => SCRIPT_FORMAT_OPTIONS.map((item) => ({ value: item, label: item })),
     []
@@ -280,6 +333,7 @@ export function CreatorScriptCard({ walletCommon, onRefetch }: Props) {
         setLastPromptUsed(null);
         setSaveMsg(null);
         setSavedProjectId(null);
+        setPlannerOpen(false);
       },
     });
   }
@@ -344,7 +398,7 @@ export function CreatorScriptCard({ walletCommon, onRefetch }: Props) {
       </div>
 
       <div className="creator-workspace-zones">
-      <div className="creator-form-zone">
+      <div id="creator-scripts-config" className="creator-form-zone">
         <p className="creator-zone-title">Como deseja gerar</p>
         <p className="creator-zone-copy">Defina formato, tom, público e objetivo antes de adicionar observações extras.</p>
         <div className="form-grid-2 creator-field-grid">
@@ -480,15 +534,19 @@ export function CreatorScriptCard({ walletCommon, onRefetch }: Props) {
       </div>
 
       <div className="creator-actions-row">
+        {!plannerOpen ? (
         <div className="creator-action-buttons">
           <button
-            onClick={onGenerateFlow}
+            onClick={openPlanner}
             disabled={isBusy || !theme.trim() || !objective.trim() || !hasCredits}
             className={`btn-ea btn-primary ${isBusy || !theme.trim() || !objective.trim() || !hasCredits ? "creator-button-busy" : ""}`}
           >
             {isBusy ? "Gerando..." : "Gerar roteiro com IA"}
           </button>
         </div>
+        ) : (
+          <div className="helper-note-inline">Revise o plano abaixo antes de executar a geração.</div>
+        )}
         {(error || copyMsg || saveMsg) ? (
           <div className="creator-feedback-stack">
             {error ? (
@@ -502,6 +560,28 @@ export function CreatorScriptCard({ walletCommon, onRefetch }: Props) {
           </div>
         ) : null}
       </div>
+
+      {plannerOpen ? (
+        <div id="creator-scripts-planner">
+          <CreatorPlannerPanel
+            title="Plano pronto para o Creator Scripts"
+            objective={`Gerar roteiro em ${format.toLowerCase()} com foco em ${objective.toLowerCase()}.`}
+            summary="Você revisa objetivo, etapas e parâmetros principais antes de a IA executar o roteiro."
+            steps={plannerSteps}
+            settings={plannerSettings}
+            parameters={plannerParameters}
+            note="Se o prompt automático estiver em modo manual, o roteiro só executa depois da sua revisão final do prompt."
+            continueLabel="Continuar com o roteiro"
+            busy={isBusy}
+            onContinue={() => {
+              setPlannerOpen(false);
+              void onGenerateFlow();
+            }}
+            onEdit={editPlanner}
+            onCancel={() => setPlannerOpen(false)}
+          />
+        </div>
+      ) : null}
 
       {loadingApply && (
         <div className="premium-card-soft creator-loading-panel">
@@ -598,7 +678,7 @@ export function CreatorScriptCard({ walletCommon, onRefetch }: Props) {
         </div>
       )}
 
-      {!(resultStructured || resultText) && !isBusy ? (
+      {!(resultStructured || resultText) && !isBusy && !plannerOpen ? (
         <div className="state-ea creator-empty-state">
           <p className="state-ea-title">Nenhum roteiro gerado ainda</p>
           <div className="state-ea-text">
@@ -607,7 +687,7 @@ export function CreatorScriptCard({ walletCommon, onRefetch }: Props) {
           <div className="state-ea-actions">
             <button
               className="btn-ea btn-primary btn-sm"
-              onClick={onGenerateFlow}
+              onClick={openPlanner}
               disabled={isBusy || !theme.trim() || !objective.trim() || !hasCredits}
             >
               Gerar roteiro
@@ -705,7 +785,7 @@ export function CreatorScriptCard({ walletCommon, onRefetch }: Props) {
               </button>
               <button
                 className="btn-ea btn-ghost btn-sm"
-                onClick={onGenerateFlow}
+                onClick={openPlanner}
                 disabled={isBusy || !theme.trim() || !objective.trim() || !hasCredits}
               >
                 Gerar novamente

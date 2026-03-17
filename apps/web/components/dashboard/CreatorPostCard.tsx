@@ -8,6 +8,7 @@ import { createIdempotencyKey } from "../../lib/idempotencyKey";
 import { runAutoPromptFlow } from "../../lib/autoPromptFlow";
 import { usePromptPreferences } from "../../hooks/usePromptPreferences";
 import { PremiumSelect } from "../ui/PremiumSelect";
+import { CreatorPlannerPanel } from "./CreatorPlannerPanel";
 import { toUserFacingError } from "../../lib/uiFeedback";
 
 type CreatorPostResult = {
@@ -184,6 +185,7 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [savedProjectId, setSavedProjectId] = useState<string | null>(null);
+  const [plannerOpen, setPlannerOpen] = useState(false);
 
   // 🔥 NOVO: etapa inline (sem modal)
   const [inlinePromptOpen, setInlinePromptOpen] = useState(false);
@@ -206,6 +208,56 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
   );
 
   const hasCredits = walletCommon >= creditsEstimate.common;
+
+  const plannerSteps = useMemo(
+    () => [
+      promptEnabled
+        ? autoApply
+          ? "Montar prompt otimizado e aplicar automaticamente ao briefing atual."
+          : "Montar prompt otimizado e abrir revisão manual antes da execução."
+        : "Usar o briefing atual como base direta para a geração.",
+      "Gerar legenda principal, CTA e hashtags alinhadas à plataforma.",
+      "Entregar variações e checklist técnico para revisão final.",
+    ],
+    [promptEnabled, autoApply]
+  );
+
+  const plannerSettings = useMemo(
+    () => [
+      { label: "Plataforma", value: platform },
+      { label: "Formato", value: contentType },
+      { label: "Tom", value: tone },
+      { label: "Idioma", value: language },
+    ],
+    [platform, contentType, tone, language]
+  );
+
+  const plannerParameters = useMemo(
+    () => [
+      { label: "Tema", value: theme.trim() || "A definir" },
+      { label: "Objetivo", value: objective },
+      { label: "Prompt automático", value: promptEnabled ? "Ligado" : "Direto" },
+      { label: "Aplicação", value: promptEnabled ? (autoApply ? "Automática" : "Manual") : "Briefing direto" },
+      { label: "Estimativa", value: `${creditsEstimate.common} Comum • ${creditsEstimate.pro} Pro • ${creditsEstimate.ultra} Ultra` },
+    ],
+    [theme, objective, promptEnabled, autoApply, creditsEstimate]
+  );
+
+  function openPlanner() {
+    if (!theme.trim() || loadingPrompt || loadingApply || !hasCredits) return;
+    setPlannerOpen(true);
+    setError(null);
+    window.requestAnimationFrame(() => {
+      document.getElementById("creator-post-planner")?.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+  }
+
+  function editPlanner() {
+    setPlannerOpen(false);
+    window.requestAnimationFrame(() => {
+      document.getElementById("creator-post-config")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
 
   async function copyText(value: string, label: string) {
     setCopyMsg(null);
@@ -404,6 +456,7 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
         setLastPromptUsed(null);
         setSaveMsg(null);
         setSavedProjectId(null);
+        setPlannerOpen(false);
       },
     });
   }
@@ -505,7 +558,7 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
       </div>
 
       <div className="creator-workspace-zones">
-      <div className="creator-form-zone">
+      <div id="creator-post-config" className="creator-form-zone">
         <p className="creator-zone-title">Como deseja gerar</p>
         <p className="creator-zone-copy">Defina plataforma, formato, objetivo e idioma antes de detalhar o tema.</p>
         <div className="form-grid-2 creator-field-grid">
@@ -625,9 +678,10 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
       </div>
 
       <div className="creator-actions-row">
+        {!plannerOpen ? (
         <div className="creator-action-buttons">
           <button
-            onClick={onGenerateFlow}
+            onClick={openPlanner}
             disabled={isBusy || !theme.trim() || !hasCredits}
             className={`btn-ea btn-primary ${isBusy || !theme.trim() || !hasCredits ? "creator-button-busy" : ""}`}
           >
@@ -635,13 +689,16 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
           </button>
 
           <button
-            onClick={onGenerateFlow}
+            onClick={openPlanner}
             disabled={isBusy || !theme.trim() || !hasCredits}
             className={`btn-ea btn-secondary ${isBusy || !theme.trim() || !hasCredits ? "creator-button-busy-soft" : ""}`}
           >
             Gerar novamente
           </button>
         </div>
+        ) : (
+          <div className="helper-note-inline">Revise o plano abaixo antes de executar a geração.</div>
+        )}
 
         {(error || copyMsg || saveMsg) ? (
           <div className="creator-feedback-stack">
@@ -656,6 +713,28 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
           </div>
         ) : null}
       </div>
+
+      {plannerOpen ? (
+        <div id="creator-post-planner">
+          <CreatorPlannerPanel
+            title="Plano pronto para o Creator Post"
+            objective={`Gerar ${contentType.toLowerCase()} para ${platform} com foco em ${objective.toLowerCase()}.`}
+            summary="Antes da execução, você revisa o que a IA vai montar com base no briefing atual."
+            steps={plannerSteps}
+            settings={plannerSettings}
+            parameters={plannerParameters}
+            note="Se o prompt automático estiver em modo manual, você ainda revisa o texto antes da geração final."
+            continueLabel="Continuar com o post"
+            busy={isBusy}
+            onContinue={() => {
+              setPlannerOpen(false);
+              void onGenerateFlow();
+            }}
+            onEdit={editPlanner}
+            onCancel={() => setPlannerOpen(false)}
+          />
+        </div>
+      ) : null}
 
       {loadingApply && (
         <div className="premium-card-soft creator-loading-panel">
@@ -762,7 +841,7 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
         </div>
       )}
 
-      {!displayResult && !isBusy ? (
+      {!displayResult && !isBusy && !plannerOpen ? (
         <div className="state-ea creator-empty-state">
           <p className="state-ea-title">Nenhum post gerado ainda</p>
           <div className="state-ea-text">
@@ -771,7 +850,7 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
           <div className="state-ea-actions">
             <button
               className="btn-ea btn-primary btn-sm"
-              onClick={onGenerateFlow}
+              onClick={openPlanner}
               disabled={isBusy || !theme.trim() || !hasCredits}
             >
               Gerar Post com IA
@@ -872,7 +951,7 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
               </button>
               <button
                 className="btn-ea btn-ghost"
-                onClick={onGenerateFlow}
+                onClick={openPlanner}
                 disabled={isBusy || !theme.trim() || !hasCredits}
               >
                 Gerar novamente

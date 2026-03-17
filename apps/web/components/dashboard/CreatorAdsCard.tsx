@@ -8,6 +8,7 @@ import { createIdempotencyKey } from "../../lib/idempotencyKey";
 import { runAutoPromptFlow } from "../../lib/autoPromptFlow";
 import { usePromptPreferences } from "../../hooks/usePromptPreferences";
 import { PremiumSelect } from "../ui/PremiumSelect";
+import { CreatorPlannerPanel } from "./CreatorPlannerPanel";
 import { toUserFacingError } from "../../lib/uiFeedback";
 
 type AdsStructuredResult = {
@@ -142,6 +143,7 @@ export function CreatorAdsCard({ walletCommon, onRefetch }: Props) {
   const [resultText, setResultText] = useState("");
   const [resultStructured, setResultStructured] = useState<AdsStructuredResult | null>(null);
   const [savedProjectId, setSavedProjectId] = useState<string | null>(null);
+  const [plannerOpen, setPlannerOpen] = useState(false);
   const [resultProvider, setResultProvider] = useState<string | null>(null);
   const [resultModel, setResultModel] = useState<string | null>(null);
 
@@ -153,6 +155,58 @@ export function CreatorAdsCard({ walletCommon, onRefetch }: Props) {
 
   const hasCredits = walletCommon >= estimatedCommon;
   const isBusy = loadingPrompt || loadingApply;
+
+  const plannerSteps = useMemo(
+    () => [
+      promptEnabled
+        ? autoApply
+          ? "Montar prompt otimizado e aplicar automaticamente ao briefing atual."
+          : "Montar prompt otimizado e abrir revisão manual antes da execução."
+        : "Usar o briefing atual como base direta para a peça de anúncio.",
+      "Gerar headline, corpo principal e CTA alinhados ao canal de mídia.",
+      "Entregar versão curta e peça completa para revisão e salvamento em projeto.",
+    ],
+    [promptEnabled, autoApply]
+  );
+
+  const plannerSettings = useMemo(
+    () => [
+      { label: "Canal", value: platform },
+      { label: "Tom", value: tone },
+      { label: "Público", value: audience.trim() || "A definir" },
+      { label: "Idioma", value: language },
+    ],
+    [platform, tone, audience, language]
+  );
+
+  const plannerParameters = useMemo(
+    () => [
+      { label: "Produto", value: productService.trim() || "A definir" },
+      { label: "Objetivo", value: objective.trim() || "A definir" },
+      { label: "Oferta / CTA", value: offerCta.trim() || "A definir" },
+      { label: "Diferencial", value: differential.trim() || "A definir" },
+      { label: "Prompt automático", value: promptEnabled ? "Ligado" : "Direto" },
+      { label: "Aplicação", value: promptEnabled ? (autoApply ? "Automática" : "Manual") : "Briefing direto" },
+      { label: "Estimativa", value: `${estimatedCommon} Comum` },
+    ],
+    [productService, objective, offerCta, differential, promptEnabled, autoApply, estimatedCommon]
+  );
+
+  function openPlanner() {
+    if (!productService.trim() || !objective.trim() || loadingPrompt || loadingApply || !hasCredits) return;
+    setPlannerOpen(true);
+    setError(null);
+    window.requestAnimationFrame(() => {
+      document.getElementById("creator-ads-planner")?.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+  }
+
+  function editPlanner() {
+    setPlannerOpen(false);
+    window.requestAnimationFrame(() => {
+      document.getElementById("creator-ads-config")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
   const platformSelectOptions = useMemo(
     () => ADS_PLATFORM_OPTIONS.map((item) => ({ value: item, label: item })),
     []
@@ -266,6 +320,7 @@ export function CreatorAdsCard({ walletCommon, onRefetch }: Props) {
         setLastPromptUsed(null);
         setSaveMsg(null);
         setSavedProjectId(null);
+        setPlannerOpen(false);
       },
     });
   }
@@ -331,7 +386,7 @@ export function CreatorAdsCard({ walletCommon, onRefetch }: Props) {
       </div>
 
       <div className="creator-workspace-zones">
-      <div className="creator-form-zone">
+      <div id="creator-ads-config" className="creator-form-zone">
         <p className="creator-zone-title">Como deseja gerar</p>
         <p className="creator-zone-copy">Defina produto, público, canal e diferencial antes de adicionar observações extras.</p>
         <div className="form-grid-2 creator-field-grid">
@@ -470,15 +525,19 @@ export function CreatorAdsCard({ walletCommon, onRefetch }: Props) {
       </div>
 
       <div className="creator-actions-row">
+        {!plannerOpen ? (
         <div className="creator-action-buttons">
           <button
-            onClick={onGenerateFlow}
+            onClick={openPlanner}
             disabled={isBusy || !productService.trim() || !objective.trim() || !hasCredits}
             className={`btn-ea btn-primary ${isBusy || !productService.trim() || !objective.trim() || !hasCredits ? "creator-button-busy" : ""}`}
           >
             {isBusy ? "Gerando..." : "Gerar anúncio com IA"}
           </button>
         </div>
+        ) : (
+          <div className="helper-note-inline">Revise o plano abaixo antes de executar a geração.</div>
+        )}
         {(error || copyMsg || saveMsg) ? (
           <div className="creator-feedback-stack">
             {error ? (
@@ -492,6 +551,28 @@ export function CreatorAdsCard({ walletCommon, onRefetch }: Props) {
           </div>
         ) : null}
       </div>
+
+      {plannerOpen ? (
+        <div id="creator-ads-planner">
+          <CreatorPlannerPanel
+            title="Plano pronto para o Creator Ads"
+            objective={`Gerar anúncio para ${platform} com foco em ${objective.toLowerCase()}.`}
+            summary="Você revisa os principais blocos da peça antes da IA executar a geração final."
+            steps={plannerSteps}
+            settings={plannerSettings}
+            parameters={plannerParameters}
+            note="Se o prompt automático estiver em modo manual, a peça ainda passa pela sua revisão antes de executar."
+            continueLabel="Continuar com o anúncio"
+            busy={isBusy}
+            onContinue={() => {
+              setPlannerOpen(false);
+              void onGenerateFlow();
+            }}
+            onEdit={editPlanner}
+            onCancel={() => setPlannerOpen(false)}
+          />
+        </div>
+      ) : null}
 
       {loadingApply && (
         <div className="premium-card-soft creator-loading-panel">
@@ -586,7 +667,7 @@ export function CreatorAdsCard({ walletCommon, onRefetch }: Props) {
         </div>
       )}
 
-      {!(resultStructured || resultText) && !isBusy ? (
+      {!(resultStructured || resultText) && !isBusy && !plannerOpen ? (
         <div className="state-ea creator-empty-state">
           <p className="state-ea-title">Nenhum anúncio gerado ainda</p>
           <div className="state-ea-text">
@@ -595,7 +676,7 @@ export function CreatorAdsCard({ walletCommon, onRefetch }: Props) {
           <div className="state-ea-actions">
             <button
               className="btn-ea btn-primary btn-sm"
-              onClick={onGenerateFlow}
+              onClick={openPlanner}
               disabled={isBusy || !productService.trim() || !objective.trim() || !hasCredits}
             >
               Gerar anúncio
@@ -681,7 +762,7 @@ export function CreatorAdsCard({ walletCommon, onRefetch }: Props) {
               </button>
               <button
                 className="btn-ea btn-ghost btn-sm"
-                onClick={onGenerateFlow}
+                onClick={openPlanner}
                 disabled={isBusy || !productService.trim() || !objective.trim() || !hasCredits}
               >
                 Gerar novamente

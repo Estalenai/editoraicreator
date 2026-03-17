@@ -6,6 +6,7 @@ import { supabase } from "../../lib/supabaseClient";
 import { apiFetch } from "../../lib/api";
 import { createIdempotencyKey } from "../../lib/idempotencyKey";
 import { PremiumSelect } from "../ui/PremiumSelect";
+import { CreatorPlannerPanel } from "./CreatorPlannerPanel";
 import { toUserFacingError } from "../../lib/uiFeedback";
 
 type CreatorMusicResult = {
@@ -104,6 +105,7 @@ export function CreatorMusicCard({ walletCommon, onRefetch }: Props) {
   const [copyMsg, setCopyMsg] = useState<string | null>(null);
   const [savedProjectId, setSavedProjectId] = useState<string | null>(null);
   const [interactionStarted, setInteractionStarted] = useState(false);
+  const [plannerOpen, setPlannerOpen] = useState(false);
 
   const estimatedCommon = useMemo(() => {
     const themeUnits = Math.max(1, Math.ceil(theme.trim().length / 120));
@@ -119,6 +121,55 @@ export function CreatorMusicCard({ walletCommon, onRefetch }: Props) {
     : walletCommon < estimatedCommon
       ? `Saldo insuficiente para esta geração. Necessário: ~${estimatedCommon} Comum. Compre créditos avulsos para continuar.`
       : null;
+
+  const plannerSteps = useMemo(
+    () => [
+      generatedPrompt.trim()
+        ? "Usar o prompt revisado para iniciar a geração da faixa."
+        : "Montar a direção sonora diretamente a partir de tema, clima, BPM e duração.",
+      "Enviar a geração para o provedor e acompanhar status ou prévia retornada.",
+      "Entregar links, metadados e continuidade em projeto para salvar ou abrir no editor.",
+    ],
+    [generatedPrompt]
+  );
+
+  const plannerSettings = useMemo(
+    () => [
+      { label: "Clima", value: MOOD_OPTIONS.find((item) => item.value === mood)?.label || mood },
+      { label: "BPM", value: `${bpm}` },
+      { label: "Duração", value: `${duration}s` },
+      { label: "Idioma", value: language },
+    ],
+    [mood, bpm, duration, language]
+  );
+
+  const plannerParameters = useMemo(
+    () => [
+      { label: "Tema", value: normalizedTheme || "A definir" },
+      { label: "Prompt", value: generatedPrompt.trim() ? "Prompt revisado" : "Direção direta do briefing" },
+      { label: "Estimativa", value: `${estimatedCommon} Comum` },
+      { label: "Entrega", value: result?.job_id ? "Job com acompanhamento" : "Geração imediata" },
+    ],
+    [normalizedTheme, generatedPrompt, estimatedCommon, result]
+  );
+
+  function openPlanner() {
+    setInteractionStarted(true);
+    if (!canGenerate || loadingGenerate) return;
+    setPlannerOpen(true);
+    setError(null);
+    setSuccess(null);
+    window.requestAnimationFrame(() => {
+      document.getElementById("creator-music-planner")?.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+  }
+
+  function editPlanner() {
+    setPlannerOpen(false);
+    window.requestAnimationFrame(() => {
+      document.getElementById("creator-music-config")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
 
   async function copyText(value: string, label: string) {
     setCopyMsg(null);
@@ -345,7 +396,7 @@ export function CreatorMusicCard({ walletCommon, onRefetch }: Props) {
       </div>
 
       <div className="creator-workspace-zones">
-        <div className="creator-form-zone">
+        <div id="creator-music-config" className="creator-form-zone">
           <p className="creator-zone-title">Como deseja gerar</p>
           <p className="creator-zone-copy">Defina tema, clima, BPM e duração antes de pedir o prompt ou a geração final.</p>
           <div className="form-grid-2 creator-field-grid">
@@ -432,7 +483,7 @@ export function CreatorMusicCard({ walletCommon, onRefetch }: Props) {
 
             <button
               className={`btn-ea btn-primary ${loadingGenerate || !canGenerate ? "creator-button-busy" : ""}`}
-              onClick={onGenerateMusic}
+              onClick={openPlanner}
               disabled={loadingGenerate || !canGenerate}
             >
               {loadingGenerate ? "Gerando..." : "Gerar música"}
@@ -458,6 +509,28 @@ export function CreatorMusicCard({ walletCommon, onRefetch }: Props) {
             </div>
           ) : null}
         </div>
+
+        {plannerOpen ? (
+          <div id="creator-music-planner">
+            <CreatorPlannerPanel
+              title="Plano pronto para o Creator Music"
+              objective={`Gerar uma faixa ${normalizedTheme || "sob medida"} com clima ${MOOD_OPTIONS.find((item) => item.value === mood)?.label.toLowerCase() || mood}.`}
+              summary="Antes da execução, você revisa a direção sonora, o tipo de entrega e os parâmetros principais."
+              steps={plannerSteps}
+              settings={plannerSettings}
+              parameters={plannerParameters}
+              note="Se você já gerou um prompt, ele será usado como base. Caso contrário, a IA parte direto do briefing atual."
+              continueLabel="Continuar com a música"
+              busy={loadingGenerate}
+              onContinue={() => {
+                setPlannerOpen(false);
+                void onGenerateMusic();
+              }}
+              onEdit={editPlanner}
+              onCancel={() => setPlannerOpen(false)}
+            />
+          </div>
+        ) : null}
 
         {loadingGenerate ? (
           <div className="premium-card-soft creator-loading-panel">
@@ -488,7 +561,7 @@ export function CreatorMusicCard({ walletCommon, onRefetch }: Props) {
           </div>
         ) : null}
 
-        {!result && !loadingGenerate ? (
+        {!result && !loadingGenerate && !plannerOpen ? (
           <div className="state-ea creator-empty-state">
             <p className="state-ea-title">Nenhuma música gerada ainda</p>
             <div className="state-ea-text">
@@ -497,7 +570,7 @@ export function CreatorMusicCard({ walletCommon, onRefetch }: Props) {
             <div className="state-ea-actions">
               <button
                 type="button"
-                onClick={onGenerateMusic}
+                onClick={openPlanner}
                 disabled={!canGenerate || loadingGenerate}
                 className="btn-ea btn-primary btn-sm"
               >
@@ -621,7 +694,7 @@ export function CreatorMusicCard({ walletCommon, onRefetch }: Props) {
                   </button>
                   <button
                     className="btn-ea btn-ghost btn-sm"
-                    onClick={onGenerateMusic}
+                    onClick={openPlanner}
                     disabled={loadingGenerate || !canGenerate}
                   >
                     {loadingGenerate ? "Gerando..." : "Gerar novamente"}
