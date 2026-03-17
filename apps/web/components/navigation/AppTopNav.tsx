@@ -15,7 +15,7 @@ type NavItem = {
 const NAV_ITEMS: NavItem[] = [
   { href: "/dashboard", label: "Dashboard", meta: "Conta, saldo e visão executiva", match: (pathname) => pathname === "/dashboard" },
   { href: "/creators", label: "Creators", meta: "Gerar base para vídeo, foto e conteúdo", match: (pathname) => pathname === "/creators" },
-  { href: "/projects", label: "Projetos", meta: "Editar, salvar e exportar vídeo ou foto", match: (pathname) => pathname === "/projects" || pathname.startsWith("/editor/") },
+  { href: "/projects", label: "Projetos", meta: "Editar, salvar e publicar", match: (pathname) => pathname === "/projects" || pathname.startsWith("/editor/") },
   { href: "/credits", label: "Créditos", meta: "Saldo, histórico e compra", match: (pathname) => pathname === "/credits" },
   { href: "/plans", label: "Planos", meta: "Assinatura, totais e disponibilidade", match: (pathname) => pathname === "/plans" },
   { href: "/support", label: "Suporte", meta: "Ajuda operacional", match: (pathname) => pathname === "/support" },
@@ -72,7 +72,7 @@ export function AppTopNav() {
       <div className="app-top-nav-head">
         <p className="app-top-nav-title">Workspace</p>
         <p className="app-top-nav-text">
-          Projetos, vídeo, foto, créditos, suporte e assinatura em uma navegação única.
+          Projetos, vídeo, foto, publicação beta, créditos, suporte e assinatura em uma navegação única.
         </p>
       </div>
       <div className="app-nav-links">

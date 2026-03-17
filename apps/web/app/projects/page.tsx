@@ -5,6 +5,7 @@ import { useMemo } from "react";
 import { useDashboardBootstrap } from "../../hooks/useDashboardBootstrap";
 import { BetaAccessBlockedView } from "../../components/waitlist/BetaAccessBlockedView";
 import { GitHubWorkspaceCard } from "../../components/projects/GitHubWorkspaceCard";
+import { VercelPublishCard } from "../../components/projects/VercelPublishCard";
 
 function getProjectId(project: any) {
   return String(project?.id || project?.project_id || "").trim();
@@ -73,7 +74,7 @@ export default function ProjectsPage() {
               </div>
               <div className="hero-side-note">
                 <strong>Fluxo curto</strong>
-                <span>Creators gera contexto, Projetos organiza continuidade e o editor finaliza até a exportação.</span>
+                <span>Creators gera contexto, Projetos organiza continuidade e Vercel prepara a publicação beta sem fluxo técnico pesado.</span>
               </div>
               <div className="hero-side-note hero-side-note-trust">
                 <strong>Persistência com Supabase</strong>
@@ -106,6 +107,7 @@ export default function ProjectsPage() {
       ) : null}
 
       <GitHubWorkspaceCard />
+      <VercelPublishCard projects={normalizedProjects.map((project) => ({ id: project.id, title: project.title, kind: project.kind }))} />
 
       <section className="premium-card projects-list-section">
         <div className="section-head">

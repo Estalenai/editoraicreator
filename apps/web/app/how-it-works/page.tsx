@@ -25,9 +25,9 @@ const STEPS = [
   {
     title: "4. Exporte com clareza",
     description:
-      "O fluxo atual privilegia salvar o projeto, revisar no editor e exportar no dispositivo com previsibilidade.",
-    href: "/credits",
-    cta: "Revisar créditos",
+      "O beta já permite fechar o fluxo criando, editando e preparando a publicação inicial via Projetos e Vercel.",
+    href: "/projects#vercel-publish",
+    cta: "Preparar publicação",
   },
 ];
 
@@ -41,7 +41,7 @@ export default function HowItWorksPage() {
               <p className="section-kicker">Fluxo da plataforma</p>
               <h1 style={{ margin: 0, letterSpacing: -0.3 }}>Como funciona</h1>
               <p className="hero-copy-compact">
-                Uma visão curta do fluxo operacional: gerar, salvar, editar, exportar e acompanhar crédito com clareza.
+                Uma visão curta do fluxo operacional: gerar, salvar, editar, publicar e acompanhar crédito com clareza.
               </p>
             </div>
           </div>

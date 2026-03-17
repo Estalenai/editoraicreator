@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { api } from "../../../lib/api";
 import { EditorShell, EditorTab } from "../../../components/editor/EditorShell";
 import { GitHubWorkspaceCard } from "../../../components/projects/GitHubWorkspaceCard";
+import { VercelPublishCard } from "../../../components/projects/VercelPublishCard";
 
 type Project = { id: string; title: string; kind: string; data?: any };
 
@@ -750,7 +751,7 @@ export default function EditorProjectPage() {
                 <p className="section-kicker">Projeto atual</p>
                 <strong className="editor-shell-footer-title">{title}</strong>
                 <p className="editor-shell-note">
-                  Continue salvando blocos-chave. Saída padrão: exportação no dispositivo; o beta GitHub já prepara versões e bundle do projeto para app ou site.
+                  Continue salvando blocos-chave. Saída padrão: exportação no dispositivo; GitHub e Vercel já preparam continuidade e publicação beta do projeto para app ou site.
                 </p>
               </div>
               <div className="editor-shell-cta-group">
@@ -762,6 +763,10 @@ export default function EditorProjectPage() {
             <GitHubWorkspaceCard
               variant="compact"
               project={project ? { id: project.id, title, kind: project.kind, data: project.data } : null}
+            />
+            <VercelPublishCard
+              variant="compact"
+              project={project ? { id: project.id, title, kind: project.kind } : null}
             />
           </div>
         }

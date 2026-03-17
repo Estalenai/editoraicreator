@@ -55,12 +55,12 @@ export function EditorShell({
               <p className="section-kicker">Workspace editorial</p>
               <h2 style={{ margin: 0 }}>{title}</h2>
               <p className="editor-shell-note editor-shell-title-copy">
-                EditexAI no centro do projeto: vídeo, foto, texto e ativos visuais seguem no mesmo workspace.
+                EditexAI no centro do projeto: vídeo, foto, texto e ativos visuais seguem no mesmo workspace até a publicação.
               </p>
             </div>
             <div className="hero-meta-row">
               <span className="premium-badge premium-badge-phase">Área ativa: {activeTab.label}</span>
-              <span className="premium-badge premium-badge-soon">Projeto com contexto salvo</span>
+              <span className="premium-badge premium-badge-soon">Projeto com contexto salvo e base de publicação</span>
             </div>
           </div>
 
@@ -68,7 +68,7 @@ export function EditorShell({
             <div className="editor-shell-status-grid">
               <div className="editor-shell-status-item">
                 <span>Fluxo</span>
-                <strong>Gerar, editar e exportar</strong>
+                <strong>Gerar, editar e publicar</strong>
               </div>
               <div className="editor-shell-status-item">
                 <span>Visibilidade</span>
@@ -117,7 +117,7 @@ export function EditorShell({
           </div>
           <div className="premium-card-soft trust-note editor-shell-trust-card">
             <strong>Saída controlada</strong>
-            <span>Fluxo padrão de entrega: exporte no dispositivo. Storage conectado entra na próxima fase.</span>
+            <span>Fluxo padrão de entrega: exporte no dispositivo ou prepare a publicação beta na Vercel. Storage conectado entra na próxima fase.</span>
           </div>
         </div>
       </header>
@@ -126,7 +126,7 @@ export function EditorShell({
         <div className="editor-shell-toolbar-head">
           <div className="editor-shell-toolbar-copy">
             <p className="section-kicker">Fluxo do editor</p>
-            <p className="helper-text-ea">Troque de área sem perder o contexto salvo.</p>
+            <p className="helper-text-ea">Troque de área sem perder o contexto salvo nem a base de publicação.</p>
           </div>
           <div className="editor-shell-toolbar-meta">
             <span className="premium-badge premium-badge-phase">{professorMode ? "Professor ativo" : "Professor opcional"}</span>
