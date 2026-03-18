@@ -1,6 +1,30 @@
 import Link from "next/link";
 import { ClosedBetaAccessCard } from "../components/waitlist/ClosedBetaAccessCard";
 
+const HOME_PROOF_SAMPLES = [
+  {
+    label: "Post com CTA",
+    creator: "Creator Post",
+    prompt: "Lançar uma aula gratuita de color grading para reels e stories.",
+    output: "Hook curto, legenda com prova social e CTA para lista de espera.",
+    nextStep: "Salvar em projeto e refinar no editor.",
+  },
+  {
+    label: "Roteiro para vídeo",
+    creator: "Creator Scripts",
+    prompt: "Explicar em 30 segundos por que uma landing lenta perde conversão.",
+    output: "Estrutura em 3 blocos com abertura, argumento central e fechamento para gravação.",
+    nextStep: "Transformar em vídeo curto ou anúncio.",
+  },
+  {
+    label: "Publicação pronta",
+    creator: "Creator Clips",
+    prompt: "Gerar um clipe curto com direção de cena e continuidade no projeto.",
+    output: "Briefing visual, job assíncrono e base pronta para editar e preparar exportação.",
+    nextStep: "Continuar no editor e preparar handoff de publicação.",
+  },
+];
+
 export default function HomePage() {
   return (
     <div className="page-shell beta-entry-page">
@@ -52,6 +76,46 @@ export default function HomePage() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="proof-value-section premium-card-soft">
+        <div className="proof-value-header">
+          <div className="section-stack-tight">
+            <p className="section-kicker">Prova de valor</p>
+            <h2 className="heading-reset">O que a IA entrega no beta</h2>
+            <p className="helper-text-ea">
+              Exemplos do tipo de saída que o workspace organiza hoje. Não são promessas vagas; são formatos reais de entrega para publicar, editar e evoluir em projeto.
+            </p>
+          </div>
+          <Link href="/creators" className="btn-link-ea btn-secondary btn-sm">
+            Ver Creators
+          </Link>
+        </div>
+
+        <div className="proof-value-grid">
+          {HOME_PROOF_SAMPLES.map((sample) => (
+            <article key={sample.label} className="proof-value-card premium-card-soft">
+              <div className="proof-value-meta-row">
+                <span className="proof-value-kicker">{sample.label}</span>
+                <span className="proof-value-chip">{sample.creator}</span>
+              </div>
+              <div className="proof-value-stack">
+                <div className="proof-value-block">
+                  <span className="proof-value-label">Briefing</span>
+                  <p>{sample.prompt}</p>
+                </div>
+                <div className="proof-value-block">
+                  <span className="proof-value-label">Entrega</span>
+                  <p>{sample.output}</p>
+                </div>
+                <div className="proof-value-block proof-value-block-inline">
+                  <span className="proof-value-label">Próximo passo</span>
+                  <strong>{sample.nextStep}</strong>
+                </div>
+              </div>
+            </article>
+          ))}
         </div>
       </section>
 

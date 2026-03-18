@@ -96,6 +96,37 @@ const CREATOR_CREDIT_GUIDE = [
   { coinType: "ultra" as const, description: "processamento premium" },
 ];
 
+const CREATOR_SHOWCASES = [
+  {
+    creator: "Creator Post",
+    kicker: "Saída de publicação",
+    briefing: "Lançar uma consultoria de marca pessoal para vídeo com CTA para lista VIP.",
+    delivery: "Legenda pronta, variações de hook e CTA final para testar distribuição.",
+    nextStep: "Salvar em projeto e abrir no editor para ajuste fino.",
+  },
+  {
+    creator: "Creator Scripts",
+    kicker: "Saída de roteiro",
+    briefing: "Explicar em 40 segundos por que um anúncio sem prova social converte menos.",
+    delivery: "Roteiro curto com abertura, argumento central e fechamento para gravação.",
+    nextStep: "Converter em clipe, anúncio ou base de apresentação.",
+  },
+  {
+    creator: "Creator Music",
+    kicker: "Saída de identidade sonora",
+    briefing: "Criar uma trilha leve, eletrônica e otimista para produto digital premium.",
+    delivery: "Direção musical, status do job e base pronta para continuar no projeto.",
+    nextStep: "Acompanhar processamento e seguir para edição ou exportação.",
+  },
+  {
+    creator: "Creator Clips",
+    kicker: "Saída de vídeo curto",
+    briefing: "Montar um clipe de apresentação com ritmo rápido e direção de cena.",
+    delivery: "Job assíncrono com acompanhamento claro e continuidade para editar depois.",
+    nextStep: "Salvar contexto e preparar publicação quando a peça estiver pronta.",
+  },
+];
+
 function parseTab(raw: string | null): CreatorTab {
   const value = String(raw || "").toLowerCase();
   return (
@@ -278,6 +309,46 @@ function CreatorsPageContent() {
           </div>
         </div>
       ) : null}
+
+      <section className="proof-value-section premium-card-soft creators-proof-section">
+        <div className="proof-value-header">
+          <div className="section-stack-tight">
+            <p className="section-kicker">Exemplos de resultado</p>
+            <h2 className="heading-reset">O que cada Creator pode destravar</h2>
+            <p className="helper-text-ea">
+              Estas amostras mostram o tipo de saída que você pode esperar antes de abrir um projeto. Elas ajudam a entender o valor da IA sem vender um fluxo maior do que o beta entrega hoje.
+            </p>
+          </div>
+          <Link href="/projects" className="btn-link-ea btn-secondary btn-sm">
+            Ver continuidade em Projetos
+          </Link>
+        </div>
+
+        <div className="proof-value-grid proof-value-grid-creators">
+          {CREATOR_SHOWCASES.map((item) => (
+            <article key={item.creator} className="proof-value-card premium-card-soft">
+              <div className="proof-value-meta-row">
+                <span className="proof-value-kicker">{item.kicker}</span>
+                <span className="proof-value-chip">{item.creator}</span>
+              </div>
+              <div className="proof-value-stack">
+                <div className="proof-value-block">
+                  <span className="proof-value-label">Briefing</span>
+                  <p>{item.briefing}</p>
+                </div>
+                <div className="proof-value-block">
+                  <span className="proof-value-label">Entrega</span>
+                  <p>{item.delivery}</p>
+                </div>
+                <div className="proof-value-block proof-value-block-inline">
+                  <span className="proof-value-label">Próximo passo</span>
+                  <strong>{item.nextStep}</strong>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
 
       <section className="creator-workspace-grid">
         <aside className="premium-card creator-workspace-side creators-sidebar creators-sidebar-soft">

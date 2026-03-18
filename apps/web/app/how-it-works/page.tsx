@@ -31,6 +31,27 @@ const STEPS = [
   },
 ];
 
+const RESULT_EXAMPLES = [
+  {
+    title: "De briefing para post publicado",
+    input: "Promover uma aula ao vivo de fotografia mobile com CTA para lista de espera.",
+    output: "Legenda curta, gancho inicial, prova social e variações para testar distribuição.",
+    nextStep: "Salvar em projeto e ajustar no editor antes de exportar.",
+  },
+  {
+    title: "De ideia para roteiro de vídeo",
+    input: "Explicar por que pages lentas derrubam conversão em até 45 segundos.",
+    output: "Abertura, desenvolvimento e fechamento com direção suficiente para gravação ou anúncio.",
+    nextStep: "Transformar em clipe, anúncio ou base de landing.",
+  },
+  {
+    title: "De conceito para fluxo publicável",
+    input: "Organizar uma peça curta com contexto visual, texto e próximo passo de deploy.",
+    output: "Projeto salvo, edição centralizada e handoff beta para GitHub e Vercel quando fizer sentido.",
+    nextStep: "Continuar no editor e preparar exportação ou publicação.",
+  },
+];
+
 export default function HowItWorksPage() {
   return (
     <div className="page-shell how-it-works-page">
@@ -77,6 +98,40 @@ export default function HowItWorksPage() {
             </Link>
           </article>
         ))}
+      </section>
+
+      <section className="proof-value-section premium-card-soft how-it-works-proof-section">
+        <div className="proof-value-header">
+          <div className="section-stack-tight">
+            <p className="section-kicker">Exemplos concretos</p>
+            <h2 className="heading-reset">Do briefing ao resultado</h2>
+            <p className="helper-text-ea">
+              Cada fluxo abaixo mostra o tipo de entrega que o beta já consegue organizar com IA, projeto e continuidade no editor.
+            </p>
+          </div>
+        </div>
+
+        <div className="proof-value-grid">
+          {RESULT_EXAMPLES.map((example) => (
+            <article key={example.title} className="proof-value-card premium-card-soft">
+              <div className="proof-value-stack">
+                <h3 className="heading-reset">{example.title}</h3>
+                <div className="proof-value-block">
+                  <span className="proof-value-label">Entrada</span>
+                  <p>{example.input}</p>
+                </div>
+                <div className="proof-value-block">
+                  <span className="proof-value-label">Saída organizada</span>
+                  <p>{example.output}</p>
+                </div>
+                <div className="proof-value-block proof-value-block-inline">
+                  <span className="proof-value-label">Continuação</span>
+                  <strong>{example.nextStep}</strong>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
       </section>
 
       <section className="premium-card-soft info-note how-it-works-note">
