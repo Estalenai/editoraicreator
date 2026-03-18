@@ -293,6 +293,11 @@ export function CreditsPackagesCard({ wallet, loading = false }: Props) {
   }
 
   async function onBuyCoinsPackage() {
+    if (loading) {
+      setPackageError("Saldo e regras de compra ainda estão sincronizando. Aguarde antes de abrir o checkout.");
+      return;
+    }
+
     setPackageCheckoutLoading(true);
     setPackageError(null);
     try {
@@ -305,8 +310,8 @@ export function CreditsPackagesCard({ wallet, loading = false }: Props) {
       const baseUrl = window.location.origin;
       const response = await api.createCoinsPackageCheckout({
         quote_id: quote.quote_id,
-        success_url: `${baseUrl}/dashboard?coins_package=success`,
-        cancel_url: `${baseUrl}/dashboard?coins_package=cancel`,
+        success_url: `${baseUrl}/credits?coins_package=success`,
+        cancel_url: `${baseUrl}/credits?coins_package=cancel`,
       });
       const checkoutUrl = String(response?.checkout?.url || "");
       if (!checkoutUrl) throw new Error("checkout_url_missing");
@@ -343,7 +348,7 @@ export function CreditsPackagesCard({ wallet, loading = false }: Props) {
         </div>
         <div className="premium-card-soft trust-note trust-note-privacy">
           <strong>Pagamento via Stripe</strong>
-          <span>O checkout abre em Stripe e retorna ao produto para confirmar saldo e histórico do pacote.</span>
+          <span>O checkout abre em Stripe e retorna a Créditos para confirmar saldo e histórico do pacote.</span>
         </div>
         <div className="premium-card-soft trust-note">
           <strong>Mix configurável</strong>
@@ -353,7 +358,7 @@ export function CreditsPackagesCard({ wallet, loading = false }: Props) {
       <div className="helper-note-inline credits-purchase-checkout-note">
         {loading
           ? "Aguarde a sincronização do saldo para abrir uma cotação segura."
-          : "Pagamento externo via Stripe com retorno ao dashboard para confirmação."}
+          : "Pagamento externo via Stripe com retorno a Créditos para confirmação."}
       </div>
       <a href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm state-ea-spaced">
         Ver histórico de consumo
@@ -399,7 +404,7 @@ export function CreditsPackagesCard({ wallet, loading = false }: Props) {
               </div>
               <div className="premium-card-soft trust-note trust-note-privacy">
                 <strong>Retorno sincronizado</strong>
-                <span>Depois do Stripe, o produto confirma saldo e histórico no dashboard antes da próxima ação.</span>
+                <span>Depois do Stripe, o produto confirma saldo e histórico em Créditos antes da próxima ação.</span>
               </div>
             </div>
 
@@ -576,14 +581,14 @@ export function CreditsPackagesCard({ wallet, loading = false }: Props) {
             <div className="hero-actions-row credits-modal-actions">
               <button
                 onClick={requestCoinsPackageQuote}
-                disabled={packageLoading || packageCheckoutLoading || !packageMixValid}
+                disabled={loading || packageLoading || packageCheckoutLoading || !packageMixValid}
                 className="btn-ea btn-secondary"
               >
                 {packageLoading ? "Atualizando cotação..." : "Atualizar cotação"}
               </button>
               <button
                 onClick={onBuyCoinsPackage}
-                disabled={packageLoading || packageCheckoutLoading || !packageMixValid}
+                disabled={loading || packageLoading || packageCheckoutLoading || !packageMixValid}
                 className="btn-ea btn-primary"
               >
                 {packageCheckoutLoading ? "Abrindo checkout..." : "Ir para pagamento seguro"}
@@ -591,7 +596,7 @@ export function CreditsPackagesCard({ wallet, loading = false }: Props) {
             </div>
 
             <div className="helper-text-ea">
-              Depois do pagamento, você volta ao dashboard com confirmação do checkout.
+              Depois do pagamento, você volta para Créditos com confirmação do checkout.
             </div>
 
             {packageQuote ? (

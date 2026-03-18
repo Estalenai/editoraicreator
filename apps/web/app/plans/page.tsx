@@ -130,6 +130,25 @@ function uniquePlanHighlights(primary: string[], secondary: string[]): string[] 
 
 type NoticeTone = "info" | "warning" | "success";
 
+function waitForCheckoutSync(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function clearCheckoutSearchParams(keys: string[]) {
+  if (typeof window === "undefined") return;
+  const url = new URL(window.location.href);
+  let changed = false;
+  for (const key of keys) {
+    if (!url.searchParams.has(key)) continue;
+    url.searchParams.delete(key);
+    changed = true;
+  }
+  if (!changed) return;
+  const nextSearch = url.searchParams.toString();
+  const nextUrl = `${url.pathname}${nextSearch ? `?${nextSearch}` : ""}${url.hash}`;
+  window.history.replaceState(window.history.state, "", nextUrl);
+}
+
 const CHECKOUT_PLAN_BY_CATALOG_CODE: Record<string, "EDITOR_FREE" | "EDITOR_PRO" | "EDITOR_ULTRA"> = {
   EDITOR_FREE: "EDITOR_FREE",
   EDITOR_PRO: "EDITOR_PRO",
@@ -262,40 +281,64 @@ function PlansPageContent() {
     if (checkoutState !== "success" && checkoutState !== "canceled") return;
     if (handledCheckoutState === checkoutState) return;
 
+    setHandledCheckoutState(checkoutState);
+
     if (checkoutState === "canceled") {
-      setHandledCheckoutState(checkoutState);
       setCheckoutNotice({
         tone: "warning",
         message: "Checkout cancelado. Você pode tentar novamente quando quiser.",
       });
+      clearCheckoutSearchParams(["checkout"]);
       return;
     }
 
     let cancelled = false;
+
+    setCheckoutNotice({
+      tone: "info",
+      message: "Pagamento confirmado na Stripe. Atualizando plano e saldo nesta página...",
+    });
+
     (async () => {
-      try {
-        await api.refreshStripeSubscription();
-        await refresh();
-        await loadCatalog();
-        if (!cancelled) {
-          setHandledCheckoutState(checkoutState);
-          setCheckoutNotice({
-            tone: "success",
-            message: "Pagamento confirmado. Plano e saldo foram sincronizados com sucesso.",
-          });
+      let synced = false;
+      let lastSyncError: any = null;
+
+      for (const delayMs of [0, 1200, 2400]) {
+        if (cancelled) return;
+        if (delayMs > 0) {
+          await waitForCheckoutSync(delayMs);
         }
-      } catch (syncError: any) {
-        if (!cancelled) {
-          setHandledCheckoutState(checkoutState);
-          setCheckoutNotice({
-            tone: "warning",
-            message: toUserFacingError(
-              syncError?.message,
-              "Checkout concluído. Não foi possível sincronizar automaticamente agora; tente atualizar o plano."
-            ),
-          });
+
+        try {
+          await api.refreshStripeSubscription();
+          await refresh();
+          await loadCatalog();
+          synced = true;
+          lastSyncError = null;
+          break;
+        } catch (syncError: any) {
+          lastSyncError = syncError;
         }
       }
+
+      if (cancelled) return;
+
+      if (synced) {
+        setCheckoutNotice({
+          tone: "success",
+          message: "Pagamento confirmado. Plano e saldo foram sincronizados com sucesso.",
+        });
+      } else {
+        setCheckoutNotice({
+          tone: "warning",
+          message: toUserFacingError(
+            lastSyncError?.message,
+            "Checkout concluído. Não foi possível sincronizar automaticamente agora; tente atualizar o plano."
+          ),
+        });
+      }
+
+      clearCheckoutSearchParams(["checkout"]);
     })();
 
     return () => {

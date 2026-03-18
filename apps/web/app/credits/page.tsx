@@ -23,6 +23,7 @@ type CoinTransaction = {
 };
 
 type CoinType = "common" | "pro" | "ultra";
+type NoticeTone = "info" | "warning" | "success";
 const ALL_COIN_TYPES: CoinType[] = ["common", "pro", "ultra"];
 
 type ConversionResponse = {
@@ -90,6 +91,25 @@ function txReasonLabel(tx: CoinTransaction): string {
   return "Movimentação de créditos";
 }
 
+function waitForCheckoutSync(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function clearCheckoutSearchParams(keys: string[]) {
+  if (typeof window === "undefined") return;
+  const url = new URL(window.location.href);
+  let changed = false;
+  for (const key of keys) {
+    if (!url.searchParams.has(key)) continue;
+    url.searchParams.delete(key);
+    changed = true;
+  }
+  if (!changed) return;
+  const nextSearch = url.searchParams.toString();
+  const nextUrl = `${url.pathname}${nextSearch ? `?${nextSearch}` : ""}${url.hash}`;
+  window.history.replaceState(window.history.state, "", nextUrl);
+}
+
 export default function CreditsPage() {
   const {
     loading,
@@ -112,6 +132,8 @@ export default function CreditsPage() {
   const [conversionLoading, setConversionLoading] = useState(false);
   const [conversionError, setConversionError] = useState<string | null>(null);
   const [conversionResult, setConversionResult] = useState<ConversionResponse | null>(null);
+  const [checkoutNotice, setCheckoutNotice] = useState<{ tone: NoticeTone; message: string } | null>(null);
+  const [handledCheckoutState, setHandledCheckoutState] = useState("");
 
   const walletSummary = useMemo(
     () => `${wallet?.common ?? 0} Comum • ${wallet?.pro ?? 0} Pro • ${wallet?.ultra ?? 0} Ultra`,
@@ -181,9 +203,11 @@ export default function CreditsPage() {
       const payload = await api.getCoinsTransactions(30);
       const items = Array.isArray(payload?.transactions) ? payload.transactions : [];
       setTransactions(items as CoinTransaction[]);
+      return items as CoinTransaction[];
     } catch (e: any) {
       setTransactions([]);
       setTxError(e?.message || "Falha ao carregar histórico de créditos.");
+      return null;
     } finally {
       setTxLoading(false);
     }
@@ -201,6 +225,82 @@ export default function CreditsPage() {
       setConversionTo(destinationOptions[0]);
     }
   }, [conversionTo, destinationOptions]);
+
+  useEffect(() => {
+    if (loading || betaBlocked || typeof window === "undefined") return;
+    const checkoutState = String(new URLSearchParams(window.location.search).get("coins_package") || "").toLowerCase();
+    if (checkoutState !== "success" && checkoutState !== "cancel") return;
+    if (handledCheckoutState === checkoutState) return;
+
+    setHandledCheckoutState(checkoutState);
+
+    if (checkoutState === "cancel") {
+      setCheckoutNotice({
+        tone: "warning",
+        message: "Checkout cancelado. Nenhuma compra foi concluída e você pode tentar novamente quando quiser.",
+      });
+      clearCheckoutSearchParams(["coins_package"]);
+      return;
+    }
+
+    let cancelled = false;
+    const baselineLatestTransactionId = String(transactions[0]?.id || "");
+
+    setCheckoutNotice({
+      tone: "info",
+      message: "Pagamento confirmado na Stripe. Atualizando saldo e histórico nesta página...",
+    });
+
+    (async () => {
+      let transactionChanged = false;
+      let syncFailed = false;
+
+      for (const delayMs of [0, 1200, 2400]) {
+        if (cancelled) return;
+        if (delayMs > 0) {
+          await waitForCheckoutSync(delayMs);
+        }
+
+        await refresh();
+        const items = await loadTransactions();
+        if (!Array.isArray(items)) {
+          syncFailed = true;
+          continue;
+        }
+
+        const nextLatestTransactionId = String(items[0]?.id || "");
+        if (!baselineLatestTransactionId || (nextLatestTransactionId && nextLatestTransactionId !== baselineLatestTransactionId)) {
+          transactionChanged = true;
+          break;
+        }
+      }
+
+      if (cancelled) return;
+
+      if (transactionChanged) {
+        setCheckoutNotice({
+          tone: "success",
+          message: "Pagamento confirmado. Saldo e histórico foram atualizados nesta tela.",
+        });
+      } else if (syncFailed) {
+        setCheckoutNotice({
+          tone: "warning",
+          message: "Pagamento confirmado na Stripe, mas não foi possível revalidar saldo e histórico agora. Atualize novamente em alguns instantes.",
+        });
+      } else {
+        setCheckoutNotice({
+          tone: "info",
+          message: "Pagamento confirmado. O retorno da Stripe foi recebido e a tela foi revalidada. Se o novo saldo ainda não apareceu, atualize novamente em instantes.",
+        });
+      }
+
+      clearCheckoutSearchParams(["coins_package"]);
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [loading, betaBlocked, refresh, loadTransactions, handledCheckoutState, transactions]);
 
   async function onConvertCredits() {
     setConversionError(null);
@@ -301,7 +401,7 @@ export default function CreditsPage() {
               </div>
               <div className="hero-side-note">
                 <strong>Checkout via Stripe</strong>
-                <span>Compras avulsas seguem por Stripe e retornam ao produto com confirmação operacional no dashboard.</span>
+                <span>Compras avulsas seguem por Stripe e retornam a Créditos com confirmação operacional do saldo e do histórico.</span>
               </div>
               <div className="hero-side-note hero-side-note-trust">
                 <strong>Histórico persistido</strong>
@@ -339,6 +439,34 @@ export default function CreditsPage() {
           </div>
         </div>
       </section>
+
+      {checkoutNotice ? (
+        <div className={`state-ea state-ea-spaced ${checkoutNotice.tone === "success" ? "state-ea-success" : checkoutNotice.tone === "warning" ? "state-ea-warning" : ""}`}>
+          <p className="state-ea-title">
+            {checkoutNotice.tone === "success"
+              ? "Compra confirmada"
+              : checkoutNotice.tone === "warning"
+                ? "Atenção no retorno do checkout"
+                : "Retorno do checkout recebido"}
+          </p>
+          <div className="state-ea-text">{checkoutNotice.message}</div>
+          <div className="state-ea-actions">
+            <button
+              onClick={async () => {
+                await refresh();
+                await loadTransactions();
+              }}
+              disabled={loading || txLoading}
+              className="btn-ea btn-secondary btn-sm"
+            >
+              {loading || txLoading ? "Atualizando..." : "Atualizar saldo e histórico"}
+            </button>
+            <Link href="#credits-history" className="btn-link-ea btn-ghost btn-sm">
+              Ver histórico
+            </Link>
+          </div>
+        </div>
+      ) : null}
 
       <section className="premium-card credits-guide-section">
         <div className="section-header-ea">

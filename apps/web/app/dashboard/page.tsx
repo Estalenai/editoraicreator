@@ -132,6 +132,13 @@ export default function DashboardPage() {
     }
   }, [loading, betaBlocked, loadUsage]);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const checkoutState = String(new URLSearchParams(window.location.search).get("coins_package") || "").toLowerCase();
+    if (checkoutState !== "success" && checkoutState !== "cancel") return;
+    window.location.replace(`/credits?coins_package=${checkoutState}`);
+  }, []);
+
   const recentProjects = useMemo(() => projects.slice(0, 6), [projects]);
   const walletSummary = useMemo(() => formatWalletSummary(wallet), [wallet]);
   const walletBreakdown = useMemo(
