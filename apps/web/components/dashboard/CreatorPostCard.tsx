@@ -9,7 +9,7 @@ import { runAutoPromptFlow } from "../../lib/autoPromptFlow";
 import { usePromptPreferences } from "../../hooks/usePromptPreferences";
 import { PremiumSelect } from "../ui/PremiumSelect";
 import { CreatorPlannerPanel } from "./CreatorPlannerPanel";
-import { toUserFacingError } from "../../lib/uiFeedback";
+import { toUserFacingError, toUserFacingGenerationSuccess } from "../../lib/uiFeedback";
 
 type CreatorPostResult = {
   caption: string;
@@ -175,6 +175,7 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
   const [loadingPrompt, setLoadingPrompt] = useState(false);
   const [loadingApply, setLoadingApply] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
   const [result, setResult] = useState<CreatorPostResult | null>(null);
   const [rawText, setRawText] = useState("");
@@ -247,6 +248,7 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
     if (!theme.trim() || loadingPrompt || loadingApply || !hasCredits) return;
     setPlannerOpen(true);
     setError(null);
+    setSuccess(null);
     window.requestAnimationFrame(() => {
       document.getElementById("creator-post-planner")?.scrollIntoView({ behavior: "smooth", block: "center" });
     });
@@ -307,6 +309,10 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
   async function applyFinalPrompt(finalPrompt: string) {
     setLoadingApply(true);
     setError(null);
+    setSuccess(null);
+    setCopyMsg(null);
+    setSaveMsg(null);
+    setSavedProjectId(null);
     setResult(null);
     setRawText("");
     setResultProvider(null);
@@ -353,6 +359,14 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
       setRawText(normalized?.caption || text);
       setResultProvider(typeof payload?.provider === "string" ? payload.provider : null);
       setResultModel(typeof payload?.model === "string" ? payload.model : null);
+      setSuccess(
+        toUserFacingGenerationSuccess({
+          provider: typeof payload?.provider === "string" ? payload.provider : null,
+          model: typeof payload?.model === "string" ? payload.model : null,
+          defaultMessage: "Post gerado e pronto para revisão.",
+          mockMessage: "Resposta entregue em modo beta simulado. Ative o provedor real para publicação final.",
+        })
+      );
 
       // ✅ transparência: guardar prompt usado
       setLastPromptUsed(finalPrompt);
@@ -370,6 +384,10 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
     // — mas aqui seu fluxo atual de "promptEnabled + skipConfirm" antes já chamava isto.
     setLoadingApply(true);
     setError(null);
+    setSuccess(null);
+    setCopyMsg(null);
+    setSaveMsg(null);
+    setSavedProjectId(null);
     setResult(null);
     setRawText("");
 
@@ -411,6 +429,16 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
       }
       setResult(normalized);
       setRawText(normalized?.caption || text);
+      setResultProvider(typeof payload?.provider === "string" ? payload.provider : null);
+      setResultModel(typeof payload?.model === "string" ? payload.model : null);
+      setSuccess(
+        toUserFacingGenerationSuccess({
+          provider: typeof payload?.provider === "string" ? payload.provider : null,
+          model: typeof payload?.model === "string" ? payload.model : null,
+          defaultMessage: "Post gerado e pronto para revisão.",
+          mockMessage: "Resposta entregue em modo beta simulado. Ative o provedor real para publicação final.",
+        })
+      );
 
       // Nota: neste fluxo não temos o prompt final com certeza.
       // Se quiser 100% transparência aqui, o backend precisaria retornar o prompt usado.
@@ -454,6 +482,7 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
         setGeneratedPrompt("");
         setShowPromptUsed(false);
         setLastPromptUsed(null);
+        setSuccess(null);
         setSaveMsg(null);
         setSavedProjectId(null);
         setPlannerOpen(false);
@@ -465,6 +494,7 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
     if (!result || saving) return;
     setSaving(true);
     setError(null);
+    setSuccess(null);
     setSaveMsg(null);
 
     const token = await getAccessToken();
@@ -700,12 +730,18 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
           <div className="helper-note-inline">Revise o plano abaixo antes de executar a geração.</div>
         )}
 
-        {(error || copyMsg || saveMsg) ? (
+        {(error || success || copyMsg || saveMsg) ? (
           <div className="creator-feedback-stack">
             {error ? (
               <div className="state-ea state-ea-error">
                 <p className="state-ea-title">Falha na geração</p>
                 <div className="state-ea-text">{toUserFacingError(error, "Ajuste o briefing e tente novamente.")}</div>
+              </div>
+            ) : null}
+            {success ? (
+              <div className={`state-ea ${resultProvider === "mock" ? "state-ea-warning" : "state-ea-success"}`}>
+                <p className="state-ea-title">Geração concluída</p>
+                <div className="state-ea-text">{success}</div>
               </div>
             ) : null}
             {copyMsg ? <div className="creator-feedback-note">{copyMsg}</div> : null}

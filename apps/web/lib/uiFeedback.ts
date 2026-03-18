@@ -42,12 +42,24 @@ export function toUserFacingError(input: unknown, fallback = "Não foi possível
     return "Alguns campos obrigatórios não foram preenchidos corretamente. Revise os dados e tente novamente.";
   }
 
+  if (normalized.includes("invalid_video_request")) {
+    return "Os parâmetros do clipe estão incompletos ou fora do limite permitido. Revise duração, formato e prompt antes de tentar novamente.";
+  }
+
+  if (normalized.includes("invalid_music_request")) {
+    return "Os parâmetros da música estão incompletos ou fora do limite permitido. Revise tema, duração e idioma antes de tentar novamente.";
+  }
+
   if (normalized.includes("quota_exceeded") || normalized.includes("usage_limit_exceeded")) {
     return "Você atingiu o limite deste recurso no plano atual. Aguarde o próximo ciclo ou faça upgrade.";
   }
 
   if (normalized.includes("idempotency_conflict") || normalized.includes("idempotency_replay")) {
     return "Essa ação já foi processada há instantes. Atualize a tela antes de tentar novamente.";
+  }
+
+  if (normalized.includes("idempotency_storage_failed")) {
+    return "Não foi possível confirmar a geração com segurança agora. Tente novamente em instantes.";
   }
 
   if (normalized.includes("coins_debit_failed")) {
@@ -125,4 +137,38 @@ export function toUserFacingError(input: unknown, fallback = "Não foi possível
   }
 
   return raw;
+}
+
+type GenerationSuccessMessageOptions = {
+  provider?: string | null;
+  model?: string | null;
+  replay?: boolean;
+  defaultMessage: string;
+  mockMessage: string;
+  replayMessage?: string;
+};
+
+export function toUserFacingGenerationSuccess({
+  provider,
+  model,
+  replay = false,
+  defaultMessage,
+  mockMessage,
+  replayMessage = "Esta execução reaproveitou uma tentativa recente com segurança. Revise o retorno antes de seguir.",
+}: GenerationSuccessMessageOptions): string {
+  const normalizedProvider = String(provider || "").trim().toLowerCase();
+
+  if (replay || normalizedProvider === "replay") {
+    return replayMessage;
+  }
+
+  if (normalizedProvider === "mock") {
+    return mockMessage;
+  }
+
+  if (!normalizedProvider) {
+    return defaultMessage;
+  }
+
+  return `${defaultMessage} Via ${provider}${model ? ` · ${model}` : ""}.`;
 }

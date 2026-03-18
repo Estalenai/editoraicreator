@@ -7,7 +7,7 @@ import { apiFetch } from "../../lib/api";
 import { createIdempotencyKey } from "../../lib/idempotencyKey";
 import { PremiumSelect } from "../ui/PremiumSelect";
 import { CreatorPlannerPanel } from "./CreatorPlannerPanel";
-import { toUserFacingError } from "../../lib/uiFeedback";
+import { toUserFacingError, toUserFacingGenerationSuccess } from "../../lib/uiFeedback";
 
 type CreatorMusicResult = {
   provider?: string;
@@ -270,6 +270,19 @@ export function CreatorMusicCard({ walletCommon, onRefetch }: Props) {
 
       setResult(normalizedResult);
       setGeneratedPrompt(String(payload?.used_prompt || promptToUse));
+      setSuccess(
+        toUserFacingGenerationSuccess({
+          provider: normalizedResult.provider,
+          model: normalizedResult.model,
+          replay: normalizedResult.provider === "replay",
+          defaultMessage:
+            normalizedResult.audio_url || normalizedResult.preview_url
+              ? "Faixa pronta para revisão."
+              : "Geração enviada com sucesso. Atualize o status para acompanhar a faixa.",
+          mockMessage: "Faixa entregue em modo beta simulado. Ative o provedor real para publicação final.",
+          replayMessage: "Esta faixa já estava em processamento. Atualize o status para acompanhar o retorno final.",
+        })
+      );
       await onRefetch();
     } catch (e: any) {
       setError(e?.message || "Falha ao gerar música.");
@@ -321,9 +334,16 @@ export function CreatorMusicCard({ walletCommon, onRefetch }: Props) {
         ...normalizedResult,
         prompt_used: prev?.prompt_used || normalizedResult.prompt_used,
       }));
-      if (normalizedResult.status === "succeeded" && normalizedResult.audio_url) {
-        setSuccess("Áudio final disponível para revisar e salvar.");
-      }
+      setSuccess(
+        normalizedResult.status === "succeeded" && normalizedResult.audio_url
+          ? toUserFacingGenerationSuccess({
+              provider: normalizedResult.provider,
+              model: normalizedResult.model,
+              defaultMessage: "Áudio final disponível para revisar e salvar.",
+              mockMessage: "Faixa entregue em modo beta simulado. Ative o provedor real para publicação final.",
+            })
+          : "Status atualizado. A faixa ainda está em processamento."
+      );
       await onRefetch();
     } catch (e: any) {
       setError(e?.message || "Falha ao consultar status da música.");
@@ -504,7 +524,12 @@ export function CreatorMusicCard({ walletCommon, onRefetch }: Props) {
                   <div className="state-ea-text">{toUserFacingError(error, "Tente gerar novamente em instantes.")}</div>
                 </div>
               ) : null}
-              {success ? <div className="creator-feedback-note">{success}</div> : null}
+              {success ? (
+                <div className={`state-ea ${result?.provider === "mock" || result?.provider === "replay" ? "state-ea-warning" : "state-ea-success"}`}>
+                  <p className="state-ea-title">Atualização da geração</p>
+                  <div className="state-ea-text">{success}</div>
+                </div>
+              ) : null}
               {copyMsg ? <div className="creator-feedback-note">{copyMsg}</div> : null}
             </div>
           ) : null}

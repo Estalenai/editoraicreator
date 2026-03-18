@@ -8,7 +8,7 @@ import { createIdempotencyKey } from "../../lib/idempotencyKey";
 import { runAutoPromptFlow } from "../../lib/autoPromptFlow";
 import { usePromptPreferences } from "../../hooks/usePromptPreferences";
 import { PremiumSelect } from "../ui/PremiumSelect";
-import { toUserFacingError } from "../../lib/uiFeedback";
+import { toUserFacingError, toUserFacingGenerationSuccess } from "../../lib/uiFeedback";
 
 type ClipResult = {
   ok?: boolean;
@@ -123,6 +123,7 @@ export function CreatorClipsCard({ walletCommon, onRefetch }: Props) {
   const [loadingStatus, setLoadingStatus] = useState(false);
   const [savingProject, setSavingProject] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [copyMsg, setCopyMsg] = useState<string | null>(null);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
 
@@ -186,6 +187,10 @@ export function CreatorClipsCard({ walletCommon, onRefetch }: Props) {
   async function applyFinalPrompt(finalPrompt: string) {
     setLoadingApply(true);
     setError(null);
+    setSuccess(null);
+    setCopyMsg(null);
+    setSaveMsg(null);
+    setSavedProjectId(null);
     setClipResult(null);
 
     try {
@@ -213,6 +218,16 @@ export function CreatorClipsCard({ walletCommon, onRefetch }: Props) {
       }
 
       setClipResult(payload || {});
+      setSuccess(
+        toUserFacingGenerationSuccess({
+          provider: typeof payload?.provider === "string" ? payload.provider : null,
+          model: typeof payload?.model === "string" ? payload.model : null,
+          replay: Boolean(payload?.replay),
+          defaultMessage: pickClipUrl(payload || {}) ? "Clipe disponível para revisar." : "Job criado com sucesso. Atualize o status para acompanhar o clipe.",
+          mockMessage: "Clipe entregue em modo beta simulado. Ative o provedor real para publicação final.",
+          replayMessage: "Este job já estava em processamento. Atualize o status para acompanhar o retorno final.",
+        })
+      );
       setLastPromptUsed(finalPrompt);
       await onRefetch();
     } catch (e: any) {
@@ -228,6 +243,7 @@ export function CreatorClipsCard({ walletCommon, onRefetch }: Props) {
 
     setLoadingStatus(true);
     setError(null);
+    setSuccess(null);
     try {
       const token = await getAccessToken();
       if (!token) throw new Error("Sessão expirada. Faça login novamente.");
@@ -247,10 +263,23 @@ export function CreatorClipsCard({ walletCommon, onRefetch }: Props) {
         throw new Error(payload?.error || "Falha ao consultar status do clipe.");
       }
 
-      setClipResult((prev) => ({
-        ...(prev || {}),
+      const nextResult = {
+        ...(clipResult || {}),
         ...(payload || {}),
-      }));
+      };
+      setClipResult(nextResult);
+      setSuccess(
+        pickClipUrl(nextResult)
+          ? toUserFacingGenerationSuccess({
+              provider: typeof nextResult?.provider === "string" ? nextResult.provider : null,
+              model: typeof nextResult?.model === "string" ? nextResult.model : null,
+              replay: Boolean(nextResult?.replay),
+              defaultMessage: "Clipe atualizado e pronto para revisar.",
+              mockMessage: "Clipe entregue em modo beta simulado. Ative o provedor real para publicação final.",
+              replayMessage: "Este job já estava em processamento. Atualize o status para acompanhar o retorno final.",
+            })
+          : "Status atualizado. O clipe ainda está sendo processado."
+      );
     } catch (e: any) {
       setError(e?.message || "Falha ao consultar status do clipe.");
     } finally {
@@ -291,6 +320,7 @@ export function CreatorClipsCard({ walletCommon, onRefetch }: Props) {
         setGeneratedPrompt("");
         setShowPromptUsed(false);
         setLastPromptUsed(null);
+        setSuccess(null);
         setSaveMsg(null);
         setSavedProjectId(null);
       },
@@ -302,6 +332,7 @@ export function CreatorClipsCard({ walletCommon, onRefetch }: Props) {
 
     setSavingProject(true);
     setError(null);
+    setSuccess(null);
     setSaveMsg(null);
 
     try {
@@ -521,7 +552,7 @@ export function CreatorClipsCard({ walletCommon, onRefetch }: Props) {
         )}
         </div>
 
-        {(error || copyMsg || saveMsg) ? (
+        {(error || success || copyMsg || saveMsg) ? (
           <div className="creator-feedback-stack">
             {error ? (
           <div className="state-ea state-ea-error">
@@ -529,6 +560,12 @@ export function CreatorClipsCard({ walletCommon, onRefetch }: Props) {
             <div className="state-ea-text">{toUserFacingError(error, "Tente novamente ou atualize o status do job.")}</div>
           </div>
             ) : null}
+        {success ? (
+          <div className={`state-ea ${clipResult?.provider === "mock" || clipResult?.provider === "replay" ? "state-ea-warning" : "state-ea-success"}`}>
+            <p className="state-ea-title">Atualização da geração</p>
+            <div className="state-ea-text">{success}</div>
+          </div>
+        ) : null}
         {copyMsg ? <div className="creator-feedback-note">{copyMsg}</div> : null}
         {saveMsg ? <div className="creator-feedback-note">{saveMsg}</div> : null}
           </div>
@@ -655,6 +692,17 @@ export function CreatorClipsCard({ walletCommon, onRefetch }: Props) {
             <p className="section-kicker">Resultado</p>
             <div className="creator-result-title">Job registrado e pronto para acompanhamento</div>
             <p className="creator-result-copy">Acompanhe o status do clipe, copie o link final e siga para o editor quando salvar o projeto.</p>
+            {clipResult?.provider ? (
+              <div className={clipResult.provider === "mock" ? "inline-alert inline-alert-warning" : "helper-note-inline"}>
+                {clipResult.provider === "mock"
+                  ? "Clipe entregue em modo beta simulado. Ative o provedor real para publicação final."
+                  : clipResult.replay || clipResult.provider === "replay"
+                    ? "Este job já estava em processamento. Atualize o status para acompanhar o retorno final."
+                    : `Job enviado via ${clipResult.provider}${clipResult.model ? ` · ${clipResult.model}` : ""}.`}
+              </div>
+            ) : clipResult?.replay ? (
+              <div className="helper-note-inline">Este job já estava em processamento. Atualize o status para acompanhar o retorno final.</div>
+            ) : null}
           </div>
 
           <div className="creator-output-grid">

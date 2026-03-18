@@ -6,6 +6,7 @@ import { api } from "../../../lib/api";
 import { EditorShell, EditorTab } from "../../../components/editor/EditorShell";
 import { GitHubWorkspaceCard } from "../../../components/projects/GitHubWorkspaceCard";
 import { VercelPublishCard } from "../../../components/projects/VercelPublishCard";
+import { toUserFacingError, toUserFacingGenerationSuccess } from "../../../lib/uiFeedback";
 
 type Project = { id: string; title: string; kind: string; data?: any };
 
@@ -297,6 +298,8 @@ export default function EditorProjectPage() {
   const [factResult, setFactResult] = useState<any>(null);
 
   const [aiSteps, setAiSteps] = useState<AiStep[]>([]);
+  const [aiBusy, setAiBusy] = useState<"text" | "fact" | null>(null);
+  const [aiFeedback, setAiFeedback] = useState<{ tone: "success" | "warning"; text: string } | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -386,6 +389,8 @@ export default function EditorProjectPage() {
   }
 
   async function runTextGenerate() {
+    setAiBusy("text");
+    setAiFeedback(null);
     setErr(null);
     setFactResult(null);
     setAiSteps(pushStep(aiSteps, "EditexAI: gerar texto", "Chamando /api/ai/text-generate"));
@@ -393,27 +398,57 @@ export default function EditorProjectPage() {
     try {
       const res = await api.aiTextGenerate({ prompt: text.trim() || "Gere um texto curto." });
       const content = res?.text || res?.output || res?.content || JSON.stringify(res);
+      const provider = typeof res?.provider === "string" ? res.provider : null;
+      const model = typeof res?.model === "string" ? res.model : null;
       setText(String(content));
+      setAiFeedback({
+        tone: provider === "mock" ? "warning" : "success",
+        text: toUserFacingGenerationSuccess({
+          provider,
+          model,
+          defaultMessage: "Texto gerado e aplicado ao editor.",
+          mockMessage: "Texto entregue em modo beta simulado. Revise antes de publicar.",
+        }),
+      });
       setAiSteps(pushStep(aiSteps, "EditexAI: texto gerado", "Texto atualizado no editor"));
     } catch (e: any) {
-      setErr(typeof e === "string" ? e : (e?.message || e?.error?.message || "Falha ao gerar texto"));
+      const message = toUserFacingError(typeof e === "string" ? e : (e?.message || e?.error?.message || "Falha ao gerar texto"), "Falha ao gerar texto.");
+      setErr(message);
       setAiSteps(pushStep(aiSteps, "Erro ao gerar texto", String(e?.error?.message || e)));
+    } finally {
+      setAiBusy((current) => (current === "text" ? null : current));
     }
   }
 
   async function runFactCheck() {
+    setAiBusy("fact");
+    setAiFeedback(null);
     setErr(null);
     setFactResult(null);
     setAiSteps(pushStep(aiSteps, "EditexAI: fact-check", "Chamando /api/ai/fact-check"));
 
     try {
       const res = await api.aiFactCheck({ claim });
+      const provider = typeof res?.provider === "string" ? res.provider : null;
+      const model = typeof res?.model === "string" ? res.model : null;
       setFactResult(res);
+      setAiFeedback({
+        tone: provider === "mock" ? "warning" : "success",
+        text: toUserFacingGenerationSuccess({
+          provider,
+          model,
+          defaultMessage: "Fact-check concluído. Revise o veredito antes de seguir.",
+          mockMessage: "Fact-check entregue em modo beta simulado. Revise antes de tratar o retorno como definitivo.",
+        }),
+      });
       const verdict = res?.verdict || res?.result?.verdict || "(sem veredito)";
       setAiSteps(pushStep(aiSteps, `Fact-check: ${verdict}`, "Resultado disponível no painel"));
     } catch (e: any) {
-      setErr(typeof e === "string" ? e : (e?.message || e?.error?.message || "Falha no fact-check"));
+      const message = toUserFacingError(typeof e === "string" ? e : (e?.message || e?.error?.message || "Falha no fact-check"), "Falha no fact-check.");
+      setErr(message);
       setAiSteps(pushStep(aiSteps, "Erro no fact-check", String(e?.error?.message || e)));
+    } finally {
+      setAiBusy((current) => (current === "fact" ? null : current));
     }
   }
 
@@ -437,6 +472,20 @@ export default function EditorProjectPage() {
           <div className="state-ea-text">{err}</div>
         </div>
       )}
+
+      {aiBusy ? (
+        <div className="state-ea">
+          <p className="state-ea-title">{aiBusy === "text" ? "Gerando texto com IA" : "Executando fact-check"}</p>
+          <div className="state-ea-text">A IA está processando sua solicitação. Aguarde alguns instantes antes de tentar outra ação.</div>
+        </div>
+      ) : null}
+
+      {aiFeedback ? (
+        <div className={`state-ea ${aiFeedback.tone === "warning" ? "state-ea-warning" : "state-ea-success"}`}>
+          <p className="state-ea-title">{aiFeedback.tone === "warning" ? "Resposta em modo beta" : "Ação concluída"}</p>
+          <div className="state-ea-text">{aiFeedback.text}</div>
+        </div>
+      ) : null}
 
       <EditorShell
         title={title}
@@ -646,10 +695,10 @@ export default function EditorProjectPage() {
                     />
                   </label>
                   <div className="editor-shell-cta-group">
-                    <button className="btn-ea btn-primary" onClick={runFactCheck}>
-                      Verificar
+                    <button className="btn-ea btn-primary" onClick={runFactCheck} disabled={aiBusy !== null || !claim.trim()}>
+                      {aiBusy === "fact" ? "Verificando..." : "Verificar"}
                     </button>
-                    <button className="btn-ea btn-ghost" onClick={() => { setClaim(""); setFactResult(null); }}>
+                    <button className="btn-ea btn-ghost" onClick={() => { setClaim(""); setFactResult(null); }} disabled={aiBusy !== null}>
                       Limpar
                     </button>
                   </div>
@@ -688,8 +737,8 @@ export default function EditorProjectPage() {
                 </p>
               </div>
               <div className="editor-shell-cta-group">
-                <button className="btn-ea btn-primary" onClick={runTextGenerate}>
-                  Gerar texto com IA
+                <button className="btn-ea btn-primary" onClick={runTextGenerate} disabled={aiBusy !== null}>
+                  {aiBusy === "text" ? "Gerando texto..." : "Gerar texto com IA"}
                 </button>
                 <button className="btn-ea btn-ghost" onClick={() => setTab("library")}>
                   Abrir biblioteca
