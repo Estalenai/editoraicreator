@@ -137,7 +137,7 @@ function parseTab(raw: string | null): CreatorTab {
 
 export default function CreatorsPage() {
   return (
-    <Suspense fallback={<div className="page-shell"><div className="premium-card" style={{ padding: 16 }}>Carregando Creators...</div></div>}>
+    <Suspense fallback={<div className="page-shell"><div className="premium-card" style={{ padding: 16 }}>Carregando área de Creators...</div></div>}>
       <CreatorsPageContent />
     </Suspense>
   );
@@ -182,8 +182,8 @@ function CreatorsPageContent() {
       })),
     [wallet, loading]
   );
-  const planLabelDisplay = loading ? "Sincronizando plano" : planLabel ?? "—";
-  const walletSummaryDisplay = loading && !wallet ? "Saldo em atualização" : walletSummary;
+  const planLabelDisplay = loading ? "Plano em sincronização" : planLabel ?? "—";
+  const walletSummaryDisplay = loading && !wallet ? "Saldo em sincronização" : walletSummary;
 
   const activeTabMeta = useMemo(
     () => CREATOR_TABS.find((tab) => tab.id === activeTab) || CREATOR_TABS[0],
@@ -233,7 +233,7 @@ function CreatorsPageContent() {
               </div>
               <div className="signal-chip signal-chip-creative">
                 <strong>Geração</strong>
-                <span>Feedback curto, loading claro e erro legível durante a execução.</span>
+                <span>Progresso claro, erro legível e retorno visível durante a execução.</span>
               </div>
               <div className="signal-chip signal-chip-creative">
                 <strong>Continuidade</strong>
@@ -250,7 +250,7 @@ function CreatorsPageContent() {
               <div className="premium-card-soft hero-kpi creators-hero-metric">
                 <span className="hero-kpi-label">Saldo para operar</span>
                 <strong className="hero-kpi-value">{walletSummaryDisplay}</strong>
-                <span className="hero-kpi-text">{loading ? "Saldo e plano estão sendo sincronizados." : "Estimativa antes da geração. Consumo real em Créditos."}</span>
+                <span className="hero-kpi-text">{loading ? "Saldo, plano e regras de uso estão sendo sincronizados." : "Estimativa antes da geração. Consumo real em Créditos."}</span>
               </div>
               <div className="premium-card-soft hero-kpi creators-hero-metric">
                 <span className="hero-kpi-label">Próximo passo</span>
@@ -301,7 +301,7 @@ function CreatorsPageContent() {
 
       {error ? (
         <div className="state-ea state-ea-error">
-          <p className="state-ea-title">Não foi possível carregar o workspace de Creators</p>
+          <p className="state-ea-title">Não foi possível carregar a área de Creators</p>
           <div className="state-ea-text">{toUserFacingError(error, "Atualize o workspace e tente novamente.")}</div>
           <div className="state-ea-actions">
             <button onClick={refresh} className="btn-ea btn-secondary btn-sm">Atualizar</button>
@@ -427,8 +427,8 @@ function CreatorsPageContent() {
             <>
               {loading ? (
                 <div className="premium-card-soft creators-inline-note">
-                  <strong>Atualização em segundo plano</strong>
-                  <span>Saldo e plano estão sendo atualizados enquanto você continua no briefing.</span>
+                  <strong>Sincronização em segundo plano</strong>
+                  <span>Saldo, plano e disponibilidade continuam sendo atualizados enquanto você trabalha no briefing.</span>
                 </div>
               ) : null}
               <div className="premium-card-soft creator-active-panel">

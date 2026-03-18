@@ -177,10 +177,10 @@ export default function DashboardPage() {
     : usageItems.length === 0
       ? "Sem consumo registrado neste mês."
       : `${usageItems.length} feature(s) com atividade monitorada no período.`;
-  const planLabelDisplay = loading ? "Sincronizando plano" : planLabel ?? "—";
+  const planLabelDisplay = loading ? "Plano em sincronização" : planLabel ?? "—";
   const emailDisplay = loading ? "Sincronizando conta..." : email || "—";
-  const walletSummaryDisplay = loading ? "Saldo em atualização" : walletSummary;
-  const recentUsageValueDisplay = loading || usageLoading ? "Carregando..." : recentUsageValue;
+  const walletSummaryDisplay = loading ? "Saldo em sincronização" : walletSummary;
+  const recentUsageValueDisplay = loading || usageLoading ? "Uso em sincronização" : recentUsageValue;
   const recentUsageDetailDisplay = loading ? "Sincronizando métricas, saldo e histórico recente." : recentUsageDetail;
   const nextActionTitleDisplay = loading ? "Preparando seu próximo passo" : nextAction.title;
   const nextActionCtaDisplay = loading ? "Aguarde a sincronização" : nextAction.cta;
@@ -284,7 +284,7 @@ export default function DashboardPage() {
 
       {error ? (
         <div className="state-ea state-ea-error">
-          <p className="state-ea-title">Não foi possível carregar seus dados agora</p>
+          <p className="state-ea-title">Não foi possível carregar painel, plano e saldo agora</p>
           <div className="state-ea-text">{toUserFacingError(error, "Atualize a página e tente novamente.")}</div>
           <div className="state-ea-actions">
             <button onClick={refresh} className="btn-ea btn-secondary btn-sm">
@@ -299,7 +299,7 @@ export default function DashboardPage() {
 
       {usageError ? (
         <div className="state-ea state-ea-warning">
-          <p className="state-ea-title">Uso do mês indisponível no momento</p>
+          <p className="state-ea-title">Uso do período indisponível no momento</p>
           <div className="state-ea-text">{toUserFacingError(usageError, "Atualize as métricas para tentar novamente.")}</div>
           <div className="state-ea-actions">
             <button onClick={loadUsage} className="btn-ea btn-secondary btn-sm">
@@ -350,7 +350,7 @@ export default function DashboardPage() {
             <div className="premium-card executive-card dashboard-summary-card dashboard-summary-card-secondary">
               <p className="executive-eyebrow">Plano atual</p>
               <p className="executive-value">{planLabel ?? "—"}</p>
-              <p className="executive-detail">Revise assinatura, disponibilidade de checkout e benefícios no catálogo.</p>
+              <p className="executive-detail">Revise assinatura, créditos incluídos, checkout e benefícios no catálogo.</p>
               <Link href="/plans" className="card-cta-link">
                 Gerenciar planos
               </Link>

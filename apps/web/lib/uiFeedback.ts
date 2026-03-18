@@ -35,7 +35,7 @@ export function toUserFacingError(input: unknown, fallback = "Não foi possível
   }
 
   if (normalized.includes("insufficient_balance")) {
-    return "Saldo insuficiente para esta ação. Compre créditos avulsos ou reduza o escopo da geração.";
+    return "Saldo insuficiente para esta ação. Ajuste o escopo ou compre créditos para continuar.";
   }
 
   if (normalized.includes("invalid_body")) {
@@ -51,15 +51,15 @@ export function toUserFacingError(input: unknown, fallback = "Não foi possível
   }
 
   if (normalized.includes("quota_exceeded") || normalized.includes("usage_limit_exceeded")) {
-    return "Você atingiu o limite deste recurso no plano atual. Aguarde o próximo ciclo ou faça upgrade.";
+    return "Você atingiu o limite deste recurso no plano atual. Aguarde a renovação ou faça upgrade para continuar.";
   }
 
   if (normalized.includes("idempotency_conflict") || normalized.includes("idempotency_replay")) {
-    return "Essa ação já foi processada há instantes. Atualize a tela antes de tentar novamente.";
+    return "Essa ação já foi recebida há instantes. Aguarde a conclusão ou atualize a tela antes de tentar de novo.";
   }
 
   if (normalized.includes("idempotency_storage_failed")) {
-    return "Não foi possível confirmar a geração com segurança agora. Tente novamente em instantes.";
+    return "Não foi possível confirmar o progresso desta ação com segurança agora. Tente novamente em instantes.";
   }
 
   if (normalized.includes("coins_debit_failed")) {
@@ -115,7 +115,7 @@ export function toUserFacingError(input: unknown, fallback = "Não foi possível
   }
 
   if (normalized.includes("stripe_checkout_failed")) {
-    return "Não foi possível abrir o checkout agora. Tente novamente.";
+    return "Não foi possível abrir o checkout seguro agora. Tente novamente.";
   }
 
   if (
@@ -129,7 +129,7 @@ export function toUserFacingError(input: unknown, fallback = "Não foi possível
   }
 
   if (normalized.includes("timeout")) {
-    return "A operação demorou mais que o esperado. Tente novamente.";
+    return "A operação demorou mais do que o esperado. Atualize a tela e tente novamente.";
   }
 
   if (normalized.includes("too many requests") || normalized.includes("429")) {

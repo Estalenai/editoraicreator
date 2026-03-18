@@ -425,7 +425,7 @@ export default function EditorProjectPage() {
     setAiFeedback(null);
     setErr(null);
     setFactResult(null);
-    setAiSteps(pushStep(aiSteps, "EditexAI: fact-check", "Chamando /api/ai/fact-check"));
+    setAiSteps(pushStep(aiSteps, "EditexAI: verificação editorial", "Chamando /api/ai/fact-check"));
 
     try {
       const res = await api.aiFactCheck({ claim });
@@ -437,16 +437,16 @@ export default function EditorProjectPage() {
         text: toUserFacingGenerationSuccess({
           provider,
           model,
-          defaultMessage: "Fact-check concluído. Revise o veredito antes de seguir.",
-          mockMessage: "Fact-check entregue em modo beta simulado. Revise antes de tratar o retorno como definitivo.",
+          defaultMessage: "Verificação editorial concluída. Revise o veredito antes de seguir.",
+          mockMessage: "Verificação editorial entregue em modo beta simulado. Revise antes de tratar o retorno como definitivo.",
         }),
       });
       const verdict = res?.verdict || res?.result?.verdict || "(sem veredito)";
-      setAiSteps(pushStep(aiSteps, `Fact-check: ${verdict}`, "Resultado disponível no painel"));
+      setAiSteps(pushStep(aiSteps, `Verificação editorial: ${verdict}`, "Resultado disponível no painel"));
     } catch (e: any) {
-      const message = toUserFacingError(typeof e === "string" ? e : (e?.message || e?.error?.message || "Falha no fact-check"), "Falha no fact-check.");
+      const message = toUserFacingError(typeof e === "string" ? e : (e?.message || e?.error?.message || "Falha na verificação editorial"), "Falha na verificação editorial.");
       setErr(message);
-      setAiSteps(pushStep(aiSteps, "Erro no fact-check", String(e?.error?.message || e)));
+      setAiSteps(pushStep(aiSteps, "Erro na verificação editorial", String(e?.error?.message || e)));
     } finally {
       setAiBusy((current) => (current === "fact" ? null : current));
     }
@@ -468,21 +468,21 @@ export default function EditorProjectPage() {
     <div className="page-shell editor-project-page">
       {err && (
         <div className="state-ea state-ea-error">
-          <p className="state-ea-title">Falha no editor</p>
+          <p className="state-ea-title">Não foi possível carregar o editor</p>
           <div className="state-ea-text">{err}</div>
         </div>
       )}
 
       {aiBusy ? (
         <div className="state-ea">
-          <p className="state-ea-title">{aiBusy === "text" ? "Gerando texto com IA" : "Executando fact-check"}</p>
+          <p className="state-ea-title">{aiBusy === "text" ? "Gerando texto com IA" : "Executando verificação editorial"}</p>
           <div className="state-ea-text">A IA está processando sua solicitação. Aguarde alguns instantes antes de tentar outra ação.</div>
         </div>
       ) : null}
 
       {aiFeedback ? (
         <div className={`state-ea ${aiFeedback.tone === "warning" ? "state-ea-warning" : "state-ea-success"}`}>
-          <p className="state-ea-title">{aiFeedback.tone === "warning" ? "Resposta em modo beta" : "Ação concluída"}</p>
+          <p className="state-ea-title">{aiFeedback.tone === "warning" ? "Resposta da IA em modo beta" : "Atualização da IA concluída"}</p>
           <div className="state-ea-text">{aiFeedback.text}</div>
         </div>
       ) : null}
@@ -673,15 +673,15 @@ export default function EditorProjectPage() {
                   <p className="section-kicker">Biblioteca IA</p>
                   <h3>Validação e apoio editorial</h3>
                   <p className="editor-shell-note">
-                    Use fact-check e registre o resultado no mesmo contexto do projeto.
+                    Use a verificação editorial e registre o resultado no mesmo contexto do projeto.
                   </p>
                 </div>
 
                 <div className="editor-shell-inline-card">
                   <div className="editor-shell-panel-head">
-                    <h4>Fact-check (Anti Fake News)</h4>
+                    <h4>Verificação editorial (anti fake news)</h4>
                     <p className="editor-shell-note">
-                      Cole uma afirmacao, valide o resultado e mantenha o contexto no projeto.
+                      Cole uma afirmação, valide o resultado e mantenha o contexto no projeto.
                     </p>
                   </div>
                   <label className="field-label-ea">
@@ -691,7 +691,7 @@ export default function EditorProjectPage() {
                       value={claim}
                       onChange={e => setClaim(e.target.value)}
                       rows={4}
-                      placeholder="Cole aqui uma afirmacao para verificar..."
+                      placeholder="Cole aqui uma afirmação para verificar..."
                     />
                   </label>
                   <div className="editor-shell-cta-group">

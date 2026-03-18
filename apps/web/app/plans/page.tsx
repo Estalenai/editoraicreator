@@ -157,7 +157,7 @@ const CHECKOUT_PLAN_BY_CATALOG_CODE: Record<string, "EDITOR_FREE" | "EDITOR_PRO"
 
 export default function PlansPage() {
   return (
-    <Suspense fallback={<div className="page-shell"><div className="premium-card" style={{ padding: 16 }}>Carregando planos...</div></div>}>
+    <Suspense fallback={<div className="page-shell"><div className="premium-card" style={{ padding: 16 }}>Carregando opções de plano...</div></div>}>
       <PlansPageContent />
     </Suspense>
   );
@@ -243,14 +243,14 @@ function PlansPageContent() {
     () => planNarrative(currentPlanCodeNormalized),
     [currentPlanCodeNormalized]
   );
-  const planLabelDisplay = loading ? "Sincronizando plano" : planLabel ?? "—";
+  const planLabelDisplay = loading ? "Plano em sincronização" : planLabel ?? "—";
   const currentPlanCreditsValue = loading
-    ? "Créditos em sincronização"
+    ? "Créditos do plano em sincronização"
     : currentPlanCreditsTotal > 0
       ? `${currentPlanCreditsTotal} créditos totais`
       : "Consulte o catálogo";
   const currentPlanCreditsDetail = loading
-    ? "A composição do plano aparece assim que o catálogo for sincronizado."
+    ? "A composição, os limites e a disponibilidade aparecem assim que o catálogo for confirmado."
     : currentPlanCredits.length > 0
       ? currentPlanCredits.join(" • ")
       : "Detalhamento completo no catálogo abaixo.";
@@ -260,14 +260,14 @@ function PlansPageContent() {
       ? `${currentPlanFeePercent}%`
       : "—";
   const currentPlanFeeDetail = loading
-    ? "Sincronizando regras do plano e benefícios de conversão."
+    ? "Sincronizando regras de conversão e benefícios do plano."
     : currentPlanFeePercent === 0
       ? "Taxa zero na conversão entre tipos: todo o crédito líquido permanece com a equipe."
       : currentPlanFeePercent != null
         ? "Quanto menor a taxa, mais crédito líquido você mantém ao converter entre Comum, Pro e Ultra."
-        : "Este plano não habilita conversão entre tipos.";
+        : "Conversão entre tipos indisponível neste plano.";
   const currentPlanAudience = loading
-    ? "Sincronizando benefícios, créditos e disponibilidade do plano."
+    ? "Sincronizando benefícios, créditos incluídos e disponibilidade do plano."
     : currentPlanNarrative.audience;
 
   useEffect(() => {
@@ -286,7 +286,7 @@ function PlansPageContent() {
     if (checkoutState === "canceled") {
       setCheckoutNotice({
         tone: "warning",
-        message: "Checkout cancelado. Você pode tentar novamente quando quiser.",
+        message: "Checkout cancelado. Nenhuma assinatura foi alterada e você pode tentar novamente quando quiser.",
       });
       clearCheckoutSearchParams(["checkout"]);
       return;
@@ -296,7 +296,7 @@ function PlansPageContent() {
 
     setCheckoutNotice({
       tone: "info",
-      message: "Pagamento confirmado na Stripe. Atualizando plano e saldo nesta página...",
+      message: "Pagamento confirmado na Stripe. Validando plano, créditos incluídos e disponibilidade nesta página...",
     });
 
     (async () => {
@@ -326,14 +326,14 @@ function PlansPageContent() {
       if (synced) {
         setCheckoutNotice({
           tone: "success",
-          message: "Pagamento confirmado. Plano e saldo foram sincronizados com sucesso.",
+          message: "Pagamento confirmado. Plano, créditos incluídos e disponibilidade já foram atualizados.",
         });
       } else {
         setCheckoutNotice({
           tone: "warning",
           message: toUserFacingError(
             lastSyncError?.message,
-            "Checkout concluído. Não foi possível sincronizar automaticamente agora; tente atualizar o plano."
+            "Checkout concluído. Não foi possível sincronizar automaticamente agora; atualize plano e catálogo em instantes."
           ),
         });
       }
@@ -353,7 +353,7 @@ function PlansPageContent() {
     if (!checkoutPlanCode) {
       setCheckoutNotice({
         tone: "warning",
-        message: "Checkout deste plano ainda não está disponível no beta fechado.",
+        message: "Este plano ainda não abre checkout automático no beta. Use ativação assistida quando necessário.",
       });
       return;
     }
@@ -432,12 +432,12 @@ function PlansPageContent() {
               <p className="section-kicker">Assinatura e disponibilidade</p>
               <h1 className="heading-reset">Planos</h1>
               <p className="section-header-copy hero-copy-compact">
-                Compare valor, créditos e taxa de conversão antes de decidir upgrade ou ativação.
+                Compare o que cada plano entrega, quantos créditos inclui e como a conversão afeta seu saldo antes de decidir upgrade ou ativação.
               </p>
             </div>
             <div className="hero-meta-row hero-meta-row-compact">
               <span className="premium-badge premium-badge-phase">Plano atual: {planLabelDisplay}</span>
-              <span className="premium-badge premium-badge-warning">Checkout self-serve quando disponível</span>
+              <span className="premium-badge premium-badge-warning">Checkout automático quando disponível</span>
             </div>
             <div className="signal-strip plans-hero-signal-strip">
               <div className="signal-chip signal-chip-sober">
@@ -446,7 +446,7 @@ function PlansPageContent() {
               </div>
               <div className="signal-chip signal-chip-sober">
                 <strong>Checkout seguro</strong>
-                <span>Planos self-serve seguem para a Stripe; os demais continuam assistidos.</span>
+                <span>Planos com checkout automático seguem para a Stripe; os demais continuam assistidos.</span>
               </div>
               <div className="signal-chip signal-chip-sober">
                 <strong>Progressão visível</strong>
@@ -459,7 +459,7 @@ function PlansPageContent() {
             <div className="hero-side-list hero-side-list-compact">
               <div className="hero-side-note">
                 <strong>Checkout via Stripe</strong>
-                <span>Planos self-serve seguem por Stripe com retorno controlado ao produto para sincronizar assinatura e disponibilidade.</span>
+                <span>Planos com checkout automático seguem por Stripe com retorno controlado ao produto para sincronizar assinatura e disponibilidade.</span>
               </div>
               <div className="hero-side-note">
                 <strong>Progressão objetiva</strong>
@@ -487,7 +487,7 @@ function PlansPageContent() {
 
       {error ? (
         <div className="state-ea state-ea-error">
-          <p className="state-ea-title">Falha ao carregar dados da conta</p>
+          <p className="state-ea-title">Não foi possível carregar planos e status da conta</p>
           <div className="state-ea-text">{toUserFacingError(error, "Tente atualizar os dados novamente.")}</div>
         </div>
       ) : null}
@@ -506,10 +506,10 @@ function PlansPageContent() {
         <div className={`state-ea ${checkoutNotice.tone === "success" ? "state-ea-success" : checkoutNotice.tone === "warning" ? "state-ea-warning" : ""}`}>
           <p className="state-ea-title">
             {checkoutNotice.tone === "success"
-              ? "Checkout confirmado"
+              ? "Assinatura confirmada"
               : checkoutNotice.tone === "warning"
                 ? "Atenção no checkout"
-                : "Plano selecionado"}
+                : "Sincronizando retorno do checkout"}
           </p>
           <div className="state-ea-text">{checkoutNotice.message}</div>
         </div>
@@ -522,7 +522,7 @@ function PlansPageContent() {
         <div className="state-ea">
           <p className="state-ea-title">Plano atual fora do catálogo exibido</p>
           <div className="state-ea-text">
-            Seu plano atual ({planLabel || "Gratuito"}) não aparece como card nesta visão. Use o resumo acima para referência.
+            Seu plano atual ({planLabel || "Gratuito"}) não aparece como card nesta visão. Use o resumo acima para consultar créditos, taxa e disponibilidade.
           </div>
         </div>
       ) : null}
@@ -548,7 +548,7 @@ function PlansPageContent() {
       <section className="premium-card-soft plans-confidence-strip">
         <div className="plans-confidence-note">
           <strong>Checkout claro</strong>
-          <span>Planos self-serve seguem para assinatura imediata via Stripe; os assistidos continuam via suporte.</span>
+          <span>Planos com checkout automático seguem para assinatura imediata via Stripe; os assistidos continuam via suporte.</span>
         </div>
         <div className="plans-confidence-note">
           <strong>Controle comercial</strong>
@@ -622,7 +622,7 @@ function PlansPageContent() {
                 : comingSoon
                   ? "Em breve"
                   : hasInteractiveCheckout
-                    ? "Checkout imediato"
+                    ? "Checkout imediato via Stripe"
                     : "Ativação assistida";
               const isMostPopular = String(item.highlight || "").toLowerCase() === "most_popular";
               const isLoadingCheckout = checkoutLoadingCode === normalizedCatalogCode;
@@ -631,7 +631,7 @@ function PlansPageContent() {
                 : comingSoon
                   ? "Em breve"
                   : checkoutSupported
-                    ? (isLoadingCheckout ? "Abrindo checkout..." : "Abrir checkout")
+                    ? (isLoadingCheckout ? "Abrindo checkout seguro..." : "Abrir checkout seguro")
                     : "Solicitar ativação";
 
               return (
@@ -731,7 +731,7 @@ function PlansPageContent() {
                   </button>
                   {isCurrentPlan ? (
                     <div className="plan-note-subtle">
-                      Este plano já está ativo na sua conta.
+                      Este plano já está ativo e com benefícios aplicados na sua conta.
                     </div>
                   ) : comingSoon ? (
                     <div className="plan-card-support-note">
@@ -743,7 +743,7 @@ function PlansPageContent() {
                     </div>
                   ) : requiresAssistedActivation ? (
                     <div className="plan-card-support-note">
-                      Disponível no beta com ativação assistida pelo suporte.
+                      Disponível no beta com ativação assistida via suporte.
                     </div>
                   ) : null}
                 </div>

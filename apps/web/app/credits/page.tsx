@@ -182,12 +182,12 @@ export default function CreditsPage() {
   const latestTransactionLabel = latestTransaction
     ? `${txReasonLabel(latestTransaction)} • ${formatDateTime(latestTransaction.created_at)}`
     : "Sem movimentações recentes";
-  const planLabelDisplay = loading ? "Sincronizando plano" : planLabel ?? "—";
-  const walletSummaryDisplay = loading ? "Saldo em atualização" : walletSummary;
+  const planLabelDisplay = loading ? "Plano em sincronização" : planLabel ?? "—";
+  const walletSummaryDisplay = loading ? "Saldo em sincronização" : walletSummary;
   const totalWalletDisplay = loading ? "..." : totalWalletAmount.toLocaleString("pt-BR");
   const conversionFeeDisplay = loading ? "..." : conversionEnabled ? `${conversionFeePercent}%` : "—";
   const conversionFeeHelper = loading
-    ? "Regras do plano em sincronização."
+    ? "Regras de conversão do plano em sincronização."
     : conversionEnabled
       ? conversionFeePercent === 0
         ? "Seu plano converte com taxa zero entre tipos."
@@ -248,7 +248,7 @@ export default function CreditsPage() {
 
     setCheckoutNotice({
       tone: "info",
-      message: "Pagamento confirmado na Stripe. Atualizando saldo e histórico nesta página...",
+      message: "Pagamento confirmado na Stripe. Validando saldo e histórico de créditos nesta página...",
     });
 
     (async () => {
@@ -280,7 +280,7 @@ export default function CreditsPage() {
       if (transactionChanged) {
         setCheckoutNotice({
           tone: "success",
-          message: "Pagamento confirmado. Saldo e histórico foram atualizados nesta tela.",
+          message: "Pagamento confirmado. Saldo e histórico já foram atualizados nesta tela.",
         });
       } else if (syncFailed) {
         setCheckoutNotice({
@@ -290,7 +290,7 @@ export default function CreditsPage() {
       } else {
         setCheckoutNotice({
           tone: "info",
-          message: "Pagamento confirmado. O retorno da Stripe foi recebido e a tela foi revalidada. Se o novo saldo ainda não apareceu, atualize novamente em instantes.",
+          message: "Pagamento confirmado. O retorno da Stripe foi recebido. Se o novo saldo ainda não apareceu, atualize saldo e histórico em instantes.",
         });
       }
 
@@ -370,7 +370,7 @@ export default function CreditsPage() {
               <p className="section-kicker">Transparência de consumo</p>
               <h1 className="heading-reset">Créditos</h1>
               <p className="section-header-copy hero-copy-compact">
-                Saldo, conversão e histórico organizados para decidir compra ou uso em segundos.
+                Saldo, compra avulsa, conversão e histórico organizados para decidir o próximo passo em segundos.
               </p>
             </div>
             <div className="hero-meta-row hero-meta-row-compact">
@@ -444,10 +444,10 @@ export default function CreditsPage() {
         <div className={`state-ea state-ea-spaced ${checkoutNotice.tone === "success" ? "state-ea-success" : checkoutNotice.tone === "warning" ? "state-ea-warning" : ""}`}>
           <p className="state-ea-title">
             {checkoutNotice.tone === "success"
-              ? "Compra confirmada"
+              ? "Compra confirmada na Stripe"
               : checkoutNotice.tone === "warning"
                 ? "Atenção no retorno do checkout"
-                : "Retorno do checkout recebido"}
+                : "Sincronizando retorno do checkout"}
           </p>
           <div className="state-ea-text">{checkoutNotice.message}</div>
           <div className="state-ea-actions">
@@ -471,7 +471,7 @@ export default function CreditsPage() {
       <section className="premium-card credits-guide-section">
         <div className="section-header-ea">
           <h3 className="heading-reset">Como ler seus créditos</h3>
-          <p className="helper-text-ea">Saldo, estimativa e histórico em três sinais.</p>
+          <p className="helper-text-ea">Saldo, estimativa e histórico em três sinais fáceis de ler.</p>
         </div>
         <div className="credits-guide-grid">
           {CREDIT_GUIDE.map((item) => (
@@ -483,10 +483,10 @@ export default function CreditsPage() {
         </div>
         <div className="credits-guide-notes">
           <div className="premium-card-soft credits-guide-note">
-            <strong>Estimativa nos Creators:</strong> prévia antes de gastar saldo.
+            <strong>Estimativa nos Creators:</strong> mostra uma prévia antes de consumir saldo real.
           </div>
           <div className="premium-card-soft credits-guide-note">
-            <strong>Histórico de créditos:</strong> consumo e compra confirmados após processamento.
+            <strong>Histórico de créditos:</strong> confirma consumo, compra e conversão depois do processamento.
           </div>
         </div>
       </section>
@@ -509,7 +509,7 @@ export default function CreditsPage() {
           <p className="executive-value">{conversionFeeDisplay}</p>
           <p className="executive-detail">
             {loading
-              ? "Sincronizando regras de conversão do seu plano."
+              ? "Sincronizando regras de conversão do seu plano e saldo disponível."
               : conversionEnabled
                 ? conversionFeePercent === 0
                   ? "Taxa zero na conversão entre tipos: todo o crédito líquido permanece com você."
@@ -535,7 +535,7 @@ export default function CreditsPage() {
         <div className="section-head">
           <div className="section-header-ea">
             <h3 className="heading-reset">Conversão de créditos</h3>
-            <p className="helper-text-ea">Veja débito, taxa e saldo estimado antes de confirmar.</p>
+            <p className="helper-text-ea">Veja débito, taxa, crédito recebido e saldo estimado antes de confirmar.</p>
           </div>
           <span className={`premium-badge ${conversionEnabled ? "premium-badge-phase" : "premium-badge-warning"}`}>
             {conversionEnabled ? `Taxa atual: ${conversionFeePercent}%` : "Indisponível no plano atual"}
@@ -544,14 +544,14 @@ export default function CreditsPage() {
 
         {loading ? (
           <div className="state-ea state-ea-spaced">
-            <p className="state-ea-title">Carregando saldo e regras do plano</p>
+            <p className="state-ea-title">Carregando saldo, regras de conversão e histórico</p>
             <div className="state-ea-text">
               A conversão fica disponível assim que plano, carteira e histórico forem sincronizados.
             </div>
           </div>
         ) : !conversionEnabled ? (
           <div className="state-ea state-ea-warning state-ea-spaced">
-            <p className="state-ea-title">Conversão bloqueada para este plano</p>
+            <p className="state-ea-title">Conversão indisponível neste plano</p>
             <div className="state-ea-text">
               Para converter créditos entre níveis, ative um plano com conversão habilitada.
             </div>
@@ -609,7 +609,7 @@ export default function CreditsPage() {
             </div>
 
             <div className="helper-text-ea">
-              Pares válidos entre Comum, Pro e Ultra. A taxa é aplicada na origem e o histórico confirma o movimento final.
+              Escolha pares válidos entre Comum, Pro e Ultra. A taxa é aplicada na origem e o histórico confirma o resultado final.
             </div>
             <div className="conversion-metrics-grid credits-conversion-metrics">
               <div className="conversion-metric-card">
@@ -634,7 +634,7 @@ export default function CreditsPage() {
               </div>
             </div>
             <div className="helper-text-ea">
-              Estimativa prévia. O saldo final é confirmado após a conversão.
+              Esta é uma estimativa prévia. O saldo final é confirmado depois da conversão.
             </div>
 
             <div className="credits-conversion-actions">
@@ -647,12 +647,12 @@ export default function CreditsPage() {
               </button>
               {!isPairSupported ? (
                 <div className="inline-alert inline-alert-warning">
-                  Par indisponível para conversão no momento.
+                  Este par de conversão não está disponível no momento.
                 </div>
               ) : null}
               {insufficientForEstimate ? (
                 <div className="inline-alert inline-alert-error">
-                  Saldo insuficiente para esta conversão.
+                  Saldo insuficiente para converter esse volume.
                 </div>
               ) : null}
             </div>
@@ -661,14 +661,14 @@ export default function CreditsPage() {
 
         {conversionError ? (
           <div className="state-ea state-ea-error state-ea-spaced">
-            <p className="state-ea-title">Falha na conversão</p>
+            <p className="state-ea-title">Não foi possível concluir a conversão</p>
             <div className="state-ea-text">{conversionError}</div>
           </div>
         ) : null}
 
         {conversionResult?.ok ? (
           <div className="state-ea state-ea-success state-ea-spaced">
-            <p className="state-ea-title">Conversão concluída</p>
+            <p className="state-ea-title">Conversão concluída com sucesso</p>
             <div className="state-ea-text">
               {coinTypeLabel(conversionResult.conversion?.from || conversionFrom)}: -{conversionResult.conversion?.debited_amount ?? estimatedDebitedAmount} •{" "}
               {coinTypeLabel(conversionResult.conversion?.to || conversionTo)}: +{conversionResult.conversion?.converted_amount ?? estimatedTargetAmount}
@@ -687,7 +687,7 @@ export default function CreditsPage() {
 
       {error ? (
         <div className="state-ea state-ea-error">
-          <p className="state-ea-title">Não foi possível carregar os dados de créditos</p>
+          <p className="state-ea-title">Não foi possível carregar saldo, histórico e regras de crédito</p>
           <div className="state-ea-text">{toUserFacingError(error, "Atualize os dados e tente novamente.")}</div>
           <div className="state-ea-actions">
             <button
@@ -740,7 +740,7 @@ export default function CreditsPage() {
           <div className="state-ea state-ea-spaced">
             <p className="state-ea-title">Sem movimentações recentes de créditos</p>
             <div className="state-ea-text">
-              Gere conteúdo em Creators para registrar consumo, ou compre créditos avulsos para aparecer no histórico.
+              Gere conteúdo em Creators para registrar consumo ou compre créditos avulsos para inaugurar o histórico.
             </div>
             <div className="state-ea-actions">
               <Link href="/creators" className="btn-link-ea btn-primary btn-sm">

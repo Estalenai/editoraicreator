@@ -56,7 +56,7 @@ const PACKAGE_COIN_INFO: Record<PackageCoinKey, { title: string; description: st
 };
 
 const PACKAGE_OPTION_COPY: Record<number, { title: string; note: string }> = {
-  300: { title: "Pacote inicial", note: "Ideal para testar fluxos e ajustar seu mix." },
+  300: { title: "Pacote inicial", note: "Ideal para testar fluxos e ajustar sua composição de créditos." },
   1200: { title: "Pacote produtividade", note: "Bom equilíbrio para rotina semanal intensa." },
   3000: { title: "Pacote escala", note: "Melhor para equipes e produção em volume." },
 };
@@ -181,7 +181,7 @@ export function CreditsPackagesCard({ wallet, loading = false }: Props) {
   const hasFee = quoteFee > 0 && quoteFeePercent > 0;
 
   const walletSummary = useMemo(
-    () => (loading ? "Saldo em atualização" : `${wallet?.common ?? 0} Comum • ${wallet?.pro ?? 0} Pro • ${wallet?.ultra ?? 0} Ultra`),
+    () => (loading ? "Saldo em sincronização" : `${wallet?.common ?? 0} Comum • ${wallet?.pro ?? 0} Pro • ${wallet?.ultra ?? 0} Ultra`),
     [wallet, loading]
   );
   const walletUpdatedAt = useMemo(() => (loading ? "—" : formatDateTime(wallet?.updated_at)), [wallet, loading]);
@@ -294,7 +294,7 @@ export function CreditsPackagesCard({ wallet, loading = false }: Props) {
 
   async function onBuyCoinsPackage() {
     if (loading) {
-      setPackageError("Saldo e regras de compra ainda estão sincronizando. Aguarde antes de abrir o checkout.");
+      setPackageError("Saldo e regras de compra ainda estão sincronizando. Aguarde antes de abrir o checkout seguro.");
       return;
     }
 
@@ -339,7 +339,7 @@ export function CreditsPackagesCard({ wallet, loading = false }: Props) {
       <p className="section-header-copy">
         {loading
           ? "Saldo e regras de compra estão sendo sincronizados antes da cotação."
-          : "Escolha um pacote ou defina o total livre com mix por tipo."}
+          : "Escolha um pacote pronto ou monte um total livre com a mistura de créditos que fizer sentido."}
       </p>
       <div className="trust-grid credits-purchase-notes">
         <div className="premium-card-soft trust-note">
@@ -358,7 +358,7 @@ export function CreditsPackagesCard({ wallet, loading = false }: Props) {
       <div className="helper-note-inline credits-purchase-checkout-note">
         {loading
           ? "Aguarde a sincronização do saldo para abrir uma cotação segura."
-          : "Pagamento externo via Stripe com retorno a Créditos para confirmação."}
+          : "Pagamento seguro via Stripe com retorno a Créditos para confirmar saldo e histórico."}
       </div>
       <a href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm state-ea-spaced">
         Ver histórico de consumo
@@ -375,7 +375,7 @@ export function CreditsPackagesCard({ wallet, loading = false }: Props) {
         ))}
       </div>
       <button onClick={() => setCoinsPanelOpen(true)} disabled={loading} className="btn-ea btn-primary credits-purchase-cta">
-        {loading ? "Carregando saldo..." : "Comprar créditos avulsos"}
+        {loading ? "Sincronizando saldo..." : "Comprar créditos avulsos"}
       </button>
 
       {coinsPanelOpen ? (
@@ -443,7 +443,7 @@ export function CreditsPackagesCard({ wallet, loading = false }: Props) {
             ) : (
               <div className="purchase-modal-section">
                 <div className="meta-text-ea">
-                  Digite a quantidade total que deseja comprar e personalize livremente o mix entre Comum, Pro e Ultra.
+                  Digite a quantidade total que deseja comprar e personalize livremente a composição entre Comum, Pro e Ultra.
                 </div>
                 <label className="field-label-ea">
                   <span>
@@ -523,7 +523,7 @@ export function CreditsPackagesCard({ wallet, loading = false }: Props) {
                 <strong>{activePackageTotal} créditos</strong>
               </div>
               <div className="purchase-summary-row">
-                <span>Soma atual do mix</span>
+                <span>Soma atual da composição</span>
                 <strong>{packageSum} créditos</strong>
               </div>
               {packageMixValid ? (
@@ -536,7 +536,7 @@ export function CreditsPackagesCard({ wallet, loading = false }: Props) {
               ) : null}
               {packageRemaining < 0 ? (
                 <div className="inline-alert inline-alert-error">
-                  O mix excedeu em {packageExceededBy} créditos.
+                  A composição excedeu em {packageExceededBy} créditos.
                 </div>
               ) : null}
               {!packageBreakdownStepValid ? (
@@ -563,7 +563,7 @@ export function CreditsPackagesCard({ wallet, loading = false }: Props) {
 
             {packageError ? (
               <div className="state-ea state-ea-error state-ea-spaced">
-                <p className="state-ea-title">Falha no fluxo de compra</p>
+                <p className="state-ea-title">Não foi possível preparar a compra</p>
                 <div className="state-ea-text">{packageError}</div>
               </div>
             ) : null}
@@ -571,10 +571,10 @@ export function CreditsPackagesCard({ wallet, loading = false }: Props) {
             {(packageLoading || packageCheckoutLoading || packageQuote) ? (
               <div className="helper-note-inline credits-modal-live-note">
                 {packageCheckoutLoading
-                  ? "Abrindo checkout seguro..."
+                  ? "Abrindo checkout seguro na Stripe..."
                   : packageLoading
                     ? "Atualizando cotação..."
-                    : "Cotação pronta. Revise o resumo antes de seguir para o pagamento."}
+                    : "Cotação pronta. Revise subtotal, taxa e total antes de seguir para o pagamento."}
               </div>
             ) : null}
 
@@ -596,12 +596,12 @@ export function CreditsPackagesCard({ wallet, loading = false }: Props) {
             </div>
 
             <div className="helper-text-ea">
-              Depois do pagamento, você volta para Créditos com confirmação do checkout.
+              Depois do pagamento, você volta para Créditos e esta tela tenta validar saldo e histórico automaticamente.
             </div>
 
             {packageQuote ? (
               <div className="premium-card-soft quote-summary-card">
-                <strong>Cotação pronta</strong>
+                <strong>Cotação pronta para revisão</strong>
                 <div className="quote-breakdown-grid state-ea-spaced">
                   <div className="quote-row">
                     <span className="quote-row-label">Subtotal</span>
@@ -612,7 +612,7 @@ export function CreditsPackagesCard({ wallet, loading = false }: Props) {
                       Taxa de compra {hasFee ? `(${quoteFeePercent}%)` : ""}
                     </span>
                     <strong className={hasFee ? "" : "quote-row-success"}>
-                      {hasFee ? formatBrl(quoteFee) : "Grátis no seu plano"}
+                      {hasFee ? formatBrl(quoteFee) : "Sem taxa no seu plano"}
                     </strong>
                   </div>
                   <div className="quote-row quote-row-total">
