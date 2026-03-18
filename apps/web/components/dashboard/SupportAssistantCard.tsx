@@ -23,10 +23,16 @@ type Props = {
 };
 
 const CATEGORY_OPTIONS: Array<{ value: SupportCategory; label: string; hint: string }> = [
-  { value: "duvida", label: "Dúvida", hint: "Perguntas sobre uso da plataforma." },
-  { value: "problema_tecnico", label: "Problema técnico", hint: "Falhas, erros e comportamento inesperado." },
-  { value: "pedido_financeiro", label: "Pedido financeiro", hint: "Reembolso, cobrança ou dúvidas de pagamento." },
-  { value: "outro", label: "Outro", hint: "Solicitações gerais e feedbacks." },
+  { value: "duvida", label: "Dúvida", hint: "Perguntas sobre uso da plataforma, próximos passos ou interpretação do fluxo." },
+  { value: "problema_tecnico", label: "Problema técnico", hint: "Falhas, erros, jobs travados, retorno inconsistente ou comportamento inesperado." },
+  { value: "pedido_financeiro", label: "Pedido financeiro", hint: "Cobrança, assinatura, compra de créditos, checkout ou divergência de saldo." },
+  { value: "outro", label: "Outro", hint: "Solicitações gerais, feedbacks ou pedidos que não entram nas categorias anteriores." },
+];
+
+const SUPPORT_EXPECTATIONS = [
+  "Descreva o que tentou fazer, o que esperava ver e o que aconteceu de fato.",
+  "Inclua referência de checkout, projeto, job, URL ou tela quando existir.",
+  "Se o tema envolver cobrança ou créditos, diga se o retorno da Stripe aconteceu e o que a tela mostrou depois.",
 ];
 
 function categoryLabel(category: SupportCategory): string {
@@ -40,16 +46,6 @@ function statusLabel(status: SupportStatus): string {
   if (status === "in_review") return "Em análise";
   if (status === "resolved") return "Resolvido";
   return "Em aberto";
-}
-
-function statusTone(status: SupportStatus) {
-  if (status === "resolved") {
-    return { background: "rgba(34,197,94,0.2)", border: "1px solid rgba(34,197,94,0.55)" };
-  }
-  if (status === "in_review") {
-    return { background: "rgba(59,130,246,0.2)", border: "1px solid rgba(59,130,246,0.55)" };
-  }
-  return { background: "rgba(251,191,36,0.2)", border: "1px solid rgba(251,191,36,0.55)" };
 }
 
 function formatSubject(value: string): string {
@@ -111,7 +107,7 @@ export function SupportAssistantCard({ onRefetch }: Props) {
         },
       });
 
-      setSuccess("Solicitação enviada. Nossa equipe vai analisar em breve.");
+      setSuccess("Solicitação enviada. A equipe acompanha a fila interna e responde neste histórico assim que a análise começar.");
       setSubject("");
       setMessage("");
       setContextRef("");
@@ -125,198 +121,178 @@ export function SupportAssistantCard({ onRefetch }: Props) {
   }
 
   return (
-    <div
-      className="premium-card"
-      style={{
-        marginTop: 16,
-        padding: 16,
-        borderRadius: 14,
-        background: "linear-gradient(165deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04))",
-        border: "1px solid rgba(255,255,255,0.14)",
-        boxShadow: "0 12px 28px rgba(2,6,23,0.24)",
-      }}
-    >
-      <div className="section-head">
-        <div>
+    <section className="premium-card support-assistant-card">
+      <div className="section-head support-assistant-head">
+        <div className="section-header-ea">
           <p className="section-kicker">Atendimento interno</p>
-          <h3 style={{ margin: "4px 0 0" }}>Support Assistant</h3>
+          <h3 className="heading-reset">Support Assistant</h3>
+          <p className="helper-text-ea">
+            Use este canal para dúvidas, problemas técnicos e questões financeiras. A fila fica registrada no produto para acompanhamento contínuo.
+          </p>
         </div>
-        <span className="premium-badge premium-badge-phase">Fila acompanhada pelo admin</span>
-      </div>
-      <div style={{ opacity: 0.8, marginTop: 8, marginBottom: 10 }}>
-        Use este canal para tirar dúvidas e registrar pedidos. Solicitações financeiras são encaminhadas para análise manual.
+        <span className="premium-badge premium-badge-phase">Fila acompanhada pela equipe</span>
       </div>
 
-      <div className="form-grid-2">
-        <label className="field-label-ea">
-          <span>Categoria</span>
-          <PremiumSelect
-            value={category}
-            onChange={(next) => setCategory(next as SupportCategory)}
-            options={categorySelectOptions}
-            ariaLabel="Categoria de suporte"
-          />
-        </label>
+      <div className="support-assistant-grid">
+        <div className="support-assistant-form">
+          <div className="form-grid-2">
+            <label className="field-label-ea">
+              <span>Categoria</span>
+              <PremiumSelect
+                value={category}
+                onChange={(next) => setCategory(next as SupportCategory)}
+                options={categorySelectOptions}
+                ariaLabel="Categoria de suporte"
+              />
+            </label>
 
-        <label className="field-label-ea">
-          <span>Assunto</span>
-          <input
-            id="support-subject"
-            value={subject}
-            onChange={(e) => setSubject(e.target.value)}
-            placeholder="Resumo curto do pedido"
-            className="field-ea"
-          />
-        </label>
+            <label className="field-label-ea">
+              <span>Assunto</span>
+              <input
+                id="support-subject"
+                value={subject}
+                onChange={(e) => setSubject(e.target.value)}
+                placeholder="Resumo curto do pedido"
+                className="field-ea"
+              />
+            </label>
+          </div>
+
+          <div className="premium-card-soft support-category-hint">
+            <strong>{selectedCategory.label}</strong>
+            <span>{selectedCategory.hint}</span>
+          </div>
+
+          <label className="field-label-ea">
+            <span>Mensagem</span>
+            <textarea
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Descreva o caso com contexto objetivo: o que tentou fazer, o que apareceu e o que esperava ver."
+              rows={5}
+              className="field-ea support-message-field"
+            />
+          </label>
+
+          <label className="field-label-ea">
+            <span>Referência opcional</span>
+            <input
+              value={contextRef}
+              onChange={(e) => setContextRef(e.target.value)}
+              placeholder="Ex.: order_123, quote_abc, URL da tela, jobId ou projectId"
+              className="field-ea"
+            />
+          </label>
+
+          <div className="support-assistant-actions">
+            <button
+              onClick={onSubmit}
+              disabled={loading || !subject.trim() || !message.trim()}
+              className="btn-ea btn-primary"
+            >
+              {loading ? "Enviando solicitação..." : "Enviar solicitação"}
+            </button>
+            <span className="helper-text-ea">Quanto mais contexto objetivo, mais rápida tende a ser a triagem.</span>
+          </div>
+
+          {error ? (
+            <div className="state-ea state-ea-error state-ea-spaced">
+              <p className="state-ea-title">Não foi possível enviar sua solicitação</p>
+              <div className="state-ea-text">{toUserFacingError(error, "Revise os campos e tente novamente.")}</div>
+            </div>
+          ) : null}
+          {success ? (
+            <div className="state-ea state-ea-success state-ea-spaced">
+              <p className="state-ea-title">Solicitação registrada</p>
+              <div className="state-ea-text">{success}</div>
+            </div>
+          ) : null}
+        </div>
+
+        <aside className="support-assistant-side">
+          <div className="premium-card-soft support-guidelines-card">
+            <strong>Como acelerar a resposta</strong>
+            <ul className="support-guidelines-list">
+              {SUPPORT_EXPECTATIONS.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="premium-card-soft support-guidelines-card">
+            <strong>Quando falar com suporte</strong>
+            <span>
+              Use suporte quando checkout, saldo, histórico, plano, publicação ou integrações não refletirem o comportamento esperado após atualização da tela.
+            </span>
+          </div>
+        </aside>
       </div>
 
-      <div className="premium-card-soft" style={{ marginTop: 10, padding: "8px 10px", opacity: 0.85, fontSize: 13 }}>
-        {selectedCategory.hint}
-      </div>
-
-      <label className="field-label-ea" style={{ marginTop: 12 }}>
-        <span>Mensagem</span>
-        <textarea
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="Descreva seu caso com o máximo de contexto possível..."
-          rows={5}
-          className="field-ea"
-          style={{
-            width: "100%",
-            resize: "vertical",
-          }}
-        />
-      </label>
-
-      <label className="field-label-ea" style={{ marginTop: 12 }}>
-        <span>Referência opcional</span>
-        <input
-          value={contextRef}
-          onChange={(e) => setContextRef(e.target.value)}
-          placeholder="Ex.: order_123, quote_abc, URL da tela, jobId..."
-          className="field-ea"
-        />
-      </label>
-
-      <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 12, flexWrap: "wrap" }}>
+      <div className="support-history-head">
+        <div className="section-header-ea">
+          <h4 className="heading-reset">Minhas solicitações</h4>
+          <p className="helper-text-ea">Acompanhe status, respostas internas e o histórico do que já foi enviado.</p>
+        </div>
         <button
-          onClick={onSubmit}
-          disabled={loading || !subject.trim() || !message.trim()}
-          className="btn-ea btn-primary"
+          type="button"
+          onClick={loadMyRequests}
+          disabled={loadingList}
+          className="btn-ea btn-secondary btn-sm"
         >
-          {loading ? "Enviando..." : "Enviar solicitação"}
+          {loadingList ? "Atualizando lista..." : "Atualizar lista"}
         </button>
-        {error ? (
-          <div className="state-ea state-ea-error" style={{ flex: 1, minWidth: 260 }}>
-            <p className="state-ea-title">Não foi possível enviar sua solicitação</p>
-            <div className="state-ea-text">{toUserFacingError(error, "Revise os campos e tente novamente.")}</div>
-          </div>
-        ) : null}
-        {success ? (
-          <div className="state-ea state-ea-success" style={{ flex: 1, minWidth: 260 }}>
-            <p className="state-ea-title">Solicitação registrada</p>
-            <div className="state-ea-text">{success}</div>
-          </div>
-        ) : null}
       </div>
 
-      <div style={{ marginTop: 16 }}>
-        <div style={{ height: 1, background: "rgba(255,255,255,0.12)", marginBottom: 12 }} />
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, marginBottom: 8, flexWrap: "wrap" }}>
-          <div style={{ fontWeight: 600 }}>Minhas solicitações</div>
-          <button
-            type="button"
-            onClick={loadMyRequests}
-            disabled={loadingList}
-            className="btn-ea btn-secondary btn-sm"
-          >
-            {loadingList ? "Atualizando..." : "Atualizar lista"}
-          </button>
+      {loadingList ? (
+        <div className="empty-ea">Carregando histórico de solicitações...</div>
+      ) : items.length === 0 ? (
+        <div className="state-ea">
+          <p className="state-ea-title">Nenhuma solicitação ainda</p>
+          <div className="state-ea-text">
+            Quando você enviar seu primeiro pedido, ele aparece aqui com status de acompanhamento e possíveis notas da equipe.
+          </div>
+          <div className="state-ea-actions">
+            <button
+              type="button"
+              onClick={() => {
+                const target = document.getElementById("support-subject");
+                if (target instanceof HTMLInputElement) target.focus();
+              }}
+              className="btn-ea btn-primary btn-sm"
+            >
+              Criar solicitação
+            </button>
+            <button type="button" onClick={loadMyRequests} className="btn-ea btn-ghost btn-sm">
+              Atualizar lista
+            </button>
+          </div>
         </div>
-        {loadingList ? (
-          <div className="empty-ea">Carregando histórico de solicitações...</div>
-        ) : items.length === 0 ? (
-          <div className="state-ea">
-            <p className="state-ea-title">Nenhuma solicitação ainda</p>
-            <div className="state-ea-text">
-              Quando você enviar seu primeiro pedido, ele aparece aqui com status de acompanhamento.
-            </div>
-            <div className="state-ea-actions">
-              <button
-                type="button"
-                onClick={() => {
-                  const target = document.getElementById("support-subject");
-                  if (target instanceof HTMLInputElement) target.focus();
-                }}
-                className="btn-ea btn-primary btn-sm"
-              >
-                Criar solicitação
-              </button>
-              <button type="button" onClick={loadMyRequests} className="btn-ea btn-ghost btn-sm">
-                Atualizar lista
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div style={{ display: "grid", gap: 8 }}>
-            {items.map((item) => (
-              <div key={item.id} className="premium-card-soft" style={{ padding: 10, borderRadius: 10, background: "rgba(0,0,0,0.2)" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
-                  <strong style={{ lineHeight: 1.35 }}>{formatSubject(item.subject)}</strong>
-                  <span
-                    style={{
-                      ...statusTone(item.status),
-                      display: "inline-flex",
-                      alignItems: "center",
-                      padding: "3px 8px",
-                      borderRadius: 999,
-                      fontSize: 12,
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {statusLabel(item.status)}
-                  </span>
-                </div>
-                <div
-                  style={{
-                    marginTop: 6,
-                    opacity: 0.82,
-                    fontSize: 13,
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8,
-                    flexWrap: "wrap",
-                  }}
-                >
-                  <span>{new Date(item.created_at).toLocaleString("pt-BR")}</span>
-                  <span aria-hidden>•</span>
-                  <span
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      padding: "2px 8px",
-                      borderRadius: 999,
-                      background: "rgba(255,255,255,0.1)",
-                    }}
-                  >
-                    {categoryLabel(item.category)}
-                  </span>
-                </div>
-                <div style={{ marginTop: 8, whiteSpace: "pre-wrap", lineHeight: 1.45 }}>{item.message}</div>
-                {item.admin_note ? (
-                  <div style={{ marginTop: 8, padding: 8, borderRadius: 8, background: "rgba(255,255,255,0.06)" }}>
-                    <strong>Nota da equipe:</strong> {item.admin_note}
-                  </div>
-                ) : null}
+      ) : (
+        <div className="support-history-list">
+          {items.map((item) => (
+            <article key={item.id} className="premium-card-soft support-history-item">
+              <div className="support-history-headline">
+                <strong>{formatSubject(item.subject)}</strong>
+                <span className={`premium-badge ${item.status === "resolved" ? "premium-badge-phase" : item.status === "in_review" ? "premium-badge-warning" : "premium-badge-soon"}`}>
+                  {statusLabel(item.status)}
+                </span>
               </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
+              <div className="support-history-meta">
+                <span>{new Date(item.created_at).toLocaleString("pt-BR")}</span>
+                <span aria-hidden>•</span>
+                <span>{categoryLabel(item.category)}</span>
+              </div>
+              <div className="support-history-message">{item.message}</div>
+              {item.admin_note ? (
+                <div className="support-history-note">
+                  <strong>Nota da equipe</strong>
+                  <span>{item.admin_note}</span>
+                </div>
+              ) : null}
+            </article>
+          ))}
+        </div>
+      )}
+    </section>
   );
 }
-
-
-
