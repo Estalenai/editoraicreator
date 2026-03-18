@@ -45,7 +45,7 @@ const FRAMEWORK_OPTIONS = [
 const STATUS_OPTIONS = [
   { value: "draft", label: "Rascunho" },
   { value: "ready", label: "Pronto para publicar" },
-  { value: "published", label: "Publicado" },
+  { value: "published", label: "Publicado (manual)" },
 ];
 
 function normalizeProject(project: ProjectInput | null | undefined): VercelProjectSummary | null {
@@ -158,7 +158,7 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
     });
     persistWorkspace(nextWorkspace);
     setNoticeTone("success");
-    setNotice("Base Vercel salva. O projeto já esta pronto para handoff beta e acompanhamento do deploy.");
+    setNotice("Base Vercel salva neste navegador. O projeto já está pronto para handoff beta e acompanhamento manual do deploy.");
   }
 
   function onDisconnect() {
@@ -166,7 +166,7 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
     const nextWorkspace = removeVercelProjectBinding(selectedProject.id);
     persistWorkspace(nextWorkspace);
     setNoticeTone("info");
-    setNotice("Ligação com a Vercel removida deste projeto. Voce pode configurar novamente quando quiser.");
+    setNotice("Base local da Vercel removida deste projeto. Você pode configurar novamente quando quiser.");
   }
 
   function onExportManifest() {
@@ -185,7 +185,7 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
       updatedAt: new Date().toISOString(),
     });
     setNoticeTone("success");
-    setNotice("Manifest exportado. Use esse arquivo como handoff inicial para publicar na Vercel.");
+    setNotice("Manifest exportado. Use esse arquivo como handoff inicial para publicar manualmente na Vercel.");
   }
 
   const deployManifest = useMemo(() => {
@@ -213,14 +213,14 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
             <p className="section-kicker">Vercel beta</p>
             <h3>{compact ? "Publicação" : "Publicação e deploy"}</h3>
             <p className="helper-text-ea">
-              A base inicial da Vercel entra quando houver um projeto salvo para preparar o fluxo criar → editar → publicar.
+              A base inicial da Vercel entra quando houver um projeto salvo para preparar o handoff de publicação no fluxo criar → editar → publicar.
             </p>
           </div>
           <span className="premium-badge premium-badge-soon">Aguardando projeto</span>
         </div>
         <div className="vercel-publish-empty">
           <strong>Nenhum projeto elegível para publicação ainda.</strong>
-          <span>Crie ou salve um projeto primeiro. Depois disso, voce já consegue preparar a publicação beta na Vercel.</span>
+          <span>Crie ou salve um projeto primeiro. Depois disso, você já consegue salvar a base de publicação beta e exportar o handoff para a Vercel.</span>
         </div>
         <div className="vercel-publish-actions">
           <Link href="/editor/new" className="btn-link-ea btn-primary btn-sm">
@@ -239,13 +239,13 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
       <div className="vercel-publish-head">
         <div className="vercel-publish-copy">
           <p className="section-kicker">Vercel beta</p>
-          <h3>{compact ? "Publicação pronta" : "Ligação inicial com Vercel"}</h3>
+          <h3>{compact ? "Base de publicação" : "Base beta de publicação na Vercel"}</h3>
           <p className="helper-text-ea">
-            Base beta para conectar o projeto a Vercel, registrar o status do deploy e manter a continuidade fora da plataforma.
+            No beta, a Vercel cobre a base do projeto, framework, URLs e handoff manual de deploy. OAuth e publicação automática entram na próxima fase.
           </p>
         </div>
         <span className={`premium-badge ${connected ? "premium-badge-phase" : "premium-badge-warning"}`}>
-          {connected ? "Projeto ligado à Vercel" : "Ainda não conectado"}
+          {connected ? "Base Vercel salva" : "Base Vercel pendente"}
         </span>
       </div>
 
@@ -276,7 +276,7 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
           <strong>{vercelFrameworkLabel(framework)}</strong>
         </div>
         <div className="vercel-publish-status-item">
-          <span>Status do deploy</span>
+          <span>Status acompanhado</span>
           <strong>{vercelDeployStatusLabel(deployStatus)}</strong>
         </div>
         <div className="vercel-publish-status-item">
@@ -358,7 +358,7 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
             />
           </label>
           <div className="vercel-publish-note">
-            No beta, esta integração salva a base do deploy, o status e o handoff do projeto. Domínio, multiambiente e publicação totalmente automatizada entram na próxima fase.
+            No beta, esta integração salva a base local da publicação, o status acompanhado manualmente e o handoff do projeto. Domínio, multiambiente e publicação totalmente automatizada entram na próxima fase.
           </div>
         </div>
       </div>
@@ -388,17 +388,17 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
 
       {notice ? (
         <div className={`state-ea ${noticeTone === "success" ? "state-ea-success" : ""}`}>
-          <p className="state-ea-title">{noticeTone === "success" ? "Base salva" : "Status da integração"}</p>
+          <p className="state-ea-title">{noticeTone === "success" ? "Base beta atualizada" : "Status da integração"}</p>
           <div className="state-ea-text">{notice}</div>
         </div>
       ) : null}
 
       <div className="vercel-publish-actions">
         <button type="button" onClick={onSave} className="btn-ea btn-primary btn-sm">
-          {connected ? "Atualizar base de publicação" : "Salvar base Vercel"}
+          {connected ? "Atualizar base local" : "Salvar base Vercel"}
         </button>
         <button type="button" onClick={onExportManifest} className="btn-ea btn-secondary btn-sm">
-          Exportar manifest
+          Exportar handoff .json
         </button>
         <a
           href={vercelAppUrl(connected)}
@@ -406,18 +406,18 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
           rel="noreferrer"
           className="btn-link-ea btn-ghost btn-sm"
         >
-          {connected ? "Abrir painel Vercel" : "Abrir Vercel"}
+          {connected ? "Abrir painel da Vercel" : "Abrir Vercel"}
         </a>
         {connected ? (
           <button type="button" onClick={onDisconnect} className="btn-ea btn-ghost btn-sm">
-            Desconectar
+            Remover base local
           </button>
         ) : null}
       </div>
 
       {!compact && deployManifest ? (
         <div className="vercel-publish-note">
-          <strong>O que entra agora:</strong> projeto, framework, root directory, status do deploy e URLs básicas. <strong>O que fica para depois:</strong> OAuth real, importacao automática, dominio customizado e deploy multiambiente.
+          <strong>O que entra agora:</strong> projeto, framework, root directory, status acompanhado e URLs básicas. <strong>O que fica para depois:</strong> OAuth real, importação automática, domínio customizado e deploy sincronizado.
         </div>
       ) : null}
     </section>

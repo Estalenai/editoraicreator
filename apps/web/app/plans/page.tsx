@@ -556,7 +556,7 @@ function PlansPageContent() {
         </div>
         <div className="plans-confidence-note">
           <strong>Sincronização pós-checkout</strong>
-          <span>Depois da compra, atualize o plano para refletir benefícios e disponibilidade.</span>
+          <span>Depois da compra, a página tenta sincronizar automaticamente e você pode atualizar novamente se precisar.</span>
         </div>
         <div className="plans-confidence-note plans-confidence-note-trust">
           <strong>Privacidade aplicada</strong>

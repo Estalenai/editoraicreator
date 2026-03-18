@@ -25,7 +25,7 @@ const STEPS = [
   {
     title: "4. Exporte com clareza",
     description:
-      "O beta já permite fechar o fluxo criando, editando e preparando a publicação inicial via Projetos e Vercel.",
+      "O beta já permite fechar o fluxo criando, editando e preparando o handoff inicial de publicação via Projetos e Vercel.",
     href: "/projects#vercel-publish",
     cta: "Preparar publicação",
   },

@@ -233,8 +233,8 @@ export default function DashboardPage() {
             <span className="plan-card-section-label">Operação</span>
             <div className="hero-side-list">
               <div className="hero-side-note">
-                <strong>Assinatura via Stripe</strong>
-                <span>Checkout, sincronização do plano e atualização pós-pagamento seguem um fluxo dedicado e previsível.</span>
+                <strong>Checkout self-serve via Stripe</strong>
+                <span>Quando disponível no plano, checkout, sincronização e atualização pós-pagamento seguem um fluxo dedicado e previsível.</span>
               </div>
               <div className="hero-side-note">
                 <strong>Projetos em Supabase</strong>

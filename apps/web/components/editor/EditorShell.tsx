@@ -60,7 +60,7 @@ export function EditorShell({
             </div>
             <div className="hero-meta-row">
               <span className="premium-badge premium-badge-phase">Área ativa: {activeTab.label}</span>
-              <span className="premium-badge premium-badge-soon">Projeto com contexto salvo e base de publicação</span>
+              <span className="premium-badge premium-badge-soon">Projeto com contexto salvo e base beta de entrega</span>
             </div>
           </div>
 
@@ -117,7 +117,7 @@ export function EditorShell({
           </div>
           <div className="premium-card-soft trust-note editor-shell-trust-card">
             <strong>Saída controlada</strong>
-            <span>Fluxo padrão de entrega: exporte no dispositivo ou prepare a publicação beta na Vercel. Storage conectado entra na próxima fase.</span>
+            <span>Fluxo padrão de entrega: exporte no dispositivo ou prepare o handoff beta de publicação na Vercel. Storage conectado entra na próxima fase.</span>
           </div>
         </div>
       </header>

@@ -134,6 +134,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
   }, [projectId]);
 
   const repoLabel = useMemo(() => formatGitHubRepoLabel(workspace), [workspace]);
+  const canLinkIdentity = useMemo(() => typeof (supabase.auth as any)?.linkIdentity === "function", []);
   const versionSummaryLabel = useMemo(() => {
     if (project) {
       return projectVersionCount > 0
@@ -156,7 +157,8 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
       const authClient = supabase.auth as any;
       if (typeof window === "undefined") return;
       if (typeof authClient.linkIdentity !== "function") {
-        throw new Error("O cliente atual ainda não expõe o link direto de identidade com GitHub.");
+        setError("A conexão direta com a conta GitHub ainda não está habilitada neste ambiente. A base local e os snapshots continuam disponíveis no beta.");
+        return;
       }
 
       const redirectTo = `${window.location.origin}/projects?github=connected#github-workspace`;
@@ -221,7 +223,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
 
       setWorkspace(nextWorkspace);
       setDraft(draftFromWorkspace(nextWorkspace));
-      setSuccess("Base GitHub salva. O editor já pode registrar versões e exportar snapshots com owner/repositório definidos.");
+      setSuccess("Base GitHub salva neste navegador. O editor já pode registrar versões locais e exportar snapshots com owner/repositório definidos.");
     } catch (saveError: any) {
       setError(
         toUserFacingError(saveError?.message, "Não foi possível salvar a base GitHub agora.")
@@ -239,7 +241,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
       clearGitHubWorkspace(accountKey);
       setWorkspace(null);
       setDraft(DEFAULT_DRAFT);
-      setSuccess("Base GitHub removida deste navegador. A conexão da conta continua disponível para a próxima configuração.");
+      setSuccess("Base GitHub removida deste navegador. Se a conta já estiver conectada, ela continua disponível para a próxima configuração.");
       setError(null);
     } finally {
       setBusyAction(null);
@@ -270,14 +272,14 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
 
   function handleExportBundle() {
     if (!project) {
-      setError("Abra um projeto antes de exportar o bundle GitHub beta.");
+      setError("Abra um projeto antes de exportar o snapshot GitHub beta.");
       return;
     }
 
     setBusyAction("export");
     try {
       downloadGitHubProjectBundle(project, workspace);
-      setSuccess("Snapshot do projeto baixado. Use esse bundle para continuar o app ou site fora da plataforma enquanto push e PRs entram na próxima fase.");
+      setSuccess("Snapshot do projeto baixado. Use esse bundle para continuar o app ou site fora da plataforma enquanto push direto, PRs e CI entram na próxima fase.");
       setError(null);
     } catch (exportError: any) {
       setError(toUserFacingError(exportError?.message, "Não foi possível exportar o snapshot agora."));
@@ -301,15 +303,15 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
       <section className="premium-card-soft github-workspace-card github-workspace-card-compact">
         <div className="section-stack-tight">
           <p className="section-kicker">GitHub beta</p>
-          <h4 className="heading-reset">Continuidade fora da plataforma</h4>
+          <h4 className="heading-reset">Handoff GitHub do projeto</h4>
           <p className="helper-text-ea">
-            Conecte a conta, defina o repositório base e registre versões do projeto para app ou site sem depender de um fluxo grande agora.
+            Use GitHub como base de continuidade: identidade da conta quando disponível, repositório base e snapshots locais para app ou site.
           </p>
         </div>
 
         <div className="hero-meta-row github-workspace-meta-row">
           <span className="premium-badge premium-badge-phase">
-            {connected ? `Conta conectada${identityLabel ? ` • ${identityLabel}` : ""}` : "Conta GitHub pendente"}
+            {connected ? `Conta conectada${identityLabel ? ` • ${identityLabel}` : ""}` : canLinkIdentity ? "Conta opcional neste beta" : "Base local ativa neste beta"}
           </span>
           <span className="premium-badge premium-badge-soon">{repoLabel || "Base do repositório ainda não definida"}</span>
         </div>
@@ -323,7 +325,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
           <div className="github-workspace-status-item">
             <span className="github-workspace-status-label">Fluxo beta</span>
             <strong>{workspace ? `${targetLabel(workspace.target)} em ${workspace.branch}` : "Configure owner/repo/branch em Projetos"}</strong>
-            <small>Push direto, branches e PRs ficam para a próxima fase.</small>
+            <small>Conta opcional, base do repositório e snapshot exportável entram agora; push direto, branches e PRs ficam para a próxima fase.</small>
           </div>
         </div>
 
@@ -336,7 +338,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
 
         {success ? (
           <div className="state-ea state-ea-success">
-            <p className="state-ea-title">GitHub beta pronto</p>
+            <p className="state-ea-title">GitHub beta atualizado</p>
             <div className="state-ea-text">{success}</div>
           </div>
         ) : null}
@@ -366,13 +368,13 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
       <div className="github-workspace-head">
         <div className="section-header-ea">
           <p className="section-kicker">GitHub beta</p>
-          <h2 className="heading-reset">Conecte a conta e prepare o repositório base</h2>
+          <h2 className="heading-reset">Base GitHub para continuidade beta</h2>
           <p className="section-header-copy">
-            A base inicial do beta conecta sua identidade GitHub, salva owner/repositório/branch e deixa o editor pronto para registrar versões e exportar bundles de app ou site.
+            No beta, GitHub já cobre identidade da conta quando disponível, base owner/repositório/branch, versões locais e snapshot exportável para app ou site.
           </p>
         </div>
         <div className="hero-meta-row github-workspace-meta-row">
-          <span className="premium-badge premium-badge-phase">{connected ? "GitHub conectado" : "GitHub ainda não conectado"}</span>
+          <span className="premium-badge premium-badge-phase">{connected ? "Conta GitHub conectada" : canLinkIdentity ? "Conta opcional neste beta" : "Conexão de conta indisponível aqui"}</span>
           <span className="premium-badge premium-badge-warning">{repoLabel || "Base do repositório ainda não definida"}</span>
         </div>
       </div>
@@ -394,29 +396,29 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
       <div className="github-workspace-grid">
         <article className="premium-card-soft github-workspace-pane">
           <div className="section-stack-tight">
-            <p className="section-kicker">1. Conta conectada</p>
-            <h3 className="heading-reset">Identidade GitHub</h3>
+            <p className="section-kicker">1. Conta da equipe</p>
+            <h3 className="heading-reset">Identidade GitHub quando disponível</h3>
             <p className="helper-text-ea">
-              Use a conexão para associar o seu workspace a uma conta real sem transformar o beta em um fluxo gigante de repositórios.
+              Quando este ambiente expõe a conexão da conta, você pode associar sua identidade GitHub. Mesmo sem isso, a base local do repositório e os snapshots continuam disponíveis no beta.
             </p>
           </div>
 
           <div className="github-workspace-status-list">
             <div className="github-workspace-status-item">
               <span className="github-workspace-status-label">Estado</span>
-              <strong>{connected ? "Conta GitHub conectada" : "Conexão pendente"}</strong>
-              <small>{connected ? (identityLabel ? `Conta identificada como ${identityLabel}.` : "Identidade disponível para continuidade do projeto.") : "Conecte a conta para reforçar continuidade e contexto fora da plataforma."}</small>
+              <strong>{connected ? "Conta GitHub conectada" : canLinkIdentity ? "Conexão opcional" : "Conexão de conta indisponível"}</strong>
+              <small>{connected ? (identityLabel ? `Conta identificada como ${identityLabel}.` : "Identidade disponível para continuidade do projeto.") : canLinkIdentity ? "Você pode seguir com a base local mesmo sem vincular a conta agora." : "Neste ambiente, use a base local e os snapshots para continuar fora da plataforma."}</small>
             </div>
             <div className="github-workspace-status-item">
               <span className="github-workspace-status-label">Escopo atual</span>
-              <strong>Identidade e base do projeto</strong>
+              <strong>Identidade opcional + handoff local</strong>
               <small>Push direto, branches, PRs e CI entram na próxima fase do beta.</small>
             </div>
           </div>
 
           <div className="github-workspace-cta-row">
-            <button onClick={handleConnectGitHub} disabled={busyAction === "connect" || connected} className="btn-ea btn-primary btn-sm">
-              {connected ? "Conta conectada" : busyAction === "connect" ? "Conectando..." : "Conectar GitHub"}
+            <button onClick={handleConnectGitHub} disabled={busyAction === "connect" || connected || !canLinkIdentity} className="btn-ea btn-primary btn-sm">
+              {connected ? "Conta conectada" : busyAction === "connect" ? "Conectando..." : canLinkIdentity ? "Conectar GitHub" : "Conexão indisponível aqui"}
             </button>
             <Link href="/editor/new" className="btn-link-ea btn-ghost btn-sm">
               Abrir projeto para app/site
@@ -479,9 +481,9 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
         <article className="premium-card-soft github-workspace-pane">
           <div className="section-stack-tight">
             <p className="section-kicker">3. Continuidade</p>
-            <h3 className="heading-reset">Salvar versão e exportar bundle</h3>
+            <h3 className="heading-reset">Salvar versão e exportar snapshot</h3>
             <p className="helper-text-ea">
-              O beta já prepara continuidade fora da plataforma: abra um projeto no editor, registre versões locais e exporte um snapshot para seguir no app ou site.
+              O beta já prepara continuidade fora da plataforma: abra um projeto no editor, registre versões locais e exporte um snapshot para seguir no app ou site com base real de handoff.
             </p>
           </div>
 
@@ -499,7 +501,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
           </div>
 
           <ol className="github-workspace-checklist">
-            <li>Conecte a conta GitHub ou mantenha a base local salva para este navegador.</li>
+            <li>Conecte a conta GitHub, quando disponível, ou mantenha a base local salva para este navegador.</li>
             <li>Abra um projeto em <Link href="/editor/new" className="text-link-ea">/editor/new</Link> ou retome um já salvo.</li>
             <li>Salve versões e exporte o snapshot .json enquanto push, PR e CI entram na próxima fase.</li>
           </ol>

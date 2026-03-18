@@ -122,7 +122,7 @@ export function vercelFrameworkLabel(framework: VercelFramework): string {
 export function vercelDeployStatusLabel(status: VercelDeployStatus): string {
   if (status === "draft") return "Rascunho";
   if (status === "ready") return "Pronto para publicar";
-  return "Publicado";
+  return "Publicado (informado)";
 }
 
 export function buildVercelDeployManifest(

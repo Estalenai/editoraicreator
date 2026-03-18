@@ -800,7 +800,7 @@ export default function EditorProjectPage() {
                 <p className="section-kicker">Projeto atual</p>
                 <strong className="editor-shell-footer-title">{title}</strong>
                 <p className="editor-shell-note">
-                  Continue salvando blocos-chave. Saída padrão: exportação no dispositivo; GitHub e Vercel já preparam continuidade e publicação beta do projeto para app ou site.
+                  Continue salvando blocos-chave. Saída padrão: exportação no dispositivo; GitHub e Vercel já preparam o handoff beta de continuidade e publicação do projeto para app ou site.
                 </p>
               </div>
               <div className="editor-shell-cta-group">

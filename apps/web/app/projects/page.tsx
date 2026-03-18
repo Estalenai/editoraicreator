@@ -70,11 +70,11 @@ export default function ProjectsPage() {
               </div>
               <div className="hero-side-note">
                 <strong>GitHub beta</strong>
-                <span>Conecte a conta, defina owner/repositório e prepare versões do projeto para app ou site fora da plataforma.</span>
+                <span>Use identidade da conta quando disponível, defina owner/repositório e prepare versões locais do projeto para app ou site fora da plataforma.</span>
               </div>
               <div className="hero-side-note">
                 <strong>Fluxo curto</strong>
-                <span>Creators gera contexto, Projetos organiza continuidade e Vercel prepara a publicação beta sem fluxo técnico pesado.</span>
+                <span>Creators gera contexto, Projetos organiza continuidade e Vercel prepara o handoff de publicação beta sem fluxo técnico pesado.</span>
               </div>
               <div className="hero-side-note hero-side-note-trust">
                 <strong>Persistência com Supabase</strong>
