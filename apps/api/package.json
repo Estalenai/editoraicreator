@@ -7,7 +7,8 @@
   "scripts": {
     "start": "node start.js",
     "dev": "nodemon start.js",
-    "test:http-client": "node --test tests/httpClient.test.js"
+    "test:http-client": "node --test tests/httpClient.test.js",
+    "test:operational": "node --test tests/operational-observability.test.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.87.1",

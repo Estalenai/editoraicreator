@@ -38,6 +38,50 @@ type AdminNotice = {
   message: string;
 };
 
+type HealthReadySnapshot = {
+  ok?: boolean;
+  status?: number;
+  deps?: {
+    db?: boolean;
+    supabaseAdmin?: boolean;
+  };
+};
+
+type AdminStatusSnapshot = {
+  ok?: boolean;
+  uptime_seconds?: number;
+  routing_defaults?: {
+    default_mode?: string;
+    recommended_mode?: string;
+  };
+  metrics_snapshot?: {
+    total_usage_samples?: number;
+    total_metrics_logged?: number;
+  };
+  internal_cost_totals?: {
+    global?: {
+      total_cost_score?: number;
+    };
+  };
+};
+
+type AdminErrorSnapshot = {
+  items?: Array<{ error: string; count: number }>;
+};
+
+type AdminRoutingSnapshot = {
+  modes?: Record<string, number>;
+  providers?: Array<{ provider: string; count: number }>;
+};
+
+type RecentOperationalEvent = {
+  event: string;
+  userId?: string | null;
+  plan?: string | null;
+  timestamp: string;
+  additional?: Record<string, unknown>;
+};
+
 type AdminActionDraft =
   | {
       kind: "support";
@@ -167,6 +211,10 @@ function emailReasonLabel(reason: unknown): string {
   return code;
 }
 
+function eventLabel(event: string): string {
+  return String(event || "evento").replace(/\./g, " -> ");
+}
+
 const panelStyle = {
   padding: 12,
   borderRadius: 12,
@@ -226,6 +274,13 @@ export default function AdminPage() {
   const [betaAccessUpdatingId, setBetaAccessUpdatingId] = useState<string | null>(null);
   const [betaAccessError, setBetaAccessError] = useState<string | null>(null);
   const [betaAccessLastSync, setBetaAccessLastSync] = useState<string | null>(null);
+  const [healthReady, setHealthReady] = useState<HealthReadySnapshot | null>(null);
+  const [statusSnapshot, setStatusSnapshot] = useState<AdminStatusSnapshot | null>(null);
+  const [routingSnapshot, setRoutingSnapshot] = useState<AdminRoutingSnapshot | null>(null);
+  const [errorSnapshot, setErrorSnapshot] = useState<AdminErrorSnapshot | null>(null);
+  const [recentEvents, setRecentEvents] = useState<RecentOperationalEvent[]>([]);
+  const [opsLoading, setOpsLoading] = useState(false);
+  const [opsLastSync, setOpsLastSync] = useState<string | null>(null);
   const [adminNotice, setAdminNotice] = useState<AdminNotice | null>(null);
   const [actionDraft, setActionDraft] = useState<AdminActionDraft | null>(null);
 
@@ -252,6 +307,40 @@ export default function AdminPage() {
       }
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function loadOperationalTelemetry() {
+    setOpsLoading(true);
+    try {
+      const [readyResult, statusResult, errorsResult, routingResult, eventsResult] = await Promise.allSettled([
+        api.healthReady(),
+        api.adminStatus(),
+        api.adminDashboardErrors(),
+        api.adminDashboardRouting(),
+        api.adminRecentEvents(12),
+      ]);
+
+      if (readyResult.status === "fulfilled") setHealthReady(readyResult.value || null);
+      if (statusResult.status === "fulfilled") setStatusSnapshot(statusResult.value || null);
+      if (errorsResult.status === "fulfilled") setErrorSnapshot(errorsResult.value || null);
+      if (routingResult.status === "fulfilled") setRoutingSnapshot(routingResult.value || null);
+      if (eventsResult.status === "fulfilled") {
+        setRecentEvents(Array.isArray(eventsResult.value?.items) ? eventsResult.value.items : []);
+      }
+
+      const failedResults = [statusResult, errorsResult, routingResult, eventsResult].filter((item) => item.status === "rejected");
+      if (failedResults.length > 0) {
+        setAdminNotice({
+          tone: "warning",
+          message: "Parte do rastreamento operacional nao respondeu agora. Os demais painéis seguem disponíveis.",
+        });
+      }
+      setOpsLastSync(new Date().toISOString());
+    } catch (e: any) {
+      setError(toUserFacingError(e?.message, "Falha ao carregar sinais operacionais."));
+    } finally {
+      setOpsLoading(false);
     }
   }
 
@@ -401,9 +490,12 @@ export default function AdminPage() {
   }
 
   async function refreshAdminScreen(nextDays = days) {
-    await loadOverview(nextDays);
-    await loadSupportRequests(supportStatusFilter, supportCategoryFilter);
-    await loadBetaAccessRequests(betaAccessFilter);
+    await Promise.all([
+      loadOverview(nextDays),
+      loadOperationalTelemetry(),
+      loadSupportRequests(supportStatusFilter, supportCategoryFilter),
+      loadBetaAccessRequests(betaAccessFilter),
+    ]);
   }
 
   const supportStats = useMemo(() => {
@@ -468,6 +560,16 @@ export default function AdminPage() {
       supportCreatedToday,
     };
   }, [betaAccessItems, supportItems]);
+
+  const topOperationalErrors = useMemo(
+    () => (Array.isArray(errorSnapshot?.items) ? errorSnapshot.items.slice(0, 5) : []),
+    [errorSnapshot]
+  );
+
+  const topOperationalProviders = useMemo(
+    () => (Array.isArray(routingSnapshot?.providers) ? routingSnapshot.providers.slice(0, 5) : []),
+    [routingSnapshot]
+  );
 
   const actionDraftLabel = useMemo(() => {
     if (!actionDraft) return "";
@@ -616,6 +718,121 @@ export default function AdminPage() {
           </div>
         </div>
       )}
+
+      <div className="premium-card" style={{ ...panelStyle, marginTop: 16 }}>
+        <div className="section-head" style={{ marginBottom: 8 }}>
+          <div>
+            <p className="section-kicker">Saude do produto</p>
+            <h3 style={{ margin: "4px 0 0" }}>Observabilidade e debug minimo</h3>
+          </div>
+          <div style={{ opacity: 0.76, fontSize: 12 }}>
+            {opsLastSync ? `Atualizado em ${new Date(opsLastSync).toLocaleTimeString("pt-BR")}` : "Sem sincronização recente"}
+          </div>
+        </div>
+
+        {opsLoading ? (
+          <div className="empty-ea">Sincronizando sinais operacionais...</div>
+        ) : (
+          <>
+            <div style={{ display: "grid", gap: 10, gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))" }}>
+              <div className="premium-card-soft" style={{ padding: "10px 12px" }}>
+                <div style={{ opacity: 0.76, fontSize: 12 }}>Readiness da API</div>
+                <div style={{ marginTop: 6, fontSize: 22, fontWeight: 700 }}>
+                  {healthReady?.ok ? "OK" : healthReady ? "Degradado" : "Sem resposta"}
+                </div>
+                <div style={{ marginTop: 6, fontSize: 12, opacity: 0.82 }}>
+                  DB: {healthReady?.deps?.db ? "ok" : "falha"} • Supabase admin: {healthReady?.deps?.supabaseAdmin ? "ok" : "falha"}
+                </div>
+              </div>
+
+              <div className="premium-card-soft" style={{ padding: "10px 12px" }}>
+                <div style={{ opacity: 0.76, fontSize: 12 }}>Uptime e trilha</div>
+                <div style={{ marginTop: 6, fontSize: 18, fontWeight: 700 }}>
+                  {statusSnapshot?.uptime_seconds ? `${Math.round(statusSnapshot.uptime_seconds)}s` : "n/d"}
+                </div>
+                <div style={{ marginTop: 6, fontSize: 12, opacity: 0.82 }}>
+                  Samples de uso: {statusSnapshot?.metrics_snapshot?.total_usage_samples ?? 0} • Métricas: {statusSnapshot?.metrics_snapshot?.total_metrics_logged ?? 0}
+                </div>
+              </div>
+
+              <div className="premium-card-soft" style={{ padding: "10px 12px" }}>
+                <div style={{ opacity: 0.76, fontSize: 12 }}>Routing de IA</div>
+                <div style={{ marginTop: 6, fontSize: 18, fontWeight: 700 }}>
+                  Default: {statusSnapshot?.routing_defaults?.default_mode || "n/d"}
+                </div>
+                <div style={{ marginTop: 6, fontSize: 12, opacity: 0.82 }}>
+                  Quality: {routingSnapshot?.modes?.quality ?? 0} • Economy: {routingSnapshot?.modes?.economy ?? 0} • Manual: {routingSnapshot?.modes?.manual ?? 0}
+                </div>
+              </div>
+
+              <div className="premium-card-soft" style={{ padding: "10px 12px" }}>
+                <div style={{ opacity: 0.76, fontSize: 12 }}>Custo interno agregado</div>
+                <div style={{ marginTop: 6, fontSize: 18, fontWeight: 700 }}>
+                  {statusSnapshot?.internal_cost_totals?.global?.total_cost_score?.toFixed?.(2) ?? "0.00"}
+                </div>
+                <div style={{ marginTop: 6, fontSize: 12, opacity: 0.82 }}>
+                  Visão curta para identificar picos operacionais no período atual.
+                </div>
+              </div>
+            </div>
+
+            <div style={{ display: "grid", gap: 10, gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", marginTop: 12 }}>
+              <div className="premium-card-soft" style={{ padding: 12 }}>
+                <div style={{ fontWeight: 700, marginBottom: 8 }}>Top erros recentes</div>
+                {topOperationalErrors.length === 0 ? (
+                  <div style={{ opacity: 0.78, fontSize: 13 }}>Sem erros agregados no buffer atual.</div>
+                ) : (
+                  <div style={{ display: "grid", gap: 6 }}>
+                    {topOperationalErrors.map((item) => (
+                      <div key={`ops-error-${item.error}`} style={{ display: "flex", justifyContent: "space-between", gap: 8, fontSize: 13 }}>
+                        <span style={{ opacity: 0.86, wordBreak: "break-word" }}>{item.error}</span>
+                        <strong>{item.count}</strong>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="premium-card-soft" style={{ padding: 12 }}>
+                <div style={{ fontWeight: 700, marginBottom: 8 }}>Providers e roteamento</div>
+                {topOperationalProviders.length === 0 ? (
+                  <div style={{ opacity: 0.78, fontSize: 13 }}>Sem providers amostrados no buffer atual.</div>
+                ) : (
+                  <div style={{ display: "grid", gap: 6 }}>
+                    {topOperationalProviders.map((item) => (
+                      <div key={`ops-provider-${item.provider}`} style={{ display: "flex", justifyContent: "space-between", gap: 8, fontSize: 13 }}>
+                        <span style={{ opacity: 0.86 }}>{item.provider}</span>
+                        <strong>{item.count}</strong>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="premium-card-soft" style={{ padding: 12 }}>
+                <div style={{ fontWeight: 700, marginBottom: 8 }}>Eventos recentes do produto</div>
+                {recentEvents.length === 0 ? (
+                  <div style={{ opacity: 0.78, fontSize: 13 }}>Sem eventos recentes no buffer atual.</div>
+                ) : (
+                  <div style={{ display: "grid", gap: 8 }}>
+                    {recentEvents.map((item, index) => (
+                      <div key={`ops-event-${item.timestamp}-${index}`} style={{ fontSize: 13 }}>
+                        <div style={{ fontWeight: 600 }}>{eventLabel(item.event)}</div>
+                        <div style={{ opacity: 0.78 }}>
+                          {new Date(item.timestamp).toLocaleString("pt-BR")}
+                          {item.plan ? ` • ${item.plan}` : ""}
+                          {item.additional?.status ? ` • ${String(item.additional.status)}` : ""}
+                          {item.additional?.source ? ` • ${String(item.additional.source)}` : ""}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </>
+        )}
+      </div>
 
       <div className="premium-card" style={{ ...panelStyle, marginTop: 16 }}>
         <h3 style={{ marginTop: 0 }}>Radar operacional</h3>

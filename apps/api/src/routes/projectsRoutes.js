@@ -4,6 +4,7 @@ import { authMiddleware } from "../middlewares/authMiddleware.js";
 import { attachPlan } from "../middlewares/planMiddleware.js";
 import { enforcePlanLimit } from "../middlewares/limitMiddleware.js";
 import { createAuthedSupabaseClient } from "../utils/supabaseAuthed.js";
+import { recordProductEvent } from "../utils/eventsStore.js";
 
 const router = express.Router();
 router.use(authMiddleware);
@@ -14,6 +15,19 @@ function badRequest(res, message, details) {
 }
 function notFound(res, message = "Registro não encontrado") {
   return res.status(404).json({ error: message });
+}
+
+function trackProjectEvent(req, event, additional = {}) {
+  try {
+    recordProductEvent({
+      event,
+      userId: req.user?.id || null,
+      plan: req.plan?.code || null,
+      additional,
+    });
+  } catch {
+    // non-blocking telemetry
+  }
 }
 
 const CreateSchema = z.object({
@@ -63,9 +77,13 @@ router.get("/:id", async (req, res) => {
       .eq("user_id", req.user.id)
       .maybeSingle();
 
-    if (error) return badRequest(res, error.message);
-    if (!data) return notFound(res);
-    return res.json({ item: data });
+      if (error) return badRequest(res, error.message);
+      if (!data) return notFound(res);
+      trackProjectEvent(req, "project.opened", {
+        source: "projects.get",
+        status: "success",
+      });
+      return res.json({ item: data });
   } catch (e) {
     return res.status(500).json({ error: "Erro interno" });
   }
@@ -97,6 +115,10 @@ router.post(
         .maybeSingle();
 
       if (error) return badRequest(res, error.message);
+      trackProjectEvent(req, "project.created", {
+        source: "projects.create",
+        status: "success",
+      });
       return res.status(201).json({ item: data });
     } catch (e) {
       return badRequest(res, e?.message || "Dados inválidos");
@@ -121,9 +143,13 @@ router.patch("/:id", async (req, res) => {
       .select("*")
       .maybeSingle();
 
-    if (error) return badRequest(res, error.message);
-    if (!data) return notFound(res);
-    return res.json({ item: data });
+      if (error) return badRequest(res, error.message);
+      if (!data) return notFound(res);
+      trackProjectEvent(req, "project.saved", {
+        source: "projects.update",
+        status: "success",
+      });
+      return res.json({ item: data });
   } catch (e) {
     return badRequest(res, e?.message || "Dados inválidos");
   }
@@ -145,9 +171,13 @@ router.delete("/:id", async (req, res) => {
       .select("id")
       .maybeSingle();
 
-    if (error) return badRequest(res, error.message);
-    if (!data) return notFound(res);
-    return res.json({ ok: true });
+      if (error) return badRequest(res, error.message);
+      if (!data) return notFound(res);
+      trackProjectEvent(req, "project.deleted", {
+        source: "projects.delete",
+        status: "success",
+      });
+      return res.json({ ok: true });
   } catch (e) {
     return res.status(500).json({ error: "Erro interno" });
   }

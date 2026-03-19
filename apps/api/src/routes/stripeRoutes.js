@@ -17,9 +17,23 @@ import {
   getPriceIdByPlanCode,
 } from "../utils/stripePlans.js";
 import { logger } from "../utils/logger.js";
+import { recordProductEvent } from "../utils/eventsStore.js";
 
 const router = express.Router();
 const IS_DEV = process.env.NODE_ENV === "development";
+
+function trackBillingEvent({ event, req, planCode = null, additional = {} }) {
+  try {
+    recordProductEvent({
+      event,
+      userId: req?.user?.id || null,
+      plan: planCode || null,
+      additional,
+    });
+  } catch {
+    // telemetry should never block billing
+  }
+}
 
 const HANDLED_TYPES = new Set([
   "checkout.session.completed",
@@ -1588,6 +1602,16 @@ router.post("/checkout/session", express.json({ limit: "1mb" }), authMiddleware,
       planCode,
       sessionIdPrefix: idPrefix(session.id),
     });
+    trackBillingEvent({
+      event: "checkout.subscription.created",
+      req,
+      planCode,
+      additional: {
+        source: "stripe.checkout",
+        status: "success",
+        mode: body.mode,
+      },
+    });
     return res.json({ ok: true, url: session.url, sessionId: session.id });
   } catch (error) {
     const checkoutError = classifyCheckoutSessionCreateError(error);
@@ -1601,6 +1625,17 @@ router.post("/checkout/session", express.json({ limit: "1mb" }), authMiddleware,
       stripeType: error?.type || error?.rawType || null,
       stripeParam: error?.param || error?.raw?.param || null,
       message: error?.message || String(error),
+    });
+    trackBillingEvent({
+      event: "checkout.subscription.failed",
+      req,
+      planCode,
+      additional: {
+        source: "stripe.checkout",
+        status: "error",
+        reason: checkoutError.reason,
+        code: checkoutError.error,
+      },
     });
     return res.status(checkoutError.status).json({
       error: checkoutError.error,
@@ -1641,12 +1676,29 @@ router.post("/portal/session", express.json({ limit: "1mb" }), authMiddleware, a
       customerIdPrefix: idPrefix(stripeCustomerId),
       portalSessionIdPrefix: idPrefix(portalSession.id),
     });
+    trackBillingEvent({
+      event: "billing.portal.opened",
+      req,
+      additional: {
+        source: "stripe.portal",
+        status: "success",
+      },
+    });
     return res.json({ ok: true, url: portalSession.url });
   } catch (error) {
     logger.error("stripe_portal_session_failed", {
       userId: maskUser(req.user?.id),
       status: "error",
       message: error?.message || String(error),
+    });
+    trackBillingEvent({
+      event: "billing.portal.failed",
+      req,
+      additional: {
+        source: "stripe.portal",
+        status: "error",
+        reason: "portal_session_failed",
+      },
     });
     return res.status(500).json({ error: "stripe_portal_failed", details: "Nao foi possivel abrir o portal." });
   }
@@ -1666,6 +1718,16 @@ router.post("/subscription/refresh", authMiddleware, async (req, res) => {
         userId,
         planCode: "EDITOR_FREE",
         status: "canceled",
+      });
+      trackBillingEvent({
+        event: "checkout.subscription.refresh",
+        req,
+        planCode: "EDITOR_FREE",
+        additional: {
+          source: "stripe.subscription_refresh",
+          status: "success",
+          reason: "missing_customer_downgraded",
+        },
       });
       return res.json({ ok: true, subscription: null, downgraded: true });
     }
@@ -1690,6 +1752,16 @@ router.post("/subscription/refresh", authMiddleware, async (req, res) => {
         status: "canceled",
         stripeCustomerId: customerId,
       });
+      trackBillingEvent({
+        event: "checkout.subscription.refresh",
+        req,
+        planCode: "EDITOR_FREE",
+        additional: {
+          source: "stripe.subscription_refresh",
+          status: "success",
+          reason: "no_active_subscription",
+        },
+      });
       return res.json({ ok: true, subscription: null, downgraded: true });
     }
 
@@ -1706,6 +1778,16 @@ router.post("/subscription/refresh", authMiddleware, async (req, res) => {
       currentPeriodStart: chosen.current_period_start ? new Date(chosen.current_period_start * 1000).toISOString() : null,
       currentPeriodEnd: chosen.current_period_end ? new Date(chosen.current_period_end * 1000).toISOString() : null,
       cancelAtPeriodEnd: Boolean(chosen.cancel_at_period_end),
+    });
+
+    trackBillingEvent({
+      event: "checkout.subscription.refresh",
+      req,
+      planCode: mappedPlan,
+      additional: {
+        source: "stripe.subscription_refresh",
+        status: "success",
+      },
     });
 
     return res.json({
@@ -1725,6 +1807,15 @@ router.post("/subscription/refresh", authMiddleware, async (req, res) => {
       userId: maskUser(userId),
       status: "error",
       message: error?.message || String(error),
+    });
+    trackBillingEvent({
+      event: "checkout.subscription.refresh_failed",
+      req,
+      additional: {
+        source: "stripe.subscription_refresh",
+        status: "error",
+        reason: "refresh_failed",
+      },
     });
     return res.status(500).json({ error: "stripe_refresh_failed" });
   }

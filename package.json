@@ -12,6 +12,9 @@
     "dev:mobile": "npm --workspace apps/mobile run start",
     "dev:all": "concurrently -k -n API,WEB,MOBILE \"npm run dev:api\" \"npm run dev:web\" \"npm run dev:mobile\"",
     "lint:web": "npm --workspace apps/web run lint",
+    "test:operational:api": "npm --workspace apps/api run test:operational",
+    "test:smoke:api": "node scripts/smoke-api-routes.mjs",
+    "test:smoke:web": "node scripts/smoke-web-routes.mjs",
     "security:secrets": "node scripts/check-secrets.mjs"
   },
   "devDependencies": {

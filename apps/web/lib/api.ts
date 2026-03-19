@@ -435,6 +435,37 @@ export const api = {
     return authJson(`/api/admin/overview?days=${encodeURIComponent(String(days))}`);
   },
 
+  async healthReady() {
+    const res = await apiFetch("/api/health/ready");
+    const payload = await readJsonSafe(res);
+    if (!payload || typeof payload !== "object") {
+      throw new Error("health_ready_unavailable");
+    }
+    return {
+      status: res.status,
+      ...payload,
+    };
+  },
+
+  async adminStatus() {
+    return authJson("/api/status");
+  },
+
+  async adminRecentEvents(limit = 20, userId?: string) {
+    const search = new URLSearchParams();
+    search.set("limit", String(limit));
+    if (userId) search.set("user_id", userId);
+    return authJson(`/api/events/recent?${search.toString()}`);
+  },
+
+  async adminDashboardErrors() {
+    return authJson("/api/dashboard/errors");
+  },
+
+  async adminDashboardRouting() {
+    return authJson("/api/dashboard/routing");
+  },
+
   async adminVisibility() {
     return authJson("/api/admin/visibility");
   },

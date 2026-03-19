@@ -4,6 +4,7 @@ import { z } from "zod";
 import supabaseAdmin, { isSupabaseAdminEnabled } from "../config/supabaseAdmin.js";
 import { authMiddleware } from "../middlewares/authMiddleware.js";
 import { logger } from "../utils/logger.js";
+import { recordProductEvent } from "../utils/eventsStore.js";
 import { resolveLang, t } from "../utils/i18n.js";
 import { generateLimiter } from "../middlewares/rateLimit.js";
 import { createAuthedSupabaseClient } from "../utils/supabaseAuthed.js";
@@ -20,6 +21,19 @@ import {
 
 const router = express.Router();
 router.use(authMiddleware);
+
+function trackCoinsEvent({ event, req, planCode = null, additional = {} }) {
+  try {
+    recordProductEvent({
+      event,
+      userId: req?.user?.id || null,
+      plan: planCode || null,
+      additional,
+    });
+  } catch {
+    // non-blocking telemetry
+  }
+}
 
 const PurchaseQuoteSchema = z.object({
   coin_type: z.enum(["common", "pro", "ultra"]),
@@ -1130,6 +1144,14 @@ router.post("/packages/checkout/create", generateLimiter, async (req, res) => {
     }
     if (replay.kind === "replay") {
       if (replay.payload?.quote_store) setQuoteStoreHeader(res, replay.payload.quote_store);
+      trackCoinsEvent({
+        event: "checkout.coins.replay",
+        req,
+        additional: {
+          source: "coins.checkout",
+          status: "replay",
+        },
+      });
       return res.json(replay.payload);
     }
 
@@ -1322,12 +1344,31 @@ router.post("/packages/checkout/create", generateLimiter, async (req, res) => {
       quoteStore,
     });
 
+    trackCoinsEvent({
+      event: "checkout.coins.created",
+      req,
+      planCode: quote.plan_code,
+      additional: {
+        source: "coins.checkout",
+        status: "success",
+      },
+    });
+
     return res.json(responsePayload);
   } catch (error) {
     logger.error("coins_package_checkout_create_failed", {
       userId: req.user?.id,
       idempotencyKeyPrefix: idemPrefix(req.headers["idempotency-key"]),
       message: error?.message || String(error),
+    });
+    trackCoinsEvent({
+      event: "checkout.coins.failed",
+      req,
+      additional: {
+        source: "coins.checkout",
+        status: "error",
+        reason: "checkout_create_failed",
+      },
     });
     return res.status(500).json({ error: "server_error", message: error?.message || String(error) });
   }
