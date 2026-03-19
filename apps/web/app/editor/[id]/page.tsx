@@ -19,6 +19,8 @@ type CreatorSnapshot = {
   prefillText?: string;
 };
 
+type ReviewStatus = "draft" | "review_ready" | "approved" | "rework";
+
 type EditorVersion = {
   id: string;
   ts: string;
@@ -27,6 +29,18 @@ type EditorVersion = {
   tab: EditorTab;
   charCount: number;
   deliverable: string;
+  snapshotText?: string;
+  reviewStatus?: ReviewStatus;
+  assetCount?: number;
+};
+
+type EditorCheckpoint = {
+  id: string;
+  ts: string;
+  title: string;
+  note: string;
+  type: "save" | "draft" | "review_ready" | "approved" | "rework";
+  versionId?: string | null;
 };
 
 type EditorAsset = {
@@ -54,8 +68,9 @@ type EditorDoc = {
   course: { sections: any[] };
   website: { blocks: any[] };
   aiSteps: AiStep[];
-  review: { factCheck: any | null };
+  review: { factCheck: any | null; status: ReviewStatus };
   versions: EditorVersion[];
+  checkpoints: EditorCheckpoint[];
   delivery: { exportTarget: "device" | "connected_storage"; connectedStorage: string | null; mediaRetention: "externalized" };
 };
 
@@ -74,6 +89,29 @@ const EDITOR_TAB_LABEL: Record<EditorTab, string> = {
   course: "Cursos",
   website: "Sites",
   library: "Biblioteca IA",
+};
+
+const REVIEW_STATUS_META: Record<ReviewStatus, { label: string; detail: string; badge: "phase" | "warning" | "soon" }> = {
+  draft: {
+    label: "Draft ativo",
+    detail: "O entregável ainda está em construção e deve continuar no editor até consolidar uma base séria.",
+    badge: "soon",
+  },
+  review_ready: {
+    label: "Pronto para revisão",
+    detail: "O material já pode passar por leitura crítica, checagem e checkpoint final antes da saída.",
+    badge: "warning",
+  },
+  approved: {
+    label: "Aprovado para saída",
+    detail: "O entregável principal já foi aprovado no projeto e pode seguir para exportação ou handoff.",
+    badge: "phase",
+  },
+  rework: {
+    label: "Ajustes pendentes",
+    detail: "A peça precisa de nova iteração antes de voltar ao estado de revisão ou aprovação.",
+    badge: "warning",
+  },
 };
 
 function extractProjectPayload(payload: any): Project {
@@ -112,8 +150,15 @@ function ensureEditor(project: Project): EditorDoc {
     aiSteps: Array.isArray(e.aiSteps) ? e.aiSteps : [],
     review: {
       factCheck: e.review?.factCheck || null,
+      status:
+        e.review?.status === "review_ready" ||
+        e.review?.status === "approved" ||
+        e.review?.status === "rework"
+          ? e.review.status
+          : "draft",
     },
     versions: Array.isArray(e.versions) ? e.versions : [],
+    checkpoints: Array.isArray(e.checkpoints) ? e.checkpoints : [],
     delivery: {
       exportTarget: e.delivery?.exportTarget === "connected_storage" ? "connected_storage" : "device",
       connectedStorage: typeof e.delivery?.connectedStorage === "string" ? e.delivery.connectedStorage : null,
@@ -331,11 +376,15 @@ function buildEditorVersionEntry({
   text,
   creatorSnapshot,
   projectKindLabel,
+  reviewStatus,
+  assetCount,
 }: {
   tab: EditorTab;
   text: string;
   creatorSnapshot: CreatorSnapshot | null;
   projectKindLabel: string;
+  reviewStatus: ReviewStatus;
+  assetCount: number;
 }): EditorVersion {
   const trimmed = String(text || "").trim();
   const charCount = trimmed.length;
@@ -360,6 +409,30 @@ function buildEditorVersionEntry({
     tab,
     charCount,
     deliverable: trimmed ? "Pronto para revisar" : "Base salva",
+    snapshotText: trimmed || creatorSnapshot?.prefillText || "",
+    reviewStatus,
+    assetCount,
+  };
+}
+
+function buildCheckpointEntry({
+  type,
+  title,
+  note,
+  versionId,
+}: {
+  type: EditorCheckpoint["type"];
+  title: string;
+  note: string;
+  versionId?: string | null;
+}): EditorCheckpoint {
+  return {
+    id: cryptoId(),
+    ts: new Date().toISOString(),
+    title,
+    note,
+    type,
+    versionId: versionId || null,
   };
 }
 
@@ -368,11 +441,13 @@ function buildProjectAssets({
   creatorSnapshot,
   text,
   factResult,
+  reviewStatus,
 }: {
   project: Project | null;
   creatorSnapshot: CreatorSnapshot | null;
   text: string;
   factResult: any;
+  reviewStatus: ReviewStatus;
 }): EditorAsset[] {
   const assets: EditorAsset[] = [];
 
@@ -440,6 +515,18 @@ function buildProjectAssets({
     });
   }
 
+  if (reviewStatus !== "draft") {
+    const meta = REVIEW_STATUS_META[reviewStatus];
+    assets.push({
+      id: "review-status",
+      label: "Estado de revisão",
+      type: "Checkpoint",
+      value: meta.label,
+      note: meta.detail,
+      state: reviewStatus === "approved" ? "ready" : "working",
+    });
+  }
+
   return assets.slice(0, 6);
 }
 
@@ -448,18 +535,25 @@ function buildDeliverableStages({
   text,
   versions,
   factResult,
+  reviewStatus,
+  checkpoints,
   exportTarget,
 }: {
   creatorSnapshot: CreatorSnapshot | null;
   text: string;
   versions: EditorVersion[];
   factResult: any;
+  reviewStatus: ReviewStatus;
+  checkpoints: EditorCheckpoint[];
   exportTarget: "device" | "connected_storage";
 }): DeliverableStage[] {
   const hasBase = Boolean(creatorSnapshot || String(text || "").trim());
   const hasRefinement = String(text || "").trim().length > 120;
-  const hasReview = Boolean(factResult);
+  const hasReviewEvidence = Boolean(factResult);
+  const isReviewReady = reviewStatus === "review_ready" || reviewStatus === "approved";
+  const isApproved = reviewStatus === "approved";
   const hasSavedVersion = versions.length > 0;
+  const hasCheckpoint = checkpoints.length > 0;
 
   return [
     {
@@ -475,16 +569,32 @@ function buildDeliverableStages({
       status: hasRefinement ? "done" : hasBase ? "active" : "pending",
     },
     {
+      id: "review",
+      label: "Revisar",
+      detail: hasReviewEvidence
+        ? isReviewReady
+          ? "Checagem editorial registrada e material marcado para revisão."
+          : "Há base de verificação editorial, mas o projeto ainda não foi levado para revisão."
+        : "Use a Biblioteca IA para validar afirmações e registrar uma leitura crítica do entregável.",
+      status: isReviewReady ? "done" : hasRefinement ? "active" : "pending",
+    },
+    {
       id: "approve",
       label: "Aprovar",
-      detail: hasReview ? "Há uma checagem editorial salva no contexto do projeto." : "Use a Biblioteca IA para validar afirmações e registrar a revisão.",
-      status: hasReview ? "done" : hasRefinement ? "active" : "pending",
+      detail: isApproved
+        ? "Entregável aprovado e pronto para seguir para saída com menos ambiguidade."
+        : isReviewReady
+          ? "O projeto já entrou em revisão. Aprove quando o checkpoint final estiver claro."
+          : "Marque o projeto como pronto para revisão antes de aprovar a saída.",
+      status: isApproved ? "done" : isReviewReady ? "active" : "pending",
     },
     {
       id: "save",
       label: "Salvar",
-      detail: hasSavedVersion ? `${versions.length} versão(ões) já registradas neste projeto.` : "Salve uma versão para travar um ponto de continuidade real.",
-      status: hasSavedVersion ? "done" : hasRefinement ? "active" : "pending",
+      detail: hasSavedVersion
+        ? `${versions.length} versão(ões) e ${checkpoints.length} checkpoint(s) já registrados neste projeto.`
+        : "Salve uma versão para travar um ponto de continuidade real.",
+      status: hasSavedVersion && hasCheckpoint ? "done" : hasRefinement ? "active" : "pending",
     },
     {
       id: "export",
@@ -493,7 +603,7 @@ function buildDeliverableStages({
         exportTarget === "device"
           ? "Saída padrão atual: exported no dispositivo ao concluir o entregável. Published segue como etapa manual fora da plataforma."
           : "Fluxo preparado para storage conectado quando essa etapa estiver disponível.",
-      status: hasSavedVersion ? "active" : "pending",
+      status: isApproved && hasSavedVersion ? "active" : hasSavedVersion ? "pending" : "pending",
     },
   ];
 }
@@ -516,6 +626,7 @@ export default function EditorProjectPage() {
   const [text, setText] = useState("");
   const [claim, setClaim] = useState("");
   const [factResult, setFactResult] = useState<any>(null);
+  const [reviewStatus, setReviewStatus] = useState<ReviewStatus>("draft");
 
   const [aiSteps, setAiSteps] = useState<AiStep[]>([]);
   const [aiBusy, setAiBusy] = useState<"text" | "fact" | null>(null);
@@ -538,6 +649,7 @@ export default function EditorProjectPage() {
         setText(ed.doc.text || snapshot?.prefillText || "");
         setAiSteps(ed.aiSteps);
         setFactResult(ed.review.factCheck || null);
+        setReviewStatus(ed.review.status || "draft");
 
         // Escolhe aba inicial baseada no kind
         if (proj.kind === "video") setTab("video");
@@ -569,10 +681,13 @@ export default function EditorProjectPage() {
   }, [factResult]);
   const editorState = useMemo(() => (project ? ensureEditor(project) : null), [project]);
   const versions = useMemo(() => editorState?.versions || [], [editorState]);
+  const checkpoints = useMemo(() => editorState?.checkpoints || [], [editorState]);
   const latestVersion = versions[0] || null;
+  const latestCheckpoint = checkpoints[0] || null;
+  const reviewStatusMeta = REVIEW_STATUS_META[reviewStatus];
   const outputAssets = useMemo(
-    () => buildProjectAssets({ project, creatorSnapshot, text, factResult }),
-    [creatorSnapshot, factResult, project, text]
+    () => buildProjectAssets({ project, creatorSnapshot, text, factResult, reviewStatus }),
+    [creatorSnapshot, factResult, project, reviewStatus, text]
   );
   const deliverableStages = useMemo(
     () =>
@@ -581,9 +696,11 @@ export default function EditorProjectPage() {
         text,
         versions,
         factResult,
+        reviewStatus,
+        checkpoints,
         exportTarget: editorState?.delivery.exportTarget || "device",
       }),
-    [creatorSnapshot, editorState?.delivery.exportTarget, factResult, text, versions]
+    [checkpoints, creatorSnapshot, editorState?.delivery.exportTarget, factResult, reviewStatus, text, versions]
   );
   const documentMetrics = useMemo(() => {
     const trimmed = String(text || "").trim();
@@ -591,10 +708,64 @@ export default function EditorProjectPage() {
     const paragraphs = trimmed ? trimmed.split(/\n\s*\n/).filter((item) => item.trim().length > 0).length : 0;
     return { chars: trimmed.length, words, paragraphs };
   }, [text]);
+  const outputMetrics = useMemo(() => {
+    const ready = outputAssets.filter((asset) => asset.state === "ready").length;
+    const working = outputAssets.filter((asset) => asset.state === "working").length;
+    return { ready, working };
+  }, [outputAssets]);
+  const primaryAsset = useMemo(
+    () => outputAssets.find((asset) => asset.state === "ready") || outputAssets[0] || null,
+    [outputAssets]
+  );
   const activeDeliverableLabel = useMemo(() => {
     const current = deliverableStages.find((item) => item.status === "active") || deliverableStages[deliverableStages.length - 1];
     return current?.label || "Refinar";
   }, [deliverableStages]);
+  const checkpointLabel = useMemo(
+    () =>
+      latestCheckpoint
+        ? `${latestCheckpoint.title} · ${new Date(latestCheckpoint.ts).toLocaleDateString("pt-BR")}`
+        : "Sem checkpoint ativo",
+    [latestCheckpoint]
+  );
+  const projectStateLabel = useMemo(
+    () => `${reviewStatusMeta.label} · ${outputMetrics.ready} saída(s) pronta(s)`,
+    [outputMetrics.ready, reviewStatusMeta.label]
+  );
+
+  async function persistEditor(next: EditorDoc, feedbackText: string) {
+    if (!project) return null;
+
+    const updated = await api.updateProject(project.id, {
+      data: {
+        ...(project.data || {}),
+        editor: {
+          version: 1,
+          mode: next.mode,
+          doc: next.doc,
+          timeline: next.timeline,
+          workflow: next.workflow,
+          course: next.course,
+          website: next.website,
+          aiSteps: next.aiSteps,
+          review: next.review,
+          versions: next.versions,
+          checkpoints: next.checkpoints,
+          delivery: next.delivery,
+        }
+      }
+    });
+
+    const proj = extractProjectPayload(updated);
+    setProject(proj);
+    setProfessorMode(next.mode.professor);
+    setTransparentMode(next.mode.transparent);
+    setAiSteps(next.aiSteps);
+    setFactResult(next.review.factCheck || null);
+    setReviewStatus(next.review.status || "draft");
+    setSaveFeedback(feedbackText);
+    return proj;
+  }
 
   async function save() {
     if (!project) return;
@@ -609,45 +780,85 @@ export default function EditorProjectPage() {
         text,
         creatorSnapshot,
         projectKindLabel,
+        reviewStatus,
+        assetCount: outputAssets.length,
+      });
+      const nextAiSteps = pushStep(current.aiSteps, "Projeto salvo", `Checkpoint criado em ${new Date().toLocaleString("pt-BR")}`);
+      const nextCheckpoint = buildCheckpointEntry({
+        type: "save",
+        title: `Checkpoint salvo · ${nextVersion.title}`,
+        note: `${nextVersion.deliverable} · ${nextVersion.charCount} caracteres · ${EDITOR_TAB_LABEL[tab]}`,
+        versionId: nextVersion.id,
       });
       const next: EditorDoc = {
         ...current,
         mode: { professor: professorMode, transparent: transparentMode },
         doc: { text },
-        aiSteps,
-        review: { factCheck: factResult || null },
+        aiSteps: nextAiSteps,
+        review: { factCheck: factResult || null, status: reviewStatus },
         versions: [nextVersion, ...current.versions].slice(0, 12),
+        checkpoints: [nextCheckpoint, ...current.checkpoints].slice(0, 12),
         delivery: current.delivery
       };
-
-      const updated = await api.updateProject(project.id, {
-        data: {
-          ...(project.data || {}),
-          editor: {
-            version: 1,
-            mode: next.mode,
-            doc: next.doc,
-            timeline: next.timeline,
-            workflow: next.workflow,
-            course: next.course,
-            website: next.website,
-            aiSteps: next.aiSteps,
-            review: next.review,
-            versions: next.versions,
-            delivery: next.delivery
-          }
-        }
-      });
-
-      const proj = extractProjectPayload(updated);
-      setProject(proj);
-      setSaveFeedback("Projeto salvo com segurança. Continue editando, abra em Projetos quando precisar e exporte ao concluir.");
-      setAiSteps((current) => pushStep(current, "Projeto salvo", new Date().toLocaleString()));
+      await persistEditor(next, "Projeto salvo com segurança. A versão ativa e o checkpoint do trabalho agora ficaram registrados no editor.");
     } catch (e: any) {
       setErr(typeof e === "string" ? e : (e?.message || e?.error?.message || "Falha ao salvar"));
     } finally {
       setSaving(false);
     }
+  }
+
+  async function updateReviewState(nextStatus: ReviewStatus) {
+    if (!project) return;
+    setSaving(true);
+    setErr(null);
+    setSaveFeedback(null);
+
+    try {
+      const current = ensureEditor(project);
+      const meta = REVIEW_STATUS_META[nextStatus];
+      const nextAiSteps = pushStep(current.aiSteps, `Revisão do projeto: ${meta.label}`, meta.detail);
+      const nextCheckpoint = buildCheckpointEntry({
+        type:
+          nextStatus === "approved"
+            ? "approved"
+            : nextStatus === "review_ready"
+              ? "review_ready"
+              : nextStatus === "draft"
+                ? "draft"
+                : "rework",
+        title: meta.label,
+        note: meta.detail,
+        versionId: latestVersion?.id || null,
+      });
+      const next: EditorDoc = {
+        ...current,
+        mode: { professor: professorMode, transparent: transparentMode },
+        doc: { text },
+        aiSteps: nextAiSteps,
+        review: { factCheck: factResult || null, status: nextStatus },
+        versions: current.versions,
+        checkpoints: [nextCheckpoint, ...current.checkpoints].slice(0, 12),
+        delivery: current.delivery,
+      };
+      await persistEditor(next, `${meta.label}. O checkpoint do projeto foi atualizado e a continuidade já reflete essa decisão.`);
+    } catch (e: any) {
+      setErr(typeof e === "string" ? e : (e?.message || e?.error?.message || "Falha ao atualizar o estado de revisão"));
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  function restoreVersion(version: EditorVersion) {
+    if (!version.snapshotText) {
+      setErr("Esta versão foi salva antes do snapshot completo do editor e não pode ser retomada automaticamente.");
+      return;
+    }
+    setText(version.snapshotText);
+    setTab(version.tab);
+    setReviewStatus(version.reviewStatus || "draft");
+    setSaveFeedback(`Versão "${version.title}" carregada no editor. Revise o conteúdo e salve novamente para registrar um novo marco.`);
+    setAiSteps((current) => pushStep(current, `Versão retomada: ${version.title}`, "Snapshot reaplicado localmente ao editor."));
   }
 
   async function runTextGenerate() {
@@ -767,6 +978,8 @@ export default function EditorProjectPage() {
         tab={tab}
         onTab={setTab}
         versionLabel={latestVersion ? `${latestVersion.title} · ${new Date(latestVersion.ts).toLocaleDateString("pt-BR")}` : "Salve a primeira versão"}
+        reviewLabel={reviewStatusMeta.label}
+        checkpointLabel={checkpointLabel}
         deliverableLabel={activeDeliverableLabel}
         outputLabel={`${outputAssets.length} ativo(s) e saída(s) no projeto`}
         nextActionLabel={deliverableStages.find((item) => item.status === "active")?.detail || "Refinar a peça principal"}
@@ -793,11 +1006,19 @@ export default function EditorProjectPage() {
               <div className="editor-shell-facts">
                 <div className="editor-shell-fact">
                   <span className="editor-shell-fact-label">Status</span>
-                  <strong>{saving ? "Salvando draft" : "Draft ativo"}</strong>
+                  <strong>{saving ? "Sincronizando editor" : projectStateLabel}</strong>
                 </div>
                 <div className="editor-shell-fact">
                   <span className="editor-shell-fact-label">Versões</span>
                   <strong>{versions.length ? `${versions.length} registradas` : "Nenhuma versão salva"}</strong>
+                </div>
+                <div className="editor-shell-fact">
+                  <span className="editor-shell-fact-label">Checkpoint</span>
+                  <strong>{latestCheckpoint ? latestCheckpoint.title : "Sem checkpoint ativo"}</strong>
+                </div>
+                <div className="editor-shell-fact">
+                  <span className="editor-shell-fact-label">Revisão</span>
+                  <strong>{reviewStatusMeta.label}</strong>
                 </div>
                 <div className="editor-shell-fact">
                   <span className="editor-shell-fact-label">Visibilidade</span>
@@ -811,7 +1032,7 @@ export default function EditorProjectPage() {
 
               <div className="editor-shell-cta-group">
                 <button onClick={save} disabled={saving} className="btn-ea btn-primary">
-                  {saving ? "Salvando..." : "Salvar projeto"}
+                  {saving ? "Salvando..." : "Salvar versão e checkpoint"}
                 </button>
                 <a href="/projects" className="btn-link-ea btn-ghost btn-sm">Projetos</a>
               </div>
@@ -937,6 +1158,28 @@ export default function EditorProjectPage() {
                   <strong>{outputAssets.length}</strong>
                 </div>
               </div>
+              <div className="editor-project-command-grid">
+                <div className="editor-project-command-card">
+                  <span>Estado do projeto</span>
+                  <strong>{reviewStatusMeta.label}</strong>
+                  <p>{reviewStatusMeta.detail}</p>
+                </div>
+                <div className="editor-project-command-card">
+                  <span>Checkpoint ativo</span>
+                  <strong>{latestCheckpoint ? latestCheckpoint.title : "Sem checkpoint"}</strong>
+                  <p>{latestCheckpoint ? latestCheckpoint.note : "Salve uma versão ou marque revisão para criar um marco útil de continuidade."}</p>
+                </div>
+                <div className="editor-project-command-card">
+                  <span>Output principal</span>
+                  <strong>{primaryAsset ? primaryAsset.label : "Documento principal"}</strong>
+                  <p>{primaryAsset ? primaryAsset.note || primaryAsset.value : "Consolide a primeira saída relevante para o projeto ganhar materialidade."}</p>
+                </div>
+                <div className="editor-project-command-card">
+                  <span>Saída final</span>
+                  <strong>{editorState?.delivery.exportTarget === "device" ? "Exportação no dispositivo" : "Storage conectado"}</strong>
+                  <p>{deliverableStages.find((item) => item.id === "export")?.detail || "Prepare a saída final ao concluir o entregável."}</p>
+                </div>
+              </div>
               <div className="editor-project-version-banner">
                 <div>
                   <span className="editor-shell-fact-label">Última versão</span>
@@ -947,6 +1190,20 @@ export default function EditorProjectPage() {
                     ? `${latestVersion.summary} · ${new Date(latestVersion.ts).toLocaleString("pt-BR")}`
                     : "Salve a primeira versão quando concluir um bloco importante para travar continuidade real no projeto."}
                 </p>
+              </div>
+              <div className="editor-shell-cta-group">
+                <button className="btn-ea btn-secondary btn-sm" onClick={() => updateReviewState("review_ready")} disabled={saving}>
+                  Marcar pronto para revisão
+                </button>
+                <button className="btn-ea btn-primary btn-sm" onClick={() => updateReviewState("approved")} disabled={saving}>
+                  Aprovar entregável
+                </button>
+                <button className="btn-ea btn-ghost btn-sm" onClick={() => updateReviewState("rework")} disabled={saving}>
+                  Pedir ajustes
+                </button>
+                <button className="btn-ea btn-ghost btn-sm" onClick={() => updateReviewState("draft")} disabled={saving}>
+                  Voltar para draft
+                </button>
               </div>
             </section>
 
@@ -1129,10 +1386,36 @@ export default function EditorProjectPage() {
 
             <section className="editor-shell-inline-card">
               <div className="editor-shell-panel-head">
+                <p className="section-kicker">Checkpoints do projeto</p>
+                <h4>Marcos de decisão e continuidade</h4>
+                <p className="editor-shell-note">
+                  Revisão, aprovação e versões salvas agora ficam separados como marcos reais do trabalho, não só como log textual.
+                </p>
+              </div>
+              <div className="editor-project-checkpoint-list">
+                {checkpoints.length ? checkpoints.map((checkpoint) => (
+                  <div key={checkpoint.id} className="editor-project-checkpoint-item" data-type={checkpoint.type}>
+                    <div className="editor-project-checkpoint-head">
+                      <strong>{checkpoint.title}</strong>
+                      <span>{new Date(checkpoint.ts).toLocaleString("pt-BR")}</span>
+                    </div>
+                    <div className="editor-project-checkpoint-note">{checkpoint.note}</div>
+                  </div>
+                )) : (
+                  <div className="editor-shell-empty-note">
+                    <strong>Sem checkpoints ainda</strong>
+                    <span>Salve uma versão ou marque o projeto para revisão para criar marcos reutilizáveis.</span>
+                  </div>
+                )}
+              </div>
+            </section>
+
+            <section className="editor-shell-inline-card">
+              <div className="editor-shell-panel-head">
                 <p className="section-kicker">Versões salvas</p>
                 <h4>Histórico de continuidade</h4>
                 <p className="editor-shell-note">
-                  Cada salvamento cria uma nova referência de trabalho para retomar, revisar ou exportar depois.
+                  Agora cada versão pode voltar para o editor como snapshot real de trabalho, em vez de ser só um registro passivo.
                 </p>
               </div>
               <div className="editor-project-version-list">
@@ -1146,8 +1429,21 @@ export default function EditorProjectPage() {
                       <span>{version.deliverable}</span>
                       <span>{version.charCount} caracteres</span>
                       <span>{EDITOR_TAB_LABEL[version.tab]}</span>
+                      {version.reviewStatus ? <span>{REVIEW_STATUS_META[version.reviewStatus].label}</span> : null}
                     </div>
                     <p>{version.summary}</p>
+                    <div className="editor-project-version-actions">
+                      <button
+                        className="btn-ea btn-ghost btn-sm"
+                        onClick={() => restoreVersion(version)}
+                        disabled={!version.snapshotText || saving}
+                      >
+                        {version.snapshotText ? "Retomar esta versão" : "Versão antiga sem snapshot"}
+                      </button>
+                      {typeof version.assetCount === "number" ? (
+                        <span className="editor-project-version-pill">{version.assetCount} ativo(s) ligados</span>
+                      ) : null}
+                    </div>
                   </div>
                 )) : (
                   <div className="editor-shell-empty-note">

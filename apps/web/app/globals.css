@@ -690,7 +690,7 @@ body {
 
 .editor-shell-status-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--ea-space-2);
 }
 
@@ -839,7 +839,9 @@ body {
 
 .editor-project-stage-grid,
 .editor-project-asset-grid,
-.editor-project-kpi-grid {
+.editor-project-kpi-grid,
+.editor-project-command-grid,
+.editor-project-checkpoint-list {
   display: grid;
   gap: var(--ea-space-3);
 }
@@ -945,6 +947,10 @@ body {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
+.editor-project-command-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .editor-project-kpi {
   display: grid;
   gap: 6px;
@@ -957,6 +963,38 @@ body {
 .editor-project-kpi strong {
   font-size: 18px;
   line-height: 1.15;
+}
+
+.editor-project-command-card {
+  display: grid;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(196, 235, 255, 0.12);
+  background:
+    radial-gradient(180px 80px at 100% 0%, rgba(75, 232, 255, 0.08), transparent 72%),
+    rgba(8, 22, 54, 0.46);
+}
+
+.editor-project-command-card span,
+.editor-project-checkpoint-head span,
+.editor-project-checkpoint-note,
+.editor-project-version-pill {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ea-text-subtle);
+}
+
+.editor-project-command-card strong {
+  color: var(--ea-text-strong);
+}
+
+.editor-project-command-card p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--ea-text-muted);
 }
 
 .editor-project-version-banner {
@@ -988,6 +1026,66 @@ body {
   display: flex;
   gap: var(--ea-space-2);
   flex-wrap: wrap;
+}
+
+.editor-project-version-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.editor-project-version-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(196, 235, 255, 0.14);
+  background: rgba(7, 27, 68, 0.46);
+}
+
+.editor-project-checkpoint-item {
+  display: grid;
+  gap: 8px;
+  padding: var(--ea-space-3);
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.016));
+}
+
+.editor-project-checkpoint-item[data-type="approved"] {
+  border-color: rgba(75, 232, 255, 0.22);
+  background:
+    radial-gradient(180px 80px at 100% 0%, rgba(75, 232, 255, 0.09), transparent 72%),
+    linear-gradient(165deg, rgba(10, 42, 82, 0.44), rgba(255, 255, 255, 0.02));
+}
+
+.editor-project-checkpoint-item[data-type="review_ready"] {
+  border-color: rgba(255, 191, 107, 0.22);
+}
+
+.editor-project-checkpoint-item[data-type="draft"] {
+  border-color: rgba(127, 183, 255, 0.2);
+}
+
+.editor-project-checkpoint-item[data-type="rework"] {
+  border-color: rgba(248, 113, 113, 0.2);
+}
+
+.editor-project-checkpoint-head {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--ea-space-2);
+  align-items: flex-start;
+}
+
+.editor-project-checkpoint-note {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--ea-text-muted);
 }
 
 .editor-shell-step {
@@ -4987,6 +5085,10 @@ textarea:focus {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .editor-shell-status-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .creators-hero-core-grid,
   .creators-secondary-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -5596,6 +5698,10 @@ textarea:focus {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .editor-project-command-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .editor-project-stage-grid,
   .editor-project-asset-grid {
     grid-template-columns: minmax(0, 1fr);
@@ -5609,7 +5715,9 @@ textarea:focus {
 
   .editor-project-stage-head,
   .editor-project-version-head,
-  .editor-project-asset-head {
+  .editor-project-asset-head,
+  .editor-project-checkpoint-head,
+  .editor-project-version-actions {
     flex-direction: column;
   }
 }

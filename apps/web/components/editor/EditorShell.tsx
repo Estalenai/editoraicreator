@@ -9,6 +9,8 @@ export function EditorShell({
   tab,
   onTab,
   versionLabel,
+  reviewLabel,
+  checkpointLabel,
   deliverableLabel,
   outputLabel,
   nextActionLabel,
@@ -25,6 +27,8 @@ export function EditorShell({
   tab: EditorTab;
   onTab: (t: EditorTab) => void;
   versionLabel?: string;
+  reviewLabel?: string;
+  checkpointLabel?: string;
   deliverableLabel?: string;
   outputLabel?: string;
   nextActionLabel?: string;
@@ -83,6 +87,14 @@ export function EditorShell({
                 <strong>{versionLabel || "Sem versão salva ainda"}</strong>
               </div>
               <div className="editor-shell-status-item">
+                <span>Checkpoint</span>
+                <strong>{checkpointLabel || "Sem checkpoint ativo"}</strong>
+              </div>
+              <div className="editor-shell-status-item">
+                <span>Revisão</span>
+                <strong>{reviewLabel || "Draft em andamento"}</strong>
+              </div>
+              <div className="editor-shell-status-item">
                 <span>Visibilidade</span>
                 <strong>{transparentMode ? "Passo a passo ativo" : "Detalhes sob demanda"}</strong>
               </div>
@@ -122,7 +134,7 @@ export function EditorShell({
           </div>
           <div className="signal-chip signal-chip-sober">
             <strong>Versionamento vivo</strong>
-            <span>Versões, contexto e entregáveis ficam no mesmo workspace até a saída final.</span>
+            <span>Versões, checkpoints, contexto e entregáveis ficam no mesmo workspace até a saída final.</span>
           </div>
         </div>
 
