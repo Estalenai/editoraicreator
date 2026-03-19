@@ -645,6 +645,7 @@ function PlansPageContent() {
                     ? "Checkout imediato via Stripe"
                     : "Ativação assistida";
               const isMostPopular = String(item.highlight || "").toLowerCase() === "most_popular";
+              const isRecommendedPlan = normalizedCatalogCode === "EDITOR_PRO" && !isCurrentPlan;
               const isLoadingCheckout = checkoutLoadingCode === normalizedCatalogCode;
               const buttonLabel = isCurrentPlan
                 ? "Plano atual"
@@ -657,7 +658,15 @@ function PlansPageContent() {
               return (
                 <div
                   key={item.code}
-                  className={`premium-card-soft plan-card ${isCurrentPlan ? "plan-card-current" : isMostPopular ? "plan-card-featured" : "plan-card-default"}`}
+                  className={`premium-card-soft plan-card ${
+                    isCurrentPlan
+                      ? "plan-card-current"
+                      : isRecommendedPlan
+                        ? "plan-card-recommended"
+                        : isMostPopular
+                          ? "plan-card-featured"
+                          : "plan-card-default"
+                  }`}
                 >
                   <div className="plan-card-top">
                     <div className="plan-card-header">
@@ -668,6 +677,10 @@ function PlansPageContent() {
                     {isCurrentPlan ? (
                       <span className="premium-badge premium-badge-warning plan-pill">
                         Plano atual
+                      </span>
+                    ) : isRecommendedPlan ? (
+                      <span className="premium-badge premium-badge-phase plan-pill">
+                        Recomendado
                       </span>
                     ) : badgeText ? (
                       <span

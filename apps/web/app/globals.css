@@ -59,11 +59,17 @@
   padding: var(--ea-page-padding-y) var(--ea-page-padding-x) calc(var(--ea-page-padding-y) + 2px);
 }
 
+html,
+body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
 .app-shell-body {
   display: flex;
   flex-direction: column;
   gap: var(--ea-space-4);
-  min-height: 0;
+  min-height: calc(100dvh - 104px);
 }
 
 .app-shell-main {
@@ -2058,7 +2064,7 @@
 
 .plan-catalog-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   column-gap: var(--ea-space-4);
   row-gap: var(--ea-space-5);
   align-items: start;
@@ -2094,6 +2100,12 @@
 .plan-card-featured {
   border-color: rgba(255, 214, 10, 0.7);
   background: linear-gradient(160deg, rgba(255, 214, 10, 0.16), rgba(0, 0, 0, 0.25));
+}
+
+.plan-card-recommended {
+  border-color: rgba(124, 244, 255, 0.42);
+  background: linear-gradient(160deg, rgba(75, 232, 255, 0.22), rgba(8, 27, 64, 0.28));
+  box-shadow: 0 24px 44px rgba(5, 28, 72, 0.34);
 }
 
 .plan-card-top,
@@ -2336,12 +2348,11 @@
   --credits-modal-pad: var(--ea-card-padding-lg);
   width: min(880px, 100%);
   max-height: 90vh;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden;
   display: grid;
-  gap: var(--ea-space-4);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 0;
   border-radius: 16px;
-  padding: var(--credits-modal-pad);
   background:
     radial-gradient(220px 120px at 100% 0%, rgba(52, 245, 255, 0.08), transparent 70%),
     #111833;
@@ -2351,13 +2362,21 @@
 }
 
 .credits-modal-head {
-  position: sticky;
-  top: calc(var(--credits-modal-pad) * -1);
+  position: relative;
   z-index: 1;
-  margin: calc(var(--credits-modal-pad) * -1) calc(var(--credits-modal-pad) * -1) 0;
   padding: var(--ea-card-padding) var(--credits-modal-pad) 12px;
   background: linear-gradient(180deg, rgba(17, 24, 51, 0.98), rgba(17, 24, 51, 0.92));
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.credits-modal-body {
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: grid;
+  gap: var(--ea-space-4);
+  padding: var(--ea-space-4) var(--credits-modal-pad);
+  overscroll-behavior: contain;
 }
 
 .credits-modal .surface-toolbar,
@@ -2396,18 +2415,17 @@
 }
 
 .purchase-modal-footer {
-  position: sticky;
-  bottom: calc(var(--credits-modal-pad) * -1);
+  position: relative;
   z-index: 2;
   display: grid;
   gap: var(--ea-space-3);
-  margin: 0 calc(var(--credits-modal-pad) * -1) calc(var(--credits-modal-pad) * -1);
+  margin: 0;
   padding: 14px var(--credits-modal-pad) calc(14px + env(safe-area-inset-bottom, 0px));
   border-top: 1px solid rgba(191, 239, 255, 0.12);
-  border-radius: 0 0 16px 16px;
+  border-radius: 0;
   background: linear-gradient(180deg, rgba(7, 27, 68, 0.92), rgba(5, 18, 46, 0.98));
   backdrop-filter: blur(12px) saturate(122%);
-  box-shadow: 0 -14px 30px rgba(2, 12, 34, 0.24);
+  box-shadow: inset 0 1px 0 rgba(234, 247, 255, 0.04);
 }
 
 .credits-history-list {
@@ -3636,6 +3654,11 @@ textarea:focus {
   background: linear-gradient(90deg, rgba(255, 214, 10, 0.82), rgba(248, 180, 75, 0.34));
 }
 
+.plan-card-recommended::before {
+  height: 4px;
+  background: linear-gradient(90deg, rgba(124, 244, 255, 0.96), rgba(89, 182, 255, 0.62));
+}
+
 .plan-card-top {
   padding-bottom: var(--ea-space-2);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -4574,20 +4597,21 @@ textarea:focus {
 
 @media (max-width: 1023px) {
   .app-nav-links {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    padding-bottom: 2px;
-    scroll-snap-type: x proximity;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    overflow: visible;
+    padding-bottom: 0;
+    scroll-snap-type: none;
   }
 
   .app-nav-link {
-    flex: 0 0 auto;
-    min-width: 168px;
-    scroll-snap-align: start;
+    flex: 1 1 auto;
+    min-width: 0;
+    scroll-snap-align: none;
   }
 
   .creators-sidebar-group-list {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -4686,7 +4710,6 @@ textarea:focus {
   .credits-modal {
     --credits-modal-pad: var(--ea-card-padding);
     max-height: 92vh;
-    padding: var(--credits-modal-pad);
   }
 
   .credits-modal .surface-toolbar > *,
@@ -4698,10 +4721,6 @@ textarea:focus {
     padding-top: 12px;
     margin-top: 4px;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
-  }
-
-  .purchase-modal-footer {
-    bottom: calc(var(--credits-modal-pad) * -1);
   }
 
   .credits-package-grid,
@@ -4812,7 +4831,6 @@ textarea:focus {
 
   .purchase-modal-footer {
     padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
-    border-radius: 0 0 14px 14px;
   }
 
   .app-nav-link {
@@ -5699,6 +5717,7 @@ body {
 }
 
 .plan-card-current,
+.plan-card-recommended,
 .plan-card-featured,
 .dashboard-summary-card-primary,
 .dashboard-summary-card-action,
@@ -5719,6 +5738,19 @@ body {
   background:
     radial-gradient(260px 120px at 100% 0%, rgba(124, 244, 255, 0.16), transparent 72%),
     linear-gradient(155deg, rgba(62, 126, 255, 0.22), rgba(12, 47, 115, 0.46));
+}
+
+.plan-card-recommended {
+  background:
+    radial-gradient(280px 130px at 100% 0%, rgba(124, 244, 255, 0.22), transparent 72%),
+    radial-gradient(220px 120px at 0% 100%, rgba(89, 182, 255, 0.14), transparent 76%),
+    linear-gradient(155deg, rgba(75, 232, 255, 0.22), rgba(20, 75, 154, 0.46));
+  transform: translateY(-2px);
+}
+
+.plan-card-recommended .plan-card-price,
+.plan-card-recommended .plan-card-total {
+  color: #eaf7ff;
 }
 
 .plan-card-total,
@@ -6397,7 +6429,7 @@ body {
 
 html,
 body,
-.credits-modal,
+.credits-modal-body,
 .app-nav-links,
 .editor-shell-tab-row {
   scrollbar-width: thin;
@@ -6405,7 +6437,7 @@ body,
 }
 
 body::-webkit-scrollbar,
-.credits-modal::-webkit-scrollbar {
+.credits-modal-body::-webkit-scrollbar {
   width: 11px;
 }
 
@@ -6415,7 +6447,7 @@ body::-webkit-scrollbar,
 }
 
 body::-webkit-scrollbar-track,
-.credits-modal::-webkit-scrollbar-track,
+.credits-modal-body::-webkit-scrollbar-track,
 .app-nav-links::-webkit-scrollbar-track,
 .editor-shell-tab-row::-webkit-scrollbar-track {
   background:
@@ -6424,7 +6456,7 @@ body::-webkit-scrollbar-track,
 }
 
 body::-webkit-scrollbar-thumb,
-.credits-modal::-webkit-scrollbar-thumb,
+.credits-modal-body::-webkit-scrollbar-thumb,
 .app-nav-links::-webkit-scrollbar-thumb,
 .editor-shell-tab-row::-webkit-scrollbar-thumb {
   border-radius: 999px;
@@ -6435,7 +6467,7 @@ body::-webkit-scrollbar-thumb,
 }
 
 body::-webkit-scrollbar-thumb:hover,
-.credits-modal::-webkit-scrollbar-thumb:hover,
+.credits-modal-body::-webkit-scrollbar-thumb:hover,
 .app-nav-links::-webkit-scrollbar-thumb:hover,
 .editor-shell-tab-row::-webkit-scrollbar-thumb:hover {
   background:
@@ -6537,7 +6569,21 @@ body::-webkit-scrollbar-thumb:hover,
     animation-timing-function: linear;
     animation-fill-mode: both;
     animation-timeline: view(block);
-    animation-range: entry 8% cover 26%;
+    animation-range: entry -4% cover 34%;
+  }
+
+  .beta-entry-page .proof-value-card,
+  .how-it-works-page .how-it-works-step,
+  .creators-page .creator-workspace-card,
+  .projects-page .dashboard-project-link,
+  .projects-page .github-workspace-card,
+  .projects-page .vercel-publish-card {
+    animation-name: premium-scroll-reveal;
+    animation-duration: 1ms;
+    animation-timing-function: linear;
+    animation-fill-mode: both;
+    animation-timeline: view(block);
+    animation-range: entry 0% cover 24%;
   }
 }
 
