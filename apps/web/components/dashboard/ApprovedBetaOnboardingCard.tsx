@@ -24,32 +24,32 @@ function walletSummary(wallet: any | null, loading = false): string {
 
 const OBJECTIVE_PATHS = [
   {
-    key: "content",
-    title: "Quero criar conteúdo",
-    description: "Comece com Creator Post e evolua para Scripts.",
+    key: "post",
+    title: "Quero publicar rápido",
+    description: "Comece com Creator Post para gerar a peça-base com CTA e levar isso para o editor.",
     href: "/creators?tab=post",
     cta: "Começar em Creator Post",
   },
   {
-    key: "ads",
-    title: "Quero gerar anúncios",
-    description: "Use Creator Ads para headline, corpo e CTA de conversão.",
-    href: "/creators?tab=ads",
-    cta: "Abrir Creator Ads",
+    key: "scripts",
+    title: "Quero estruturar um vídeo",
+    description: "Use Creator Scripts para organizar a narrativa antes de gravar, editar ou transformar em clipe.",
+    href: "/creators?tab=scripts",
+    cta: "Abrir Creator Scripts",
   },
   {
-    key: "media",
-    title: "Quero começar por vídeo/música",
-    description: "Creator Clips e Creator Music aceleram produção audiovisual.",
+    key: "clips",
+    title: "Quero sair com um clipe",
+    description: "Creator Clips é o creator hero visual para transformar ideia em vídeo curto com continuidade.",
     href: "/creators?tab=clips",
     cta: "Abrir Creator Clips",
   },
   {
-    key: "product",
-    title: "Quero estruturar um produto",
-    description: "Creator No Code monta a base inicial para continuar no editor.",
-    href: "/creators?tab=no-code",
-    cta: "Abrir Creator No Code",
+    key: "supporting",
+    title: "Quero explorar apoio e labs",
+    description: "Ads, Music, Live Cuts e No Code continuam disponíveis, mas fora do núcleo principal agora.",
+    href: "/creators",
+    cta: "Ver catálogo completo",
   },
 ];
 
@@ -128,9 +128,9 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
       <div className="onboarding-objective-shell">
         <div className="section-stack">
           <p className="section-kicker">Escolha seu objetivo inicial</p>
-          <h4 style={{ margin: 0 }}>Comece por uma tarefa clara</h4>
+          <h4 style={{ margin: 0 }}>Comece por um creator hero</h4>
           <p className="helper-text-ea">
-            Cada entrada abaixo abre o creator certo para o primeiro fluxo sem excesso de decisão.
+            O melhor ponto de entrada hoje está em Post, Scripts e Clips. O restante do catálogo continua disponível, mas sai do centro da promessa.
           </p>
         </div>
         <div className="onboarding-objective-grid">

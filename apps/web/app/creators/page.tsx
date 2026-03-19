@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Suspense, useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDashboardBootstrap } from "../../hooks/useDashboardBootstrap";
 import { BetaAccessBlockedView } from "../../components/waitlist/BetaAccessBlockedView";
 import { CreatorPostCard } from "../../components/dashboard/CreatorPostCard";
@@ -24,12 +24,12 @@ type CreatorTab =
   | "live-cuts"
   | "no-code";
 
-type CreatorGroupId = "content" | "media" | "product";
+type CreatorGroupId = "hero" | "secondary" | "labs";
 
 const CREATOR_GROUPS: Array<{ id: CreatorGroupId; title: string; subtitle: string }> = [
-  { id: "content", title: "Conteúdo", subtitle: "Ideias, roteiro e copy para distribuição." },
-  { id: "media", title: "Vídeo e música", subtitle: "Vídeo, foto, trilha e clipes para acelerar publicação." },
-  { id: "product", title: "Produto e automação", subtitle: "Estruture uma base de produto para evoluir no editor." },
+  { id: "hero", title: "Creators hero", subtitle: "Núcleo principal de aquisição, repetição de uso e continuidade com o editor." },
+  { id: "secondary", title: "Apoio estratégico", subtitle: "Complementam o pipeline, mas não carregam o centro da promessa agora." },
+  { id: "labs", title: "Labs e preview", subtitle: "Explorações úteis, ainda fora do núcleo principal do produto." },
 ];
 
 const CREATOR_TABS: Array<{
@@ -38,55 +38,79 @@ const CREATOR_TABS: Array<{
   label: string;
   description: string;
   bestFor: string;
+  expectedOutput: string;
+  continuity: string;
+  stageLabel: string;
 }> = [
   {
     id: "post",
-    group: "content",
+    group: "hero",
     label: "Creator Post",
-    description: "Posts para redes sociais com CTA e variações.",
-    bestFor: "Quando você precisa publicar rápido com consistência.",
+    description: "Posts com legenda, CTA e variações prontos para virar peça-mãe no editor.",
+    bestFor: "Quando você precisa publicar rápido com clareza de saída e alta chance de uso recorrente.",
+    expectedOutput: "Legenda principal, CTA e variações prontas para salvar em projeto.",
+    continuity: "Entra no editor como base de copy, versão e exportação.",
+    stageLabel: "Hero",
   },
   {
     id: "scripts",
-    group: "content",
+    group: "hero",
     label: "Creator Scripts",
-    description: "Roteiros curtos e estruturados para vídeo.",
-    bestFor: "Quando precisa organizar narrativa antes de gravar.",
+    description: "Roteiros curtos e estruturados para vídeo, gravação e continuidade no editor.",
+    bestFor: "Quando precisa organizar a narrativa antes de gravar, editar ou transformar em clipe.",
+    expectedOutput: "Roteiro com gancho, desenvolvimento e fechamento utilizável de imediato.",
+    continuity: "Vira linha mestra de vídeo, anúncio, apresentação ou refinamento editorial.",
+    stageLabel: "Hero",
   },
   {
     id: "ads",
-    group: "content",
+    group: "secondary",
     label: "Creator Ads",
-    description: "Anúncios com briefing, headline e CTA.",
-    bestFor: "Quando o objetivo é conversão e teste de mensagem.",
+    description: "Peças de conversão com briefing, headline e CTA.",
+    bestFor: "Quando o objetivo é testar mensagem e performance depois que o núcleo de conteúdo já está claro.",
+    expectedOutput: "Copy de anúncio e variações de conversão.",
+    continuity: "Complementa campanhas, mas não é o ponto mais forte do produto agora.",
+    stageLabel: "Apoio",
   },
   {
     id: "music",
-    group: "media",
+    group: "secondary",
     label: "Creator Music",
-    description: "Trilhas em evolução para acelerar produção.",
-    bestFor: "Quando o conteúdo precisa de identidade sonora rápida.",
+    description: "Trilhas e direção sonora para acelerar produção.",
+    bestFor: "Quando o conteúdo já está definido e precisa ganhar identidade sonora com contexto salvo.",
+    expectedOutput: "Direção musical e job de trilha com acompanhamento.",
+    continuity: "Apoia o pipeline criativo, mas ainda não deve carregar a promessa principal.",
+    stageLabel: "Apoio",
   },
   {
     id: "clips",
-    group: "media",
+    group: "hero",
     label: "Creator Clips",
-    description: "Clipes com job assíncrono e status de processamento.",
-    bestFor: "Quando você quer transformar uma ideia em vídeo curto.",
+    description: "Clipes com job assíncrono, status legível e continuidade para edição e publicação.",
+    bestFor: "Quando você quer transformar uma ideia em vídeo curto com o maior potencial de impacto visual do produto.",
+    expectedOutput: "Job de clipe com status real, preview e rota clara para o editor.",
+    continuity: "Fecha a narrativa de vídeo: ideia, roteiro, geração, revisão e saída.",
+    stageLabel: "Hero",
   },
   {
     id: "live-cuts",
-    group: "media",
+    group: "labs",
     label: "Creator Live Cuts",
-    description: "Sessões de cortes ao vivo em Fase 1.",
-    bestFor: "Quando quer configurar cortes recorrentes para lives.",
+    description: "Sessões de cortes ao vivo em fase inicial.",
+    bestFor: "Quando quer explorar uma operação recorrente de live, mas ainda fora do centro da proposta atual.",
+    expectedOutput: "Sessão operacional com estimativa e acompanhamento.",
+    continuity: "É promissor, porém mais especializado e menos forte como wedge neste momento.",
+    stageLabel: "Lab",
   },
   {
     id: "no-code",
-    group: "product",
+    group: "labs",
     label: "Creator No Code",
-    description: "Estrutura inicial de produto em Fase 1.",
-    bestFor: "Quando precisa transformar ideia em blueprint acionável.",
+    description: "Blueprint inicial de produto para exploração.",
+    bestFor: "Quando precisa organizar uma ideia, mas isso ainda não deve competir com o núcleo criativo da plataforma.",
+    expectedOutput: "Estrutura inicial de produto e escopo.",
+    continuity: "Serve como exploração lateral; não deve carregar aquisição nem retenção agora.",
+    stageLabel: "Lab",
   },
 ];
 
@@ -112,13 +136,6 @@ const CREATOR_SHOWCASES = [
     nextStep: "Converter em clipe, anúncio ou base de apresentação.",
   },
   {
-    creator: "Creator Music",
-    kicker: "Saída de identidade sonora",
-    briefing: "Criar uma trilha leve, eletrônica e otimista para produto digital premium.",
-    delivery: "Direção musical, status do job e base pronta para continuar no projeto.",
-    nextStep: "Acompanhar processamento e seguir para edição ou exportação.",
-  },
-  {
     creator: "Creator Clips",
     kicker: "Saída de vídeo curto",
     briefing: "Montar um clipe de apresentação com ritmo rápido e direção de cena.",
@@ -127,12 +144,33 @@ const CREATOR_SHOWCASES = [
   },
 ];
 
+const CREATOR_STAGE_GUIDANCE: Record<CreatorGroupId, { title: string; description: string }> = {
+  hero: {
+    title: "Creator hero do produto",
+    description: "Este creator faz parte do trio que precisa carregar aquisição, repetição de uso e continuidade com o editor. Se você quer medir o valor real da plataforma, comece por aqui.",
+  },
+  secondary: {
+    title: "Creator de apoio estratégico",
+    description: "Este creator complementa o pipeline, mas não deve carregar a promessa principal do produto agora. Use depois que o núcleo principal já estiver claro.",
+  },
+  labs: {
+    title: "Creator em lab ou preview",
+    description: "Este creator continua disponível, mas ainda está fora do centro da proposta atual. Trate como exploração útil, não como ponto principal de entrada.",
+  },
+};
+
 function parseTab(raw: string | null): CreatorTab {
   const value = String(raw || "").toLowerCase();
   return (
     CREATOR_TABS.find((tab) => tab.id === value)?.id ||
     "post"
   );
+}
+
+function creatorStageTone(group: CreatorGroupId): "phase" | "warning" | "soon" {
+  if (group === "hero") return "phase";
+  if (group === "secondary") return "warning";
+  return "soon";
 }
 
 export default function CreatorsPage() {
@@ -145,6 +183,9 @@ export default function CreatorsPage() {
 
 function CreatorsPageContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+  const workspaceRef = useRef<HTMLElement | null>(null);
   const [activeTab, setActiveTab] = useState<CreatorTab>("post");
 
   const {
@@ -197,6 +238,24 @@ function CreatorsPageContent() {
       })),
     []
   );
+  const heroCreators = tabsByGroup.find((group) => group.id === "hero")?.items ?? [];
+  const secondaryCreators = tabsByGroup.find((group) => group.id === "secondary")?.items ?? [];
+  const labCreators = tabsByGroup.find((group) => group.id === "labs")?.items ?? [];
+  const activeStageTone = creatorStageTone(activeTabMeta.group);
+  const activeStageGuidance = CREATOR_STAGE_GUIDANCE[activeTabMeta.group];
+
+  function activateTab(nextTab: CreatorTab, options?: { scrollToWorkspace?: boolean }) {
+    setActiveTab(nextTab);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("tab", nextTab);
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+
+    if (options?.scrollToWorkspace) {
+      requestAnimationFrame(() => {
+        workspaceRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    }
+  }
 
   if (betaBlocked) {
     return (
@@ -217,7 +276,7 @@ function CreatorsPageContent() {
               <p className="section-kicker">Workspace de criação</p>
               <h1 style={{ margin: 0, letterSpacing: -0.35 }}>Creators</h1>
               <p className="creators-hero-lead">
-                Configure com clareza, gere base para vídeo, foto e conteúdo e siga para o editor com contexto preservado.
+                Configure com clareza, gere saídas reais nos creators hero e siga para o editor com contexto preservado, projeto salvo e rota clara de continuidade.
               </p>
             </div>
 
@@ -314,7 +373,7 @@ function CreatorsPageContent() {
         <div className="proof-value-header">
           <div className="section-stack-tight">
             <p className="section-kicker">Exemplos de resultado</p>
-            <h2 className="heading-reset">O que cada Creator pode destravar</h2>
+            <h2 className="heading-reset">O que os creators hero podem destravar</h2>
             <p className="helper-text-ea">
               Estas amostras mostram o tipo de saída que você pode esperar antes de abrir um projeto. Elas ajudam a entender o valor da IA sem vender um fluxo maior do que o beta entrega hoje.
             </p>
@@ -350,12 +409,104 @@ function CreatorsPageContent() {
         </div>
       </section>
 
-      <section className="creator-workspace-grid">
+      <section className="premium-card creators-hero-core-section">
+        <div className="proof-value-header creators-hero-core-header">
+          <div className="section-stack-tight">
+            <p className="section-kicker">Creators hero</p>
+            <h2 className="heading-reset">Os 3 creators que precisam carregar a plataforma</h2>
+            <p className="helper-text-ea">
+              <strong>Creator Post</strong>, <strong>Creator Scripts</strong> e <strong>Creator Clips</strong> concentram a melhor combinação atual de clareza de valor, repetição de uso, continuidade com o editor e força comercial.
+            </p>
+          </div>
+          <div className="creators-hero-core-header-note">
+            <span className="premium-badge premium-badge-phase">Núcleo principal</span>
+            <span className="helper-text-ea">O restante do catálogo continua disponível, mas sai do centro da promessa.</span>
+          </div>
+        </div>
+
+        <div className="creators-hero-core-grid">
+          {heroCreators.map((tab) => (
+            <article
+              key={tab.id}
+              className="premium-card-soft creators-hero-core-card"
+              data-active={activeTab === tab.id}
+            >
+              <div className="creators-hero-core-card-head">
+                <span className="premium-badge premium-badge-phase">{tab.stageLabel}</span>
+                <span className="creators-hero-core-card-kicker">Creator central</span>
+              </div>
+              <div className="section-stack-tight">
+                <h3 className="heading-reset">{tab.label}</h3>
+                <p className="helper-text-ea">{tab.description}</p>
+              </div>
+              <div className="creators-hero-core-stack">
+                <div className="creators-hero-core-point">
+                  <span>Melhor para</span>
+                  <strong>{tab.bestFor}</strong>
+                </div>
+                <div className="creators-hero-core-point">
+                  <span>Saída esperada</span>
+                  <strong>{tab.expectedOutput}</strong>
+                </div>
+                <div className="creators-hero-core-point">
+                  <span>Continuidade</span>
+                  <strong>{tab.continuity}</strong>
+                </div>
+              </div>
+              <div className="creators-hero-card-actions">
+                <button onClick={() => activateTab(tab.id, { scrollToWorkspace: true })} className="btn-ea btn-primary btn-sm">
+                  Abrir no workspace
+                </button>
+                <Link href="/projects" className="btn-link-ea btn-ghost btn-sm">
+                  Ver continuidade em Projetos
+                </Link>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="premium-card-soft creators-secondary-section">
+        <div className="proof-value-header creators-secondary-header">
+          <div className="section-stack-tight">
+            <p className="section-kicker">Apoio e labs</p>
+            <h2 className="heading-reset">O restante do catálogo continua útil, mas com papel mais claro</h2>
+            <p className="helper-text-ea">
+              <strong>Apoio estratégico</strong> complementa campanhas e produção. <strong>Labs e preview</strong> seguem disponíveis para exploração, sem disputar o centro da promessa agora.
+            </p>
+          </div>
+        </div>
+
+        <div className="creators-secondary-grid">
+          {[...secondaryCreators, ...labCreators].map((tab) => (
+            <article key={tab.id} className="creators-secondary-card premium-card-soft" data-priority={tab.group}>
+              <div className="creators-secondary-card-head">
+                <strong>{tab.label}</strong>
+                <span className={`premium-badge premium-badge-${creatorStageTone(tab.group)}`}>{tab.stageLabel}</span>
+              </div>
+              <p className="helper-text-ea">{tab.description}</p>
+              <div className="creators-secondary-card-copy">
+                <span>Saída esperada</span>
+                <strong>{tab.expectedOutput}</strong>
+              </div>
+              <div className="creators-secondary-card-copy">
+                <span>Papel atual</span>
+                <strong>{tab.continuity}</strong>
+              </div>
+              <button onClick={() => activateTab(tab.id, { scrollToWorkspace: true })} className="btn-ea btn-ghost btn-sm">
+                Abrir no workspace
+              </button>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section ref={workspaceRef} className="creator-workspace-grid">
         <aside className="premium-card creator-workspace-side creators-sidebar creators-sidebar-soft">
           <div className="creators-side-note creators-side-note-primary">
-            <strong>Comece pelo objetivo</strong>
+            <strong>Comece pelos creators hero</strong>
             <span>
-              Conteúdo rápido: <strong>Creator Post</strong> • Narrativa: <strong>Creator Scripts</strong> • Conversão: <strong>Creator Ads</strong>
+              Publicação rápida: <strong>Creator Post</strong> • Narrativa: <strong>Creator Scripts</strong> • Vídeo curto: <strong>Creator Clips</strong>
             </span>
           </div>
 
@@ -368,12 +519,17 @@ function CreatorsPageContent() {
                   {group.items.map((tab) => (
                     <button
                       key={tab.id}
+                      data-priority={tab.group}
                       data-active={activeTab === tab.id}
-                      onClick={() => setActiveTab(tab.id)}
+                      onClick={() => activateTab(tab.id)}
                       className="creator-tab-btn"
                     >
-                      <span className="creator-tab-title">{tab.label}</span>
+                      <span className="creator-tab-head">
+                        <span className="creator-tab-title">{tab.label}</span>
+                        <span className="creator-tab-chip">{tab.stageLabel}</span>
+                      </span>
                       <span className="creator-tab-meta">{tab.description}</span>
+                      <span className="creator-tab-support">{tab.expectedOutput}</span>
                     </button>
                   ))}
                 </div>
@@ -439,9 +595,28 @@ function CreatorsPageContent() {
                     <p className="creator-active-panel-copy">{activeTabMeta.bestFor}</p>
                   </div>
                   <div className="creator-active-panel-meta">
+                    <span className={`premium-badge premium-badge-${activeStageTone}`}>{activeTabMeta.stageLabel}</span>
                     <span className="premium-badge premium-badge-phase">Plano {planLabelDisplay}</span>
                     <span className="premium-badge premium-badge-warning">Saldo {walletSummaryDisplay}</span>
                   </div>
+                </div>
+                <div className="creator-active-summary-grid">
+                  <div className="creator-active-summary-card">
+                    <span>Saída esperada</span>
+                    <strong>{activeTabMeta.expectedOutput}</strong>
+                  </div>
+                  <div className="creator-active-summary-card">
+                    <span>Continuidade</span>
+                    <strong>{activeTabMeta.continuity}</strong>
+                  </div>
+                  <div className="creator-active-summary-card">
+                    <span>Papel no produto</span>
+                    <strong>{activeStageGuidance.title}</strong>
+                  </div>
+                </div>
+                <div className={`creator-active-stage-note creator-active-stage-note-${activeTabMeta.group}`}>
+                  <strong>{activeStageGuidance.title}</strong>
+                  <span>{activeStageGuidance.description}</span>
                 </div>
                 <div className="hero-actions-row creator-active-panel-actions">
                   <Link href="/projects" className="btn-link-ea btn-ghost btn-sm">
