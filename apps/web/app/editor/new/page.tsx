@@ -5,6 +5,9 @@ import { api } from "../../../lib/api";
 
 type Kind = "video" | "text" | "automation" | "course" | "website";
 
+const PRIMARY_KINDS: Kind[] = ["text", "video"];
+const SECONDARY_KINDS: Kind[] = ["automation", "course", "website"];
+
 const KIND_LABEL: Record<Kind, string> = {
   video: "Projeto de Vídeo",
   text: "Projeto de Texto",
@@ -99,12 +102,12 @@ export default function NewEditorProjectPage() {
               <p className="section-kicker">Entrada do editor</p>
               <h1 style={{ margin: 0, letterSpacing: -0.3 }}>Abra um projeto com contexto pronto</h1>
               <p className="editor-new-lead">
-                Escolha o formato mais próximo do seu fluxo e entre no editor com base inicial para vídeo, foto, texto ou automação.
+                O beta pago/controlado gira hoje em torno de texto e vídeo com continuidade forte. Os demais formatos continuam acessíveis, mas fora do centro da promessa principal.
               </p>
             </div>
             <div className="hero-meta-row">
-              <span className="premium-badge premium-badge-phase">5 formatos de projeto</span>
-              <span className="premium-badge premium-badge-soon">Pronto para editar, salvar e exportar</span>
+              <span className="premium-badge premium-badge-phase">Núcleo recomendado: texto e vídeo</span>
+              <span className="premium-badge premium-badge-soon">Outros formatos seguem secundários no beta</span>
             </div>
           </div>
 
@@ -113,19 +116,19 @@ export default function NewEditorProjectPage() {
             <div className="hero-side-list">
               <div className="hero-side-note">
                 <strong>Escolha o formato certo</strong>
-                <span>O editor abre já orientado para o tipo de projeto que você quer desenvolver.</span>
+                <span>Texto e vídeo concentram a melhor continuidade atual entre creators hero, editor e saída.</span>
               </div>
               <div className="hero-side-note">
                 <strong>Entre com estrutura mínima pronta</strong>
-                <span>Texto, vídeo, foto, automação, curso ou site com base salva desde o primeiro passo.</span>
+                <span>Todo projeto já nasce salvo em draft, com base mínima para editar, revisar e registrar exported depois.</span>
               </div>
               <div className="hero-side-note">
                 <strong>Continue no mesmo workspace</strong>
-                <span>Salve em draft, refine com IA e só então exporte ou publique com handoff beta quando fizer sentido, mantendo histórico de saída desde o início.</span>
+                <span>Salve em draft, refine com IA e só então exporte ou publique com histórico de saída desde o início.</span>
               </div>
               <div className="hero-side-note">
-                <strong>GitHub e Vercel para app ou site</strong>
-                <span>Na página Projetos, o beta já separa draft, exported e published com base GitHub/Vercel honesta e manual onde ainda não há automação.</span>
+                <strong>Handoff beta fora do núcleo</strong>
+                <span>GitHub e Vercel continuam úteis quando fizer sentido, mas ficam como fundação secundária e manual nesta fase.</span>
               </div>
             </div>
           </div>
@@ -157,27 +160,56 @@ export default function NewEditorProjectPage() {
       <section className="premium-card editor-new-selection">
         <div className="section-header-ea">
           <p className="section-kicker">Escolha inicial</p>
-          <h2 style={{ margin: 0 }}>Selecione o formato mais próximo do seu trabalho</h2>
+          <h2 style={{ margin: 0 }}>Comece pelo formato que melhor sustenta o beta hoje</h2>
           <p className="section-header-copy">
-            Cada opção abre um workspace pronto para continuidade, com estrutura base e apoio lateral da EditexAI.
+            Texto e vídeo concentram a melhor relação atual entre creators hero, editor, projetos e saída. Os demais formatos continuam acessíveis, mas com papel secundário.
           </p>
         </div>
 
-        <div className="editor-kind-grid">
-          {(Object.keys(KIND_LABEL) as Kind[]).map((kind) => (
-            <button
-              key={kind}
-              className={`editor-kind-card ${creating === kind ? "editor-kind-card-loading" : ""}`}
-              onClick={() => create(kind)}
-              disabled={!!creating}
-            >
-              <span className="section-kicker editor-kind-kicker">Tipo de projeto</span>
-              <span className="editor-kind-title">{creating === kind ? "Preparando workspace..." : KIND_LABEL[kind]}</span>
-              <span className="editor-kind-copy">{KIND_HELP[kind]}</span>
-              <span className="editor-kind-meta">{KIND_USE_CASE[kind]}</span>
-              <span className="editor-kind-action">{creating === kind ? "Aguarde" : "Abrir no editor"}</span>
-            </button>
-          ))}
+        <div className="editor-new-kind-section">
+          <div className="section-stack-tight">
+            <p className="section-kicker">Núcleo recomendado</p>
+            <p className="helper-text-ea">Use estas entradas quando quiser o caminho mais forte para gerar, refinar, salvar e exportar no beta pago/controlado.</p>
+          </div>
+          <div className="editor-kind-grid">
+            {PRIMARY_KINDS.map((kind) => (
+              <button
+                key={kind}
+                className={`editor-kind-card ${creating === kind ? "editor-kind-card-loading" : ""}`}
+                onClick={() => create(kind)}
+                disabled={!!creating}
+              >
+                <span className="section-kicker editor-kind-kicker">Tipo de projeto</span>
+                <span className="editor-kind-title">{creating === kind ? "Preparando workspace..." : KIND_LABEL[kind]}</span>
+                <span className="editor-kind-copy">{KIND_HELP[kind]}</span>
+                <span className="editor-kind-meta">{KIND_USE_CASE[kind]}</span>
+                <span className="editor-kind-action">{creating === kind ? "Aguarde" : "Abrir no editor"}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="editor-new-kind-section editor-new-kind-section-secondary">
+          <div className="section-stack-tight">
+            <p className="section-kicker">Secundários e em evolução</p>
+            <p className="helper-text-ea">Continuam disponíveis para exploração, mas ainda não devem carregar o centro da promessa comercial do beta pago/controlado.</p>
+          </div>
+          <div className="editor-kind-grid">
+            {SECONDARY_KINDS.map((kind) => (
+              <button
+                key={kind}
+                className={`editor-kind-card ${creating === kind ? "editor-kind-card-loading" : ""}`}
+                onClick={() => create(kind)}
+                disabled={!!creating}
+              >
+                <span className="section-kicker editor-kind-kicker">Tipo de projeto</span>
+                <span className="editor-kind-title">{creating === kind ? "Preparando workspace..." : KIND_LABEL[kind]}</span>
+                <span className="editor-kind-copy">{KIND_HELP[kind]}</span>
+                <span className="editor-kind-meta">{KIND_USE_CASE[kind]}</span>
+                <span className="editor-kind-action">{creating === kind ? "Aguarde" : "Abrir no editor"}</span>
+              </button>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -193,7 +225,7 @@ export default function NewEditorProjectPage() {
           </div>
           <div className="premium-card-soft editor-new-flow-note">
             <strong>3. Salve, exporte ou publique</strong>
-            <span>O padrão atual é salvar em draft, exportar no dispositivo ou gerar handoff beta para GitHub/Vercel. Publicação automática ainda não entra nesta fase.</span>
+            <span>O padrão atual é salvar em draft, registrar exported com clareza e só então usar handoff beta ou publicação manual quando fizer sentido.</span>
           </div>
         </div>
         <a href="/dashboard" className="btn-link-ea btn-ghost btn-sm">Voltar ao dashboard</a>

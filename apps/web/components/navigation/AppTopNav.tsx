@@ -72,7 +72,7 @@ export function AppTopNav() {
       <div className="app-top-nav-head">
         <p className="app-top-nav-title">Workspace</p>
         <p className="app-top-nav-text">
-          Projetos, vídeo, foto, publicação beta, créditos, suporte e assinatura em uma navegação única.
+          Creators hero, editor e projetos ficam no centro. Créditos, planos e suporte continuam como camadas operacionais do beta pago/controlado.
         </p>
       </div>
       <div className="app-nav-links">

@@ -53,7 +53,7 @@ export default function ProjectsPage() {
               <p className="section-kicker">Continuidade</p>
               <h1 style={{ margin: 0, letterSpacing: -0.3 }}>Projetos</h1>
               <p className="section-header-copy hero-copy-compact">
-                Abra um projeto salvo ou inicie um novo workspace com contexto pronto para editar, exportar e continuar fora da plataforma quando fizer sentido.
+                Projetos é o hub de continuidade do beta pago/controlado: abra um draft salvo, continue no editor, acompanhe a saída e só então leve o trabalho para fora da plataforma quando fizer sentido.
               </p>
             </div>
             <div className="hero-meta-row">
@@ -69,12 +69,12 @@ export default function ProjectsPage() {
                 <span>Use a lista abaixo para retomar do ponto em que o projeto foi salvo.</span>
               </div>
               <div className="hero-side-note">
-                <strong>GitHub beta</strong>
-                <span>GitHub cobre draft e exported com base local, versões e snapshot. Push direto continua fora do escopo desta fase beta.</span>
+                <strong>Estado de saída claro</strong>
+                <span>Draft, exported e published aparecem como estados distintos para separar trabalho em andamento de entrega já encerrada.</span>
               </div>
               <div className="hero-side-note">
-                <strong>Pipeline de saída</strong>
-                <span>Draft no editor, exported no handoff e published como confirmação manual de deploy. Sem promessa de automação onde ela ainda não existe.</span>
+                <strong>Handoff beta secundário</strong>
+                <span>GitHub e Vercel seguem úteis para continuidade manual, mas fora do centro da promessa principal desta fase.</span>
               </div>
               <div className="hero-side-note hero-side-note-trust">
                 <strong>Persistência com Supabase</strong>
@@ -106,48 +106,12 @@ export default function ProjectsPage() {
         </div>
       ) : null}
 
-      <GitHubWorkspaceCard />
-      <VercelPublishCard projects={normalizedProjects.map((project) => ({ id: project.id, title: project.title, kind: project.kind }))} />
-
-      <section className="premium-card-soft projects-publish-section">
-        <div className="section-header-ea">
-          <p className="section-kicker">Pipeline de saída</p>
-          <h2 className="heading-reset">Draft, exported e published sem ambiguidade</h2>
-          <p className="helper-text-ea">
-            O beta agora separa três estados e mantém trilha de saída: o que ainda está em rascunho no projeto, o que já saiu como handoff exportado e o que já foi publicado manualmente fora da plataforma.
-          </p>
-        </div>
-        <div className="proof-value-grid">
-          <div className="proof-value-card">
-            <div className="proof-value-block">
-              <span className="proof-value-chip">Draft</span>
-              <strong>No editor e em Projetos</strong>
-              <p>Projeto salvo, contexto ativo e entregável ainda em refinamento.</p>
-            </div>
-          </div>
-          <div className="proof-value-card">
-            <div className="proof-value-block">
-              <span className="proof-value-chip">Exported</span>
-              <strong>Handoff beta gerado</strong>
-              <p>Snapshot GitHub ou manifest Vercel já saíram da plataforma para continuidade manual.</p>
-            </div>
-          </div>
-          <div className="proof-value-card">
-            <div className="proof-value-block">
-              <span className="proof-value-chip">Published</span>
-              <strong>Publicado com confirmação manual</strong>
-              <p>Publicação informada manualmente na base beta da Vercel, sem fingir sincronização automática.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <section className="premium-card projects-list-section">
         <div className="section-head">
           <div className="section-header-ea">
             <h2 className="heading-reset">Abrir no editor</h2>
             <p className="helper-text-ea">
-              Selecione um projeto existente ou crie um novo para entrar no editor com contexto salvo.
+              Retome um projeto existente ou crie um novo para seguir no núcleo principal do beta: creators hero, editor, checkpoint e saída.
             </p>
           </div>
           <Link href="/editor/new" className="btn-link-ea btn-secondary btn-sm">
@@ -198,6 +162,60 @@ export default function ProjectsPage() {
             ))}
           </div>
         )}
+      </section>
+
+      <section className="premium-card-soft projects-publish-section">
+        <div className="section-header-ea">
+          <p className="section-kicker">Pipeline de saída</p>
+          <h2 className="heading-reset">Draft, exported e published sem ambiguidade</h2>
+          <p className="helper-text-ea">
+            O beta pago/controlado separa três estados e mantém trilha de saída: o que ainda está em rascunho no projeto, o que já saiu como handoff exportado e o que já foi publicado manualmente fora da plataforma.
+          </p>
+        </div>
+        <div className="proof-value-grid">
+          <div className="proof-value-card">
+            <div className="proof-value-block">
+              <span className="proof-value-chip">Draft</span>
+              <strong>No editor e em Projetos</strong>
+              <p>Projeto salvo, contexto ativo e entregável ainda em refinamento.</p>
+            </div>
+          </div>
+          <div className="proof-value-card">
+            <div className="proof-value-block">
+              <span className="proof-value-chip">Exported</span>
+              <strong>Handoff beta gerado</strong>
+              <p>Snapshot GitHub ou manifest Vercel já saíram da plataforma para continuidade manual.</p>
+            </div>
+          </div>
+          <div className="proof-value-card">
+            <div className="proof-value-block">
+              <span className="proof-value-chip">Published</span>
+              <strong>Publicado com confirmação manual</strong>
+              <p>Publicação informada manualmente na base beta da Vercel, sem fingir sincronização automática.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="premium-card projects-handoff-section">
+        <div className="section-head">
+          <div className="section-header-ea">
+            <h2 className="heading-reset">Handoff beta e publicação manual</h2>
+            <p className="helper-text-ea">
+              GitHub e Vercel continuam acessíveis como fundações úteis de continuidade fora da plataforma, mas agora aparecem como camada secundária ao fluxo principal.
+            </p>
+          </div>
+          <Link href="/support" className="btn-link-ea btn-ghost btn-sm">
+            Entender limites do beta
+          </Link>
+        </div>
+        <div className="dashboard-section-body">
+          <GitHubWorkspaceCard />
+          <VercelPublishCard projects={normalizedProjects.map((project) => ({ id: project.id, title: project.title, kind: project.kind }))} />
+        </div>
+        <div className="helper-text-ea">
+          Use essas integrações quando o projeto já estiver suficientemente maduro para sair da plataforma. O núcleo do beta pago/controlado continua sendo creators hero, editor, projetos e saída rastreada.
+        </div>
       </section>
     </div>
   );

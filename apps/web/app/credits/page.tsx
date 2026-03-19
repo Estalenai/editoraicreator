@@ -370,7 +370,7 @@ export default function CreditsPage() {
               <p className="section-kicker">Transparência de consumo</p>
               <h1 className="heading-reset">Créditos</h1>
               <p className="section-header-copy hero-copy-compact">
-                Saldo, compra avulsa, conversão e histórico organizados para decidir o próximo passo em segundos.
+                Créditos é a camada operacional do beta pago/controlado: saldo, compra avulsa, conversão e histórico ficam claros sem competir com o núcleo criativo do produto.
               </p>
             </div>
             <div className="hero-meta-row hero-meta-row-compact">
@@ -396,8 +396,8 @@ export default function CreditsPage() {
             <span className="plan-card-section-label">Segurança e controle</span>
             <div className="hero-side-list hero-side-list-compact">
               <div className="hero-side-note">
-                <strong>Saldo por tipo</strong>
-                <span>Comum, Pro e Ultra seguem separados para facilitar uso, compra e conversão.</span>
+                <strong>Apoio ao núcleo do produto</strong>
+                <span>Use esta área para sustentar creators, editor e projetos com leitura rápida de saldo e consumo.</span>
               </div>
               <div className="hero-side-note">
                 <strong>Checkout via Stripe</strong>

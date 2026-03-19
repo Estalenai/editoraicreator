@@ -144,6 +144,16 @@ function uniquePlanHighlights(primary: string[], secondary: string[]): string[] 
   });
 }
 
+function planPriority(code: string): number {
+  const normalized = normalizePlanCode(code);
+  if (normalized === "EDITOR_PRO") return 0;
+  if (normalized === "EDITOR_ULTRA") return 1;
+  if (normalized === "EDITOR_FREE") return 2;
+  if (normalized === "EMPRESARIAL") return 3;
+  if (normalized === "ENTERPRISE" || normalized === "ENTERPRISE_ULTRA") return 4;
+  return 10;
+}
+
 type NoticeTone = "info" | "warning" | "success";
 
 function waitForCheckoutSync(ms: number) {
@@ -238,6 +248,10 @@ function PlansPageContent() {
   const currentPlanVisibleInCatalog = useMemo(
     () => catalogPlans.some((plan) => normalizePlanCode(plan.code) === currentPlanCodeNormalized),
     [catalogPlans, currentPlanCodeNormalized]
+  );
+  const orderedCatalogPlans = useMemo(
+    () => [...catalogPlans].sort((a, b) => planPriority(a.code) - planPriority(b.code)),
+    [catalogPlans]
   );
   const currentCatalogPlan = useMemo(
     () => catalogPlans.find((plan) => normalizePlanCode(plan.code) === currentPlanCodeNormalized) || null,
@@ -451,25 +465,25 @@ function PlansPageContent() {
               <p className="section-kicker">Assinatura e disponibilidade</p>
               <h1 className="heading-reset">Planos</h1>
               <p className="section-header-copy hero-copy-compact">
-                Compare o que cada plano entrega, quantos créditos inclui e como a conversão afeta seu saldo antes de decidir upgrade ou ativação.
+                O beta pago/controlado precisa de uma oferta clara. Hoje o centro comercial é <strong>Editor Pro</strong>, com checkout seguro, créditos visíveis e continuidade forte; o restante cobre entrada, escala ou ativação assistida.
               </p>
             </div>
             <div className="hero-meta-row hero-meta-row-compact">
               <span className="premium-badge premium-badge-phase">Plano atual: {planLabelDisplay}</span>
-              <span className="premium-badge premium-badge-warning">Checkout automático quando disponível</span>
+              <span className="premium-badge premium-badge-warning">Editor Pro é o plano principal do beta</span>
             </div>
             <div className="signal-strip plans-hero-signal-strip">
               <div className="signal-chip signal-chip-sober">
-                <strong>Escolha objetiva</strong>
-                <span>Preço, créditos e taxa aparecem sem abrir telas extras.</span>
+                <strong>Oferta mais decidida</strong>
+                <span>Entrada, plano principal e escala aparecem com papéis comerciais mais claros.</span>
               </div>
               <div className="signal-chip signal-chip-sober">
                 <strong>Checkout seguro</strong>
                 <span>Planos com checkout automático seguem para a Stripe; os demais continuam assistidos.</span>
               </div>
               <div className="signal-chip signal-chip-sober">
-                <strong>Progressão visível</strong>
-                <span>Entrada, operação recorrente e escala ficam lado a lado.</span>
+                <strong>Menos ruído comercial</strong>
+                <span>Preço, créditos, conversão e disponibilidade ficam expostos antes de qualquer decisão.</span>
               </div>
             </div>
           </div>
@@ -477,12 +491,12 @@ function PlansPageContent() {
             <span className="plan-card-section-label">Cobrança e segurança</span>
             <div className="hero-side-list hero-side-list-compact">
               <div className="hero-side-note">
-                <strong>Checkout via Stripe</strong>
-                <span>Planos com checkout automático seguem por Stripe com retorno controlado ao produto para sincronizar assinatura e disponibilidade.</span>
+                <strong>Plano principal claro</strong>
+                <span>Editor Pro é a melhor leitura comercial atual para quem quer usar o produto de forma recorrente no beta pago/controlado.</span>
               </div>
               <div className="hero-side-note">
-                <strong>Progressão objetiva</strong>
-                <span>Créditos, taxa de conversão e perfil de uso ficam visíveis antes da decisão.</span>
+                <strong>Checkout via Stripe</strong>
+                <span>Planos com checkout automático seguem por Stripe com retorno controlado ao produto para sincronizar assinatura e disponibilidade.</span>
               </div>
               <div className="hero-side-note hero-side-note-trust">
                 <strong>Confidencialidade empresarial</strong>
@@ -566,6 +580,10 @@ function PlansPageContent() {
 
       <section className="premium-card-soft plans-confidence-strip">
         <div className="plans-confidence-note">
+          <strong>Plano principal do beta</strong>
+          <span>Editor Pro é o ponto mais forte para operação recorrente; Free valida encaixe e Ultra expande cadência.</span>
+        </div>
+        <div className="plans-confidence-note">
           <strong>Checkout claro</strong>
           <span>Planos com checkout automático seguem para assinatura imediata via Stripe; os assistidos continuam via suporte.</span>
         </div>
@@ -614,7 +632,7 @@ function PlansPageContent() {
           </div>
         ) : (
           <div className="plan-catalog-grid plan-catalog-grid-spaced">
-            {catalogPlans.map((item) => {
+            {orderedCatalogPlans.map((item) => {
               const comingSoon = item?.coming_soon === true || item?.purchasable === false;
               const codeUpper = String(item?.code || "").toUpperCase();
               const normalizedCatalogCode = normalizePlanCode(codeUpper);
@@ -765,6 +783,10 @@ function PlansPageContent() {
                   {isCurrentPlan ? (
                     <div className="plan-note-subtle">
                       Este plano já está ativo e com benefícios aplicados na sua conta.
+                    </div>
+                  ) : isRecommendedPlan ? (
+                    <div className="plan-card-support-note">
+                      Melhor ponto de entrada comercial para o beta pago/controlado nesta fase.
                     </div>
                   ) : comingSoon ? (
                     <div className="plan-card-support-note">

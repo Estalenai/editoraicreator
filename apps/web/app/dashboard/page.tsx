@@ -13,6 +13,7 @@ type UsageItem = { feature: string; used: number; limit: number };
 
 type QuickLinkItem = {
   href: string;
+  group: "core" | "support";
   tag: string;
   title: string;
   description: string;
@@ -22,34 +23,47 @@ type QuickLinkItem = {
 const QUICK_LINKS: QuickLinkItem[] = [
   {
     href: "/creators",
+    group: "core",
     tag: "Workspace",
     title: "Creators",
-    description: "Abra um creator com briefing, estimativa e resultado em um fluxo único.",
+    description: "Abra Creator Post, Scripts ou Clips com briefing, estimativa e continuidade para o editor.",
     cta: "Abrir workspace",
   },
   {
     href: "/projects",
+    group: "core",
     tag: "Continuidade",
     title: "Projetos",
     description: "Retome entregas salvas e siga direto para o editor com contexto.",
     cta: "Ver projetos",
   },
   {
+    href: "/editor/new",
+    group: "core",
+    tag: "Editor",
+    title: "Novo projeto",
+    description: "Entre direto no editor quando já souber o entregável principal e quiser abrir a mesa central de produção.",
+    cta: "Abrir editor",
+  },
+  {
     href: "/credits",
+    group: "support",
     tag: "Financeiro",
     title: "Créditos",
-    description: "Acompanhe saldo, conversão e compra avulsa sem ruído operacional.",
+    description: "Acompanhe saldo, conversão e compra avulsa como camada operacional do beta.",
     cta: "Abrir créditos",
   },
   {
     href: "/plans",
+    group: "support",
     tag: "Assinatura",
     title: "Planos",
-    description: "Compare níveis, taxa de conversão e checkout com leitura objetiva.",
+    description: "Compare níveis, taxa de conversão e checkout com foco no plano principal do beta pago/controlado.",
     cta: "Revisar planos",
   },
   {
     href: "/support",
+    group: "support",
     tag: "Suporte",
     title: "Suporte",
     description: "Acione ajuda assistida quando precisar de ativação ou orientação.",
@@ -57,9 +71,10 @@ const QUICK_LINKS: QuickLinkItem[] = [
   },
   {
     href: "/how-it-works",
+    group: "support",
     tag: "Guia",
     title: "Como funciona",
-    description: "Recapitule creators, créditos e continuidade em poucos passos.",
+    description: "Recapitule creators hero, editor, projetos e saída em poucos passos.",
     cta: "Ler guia",
   },
 ];
@@ -141,6 +156,14 @@ export default function DashboardPage() {
 
   const recentProjects = useMemo(() => projects.slice(0, 6), [projects]);
   const walletSummary = useMemo(() => formatWalletSummary(wallet), [wallet]);
+  const coreQuickLinks = useMemo(
+    () => QUICK_LINKS.filter((item) => item.group === "core"),
+    []
+  );
+  const supportQuickLinks = useMemo(
+    () => QUICK_LINKS.filter((item) => item.group === "support"),
+    []
+  );
   const walletBreakdown = useMemo(
     () =>
       CREDIT_GUIDE_ITEMS.map((item) => ({
@@ -233,16 +256,16 @@ export default function DashboardPage() {
             <span className="plan-card-section-label">Operação</span>
             <div className="hero-side-list">
               <div className="hero-side-note">
-                <strong>Checkout self-serve via Stripe</strong>
-                <span>Quando disponível no plano, checkout, sincronização e atualização pós-pagamento seguem um fluxo dedicado e previsível.</span>
+                <strong>Núcleo do beta pago/controlado</strong>
+                <span>Creators hero, editor e projetos concentram a maior parte do valor recorrente da plataforma hoje.</span>
               </div>
               <div className="hero-side-note">
-                <strong>Projetos em Supabase</strong>
+                <strong>Operação rastreada</strong>
                 <span>Conta, saldo, projetos e continuidade operacional ficam persistidos para retomar o trabalho com contexto.</span>
               </div>
               <div className="hero-side-note">
-                <strong>Beta controlado</strong>
-                <span>Acesso monitorado e navegação consolidada para operação segura.</span>
+                <strong>Camadas de apoio</strong>
+                <span>Plans, Credits e Support continuam visíveis, mas sem disputar o centro da experiência criativa.</span>
               </div>
             </div>
             <div className="hero-actions-row">
@@ -458,24 +481,51 @@ export default function DashboardPage() {
 
       <section className="premium-card dashboard-section-card">
         <div className="section-header-ea">
-          <h3 className="heading-reset">Acessos rápidos</h3>
-          <p className="helper-text-ea">Atalhos operacionais para seguir do painel direto para a ação.</p>
+          <h3 className="heading-reset">Núcleo do beta pago/controlado</h3>
+          <p className="helper-text-ea">Atalhos para o que precisa carregar valor, retenção e continuidade real no uso recorrente.</p>
         </div>
-        <div className="dashboard-quick-links-grid">
-          {QUICK_LINKS.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="premium-card-soft dashboard-quick-link"
-            >
-              <div className="dashboard-quick-link-kicker">{item.tag}</div>
-              <div className="dashboard-project-link-title">{item.title}</div>
-              <div className="dashboard-quick-link-copy helper-text-ea">{item.description}</div>
-              <div className="dashboard-quick-link-footer">
-                <span className="dashboard-quick-link-cta">{item.cta}</span>
-              </div>
-            </Link>
-          ))}
+        <div className="dashboard-quick-links-stack">
+          <div className="section-stack-tight">
+            <p className="section-kicker">Centro da experiência</p>
+            <div className="dashboard-quick-links-grid">
+              {coreQuickLinks.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="premium-card-soft dashboard-quick-link"
+                >
+                  <div className="dashboard-quick-link-kicker">{item.tag}</div>
+                  <div className="dashboard-project-link-title">{item.title}</div>
+                  <div className="dashboard-quick-link-copy helper-text-ea">{item.description}</div>
+                  <div className="dashboard-quick-link-footer">
+                    <span className="dashboard-quick-link-cta">{item.cta}</span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+          <div className="section-stack-tight dashboard-quick-links-secondary">
+            <p className="section-kicker">Camadas operacionais</p>
+            <p className="helper-text-ea">
+              Financeiro, suporte e leitura do beta continuam acessíveis, mas como apoio ao núcleo criativo e editorial.
+            </p>
+            <div className="dashboard-quick-links-grid">
+              {supportQuickLinks.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="premium-card-soft dashboard-quick-link"
+                >
+                  <div className="dashboard-quick-link-kicker">{item.tag}</div>
+                  <div className="dashboard-project-link-title">{item.title}</div>
+                  <div className="dashboard-quick-link-copy helper-text-ea">{item.description}</div>
+                  <div className="dashboard-quick-link-footer">
+                    <span className="dashboard-quick-link-cta">{item.cta}</span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 

@@ -67,12 +67,12 @@ export function EditorShell({
               <p className="section-kicker">Workspace editorial</p>
               <h2 style={{ margin: 0 }}>{title}</h2>
               <p className="editor-shell-note editor-shell-title-copy">
-                EditexAI no centro do projeto: vídeo, foto, texto e ativos visuais seguem no mesmo workspace até a publicação.
+                Este é o centro do beta pago/controlado: creators, projeto salvo, checkpoints, revisão e saída rastreada convergem no mesmo workspace até o encerramento do fluxo.
               </p>
             </div>
             <div className="hero-meta-row">
               <span className="premium-badge premium-badge-phase">Área ativa: {activeTab.label}</span>
-              <span className="premium-badge premium-badge-soon">Projeto com contexto salvo e base beta de entrega</span>
+              <span className="premium-badge premium-badge-soon">Projeto com contexto salvo e saída rastreada</span>
             </div>
           </div>
 
@@ -149,7 +149,7 @@ export function EditorShell({
           </div>
           <div className="premium-card-soft trust-note editor-shell-trust-card">
             <strong>Saída controlada</strong>
-            <span>Fluxo padrão de entrega: exporte no dispositivo ou prepare o handoff beta de publicação na Vercel. Storage conectado entra na próxima fase.</span>
+            <span>Fluxo padrão de entrega: salve a versão, registre exported com clareza e confirme published quando a etapa manual estiver realmente concluída. GitHub e Vercel entram como handoff secundário.</span>
           </div>
         </div>
       </header>

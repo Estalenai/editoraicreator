@@ -32,11 +32,11 @@ export default function HomePage() {
         <div className="beta-entry-hero-grid">
           <div className="beta-entry-hero-copy">
             <div className="premium-badge premium-badge-phase beta-entry-badge">
-              Beta fechado
+              Beta pago/controlado
             </div>
-            <h1 className="beta-entry-title">Acesso antecipado</h1>
+            <h1 className="beta-entry-title">Acesso ao núcleo do Editor AI Creator</h1>
             <p className="beta-entry-copy">
-              O Editor AI Creator organiza geração, edição, refinamento e exportação de vídeo, foto e conteúdo em um workspace contínuo. Solicite acesso antecipado para liberar sua conta e acompanhar a evolução da plataforma.
+              O Editor AI Creator concentra hoje o que já sustenta valor real: <strong>Creator Post</strong>, <strong>Creator Scripts</strong>, <strong>Creator Clips</strong>, editor central, projetos e saída rastreada. Solicite acesso para entrar no beta pago/controlado com escopo claro, onboarding assistido e continuidade séria até a exportação.
             </p>
             <div className="hero-actions-row">
               <Link href="/login" className="btn-link-ea btn-primary">Já tenho acesso</Link>
@@ -45,16 +45,16 @@ export default function HomePage() {
             </div>
             <div className="signal-strip beta-entry-signal-strip">
               <div className="signal-chip signal-chip-creative">
-                <strong>Controle claro</strong>
-                <span>Planos, créditos, projeto e exportação local organizados desde a entrada.</span>
+                <strong>Núcleo focado</strong>
+                <span>Post, Scripts e Clips ficam no centro da promessa e do uso recorrente.</span>
               </div>
               <div className="signal-chip signal-chip-creative">
-                <strong>Criação com contexto</strong>
-                <span>Creators e editor trabalham no mesmo fluxo para vídeo, foto e conteúdo, sem perder o projeto.</span>
+                <strong>Editor central</strong>
+                <span>Creators, projetos e checkpoints convergem para o mesmo workspace até a saída final.</span>
               </div>
               <div className="signal-chip signal-chip-creative">
-                <strong>Privacidade real</strong>
-                <span>Seus dados não são usados para treinar modelos; o processamento segue isolado por conta.</span>
+                <strong>Saída rastreada</strong>
+                <span>Draft, exported e published aparecem com clareza para reduzir ambiguidade no fechamento.</span>
               </div>
             </div>
           </div>
@@ -63,12 +63,12 @@ export default function HomePage() {
             <p className="section-kicker">Leitura rápida</p>
             <div className="beta-entry-side-list">
               <div className="hero-side-note">
-                <strong>Estrutura séria</strong>
-                <span>Painel operacional, fluxo de edição e área financeira com hierarquia clara.</span>
+                <strong>Escopo decidido</strong>
+                <span>O centro do beta pago/controlado é criar, editar, salvar e exportar com força comercial real.</span>
               </div>
               <div className="hero-side-note">
-                <strong>Energia criativa</strong>
-                <span>Workspace de criação com personalidade própria, sem virar showcase visual.</span>
+                <strong>Amplitude reduzida</strong>
+                <span>O que ainda está cedo demais saiu do centro da promessa e virou camada secundária ou handoff beta.</span>
               </div>
               <div className="hero-side-note hero-side-note-trust">
                 <strong>Confidencialidade priorizada</strong>
@@ -83,9 +83,9 @@ export default function HomePage() {
         <div className="proof-value-header">
           <div className="section-stack-tight">
             <p className="section-kicker">Prova de valor</p>
-            <h2 className="heading-reset">O que a IA entrega no beta</h2>
+            <h2 className="heading-reset">O que a IA entrega no beta pago/controlado</h2>
             <p className="helper-text-ea">
-              Exemplos do tipo de saída que o workspace organiza hoje. Não são promessas vagas; são formatos reais de entrega para publicar, editar e evoluir em projeto.
+              Exemplos do tipo de saída que o núcleo atual já consegue organizar. Não são promessas vagas; são formatos reais para gerar, salvar em projeto, refinar no editor e fechar a saída com clareza.
             </p>
           </div>
           <Link href="/creators" className="btn-link-ea btn-secondary btn-sm">
@@ -122,7 +122,7 @@ export default function HomePage() {
       <ClosedBetaAccessCard
         compact
         title="Fila de espera"
-        description="Informe seu e-mail para entrar na fila de liberação do beta fechado."
+        description="Informe seu e-mail para entrar na fila de liberação do beta pago/controlado."
       />
 
       <div className="helper-text-ea">

@@ -1513,6 +1513,16 @@ body {
   padding: var(--ea-card-padding-lg);
 }
 
+.editor-new-kind-section {
+  display: grid;
+  gap: var(--ea-space-3);
+}
+
+.editor-new-kind-section-secondary {
+  padding-top: var(--ea-space-3);
+  border-top: 1px solid rgba(191, 239, 255, 0.1);
+}
+
 .editor-new-footer {
   display: grid;
   gap: var(--ea-space-4);
@@ -2480,6 +2490,16 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: var(--ea-space-3);
+}
+
+.dashboard-quick-links-stack {
+  display: grid;
+  gap: var(--ea-space-4);
+}
+
+.dashboard-quick-links-secondary {
+  padding-top: var(--ea-space-2);
+  border-top: 1px solid rgba(191, 239, 255, 0.1);
 }
 
 .dashboard-quick-link {
@@ -4539,6 +4559,7 @@ textarea:focus {
 .editor-shell-toolbar,
 .editor-shell-panel,
 .projects-list-section,
+.projects-handoff-section,
 .how-it-works-step {
   animation: premium-surface-rise 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -4605,6 +4626,7 @@ textarea:focus {
 .credits-section-card,
 .credits-purchase-card,
 .projects-list-section,
+.projects-handoff-section,
 .how-it-works-step {
   box-shadow: 0 16px 34px rgba(2, 6, 23, 0.26);
 }
@@ -4615,6 +4637,7 @@ textarea:focus {
 .credits-section-card,
 .credits-purchase-card,
 .projects-list-section,
+.projects-handoff-section,
 .how-it-works-step {
   background:
     radial-gradient(240px 96px at 100% 0%, rgba(127, 183, 255, 0.08), transparent 72%),
@@ -5844,6 +5867,11 @@ textarea:focus {
   gap: var(--ea-space-4);
 }
 
+.projects-handoff-section {
+  display: grid;
+  gap: var(--ea-space-4);
+}
+
 .vercel-publish-card {
   display: grid;
   gap: var(--ea-space-4);
@@ -6265,6 +6293,7 @@ body {
 .dashboard-section-card,
 .credits-section-card,
 .projects-list-section,
+.projects-handoff-section,
 .credits-guide-card,
 .credits-guide-note,
 .how-it-works-step,

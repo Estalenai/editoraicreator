@@ -4,7 +4,7 @@ const STEPS = [
   {
     title: "1. Gere contexto em Creators",
     description:
-      "Use Post, Scripts, Ads e os demais workspaces para estruturar briefing, configuração e resultado antes do editor.",
+      "Comece por Creator Post, Creator Scripts ou Creator Clips para estruturar briefing, resultado e continuidade no núcleo principal do beta.",
     href: "/creators",
     cta: "Abrir Creators",
   },
@@ -18,14 +18,14 @@ const STEPS = [
   {
     title: "3. Continue no editor",
     description:
-      "Abra um projeto existente ou comece por /editor/new para entrar com estrutura inicial pronta para editar.",
+      "Abra um projeto existente ou entre em /editor/new para revisar, salvar versão, marcar checkpoint e consolidar o entregável principal.",
     href: "/editor/new",
     cta: "Abrir editor novo",
   },
   {
     title: "4. Exporte com clareza",
     description:
-      "O beta já permite fechar o fluxo criando, editando e preparando o handoff inicial de publicação via Projetos e Vercel.",
+      "Registre exported e published com clareza no projeto. GitHub e Vercel continuam úteis como handoff beta, sem fingir automação completa.",
     href: "/projects#vercel-publish",
     cta: "Preparar publicação",
   },
@@ -45,10 +45,10 @@ const RESULT_EXAMPLES = [
     nextStep: "Transformar em clipe, anúncio ou base de landing.",
   },
   {
-    title: "De conceito para fluxo publicável",
-    input: "Organizar uma peça curta com contexto visual, texto e próximo passo de deploy.",
-    output: "Projeto salvo, edição centralizada e handoff beta para GitHub e Vercel quando fizer sentido.",
-    nextStep: "Continuar no editor e preparar exportação ou publicação.",
+    title: "De peça pronta para saída rastreada",
+    input: "Organizar um post, roteiro ou clipe com estado claro de draft, exported e published.",
+    output: "Projeto salvo, checkpoints no editor e trilha de saída registrada sem confundir trabalho em andamento com publicação final.",
+    nextStep: "Exportar no dispositivo ou registrar publicação manual com clareza.",
   },
 ];
 
@@ -62,7 +62,7 @@ export default function HowItWorksPage() {
               <p className="section-kicker">Fluxo da plataforma</p>
               <h1 style={{ margin: 0, letterSpacing: -0.3 }}>Como funciona</h1>
               <p className="hero-copy-compact">
-                Uma visão curta do fluxo operacional: gerar, salvar, editar, publicar e acompanhar crédito com clareza.
+                Uma visão curta do fluxo que o beta pago/controlado realmente sustenta hoje: gerar nos creators hero, continuar no editor, salvar em projeto e fechar a saída com clareza.
               </p>
             </div>
           </div>
@@ -71,11 +71,11 @@ export default function HowItWorksPage() {
             <div className="hero-side-list">
               <div className="hero-side-note">
                 <strong>Fluxo único</strong>
-                <span>Creators prepara contexto, Projetos organiza continuidade e o editor centraliza a execução.</span>
+                <span>Creators hero prepara contexto, Projetos guarda continuidade e o editor centraliza a execução.</span>
               </div>
               <div className="hero-side-note">
-                <strong>Controle financeiro</strong>
-                <span>Plans e Credits mostram o que está disponível, o que foi usado e o que muda em cada decisão.</span>
+                <strong>Camada comercial clara</strong>
+                <span>Plans e Credits sustentam o beta pago/controlado sem disputar o centro da proposta criativa.</span>
               </div>
               <div className="hero-side-note hero-side-note-trust">
                 <strong>Privacidade aplicada</strong>
@@ -106,7 +106,7 @@ export default function HowItWorksPage() {
             <p className="section-kicker">Exemplos concretos</p>
             <h2 className="heading-reset">Do briefing ao resultado</h2>
             <p className="helper-text-ea">
-              Cada fluxo abaixo mostra o tipo de entrega que o beta já consegue organizar com IA, projeto e continuidade no editor.
+              Cada fluxo abaixo mostra o tipo de entrega que o núcleo atual já consegue organizar com IA, projeto, checkpoints e continuidade no editor.
             </p>
           </div>
         </div>
@@ -141,7 +141,7 @@ export default function HowItWorksPage() {
           <Link href="/editor/new" className="text-link-ea">
             /editor/new
           </Link>{" "}
-          e abra um projeto com contexto pronto para editar e exportar.
+          e abra primeiro texto ou vídeo, que hoje concentram a melhor continuidade do beta pago/controlado.
         </span>
       </section>
 

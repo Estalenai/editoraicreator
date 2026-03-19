@@ -84,7 +84,7 @@ export default function SupportPage() {
               <p className="section-kicker">Canal operacional</p>
               <h1 style={{ margin: "4px 0 0", letterSpacing: -0.35 }}>Suporte</h1>
               <p className="section-header-copy hero-copy-compact">
-                Uma área objetiva para tirar dúvidas, registrar problemas e entender o próximo passo em planos, créditos, publicação e integrações do beta.
+                Uma área objetiva para sustentar o beta pago/controlado: tirar dúvidas, registrar problemas e entender o próximo passo em planos, créditos, publicação e integrações sem ruído.
               </p>
             </div>
 
@@ -112,7 +112,7 @@ export default function SupportPage() {
               </div>
               <div className="hero-side-note">
                 <strong>Próximo passo sugerido</strong>
-                <span>Consulte o FAQ e a trilha certa antes de abrir uma solicitação. Isso reduz ida e volta e acelera a resposta.</span>
+                <span>Consulte o FAQ e a trilha certa antes de abrir uma solicitação. Isso reduz ida e volta e protege a experiência de um beta pago/controlado mais sério.</span>
               </div>
               <div className="hero-side-note hero-side-note-trust">
                 <strong>Privacidade aplicada</strong>

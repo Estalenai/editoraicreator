@@ -27,7 +27,7 @@ type CreatorTab =
 type CreatorGroupId = "hero" | "secondary" | "labs";
 
 const CREATOR_GROUPS: Array<{ id: CreatorGroupId; title: string; subtitle: string }> = [
-  { id: "hero", title: "Creators hero", subtitle: "Núcleo principal de aquisição, repetição de uso e continuidade com o editor." },
+  { id: "hero", title: "Creators hero", subtitle: "Núcleo principal de aquisição, repetição de uso e continuidade com o editor no beta pago/controlado." },
   { id: "secondary", title: "Apoio estratégico", subtitle: "Complementam o pipeline, mas não carregam o centro da promessa agora." },
   { id: "labs", title: "Labs e preview", subtitle: "Explorações úteis, ainda fora do núcleo principal do produto." },
 ];
@@ -147,7 +147,7 @@ const CREATOR_SHOWCASES = [
 const CREATOR_STAGE_GUIDANCE: Record<CreatorGroupId, { title: string; description: string }> = {
   hero: {
     title: "Creator hero do produto",
-    description: "Este creator faz parte do trio que precisa carregar aquisição, repetição de uso e continuidade com o editor. Se você quer medir o valor real da plataforma, comece por aqui.",
+    description: "Este creator faz parte do trio que precisa carregar aquisição, repetição de uso e continuidade com o editor. Se você quer medir o valor real do beta pago/controlado, comece por aqui.",
   },
   secondary: {
     title: "Creator de apoio estratégico",
@@ -276,13 +276,13 @@ function CreatorsPageContent() {
               <p className="section-kicker">Workspace de criação</p>
               <h1 style={{ margin: 0, letterSpacing: -0.35 }}>Creators</h1>
               <p className="creators-hero-lead">
-                Configure com clareza, gere saídas reais nos creators hero e siga para o editor com contexto preservado, projeto salvo e rota clara de continuidade.
+                Configure com clareza, gere saídas reais nos creators hero e siga para o editor com contexto preservado, projeto salvo e rota clara de continuidade. É aqui que o beta pago/controlado começa a provar valor recorrente.
               </p>
             </div>
 
             <div className="hero-meta-row hero-meta-row-compact">
               <span className="premium-badge premium-badge-phase">Plano: {planLabelDisplay}</span>
-              <span className="premium-badge premium-badge-soon">Resultado pronto para salvar em projeto</span>
+              <span className="premium-badge premium-badge-soon">Creators hero no centro do beta pago/controlado</span>
             </div>
 
             <div className="signal-strip creators-hero-signal-strip">
