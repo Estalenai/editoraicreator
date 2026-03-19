@@ -52,6 +52,22 @@ function totalCreditsIncluded(credits?: CatalogPlan["credits"]): number {
   return Number(credits.common || 0) + Number(credits.pro || 0) + Number(credits.ultra || 0);
 }
 
+function isEnterpriseConversionPlan(code: string): boolean {
+  const normalized = normalizePlanCode(code);
+  return normalized === "EMPRESARIAL" || normalized === "ENTERPRISE" || normalized === "ENTERPRISE_ULTRA";
+}
+
+function resolvePlanConversionState(code: string, plan: CatalogPlan) {
+  const fee = Number(plan?.addons?.convert?.fee_percent ?? NaN);
+  if (Number.isFinite(fee)) {
+    return { enabled: true, feePercent: Math.max(0, fee) };
+  }
+  if (isEnterpriseConversionPlan(code)) {
+    return { enabled: true, feePercent: 0 };
+  }
+  return { enabled: Boolean(plan?.addons?.convert?.enabled), feePercent: 0 };
+}
+
 type PlanNarrative = {
   audience: string;
   valueBullets: string[];
@@ -228,9 +244,12 @@ function PlansPageContent() {
     [catalogPlans, currentPlanCodeNormalized]
   );
   const currentPlanFeePercent = useMemo(() => {
-    const fee = Number(currentCatalogPlan?.addons?.convert?.fee_percent ?? NaN);
-    return Number.isFinite(fee) ? fee : null;
-  }, [currentCatalogPlan]);
+    if (!currentCatalogPlan) {
+      return isEnterpriseConversionPlan(currentPlanCodeNormalized) ? 0 : null;
+    }
+    const conversionState = resolvePlanConversionState(currentPlanCodeNormalized, currentCatalogPlan);
+    return conversionState.enabled ? conversionState.feePercent : null;
+  }, [currentCatalogPlan, currentPlanCodeNormalized]);
   const currentPlanCredits = useMemo(
     () => formatCreditsIncluded(currentCatalogPlan?.credits || undefined),
     [currentCatalogPlan]
@@ -615,8 +634,9 @@ function PlansPageContent() {
                 : [];
               const narrative = planNarrative(normalizedCatalogCode);
               const displayBenefits = uniquePlanHighlights(narrative.valueBullets, topBenefits).slice(0, 4);
-              const convertEnabled = Boolean(item?.addons?.convert?.enabled);
-              const convertFee = Number(item?.addons?.convert?.fee_percent ?? 0);
+              const conversionState = resolvePlanConversionState(normalizedCatalogCode, item);
+              const convertEnabled = conversionState.enabled;
+              const convertFee = conversionState.feePercent;
               const statusText = isCurrentPlan
                 ? "Plano atual"
                 : comingSoon

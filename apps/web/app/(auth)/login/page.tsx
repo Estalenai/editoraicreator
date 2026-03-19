@@ -20,6 +20,12 @@ function LoginPageContent() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
+  function setAuthMode(nextMode: "login" | "signup") {
+    setMode(nextMode);
+    setError(null);
+    setSuccess(null);
+  }
+
   useEffect(() => {
     let active = true;
 
@@ -170,22 +176,20 @@ function LoginPageContent() {
             <div className="auth-entry-toggle" role="tablist" aria-label="Modo de acesso">
               <button
                 type="button"
-                onClick={() => {
-                  setMode("login");
-                  setError(null);
-                  setSuccess(null);
-                }}
+                role="tab"
+                aria-selected={mode === "login"}
+                data-active={mode === "login" ? "true" : "false"}
+                onClick={() => setAuthMode("login")}
                 className={`btn-ea ${mode === "login" ? "btn-primary" : "btn-ghost"}`}
               >
                 Entrar
               </button>
               <button
                 type="button"
-                onClick={() => {
-                  setMode("signup");
-                  setError(null);
-                  setSuccess(null);
-                }}
+                role="tab"
+                aria-selected={mode === "signup"}
+                data-active={mode === "signup" ? "true" : "false"}
+                onClick={() => setAuthMode("signup")}
                 className={`btn-ea ${mode === "signup" ? "btn-primary" : "btn-ghost"}`}
               >
                 Criar conta

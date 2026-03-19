@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { api } from "../../lib/api";
 import { coinTypeLabel } from "../../lib/coinTypeLabel";
 import { toUserFacingError } from "../../lib/uiFeedback";
@@ -125,6 +125,10 @@ function normalizeMixInput(value: string): number {
   return Math.max(0, Math.trunc(parsed));
 }
 
+function sameBreakdown(left?: Partial<PackageBreakdown> | null, right?: Partial<PackageBreakdown> | null): boolean {
+  return PACKAGE_COIN_ORDER.every((coinType) => Number(left?.[coinType] || 0) === Number(right?.[coinType] || 0));
+}
+
 type Props = {
   wallet: any | null;
   loading?: boolean;
@@ -179,12 +183,36 @@ export function CreditsPackagesCard({ wallet, loading = false }: Props) {
   const quoteTotal = Number(packageQuote?.total_brl || 0);
   const quoteFeePercent = Number(packageQuote?.fee_percent || 0);
   const hasFee = quoteFee > 0 && quoteFeePercent > 0;
+  const quoteMatchesSelection =
+    Boolean(packageQuote?.quote_id) &&
+    Number(packageQuote?.package_total || 0) === activePackageTotal &&
+    sameBreakdown(packageQuote?.breakdown, packageBreakdown);
+  const canRequestQuote = !loading && !packageLoading && !packageCheckoutLoading && packageMixValid;
+  const canOpenCheckout = canRequestQuote && quoteMatchesSelection;
 
   const walletSummary = useMemo(
     () => (loading ? "Saldo em sincronização" : `${wallet?.common ?? 0} Comum • ${wallet?.pro ?? 0} Pro • ${wallet?.ultra ?? 0} Ultra`),
     [wallet, loading]
   );
   const walletUpdatedAt = useMemo(() => (loading ? "—" : formatDateTime(wallet?.updated_at)), [wallet, loading]);
+
+  useEffect(() => {
+    if (!coinsPanelOpen || typeof document === "undefined") return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key !== "Escape") return;
+      setCoinsPanelOpen(false);
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [coinsPanelOpen]);
 
   function updatePackageBreakdown(field: keyof PackageBreakdown, rawValue: string) {
     const normalizedValue = normalizeMixInput(rawValue);
@@ -303,7 +331,7 @@ export function CreditsPackagesCard({ wallet, loading = false }: Props) {
     try {
       const activeTotal = coinsPackageMode === "custom" ? commitCustomTotal() : selectedPackage;
       const quote =
-        packageQuote && packageQuote.package_total === activeTotal
+        packageQuote && packageQuote.package_total === activeTotal && sameBreakdown(packageQuote.breakdown, packageBreakdown)
           ? packageQuote
           : await requestCoinsPackageQuote();
 
@@ -374,7 +402,14 @@ export function CreditsPackagesCard({ wallet, loading = false }: Props) {
           </div>
         ))}
       </div>
-      <button onClick={() => setCoinsPanelOpen(true)} disabled={loading} className="btn-ea btn-primary credits-purchase-cta">
+      <button
+        onClick={() => {
+          setPackageError(null);
+          setCoinsPanelOpen(true);
+        }}
+        disabled={loading}
+        className="btn-ea btn-primary credits-purchase-cta"
+      >
         {loading ? "Sincronizando saldo..." : "Comprar créditos avulsos"}
       </button>
 
@@ -568,37 +603,6 @@ export function CreditsPackagesCard({ wallet, loading = false }: Props) {
               </div>
             ) : null}
 
-            {(packageLoading || packageCheckoutLoading || packageQuote) ? (
-              <div className="helper-note-inline credits-modal-live-note">
-                {packageCheckoutLoading
-                  ? "Abrindo checkout seguro na Stripe..."
-                  : packageLoading
-                    ? "Atualizando cotação..."
-                    : "Cotação pronta. Revise subtotal, taxa e total antes de seguir para o pagamento."}
-              </div>
-            ) : null}
-
-            <div className="hero-actions-row credits-modal-actions">
-              <button
-                onClick={requestCoinsPackageQuote}
-                disabled={loading || packageLoading || packageCheckoutLoading || !packageMixValid}
-                className="btn-ea btn-secondary"
-              >
-                {packageLoading ? "Atualizando cotação..." : "Atualizar cotação"}
-              </button>
-              <button
-                onClick={onBuyCoinsPackage}
-                disabled={loading || packageLoading || packageCheckoutLoading || !packageMixValid}
-                className="btn-ea btn-primary"
-              >
-                {packageCheckoutLoading ? "Abrindo checkout..." : "Ir para pagamento seguro"}
-              </button>
-            </div>
-
-            <div className="helper-text-ea">
-              Depois do pagamento, você volta para Créditos e esta tela tenta validar saldo e histórico automaticamente.
-            </div>
-
             {packageQuote ? (
               <div className="premium-card-soft quote-summary-card">
                 <strong>Cotação pronta para revisão</strong>
@@ -635,6 +639,49 @@ export function CreditsPackagesCard({ wallet, loading = false }: Props) {
                 </ul>
               </div>
             ) : null}
+
+            <div className="premium-card-soft purchase-modal-footer">
+              {(packageLoading || packageCheckoutLoading || packageQuote) ? (
+                <div className="helper-note-inline credits-modal-live-note">
+                  {packageCheckoutLoading
+                    ? "Abrindo checkout seguro na Stripe..."
+                    : packageLoading
+                      ? "Atualizando cotação..."
+                      : quoteMatchesSelection
+                        ? "Cotação pronta. Revise subtotal, taxa e total antes de seguir para o pagamento."
+                        : "A composição mudou. Atualize a cotação antes de seguir para o checkout."}
+                </div>
+              ) : (
+                <div className="helper-note-inline credits-modal-live-note">
+                  Escolha total e composição. Depois gere a cotação para revisar subtotal, taxa e total antes do pagamento.
+                </div>
+              )}
+
+              <div className="hero-actions-row credits-modal-actions">
+                <button
+                  onClick={requestCoinsPackageQuote}
+                  disabled={!canRequestQuote}
+                  className="btn-ea btn-secondary"
+                >
+                  {packageLoading ? "Atualizando cotação..." : "Atualizar cotação"}
+                </button>
+                <button
+                  onClick={onBuyCoinsPackage}
+                  disabled={loading || packageLoading || packageCheckoutLoading || !packageMixValid}
+                  className="btn-ea btn-primary"
+                >
+                  {packageCheckoutLoading
+                    ? "Abrindo checkout..."
+                    : canOpenCheckout
+                      ? "Ir para pagamento seguro"
+                      : "Gerar cotação e ir ao pagamento"}
+                </button>
+              </div>
+
+              <div className="helper-text-ea">
+                Depois do pagamento, você volta para Créditos e esta tela tenta validar saldo e histórico automaticamente.
+              </div>
+            </div>
           </div>
         </div>
       ) : null}
