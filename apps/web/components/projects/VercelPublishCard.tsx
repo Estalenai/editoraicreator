@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { PremiumSelect } from "../ui/PremiumSelect";
 import {
+  appendVercelProjectEvent,
   buildVercelDeployManifest,
   downloadVercelDeployManifest,
   getVercelProjectBinding,
@@ -18,6 +19,7 @@ import {
   vercelFrameworkLabel,
   type VercelDeployStatus,
   type VercelFramework,
+  type VercelProjectEvent,
   type VercelProjectSummary,
   type VercelWorkspaceState,
 } from "../../lib/vercelWorkspace";
@@ -80,6 +82,15 @@ function vercelAppUrl(connected: boolean): string {
   return connected ? "https://vercel.com/dashboard" : "https://vercel.com/new";
 }
 
+function formatDateLabel(value: string | null | undefined): string {
+  if (!value) return "Ainda não registrado";
+  try {
+    return new Date(value).toLocaleString("pt-BR");
+  } catch {
+    return String(value);
+  }
+}
+
 export function VercelPublishCard({ variant = "full", project = null, projects = [] }: Props) {
   const availableProjects = useMemo(() => {
     if (project) {
@@ -139,6 +150,12 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
   const currentBinding = selectedProject ? workspace?.projectBindings?.[selectedProject.id] || null : null;
   const connected = Boolean(currentBinding);
   const outputStage = resolveVercelOutputStage(currentBinding);
+  const outputHistory = useMemo(() => currentBinding?.history || [], [currentBinding]);
+  const visibleOutputHistory = useMemo(
+    () => (compact ? outputHistory.slice(0, 3) : outputHistory),
+    [compact, outputHistory]
+  );
+  const lastPublishedAt = currentBinding?.history?.find((item) => item.stage === "published")?.ts || null;
 
   function persistWorkspace(nextWorkspace: VercelWorkspaceState) {
     saveVercelWorkspace(nextWorkspace);
@@ -159,10 +176,38 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
       previewUrl: normalizeUrl(previewUrl),
       productionUrl: normalizeUrl(productionUrl),
       lastManifestExportedAt: currentBinding?.lastManifestExportedAt,
+      history: appendVercelProjectEvent(currentBinding, {
+        type:
+          deployStatus === "published"
+            ? "published_manual"
+            : connected
+              ? "status_updated"
+              : "base_saved",
+        stage:
+          deployStatus === "published"
+            ? "published"
+            : currentBinding?.lastManifestExportedAt
+              ? "exported"
+              : "draft",
+        title:
+          deployStatus === "published"
+            ? "Publicação manual registrada"
+            : connected
+              ? "Base Vercel atualizada"
+              : "Base Vercel salva",
+        note:
+          deployStatus === "published"
+            ? `Status informado como publicado${normalizeUrl(productionUrl) ? ` em ${normalizeUrl(productionUrl)}` : ""}.`
+            : `Projeto ${vercelProjectName || buildDefaultProjectName(selectedProject)} com framework ${vercelFrameworkLabel(framework)} e root ${rootDirectory.trim() || recommendedRootDirectory(framework)}.`,
+      }),
     });
     persistWorkspace(nextWorkspace);
     setNoticeTone("success");
-    setNotice("Base Vercel salva neste navegador. O projeto permanece em draft até você exportar o handoff ou informar a publicação manual.");
+    setNotice(
+      deployStatus === "published"
+        ? "Publicação manual registrada neste navegador. O projeto agora aparece como published com trilha de saída."
+        : "Base Vercel salva neste navegador. O projeto permanece em draft até você exportar o handoff ou informar a publicação manual."
+    );
   }
 
   function onDisconnect() {
@@ -187,8 +232,34 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
       previewUrl: normalizeUrl(previewUrl),
       productionUrl: normalizeUrl(productionUrl),
       lastManifestExportedAt: new Date().toISOString(),
+      history: appendVercelProjectEvent(currentBinding, {
+        type: "handoff_exported",
+        stage: "exported",
+        title: "Manifest exportado",
+        note: "Handoff beta gerado para deploy manual na Vercel.",
+      }),
       updatedAt: new Date().toISOString(),
     });
+    const nextWorkspace = upsertVercelProjectBinding({
+      projectId: selectedProject.id,
+      projectTitle: selectedProject.title,
+      projectKind: selectedProject.kind,
+      vercelProjectName: vercelProjectName || buildDefaultProjectName(selectedProject),
+      teamSlug: teamSlug.trim(),
+      framework,
+      rootDirectory: rootDirectory.trim() || recommendedRootDirectory(framework),
+      deployStatus,
+      previewUrl: normalizeUrl(previewUrl),
+      productionUrl: normalizeUrl(productionUrl),
+      lastManifestExportedAt: new Date().toISOString(),
+      history: appendVercelProjectEvent(currentBinding, {
+        type: "handoff_exported",
+        stage: "exported",
+        title: "Manifest exportado",
+        note: "Handoff beta gerado para deploy manual na Vercel.",
+      }),
+    });
+    persistWorkspace(nextWorkspace);
     setNoticeTone("success");
     setNotice("Manifest exportado. O projeto agora está em exported e pronto para handoff beta de deploy manual na Vercel.");
   }
@@ -292,6 +363,14 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
         <div className="vercel-publish-status-item">
           <span>Fluxo do beta</span>
           <strong>{outputStage.detail}</strong>
+        </div>
+        <div className="vercel-publish-status-item">
+          <span>Último handoff</span>
+          <strong>{formatDateLabel(currentBinding?.lastManifestExportedAt || null)}</strong>
+        </div>
+        <div className="vercel-publish-status-item">
+          <span>Última publicação</span>
+          <strong>{formatDateLabel(lastPublishedAt)}</strong>
         </div>
       </div>
 
@@ -402,6 +481,35 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
           <div className="state-ea-text">{notice}</div>
         </div>
       ) : null}
+
+      <div className="vercel-publish-history">
+        <div className="section-stack-tight">
+          <p className="section-kicker">Histórico de saída</p>
+          <h4 className="heading-reset">Draft, handoff e publicação registrados</h4>
+          <p className="helper-text-ea">
+            Esta trilha mostra o que já foi salvo como base local, o que já saiu como handoff exported e o que já foi confirmado manualmente como published.
+          </p>
+        </div>
+        <div className="vercel-publish-history-list">
+          {visibleOutputHistory.length ? visibleOutputHistory.map((event: VercelProjectEvent) => (
+            <div key={event.id} className="vercel-publish-history-item">
+              <div className="vercel-publish-history-head">
+                <strong>{event.title}</strong>
+                <span>{formatDateLabel(event.ts)}</span>
+              </div>
+              <div className="vercel-publish-history-meta">
+                <span>{event.stage}</span>
+                <span>{event.type}</span>
+              </div>
+              <p>{event.note}</p>
+            </div>
+          )) : (
+            <div className="vercel-publish-note">
+              Ainda sem histórico de saída neste projeto. Salve a base, exporte o handoff ou registre a publicação manual para criar uma trilha operacional mais clara.
+            </div>
+          )}
+        </div>
+      </div>
 
       <div className="vercel-publish-actions">
         <button type="button" onClick={onSave} className="btn-ea btn-primary btn-sm">

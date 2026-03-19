@@ -16,7 +16,9 @@ import {
   saveGitHubProjectExport,
   saveGitHubProjectVersion,
   saveGitHubWorkspace,
+  type GitHubProjectExport,
   type GitHubProjectRef,
+  type GitHubProjectVersion,
   type GitHubWorkspace,
   type GitHubWorkspaceTarget,
 } from "../../lib/githubWorkspace";
@@ -86,6 +88,8 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
   const [lastVersionSavedAt, setLastVersionSavedAt] = useState<string | null>(null);
   const [projectExportCount, setProjectExportCount] = useState(0);
   const [lastExportedAt, setLastExportedAt] = useState<string | null>(null);
+  const [projectVersions, setProjectVersions] = useState<GitHubProjectVersion[]>([]);
+  const [projectExports, setProjectExports] = useState<GitHubProjectExport[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [busyAction, setBusyAction] = useState<"connect" | "save" | "clear" | "version" | "export" | null>(null);
@@ -114,6 +118,8 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
       setLastVersionSavedAt(versions[0]?.savedAt || null);
       setProjectExportCount(projectId ? exports.filter((item) => item.projectId === projectId).length : exports.length);
       setLastExportedAt(projectId ? exports.find((item) => item.projectId === projectId)?.exportedAt || null : exports[0]?.exportedAt || null);
+      setProjectVersions(projectId ? versions.filter((item) => item.projectId === projectId).slice(0, 4) : versions.slice(0, 4));
+      setProjectExports(projectId ? exports.filter((item) => item.projectId === projectId).slice(0, 4) : exports.slice(0, 4));
       setReady(true);
 
       if (typeof window !== "undefined") {
@@ -168,6 +174,30 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
       detail: "Defina owner, repositório e branch antes de preparar a saída.",
     };
   }, [projectExportCount, workspace]);
+  const recentGitHubActivity = useMemo(
+    () =>
+      [
+        ...projectVersions.map((item) => ({
+          id: `version-${item.id}`,
+          ts: item.savedAt,
+          title: "Versão local registrada",
+          detail: `${item.projectTitle} • ${targetLabel(item.handoffTarget)}${item.repoLabel ? ` • ${item.repoLabel}` : ""}`,
+        })),
+        ...projectExports.map((item) => ({
+          id: `export-${item.id}`,
+          ts: item.exportedAt,
+          title: "Snapshot exportado",
+          detail: `${item.projectTitle} • ${targetLabel(item.handoffTarget)}${item.repoLabel ? ` • ${item.repoLabel}` : ""}`,
+        })),
+      ]
+        .sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())
+        .slice(0, 5),
+    [projectExports, projectVersions]
+  );
+  const visibleGitHubActivity = useMemo(
+    () => (variant === "compact" ? recentGitHubActivity.slice(0, 3) : recentGitHubActivity),
+    [recentGitHubActivity, variant]
+  );
 
   function updateDraft(field: keyof WorkspaceDraft, value: string) {
     setDraft((current) => ({ ...current, [field]: value }));
@@ -286,6 +316,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
       setVersionCount(versions.length);
       setProjectVersionCount(versions.filter((item) => item.projectId === project.id).length);
       setLastVersionSavedAt(entry.savedAt);
+      setProjectVersions(versions.filter((item) => item.projectId === project.id).slice(0, 4));
       setSuccess("Versão do projeto registrada. Agora você pode baixar o snapshot ou continuar a evolução fora da plataforma.");
       setError(null);
     } catch (versionError: any) {
@@ -309,6 +340,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
         const exports = listGitHubProjectExports(accountKey);
         setProjectExportCount(exports.filter((item) => item.projectId === project.id).length);
         setLastExportedAt(exportEntry.exportedAt);
+        setProjectExports(exports.filter((item) => item.projectId === project.id).slice(0, 4));
       }
       setSuccess("Snapshot do projeto baixado. Use esse bundle para continuar o app ou site fora da plataforma enquanto push direto, PRs e CI entram na próxima fase.");
       setError(null);
@@ -393,6 +425,20 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
         <div className="github-workspace-inline-note">
           <strong>Último snapshot exportado</strong>
           <span>{formatDateLabel(lastExportedAt)}</span>
+        </div>
+        <div className="github-workspace-activity-list">
+          {visibleGitHubActivity.length ? visibleGitHubActivity.map((item) => (
+            <div key={item.id} className="github-workspace-activity-item">
+              <strong>{item.title}</strong>
+              <span>{item.detail}</span>
+              <small>{formatDateLabel(item.ts)}</small>
+            </div>
+          )) : (
+            <div className="github-workspace-inline-note">
+              <strong>Sem histórico recente</strong>
+              <span>Salve uma versão local ou exporte um snapshot para criar uma trilha clara de saída.</span>
+            </div>
+          )}
         </div>
       </section>
     );
@@ -550,6 +596,20 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
           <div className="github-workspace-inline-note">
             <strong>Fluxo preparado para app/site</strong>
             <span>O handoff atual é leve e honesto: base do repositório, versões locais e bundle exportável para continuar fora da plataforma.</span>
+          </div>
+          <div className="github-workspace-activity-list">
+            {visibleGitHubActivity.length ? visibleGitHubActivity.map((item) => (
+              <div key={item.id} className="github-workspace-activity-item">
+                <strong>{item.title}</strong>
+                <span>{item.detail}</span>
+                <small>{formatDateLabel(item.ts)}</small>
+              </div>
+            )) : (
+              <div className="github-workspace-inline-note">
+                <strong>Sem histórico recente</strong>
+                <span>Registre versões locais e exporte snapshots para tornar a continuidade do app ou site menos ambígua.</span>
+              </div>
+            )}
           </div>
         </article>
       </div>

@@ -43,6 +43,17 @@ type EditorCheckpoint = {
   versionId?: string | null;
 };
 
+type OutputStage = "draft" | "exported" | "published";
+
+type EditorDeliveryEvent = {
+  id: string;
+  ts: string;
+  stage: OutputStage;
+  channel: "device" | "github" | "vercel" | "manual";
+  title: string;
+  note: string;
+};
+
 type EditorAsset = {
   id: string;
   label: string;
@@ -71,7 +82,15 @@ type EditorDoc = {
   review: { factCheck: any | null; status: ReviewStatus };
   versions: EditorVersion[];
   checkpoints: EditorCheckpoint[];
-  delivery: { exportTarget: "device" | "connected_storage"; connectedStorage: string | null; mediaRetention: "externalized" };
+  delivery: {
+    exportTarget: "device" | "connected_storage";
+    connectedStorage: string | null;
+    mediaRetention: "externalized";
+    outputStage: OutputStage;
+    lastExportedAt: string | null;
+    lastPublishedAt: string | null;
+    history: EditorDeliveryEvent[];
+  };
 };
 
 const PROJECT_KIND_LABEL: Record<string, string> = {
@@ -111,6 +130,24 @@ const REVIEW_STATUS_META: Record<ReviewStatus, { label: string; detail: string; 
     label: "Ajustes pendentes",
     detail: "A peça precisa de nova iteração antes de voltar ao estado de revisão ou aprovação.",
     badge: "warning",
+  },
+};
+
+const OUTPUT_STAGE_META: Record<OutputStage, { label: string; detail: string; badge: "phase" | "warning" | "soon" }> = {
+  draft: {
+    label: "Draft",
+    detail: "O trabalho ainda está concentrado no editor e não saiu da plataforma como entregável final.",
+    badge: "soon",
+  },
+  exported: {
+    label: "Exported",
+    detail: "A saída já foi registrada como exportada ou enviada para handoff fora da plataforma.",
+    badge: "warning",
+  },
+  published: {
+    label: "Published",
+    detail: "A publicação já foi registrada manualmente como concluída no fluxo atual do beta.",
+    badge: "phase",
   },
 };
 
@@ -163,6 +200,27 @@ function ensureEditor(project: Project): EditorDoc {
       exportTarget: e.delivery?.exportTarget === "connected_storage" ? "connected_storage" : "device",
       connectedStorage: typeof e.delivery?.connectedStorage === "string" ? e.delivery.connectedStorage : null,
       mediaRetention: "externalized",
+      outputStage:
+        e.delivery?.outputStage === "exported" || e.delivery?.outputStage === "published"
+          ? e.delivery.outputStage
+          : "draft",
+      lastExportedAt: typeof e.delivery?.lastExportedAt === "string" ? e.delivery.lastExportedAt : null,
+      lastPublishedAt: typeof e.delivery?.lastPublishedAt === "string" ? e.delivery.lastPublishedAt : null,
+      history: Array.isArray(e.delivery?.history)
+        ? e.delivery.history
+            .filter((item: any) => item && typeof item === "object")
+            .map((item: any) => ({
+              id: String(item.id || cryptoId()),
+              ts: String(item.ts || new Date().toISOString()),
+              stage: item.stage === "published" ? "published" : item.stage === "exported" ? "exported" : "draft",
+              channel:
+                item.channel === "github" || item.channel === "vercel" || item.channel === "manual"
+                  ? item.channel
+                  : "device",
+              title: String(item.title || "Evento de saída"),
+              note: String(item.note || ""),
+            }))
+        : [],
     }
   };
 }
@@ -436,6 +494,27 @@ function buildCheckpointEntry({
   };
 }
 
+function buildDeliveryEvent({
+  stage,
+  channel,
+  title,
+  note,
+}: {
+  stage: OutputStage;
+  channel: EditorDeliveryEvent["channel"];
+  title: string;
+  note: string;
+}): EditorDeliveryEvent {
+  return {
+    id: cryptoId(),
+    ts: new Date().toISOString(),
+    stage,
+    channel,
+    title,
+    note,
+  };
+}
+
 function buildProjectAssets({
   project,
   creatorSnapshot,
@@ -537,6 +616,7 @@ function buildDeliverableStages({
   factResult,
   reviewStatus,
   checkpoints,
+  outputStage,
   exportTarget,
 }: {
   creatorSnapshot: CreatorSnapshot | null;
@@ -545,6 +625,7 @@ function buildDeliverableStages({
   factResult: any;
   reviewStatus: ReviewStatus;
   checkpoints: EditorCheckpoint[];
+  outputStage: OutputStage;
   exportTarget: "device" | "connected_storage";
 }): DeliverableStage[] {
   const hasBase = Boolean(creatorSnapshot || String(text || "").trim());
@@ -600,10 +681,14 @@ function buildDeliverableStages({
       id: "export",
       label: "Exportar",
       detail:
-        exportTarget === "device"
-          ? "Saída padrão atual: exported no dispositivo ao concluir o entregável. Published segue como etapa manual fora da plataforma."
-          : "Fluxo preparado para storage conectado quando essa etapa estiver disponível.",
-      status: isApproved && hasSavedVersion ? "active" : hasSavedVersion ? "pending" : "pending",
+        outputStage === "published"
+          ? "A saída já foi registrada como publicada. O histórico abaixo mantém quando isso aconteceu e por qual canal."
+          : outputStage === "exported"
+            ? "A saída já foi registrada como exported. Agora você pode concluir a publicação manual ou manter o projeto em handoff."
+            : exportTarget === "device"
+              ? "Saída padrão atual: exported no dispositivo ao concluir o entregável. Published segue como etapa manual fora da plataforma."
+              : "Fluxo preparado para storage conectado quando essa etapa estiver disponível.",
+      status: outputStage === "published" ? "done" : outputStage === "exported" ? "done" : isApproved && hasSavedVersion ? "active" : "pending",
     },
   ];
 }
@@ -682,9 +767,13 @@ export default function EditorProjectPage() {
   const editorState = useMemo(() => (project ? ensureEditor(project) : null), [project]);
   const versions = useMemo(() => editorState?.versions || [], [editorState]);
   const checkpoints = useMemo(() => editorState?.checkpoints || [], [editorState]);
+  const deliveryHistory = useMemo(() => editorState?.delivery.history || [], [editorState]);
   const latestVersion = versions[0] || null;
   const latestCheckpoint = checkpoints[0] || null;
   const reviewStatusMeta = REVIEW_STATUS_META[reviewStatus];
+  const outputStage = editorState?.delivery.outputStage || "draft";
+  const outputStageMeta = OUTPUT_STAGE_META[outputStage];
+  const latestDeliveryEvent = deliveryHistory[0] || null;
   const outputAssets = useMemo(
     () => buildProjectAssets({ project, creatorSnapshot, text, factResult, reviewStatus }),
     [creatorSnapshot, factResult, project, reviewStatus, text]
@@ -698,9 +787,10 @@ export default function EditorProjectPage() {
         factResult,
         reviewStatus,
         checkpoints,
+        outputStage,
         exportTarget: editorState?.delivery.exportTarget || "device",
       }),
-    [checkpoints, creatorSnapshot, editorState?.delivery.exportTarget, factResult, reviewStatus, text, versions]
+    [checkpoints, creatorSnapshot, editorState?.delivery.exportTarget, factResult, outputStage, reviewStatus, text, versions]
   );
   const documentMetrics = useMemo(() => {
     const trimmed = String(text || "").trim();
@@ -729,8 +819,8 @@ export default function EditorProjectPage() {
     [latestCheckpoint]
   );
   const projectStateLabel = useMemo(
-    () => `${reviewStatusMeta.label} · ${outputMetrics.ready} saída(s) pronta(s)`,
-    [outputMetrics.ready, reviewStatusMeta.label]
+    () => `${outputStageMeta.label} · ${reviewStatusMeta.label} · ${outputMetrics.ready} saída(s) pronta(s)`,
+    [outputMetrics.ready, outputStageMeta.label, reviewStatusMeta.label]
   );
 
   async function persistEditor(next: EditorDoc, feedbackText: string) {
@@ -765,6 +855,54 @@ export default function EditorProjectPage() {
     setReviewStatus(next.review.status || "draft");
     setSaveFeedback(feedbackText);
     return proj;
+  }
+
+  async function registerDeliveryStage({
+    stage,
+    channel,
+    title,
+    note,
+  }: {
+    stage: OutputStage;
+    channel: EditorDeliveryEvent["channel"];
+    title: string;
+    note: string;
+  }) {
+    if (!project) return;
+    setSaving(true);
+    setErr(null);
+    setSaveFeedback(null);
+
+    try {
+      const current = ensureEditor(project);
+      const event = buildDeliveryEvent({ stage, channel, title, note });
+      const next: EditorDoc = {
+        ...current,
+        mode: { professor: professorMode, transparent: transparentMode },
+        doc: { text },
+        aiSteps: pushStep(current.aiSteps, title, note),
+        review: { factCheck: factResult || null, status: reviewStatus },
+        versions: current.versions,
+        checkpoints: current.checkpoints,
+        delivery: {
+          ...current.delivery,
+          outputStage: stage,
+          lastExportedAt: stage === "exported" || stage === "published" ? event.ts : current.delivery.lastExportedAt,
+          lastPublishedAt: stage === "published" ? event.ts : current.delivery.lastPublishedAt,
+          history: [event, ...current.delivery.history].slice(0, 16),
+        },
+      };
+      await persistEditor(
+        next,
+        stage === "published"
+          ? "Publicação manual registrada. O projeto agora mostra a saída como published com histórico claro."
+          : "Exportação registrada. O projeto agora mostra a saída como exported com histórico claro."
+      );
+    } catch (e: any) {
+      setErr(typeof e === "string" ? e : (e?.message || e?.error?.message || "Falha ao registrar a saída do projeto"));
+    } finally {
+      setSaving(false);
+    }
   }
 
   async function save() {
@@ -1161,8 +1299,8 @@ export default function EditorProjectPage() {
               <div className="editor-project-command-grid">
                 <div className="editor-project-command-card">
                   <span>Estado do projeto</span>
-                  <strong>{reviewStatusMeta.label}</strong>
-                  <p>{reviewStatusMeta.detail}</p>
+                  <strong>{outputStageMeta.label}</strong>
+                  <p>{outputStageMeta.detail}</p>
                 </div>
                 <div className="editor-project-command-card">
                   <span>Checkpoint ativo</span>
@@ -1179,6 +1317,13 @@ export default function EditorProjectPage() {
                   <strong>{editorState?.delivery.exportTarget === "device" ? "Exportação no dispositivo" : "Storage conectado"}</strong>
                   <p>{deliverableStages.find((item) => item.id === "export")?.detail || "Prepare a saída final ao concluir o entregável."}</p>
                 </div>
+              </div>
+              <div className="hero-meta-row">
+                <span className={`premium-badge premium-badge-${outputStageMeta.badge}`}>Saída atual: {outputStageMeta.label}</span>
+                <span className="premium-badge premium-badge-warning">Revisão: {reviewStatusMeta.label}</span>
+                <span className="premium-badge premium-badge-soon">
+                  {latestDeliveryEvent ? `Última saída: ${new Date(latestDeliveryEvent.ts).toLocaleDateString("pt-BR")}` : "Nenhuma saída registrada"}
+                </span>
               </div>
               <div className="editor-project-version-banner">
                 <div>
@@ -1386,6 +1531,34 @@ export default function EditorProjectPage() {
 
             <section className="editor-shell-inline-card">
               <div className="editor-shell-panel-head">
+                <p className="section-kicker">Histórico de saída</p>
+                <h4>O que já saiu da plataforma</h4>
+                <p className="editor-shell-note">
+                  Registre quando o trabalho for exportado no dispositivo, enviado por handoff ou publicado manualmente. O objetivo aqui é clareza operacional, não automação falsa.
+                </p>
+              </div>
+              <div className="editor-project-checkpoint-list">
+                {deliveryHistory.length ? deliveryHistory.map((event) => (
+                  <div key={event.id} className="editor-project-checkpoint-item" data-type={event.stage === "published" ? "approved" : event.stage === "exported" ? "review_ready" : "draft"}>
+                    <div className="editor-project-checkpoint-head">
+                      <strong>{event.title}</strong>
+                      <span>{new Date(event.ts).toLocaleString("pt-BR")}</span>
+                    </div>
+                    <div className="editor-project-checkpoint-note">
+                      {OUTPUT_STAGE_META[event.stage].label} • canal {event.channel} • {event.note}
+                    </div>
+                  </div>
+                )) : (
+                  <div className="editor-shell-empty-note">
+                    <strong>Nenhuma saída registrada</strong>
+                    <span>Quando o entregável realmente sair da plataforma, registre o momento para não perder a trilha operacional.</span>
+                  </div>
+                )}
+              </div>
+            </section>
+
+            <section className="editor-shell-inline-card">
+              <div className="editor-shell-panel-head">
                 <p className="section-kicker">Checkpoints do projeto</p>
                 <h4>Marcos de decisão e continuidade</h4>
                 <p className="editor-shell-note">
@@ -1508,12 +1681,43 @@ export default function EditorProjectPage() {
                 <p className="section-kicker">Projeto atual</p>
                 <strong className="editor-shell-footer-title">{title}</strong>
                 <p className="editor-shell-note">
-                  O fluxo agora fecha aqui: draft no editor, exported via saída ou handoff beta e published apenas como etapa manual informada. Exportação padrão no dispositivo; GitHub e Vercel seguem como continuidade honesta desta fase.
+                  O fluxo agora fecha aqui com rastreio explícito: draft enquanto o trabalho ainda vive no editor, exported quando a saída realmente sai da plataforma e published quando a publicação manual for confirmada.
                 </p>
               </div>
               <div className="editor-shell-cta-group">
                 <button className="btn-ea btn-primary btn-sm" onClick={save} disabled={saving}>
                   {saving ? "Salvando..." : "Salvar nova versão"}
+                </button>
+                <button
+                  className="btn-ea btn-secondary btn-sm"
+                  onClick={() =>
+                    registerDeliveryStage({
+                      stage: "exported",
+                      channel: editorState?.delivery.exportTarget === "connected_storage" ? "manual" : "device",
+                      title: "Exportação registrada",
+                      note:
+                        editorState?.delivery.exportTarget === "connected_storage"
+                          ? "Saída registrada para continuidade em storage conectado ou outro canal manual."
+                          : "Entregável exportado no dispositivo e pronto para continuidade fora da plataforma.",
+                    })
+                  }
+                  disabled={saving}
+                >
+                  Registrar exported
+                </button>
+                <button
+                  className="btn-ea btn-ghost btn-sm"
+                  onClick={() =>
+                    registerDeliveryStage({
+                      stage: "published",
+                      channel: "manual",
+                      title: "Publicação manual registrada",
+                      note: "Publicação confirmada manualmente fora da plataforma, sem depender de deploy automático inexistente nesta fase.",
+                    })
+                  }
+                  disabled={saving}
+                >
+                  Registrar published
                 </button>
                 <button className="btn-ea btn-ghost btn-sm" onClick={() => setAiSteps([])}>
                   Limpar log

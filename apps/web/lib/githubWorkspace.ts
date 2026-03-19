@@ -279,6 +279,7 @@ export function buildGitHubProjectBundle(project: GitHubProjectRef, workspace: G
     exportedAt: new Date().toISOString(),
     product: "Editor AI Creator",
     handoff: {
+      stage: "exported",
       target: handoffTarget,
       steps: ["gerar", "editar", "salvar", "exportar"],
       starterStructure: buildStarterStructure(handoffTarget),

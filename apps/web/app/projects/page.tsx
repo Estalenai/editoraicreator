@@ -114,7 +114,7 @@ export default function ProjectsPage() {
           <p className="section-kicker">Pipeline de saída</p>
           <h2 className="heading-reset">Draft, exported e published sem ambiguidade</h2>
           <p className="helper-text-ea">
-            O beta agora separa três estados: o que ainda está em rascunho no projeto, o que já saiu como handoff exportado e o que já foi publicado manualmente fora da plataforma.
+            O beta agora separa três estados e mantém trilha de saída: o que ainda está em rascunho no projeto, o que já saiu como handoff exportado e o que já foi publicado manualmente fora da plataforma.
           </p>
         </div>
         <div className="proof-value-grid">

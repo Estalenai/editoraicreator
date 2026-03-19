@@ -5680,6 +5680,56 @@ textarea:focus {
   line-height: 1.35;
 }
 
+.github-workspace-activity-list,
+.vercel-publish-history,
+.vercel-publish-history-list {
+  display: grid;
+  gap: var(--ea-space-3);
+}
+
+.github-workspace-activity-item,
+.vercel-publish-history-item {
+  display: grid;
+  gap: 6px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(196, 235, 255, 0.12);
+  background:
+    radial-gradient(160px 72px at 100% 0%, rgba(75, 232, 255, 0.08), transparent 72%),
+    rgba(8, 22, 54, 0.42);
+}
+
+.github-workspace-activity-item strong,
+.vercel-publish-history-item strong {
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.github-workspace-activity-item span,
+.github-workspace-activity-item small,
+.vercel-publish-history-head span,
+.vercel-publish-history-meta span {
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--ea-text-subtle);
+}
+
+.vercel-publish-history-head,
+.vercel-publish-history-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--ea-space-2);
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.vercel-publish-history-item p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.58;
+  color: var(--ea-text-muted);
+}
+
 .github-workspace-card-compact {
   border-color: rgba(127, 183, 255, 0.18);
   background:

@@ -61,7 +61,18 @@ export default function NewEditorProjectPage() {
             course: { sections: [] },
             website: { blocks: [] },
             aiSteps: [],
-            delivery: { exportTarget: "device", connectedStorage: null, mediaRetention: "externalized" }
+            review: { factCheck: null, status: "draft" },
+            versions: [],
+            checkpoints: [],
+            delivery: {
+              exportTarget: "device",
+              connectedStorage: null,
+              mediaRetention: "externalized",
+              outputStage: "draft",
+              lastExportedAt: null,
+              lastPublishedAt: null,
+              history: [],
+            }
           }
         }
       });
@@ -110,7 +121,7 @@ export default function NewEditorProjectPage() {
               </div>
               <div className="hero-side-note">
                 <strong>Continue no mesmo workspace</strong>
-                <span>Salve em draft, refine com IA e só então exporte ou publique com handoff beta quando fizer sentido.</span>
+                <span>Salve em draft, refine com IA e só então exporte ou publique com handoff beta quando fizer sentido, mantendo histórico de saída desde o início.</span>
               </div>
               <div className="hero-side-note">
                 <strong>GitHub e Vercel para app ou site</strong>

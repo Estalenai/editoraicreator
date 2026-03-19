@@ -2,6 +2,16 @@
 
 export type VercelFramework = "nextjs" | "vite" | "static";
 export type VercelDeployStatus = "draft" | "ready" | "published";
+export type VercelOutputStage = "draft" | "exported" | "published";
+
+export type VercelProjectEvent = {
+  id: string;
+  ts: string;
+  type: "base_saved" | "handoff_exported" | "published_manual" | "status_updated";
+  stage: VercelOutputStage;
+  title: string;
+  note: string;
+};
 
 export type VercelProjectSummary = {
   id: string;
@@ -21,6 +31,7 @@ export type VercelProjectBinding = {
   previewUrl: string;
   productionUrl: string;
   lastManifestExportedAt?: string;
+  history?: VercelProjectEvent[];
   updatedAt: string;
 };
 
@@ -44,18 +55,68 @@ function canUseStorage(): boolean {
   return typeof window !== "undefined" && typeof window.localStorage !== "undefined";
 }
 
+function localId(): string {
+  try {
+    return globalThis.crypto?.randomUUID?.() || Math.random().toString(36).slice(2);
+  } catch {
+    return Math.random().toString(36).slice(2);
+  }
+}
+
+function normalizeHistory(history: unknown): VercelProjectEvent[] {
+  if (!Array.isArray(history)) return [];
+  return history
+    .filter((item) => item && typeof item === "object")
+    .map((item: any): VercelProjectEvent => {
+      const type: VercelProjectEvent["type"] =
+        item.type === "handoff_exported" || item.type === "published_manual" || item.type === "status_updated"
+          ? item.type
+          : "base_saved";
+      const stage: VercelOutputStage =
+        item.stage === "published" ? "published" : item.stage === "exported" ? "exported" : "draft";
+      return {
+        id: String(item.id || localId()),
+        ts: String(item.ts || new Date().toISOString()),
+        type,
+        stage,
+        title: String(item.title || "Evento Vercel"),
+        note: String(item.note || ""),
+      };
+    })
+    .slice(0, 12);
+}
+
 export function readVercelWorkspace(): VercelWorkspaceState {
   if (!canUseStorage()) return emptyWorkspace();
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return emptyWorkspace();
     const parsed = JSON.parse(raw);
+    const rawBindings = typeof parsed?.projectBindings === "object" && parsed?.projectBindings ? parsed.projectBindings : {};
+    const projectBindings = Object.fromEntries(
+      Object.entries(rawBindings).map(([projectId, value]: [string, any]) => [
+        projectId,
+        {
+          projectId: String(value?.projectId || projectId),
+          projectTitle: String(value?.projectTitle || "Projeto"),
+          projectKind: String(value?.projectKind || ""),
+          vercelProjectName: String(value?.vercelProjectName || ""),
+          teamSlug: String(value?.teamSlug || ""),
+          framework: value?.framework === "vite" ? "vite" : value?.framework === "static" ? "static" : "nextjs",
+          rootDirectory: String(value?.rootDirectory || ""),
+          deployStatus: value?.deployStatus === "ready" ? "ready" : value?.deployStatus === "published" ? "published" : "draft",
+          previewUrl: String(value?.previewUrl || ""),
+          productionUrl: String(value?.productionUrl || ""),
+          lastManifestExportedAt: value?.lastManifestExportedAt ? String(value.lastManifestExportedAt) : undefined,
+          history: normalizeHistory(value?.history),
+          updatedAt: String(value?.updatedAt || new Date().toISOString()),
+        } satisfies VercelProjectBinding,
+      ])
+    ) as Record<string, VercelProjectBinding>;
     return {
       version: 1,
       defaultTeamSlug: String(parsed?.defaultTeamSlug || ""),
-      projectBindings: typeof parsed?.projectBindings === "object" && parsed?.projectBindings
-        ? parsed.projectBindings
-        : {},
+      projectBindings,
     };
   } catch {
     return emptyWorkspace();
@@ -84,6 +145,7 @@ export function upsertVercelProjectBinding(
       ...current.projectBindings,
       [binding.projectId]: {
         ...binding,
+        history: normalizeHistory(binding.history),
         updatedAt: new Date().toISOString(),
       },
     },
@@ -157,6 +219,18 @@ export function resolveVercelOutputStage(binding: Pick<VercelProjectBinding, "de
   };
 }
 
+export function appendVercelProjectEvent(
+  binding: VercelProjectBinding | null | undefined,
+  event: Omit<VercelProjectEvent, "id" | "ts">
+): VercelProjectEvent[] {
+  const nextEvent: VercelProjectEvent = {
+    id: localId(),
+    ts: new Date().toISOString(),
+    ...event,
+  };
+  return [nextEvent, ...normalizeHistory(binding?.history)].slice(0, 12);
+}
+
 export function buildVercelDeployManifest(
   project: VercelProjectSummary,
   binding: Omit<VercelProjectBinding, "updatedAt"> | VercelProjectBinding
@@ -180,6 +254,7 @@ export function buildVercelDeployManifest(
       previewUrl: binding.previewUrl || null,
       productionUrl: binding.productionUrl || null,
       lastManifestExportedAt: binding.lastManifestExportedAt || null,
+      history: normalizeHistory(binding.history),
     },
     publishMode: "beta_manual_handoff",
     notes: [
