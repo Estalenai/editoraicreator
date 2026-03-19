@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
-import { apiFetch } from "../../lib/api";
+import { api, apiFetch } from "../../lib/api";
 import { createIdempotencyKey } from "../../lib/idempotencyKey";
 import { runAutoPromptFlow } from "../../lib/autoPromptFlow";
 import { usePromptPreferences } from "../../hooks/usePromptPreferences";
@@ -163,6 +164,7 @@ async function getAccessToken() {
 }
 
 export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
+  const router = useRouter();
   const [platform, setPlatform] = useState("Instagram");
   const [contentType, setContentType] = useState("Post");
   const [theme, setTheme] = useState("");
@@ -181,11 +183,13 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
   const [rawText, setRawText] = useState("");
   const [resultProvider, setResultProvider] = useState<string | null>(null);
   const [resultModel, setResultModel] = useState<string | null>(null);
+  const [resultReplay, setResultReplay] = useState(false);
 
   const [copyMsg, setCopyMsg] = useState<string | null>(null);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [savedProjectId, setSavedProjectId] = useState<string | null>(null);
+  const [resultDirty, setResultDirty] = useState(false);
   const [plannerOpen, setPlannerOpen] = useState(false);
 
   // 🔥 NOVO: etapa inline (sem modal)
@@ -209,6 +213,8 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
   );
 
   const hasCredits = walletCommon >= creditsEstimate.common;
+  const hasSavedProject = Boolean(savedProjectId);
+  const needsProjectSync = Boolean(savedProjectId && resultDirty);
 
   const plannerSteps = useMemo(
     () => [
@@ -219,6 +225,7 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
         : "Usar o briefing atual como base direta para a geração.",
       "Gerar legenda principal, CTA e hashtags alinhadas à plataforma.",
       "Entregar variações e checklist técnico para revisão final.",
+      "Salvar no projeto e seguir para o editor com a base pronta para checkpoint e exportação.",
     ],
     [promptEnabled, autoApply]
   );
@@ -317,6 +324,8 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
     setRawText("");
     setResultProvider(null);
     setResultModel(null);
+    setResultReplay(false);
+    setResultDirty(false);
 
     try {
       const idempotencyKey = createIdempotencyKey("creator_post_generate");
@@ -359,17 +368,22 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
       setRawText(normalized?.caption || text);
       setResultProvider(typeof payload?.provider === "string" ? payload.provider : null);
       setResultModel(typeof payload?.model === "string" ? payload.model : null);
+      setResultReplay(Boolean(payload?.replay));
       setSuccess(
         toUserFacingGenerationSuccess({
           provider: typeof payload?.provider === "string" ? payload.provider : null,
           model: typeof payload?.model === "string" ? payload.model : null,
+          replay: Boolean(payload?.replay),
           defaultMessage: "Post gerado e pronto para revisão.",
           mockMessage: "Resposta entregue em modo beta simulado. Ative o provedor real para publicação final.",
         })
       );
 
-      // ✅ transparência: guardar prompt usado
-      setLastPromptUsed(finalPrompt);
+      setLastPromptUsed(
+        typeof payload?.used_prompt === "string" && payload.used_prompt.trim()
+          ? payload.used_prompt.trim()
+          : finalPrompt
+      );
 
       await onRefetch();
     } catch (e: any) {
@@ -390,6 +404,10 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
     setSavedProjectId(null);
     setResult(null);
     setRawText("");
+    setResultProvider(null);
+    setResultModel(null);
+    setResultReplay(false);
+    setResultDirty(false);
 
     try {
       const idempotencyKey = createIdempotencyKey("creator_post_generate");
@@ -431,19 +449,22 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
       setRawText(normalized?.caption || text);
       setResultProvider(typeof payload?.provider === "string" ? payload.provider : null);
       setResultModel(typeof payload?.model === "string" ? payload.model : null);
+      setResultReplay(Boolean(payload?.replay));
       setSuccess(
         toUserFacingGenerationSuccess({
           provider: typeof payload?.provider === "string" ? payload.provider : null,
           model: typeof payload?.model === "string" ? payload.model : null,
+          replay: Boolean(payload?.replay),
           defaultMessage: "Post gerado e pronto para revisão.",
           mockMessage: "Resposta entregue em modo beta simulado. Ative o provedor real para publicação final.",
         })
       );
 
-      // Nota: neste fluxo não temos o prompt final com certeza.
-      // Se quiser 100% transparência aqui, o backend precisaria retornar o prompt usado.
-      // Por enquanto, limpamos o lastPromptUsed para não mostrar algo errado.
-      setLastPromptUsed(null);
+      setLastPromptUsed(
+        typeof payload?.used_prompt === "string" && payload.used_prompt.trim()
+          ? payload.used_prompt.trim()
+          : null
+      );
 
       await onRefetch();
     } catch (e: any) {
@@ -482,6 +503,8 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
         setGeneratedPrompt("");
         setShowPromptUsed(false);
         setLastPromptUsed(null);
+        setResultReplay(false);
+        setResultDirty(false);
         setSuccess(null);
         setSaveMsg(null);
         setSavedProjectId(null);
@@ -490,19 +513,29 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
     });
   }
 
-  async function onSaveProject() {
+  function applyVariationAsPrimary(variation: string) {
+    if (!variation.trim()) return;
+    setResult((current) => {
+      if (!current) return current;
+      return {
+        ...current,
+        caption: variation,
+      };
+    });
+    setRawText(variation);
+    setSuccess("Variação aplicada como legenda principal. Revise a peça e sincronize o projeto antes de seguir.");
+    if (savedProjectId) {
+      setResultDirty(true);
+      setSaveMsg("A legenda principal mudou depois do último salvamento. Atualize o projeto antes de abrir o editor.");
+    }
+  }
+
+  async function persistProject(openEditorAfterSave = false) {
     if (!result || saving) return;
     setSaving(true);
     setError(null);
     setSuccess(null);
     setSaveMsg(null);
-
-    const token = await getAccessToken();
-    if (!token) {
-      setSaving(false);
-      setError("Sessão expirada. Faça login novamente.");
-      return;
-    }
 
     const themeSnippet = theme.trim().slice(0, 60) || "sem tema";
     const title = `${platform} ${contentType} - ${themeSnippet}`;
@@ -519,33 +552,34 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
     const content = JSON.stringify(dataPayload);
 
     try {
-      const res = await apiFetch("/api/projects", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          title,
-          kind: "post",
-          content,
-          data: { content },
-        }),
-      });
-      const body = await res.json().catch(() => null);
+      const body = savedProjectId
+        ? await api.updateProject(savedProjectId, {
+            title,
+            kind: "post",
+            data: { content },
+          })
+        : await api.createProject({
+            title,
+            kind: "post",
+            data: { content },
+          });
 
-      if (!res.ok) {
-        const message =
-          extractApiErrorMessage(body, "") ||
-          "Falha ao salvar projeto. Verifique os dados e tente novamente.";
-        setError(String(message));
-        return;
-      }
-
-      const projectId = String(body?.item?.id || body?.id || "").trim();
+      const projectId = String(body?.item?.id || body?.id || savedProjectId || "").trim();
       setSavedProjectId(projectId || null);
-      setSaveMsg("Projeto salvo com segurança. Continue no Editor para revisar, salvar novas versões e exportar depois.");
+      setResultDirty(false);
+      setSaveMsg(
+        openEditorAfterSave
+          ? "Projeto sincronizado. Abrindo o editor com a base do Creator Post pronta para continuidade."
+          : savedProjectId
+            ? "Projeto atualizado com segurança. O editor vai receber a versão mais recente desta peça."
+            : "Projeto salvo com segurança. A base do Creator Post já está pronta para abrir no editor."
+      );
       await onRefetch();
+      if (openEditorAfterSave && projectId) {
+        router.push(`/editor/${projectId}?source=creator_post&handoff=saved`);
+      }
+    } catch (e: any) {
+      setError(extractApiErrorMessage(e, "Falha ao salvar projeto. Verifique os dados e tente novamente."));
     } finally {
       setSaving(false);
     }
@@ -554,6 +588,27 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
   const displayResult = result || null;
   const caption = displayResult?.caption || rawText;
   const hashtags = displayResult?.hashtags || [];
+  const resultSourceNote = useMemo(() => {
+    if (resultReplay) {
+      return {
+        tone: "warning" as const,
+        text: "Esta saída reaproveitou uma tentativa recente com segurança. Revise a peça e salve no projeto antes de seguir.",
+      };
+    }
+    if (resultProvider === "mock") {
+      return {
+        tone: "warning" as const,
+        text: "Resposta entregue em modo beta simulado. Ative o provedor real antes de tratar esta peça como publicação final.",
+      };
+    }
+    if (resultProvider) {
+      return {
+        tone: "success" as const,
+        text: `Gerado via ${resultProvider}${resultModel ? ` · ${resultModel}` : ""}.`,
+      };
+    }
+    return null;
+  }, [resultModel, resultProvider, resultReplay]);
 
   const isBusy = loadingPrompt || loadingApply;
   const platformSelectOptions = useMemo(
@@ -707,6 +762,17 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
         {!hasCredits && <div className="inline-alert inline-alert-error">Saldo insuficiente para gerar. Compre créditos avulsos para continuar.</div>}
       </div>
 
+      <div className="creator-planner-field-grid creator-post-journey-grid">
+        <div className="creator-planner-field">
+          <span>Saída esperada</span>
+          <strong>Legenda principal, CTA, hashtags, mídia sugerida e variações.</strong>
+        </div>
+        <div className="creator-planner-field">
+          <span>Encerramento do fluxo</span>
+          <strong>Salvar no projeto, abrir o editor e registrar exported quando a peça sair.</strong>
+        </div>
+      </div>
+
       <div className="creator-actions-row">
         {!plannerOpen ? (
         <div className="creator-action-buttons">
@@ -715,16 +781,18 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
             disabled={isBusy || !theme.trim() || !hasCredits}
             className={`btn-ea btn-primary ${isBusy || !theme.trim() || !hasCredits ? "creator-button-busy" : ""}`}
           >
-            {isBusy ? "Gerando..." : "Gerar Post com IA"}
+            {isBusy ? "Gerando..." : displayResult ? "Gerar nova versão" : "Revisar plano e gerar"}
           </button>
 
-          <button
-            onClick={openPlanner}
-            disabled={isBusy || !theme.trim() || !hasCredits}
-            className={`btn-ea btn-secondary ${isBusy || !theme.trim() || !hasCredits ? "creator-button-busy-soft" : ""}`}
-          >
-            Gerar novamente
-          </button>
+          {displayResult ? (
+            <button
+              onClick={openPlanner}
+              disabled={isBusy || !theme.trim() || !hasCredits}
+              className={`btn-ea btn-secondary ${isBusy || !theme.trim() || !hasCredits ? "creator-button-busy-soft" : ""}`}
+            >
+              Ajustar plano
+            </button>
+          ) : null}
         </div>
         ) : (
           <div className="helper-note-inline">Revise o plano abaixo antes de executar a geração.</div>
@@ -739,7 +807,7 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
               </div>
             ) : null}
             {success ? (
-              <div className={`state-ea ${resultProvider === "mock" ? "state-ea-warning" : "state-ea-success"}`}>
+              <div className={`state-ea ${resultProvider === "mock" || resultReplay ? "state-ea-warning" : "state-ea-success"}`}>
                 <p className="state-ea-title">Geração concluída</p>
                 <div className="state-ea-text">{success}</div>
               </div>
@@ -881,7 +949,7 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
         <div className="state-ea creator-empty-state">
           <p className="state-ea-title">Nenhum post gerado ainda</p>
           <div className="state-ea-text">
-            Preencha o briefing e clique em “Gerar Post com IA”. Depois, salve em projetos para continuar no editor.
+            Preencha o briefing, revise o planner e gere a primeira versão. Depois, salve no projeto e continue no editor com a base do post já preservada.
           </div>
           <div className="state-ea-actions">
             <button
@@ -889,7 +957,7 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
               onClick={openPlanner}
               disabled={isBusy || !theme.trim() || !hasCredits}
             >
-              Gerar Post com IA
+              Revisar plano e gerar
             </button>
             <Link href="/projects" className="btn-link-ea btn-ghost btn-sm">
               Ver projetos
@@ -904,15 +972,32 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
             <p className="section-kicker">Resultado</p>
             <div className="creator-result-title">Post pronto para revisar e salvar</div>
             <p className="creator-result-copy">
-              Revise legenda, variações e próximos passos antes de levar a peça para o editor.
+              Revise legenda, variações e próximos passos antes de salvar no projeto e levar a peça para o editor.
             </p>
-            {resultProvider ? (
-              <div className={resultProvider === "mock" ? "inline-alert inline-alert-warning" : "helper-note-inline"}>
-                {resultProvider === "mock"
-                  ? "Resposta entregue em modo beta simulado. Ative o provedor real para publicação final."
-                  : `Gerado via ${resultProvider}${resultModel ? ` · ${resultModel}` : ""}.`}
+            {resultSourceNote ? (
+              <div className={resultSourceNote.tone === "warning" ? "inline-alert inline-alert-warning" : "helper-note-inline"}>
+                {resultSourceNote.text}
               </div>
             ) : null}
+          </div>
+
+          <div className="creator-planner-field-grid creator-post-result-summary-grid">
+            <div className="creator-planner-field">
+              <span>Legenda principal</span>
+              <strong>{caption.trim().length} caracteres prontos para revisão</strong>
+            </div>
+            <div className="creator-planner-field">
+              <span>Hashtags</span>
+              <strong>{hashtags.length} conectadas ao post</strong>
+            </div>
+            <div className="creator-planner-field">
+              <span>Variações</span>
+              <strong>{displayResult.variations.length} opções para iteração</strong>
+            </div>
+            <div className="creator-planner-field">
+              <span>Próxima ação</span>
+              <strong>{hasSavedProject && !needsProjectSync ? "Abrir no editor" : "Salvar no projeto"}</strong>
+            </div>
           </div>
 
           <div className="creator-output-grid">
@@ -958,7 +1043,7 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
                   <div className="result-copy-prewrap">{variation}</div>
                   <button
                     className="btn-ea btn-ghost btn-sm"
-                    onClick={() => copyText(variation, "Variação")}
+                    onClick={() => applyVariationAsPrimary(variation)}
                   >
                     Usar esta
                   </button>
@@ -979,12 +1064,38 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
           <div className="postgen-panel creator-next-step-panel">
             <div className="postgen-title">Próximos passos</div>
             <div className="creator-next-step-copy">
-              Fluxo recomendado: gerar → salvar projeto → continuar no editor.
+              Fluxo recomendado: revisar a peça → salvar no projeto → continuar no editor → salvar checkpoint → registrar exported.
             </div>
+            {hasSavedProject && !needsProjectSync ? (
+              <div className="creator-feedback-note creator-feedback-note-muted">
+                Projeto sincronizado. O editor vai receber legenda, CTA e hashtags preservados neste fluxo hero.
+              </div>
+            ) : null}
             <div className="postgen-actions">
-              <button className="btn-ea btn-secondary" onClick={onSaveProject} disabled={saving}>
-                {saving ? "Salvando..." : "Salvar projeto"}
+              <button
+                className="btn-ea btn-primary"
+                onClick={() => {
+                  if (savedProjectId && !needsProjectSync) {
+                    router.push(`/editor/${savedProjectId}?source=creator_post&handoff=saved`);
+                    return;
+                  }
+                  void persistProject(true);
+                }}
+                disabled={saving}
+              >
+                {saving
+                  ? "Sincronizando..."
+                  : !savedProjectId
+                    ? "Salvar e abrir no Editor"
+                    : needsProjectSync
+                      ? "Atualizar projeto e abrir no Editor"
+                      : "Abrir no Editor"}
               </button>
+              {!hasSavedProject || needsProjectSync ? (
+                <button className="btn-ea btn-secondary" onClick={() => void persistProject(false)} disabled={saving}>
+                  {saving ? "Salvando..." : savedProjectId ? "Atualizar projeto salvo" : "Salvar projeto"}
+                </button>
+              ) : null}
               <button
                 className="btn-ea btn-ghost"
                 onClick={openPlanner}
@@ -992,20 +1103,9 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
               >
                 Gerar novamente
               </button>
-              <a
-                href="/projects"
-                className="btn-link-ea btn-ghost"
-              >
+              <a href="/projects" className="btn-link-ea btn-ghost">
                 Ver em Projetos
               </a>
-              {savedProjectId && (
-                <a
-                  href={`/editor/${savedProjectId}`}
-                  className="btn-link-ea btn-primary"
-                >
-                  Continuar no Editor
-                </a>
-              )}
             </div>
           </div>
           </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { api } from "../../../lib/api";
 import { EditorShell, EditorTab } from "../../../components/editor/EditorShell";
 import { GitHubWorkspaceCard } from "../../../components/projects/GitHubWorkspaceCard";
@@ -12,11 +12,19 @@ type Project = { id: string; title: string; kind: string; data?: any };
 
 type AiStep = { id: string; ts: string; title: string; details?: string };
 
+type CreatorSnapshotField = {
+  label: string;
+  value: string;
+};
+
 type CreatorSnapshot = {
   source: string;
   summary: string;
   details: string;
   prefillText?: string;
+  briefingFields?: CreatorSnapshotField[];
+  outputFields?: CreatorSnapshotField[];
+  nextAction?: string;
 };
 
 type ReviewStatus = "draft" | "review_ready" | "approved" | "rework";
@@ -267,22 +275,48 @@ function buildCreatorSnapshot(project: Project): CreatorSnapshot | null {
 
   if (payload.type === "creator_post") {
     const result = payload.result || {};
+    const platform = String(payload.platform || "").trim();
+    const contentType = String(payload.contentType || "").trim();
+    const tone = String(payload.tone || "").trim();
+    const objective = String(payload.objective || "").trim();
+    const theme = String(payload.theme || "").trim();
     const caption = String(result.caption || "").trim();
     const cta = String(result.cta || "").trim();
-    const hashtags = normalizeStringList(result.hashtags).join(" ");
+    const hashtagsList = normalizeStringList(result.hashtags);
+    const hashtags = hashtagsList.join(" ");
     const variations = normalizeStringList(result.variations);
+    const mediaSuggestion = String(result.mediaSuggestion || "").trim();
+    const checklist = normalizeStringList(result.platformChecklist);
     return {
       source: "Creator Post",
-      summary: "Post salvo a partir de Creators com contexto pronto para continuidade.",
+      summary: "Post salvo a partir de Creators com briefing, legenda e próximos passos prontos para continuidade no editor.",
       details: [
+        platform ? `Plataforma\n${platform}` : "",
+        contentType ? `Formato\n${contentType}` : "",
+        theme ? `Briefing\n${theme}` : "",
         caption ? `Legenda\n${caption}` : "",
         hashtags ? `Hashtags\n${hashtags}` : "",
         cta ? `CTA\n${cta}` : "",
+        mediaSuggestion ? `Midia sugerida\n${mediaSuggestion}` : "",
         variations.length ? `Variacoes\n- ${variations.join("\n- ")}` : "",
+        checklist.length ? `Checklist\n- ${checklist.join("\n- ")}` : "",
       ]
         .filter(Boolean)
         .join("\n\n"),
       prefillText: [caption, hashtags, cta ? `CTA: ${cta}` : ""].filter(Boolean).join("\n\n"),
+      briefingFields: [
+        { label: "Plataforma", value: platform },
+        { label: "Formato", value: contentType },
+        { label: "Tom", value: tone },
+        { label: "Objetivo", value: objective },
+      ].filter((item) => item.value),
+      outputFields: [
+        { label: "Hashtags", value: hashtagsList.length ? `${hashtagsList.length} conectadas` : "" },
+        { label: "CTA", value: cta },
+        { label: "Mídia sugerida", value: mediaSuggestion },
+        { label: "Variações", value: variations.length ? `${variations.length} prontas para iteração` : "" },
+      ].filter((item) => item.value),
+      nextAction: "Refine a legenda principal, salve a primeira versão do post e registre exported quando a peça realmente sair da plataforma.",
     };
   }
 
@@ -446,9 +480,10 @@ function buildEditorVersionEntry({
 }): EditorVersion {
   const trimmed = String(text || "").trim();
   const charCount = trimmed.length;
+  const isCreatorPost = creatorSnapshot?.source === "Creator Post";
   const titleByTab: Record<EditorTab, string> = {
     video: "Versão de vídeo",
-    text: "Versão editorial",
+    text: isCreatorPost ? "Versão editorial do post" : "Versão editorial",
     automation: "Versão de workflow",
     course: "Versão de curso",
     website: "Versão de site",
@@ -461,12 +496,12 @@ function buildEditorVersionEntry({
     title: titleByTab[tab],
     summary: trimmed
       ? summarizeText(trimmed)
-      : creatorSnapshot
+        : creatorSnapshot
         ? `Base herdada de ${creatorSnapshot.source.toLowerCase()} para ${projectKindLabel.toLowerCase()}.`
         : `Projeto salvo sem texto consolidado nesta etapa de ${projectKindLabel.toLowerCase()}.`,
     tab,
     charCount,
-    deliverable: trimmed ? "Pronto para revisar" : "Base salva",
+    deliverable: trimmed ? (isCreatorPost ? "Post pronto para revisar" : "Pronto para revisar") : isCreatorPost ? "Base do post salva" : "Base salva",
     snapshotText: trimmed || creatorSnapshot?.prefillText || "",
     reviewStatus,
     assetCount,
@@ -529,8 +564,9 @@ function buildProjectAssets({
   reviewStatus: ReviewStatus;
 }): EditorAsset[] {
   const assets: EditorAsset[] = [];
+  const payload = project ? parseCreatorProjectData(project) : null;
 
-  if (creatorSnapshot) {
+  if (creatorSnapshot && payload?.type !== "creator_post") {
     assets.push({
       id: "source-context",
       label: creatorSnapshot.source,
@@ -541,7 +577,6 @@ function buildProjectAssets({
     });
   }
 
-  const payload = project ? parseCreatorProjectData(project) : null;
   const trimmedText = String(text || "").trim();
   if (trimmedText) {
     assets.push({
@@ -552,6 +587,58 @@ function buildProjectAssets({
       note: summarizeText(trimmedText, 120),
       state: "ready",
     });
+  }
+
+  if (payload?.type === "creator_post") {
+    const result = payload.result || {};
+    const caption = String(result.caption || "").trim();
+    const hashtags = normalizeStringList(result.hashtags);
+    const cta = String(result.cta || "").trim();
+    const mediaSuggestion = String(result.mediaSuggestion || "").trim();
+
+    if (caption) {
+      assets.push({
+        id: "post-caption",
+        label: "Legenda principal",
+        type: "Post",
+        value: `${caption.length} caracteres prontos para edição`,
+        note: summarizeText(caption, 120),
+        state: "ready",
+      });
+    }
+
+    if (hashtags.length) {
+      assets.push({
+        id: "post-hashtags",
+        label: "Hashtags do post",
+        type: "Distribuição",
+        value: `${hashtags.length} conectadas à peça`,
+        note: hashtags.join(" "),
+        state: "ready",
+      });
+    }
+
+    if (cta) {
+      assets.push({
+        id: "post-cta",
+        label: "CTA principal",
+        type: "Conversão",
+        value: cta,
+        note: "Chamada pronta para publicação ou refinamento editorial.",
+        state: "ready",
+      });
+    }
+
+    if (mediaSuggestion) {
+      assets.push({
+        id: "post-media",
+        label: "Direção de mídia",
+        type: "Referência visual",
+        value: summarizeText(mediaSuggestion, 96),
+        note: "Referência salva junto da copy para briefing visual ou publicação.",
+        state: "context",
+      });
+    }
   }
 
   if (payload?.type === "creator_music") {
@@ -695,6 +782,7 @@ function buildDeliverableStages({
 
 export default function EditorProjectPage() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const id = String((params as any).id);
 
   const [loading, setLoading] = useState(true);
@@ -774,6 +862,9 @@ export default function EditorProjectPage() {
   const outputStage = editorState?.delivery.outputStage || "draft";
   const outputStageMeta = OUTPUT_STAGE_META[outputStage];
   const latestDeliveryEvent = deliveryHistory[0] || null;
+  const isCreatorPostFlow = creatorSnapshot?.source === "Creator Post";
+  const handoffFromCreatorPost = searchParams.get("source") === "creator_post";
+  const handoffStageParam = searchParams.get("handoff");
   const outputAssets = useMemo(
     () => buildProjectAssets({ project, creatorSnapshot, text, factResult, reviewStatus }),
     [creatorSnapshot, factResult, project, reviewStatus, text]
@@ -811,6 +902,12 @@ export default function EditorProjectPage() {
     const current = deliverableStages.find((item) => item.status === "active") || deliverableStages[deliverableStages.length - 1];
     return current?.label || "Refinar";
   }, [deliverableStages]);
+  const handoffNotice = useMemo(() => {
+    if (!handoffFromCreatorPost) return null;
+    return handoffStageParam === "saved"
+      ? "A base do Creator Post chegou ao editor com legenda, CTA e hashtags preservados. Agora refine a peça, salve a primeira versão e registre exported quando a saída realmente sair."
+      : "Este projeto entrou no editor a partir do Creator Post. Use a área central para consolidar a peça antes da saída final.";
+  }, [handoffFromCreatorPost, handoffStageParam]);
   const checkpointLabel = useMemo(
     () =>
       latestCheckpoint
@@ -818,6 +915,11 @@ export default function EditorProjectPage() {
         : "Sem checkpoint ativo",
     [latestCheckpoint]
   );
+  const hasPrimaryOutputBody = Boolean(String(text || creatorSnapshot?.prefillText || "").trim());
+  const canRegisterExport = hasPrimaryOutputBody && versions.length > 0;
+  const canRegisterPublish = canRegisterExport && (outputStage === "exported" || outputStage === "published");
+  const primarySaveLabel = isCreatorPostFlow && !versions.length ? "Salvar primeira versão do post" : "Salvar nova versão";
+  const contextSaveLabel = isCreatorPostFlow && !versions.length ? "Salvar primeira versão do post" : "Salvar versão e checkpoint";
   const projectStateLabel = useMemo(
     () => `${outputStageMeta.label} · ${reviewStatusMeta.label} · ${outputMetrics.ready} saída(s) pronta(s)`,
     [outputMetrics.ready, outputStageMeta.label, reviewStatusMeta.label]
@@ -869,6 +971,14 @@ export default function EditorProjectPage() {
     note: string;
   }) {
     if (!project) return;
+    if (!canRegisterExport) {
+      setErr("Salve ao menos uma versão ou checkpoint antes de registrar a saída final deste projeto.");
+      return;
+    }
+    if (stage === "published" && outputStage === "draft") {
+      setErr("Registre exported antes de marcar a publicação manual deste projeto.");
+      return;
+    }
     setSaving(true);
     setErr(null);
     setSaveFeedback(null);
@@ -895,8 +1005,12 @@ export default function EditorProjectPage() {
       await persistEditor(
         next,
         stage === "published"
-          ? "Publicação manual registrada. O projeto agora mostra a saída como published com histórico claro."
-          : "Exportação registrada. O projeto agora mostra a saída como exported com histórico claro."
+          ? isCreatorPostFlow
+            ? "Publicação manual do post registrada. O projeto agora mostra a saída como published com histórico claro."
+            : "Publicação manual registrada. O projeto agora mostra a saída como published com histórico claro."
+          : isCreatorPostFlow
+            ? "Exportação do post registrada. O projeto agora mostra a saída como exported com histórico claro."
+            : "Exportação registrada. O projeto agora mostra a saída como exported com histórico claro."
       );
     } catch (e: any) {
       setErr(typeof e === "string" ? e : (e?.message || e?.error?.message || "Falha ao registrar a saída do projeto"));
@@ -938,7 +1052,12 @@ export default function EditorProjectPage() {
         checkpoints: [nextCheckpoint, ...current.checkpoints].slice(0, 12),
         delivery: current.delivery
       };
-      await persistEditor(next, "Projeto salvo com segurança. A versão ativa e o checkpoint do trabalho agora ficaram registrados no editor.");
+      await persistEditor(
+        next,
+        isCreatorPostFlow && current.versions.length === 0
+          ? "Primeira versão do post salva com segurança. O editor agora registra um checkpoint real para continuidade e saída."
+          : "Projeto salvo com segurança. A versão ativa e o checkpoint do trabalho agora ficaram registrados no editor."
+      );
     } catch (e: any) {
       setErr(typeof e === "string" ? e : (e?.message || e?.error?.message || "Falha ao salvar"));
     } finally {
@@ -1110,6 +1229,12 @@ export default function EditorProjectPage() {
           <div className="state-ea-text">{saveFeedback}</div>
         </div>
       ) : null}
+      {handoffNotice ? (
+        <div className="state-ea state-ea-success">
+          <p className="state-ea-title">Base do Creator Post carregada</p>
+          <div className="state-ea-text">{handoffNotice}</div>
+        </div>
+      ) : null}
 
       <EditorShell
         title={title}
@@ -1170,7 +1295,7 @@ export default function EditorProjectPage() {
 
               <div className="editor-shell-cta-group">
                 <button onClick={save} disabled={saving} className="btn-ea btn-primary">
-                  {saving ? "Salvando..." : "Salvar versão e checkpoint"}
+                  {saving ? "Salvando..." : contextSaveLabel}
                 </button>
                 <a href="/projects" className="btn-link-ea btn-ghost btn-sm">Projetos</a>
               </div>
@@ -1204,6 +1329,38 @@ export default function EditorProjectPage() {
                   <h4>{creatorSnapshot.source}</h4>
                   <p className="editor-shell-note">{creatorSnapshot.summary}</p>
                 </div>
+                {creatorSnapshot.briefingFields?.length ? (
+                  <div className="editor-project-context-stack">
+                    <div className="editor-shell-fact-label">Briefing herdado</div>
+                    <div className="creator-planner-field-grid editor-project-context-grid">
+                      {creatorSnapshot.briefingFields.map((item) => (
+                        <div key={`${item.label}-${item.value}`} className="creator-planner-field">
+                          <span>{item.label}</span>
+                          <strong>{item.value}</strong>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+                {creatorSnapshot.outputFields?.length ? (
+                  <div className="editor-project-context-stack">
+                    <div className="editor-shell-fact-label">Saída herdada do creator</div>
+                    <div className="creator-planner-field-grid editor-project-context-grid">
+                      {creatorSnapshot.outputFields.map((item) => (
+                        <div key={`${item.label}-${item.value}`} className="creator-planner-field">
+                          <span>{item.label}</span>
+                          <strong>{item.value}</strong>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+                {creatorSnapshot.nextAction ? (
+                  <div className="editor-project-origin-note">
+                    <strong>Próxima ação recomendada</strong>
+                    <span>{creatorSnapshot.nextAction}</span>
+                  </div>
+                ) : null}
                 <pre className="editor-shell-pre editor-shell-pre-compact">{creatorSnapshot.details}</pre>
               </section>
             ) : null}
@@ -1211,9 +1368,11 @@ export default function EditorProjectPage() {
             <section className="editor-shell-inline-card">
               <div className="editor-shell-panel-head">
                 <p className="section-kicker">Assets e outputs</p>
-                <h4>O que este projeto já entrega</h4>
+                <h4>{isCreatorPostFlow ? "O que este post já entrega" : "O que este projeto já entrega"}</h4>
                 <p className="editor-shell-note">
-                  Contexto importado, saídas geradas e validações ficam reunidos para separar o que ainda está em draft do que já está pronto para exportação.
+                  {isCreatorPostFlow
+                    ? "Legenda, CTA, hashtags, direção de mídia e estados de revisão ficam reunidos para separar o que ainda está em draft do que já está pronto para exportação."
+                    : "Contexto importado, saídas geradas e validações ficam reunidos para separar o que ainda está em draft do que já está pronto para exportação."}
                 </p>
               </div>
               <div className="editor-project-asset-grid">
@@ -1686,7 +1845,7 @@ export default function EditorProjectPage() {
               </div>
               <div className="editor-shell-cta-group">
                 <button className="btn-ea btn-primary btn-sm" onClick={save} disabled={saving}>
-                  {saving ? "Salvando..." : "Salvar nova versão"}
+                  {saving ? "Salvando..." : primarySaveLabel}
                 </button>
                 <button
                   className="btn-ea btn-secondary btn-sm"
@@ -1701,7 +1860,7 @@ export default function EditorProjectPage() {
                           : "Entregável exportado no dispositivo e pronto para continuidade fora da plataforma.",
                     })
                   }
-                  disabled={saving}
+                  disabled={saving || !canRegisterExport}
                 >
                   Registrar exported
                 </button>
@@ -1715,7 +1874,7 @@ export default function EditorProjectPage() {
                       note: "Publicação confirmada manualmente fora da plataforma, sem depender de deploy automático inexistente nesta fase.",
                     })
                   }
-                  disabled={saving}
+                  disabled={saving || !canRegisterPublish || outputStage === "published"}
                 >
                   Registrar published
                 </button>
@@ -1724,6 +1883,12 @@ export default function EditorProjectPage() {
                 </button>
               </div>
             </div>
+            {!canRegisterExport ? (
+              <div className="editor-project-origin-note editor-project-origin-note-inline">
+                <strong>Antes de registrar a saída</strong>
+                <span>Salve ao menos uma versão ou checkpoint do projeto. Isso evita marcar exported sem uma base real de continuidade.</span>
+              </div>
+            ) : null}
             <GitHubWorkspaceCard
               variant="compact"
               project={project ? { id: project.id, title, kind: project.kind, data: project.data } : null}

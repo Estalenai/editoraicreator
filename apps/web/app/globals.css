@@ -850,6 +850,11 @@ body {
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
 }
 
+.editor-project-context-stack {
+  display: grid;
+  gap: 10px;
+}
+
 .editor-project-stage {
   display: grid;
   gap: 8px;
@@ -995,6 +1000,34 @@ body {
   font-size: 12px;
   line-height: 1.55;
   color: var(--ea-text-muted);
+}
+
+.editor-project-origin-note {
+  display: grid;
+  gap: 6px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(127, 183, 255, 0.2);
+  background:
+    radial-gradient(180px 80px at 100% 0%, rgba(127, 183, 255, 0.12), transparent 72%),
+    linear-gradient(165deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.016));
+}
+
+.editor-project-origin-note strong {
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ea-text-subtle);
+}
+
+.editor-project-origin-note span {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ea-text-strong);
+}
+
+.editor-project-origin-note-inline {
+  margin-top: var(--ea-space-3);
 }
 
 .editor-project-version-banner {
@@ -1567,6 +1600,11 @@ body {
   align-items: center;
   gap: var(--ea-space-3);
   flex-wrap: wrap;
+}
+
+.creator-post-journey-grid,
+.creator-post-result-summary-grid {
+  margin-top: 2px;
 }
 
 .creator-estimate-row {
