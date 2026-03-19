@@ -6384,6 +6384,163 @@ body {
   }
 }
 
+@keyframes premium-scroll-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.988);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+html,
+body,
+.credits-modal,
+.app-nav-links,
+.editor-shell-tab-row {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(124, 244, 255, 0.52) rgba(7, 27, 68, 0.56);
+}
+
+body::-webkit-scrollbar,
+.credits-modal::-webkit-scrollbar {
+  width: 11px;
+}
+
+.app-nav-links::-webkit-scrollbar,
+.editor-shell-tab-row::-webkit-scrollbar {
+  height: 8px;
+}
+
+body::-webkit-scrollbar-track,
+.credits-modal::-webkit-scrollbar-track,
+.app-nav-links::-webkit-scrollbar-track,
+.editor-shell-tab-row::-webkit-scrollbar-track {
+  background:
+    linear-gradient(180deg, rgba(7, 27, 68, 0.88), rgba(5, 18, 46, 0.92));
+  border-radius: 999px;
+}
+
+body::-webkit-scrollbar-thumb,
+.credits-modal::-webkit-scrollbar-thumb,
+.app-nav-links::-webkit-scrollbar-thumb,
+.editor-shell-tab-row::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  border: 2px solid rgba(7, 27, 68, 0.72);
+  background:
+    linear-gradient(180deg, rgba(124, 244, 255, 0.74), rgba(89, 182, 255, 0.78));
+  box-shadow: inset 0 1px 0 rgba(234, 247, 255, 0.28);
+}
+
+body::-webkit-scrollbar-thumb:hover,
+.credits-modal::-webkit-scrollbar-thumb:hover,
+.app-nav-links::-webkit-scrollbar-thumb:hover,
+.editor-shell-tab-row::-webkit-scrollbar-thumb:hover {
+  background:
+    linear-gradient(180deg, rgba(124, 244, 255, 0.9), rgba(89, 182, 255, 0.94));
+}
+
+@media (hover: hover) {
+  .premium-card,
+  .premium-card-soft,
+  .premium-hero,
+  .creator-workspace-card,
+  .hero-side-note,
+  .signal-chip,
+  .hero-kpi,
+  .dashboard-quick-link,
+  .dashboard-project-link,
+  .purchase-option-card,
+  .plan-card,
+  .how-it-works-step,
+  .creator-tab-btn,
+  .editor-shell-tab-trigger {
+    transform-origin: center top;
+  }
+
+  .premium-card,
+  .premium-card-soft,
+  .premium-hero,
+  .creator-workspace-card {
+    transition:
+      transform var(--ea-motion-base),
+      box-shadow var(--ea-motion-base),
+      border-color var(--ea-motion-fast),
+      background var(--ea-motion-base);
+  }
+
+  .premium-card::before,
+  .premium-card-soft::before,
+  .premium-hero::after,
+  .creator-workspace-card::before,
+  .dashboard-quick-link::after,
+  .dashboard-project-link::after,
+  .purchase-option-card::after,
+  .how-it-works-step::after {
+    transition:
+      opacity var(--ea-motion-fast),
+      transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .premium-card:hover,
+  .premium-card-soft:hover,
+  .creator-workspace-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 22px 40px rgba(5, 28, 72, 0.26);
+  }
+
+  .premium-card:hover::before,
+  .premium-card-soft:hover::before,
+  .creator-workspace-card:hover::before {
+    opacity: 0.94;
+    transform: scaleX(1.02);
+  }
+
+  .premium-hero:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 30px 64px rgba(1, 10, 30, 0.42);
+  }
+
+  .premium-hero:hover::after,
+  .dashboard-quick-link:hover::after,
+  .dashboard-project-link:hover::after,
+  .purchase-option-card:hover::after,
+  .how-it-works-step:hover::after {
+    opacity: 0.72;
+    transform: translateY(-1px);
+  }
+
+  .btn-primary:hover,
+  .dashboard-quick-link:hover,
+  .dashboard-project-link:hover,
+  .purchase-option-card:hover,
+  .plan-card:hover {
+    filter: saturate(1.05);
+  }
+
+  .creator-tab-btn:hover,
+  .editor-shell-tab-trigger:hover {
+    filter: saturate(1.04);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  .beta-entry-page > *,
+  .how-it-works-page > *,
+  .creators-page > *,
+  .projects-page > *,
+  .editor-new-page > * {
+    animation-name: premium-scroll-reveal;
+    animation-duration: 1ms;
+    animation-timing-function: linear;
+    animation-fill-mode: both;
+    animation-timeline: view(block);
+    animation-range: entry 8% cover 26%;
+  }
+}
+
 @media (max-width: 1100px) {
   .support-guide-grid,
   .support-faq-grid,
@@ -6405,8 +6562,35 @@ body {
     animation: none !important;
   }
 
+  .beta-entry-page > *,
+  .how-it-works-page > *,
+  .creators-page > *,
+  .projects-page > *,
+  .editor-new-page > * {
+    animation: none !important;
+  }
+
   .btn-ea::after,
   .btn-link-ea::after {
     transition: none !important;
+  }
+
+  .premium-card,
+  .premium-card-soft,
+  .premium-hero,
+  .creator-workspace-card,
+  .hero-side-note,
+  .signal-chip,
+  .hero-kpi,
+  .dashboard-quick-link,
+  .dashboard-project-link,
+  .purchase-option-card,
+  .plan-card,
+  .how-it-works-step,
+  .creator-tab-btn,
+  .editor-shell-tab-trigger {
+    transition: none !important;
+    transform: none !important;
+    filter: none !important;
   }
 }
