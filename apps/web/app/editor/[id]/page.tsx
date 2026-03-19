@@ -104,6 +104,7 @@ type EditorDoc = {
 const PROJECT_KIND_LABEL: Record<string, string> = {
   video: "Projeto de Vídeo",
   text: "Projeto de Texto",
+  script: "Projeto de Roteiro",
   automation: "Projeto de Automação",
   course: "Projeto de Curso",
   website: "Projeto de Site"
@@ -348,18 +349,44 @@ function buildCreatorSnapshot(project: Project): CreatorSnapshot | null {
   if (payload.type === "creator_scripts") {
     const generated = payload.generated || {};
     const structured = generated.structured || {};
+    const theme = String(payload.theme || "").trim();
+    const format = String(payload.format || "").trim();
+    const tone = String(payload.tone || "").trim();
+    const audience = String(payload.audience || "").trim();
+    const duration = String(payload.duration || "").trim();
+    const objective = String(payload.objective || "").trim();
     const finalScript = String(structured.final_script || generated.raw_text || "").trim();
+    const developmentPoints = normalizeStringList(structured.development_points);
     return {
       source: "Creator Scripts",
-      summary: "Roteiro salvo a partir de Creators para continuar refinando no editor.",
+      summary: "Roteiro salvo a partir de Creators com estrutura, CTA e continuidade prontos para revisão editorial.",
       details: [
+        format ? `Formato\n${format}` : "",
+        theme ? `Tema\n${theme}` : "",
         structured.title ? `Titulo\n${String(structured.title).trim()}` : "",
+        structured.opening ? `Abertura\n${String(structured.opening).trim()}` : "",
+        developmentPoints.length ? `Desenvolvimento\n- ${developmentPoints.join("\n- ")}` : "",
+        structured.closing ? `Encerramento\n${String(structured.closing).trim()}` : "",
         finalScript ? `Roteiro final\n${finalScript}` : "",
         structured.cta ? `CTA\n${String(structured.cta).trim()}` : "",
       ]
         .filter(Boolean)
         .join("\n\n"),
       prefillText: finalScript,
+      briefingFields: [
+        { label: "Formato", value: format },
+        { label: "Tom", value: tone },
+        { label: "Público", value: audience },
+        { label: "Objetivo", value: objective },
+        { label: "Duração", value: duration },
+      ].filter((item) => item.value),
+      outputFields: [
+        { label: "Hook", value: structured.opening ? "Abertura pronta" : "" },
+        { label: "Desenvolvimento", value: developmentPoints.length ? `${developmentPoints.length} bloco(s)` : "" },
+        { label: "Fechamento", value: structured.closing ? "Encerramento pronto" : "" },
+        { label: "CTA", value: structured.cta ? "CTA definido" : "" },
+      ].filter((item) => item.value),
+      nextAction: "Abra a revisão editorial, marque o roteiro como pronto para revisão e salve um checkpoint antes de registrar exported.",
     };
   }
 
@@ -566,7 +593,7 @@ function buildProjectAssets({
   const assets: EditorAsset[] = [];
   const payload = project ? parseCreatorProjectData(project) : null;
 
-  if (creatorSnapshot && payload?.type !== "creator_post") {
+  if (creatorSnapshot && payload?.type !== "creator_post" && payload?.type !== "creator_scripts") {
     assets.push({
       id: "source-context",
       label: creatorSnapshot.source,
@@ -637,6 +664,68 @@ function buildProjectAssets({
         value: summarizeText(mediaSuggestion, 96),
         note: "Referência salva junto da copy para briefing visual ou publicação.",
         state: "context",
+      });
+    }
+  }
+
+  if (payload?.type === "creator_scripts") {
+    const generated = payload.generated || {};
+    const structured = generated.structured || {};
+    const developmentPoints = normalizeStringList(structured.development_points);
+    const finalScript = String(structured.final_script || generated.raw_text || "").trim();
+
+    if (structured.title) {
+      assets.push({
+        id: "script-title",
+        label: "Título do roteiro",
+        type: "Estrutura",
+        value: String(structured.title).trim(),
+        note: "Título salvo junto do roteiro para revisão editorial e continuidade.",
+        state: "ready",
+      });
+    }
+
+    if (structured.opening) {
+      assets.push({
+        id: "script-hook",
+        label: "Hook de abertura",
+        type: "Estrutura",
+        value: summarizeText(String(structured.opening).trim(), 96),
+        note: "Abertura pronta para revisão de gancho e ritmo.",
+        state: "ready",
+      });
+    }
+
+    if (developmentPoints.length) {
+      assets.push({
+        id: "script-development",
+        label: "Blocos de desenvolvimento",
+        type: "Estrutura",
+        value: `${developmentPoints.length} bloco(s) estruturados`,
+        note: developmentPoints.join(" • "),
+        state: "ready",
+      });
+    }
+
+    if (structured.cta) {
+      assets.push({
+        id: "script-cta",
+        label: "CTA do roteiro",
+        type: "Saída editorial",
+        value: String(structured.cta).trim(),
+        note: "Chamada final pronta para aprovação editorial.",
+        state: "ready",
+      });
+    }
+
+    if (!trimmedText && finalScript) {
+      assets.push({
+        id: "script-body",
+        label: "Roteiro consolidado",
+        type: "Saída central",
+        value: `${finalScript.length} caracteres prontos para revisão`,
+        note: summarizeText(finalScript, 120),
+        state: "ready",
       });
     }
   }
@@ -722,6 +811,7 @@ function buildDeliverableStages({
   const isApproved = reviewStatus === "approved";
   const hasSavedVersion = versions.length > 0;
   const hasCheckpoint = checkpoints.length > 0;
+  const isScriptFlow = creatorSnapshot?.source === "Creator Scripts";
 
   return [
     {
@@ -736,26 +826,32 @@ function buildDeliverableStages({
       detail: hasRefinement ? "O material principal já tem corpo para revisão séria." : "Consolide o texto, vídeo ou fluxo principal antes de aprovar.",
       status: hasRefinement ? "done" : hasBase ? "active" : "pending",
     },
-    {
-      id: "review",
-      label: "Revisar",
-      detail: hasReviewEvidence
-        ? isReviewReady
-          ? "Checagem editorial registrada e material marcado para revisão."
-          : "Há base de verificação editorial, mas o projeto ainda não foi levado para revisão."
-        : "Use a Biblioteca IA para validar afirmações e registrar uma leitura crítica do entregável.",
-      status: isReviewReady ? "done" : hasRefinement ? "active" : "pending",
-    },
-    {
-      id: "approve",
-      label: "Aprovar",
-      detail: isApproved
-        ? "Entregável aprovado e pronto para seguir para saída com menos ambiguidade."
-        : isReviewReady
-          ? "O projeto já entrou em revisão. Aprove quando o checkpoint final estiver claro."
-          : "Marque o projeto como pronto para revisão antes de aprovar a saída.",
-      status: isApproved ? "done" : isReviewReady ? "active" : "pending",
-    },
+      {
+        id: "review",
+        label: "Revisar",
+        detail: hasReviewEvidence
+          ? isReviewReady
+            ? "Checagem editorial registrada e material marcado para revisão."
+            : "Há base de verificação editorial, mas o projeto ainda não foi levado para revisão."
+          : isScriptFlow
+            ? "Marque o roteiro como pronto para revisão e use a Biblioteca IA para registrar uma leitura editorial antes da aprovação."
+            : "Use a Biblioteca IA para validar afirmações e registrar uma leitura crítica do entregável.",
+        status: isReviewReady ? "done" : hasRefinement ? "active" : "pending",
+      },
+      {
+        id: "approve",
+        label: "Aprovar",
+        detail: isApproved
+          ? "Entregável aprovado e pronto para seguir para saída com menos ambiguidade."
+          : isReviewReady
+            ? isScriptFlow
+              ? "O roteiro já entrou em revisão. Aprove quando o checkpoint editorial final estiver claro."
+              : "O projeto já entrou em revisão. Aprove quando o checkpoint final estiver claro."
+            : isScriptFlow
+              ? "Leve o roteiro para revisão antes de aprovar a saída final."
+              : "Marque o projeto como pronto para revisão antes de aprovar a saída.",
+        status: isApproved ? "done" : isReviewReady ? "active" : "pending",
+      },
     {
       id: "save",
       label: "Salvar",
@@ -863,7 +959,8 @@ export default function EditorProjectPage() {
   const outputStageMeta = OUTPUT_STAGE_META[outputStage];
   const latestDeliveryEvent = deliveryHistory[0] || null;
   const isCreatorPostFlow = creatorSnapshot?.source === "Creator Post";
-  const handoffFromCreatorPost = searchParams.get("source") === "creator_post";
+  const isCreatorScriptsFlow = creatorSnapshot?.source === "Creator Scripts";
+  const handoffSourceParam = searchParams.get("source");
   const handoffStageParam = searchParams.get("handoff");
   const outputAssets = useMemo(
     () => buildProjectAssets({ project, creatorSnapshot, text, factResult, reviewStatus }),
@@ -903,11 +1000,23 @@ export default function EditorProjectPage() {
     return current?.label || "Refinar";
   }, [deliverableStages]);
   const handoffNotice = useMemo(() => {
-    if (!handoffFromCreatorPost) return null;
-    return handoffStageParam === "saved"
-      ? "A base do Creator Post chegou ao editor com legenda, CTA e hashtags preservados. Agora refine a peça, salve a primeira versão e registre exported quando a saída realmente sair."
-      : "Este projeto entrou no editor a partir do Creator Post. Use a área central para consolidar a peça antes da saída final.";
-  }, [handoffFromCreatorPost, handoffStageParam]);
+    if (handoffSourceParam === "creator_post") {
+      return handoffStageParam === "saved"
+        ? "A base do Creator Post chegou ao editor com legenda, CTA e hashtags preservados. Agora refine a peça, salve a primeira versão e registre exported quando a saída realmente sair."
+        : "Este projeto entrou no editor a partir do Creator Post. Use a área central para consolidar a peça antes da saída final.";
+    }
+    if (handoffSourceParam === "creator_scripts") {
+      return handoffStageParam === "saved"
+        ? "A base do Creator Scripts chegou ao editor com estrutura, CTA e roteiro preservados. Agora revise, marque o estado editorial e salve o primeiro checkpoint antes de exportar."
+        : "Este projeto entrou no editor a partir do Creator Scripts. Use a revisão editorial como etapa central antes da saída final.";
+    }
+    return null;
+  }, [handoffSourceParam, handoffStageParam]);
+  const handoffNoticeTitle = handoffSourceParam === "creator_scripts"
+    ? "Base do Creator Scripts carregada"
+    : handoffSourceParam === "creator_post"
+      ? "Base do Creator Post carregada"
+      : "Base do creator carregada";
   const checkpointLabel = useMemo(
     () =>
       latestCheckpoint
@@ -916,14 +1025,41 @@ export default function EditorProjectPage() {
     [latestCheckpoint]
   );
   const hasPrimaryOutputBody = Boolean(String(text || creatorSnapshot?.prefillText || "").trim());
-  const canRegisterExport = hasPrimaryOutputBody && versions.length > 0;
-  const canRegisterPublish = canRegisterExport && (outputStage === "exported" || outputStage === "published");
-  const primarySaveLabel = isCreatorPostFlow && !versions.length ? "Salvar primeira versão do post" : "Salvar nova versão";
-  const contextSaveLabel = isCreatorPostFlow && !versions.length ? "Salvar primeira versão do post" : "Salvar versão e checkpoint";
+  const isScriptReviewReady = reviewStatus === "review_ready" || reviewStatus === "approved";
+  const canRegisterExport = hasPrimaryOutputBody && versions.length > 0 && (!isCreatorScriptsFlow || isScriptReviewReady);
+  const canRegisterPublish =
+    canRegisterExport &&
+    (outputStage === "exported" || outputStage === "published") &&
+    (!isCreatorScriptsFlow || reviewStatus === "approved");
+  const primarySaveLabel = isCreatorPostFlow && !versions.length
+    ? "Salvar primeira versão do post"
+    : isCreatorScriptsFlow && !versions.length
+      ? "Salvar primeira versão do roteiro"
+      : "Salvar nova versão";
+  const contextSaveLabel = isCreatorPostFlow && !versions.length
+    ? "Salvar primeira versão do post"
+    : isCreatorScriptsFlow && !versions.length
+      ? "Salvar primeira versão do roteiro"
+      : "Salvar versão e checkpoint";
   const projectStateLabel = useMemo(
     () => `${outputStageMeta.label} · ${reviewStatusMeta.label} · ${outputMetrics.ready} saída(s) pronta(s)`,
     [outputMetrics.ready, outputStageMeta.label, reviewStatusMeta.label]
   );
+  const exportBlockReason = useMemo(() => {
+    if (!hasPrimaryOutputBody) {
+      return "Consolide o roteiro principal no editor antes de registrar a saída.";
+    }
+    if (!versions.length) {
+      return "Salve ao menos uma versão ou checkpoint do projeto. Isso evita marcar exported sem uma base real de continuidade.";
+    }
+    if (isCreatorScriptsFlow && !isScriptReviewReady) {
+      return "Leve o roteiro para revisão e marque ao menos 'pronto para revisão' antes de registrar exported.";
+    }
+    return null;
+  }, [hasPrimaryOutputBody, isCreatorScriptsFlow, isScriptReviewReady, versions.length]);
+  const publishBlockReason = isCreatorScriptsFlow && outputStage === "exported" && reviewStatus !== "approved"
+    ? "A publicação manual do roteiro só deve ser registrada depois da aprovação editorial final."
+    : null;
 
   async function persistEditor(next: EditorDoc, feedbackText: string) {
     if (!project) return null;
@@ -971,12 +1107,24 @@ export default function EditorProjectPage() {
     note: string;
   }) {
     if (!project) return;
-    if (!canRegisterExport) {
+    if (!hasPrimaryOutputBody) {
+      setErr("Consolide o entregável principal no editor antes de registrar a saída final deste projeto.");
+      return;
+    }
+    if (!versions.length) {
       setErr("Salve ao menos uma versão ou checkpoint antes de registrar a saída final deste projeto.");
+      return;
+    }
+    if (stage === "exported" && isCreatorScriptsFlow && !isScriptReviewReady) {
+      setErr("Leve o roteiro para revisão e marque ao menos 'pronto para revisão' antes de registrar exported.");
       return;
     }
     if (stage === "published" && outputStage === "draft") {
       setErr("Registre exported antes de marcar a publicação manual deste projeto.");
+      return;
+    }
+    if (stage === "published" && isCreatorScriptsFlow && reviewStatus !== "approved") {
+      setErr("Aprove o roteiro antes de registrar a publicação manual desta saída.");
       return;
     }
     setSaving(true);
@@ -1007,9 +1155,13 @@ export default function EditorProjectPage() {
         stage === "published"
           ? isCreatorPostFlow
             ? "Publicação manual do post registrada. O projeto agora mostra a saída como published com histórico claro."
+            : isCreatorScriptsFlow
+              ? "Publicação manual do roteiro registrada. O projeto agora mostra a saída como published com histórico claro."
             : "Publicação manual registrada. O projeto agora mostra a saída como published com histórico claro."
           : isCreatorPostFlow
             ? "Exportação do post registrada. O projeto agora mostra a saída como exported com histórico claro."
+            : isCreatorScriptsFlow
+              ? "Exportação do roteiro registrada. O projeto agora mostra a saída como exported com histórico claro."
             : "Exportação registrada. O projeto agora mostra a saída como exported com histórico claro."
       );
     } catch (e: any) {
@@ -1056,6 +1208,8 @@ export default function EditorProjectPage() {
         next,
         isCreatorPostFlow && current.versions.length === 0
           ? "Primeira versão do post salva com segurança. O editor agora registra um checkpoint real para continuidade e saída."
+          : isCreatorScriptsFlow && current.versions.length === 0
+            ? "Primeira versão do roteiro salva com segurança. O editor agora registra um checkpoint real para revisão, continuidade e saída."
           : "Projeto salvo com segurança. A versão ativa e o checkpoint do trabalho agora ficaram registrados no editor."
       );
     } catch (e: any) {
@@ -1231,7 +1385,7 @@ export default function EditorProjectPage() {
       ) : null}
       {handoffNotice ? (
         <div className="state-ea state-ea-success">
-          <p className="state-ea-title">Base do Creator Post carregada</p>
+          <p className="state-ea-title">{handoffNoticeTitle}</p>
           <div className="state-ea-text">{handoffNotice}</div>
         </div>
       ) : null}
@@ -1368,10 +1522,12 @@ export default function EditorProjectPage() {
             <section className="editor-shell-inline-card">
               <div className="editor-shell-panel-head">
                 <p className="section-kicker">Assets e outputs</p>
-                <h4>{isCreatorPostFlow ? "O que este post já entrega" : "O que este projeto já entrega"}</h4>
+                <h4>{isCreatorPostFlow ? "O que este post já entrega" : isCreatorScriptsFlow ? "O que este roteiro já entrega" : "O que este projeto já entrega"}</h4>
                 <p className="editor-shell-note">
                   {isCreatorPostFlow
                     ? "Legenda, CTA, hashtags, direção de mídia e estados de revisão ficam reunidos para separar o que ainda está em draft do que já está pronto para exportação."
+                    : isCreatorScriptsFlow
+                      ? "Hook, estrutura, CTA, revisão e checkpoints ficam reunidos para separar o que ainda está em draft do que já está pronto para exportação."
                     : "Contexto importado, saídas geradas e validações ficam reunidos para separar o que ainda está em draft do que já está pronto para exportação."}
                 </p>
               </div>
@@ -1497,18 +1653,24 @@ export default function EditorProjectPage() {
               </div>
               <div className="editor-shell-cta-group">
                 <button className="btn-ea btn-secondary btn-sm" onClick={() => updateReviewState("review_ready")} disabled={saving}>
-                  Marcar pronto para revisão
+                  {isCreatorScriptsFlow ? "Marcar roteiro pronto para revisão" : "Marcar pronto para revisão"}
                 </button>
                 <button className="btn-ea btn-primary btn-sm" onClick={() => updateReviewState("approved")} disabled={saving}>
-                  Aprovar entregável
+                  {isCreatorScriptsFlow ? "Aprovar roteiro" : "Aprovar entregável"}
                 </button>
                 <button className="btn-ea btn-ghost btn-sm" onClick={() => updateReviewState("rework")} disabled={saving}>
-                  Pedir ajustes
+                  {isCreatorScriptsFlow ? "Pedir ajustes no roteiro" : "Pedir ajustes"}
                 </button>
                 <button className="btn-ea btn-ghost btn-sm" onClick={() => updateReviewState("draft")} disabled={saving}>
                   Voltar para draft
                 </button>
               </div>
+              {isCreatorScriptsFlow ? (
+                <div className="editor-project-origin-note editor-project-origin-note-inline">
+                  <strong>Revisão editorial do roteiro</strong>
+                  <span>Use revisão, aprovação e checkpoint como marcos centrais do fluxo. O roteiro só deve seguir para exported depois de uma leitura editorial clara.</span>
+                </div>
+              ) : null}
             </section>
 
             {tab === "text" && (
@@ -1883,10 +2045,16 @@ export default function EditorProjectPage() {
                 </button>
               </div>
             </div>
-            {!canRegisterExport ? (
+            {exportBlockReason ? (
               <div className="editor-project-origin-note editor-project-origin-note-inline">
                 <strong>Antes de registrar a saída</strong>
-                <span>Salve ao menos uma versão ou checkpoint do projeto. Isso evita marcar exported sem uma base real de continuidade.</span>
+                <span>{exportBlockReason}</span>
+              </div>
+            ) : null}
+            {publishBlockReason ? (
+              <div className="editor-project-origin-note editor-project-origin-note-inline">
+                <strong>Antes de registrar published</strong>
+                <span>{publishBlockReason}</span>
               </div>
             ) : null}
             <GitHubWorkspaceCard

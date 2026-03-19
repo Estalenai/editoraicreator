@@ -1603,7 +1603,9 @@ body {
 }
 
 .creator-post-journey-grid,
-.creator-post-result-summary-grid {
+.creator-post-result-summary-grid,
+.creator-script-journey-grid,
+.creator-script-result-summary-grid {
   margin-top: 2px;
 }
 

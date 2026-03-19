@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { api, apiFetch } from "../../lib/api";
 import { supabase } from "../../lib/supabaseClient";
@@ -134,6 +135,7 @@ function getScriptCopyValue(structured: ScriptStructuredResult | null, fallbackT
 }
 
 export function CreatorScriptCard({ walletCommon, onRefetch }: Props) {
+  const router = useRouter();
   const [theme, setTheme] = useState("");
   const [format, setFormat] = useState("Vídeo curto (Reels/Shorts)");
   const [tone, setTone] = useState("Didático");
@@ -164,6 +166,8 @@ export function CreatorScriptCard({ walletCommon, onRefetch }: Props) {
   const [plannerOpen, setPlannerOpen] = useState(false);
   const [resultProvider, setResultProvider] = useState<string | null>(null);
   const [resultModel, setResultModel] = useState<string | null>(null);
+  const [resultReplay, setResultReplay] = useState(false);
+  const [resultDirty, setResultDirty] = useState(false);
 
   const estimatedCommon = useMemo(() => {
     const notesUnits = Math.max(1, Math.ceil(notes.trim().length / 300));
@@ -172,6 +176,8 @@ export function CreatorScriptCard({ walletCommon, onRefetch }: Props) {
 
   const hasCredits = walletCommon >= estimatedCommon;
   const isBusy = loadingPrompt || loadingApply;
+  const hasSavedProject = Boolean(savedProjectId);
+  const needsProjectSync = Boolean(savedProjectId && resultDirty);
 
   const plannerSteps = useMemo(
     () => [
@@ -182,6 +188,7 @@ export function CreatorScriptCard({ walletCommon, onRefetch }: Props) {
         : "Usar o briefing atual como base direta para o roteiro.",
       "Gerar estrutura com gancho, desenvolvimento, fechamento e CTA.",
       "Entregar roteiro final pronto para revisão, salvamento e continuidade no editor.",
+      "Salvar no projeto e seguir para revisão editorial, checkpoint e exportação clara.",
     ],
     [promptEnabled, autoApply]
   );
@@ -263,11 +270,11 @@ export function CreatorScriptCard({ walletCommon, onRefetch }: Props) {
     setSuccess(null);
     setCopyMsg(null);
     setSaveMsg(null);
-    setSavedProjectId(null);
     setResultText("");
     setResultStructured(null);
     setResultProvider(null);
     setResultModel(null);
+    setResultReplay(false);
 
     try {
       const token = await getAccessToken();
@@ -296,6 +303,8 @@ export function CreatorScriptCard({ walletCommon, onRefetch }: Props) {
       setResultStructured(extractStructuredResult(text));
       setResultProvider(typeof payload?.provider === "string" ? payload.provider : null);
       setResultModel(typeof payload?.model === "string" ? payload.model : null);
+      setResultReplay(Boolean(payload?.replay));
+      setResultDirty(Boolean(savedProjectId));
       setSuccess(
         toUserFacingGenerationSuccess({
           provider: typeof payload?.provider === "string" ? payload.provider : null,
@@ -306,7 +315,14 @@ export function CreatorScriptCard({ walletCommon, onRefetch }: Props) {
           replayMessage: "Esta resposta reaproveitou uma execução recente com segurança. Revise o roteiro antes de seguir.",
         })
       );
-      setLastPromptUsed(finalPrompt);
+      setLastPromptUsed(
+        typeof payload?.used_prompt === "string" && payload.used_prompt.trim()
+          ? payload.used_prompt.trim()
+          : finalPrompt
+      );
+      if (savedProjectId) {
+        setSaveMsg("Nova versão do roteiro gerada. Atualize o projeto salvo antes de abrir o editor.");
+      }
       await onRefetch();
     } catch (e: any) {
       setError(e?.message || "Falha ao gerar roteiro.");
@@ -347,15 +363,15 @@ export function CreatorScriptCard({ walletCommon, onRefetch }: Props) {
         setGeneratedPrompt("");
         setShowPromptUsed(false);
         setLastPromptUsed(null);
+        setResultReplay(false);
         setSuccess(null);
         setSaveMsg(null);
-        setSavedProjectId(null);
         setPlannerOpen(false);
       },
     });
   }
 
-  async function onSaveProject() {
+  async function persistProject(openEditorAfterSave = false) {
     if (savingProject || (!resultText && !resultStructured)) return;
 
     setSavingProject(true);
@@ -382,16 +398,32 @@ export function CreatorScriptCard({ walletCommon, onRefetch }: Props) {
         },
       };
 
-      const created = await api.createProject({
-        title: `Creator Scripts - ${themeSnippet}`,
-        kind: "script",
-        data: payload,
-      });
+      const created = savedProjectId
+        ? await api.updateProject(savedProjectId, {
+            title: `Creator Scripts - ${themeSnippet}`,
+            kind: "script",
+            data: payload,
+          })
+        : await api.createProject({
+            title: `Creator Scripts - ${themeSnippet}`,
+            kind: "script",
+            data: payload,
+          });
 
-      const projectId = String(created?.item?.id || created?.id || "").trim();
+      const projectId = String(created?.item?.id || created?.id || savedProjectId || "").trim();
       setSavedProjectId(projectId || null);
-      setSaveMsg("Projeto salvo com segurança. Continue no Editor para revisar, salvar novas versões e exportar depois.");
+      setResultDirty(false);
+      setSaveMsg(
+        openEditorAfterSave
+          ? "Projeto sincronizado. Abrindo o editor com o roteiro pronto para revisão editorial."
+          : savedProjectId
+            ? "Projeto atualizado com segurança. O editor vai receber a versão mais recente deste roteiro."
+            : "Projeto salvo com segurança. O roteiro já está pronto para continuar no editor."
+      );
       await onRefetch();
+      if (openEditorAfterSave && projectId) {
+        router.push(`/editor/${projectId}?source=creator_scripts&handoff=saved`);
+      }
     } catch (e: any) {
       setError(e?.message || "Falha ao salvar roteiro em projeto.");
     } finally {
@@ -400,6 +432,39 @@ export function CreatorScriptCard({ walletCommon, onRefetch }: Props) {
   }
 
   const finalScriptForCopy = getScriptCopyValue(resultStructured, resultText);
+  const scriptBeatCount = useMemo(() => {
+    const points = Array.isArray(resultStructured?.development_points) ? resultStructured?.development_points.length : 0;
+    let count = points;
+    if (resultStructured?.opening) count += 1;
+    if (resultStructured?.closing) count += 1;
+    if (resultStructured?.cta) count += 1;
+    return count;
+  }, [resultStructured]);
+  const finalScriptWords = useMemo(() => {
+    const normalized = String(finalScriptForCopy || "").trim();
+    return normalized ? normalized.split(/\s+/).filter(Boolean).length : 0;
+  }, [finalScriptForCopy]);
+  const resultSourceNote = useMemo(() => {
+    if (resultReplay) {
+      return {
+        tone: "warning" as const,
+        text: "Este roteiro reaproveitou uma execução recente com segurança. Revise a estrutura antes de seguir para o editor.",
+      };
+    }
+    if (resultProvider === "mock") {
+      return {
+        tone: "warning" as const,
+        text: "Resposta entregue em modo beta simulado. Ative o provedor real antes de tratar este roteiro como saída final.",
+      };
+    }
+    if (resultProvider) {
+      return {
+        tone: "success" as const,
+        text: `Gerado via ${resultProvider}${resultModel ? ` · ${resultModel}` : ""}.`,
+      };
+    }
+    return null;
+  }, [resultModel, resultProvider, resultReplay]);
 
   return (
     <div
@@ -551,6 +616,17 @@ export function CreatorScriptCard({ walletCommon, onRefetch }: Props) {
         {!hasCredits && <div className="inline-alert inline-alert-error">Saldo insuficiente para gerar roteiro. Compre créditos avulsos para continuar.</div>}
       </div>
 
+      <div className="creator-planner-field-grid creator-script-journey-grid">
+        <div className="creator-planner-field">
+          <span>Saída esperada</span>
+          <strong>Título, hook, desenvolvimento, fechamento, CTA e roteiro final pronto para revisão.</strong>
+        </div>
+        <div className="creator-planner-field">
+          <span>Encerramento do fluxo</span>
+          <strong>Salvar no projeto, abrir o editor, revisar o roteiro e registrar exported com histórico claro.</strong>
+        </div>
+      </div>
+
       <div className="creator-actions-row">
         {!plannerOpen ? (
         <div className="creator-action-buttons">
@@ -559,8 +635,17 @@ export function CreatorScriptCard({ walletCommon, onRefetch }: Props) {
             disabled={isBusy || !theme.trim() || !objective.trim() || !hasCredits}
             className={`btn-ea btn-primary ${isBusy || !theme.trim() || !objective.trim() || !hasCredits ? "creator-button-busy" : ""}`}
           >
-            {isBusy ? "Gerando..." : "Gerar roteiro com IA"}
+            {isBusy ? "Gerando..." : resultText ? "Gerar nova versão" : "Revisar plano e gerar"}
           </button>
+          {resultText ? (
+            <button
+              onClick={openPlanner}
+              disabled={isBusy || !theme.trim() || !objective.trim() || !hasCredits}
+              className={`btn-ea btn-secondary ${isBusy || !theme.trim() || !objective.trim() || !hasCredits ? "creator-button-busy-soft" : ""}`}
+            >
+              Ajustar plano
+            </button>
+          ) : null}
         </div>
         ) : (
           <div className="helper-note-inline">Revise o plano abaixo antes de executar a geração.</div>
@@ -574,7 +659,7 @@ export function CreatorScriptCard({ walletCommon, onRefetch }: Props) {
               </div>
             ) : null}
             {success ? (
-              <div className={`state-ea ${resultProvider === "mock" ? "state-ea-warning" : "state-ea-success"}`}>
+              <div className={`state-ea ${resultProvider === "mock" || resultReplay ? "state-ea-warning" : "state-ea-success"}`}>
                 <p className="state-ea-title">Geração concluída</p>
                 <div className="state-ea-text">{success}</div>
               </div>
@@ -706,7 +791,7 @@ export function CreatorScriptCard({ walletCommon, onRefetch }: Props) {
         <div className="state-ea creator-empty-state">
           <p className="state-ea-title">Nenhum roteiro gerado ainda</p>
           <div className="state-ea-text">
-            Defina tema e objetivo, gere o roteiro e salve em projetos para continuar no editor.
+            Defina tema e objetivo, revise o planner e gere o roteiro. Depois, salve no projeto para continuar a revisão no editor.
           </div>
           <div className="state-ea-actions">
             <button
@@ -714,7 +799,7 @@ export function CreatorScriptCard({ walletCommon, onRefetch }: Props) {
               onClick={openPlanner}
               disabled={isBusy || !theme.trim() || !objective.trim() || !hasCredits}
             >
-              Gerar roteiro
+              Revisar plano e gerar
             </button>
             <Link href="/projects" className="btn-link-ea btn-ghost btn-sm">
               Ver projetos
@@ -729,15 +814,32 @@ export function CreatorScriptCard({ walletCommon, onRefetch }: Props) {
             <p className="section-kicker">Resultado</p>
             <div className="creator-result-title">Roteiro pronto para revisar</div>
             <p className="creator-result-copy">
-              Confira estrutura, título e CTA antes de salvar o material.
+              Confira estrutura, título e CTA antes de salvar o material e levar a revisão editorial para o editor.
             </p>
-            {resultProvider ? (
-              <div className={resultProvider === "mock" ? "inline-alert inline-alert-warning" : "helper-note-inline"}>
-                {resultProvider === "mock"
-                  ? "Resposta entregue em modo beta simulado. Ative o provedor real para versão final."
-                  : `Gerado via ${resultProvider}${resultModel ? ` · ${resultModel}` : ""}.`}
+            {resultSourceNote ? (
+              <div className={resultSourceNote.tone === "warning" ? "inline-alert inline-alert-warning" : "helper-note-inline"}>
+                {resultSourceNote.text}
               </div>
             ) : null}
+          </div>
+
+          <div className="creator-planner-field-grid creator-script-result-summary-grid">
+            <div className="creator-planner-field">
+              <span>Estrutura</span>
+              <strong>{scriptBeatCount} bloco(s) de roteiro identificados</strong>
+            </div>
+            <div className="creator-planner-field">
+              <span>Roteiro final</span>
+              <strong>{finalScriptWords} palavras prontas para revisão</strong>
+            </div>
+            <div className="creator-planner-field">
+              <span>Estado editorial</span>
+              <strong>{hasSavedProject && !needsProjectSync ? "Pronto para abrir no editor" : "Salvar no projeto"}</strong>
+            </div>
+            <div className="creator-planner-field">
+              <span>Próxima ação</span>
+              <strong>Levar para revisão e checkpoint</strong>
+            </div>
           </div>
 
           <div className="creator-output-grid">
@@ -791,8 +893,13 @@ export function CreatorScriptCard({ walletCommon, onRefetch }: Props) {
           <div className="postgen-panel creator-next-step-panel">
             <div className="postgen-title">Próximos passos</div>
             <div className="creator-next-step-copy">
-              Fluxo recomendado: gerar → salvar projeto → continuar no editor.
+              Fluxo recomendado: revisar estrutura → salvar no projeto → abrir no editor → marcar pronto para revisão → salvar checkpoint → registrar exported.
             </div>
+            {hasSavedProject && !needsProjectSync ? (
+              <div className="creator-feedback-note creator-feedback-note-muted">
+                Projeto sincronizado. O editor vai receber o roteiro, o CTA e a estrutura preservados para revisão editorial.
+              </div>
+            ) : null}
             <div className="postgen-actions">
               <button
                 className="btn-ea btn-ghost btn-sm"
@@ -801,12 +908,33 @@ export function CreatorScriptCard({ walletCommon, onRefetch }: Props) {
                 Copiar roteiro
               </button>
               <button
-                className="btn-ea btn-secondary btn-sm"
-                onClick={onSaveProject}
+                className="btn-ea btn-primary btn-sm"
+                onClick={() => {
+                  if (savedProjectId && !needsProjectSync) {
+                    router.push(`/editor/${savedProjectId}?source=creator_scripts&handoff=saved`);
+                    return;
+                  }
+                  void persistProject(true);
+                }}
                 disabled={savingProject}
               >
-                {savingProject ? "Salvando..." : "Salvar projeto"}
+                {savingProject
+                  ? "Sincronizando..."
+                  : !savedProjectId
+                    ? "Salvar e abrir no Editor"
+                    : needsProjectSync
+                      ? "Atualizar projeto e abrir no Editor"
+                      : "Abrir no Editor"}
               </button>
+              {!hasSavedProject || needsProjectSync ? (
+                <button
+                  className="btn-ea btn-secondary btn-sm"
+                  onClick={() => void persistProject(false)}
+                  disabled={savingProject}
+                >
+                  {savingProject ? "Salvando..." : savedProjectId ? "Atualizar projeto salvo" : "Salvar projeto"}
+                </button>
+              ) : null}
               <button
                 className="btn-ea btn-ghost btn-sm"
                 onClick={openPlanner}
@@ -820,14 +948,6 @@ export function CreatorScriptCard({ walletCommon, onRefetch }: Props) {
               >
                 Ver em Projetos
               </a>
-              {savedProjectId && (
-                <a
-                  href={`/editor/${savedProjectId}`}
-                  className="btn-link-ea btn-primary btn-sm"
-                >
-                  Continuar no Editor
-                </a>
-              )}
             </div>
           </div>
           </div>
