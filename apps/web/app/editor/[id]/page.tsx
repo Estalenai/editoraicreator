@@ -19,6 +19,33 @@ type CreatorSnapshot = {
   prefillText?: string;
 };
 
+type EditorVersion = {
+  id: string;
+  ts: string;
+  title: string;
+  summary: string;
+  tab: EditorTab;
+  charCount: number;
+  deliverable: string;
+};
+
+type EditorAsset = {
+  id: string;
+  label: string;
+  type: string;
+  value: string;
+  note?: string;
+  url?: string | null;
+  state: "ready" | "working" | "context";
+};
+
+type DeliverableStage = {
+  id: string;
+  label: string;
+  detail: string;
+  status: "done" | "active" | "pending";
+};
+
 type EditorDoc = {
   mode: { professor: boolean; transparent: boolean };
   doc: { text: string };
@@ -27,6 +54,8 @@ type EditorDoc = {
   course: { sections: any[] };
   website: { blocks: any[] };
   aiSteps: AiStep[];
+  review: { factCheck: any | null };
+  versions: EditorVersion[];
   delivery: { exportTarget: "device" | "connected_storage"; connectedStorage: string | null; mediaRetention: "externalized" };
 };
 
@@ -36,6 +65,15 @@ const PROJECT_KIND_LABEL: Record<string, string> = {
   automation: "Projeto de Automação",
   course: "Projeto de Curso",
   website: "Projeto de Site"
+};
+
+const EDITOR_TAB_LABEL: Record<EditorTab, string> = {
+  video: "Vídeo",
+  text: "Texto",
+  automation: "Workflows",
+  course: "Cursos",
+  website: "Sites",
+  library: "Biblioteca IA",
 };
 
 function extractProjectPayload(payload: any): Project {
@@ -72,6 +110,10 @@ function ensureEditor(project: Project): EditorDoc {
       blocks: Array.isArray(e.website?.blocks) ? e.website.blocks : []
     },
     aiSteps: Array.isArray(e.aiSteps) ? e.aiSteps : [],
+    review: {
+      factCheck: e.review?.factCheck || null,
+    },
+    versions: Array.isArray(e.versions) ? e.versions : [],
     delivery: {
       exportTarget: e.delivery?.exportTarget === "connected_storage" ? "connected_storage" : "device",
       connectedStorage: typeof e.delivery?.connectedStorage === "string" ? e.delivery.connectedStorage : null,
@@ -278,6 +320,184 @@ function cryptoId() {
   }
 }
 
+function summarizeText(value: string, max = 140) {
+  const normalized = String(value || "").replace(/\s+/g, " ").trim();
+  if (!normalized) return "Sem conteúdo textual consolidado ainda.";
+  return normalized.length <= max ? normalized : `${normalized.slice(0, max).trim()}…`;
+}
+
+function buildEditorVersionEntry({
+  tab,
+  text,
+  creatorSnapshot,
+  projectKindLabel,
+}: {
+  tab: EditorTab;
+  text: string;
+  creatorSnapshot: CreatorSnapshot | null;
+  projectKindLabel: string;
+}): EditorVersion {
+  const trimmed = String(text || "").trim();
+  const charCount = trimmed.length;
+  const titleByTab: Record<EditorTab, string> = {
+    video: "Versão de vídeo",
+    text: "Versão editorial",
+    automation: "Versão de workflow",
+    course: "Versão de curso",
+    website: "Versão de site",
+    library: "Versão de apoio IA",
+  };
+
+  return {
+    id: cryptoId(),
+    ts: new Date().toISOString(),
+    title: titleByTab[tab],
+    summary: trimmed
+      ? summarizeText(trimmed)
+      : creatorSnapshot
+        ? `Base herdada de ${creatorSnapshot.source.toLowerCase()} para ${projectKindLabel.toLowerCase()}.`
+        : `Projeto salvo sem texto consolidado nesta etapa de ${projectKindLabel.toLowerCase()}.`,
+    tab,
+    charCount,
+    deliverable: trimmed ? "Pronto para revisar" : "Base salva",
+  };
+}
+
+function buildProjectAssets({
+  project,
+  creatorSnapshot,
+  text,
+  factResult,
+}: {
+  project: Project | null;
+  creatorSnapshot: CreatorSnapshot | null;
+  text: string;
+  factResult: any;
+}): EditorAsset[] {
+  const assets: EditorAsset[] = [];
+
+  if (creatorSnapshot) {
+    assets.push({
+      id: "source-context",
+      label: creatorSnapshot.source,
+      type: "Contexto de origem",
+      value: creatorSnapshot.summary,
+      note: "Base importada para continuidade no editor.",
+      state: "context",
+    });
+  }
+
+  const payload = project ? parseCreatorProjectData(project) : null;
+  const trimmedText = String(text || "").trim();
+  if (trimmedText) {
+    assets.push({
+      id: "main-doc",
+      label: "Documento principal",
+      type: "Saída central",
+      value: `${trimmedText.length} caracteres prontos para refino editorial`,
+      note: summarizeText(trimmedText, 120),
+      state: "ready",
+    });
+  }
+
+  if (payload?.type === "creator_music") {
+    const result = payload.result || {};
+    const audioUrl = String(result.audio_url || result.preview_url || "").trim();
+    assets.push({
+      id: "music-output",
+      label: "Faixa gerada",
+      type: "Áudio",
+      value: result.title ? String(result.title) : "Resultado de áudio",
+      note: audioUrl ? "Link de áudio ou prévia disponível para revisão." : "Metadados da faixa salvos no projeto.",
+      url: audioUrl || null,
+      state: audioUrl ? "ready" : "working",
+    });
+  }
+
+  if (payload?.type === "creator_clips") {
+    const result = payload.generated?.result || {};
+    const clipUrl = String(payload.generated?.clip_url || result?.output?.video_url || result?.assets?.preview_url || "").trim();
+    assets.push({
+      id: "clip-output",
+      label: "Clipe gerado",
+      type: "Vídeo",
+      value: result.status ? `Status ${String(result.status)}` : "Job salvo no projeto",
+      note: clipUrl ? "Link do clipe disponível para revisão." : "Acompanhe o job e consolide o link final antes de exportar.",
+      url: clipUrl || null,
+      state: clipUrl ? "ready" : "working",
+    });
+  }
+
+  if (factResult) {
+    const verdict = String(factResult?.verdict || factResult?.result?.verdict || "Sem veredito");
+    assets.push({
+      id: "fact-check",
+      label: "Verificação editorial",
+      type: "Aprovação",
+      value: verdict,
+      note: "Resultado persistido no projeto para continuidade e revisão.",
+      state: "ready",
+    });
+  }
+
+  return assets.slice(0, 6);
+}
+
+function buildDeliverableStages({
+  creatorSnapshot,
+  text,
+  versions,
+  factResult,
+  exportTarget,
+}: {
+  creatorSnapshot: CreatorSnapshot | null;
+  text: string;
+  versions: EditorVersion[];
+  factResult: any;
+  exportTarget: "device" | "connected_storage";
+}): DeliverableStage[] {
+  const hasBase = Boolean(creatorSnapshot || String(text || "").trim());
+  const hasRefinement = String(text || "").trim().length > 120;
+  const hasReview = Boolean(factResult);
+  const hasSavedVersion = versions.length > 0;
+
+  return [
+    {
+      id: "generate",
+      label: "Gerar",
+      detail: hasBase ? "Base do projeto já entrou no editor com contexto real." : "Traga uma base de Creators ou escreva a primeira versão no editor.",
+      status: hasBase ? "done" : "active",
+    },
+    {
+      id: "refine",
+      label: "Refinar",
+      detail: hasRefinement ? "O material principal já tem corpo para revisão séria." : "Consolide o texto, vídeo ou fluxo principal antes de aprovar.",
+      status: hasRefinement ? "done" : hasBase ? "active" : "pending",
+    },
+    {
+      id: "approve",
+      label: "Aprovar",
+      detail: hasReview ? "Há uma checagem editorial salva no contexto do projeto." : "Use a Biblioteca IA para validar afirmações e registrar a revisão.",
+      status: hasReview ? "done" : hasRefinement ? "active" : "pending",
+    },
+    {
+      id: "save",
+      label: "Salvar",
+      detail: hasSavedVersion ? `${versions.length} versão(ões) já registradas neste projeto.` : "Salve uma versão para travar um ponto de continuidade real.",
+      status: hasSavedVersion ? "done" : hasRefinement ? "active" : "pending",
+    },
+    {
+      id: "export",
+      label: "Exportar",
+      detail:
+        exportTarget === "device"
+          ? "Saída padrão atual: exportação no dispositivo ao concluir o entregável."
+          : "Fluxo preparado para storage conectado quando essa etapa estiver disponível.",
+      status: hasSavedVersion ? "active" : "pending",
+    },
+  ];
+}
+
 export default function EditorProjectPage() {
   const params = useParams();
   const id = String((params as any).id);
@@ -317,6 +537,7 @@ export default function EditorProjectPage() {
         setTransparentMode(ed.mode.transparent);
         setText(ed.doc.text || snapshot?.prefillText || "");
         setAiSteps(ed.aiSteps);
+        setFactResult(ed.review.factCheck || null);
 
         // Escolhe aba inicial baseada no kind
         if (proj.kind === "video") setTab("video");
@@ -346,6 +567,34 @@ export default function EditorProjectPage() {
     if (confidence === null || confidence === undefined || confidence === "") return null;
     return String(confidence);
   }, [factResult]);
+  const editorState = useMemo(() => (project ? ensureEditor(project) : null), [project]);
+  const versions = useMemo(() => editorState?.versions || [], [editorState]);
+  const latestVersion = versions[0] || null;
+  const outputAssets = useMemo(
+    () => buildProjectAssets({ project, creatorSnapshot, text, factResult }),
+    [creatorSnapshot, factResult, project, text]
+  );
+  const deliverableStages = useMemo(
+    () =>
+      buildDeliverableStages({
+        creatorSnapshot,
+        text,
+        versions,
+        factResult,
+        exportTarget: editorState?.delivery.exportTarget || "device",
+      }),
+    [creatorSnapshot, editorState?.delivery.exportTarget, factResult, text, versions]
+  );
+  const documentMetrics = useMemo(() => {
+    const trimmed = String(text || "").trim();
+    const words = trimmed ? trimmed.split(/\s+/).filter(Boolean).length : 0;
+    const paragraphs = trimmed ? trimmed.split(/\n\s*\n/).filter((item) => item.trim().length > 0).length : 0;
+    return { chars: trimmed.length, words, paragraphs };
+  }, [text]);
+  const activeDeliverableLabel = useMemo(() => {
+    const current = deliverableStages.find((item) => item.status === "active") || deliverableStages[deliverableStages.length - 1];
+    return current?.label || "Refinar";
+  }, [deliverableStages]);
 
   async function save() {
     if (!project) return;
@@ -355,11 +604,19 @@ export default function EditorProjectPage() {
 
     try {
       const current = ensureEditor(project);
+      const nextVersion = buildEditorVersionEntry({
+        tab,
+        text,
+        creatorSnapshot,
+        projectKindLabel,
+      });
       const next: EditorDoc = {
         ...current,
         mode: { professor: professorMode, transparent: transparentMode },
         doc: { text },
         aiSteps,
+        review: { factCheck: factResult || null },
+        versions: [nextVersion, ...current.versions].slice(0, 12),
         delivery: current.delivery
       };
 
@@ -375,6 +632,8 @@ export default function EditorProjectPage() {
             course: next.course,
             website: next.website,
             aiSteps: next.aiSteps,
+            review: next.review,
+            versions: next.versions,
             delivery: next.delivery
           }
         }
@@ -507,6 +766,10 @@ export default function EditorProjectPage() {
         title={title}
         tab={tab}
         onTab={setTab}
+        versionLabel={latestVersion ? `${latestVersion.title} · ${new Date(latestVersion.ts).toLocaleDateString("pt-BR")}` : "Salve a primeira versão"}
+        deliverableLabel={activeDeliverableLabel}
+        outputLabel={`${outputAssets.length} ativo(s) e saída(s) no projeto`}
+        nextActionLabel={deliverableStages.find((item) => item.status === "active")?.detail || "Refinar a peça principal"}
         professorMode={professorMode}
         transparentMode={transparentMode}
         onToggleProfessor={() => setProfessorMode(v => !v)}
@@ -533,6 +796,10 @@ export default function EditorProjectPage() {
                   <strong>{saving ? "Salvando agora" : "Pronto para editar"}</strong>
                 </div>
                 <div className="editor-shell-fact">
+                  <span className="editor-shell-fact-label">Versões</span>
+                  <strong>{versions.length ? `${versions.length} registradas` : "Nenhuma versão salva"}</strong>
+                </div>
+                <div className="editor-shell-fact">
                   <span className="editor-shell-fact-label">Visibilidade</span>
                   <strong>{transparentMode ? "Passos abertos" : "Passos sob demanda"}</strong>
                 </div>
@@ -550,6 +817,27 @@ export default function EditorProjectPage() {
               </div>
             </section>
 
+            <section className="editor-shell-inline-card">
+              <div className="editor-shell-panel-head">
+                <p className="section-kicker">Linha de trabalho</p>
+                <h4>Do briefing ao entregável</h4>
+                <p className="editor-shell-note">
+                  Este projeto agora mantém a progressão completa de gerar, refinar, aprovar, salvar e exportar.
+                </p>
+              </div>
+              <div className="editor-project-stage-grid">
+                {deliverableStages.map((stage) => (
+                  <div key={stage.id} className={`editor-project-stage editor-project-stage-${stage.status}`}>
+                    <div className="editor-project-stage-head">
+                      <strong>{stage.label}</strong>
+                      <span>{stage.status === "done" ? "Concluído" : stage.status === "active" ? "Em foco" : "Pendente"}</span>
+                    </div>
+                    <p>{stage.detail}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
             {creatorSnapshot ? (
               <section className="editor-shell-inline-card">
                 <div className="editor-shell-panel-head">
@@ -563,16 +851,48 @@ export default function EditorProjectPage() {
 
             <section className="editor-shell-inline-card">
               <div className="editor-shell-panel-head">
+                <p className="section-kicker">Assets e outputs</p>
+                <h4>O que este projeto já entrega</h4>
+                <p className="editor-shell-note">
+                  Contexto importado, saídas geradas e validações ficam reunidos para o trabalho sério acontecer aqui.
+                </p>
+              </div>
+              <div className="editor-project-asset-grid">
+                {outputAssets.length ? outputAssets.map((asset) => (
+                  <div key={asset.id} className={`editor-project-asset-card editor-project-asset-${asset.state}`}>
+                    <div className="editor-project-asset-head">
+                      <span>{asset.type}</span>
+                      <strong>{asset.label}</strong>
+                    </div>
+                    <div className="editor-project-asset-value">{asset.value}</div>
+                    {asset.note ? <p className="editor-shell-note">{asset.note}</p> : null}
+                    {asset.url ? (
+                      <a href={asset.url} target="_blank" rel="noreferrer" className="editor-project-asset-link">
+                        Abrir saída
+                      </a>
+                    ) : null}
+                  </div>
+                )) : (
+                  <div className="editor-shell-empty-note">
+                    <strong>Sem outputs consolidados</strong>
+                    <span>Gere uma base, refine o material principal e salve a primeira versão para preencher esta área.</span>
+                  </div>
+                )}
+              </div>
+            </section>
+
+            <section className="editor-shell-inline-card">
+              <div className="editor-shell-panel-head">
                 <p className="section-kicker">Guia rápido</p>
                 <h4>Como usar este editor</h4>
                 <p className="editor-shell-note">
-                  Mantenha a mesma cadencia em qualquer aba para evoluir o projeto sem perder contexto.
+                  Mantenha a mesma cadência em qualquer aba para evoluir o projeto sem perder contexto, versões e entregáveis.
                 </p>
               </div>
               <ol className="editor-shell-checklist editor-shell-checklist-ordered">
-                <li>Edite o bloco principal da aba ativa.</li>
-                <li>Use a EditexAI no painel lateral quando precisar acelerar uma etapa.</li>
-                <li>Salve ao concluir um bloco importante para manter o projeto sincronizado.</li>
+                <li>Consolide o output principal na aba ativa.</li>
+                <li>Use a EditexAI ou a Biblioteca IA para refinar e validar antes de aprovar.</li>
+                <li>Salve uma versão quando alcançar um ponto de continuidade relevante.</li>
               </ol>
             </section>
 
@@ -591,18 +911,57 @@ export default function EditorProjectPage() {
         }
         center={
           <div className="editor-panel-stack">
+            <section className="editor-shell-inline-card editor-project-summary-card">
+              <div className="editor-shell-panel-head">
+                <p className="section-kicker">Centro do projeto</p>
+                <h4>Profundidade operacional do editor</h4>
+                <p className="editor-shell-note">
+                  O trabalho principal acontece aqui: conteúdo, aprovação, versões salvas e saída final no mesmo contexto.
+                </p>
+              </div>
+              <div className="editor-project-kpi-grid">
+                <div className="editor-project-kpi">
+                  <span>Caracteres ativos</span>
+                  <strong>{documentMetrics.chars}</strong>
+                </div>
+                <div className="editor-project-kpi">
+                  <span>Palavras</span>
+                  <strong>{documentMetrics.words}</strong>
+                </div>
+                <div className="editor-project-kpi">
+                  <span>Parágrafos</span>
+                  <strong>{documentMetrics.paragraphs}</strong>
+                </div>
+                <div className="editor-project-kpi">
+                  <span>Outputs rastreados</span>
+                  <strong>{outputAssets.length}</strong>
+                </div>
+              </div>
+              <div className="editor-project-version-banner">
+                <div>
+                  <span className="editor-shell-fact-label">Última versão</span>
+                  <strong>{latestVersion ? latestVersion.title : "Ainda sem versão salva"}</strong>
+                </div>
+                <p className="editor-shell-note">
+                  {latestVersion
+                    ? `${latestVersion.summary} · ${new Date(latestVersion.ts).toLocaleString("pt-BR")}`
+                    : "Salve a primeira versão quando concluir um bloco importante para travar continuidade real no projeto."}
+                </p>
+              </div>
+            </section>
+
             {tab === "text" && (
               <section className="editor-shell-section editor-shell-focus-card">
                 <div className="editor-shell-panel-head">
                   <p className="section-kicker">Edicao principal</p>
                   <h3>Texto base do projeto</h3>
                   <p className="editor-shell-note">
-                    Escreva, refine com IA e mantenha a peca central pronta para continuidade no workspace.
+                    Escreva, refine com IA e mantenha a peça central pronta para continuidade, aprovação e exportação.
                   </p>
                 </div>
                 <div className="editor-shell-badge-row">
                   <span className="premium-badge premium-badge-phase">Documento vivo</span>
-                  <span className="premium-badge premium-badge-soon">Salve ao concluir um bloco</span>
+                  <span className="premium-badge premium-badge-soon">Salve uma versão ao concluir um bloco</span>
                 </div>
                 <label className="field-label-ea">
                   <span>Conteúdo em edição</span>
@@ -614,6 +973,12 @@ export default function EditorProjectPage() {
                     placeholder="Escreva ou gere com a EditexAI..."
                   />
                 </label>
+                <div className="editor-shell-placeholder editor-shell-placeholder-muted">
+                  <strong>Entregável textual em foco</strong>
+                  <p className="editor-shell-note">
+                    Use este bloco como peça-mãe do projeto. Depois aprove, salve uma versão e siga para exportação ou handoff de publicação.
+                  </p>
+                </div>
               </section>
             )}
 
@@ -623,12 +988,12 @@ export default function EditorProjectPage() {
                   <p className="section-kicker">Edicao principal</p>
                   <h3>Editor de Vídeo</h3>
                   <p className="editor-shell-note">
-                    Base do fluxo pronta para continuidade. Timeline completa entra na próxima etapa.
+                    Base do fluxo pronta para continuidade. Aqui o vídeo deixa de ser só geração e passa a ter contexto, assets e entregável.
                   </p>
                 </div>
                 <div className="editor-shell-placeholder editor-shell-placeholder-muted">
                   <strong>Timeline preparada</strong>
-                  <p className="editor-shell-note">Clipes e estrutura do fluxo já ficam organizados para a próxima etapa de edição.</p>
+                  <p className="editor-shell-note">Clipes, status do job e ativos visuais já ficam organizados para revisão, salvamento de versão e saída final.</p>
                 </div>
               </section>
             )}
@@ -639,7 +1004,7 @@ export default function EditorProjectPage() {
                   <p className="section-kicker">Edicao principal</p>
                   <h3>Workflows IA</h3>
                   <p className="editor-shell-note">
-                    Organize automações, mantenha o projeto salvo e avance por etapas sem perder a estrutura.
+                    Organize automações, mantenha o projeto salvo e avance por etapas sem perder estrutura, entregáveis e histórico.
                   </p>
                 </div>
                 <div className="editor-shell-placeholder editor-shell-placeholder-muted">
@@ -657,7 +1022,7 @@ export default function EditorProjectPage() {
                   <p className="section-kicker">Edicao principal</p>
                   <h3>Creator Courses</h3>
                   <p className="editor-shell-note">
-                    Estruture seções e aulas com uma base pronta para evolução editorial por módulos.
+                    Estruture seções e aulas com uma base pronta para evolução editorial por módulos e marcos de versão.
                   </p>
                 </div>
                 <div className="editor-shell-placeholder editor-shell-placeholder-muted">
@@ -673,7 +1038,7 @@ export default function EditorProjectPage() {
                   <p className="section-kicker">Edicao principal</p>
                   <h3>Creator Sites</h3>
                   <p className="editor-shell-note">
-                    Mantenha blocos e estrutura do site prontos para crescer com o mesmo contexto do projeto.
+                    Mantenha blocos e estrutura do site prontos para crescer com o mesmo contexto do projeto até publicação.
                   </p>
                 </div>
                 <div className="editor-shell-placeholder editor-shell-placeholder-muted">
@@ -689,7 +1054,7 @@ export default function EditorProjectPage() {
                   <p className="section-kicker">Biblioteca IA</p>
                   <h3>Validação e apoio editorial</h3>
                   <p className="editor-shell-note">
-                    Use a verificação editorial e registre o resultado no mesmo contexto do projeto.
+                    Use a verificação editorial e registre o resultado no mesmo contexto do projeto e da próxima versão.
                   </p>
                 </div>
 
@@ -749,7 +1114,7 @@ export default function EditorProjectPage() {
                 <p className="section-kicker">Assistente lateral</p>
                 <h3>EditexAI</h3>
                 <p className="editor-shell-note">
-                  Acione a IA sem sair do fluxo principal. O painel lateral serve como apoio, não como distração.
+                  Acione a IA sem sair do fluxo principal. O painel lateral acelera o trabalho sério sem competir com o entregável central.
                 </p>
               </div>
               <div className="editor-shell-cta-group">
@@ -759,6 +1124,37 @@ export default function EditorProjectPage() {
                 <button className="btn-ea btn-ghost" onClick={() => setTab("library")}>
                   Abrir biblioteca
                 </button>
+              </div>
+            </section>
+
+            <section className="editor-shell-inline-card">
+              <div className="editor-shell-panel-head">
+                <p className="section-kicker">Versões salvas</p>
+                <h4>Histórico de continuidade</h4>
+                <p className="editor-shell-note">
+                  Cada salvamento cria uma nova referência de trabalho para retomar, revisar ou exportar depois.
+                </p>
+              </div>
+              <div className="editor-project-version-list">
+                {versions.length ? versions.map((version) => (
+                  <div key={version.id} className="editor-project-version-item">
+                    <div className="editor-project-version-head">
+                      <strong>{version.title}</strong>
+                      <span>{new Date(version.ts).toLocaleString("pt-BR")}</span>
+                    </div>
+                    <div className="editor-project-version-meta">
+                      <span>{version.deliverable}</span>
+                      <span>{version.charCount} caracteres</span>
+                      <span>{EDITOR_TAB_LABEL[version.tab]}</span>
+                    </div>
+                    <p>{version.summary}</p>
+                  </div>
+                )) : (
+                  <div className="editor-shell-empty-note">
+                    <strong>Nenhuma versão registrada</strong>
+                    <span>Salve o projeto para criar o primeiro marco real de continuidade.</span>
+                  </div>
+                )}
               </div>
             </section>
 
@@ -785,9 +1181,9 @@ export default function EditorProjectPage() {
             <section className="editor-shell-inline-card">
               <div className="editor-shell-panel-head">
                 <p className="section-kicker">Log do projeto</p>
-                <h4>Passos registrados</h4>
+                <h4>Rastro de execução</h4>
                 <p className="editor-shell-note">
-                  Histórico rápido do que já foi salvo ou executado no contexto deste editor.
+                  Histórico rápido do que já foi salvo, gerado, validado ou aprovado no contexto deste editor.
                 </p>
               </div>
               <div className="editor-shell-log-list">
@@ -816,10 +1212,13 @@ export default function EditorProjectPage() {
                 <p className="section-kicker">Projeto atual</p>
                 <strong className="editor-shell-footer-title">{title}</strong>
                 <p className="editor-shell-note">
-                  Continue salvando blocos-chave. Saída padrão: exportação no dispositivo; GitHub e Vercel já preparam o handoff beta de continuidade e publicação do projeto para app ou site.
+                  O fluxo agora fecha aqui: gerar, refinar, aprovar, salvar uma versão e preparar a saída. Exportação padrão no dispositivo; GitHub e Vercel seguem como handoff beta de continuidade e publicação.
                 </p>
               </div>
               <div className="editor-shell-cta-group">
+                <button className="btn-ea btn-primary btn-sm" onClick={save} disabled={saving}>
+                  {saving ? "Salvando..." : "Salvar nova versão"}
+                </button>
                 <button className="btn-ea btn-ghost btn-sm" onClick={() => setAiSteps([])}>
                   Limpar log
                 </button>

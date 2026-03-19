@@ -627,6 +627,159 @@ body {
   margin: 0;
 }
 
+.editor-project-stage-grid,
+.editor-project-asset-grid,
+.editor-project-kpi-grid {
+  display: grid;
+  gap: var(--ea-space-3);
+}
+
+.editor-project-stage-grid {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.editor-project-stage {
+  display: grid;
+  gap: 8px;
+  padding: var(--ea-space-3);
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.018));
+}
+
+.editor-project-stage-done {
+  border-color: rgba(75, 232, 255, 0.26);
+  background:
+    radial-gradient(180px 80px at 100% 0%, rgba(75, 232, 255, 0.12), transparent 72%),
+    linear-gradient(165deg, rgba(10, 42, 82, 0.48), rgba(255, 255, 255, 0.02));
+}
+
+.editor-project-stage-active {
+  border-color: rgba(127, 183, 255, 0.28);
+  background:
+    radial-gradient(180px 80px at 100% 0%, rgba(127, 183, 255, 0.12), transparent 72%),
+    linear-gradient(165deg, rgba(10, 32, 66, 0.54), rgba(255, 255, 255, 0.02));
+}
+
+.editor-project-stage-head,
+.editor-project-version-head,
+.editor-project-asset-head {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--ea-space-2);
+  align-items: flex-start;
+}
+
+.editor-project-stage-head span,
+.editor-project-version-head span,
+.editor-project-asset-head span,
+.editor-project-kpi span,
+.editor-project-version-meta span {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ea-text-subtle);
+}
+
+.editor-project-stage p,
+.editor-project-version-item p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--ea-text-muted);
+}
+
+.editor-project-asset-grid {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.editor-project-asset-card {
+  display: grid;
+  gap: 8px;
+  padding: var(--ea-space-3);
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.018));
+}
+
+.editor-project-asset-context {
+  border-style: dashed;
+}
+
+.editor-project-asset-working {
+  border-color: rgba(127, 183, 255, 0.22);
+}
+
+.editor-project-asset-ready {
+  border-color: rgba(75, 232, 255, 0.24);
+}
+
+.editor-project-asset-value {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ea-text-strong);
+}
+
+.editor-project-asset-link {
+  font-size: 12px;
+  color: var(--ea-soft-blue);
+}
+
+.editor-project-summary-card {
+  background:
+    radial-gradient(320px 120px at 100% 0%, rgba(75, 232, 255, 0.09), transparent 72%),
+    linear-gradient(165deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.022));
+}
+
+.editor-project-kpi-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.editor-project-kpi {
+  display: grid;
+  gap: 6px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.editor-project-kpi strong {
+  font-size: 18px;
+  line-height: 1.15;
+}
+
+.editor-project-version-banner {
+  display: grid;
+  gap: 8px;
+  padding: var(--ea-space-3);
+  border-radius: 14px;
+  border: 1px solid rgba(127, 183, 255, 0.22);
+  background:
+    radial-gradient(180px 80px at 100% 0%, rgba(127, 183, 255, 0.12), transparent 72%),
+    linear-gradient(165deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.018));
+}
+
+.editor-project-version-list {
+  display: grid;
+  gap: var(--ea-space-2);
+}
+
+.editor-project-version-item {
+  display: grid;
+  gap: 8px;
+  padding: var(--ea-space-3);
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.016));
+}
+
+.editor-project-version-meta {
+  display: flex;
+  gap: var(--ea-space-2);
+  flex-wrap: wrap;
+}
+
 .editor-shell-step {
   padding: var(--ea-space-3);
   border-radius: 14px;
@@ -5217,6 +5370,29 @@ textarea:focus {
   display: grid;
   gap: var(--ea-space-3);
   width: 100%;
+}
+
+@media (max-width: 1023px) {
+  .editor-project-kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .editor-project-stage-grid,
+  .editor-project-asset-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .editor-project-kpi-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .editor-project-stage-head,
+  .editor-project-version-head,
+  .editor-project-asset-head {
+    flex-direction: column;
+  }
 }
 
 @media (max-width: 1200px) {

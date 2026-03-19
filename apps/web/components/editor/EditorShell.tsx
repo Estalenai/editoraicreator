@@ -8,6 +8,10 @@ export function EditorShell({
   title,
   tab,
   onTab,
+  versionLabel,
+  deliverableLabel,
+  outputLabel,
+  nextActionLabel,
   professorMode,
   transparentMode,
   onToggleProfessor,
@@ -20,6 +24,10 @@ export function EditorShell({
   title: string;
   tab: EditorTab;
   onTab: (t: EditorTab) => void;
+  versionLabel?: string;
+  deliverableLabel?: string;
+  outputLabel?: string;
+  nextActionLabel?: string;
   professorMode: boolean;
   transparentMode: boolean;
   onToggleProfessor: () => void;
@@ -67,8 +75,12 @@ export function EditorShell({
           <div className="editor-shell-status-panel">
             <div className="editor-shell-status-grid">
               <div className="editor-shell-status-item">
-                <span>Fluxo</span>
-                <strong>Gerar, editar e publicar</strong>
+                <span>Entregável</span>
+                <strong>{deliverableLabel || "Gerar, editar e publicar"}</strong>
+              </div>
+              <div className="editor-shell-status-item">
+                <span>Versão ativa</span>
+                <strong>{versionLabel || "Sem versão salva ainda"}</strong>
               </div>
               <div className="editor-shell-status-item">
                 <span>Visibilidade</span>
@@ -79,8 +91,12 @@ export function EditorShell({
                 <strong>{professorMode ? "Explicação ligada" : "Opcional para apoio"}</strong>
               </div>
               <div className="editor-shell-status-item">
+                <span>Outputs</span>
+                <strong>{outputLabel || "Saídas e ativos no mesmo projeto"}</strong>
+              </div>
+              <div className="editor-shell-status-item">
                 <span>Próxima ação</span>
-                <strong>{activeTab.id === "library" ? "Validar e registrar no projeto" : "Refinar a peça principal"}</strong>
+                <strong>{nextActionLabel || (activeTab.id === "library" ? "Validar e registrar no projeto" : "Refinar a peça principal")}</strong>
               </div>
             </div>
             <div className="hero-actions-row editor-shell-header-actions">
@@ -103,6 +119,10 @@ export function EditorShell({
           <div className="signal-chip signal-chip-sober">
             <strong>Controle editorial</strong>
             <span>Salvar, revisar e iterar continuam visíveis em um shell único.</span>
+          </div>
+          <div className="signal-chip signal-chip-sober">
+            <strong>Versionamento vivo</strong>
+            <span>Versões, contexto e entregáveis ficam no mesmo workspace até a saída final.</span>
           </div>
         </div>
 
