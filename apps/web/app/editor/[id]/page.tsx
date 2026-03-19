@@ -411,25 +411,60 @@ function buildCreatorSnapshot(project: Project): CreatorSnapshot | null {
   if (payload.type === "creator_clips") {
     const generated = payload.generated || {};
     const result = generated.result || {};
-    const clipUrl = String(generated.clip_url || result?.output?.video_url || "").trim();
+    const clipIdea = String(payload.clipIdea || "").trim();
+    const visualStyle = String(payload.visualStyle || "").trim();
+    const tone = String(payload.tone || "").trim();
+    const platform = String(payload.platform || "").trim();
+    const duration = Number.isFinite(Number(payload.durationSec)) ? `${Number(payload.durationSec)}s` : "";
+    const aspectRatio = String(payload.aspectRatio || "").trim();
+    const quality = String(payload.quality || "").trim();
+    const clipStatus = String(result.status || "").trim();
+    const provider = String(result.provider || "").trim();
+    const model = String(result.model || "").trim();
+    const clipUrl = String(generated.clip_url || result?.output?.video_url || result?.assets?.preview_url || "").trim();
+    const thumbnailUrl = String(result?.output?.thumbnail_url || "").trim();
     return {
       source: "Creator Clips",
-      summary: "Job de vídeo salvo a partir de Creators com status e referência do clipe.",
+      summary: clipUrl
+        ? "Clipe salvo a partir de Creators com link visual pronto para revisão, checkpoint e saída."
+        : "Job de vídeo salvo a partir de Creators com status, briefing visual e continuidade pronta para o editor.",
       details: [
-        payload.clipIdea ? `Ideia do clipe\n${String(payload.clipIdea).trim()}` : "",
+        clipIdea ? `Ideia do clipe\n${clipIdea}` : "",
+        visualStyle ? `Estilo visual\n${visualStyle}` : "",
+        platform ? `Plataforma\n${platform}` : "",
         result.jobId ? `Job ID\n${String(result.jobId).trim()}` : "",
-        result.status ? `Status\n${String(result.status).trim()}` : "",
+        clipStatus ? `Status\n${clipStatus}` : "",
+        provider ? `Provedor\n${provider}${model ? ` · ${model}` : ""}` : "",
         clipUrl ? `URL do vídeo\n${clipUrl}` : "",
+        thumbnailUrl ? `Thumbnail\n${thumbnailUrl}` : "",
         generated.prompt_used ? `Prompt usado\n${String(generated.prompt_used).trim()}` : "",
       ]
         .filter(Boolean)
         .join("\n\n"),
       prefillText: [
-        payload.clipIdea ? `Ideia: ${String(payload.clipIdea).trim()}` : "",
+        clipIdea ? `Ideia: ${clipIdea}` : "",
+        clipStatus ? `Status: ${clipStatus}` : "",
         clipUrl ? `Video: ${clipUrl}` : "",
       ]
         .filter(Boolean)
         .join("\n\n"),
+      briefingFields: [
+        { label: "Estilo", value: visualStyle },
+        { label: "Tom", value: tone },
+        { label: "Plataforma", value: platform },
+        { label: "Duração", value: duration },
+        { label: "Formato", value: aspectRatio },
+        { label: "Qualidade", value: quality },
+      ].filter((item) => item.value),
+      outputFields: [
+        { label: "Job", value: result.jobId ? `ID ${String(result.jobId).trim()}` : "" },
+        { label: "Status", value: clipStatus || "" },
+        { label: "Saída visual", value: clipUrl ? "Link do clipe disponível" : "Aguardando link final" },
+        { label: "Publicação", value: clipUrl ? "Pronto para revisão visual" : "Acompanhar job antes da saída" },
+      ].filter((item) => item.value),
+      nextAction: clipUrl
+        ? "Abra o clipe no editor, valide o ativo visual, salve um checkpoint e registre exported quando a saída realmente sair da plataforma."
+        : "Leve o job para o editor, acompanhe o status do clipe e só registre exported quando o link final estiver disponível.",
     };
   }
 
@@ -508,9 +543,11 @@ function buildEditorVersionEntry({
   const trimmed = String(text || "").trim();
   const charCount = trimmed.length;
   const isCreatorPost = creatorSnapshot?.source === "Creator Post";
+  const isCreatorScript = creatorSnapshot?.source === "Creator Scripts";
+  const isCreatorClips = creatorSnapshot?.source === "Creator Clips";
   const titleByTab: Record<EditorTab, string> = {
-    video: "Versão de vídeo",
-    text: isCreatorPost ? "Versão editorial do post" : "Versão editorial",
+    video: isCreatorClips ? "Versão do clipe" : "Versão de vídeo",
+    text: isCreatorPost ? "Versão editorial do post" : isCreatorScript ? "Versão editorial do roteiro" : "Versão editorial",
     automation: "Versão de workflow",
     course: "Versão de curso",
     website: "Versão de site",
@@ -528,7 +565,21 @@ function buildEditorVersionEntry({
         : `Projeto salvo sem texto consolidado nesta etapa de ${projectKindLabel.toLowerCase()}.`,
     tab,
     charCount,
-    deliverable: trimmed ? (isCreatorPost ? "Post pronto para revisar" : "Pronto para revisar") : isCreatorPost ? "Base do post salva" : "Base salva",
+    deliverable: trimmed
+      ? isCreatorPost
+        ? "Post pronto para revisar"
+        : isCreatorScript
+          ? "Roteiro pronto para revisar"
+          : isCreatorClips
+            ? "Clipe pronto para revisar"
+            : "Pronto para revisar"
+      : isCreatorPost
+        ? "Base do post salva"
+        : isCreatorScript
+          ? "Base do roteiro salva"
+          : isCreatorClips
+            ? "Base do clipe salva"
+            : "Base salva",
     snapshotText: trimmed || creatorSnapshot?.prefillText || "",
     reviewStatus,
     assetCount,
@@ -593,7 +644,7 @@ function buildProjectAssets({
   const assets: EditorAsset[] = [];
   const payload = project ? parseCreatorProjectData(project) : null;
 
-  if (creatorSnapshot && payload?.type !== "creator_post" && payload?.type !== "creator_scripts") {
+  if (creatorSnapshot && payload?.type !== "creator_post" && payload?.type !== "creator_scripts" && payload?.type !== "creator_clips") {
     assets.push({
       id: "source-context",
       label: creatorSnapshot.source,
@@ -747,6 +798,22 @@ function buildProjectAssets({
   if (payload?.type === "creator_clips") {
     const result = payload.generated?.result || {};
     const clipUrl = String(payload.generated?.clip_url || result?.output?.video_url || result?.assets?.preview_url || "").trim();
+    const thumbnailUrl = String(result?.output?.thumbnail_url || "").trim();
+    const clipStatus = String(result.status || "").trim();
+    const provider = String(result.provider || "").trim();
+    const model = String(result.model || "").trim();
+    const visualStyle = String(payload.visualStyle || "").trim();
+    const platform = String(payload.platform || "").trim();
+    if (clipStatus || provider) {
+      assets.push({
+        id: "clip-job",
+        label: "Estado do job",
+        type: "Pipeline visual",
+        value: clipStatus ? `Status ${clipStatus}` : "Job registrado",
+        note: provider ? `Execução via ${provider}${model ? ` · ${model}` : ""}.` : "Acompanhe o retorno do provedor antes da saída final.",
+        state: clipUrl ? "ready" : "working",
+      });
+    }
     assets.push({
       id: "clip-output",
       label: "Clipe gerado",
@@ -756,6 +823,27 @@ function buildProjectAssets({
       url: clipUrl || null,
       state: clipUrl ? "ready" : "working",
     });
+    if (thumbnailUrl) {
+      assets.push({
+        id: "clip-thumbnail",
+        label: "Thumbnail do clipe",
+        type: "Preview",
+        value: "Thumbnail pronta para revisão visual",
+        note: "Use a thumbnail para validar enquadramento e continuidade antes da publicação.",
+        url: thumbnailUrl,
+        state: "ready",
+      });
+    }
+    if (visualStyle || platform) {
+      assets.push({
+        id: "clip-direction",
+        label: "Direção visual",
+        type: "Briefing",
+        value: [visualStyle, platform].filter(Boolean).join(" · ") || "Briefing visual salvo",
+        note: "A ideia, o estilo e o canal do clipe continuam ligados ao ativo final no editor.",
+        state: "context",
+      });
+    }
   }
 
   if (factResult) {
@@ -794,6 +882,7 @@ function buildDeliverableStages({
   checkpoints,
   outputStage,
   exportTarget,
+  primaryOutputReady,
 }: {
   creatorSnapshot: CreatorSnapshot | null;
   text: string;
@@ -803,6 +892,7 @@ function buildDeliverableStages({
   checkpoints: EditorCheckpoint[];
   outputStage: OutputStage;
   exportTarget: "device" | "connected_storage";
+  primaryOutputReady: boolean;
 }): DeliverableStage[] {
   const hasBase = Boolean(creatorSnapshot || String(text || "").trim());
   const hasRefinement = String(text || "").trim().length > 120;
@@ -812,19 +902,30 @@ function buildDeliverableStages({
   const hasSavedVersion = versions.length > 0;
   const hasCheckpoint = checkpoints.length > 0;
   const isScriptFlow = creatorSnapshot?.source === "Creator Scripts";
+  const isClipFlow = creatorSnapshot?.source === "Creator Clips";
 
   return [
     {
       id: "generate",
       label: "Gerar",
-      detail: hasBase ? "Base do projeto já entrou no editor com contexto real." : "Traga uma base de Creators ou escreva a primeira versão no editor.",
+      detail: hasBase
+        ? isClipFlow
+          ? "O job visual já entrou no editor com briefing, status e referência do ativo final."
+          : "Base do projeto já entrou no editor com contexto real."
+        : "Traga uma base de Creators ou escreva a primeira versão no editor.",
       status: hasBase ? "done" : "active",
     },
     {
       id: "refine",
       label: "Refinar",
-      detail: hasRefinement ? "O material principal já tem corpo para revisão séria." : "Consolide o texto, vídeo ou fluxo principal antes de aprovar.",
-      status: hasRefinement ? "done" : hasBase ? "active" : "pending",
+      detail: isClipFlow
+        ? primaryOutputReady
+          ? "O ativo visual já está disponível para revisão séria, handoff e checkpoint."
+          : "Acompanhe o job até existir um preview ou link final antes de tratar o clipe como saída consolidada."
+        : hasRefinement
+          ? "O material principal já tem corpo para revisão séria."
+          : "Consolide o texto, vídeo ou fluxo principal antes de aprovar.",
+      status: isClipFlow ? (primaryOutputReady ? "done" : hasBase ? "active" : "pending") : hasRefinement ? "done" : hasBase ? "active" : "pending",
     },
       {
         id: "review",
@@ -833,10 +934,12 @@ function buildDeliverableStages({
           ? isReviewReady
             ? "Checagem editorial registrada e material marcado para revisão."
             : "Há base de verificação editorial, mas o projeto ainda não foi levado para revisão."
+          : isClipFlow
+            ? "Marque o clipe como pronto para revisão quando o ativo visual estiver confirmado. Use checkpoint e aprovação para separar preview de saída final."
           : isScriptFlow
             ? "Marque o roteiro como pronto para revisão e use a Biblioteca IA para registrar uma leitura editorial antes da aprovação."
             : "Use a Biblioteca IA para validar afirmações e registrar uma leitura crítica do entregável.",
-        status: isReviewReady ? "done" : hasRefinement ? "active" : "pending",
+        status: isReviewReady ? "done" : isClipFlow ? (primaryOutputReady ? "active" : "pending") : hasRefinement ? "active" : "pending",
       },
       {
         id: "approve",
@@ -844,13 +947,17 @@ function buildDeliverableStages({
         detail: isApproved
           ? "Entregável aprovado e pronto para seguir para saída com menos ambiguidade."
           : isReviewReady
-            ? isScriptFlow
-              ? "O roteiro já entrou em revisão. Aprove quando o checkpoint editorial final estiver claro."
-              : "O projeto já entrou em revisão. Aprove quando o checkpoint final estiver claro."
-            : isScriptFlow
-              ? "Leve o roteiro para revisão antes de aprovar a saída final."
-              : "Marque o projeto como pronto para revisão antes de aprovar a saída.",
-        status: isApproved ? "done" : isReviewReady ? "active" : "pending",
+            ? isClipFlow
+              ? "O clipe já entrou em revisão. Aprove quando o ativo visual final estiver validado e o checkpoint estiver salvo."
+              : isScriptFlow
+                ? "O roteiro já entrou em revisão. Aprove quando o checkpoint editorial final estiver claro."
+                : "O projeto já entrou em revisão. Aprove quando o checkpoint final estiver claro."
+            : isClipFlow
+              ? "Leve o clipe para revisão antes de registrar published ou tratar o ativo como final."
+              : isScriptFlow
+                ? "Leve o roteiro para revisão antes de aprovar a saída final."
+                : "Marque o projeto como pronto para revisão antes de aprovar a saída.",
+        status: isApproved ? "done" : isReviewReady ? "active" : isClipFlow && primaryOutputReady ? "active" : "pending",
       },
     {
       id: "save",
@@ -858,7 +965,7 @@ function buildDeliverableStages({
       detail: hasSavedVersion
         ? `${versions.length} versão(ões) e ${checkpoints.length} checkpoint(s) já registrados neste projeto.`
         : "Salve uma versão para travar um ponto de continuidade real.",
-      status: hasSavedVersion && hasCheckpoint ? "done" : hasRefinement ? "active" : "pending",
+      status: hasSavedVersion && hasCheckpoint ? "done" : isClipFlow ? (primaryOutputReady ? "active" : "pending") : hasRefinement ? "active" : "pending",
     },
     {
       id: "export",
@@ -868,10 +975,14 @@ function buildDeliverableStages({
           ? "A saída já foi registrada como publicada. O histórico abaixo mantém quando isso aconteceu e por qual canal."
           : outputStage === "exported"
             ? "A saída já foi registrada como exported. Agora você pode concluir a publicação manual ou manter o projeto em handoff."
+            : isClipFlow
+              ? primaryOutputReady
+                ? "O clipe já tem link final. Salve um checkpoint, registre exported quando a saída realmente sair e published quando a publicação manual estiver confirmada."
+                : "Aguarde o link final do clipe antes de registrar exported. Enquanto isso, mantenha o job e o projeto sincronizados."
             : exportTarget === "device"
               ? "Saída padrão atual: exported no dispositivo ao concluir o entregável. Published segue como etapa manual fora da plataforma."
               : "Fluxo preparado para storage conectado quando essa etapa estiver disponível.",
-      status: outputStage === "published" ? "done" : outputStage === "exported" ? "done" : isApproved && hasSavedVersion ? "active" : "pending",
+      status: outputStage === "published" ? "done" : outputStage === "exported" ? "done" : isClipFlow ? (primaryOutputReady && hasSavedVersion ? "active" : "pending") : isApproved && hasSavedVersion ? "active" : "pending",
     },
   ];
 }
@@ -960,12 +1071,22 @@ export default function EditorProjectPage() {
   const latestDeliveryEvent = deliveryHistory[0] || null;
   const isCreatorPostFlow = creatorSnapshot?.source === "Creator Post";
   const isCreatorScriptsFlow = creatorSnapshot?.source === "Creator Scripts";
+  const isCreatorClipsFlow = creatorSnapshot?.source === "Creator Clips";
   const handoffSourceParam = searchParams.get("source");
   const handoffStageParam = searchParams.get("handoff");
   const outputAssets = useMemo(
     () => buildProjectAssets({ project, creatorSnapshot, text, factResult, reviewStatus }),
     [creatorSnapshot, factResult, project, reviewStatus, text]
   );
+  const clipOutputAsset = useMemo(
+    () => outputAssets.find((asset) => asset.id === "clip-output") || null,
+    [outputAssets]
+  );
+  const clipPreviewAsset = useMemo(
+    () => outputAssets.find((asset) => asset.id === "clip-thumbnail") || null,
+    [outputAssets]
+  );
+  const hasClipOutputReady = Boolean(clipOutputAsset?.url);
   const deliverableStages = useMemo(
     () =>
       buildDeliverableStages({
@@ -977,8 +1098,9 @@ export default function EditorProjectPage() {
         checkpoints,
         outputStage,
         exportTarget: editorState?.delivery.exportTarget || "device",
+        primaryOutputReady: isCreatorClipsFlow ? hasClipOutputReady : Boolean(String(text || "").trim().length > 120 || outputAssets.some((asset) => asset.state === "ready")),
       }),
-    [checkpoints, creatorSnapshot, editorState?.delivery.exportTarget, factResult, outputStage, reviewStatus, text, versions]
+    [checkpoints, creatorSnapshot, editorState?.delivery.exportTarget, factResult, hasClipOutputReady, isCreatorClipsFlow, outputAssets, outputStage, reviewStatus, text, versions]
   );
   const documentMetrics = useMemo(() => {
     const trimmed = String(text || "").trim();
@@ -1010,10 +1132,17 @@ export default function EditorProjectPage() {
         ? "A base do Creator Scripts chegou ao editor com estrutura, CTA e roteiro preservados. Agora revise, marque o estado editorial e salve o primeiro checkpoint antes de exportar."
         : "Este projeto entrou no editor a partir do Creator Scripts. Use a revisão editorial como etapa central antes da saída final.";
     }
+    if (handoffSourceParam === "creator_clips") {
+      return handoffStageParam === "saved"
+        ? "A base do Creator Clips chegou ao editor com briefing, status do job e ativo visual preservados. Agora valide o clipe, salve um checkpoint e registre exported quando a saída realmente sair."
+        : "Este projeto entrou no editor a partir do Creator Clips. Use a revisão visual e o estado do ativo como centro do fluxo final.";
+    }
     return null;
   }, [handoffSourceParam, handoffStageParam]);
   const handoffNoticeTitle = handoffSourceParam === "creator_scripts"
     ? "Base do Creator Scripts carregada"
+    : handoffSourceParam === "creator_clips"
+      ? "Base do Creator Clips carregada"
     : handoffSourceParam === "creator_post"
       ? "Base do Creator Post carregada"
       : "Base do creator carregada";
@@ -1026,28 +1155,39 @@ export default function EditorProjectPage() {
   );
   const hasPrimaryOutputBody = Boolean(String(text || creatorSnapshot?.prefillText || "").trim());
   const isScriptReviewReady = reviewStatus === "review_ready" || reviewStatus === "approved";
-  const canRegisterExport = hasPrimaryOutputBody && versions.length > 0 && (!isCreatorScriptsFlow || isScriptReviewReady);
+  const canRegisterExport = isCreatorClipsFlow
+    ? hasClipOutputReady && versions.length > 0
+    : hasPrimaryOutputBody && versions.length > 0 && (!isCreatorScriptsFlow || isScriptReviewReady);
   const canRegisterPublish =
     canRegisterExport &&
     (outputStage === "exported" || outputStage === "published") &&
-    (!isCreatorScriptsFlow || reviewStatus === "approved");
+    ((!isCreatorScriptsFlow && !isCreatorClipsFlow) || reviewStatus === "approved");
   const primarySaveLabel = isCreatorPostFlow && !versions.length
     ? "Salvar primeira versão do post"
     : isCreatorScriptsFlow && !versions.length
       ? "Salvar primeira versão do roteiro"
+      : isCreatorClipsFlow && !versions.length
+        ? "Salvar primeira versão do clipe"
       : "Salvar nova versão";
   const contextSaveLabel = isCreatorPostFlow && !versions.length
     ? "Salvar primeira versão do post"
     : isCreatorScriptsFlow && !versions.length
       ? "Salvar primeira versão do roteiro"
+      : isCreatorClipsFlow && !versions.length
+        ? "Salvar primeira versão do clipe"
       : "Salvar versão e checkpoint";
   const projectStateLabel = useMemo(
     () => `${outputStageMeta.label} · ${reviewStatusMeta.label} · ${outputMetrics.ready} saída(s) pronta(s)`,
     [outputMetrics.ready, outputStageMeta.label, reviewStatusMeta.label]
   );
   const exportBlockReason = useMemo(() => {
+    if (isCreatorClipsFlow && !hasClipOutputReady) {
+      return "Aguarde o link final do clipe antes de registrar exported. Enquanto isso, mantenha o job sincronizado no projeto.";
+    }
     if (!hasPrimaryOutputBody) {
-      return "Consolide o roteiro principal no editor antes de registrar a saída.";
+      return isCreatorScriptsFlow
+        ? "Consolide o roteiro principal no editor antes de registrar a saída."
+        : "Consolide o entregável principal no editor antes de registrar a saída.";
     }
     if (!versions.length) {
       return "Salve ao menos uma versão ou checkpoint do projeto. Isso evita marcar exported sem uma base real de continuidade.";
@@ -1056,9 +1196,11 @@ export default function EditorProjectPage() {
       return "Leve o roteiro para revisão e marque ao menos 'pronto para revisão' antes de registrar exported.";
     }
     return null;
-  }, [hasPrimaryOutputBody, isCreatorScriptsFlow, isScriptReviewReady, versions.length]);
-  const publishBlockReason = isCreatorScriptsFlow && outputStage === "exported" && reviewStatus !== "approved"
-    ? "A publicação manual do roteiro só deve ser registrada depois da aprovação editorial final."
+  }, [hasClipOutputReady, hasPrimaryOutputBody, isCreatorClipsFlow, isCreatorScriptsFlow, isScriptReviewReady, versions.length]);
+  const publishBlockReason = outputStage === "exported" && reviewStatus !== "approved" && (isCreatorScriptsFlow || isCreatorClipsFlow)
+    ? isCreatorClipsFlow
+      ? "A publicação manual do clipe só deve ser registrada depois da validação e aprovação final do ativo visual."
+      : "A publicação manual do roteiro só deve ser registrada depois da aprovação editorial final."
     : null;
 
   async function persistEditor(next: EditorDoc, feedbackText: string) {
@@ -1107,6 +1249,10 @@ export default function EditorProjectPage() {
     note: string;
   }) {
     if (!project) return;
+    if (isCreatorClipsFlow && !hasClipOutputReady) {
+      setErr("Aguarde o link final do clipe antes de registrar a saída final deste projeto.");
+      return;
+    }
     if (!hasPrimaryOutputBody) {
       setErr("Consolide o entregável principal no editor antes de registrar a saída final deste projeto.");
       return;
@@ -1121,6 +1267,10 @@ export default function EditorProjectPage() {
     }
     if (stage === "published" && outputStage === "draft") {
       setErr("Registre exported antes de marcar a publicação manual deste projeto.");
+      return;
+    }
+    if (stage === "published" && isCreatorClipsFlow && reviewStatus !== "approved") {
+      setErr("Aprove o clipe antes de registrar a publicação manual desta saída.");
       return;
     }
     if (stage === "published" && isCreatorScriptsFlow && reviewStatus !== "approved") {
@@ -1155,11 +1305,15 @@ export default function EditorProjectPage() {
         stage === "published"
           ? isCreatorPostFlow
             ? "Publicação manual do post registrada. O projeto agora mostra a saída como published com histórico claro."
+            : isCreatorClipsFlow
+              ? "Publicação manual do clipe registrada. O projeto agora mostra a saída como published com histórico claro."
             : isCreatorScriptsFlow
               ? "Publicação manual do roteiro registrada. O projeto agora mostra a saída como published com histórico claro."
             : "Publicação manual registrada. O projeto agora mostra a saída como published com histórico claro."
           : isCreatorPostFlow
             ? "Exportação do post registrada. O projeto agora mostra a saída como exported com histórico claro."
+            : isCreatorClipsFlow
+              ? "Exportação do clipe registrada. O projeto agora mostra a saída como exported com histórico claro."
             : isCreatorScriptsFlow
               ? "Exportação do roteiro registrada. O projeto agora mostra a saída como exported com histórico claro."
             : "Exportação registrada. O projeto agora mostra a saída como exported com histórico claro."
@@ -1208,6 +1362,8 @@ export default function EditorProjectPage() {
         next,
         isCreatorPostFlow && current.versions.length === 0
           ? "Primeira versão do post salva com segurança. O editor agora registra um checkpoint real para continuidade e saída."
+          : isCreatorClipsFlow && current.versions.length === 0
+            ? "Primeira versão do clipe salva com segurança. O editor agora registra um checkpoint real para revisão visual, continuidade e saída."
           : isCreatorScriptsFlow && current.versions.length === 0
             ? "Primeira versão do roteiro salva com segurança. O editor agora registra um checkpoint real para revisão, continuidade e saída."
           : "Projeto salvo com segurança. A versão ativa e o checkpoint do trabalho agora ficaram registrados no editor."
@@ -1522,13 +1678,15 @@ export default function EditorProjectPage() {
             <section className="editor-shell-inline-card">
               <div className="editor-shell-panel-head">
                 <p className="section-kicker">Assets e outputs</p>
-                <h4>{isCreatorPostFlow ? "O que este post já entrega" : isCreatorScriptsFlow ? "O que este roteiro já entrega" : "O que este projeto já entrega"}</h4>
+                <h4>{isCreatorPostFlow ? "O que este post já entrega" : isCreatorScriptsFlow ? "O que este roteiro já entrega" : isCreatorClipsFlow ? "O que este clipe já entrega" : "O que este projeto já entrega"}</h4>
                 <p className="editor-shell-note">
                   {isCreatorPostFlow
                     ? "Legenda, CTA, hashtags, direção de mídia e estados de revisão ficam reunidos para separar o que ainda está em draft do que já está pronto para exportação."
                     : isCreatorScriptsFlow
                       ? "Hook, estrutura, CTA, revisão e checkpoints ficam reunidos para separar o que ainda está em draft do que já está pronto para exportação."
-                    : "Contexto importado, saídas geradas e validações ficam reunidos para separar o que ainda está em draft do que já está pronto para exportação."}
+                      : isCreatorClipsFlow
+                        ? "Job, preview, thumbnail, checkpoints e estado de publicação ficam reunidos para separar o que ainda está em processamento do que já virou saída final."
+                      : "Contexto importado, saídas geradas e validações ficam reunidos para separar o que ainda está em draft do que já está pronto para exportação."}
                 </p>
               </div>
               <div className="editor-project-asset-grid">
@@ -1653,13 +1811,13 @@ export default function EditorProjectPage() {
               </div>
               <div className="editor-shell-cta-group">
                 <button className="btn-ea btn-secondary btn-sm" onClick={() => updateReviewState("review_ready")} disabled={saving}>
-                  {isCreatorScriptsFlow ? "Marcar roteiro pronto para revisão" : "Marcar pronto para revisão"}
+                  {isCreatorScriptsFlow ? "Marcar roteiro pronto para revisão" : isCreatorClipsFlow ? "Marcar clipe pronto para revisão" : "Marcar pronto para revisão"}
                 </button>
                 <button className="btn-ea btn-primary btn-sm" onClick={() => updateReviewState("approved")} disabled={saving}>
-                  {isCreatorScriptsFlow ? "Aprovar roteiro" : "Aprovar entregável"}
+                  {isCreatorScriptsFlow ? "Aprovar roteiro" : isCreatorClipsFlow ? "Aprovar clipe" : "Aprovar entregável"}
                 </button>
                 <button className="btn-ea btn-ghost btn-sm" onClick={() => updateReviewState("rework")} disabled={saving}>
-                  {isCreatorScriptsFlow ? "Pedir ajustes no roteiro" : "Pedir ajustes"}
+                  {isCreatorScriptsFlow ? "Pedir ajustes no roteiro" : isCreatorClipsFlow ? "Pedir ajustes no clipe" : "Pedir ajustes"}
                 </button>
                 <button className="btn-ea btn-ghost btn-sm" onClick={() => updateReviewState("draft")} disabled={saving}>
                   Voltar para draft
@@ -1669,6 +1827,11 @@ export default function EditorProjectPage() {
                 <div className="editor-project-origin-note editor-project-origin-note-inline">
                   <strong>Revisão editorial do roteiro</strong>
                   <span>Use revisão, aprovação e checkpoint como marcos centrais do fluxo. O roteiro só deve seguir para exported depois de uma leitura editorial clara.</span>
+                </div>
+              ) : isCreatorClipsFlow ? (
+                <div className="editor-project-origin-note editor-project-origin-note-inline">
+                  <strong>Revisão visual do clipe</strong>
+                  <span>Use revisão, aprovação e checkpoint como marcos centrais do fluxo. O clipe só deve seguir para published depois de o ativo final estar validado.</span>
                 </div>
               ) : null}
             </section>
@@ -1709,15 +1872,53 @@ export default function EditorProjectPage() {
               <section className="editor-shell-section editor-shell-focus-card">
                 <div className="editor-shell-panel-head">
                   <p className="section-kicker">Edicao principal</p>
-                  <h3>Editor de Vídeo</h3>
+                  <h3>{isCreatorClipsFlow ? "Mesa de revisão do clipe" : "Editor de Vídeo"}</h3>
                   <p className="editor-shell-note">
-                    Base do fluxo pronta para continuidade. Aqui o vídeo deixa de ser só geração e passa a ter contexto, assets e entregável.
+                    {isCreatorClipsFlow
+                      ? "Aqui o clipe deixa de ser só um job assíncrono e vira ativo principal do projeto, com revisão visual, checkpoint e estado final de saída."
+                      : "Base do fluxo pronta para continuidade. Aqui o vídeo deixa de ser só geração e passa a ter contexto, assets e entregável."}
                   </p>
                 </div>
+                {isCreatorClipsFlow ? (
+                  <div className="editor-project-context-stack">
+                    <div className="creator-planner-field-grid editor-project-context-grid">
+                      <div className="creator-planner-field">
+                        <span>Status visual</span>
+                        <strong>{clipOutputAsset ? clipOutputAsset.value : "Job salvo no projeto"}</strong>
+                      </div>
+                      <div className="creator-planner-field">
+                        <span>Saída atual</span>
+                        <strong>{clipOutputAsset?.url ? "Link do clipe disponível" : "Aguardando link final"}</strong>
+                      </div>
+                      <div className="creator-planner-field">
+                        <span>Published</span>
+                        <strong>{outputStage === "published" ? "Já registrado" : "Registro manual depois da aprovação"}</strong>
+                      </div>
+                    </div>
+                  </div>
+                ) : null}
                 <div className="editor-shell-placeholder editor-shell-placeholder-muted">
-                  <strong>Timeline preparada</strong>
-                  <p className="editor-shell-note">Clipes, status do job e ativos visuais já ficam organizados para revisão, salvamento de versão e saída final.</p>
+                  <strong>{isCreatorClipsFlow ? "Ativo visual em foco" : "Timeline preparada"}</strong>
+                  <p className="editor-shell-note">
+                    {isCreatorClipsFlow
+                      ? "Status do job, preview, thumbnail, checkpoint e registro de saída ficam reunidos aqui para fechar o pipeline com menos ambiguidade."
+                      : "Clipes, status do job e ativos visuais já ficam organizados para revisão, salvamento de versão e saída final."}
+                  </p>
                 </div>
+                {isCreatorClipsFlow && (clipOutputAsset?.url || clipPreviewAsset?.url) ? (
+                  <div className="editor-shell-cta-group">
+                    {clipOutputAsset?.url ? (
+                      <a href={clipOutputAsset.url} target="_blank" rel="noreferrer" className="btn-link-ea btn-primary btn-sm">
+                        Abrir clipe gerado
+                      </a>
+                    ) : null}
+                    {clipPreviewAsset?.url ? (
+                      <a href={clipPreviewAsset.url} target="_blank" rel="noreferrer" className="btn-link-ea btn-ghost btn-sm">
+                        Abrir thumbnail
+                      </a>
+                    ) : null}
+                  </div>
+                ) : null}
               </section>
             )}
 
