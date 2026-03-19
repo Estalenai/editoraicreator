@@ -20,6 +20,7 @@ export type VercelProjectBinding = {
   deployStatus: VercelDeployStatus;
   previewUrl: string;
   productionUrl: string;
+  lastManifestExportedAt?: string;
   updatedAt: string;
 };
 
@@ -125,6 +126,37 @@ export function vercelDeployStatusLabel(status: VercelDeployStatus): string {
   return "Publicado (informado)";
 }
 
+export function resolveVercelOutputStage(binding: Pick<VercelProjectBinding, "deployStatus" | "lastManifestExportedAt"> | null | undefined): {
+  label: string;
+  detail: string;
+} {
+  if (!binding) {
+    return {
+      label: "Draft",
+      detail: "A base de publicação ainda não foi salva para este projeto.",
+    };
+  }
+
+  if (binding.deployStatus === "published") {
+    return {
+      label: "Published",
+      detail: "Publicação marcada manualmente como concluída neste beta.",
+    };
+  }
+
+  if (binding.lastManifestExportedAt) {
+    return {
+      label: "Exported",
+      detail: "Manifest exportado para handoff beta de deploy manual.",
+    };
+  }
+
+  return {
+    label: "Draft",
+    detail: "A base local existe, mas o handoff de publicação ainda não foi exportado.",
+  };
+}
+
 export function buildVercelDeployManifest(
   project: VercelProjectSummary,
   binding: Omit<VercelProjectBinding, "updatedAt"> | VercelProjectBinding
@@ -147,10 +179,11 @@ export function buildVercelDeployManifest(
       deployStatus: binding.deployStatus,
       previewUrl: binding.previewUrl || null,
       productionUrl: binding.productionUrl || null,
+      lastManifestExportedAt: binding.lastManifestExportedAt || null,
     },
     publishMode: "beta_manual_handoff",
     notes: [
-      "Fluxo beta inicial: preparar o projeto, abrir a Vercel e publicar com base no handoff exportado.",
+      "Fluxo beta inicial: draft local, exported via manifest e published apenas como confirmação manual.",
       "Domínio customizado, multiambiente e sincronização automática entram na próxima fase.",
     ],
   };

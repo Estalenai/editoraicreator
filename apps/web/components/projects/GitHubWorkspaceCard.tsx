@@ -8,10 +8,12 @@ import {
   clearGitHubWorkspace,
   downloadGitHubProjectBundle,
   formatGitHubRepoLabel,
+  listGitHubProjectExports,
   listGitHubProjectVersions,
   normalizeRootPath,
   readGitHubWorkspace,
   resolveGitHubConnection,
+  saveGitHubProjectExport,
   saveGitHubProjectVersion,
   saveGitHubWorkspace,
   type GitHubProjectRef,
@@ -82,6 +84,8 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
   const [versionCount, setVersionCount] = useState(0);
   const [projectVersionCount, setProjectVersionCount] = useState(0);
   const [lastVersionSavedAt, setLastVersionSavedAt] = useState<string | null>(null);
+  const [projectExportCount, setProjectExportCount] = useState(0);
+  const [lastExportedAt, setLastExportedAt] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [busyAction, setBusyAction] = useState<"connect" | "save" | "clear" | "version" | "export" | null>(null);
@@ -98,6 +102,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
       const connection = resolveGitHubConnection(user);
       const storedWorkspace = nextAccountKey ? readGitHubWorkspace(nextAccountKey) : null;
       const versions = nextAccountKey ? listGitHubProjectVersions(nextAccountKey) : [];
+      const exports = nextAccountKey ? listGitHubProjectExports(nextAccountKey) : [];
 
       setAccountKey(nextAccountKey);
       setConnected(connection.connected);
@@ -107,6 +112,8 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
       setVersionCount(versions.length);
       setProjectVersionCount(projectId ? versions.filter((item) => item.projectId === projectId).length : versions.length);
       setLastVersionSavedAt(versions[0]?.savedAt || null);
+      setProjectExportCount(projectId ? exports.filter((item) => item.projectId === projectId).length : exports.length);
+      setLastExportedAt(projectId ? exports.find((item) => item.projectId === projectId)?.exportedAt || null : exports[0]?.exportedAt || null);
       setReady(true);
 
       if (typeof window !== "undefined") {
@@ -143,6 +150,24 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
     }
     return versionCount > 0 ? `${versionCount} versão(ões) locais prontas para continuidade` : "Nenhuma versão local salva ainda";
   }, [project, projectVersionCount, versionCount]);
+  const githubDeliveryStage = useMemo(() => {
+    if (projectExportCount > 0) {
+      return {
+        label: "Exported",
+        detail: "Snapshot exportado e pronto para handoff beta fora da plataforma.",
+      };
+    }
+    if (workspace) {
+      return {
+        label: "Draft",
+        detail: "Base do repositório salva. Falta exportar o snapshot para o handoff beta.",
+      };
+    }
+    return {
+      label: "Draft",
+      detail: "Defina owner, repositório e branch antes de preparar a saída.",
+    };
+  }, [projectExportCount, workspace]);
 
   function updateDraft(field: keyof WorkspaceDraft, value: string) {
     setDraft((current) => ({ ...current, [field]: value }));
@@ -279,6 +304,12 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
     setBusyAction("export");
     try {
       downloadGitHubProjectBundle(project, workspace);
+      if (accountKey) {
+        const exportEntry = saveGitHubProjectExport(accountKey, project, workspace);
+        const exports = listGitHubProjectExports(accountKey);
+        setProjectExportCount(exports.filter((item) => item.projectId === project.id).length);
+        setLastExportedAt(exportEntry.exportedAt);
+      }
       setSuccess("Snapshot do projeto baixado. Use esse bundle para continuar o app ou site fora da plataforma enquanto push direto, PRs e CI entram na próxima fase.");
       setError(null);
     } catch (exportError: any) {
@@ -323,9 +354,9 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
             <small>{project ? `${project.kind} • ${versionSummaryLabel}` : "O editor usa essa base para salvar versões e exportar snapshots."}</small>
           </div>
           <div className="github-workspace-status-item">
-            <span className="github-workspace-status-label">Fluxo beta</span>
-            <strong>{workspace ? `${targetLabel(workspace.target)} em ${workspace.branch}` : "Configure owner/repo/branch em Projetos"}</strong>
-            <small>Conta opcional, base do repositório e snapshot exportável entram agora; push direto, branches e PRs ficam para a próxima fase.</small>
+            <span className="github-workspace-status-label">Saída atual</span>
+            <strong>{githubDeliveryStage.label}</strong>
+            <small>{githubDeliveryStage.detail}</small>
           </div>
         </div>
 
@@ -359,6 +390,10 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
           <strong>Última versão local</strong>
           <span>{formatDateLabel(lastVersionSavedAt)}</span>
         </div>
+        <div className="github-workspace-inline-note">
+          <strong>Último snapshot exportado</strong>
+          <span>{formatDateLabel(lastExportedAt)}</span>
+        </div>
       </section>
     );
   }
@@ -376,6 +411,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
         <div className="hero-meta-row github-workspace-meta-row">
           <span className="premium-badge premium-badge-phase">{connected ? "Conta GitHub conectada" : canLinkIdentity ? "Conta opcional neste beta" : "Conexão de conta indisponível aqui"}</span>
           <span className="premium-badge premium-badge-warning">{repoLabel || "Base do repositório ainda não definida"}</span>
+          <span className="premium-badge premium-badge-soon">{githubDeliveryStage.label}</span>
         </div>
       </div>
 
@@ -494,9 +530,14 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
               <small>Última atualização: {formatDateLabel(lastVersionSavedAt)}</small>
             </div>
             <div className="github-workspace-status-item">
-              <span className="github-workspace-status-label">Destino atual</span>
-              <strong>{workspace ? `${targetLabel(workspace.target)} • ${workspace.branch}` : "Defina a base GitHub"}</strong>
-              <small>{workspace ? `Raiz ${workspace.rootPath} em ${formatGitHubRepoLabel(workspace)}.` : "Configure owner/repositório/branch e depois exporte versões pelo editor."}</small>
+              <span className="github-workspace-status-label">Saída atual</span>
+              <strong>{githubDeliveryStage.label}</strong>
+              <small>{githubDeliveryStage.detail}</small>
+            </div>
+            <div className="github-workspace-status-item">
+              <span className="github-workspace-status-label">Último snapshot</span>
+              <strong>{lastExportedAt ? formatDateLabel(lastExportedAt) : "Nenhum snapshot exportado"}</strong>
+              <small>{workspace ? `Destino ${targetLabel(workspace.target)} em ${workspace.branch}${repoLabel ? ` • ${repoLabel}` : ""}.` : "Configure owner/repositório/branch e depois exporte o snapshot do projeto."}</small>
             </div>
           </div>
 

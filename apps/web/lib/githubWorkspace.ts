@@ -29,10 +29,21 @@ export type GitHubProjectVersion = {
   repoLabel: string | null;
 };
 
+export type GitHubProjectExport = {
+  id: string;
+  projectId: string;
+  projectTitle: string;
+  exportedAt: string;
+  handoffTarget: GitHubWorkspaceTarget;
+  repoLabel: string | null;
+};
+
 const STORAGE_VERSION = "v1";
 const WORKSPACE_PREFIX = `ea:github-workspace:${STORAGE_VERSION}`;
 const VERSION_PREFIX = `ea:github-versions:${STORAGE_VERSION}`;
+const EXPORT_PREFIX = `ea:github-exports:${STORAGE_VERSION}`;
 const VERSION_LIMIT = 16;
+const EXPORT_LIMIT = 16;
 
 function isBrowser() {
   return typeof window !== "undefined" && typeof window.localStorage !== "undefined";
@@ -48,6 +59,10 @@ function workspaceStorageKey(accountKey: string): string {
 
 function versionStorageKey(accountKey: string): string {
   return `${VERSION_PREFIX}:${normalizeAccountKey(accountKey)}`;
+}
+
+function exportStorageKey(accountKey: string): string {
+  return `${EXPORT_PREFIX}:${normalizeAccountKey(accountKey)}`;
 }
 
 export function normalizeRootPath(value: string): string {
@@ -131,6 +146,29 @@ export function listGitHubProjectVersions(accountKey: string): GitHubProjectVers
   }
 }
 
+export function listGitHubProjectExports(accountKey: string): GitHubProjectExport[] {
+  if (!isBrowser()) return [];
+  try {
+    const raw = window.localStorage.getItem(exportStorageKey(accountKey));
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .filter((item) => item && typeof item === "object")
+      .map((item) => ({
+        id: String(item.id || ""),
+        projectId: String(item.projectId || ""),
+        projectTitle: String(item.projectTitle || "Projeto"),
+        exportedAt: String(item.exportedAt || new Date().toISOString()),
+        handoffTarget: (item.handoffTarget === "app" ? "app" : "site") as GitHubWorkspaceTarget,
+        repoLabel: item.repoLabel ? String(item.repoLabel) : null,
+      }))
+      .filter((item) => item.id && item.projectId);
+  } catch {
+    return [];
+  }
+}
+
 function localId() {
   try {
     return globalThis.crypto?.randomUUID?.() || Math.random().toString(36).slice(2);
@@ -157,6 +195,28 @@ export function saveGitHubProjectVersion(
   const next = [entry, ...listGitHubProjectVersions(accountKey)].slice(0, VERSION_LIMIT);
   if (isBrowser()) {
     window.localStorage.setItem(versionStorageKey(accountKey), JSON.stringify(next));
+  }
+
+  return entry;
+}
+
+export function saveGitHubProjectExport(
+  accountKey: string,
+  project: GitHubProjectRef,
+  workspace: GitHubWorkspace | null
+): GitHubProjectExport {
+  const entry: GitHubProjectExport = {
+    id: localId(),
+    projectId: String(project.id),
+    projectTitle: String(project.title || "Projeto"),
+    exportedAt: new Date().toISOString(),
+    handoffTarget: workspace?.target === "app" ? "app" : "site",
+    repoLabel: workspace ? formatGitHubRepoLabel(workspace) : null,
+  };
+
+  const next = [entry, ...listGitHubProjectExports(accountKey)].slice(0, EXPORT_LIMIT);
+  if (isBrowser()) {
+    window.localStorage.setItem(exportStorageKey(accountKey), JSON.stringify(next));
   }
 
   return entry;
@@ -222,7 +282,7 @@ export function buildGitHubProjectBundle(project: GitHubProjectRef, workspace: G
       target: handoffTarget,
       steps: ["gerar", "editar", "salvar", "exportar"],
       starterStructure: buildStarterStructure(handoffTarget),
-      note: "Fluxo beta: o bundle prepara continuidade fora da plataforma. Push, branches e PRs entram na próxima fase.",
+      note: "Fluxo beta: este bundle representa o estado exported do projeto para continuidade fora da plataforma. Push, branches e PRs entram na próxima fase.",
     },
     github: workspace
       ? {

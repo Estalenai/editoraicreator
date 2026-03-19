@@ -491,7 +491,7 @@ function buildDeliverableStages({
       label: "Exportar",
       detail:
         exportTarget === "device"
-          ? "Saída padrão atual: exportação no dispositivo ao concluir o entregável."
+          ? "Saída padrão atual: exported no dispositivo ao concluir o entregável. Published segue como etapa manual fora da plataforma."
           : "Fluxo preparado para storage conectado quando essa etapa estiver disponível.",
       status: hasSavedVersion ? "active" : "pending",
     },
@@ -793,7 +793,7 @@ export default function EditorProjectPage() {
               <div className="editor-shell-facts">
                 <div className="editor-shell-fact">
                   <span className="editor-shell-fact-label">Status</span>
-                  <strong>{saving ? "Salvando agora" : "Pronto para editar"}</strong>
+                  <strong>{saving ? "Salvando draft" : "Draft ativo"}</strong>
                 </div>
                 <div className="editor-shell-fact">
                   <span className="editor-shell-fact-label">Versões</span>
@@ -854,7 +854,7 @@ export default function EditorProjectPage() {
                 <p className="section-kicker">Assets e outputs</p>
                 <h4>O que este projeto já entrega</h4>
                 <p className="editor-shell-note">
-                  Contexto importado, saídas geradas e validações ficam reunidos para o trabalho sério acontecer aqui.
+                  Contexto importado, saídas geradas e validações ficam reunidos para separar o que ainda está em draft do que já está pronto para exportação.
                 </p>
               </div>
               <div className="editor-project-asset-grid">
@@ -1212,7 +1212,7 @@ export default function EditorProjectPage() {
                 <p className="section-kicker">Projeto atual</p>
                 <strong className="editor-shell-footer-title">{title}</strong>
                 <p className="editor-shell-note">
-                  O fluxo agora fecha aqui: gerar, refinar, aprovar, salvar uma versão e preparar a saída. Exportação padrão no dispositivo; GitHub e Vercel seguem como handoff beta de continuidade e publicação.
+                  O fluxo agora fecha aqui: draft no editor, exported via saída ou handoff beta e published apenas como etapa manual informada. Exportação padrão no dispositivo; GitHub e Vercel seguem como continuidade honesta desta fase.
                 </p>
               </div>
               <div className="editor-shell-cta-group">

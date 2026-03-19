@@ -110,11 +110,11 @@ export default function NewEditorProjectPage() {
               </div>
               <div className="hero-side-note">
                 <strong>Continue no mesmo workspace</strong>
-                <span>Salve, refine com IA e prepare o handoff de publicação beta sem quebrar o contexto do projeto.</span>
+                <span>Salve em draft, refine com IA e só então exporte ou publique com handoff beta quando fizer sentido.</span>
               </div>
               <div className="hero-side-note">
                 <strong>GitHub e Vercel para app ou site</strong>
-                <span>Na página Projetos, o beta já permite salvar a base GitHub, exportar snapshots e preparar a base de publicação na Vercel.</span>
+                <span>Na página Projetos, o beta já separa draft, exported e published com base GitHub/Vercel honesta e manual onde ainda não há automação.</span>
               </div>
             </div>
           </div>
@@ -182,7 +182,7 @@ export default function NewEditorProjectPage() {
           </div>
           <div className="premium-card-soft editor-new-flow-note">
             <strong>3. Salve, exporte ou publique</strong>
-            <span>O padrão atual é exportar no dispositivo. Para app/site, o beta já permite salvar a base GitHub e preparar o handoff manual de publicação na Vercel.</span>
+            <span>O padrão atual é salvar em draft, exportar no dispositivo ou gerar handoff beta para GitHub/Vercel. Publicação automática ainda não entra nesta fase.</span>
           </div>
         </div>
         <a href="/dashboard" className="btn-link-ea btn-ghost btn-sm">Voltar ao dashboard</a>
