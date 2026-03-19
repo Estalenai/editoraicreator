@@ -1,14 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { api, apiFetch } from "../../lib/api";
 import { supabase } from "../../lib/supabaseClient";
 import { createIdempotencyKey } from "../../lib/idempotencyKey";
 import { runAutoPromptFlow } from "../../lib/autoPromptFlow";
 import { usePromptPreferences } from "../../hooks/usePromptPreferences";
 import { PremiumSelect } from "../ui/PremiumSelect";
-import { toUserFacingError, toUserFacingGenerationSuccess } from "../../lib/uiFeedback";
+import {
+  describeAsyncJobStatus,
+  extractApiErrorMessage,
+  shouldAutoRefreshAsyncJob,
+  toUserFacingError,
+  toUserFacingGenerationSuccess,
+} from "../../lib/uiFeedback";
 
 type ClipResult = {
   ok?: boolean;
@@ -134,6 +140,7 @@ export function CreatorClipsCard({ walletCommon, onRefetch }: Props) {
 
   const [clipResult, setClipResult] = useState<ClipResult | null>(null);
   const [savedProjectId, setSavedProjectId] = useState<string | null>(null);
+  const [statusAutoRefreshCount, setStatusAutoRefreshCount] = useState(0);
 
   const estimatedCommon = useMemo(() => 0, []);
   const hasCredits = walletCommon >= estimatedCommon;
@@ -158,6 +165,20 @@ export function CreatorClipsCard({ walletCommon, onRefetch }: Props) {
     () => CLIP_QUALITY_OPTIONS.map((item) => ({ value: item.value, label: item.label })),
     []
   );
+  const jobStatusUi = useMemo(
+    () =>
+      describeAsyncJobStatus({
+        status: clipResult?.status,
+        provider: clipResult?.provider,
+        replay: Boolean(clipResult?.replay),
+        hasResultUrl: Boolean(pickClipUrl(clipResult)),
+      }),
+    [clipResult]
+  );
+
+  useEffect(() => {
+    setStatusAutoRefreshCount(0);
+  }, [clipResult?.jobId]);
 
   async function copyText(value: string, label: string) {
     setCopyMsg(null);
@@ -214,10 +235,11 @@ export function CreatorClipsCard({ walletCommon, onRefetch }: Props) {
 
       const payload = await res.json().catch(() => null);
       if (!res.ok) {
-        throw new Error(payload?.error || "Falha ao gerar clipe.");
+        throw new Error(extractApiErrorMessage(payload, "Falha ao gerar clipe."));
       }
 
       setClipResult(payload || {});
+      setStatusAutoRefreshCount(0);
       setSuccess(
         toUserFacingGenerationSuccess({
           provider: typeof payload?.provider === "string" ? payload.provider : null,
@@ -237,7 +259,7 @@ export function CreatorClipsCard({ walletCommon, onRefetch }: Props) {
     }
   }
 
-  async function refreshClipStatus() {
+  const refreshClipStatus = useCallback(async () => {
     const jobId = String(clipResult?.jobId || "").trim();
     if (!jobId) return;
 
@@ -260,7 +282,7 @@ export function CreatorClipsCard({ walletCommon, onRefetch }: Props) {
 
       const payload = await res.json().catch(() => null);
       if (!res.ok) {
-        throw new Error(payload?.error || "Falha ao consultar status do clipe.");
+        throw new Error(extractApiErrorMessage(payload, "Falha ao consultar status do clipe."));
       }
 
       const nextResult = {
@@ -268,6 +290,9 @@ export function CreatorClipsCard({ walletCommon, onRefetch }: Props) {
         ...(payload || {}),
       };
       setClipResult(nextResult);
+      if (!shouldAutoRefreshAsyncJob(nextResult.status)) {
+        setStatusAutoRefreshCount(0);
+      }
       setSuccess(
         pickClipUrl(nextResult)
           ? toUserFacingGenerationSuccess({
@@ -285,7 +310,20 @@ export function CreatorClipsCard({ walletCommon, onRefetch }: Props) {
     } finally {
       setLoadingStatus(false);
     }
-  }
+  }, [clipResult]);
+
+  useEffect(() => {
+    if (!clipResult?.jobId || loadingStatus) return;
+    if (!shouldAutoRefreshAsyncJob(clipResult.status)) return;
+    if (statusAutoRefreshCount >= 3) return;
+
+    const timer = window.setTimeout(() => {
+      setStatusAutoRefreshCount((current) => current + 1);
+      void refreshClipStatus();
+    }, 7000 + statusAutoRefreshCount * 2000);
+
+    return () => window.clearTimeout(timer);
+  }, [clipResult?.jobId, clipResult?.status, loadingStatus, refreshClipStatus, statusAutoRefreshCount]);
 
   async function onGenerateFlow() {
     if (!clipIdea.trim() || !objective.trim() || loadingPrompt || loadingApply) return;
@@ -364,7 +402,7 @@ export function CreatorClipsCard({ walletCommon, onRefetch }: Props) {
 
       const projectId = String(created?.item?.id || created?.id || "").trim();
       setSavedProjectId(projectId || null);
-      setSaveMsg("Projeto salvo com sucesso.");
+      setSaveMsg("Projeto salvo com segurança. Continue no Editor para revisar, salvar novas versões e exportar depois.");
       await onRefetch();
     } catch (e: any) {
       setError(e?.message || "Falha ao salvar clipe em projeto.");
@@ -705,11 +743,21 @@ export function CreatorClipsCard({ walletCommon, onRefetch }: Props) {
             ) : null}
           </div>
 
+          {(jobStatusUi.isPending || jobStatusUi.tone === "error") ? (
+            <div className={`state-ea ${jobStatusUi.tone === "error" ? "state-ea-error" : "state-ea-warning"}`}>
+              <p className="state-ea-title">{jobStatusUi.label}</p>
+              <div className="state-ea-text">
+                {jobStatusUi.detail}
+                {jobStatusUi.isPending && statusAutoRefreshCount > 0 ? ` Atualização automática ${statusAutoRefreshCount}/3 em andamento.` : ""}
+              </div>
+            </div>
+          ) : null}
+
           <div className="creator-output-grid">
           <div className="creator-output-card">
             <div className="creator-output-card-title">Status do job</div>
             <div className="creator-output-card-stat-row"><span>Job ID</span><strong>{String(clipResult.jobId || "—")}</strong></div>
-            <div className="creator-output-card-stat-row"><span>Status</span><strong>{String(clipResult.status || "—")}</strong></div>
+            <div className="creator-output-card-stat-row"><span>Status</span><strong>{jobStatusUi.label}</strong></div>
             <div className="creator-output-card-stat-row"><span>Provedor</span><strong>{String(clipResult.provider || "—")}</strong></div>
             <div className="creator-output-card-stat-row"><span>Modelo</span><strong>{String(clipResult.model || "—")}</strong></div>
             {clipResult.replay ? <div className="creator-output-card-meta">Replay: sim</div> : null}
@@ -734,7 +782,7 @@ export function CreatorClipsCard({ walletCommon, onRefetch }: Props) {
             <div className="creator-output-card">
               <div className="creator-output-card-title">Resultado em andamento</div>
               <div className="creator-output-card-meta">
-              O clipe ainda está sendo processado. Atualize o status em instantes.
+              {jobStatusUi.detail}
               </div>
             </div>
           )}

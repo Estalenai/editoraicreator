@@ -9,7 +9,7 @@ import { runAutoPromptFlow } from "../../lib/autoPromptFlow";
 import { usePromptPreferences } from "../../hooks/usePromptPreferences";
 import { PremiumSelect } from "../ui/PremiumSelect";
 import { CreatorPlannerPanel } from "./CreatorPlannerPanel";
-import { toUserFacingError, toUserFacingGenerationSuccess } from "../../lib/uiFeedback";
+import { extractApiErrorMessage, toUserFacingError, toUserFacingGenerationSuccess } from "../../lib/uiFeedback";
 
 type AdsStructuredResult = {
   headline?: string;
@@ -274,7 +274,7 @@ export function CreatorAdsCard({ walletCommon, onRefetch }: Props) {
 
       const payload = await res.json().catch(() => null);
       if (!res.ok) {
-        throw new Error(payload?.error || "Falha ao gerar anúncio.");
+        throw new Error(extractApiErrorMessage(payload, "Falha ao gerar anúncio."));
       }
 
       const text = String(payload?.text || "");
@@ -286,8 +286,10 @@ export function CreatorAdsCard({ walletCommon, onRefetch }: Props) {
         toUserFacingGenerationSuccess({
           provider: typeof payload?.provider === "string" ? payload.provider : null,
           model: typeof payload?.model === "string" ? payload.model : null,
+          replay: Boolean(payload?.replay),
           defaultMessage: "Peça gerada e pronta para revisão.",
           mockMessage: "Resposta entregue em modo beta simulado. Ative o provedor real para peça final.",
+          replayMessage: "Esta resposta reaproveitou uma execução recente com segurança. Revise a peça antes de seguir.",
         })
       );
       setLastPromptUsed(finalPrompt);
@@ -376,7 +378,7 @@ export function CreatorAdsCard({ walletCommon, onRefetch }: Props) {
 
       const projectId = String(created?.item?.id || created?.id || "").trim();
       setSavedProjectId(projectId || null);
-      setSaveMsg("Projeto salvo com sucesso.");
+      setSaveMsg("Projeto salvo com segurança. Continue no Editor para revisar, salvar novas versões e exportar depois.");
       await onRefetch();
     } catch (e: any) {
       setError(e?.message || "Falha ao salvar anúncio em projeto.");

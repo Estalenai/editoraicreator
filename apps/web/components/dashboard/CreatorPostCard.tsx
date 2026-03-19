@@ -9,7 +9,7 @@ import { runAutoPromptFlow } from "../../lib/autoPromptFlow";
 import { usePromptPreferences } from "../../hooks/usePromptPreferences";
 import { PremiumSelect } from "../ui/PremiumSelect";
 import { CreatorPlannerPanel } from "./CreatorPlannerPanel";
-import { toUserFacingError, toUserFacingGenerationSuccess } from "../../lib/uiFeedback";
+import { extractApiErrorMessage, toUserFacingError, toUserFacingGenerationSuccess } from "../../lib/uiFeedback";
 
 type CreatorPostResult = {
   caption: string;
@@ -544,7 +544,7 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
 
       const projectId = String(body?.item?.id || body?.id || "").trim();
       setSavedProjectId(projectId || null);
-      setSaveMsg("Projeto salvo com sucesso.");
+      setSaveMsg("Projeto salvo com segurança. Continue no Editor para revisar, salvar novas versões e exportar depois.");
       await onRefetch();
     } finally {
       setSaving(false);
@@ -1014,14 +1014,6 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
       </div>
     </div>
   );
-}
-
-function extractApiErrorMessage(payload: any, fallback: string) {
-  const candidates = [payload?.message, payload?.detail, payload?.error, payload?.reason];
-  for (const candidate of candidates) {
-    if (typeof candidate === "string" && candidate.trim()) return candidate.trim();
-  }
-  return fallback;
 }
 
 function normalizeStringArray(value: unknown): string[] {

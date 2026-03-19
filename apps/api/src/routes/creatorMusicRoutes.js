@@ -311,6 +311,30 @@ function mapRouteError(error, defaultErrorCode) {
       },
     };
   }
+  if (normalized.includes("provider_unavailable")) {
+    return {
+      status: 502,
+      payload: {
+        error: "provider_unavailable",
+      },
+    };
+  }
+  if (normalized.includes("failed_to_load_idempotency") || normalized.includes("failed_to_save_idempotency")) {
+    return {
+      status: 503,
+      payload: {
+        error: "idempotency_storage_failed",
+      },
+    };
+  }
+  if (normalized.includes("failed_to_load_wallet")) {
+    return {
+      status: 503,
+      payload: {
+        error: "wallet_unavailable",
+      },
+    };
+  }
 
   return {
     status: 500,

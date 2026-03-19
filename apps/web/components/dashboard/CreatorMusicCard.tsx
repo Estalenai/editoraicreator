@@ -1,13 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
 import { apiFetch } from "../../lib/api";
 import { createIdempotencyKey } from "../../lib/idempotencyKey";
 import { PremiumSelect } from "../ui/PremiumSelect";
 import { CreatorPlannerPanel } from "./CreatorPlannerPanel";
-import { toUserFacingError, toUserFacingGenerationSuccess } from "../../lib/uiFeedback";
+import {
+  describeAsyncJobStatus,
+  extractApiErrorMessage,
+  shouldAutoRefreshAsyncJob,
+  toUserFacingError,
+  toUserFacingGenerationSuccess,
+} from "../../lib/uiFeedback";
 
 type CreatorMusicResult = {
   provider?: string;
@@ -37,14 +43,6 @@ const MOOD_OPTIONS = [
   { value: "suave", label: "Suave" },
   { value: "intermediario", label: "Intermediária" },
 ];
-
-function extractApiErrorMessage(payload: any, fallback: string) {
-  const candidates = [payload?.message, payload?.detail, payload?.error, payload?.reason];
-  for (const candidate of candidates) {
-    if (typeof candidate === "string" && candidate.trim()) return candidate.trim();
-  }
-  return fallback;
-}
 
 function buildMusicPrompt({ theme, mood, bpm, duration, language }: { theme: string; mood: string; bpm: number; duration: number; language: string }) {
   return `Crie uma musica no estilo ${theme}, humor ${mood}, ${bpm} BPM, duracao de ${duration} segundos em ${language}.`;
@@ -106,6 +104,7 @@ export function CreatorMusicCard({ walletCommon, onRefetch }: Props) {
   const [savedProjectId, setSavedProjectId] = useState<string | null>(null);
   const [interactionStarted, setInteractionStarted] = useState(false);
   const [plannerOpen, setPlannerOpen] = useState(false);
+  const [statusAutoRefreshCount, setStatusAutoRefreshCount] = useState(0);
 
   const estimatedCommon = useMemo(() => {
     const themeUnits = Math.max(1, Math.ceil(theme.trim().length / 120));
@@ -152,6 +151,21 @@ export function CreatorMusicCard({ walletCommon, onRefetch }: Props) {
     ],
     [normalizedTheme, generatedPrompt, estimatedCommon, result]
   );
+
+  const jobStatusUi = useMemo(
+    () =>
+      describeAsyncJobStatus({
+        status: result?.status,
+        provider: result?.provider,
+        replay: result?.provider === "replay",
+        hasResultUrl: Boolean(result?.audio_url || result?.preview_url),
+      }),
+    [result?.audio_url, result?.preview_url, result?.provider, result?.status]
+  );
+
+  useEffect(() => {
+    setStatusAutoRefreshCount(0);
+  }, [result?.job_id]);
 
   function openPlanner() {
     setInteractionStarted(true);
@@ -269,6 +283,7 @@ export function CreatorMusicCard({ walletCommon, onRefetch }: Props) {
       }
 
       setResult(normalizedResult);
+      setStatusAutoRefreshCount(0);
       setGeneratedPrompt(String(payload?.used_prompt || promptToUse));
       setSuccess(
         toUserFacingGenerationSuccess({
@@ -291,7 +306,7 @@ export function CreatorMusicCard({ walletCommon, onRefetch }: Props) {
     }
   }
 
-  async function onRefreshStatus() {
+  const onRefreshStatus = useCallback(async () => {
     const jobId = String(result?.job_id || "").trim();
     if (!jobId || loadingStatus) return;
 
@@ -334,6 +349,9 @@ export function CreatorMusicCard({ walletCommon, onRefetch }: Props) {
         ...normalizedResult,
         prompt_used: prev?.prompt_used || normalizedResult.prompt_used,
       }));
+      if (!shouldAutoRefreshAsyncJob(normalizedResult.status)) {
+        setStatusAutoRefreshCount(0);
+      }
       setSuccess(
         normalizedResult.status === "succeeded" && normalizedResult.audio_url
           ? toUserFacingGenerationSuccess({
@@ -350,7 +368,20 @@ export function CreatorMusicCard({ walletCommon, onRefetch }: Props) {
     } finally {
       setLoadingStatus(false);
     }
-  }
+  }, [bpm, duration, generatedPrompt, language, loadingStatus, mood, onRefetch, result?.job_id, theme]);
+
+  useEffect(() => {
+    if (!result?.job_id || loadingStatus) return;
+    if (!shouldAutoRefreshAsyncJob(result.status)) return;
+    if (statusAutoRefreshCount >= 3) return;
+
+    const timer = window.setTimeout(() => {
+      setStatusAutoRefreshCount((current) => current + 1);
+      void onRefreshStatus();
+    }, 7000 + statusAutoRefreshCount * 2000);
+
+    return () => window.clearTimeout(timer);
+  }, [loadingStatus, onRefreshStatus, result?.job_id, result?.status, statusAutoRefreshCount]);
 
   async function onSaveProject() {
     if (!result || saving) return;
@@ -394,7 +425,7 @@ export function CreatorMusicCard({ walletCommon, onRefetch }: Props) {
 
       const projectId = String(body?.item?.id || body?.id || "").trim();
       setSavedProjectId(projectId || null);
-      setSuccess("Projeto salvo com sucesso.");
+      setSuccess("Projeto salvo com segurança. Continue no Editor para revisar, salvar novas versões e exportar depois.");
       await onRefetch();
     } catch (e: any) {
       setError(e?.message || "Falha ao salvar projeto.");
@@ -631,12 +662,22 @@ export function CreatorMusicCard({ walletCommon, onRefetch }: Props) {
               ) : null}
             </div>
 
+            {(jobStatusUi.isPending || jobStatusUi.tone === "error") ? (
+              <div className={`state-ea ${jobStatusUi.tone === "error" ? "state-ea-error" : "state-ea-warning"}`}>
+                <p className="state-ea-title">{jobStatusUi.label}</p>
+                <div className="state-ea-text">
+                  {jobStatusUi.detail}
+                  {jobStatusUi.isPending && statusAutoRefreshCount > 0 ? ` Atualização automática ${statusAutoRefreshCount}/3 em andamento.` : ""}
+                </div>
+              </div>
+            ) : null}
+
             <div className="creator-output-grid">
               <div className="creator-output-card">
                 <div className="creator-output-card-title">Resumo da faixa</div>
                 <div className="creator-output-card-stat-row"><span>Título</span><strong>{result.title || "—"}</strong></div>
                 <div className="creator-output-card-stat-row"><span>Provedor</span><strong>{result.provider || "—"}</strong></div>
-                <div className="creator-output-card-stat-row"><span>Status</span><strong>{result.status || "—"}</strong></div>
+                <div className="creator-output-card-stat-row"><span>Status</span><strong>{jobStatusUi.label}</strong></div>
                 <div className="creator-output-card-stat-row"><span>BPM</span><strong>{result.bpm ?? bpm}</strong></div>
                 <div className="creator-output-card-stat-row"><span>Duração</span><strong>{result.duration ?? duration}s</strong></div>
               </div>
@@ -657,8 +698,8 @@ export function CreatorMusicCard({ walletCommon, onRefetch }: Props) {
                       {result.preview_url}
                     </a>
                   </>
-                ) : result.status === "processing" ? (
-                  <div className="creator-output-card-meta">Processamento em andamento. Atualize o status para buscar o link final.</div>
+                ) : shouldAutoRefreshAsyncJob(result.status) ? (
+                  <div className="creator-output-card-meta">{jobStatusUi.detail}</div>
                 ) : (
                   <div className="creator-output-card-meta">Ainda sem link retornado pelo provedor.</div>
                 )}

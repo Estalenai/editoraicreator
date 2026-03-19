@@ -300,6 +300,7 @@ export default function EditorProjectPage() {
   const [aiSteps, setAiSteps] = useState<AiStep[]>([]);
   const [aiBusy, setAiBusy] = useState<"text" | "fact" | null>(null);
   const [aiFeedback, setAiFeedback] = useState<{ tone: "success" | "warning"; text: string } | null>(null);
+  const [saveFeedback, setSaveFeedback] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -350,6 +351,7 @@ export default function EditorProjectPage() {
     if (!project) return;
     setSaving(true);
     setErr(null);
+    setSaveFeedback(null);
 
     try {
       const current = ensureEditor(project);
@@ -380,7 +382,8 @@ export default function EditorProjectPage() {
 
       const proj = extractProjectPayload(updated);
       setProject(proj);
-      setAiSteps(pushStep(aiSteps, "Projeto salvo", new Date().toLocaleString()));
+      setSaveFeedback("Projeto salvo com segurança. Continue editando, abra em Projetos quando precisar e exporte ao concluir.");
+      setAiSteps((current) => pushStep(current, "Projeto salvo", new Date().toLocaleString()));
     } catch (e: any) {
       setErr(typeof e === "string" ? e : (e?.message || e?.error?.message || "Falha ao salvar"));
     } finally {
@@ -391,9 +394,10 @@ export default function EditorProjectPage() {
   async function runTextGenerate() {
     setAiBusy("text");
     setAiFeedback(null);
+    setSaveFeedback(null);
     setErr(null);
     setFactResult(null);
-    setAiSteps(pushStep(aiSteps, "EditexAI: gerar texto", "Chamando /api/ai/text-generate"));
+    setAiSteps((current) => pushStep(current, "EditexAI: gerar texto", "Chamando /api/ai/text-generate"));
 
     try {
       const res = await api.aiTextGenerate({ prompt: text.trim() || "Gere um texto curto." });
@@ -402,19 +406,21 @@ export default function EditorProjectPage() {
       const model = typeof res?.model === "string" ? res.model : null;
       setText(String(content));
       setAiFeedback({
-        tone: provider === "mock" ? "warning" : "success",
+        tone: provider === "mock" || Boolean(res?.replay) ? "warning" : "success",
         text: toUserFacingGenerationSuccess({
           provider,
           model,
+          replay: Boolean(res?.replay),
           defaultMessage: "Texto gerado e aplicado ao editor.",
           mockMessage: "Texto entregue em modo beta simulado. Revise antes de publicar.",
+          replayMessage: "Esta resposta reaproveitou uma execução recente com segurança. Revise o texto antes de publicar.",
         }),
       });
-      setAiSteps(pushStep(aiSteps, "EditexAI: texto gerado", "Texto atualizado no editor"));
+      setAiSteps((current) => pushStep(current, "EditexAI: texto gerado", "Texto atualizado no editor"));
     } catch (e: any) {
       const message = toUserFacingError(typeof e === "string" ? e : (e?.message || e?.error?.message || "Falha ao gerar texto"), "Falha ao gerar texto.");
       setErr(message);
-      setAiSteps(pushStep(aiSteps, "Erro ao gerar texto", String(e?.error?.message || e)));
+      setAiSteps((current) => pushStep(current, "Erro ao gerar texto", String(e?.error?.message || e)));
     } finally {
       setAiBusy((current) => (current === "text" ? null : current));
     }
@@ -423,9 +429,10 @@ export default function EditorProjectPage() {
   async function runFactCheck() {
     setAiBusy("fact");
     setAiFeedback(null);
+    setSaveFeedback(null);
     setErr(null);
     setFactResult(null);
-    setAiSteps(pushStep(aiSteps, "EditexAI: verificação editorial", "Chamando /api/ai/fact-check"));
+    setAiSteps((current) => pushStep(current, "EditexAI: verificação editorial", "Chamando /api/ai/fact-check"));
 
     try {
       const res = await api.aiFactCheck({ claim });
@@ -433,20 +440,22 @@ export default function EditorProjectPage() {
       const model = typeof res?.model === "string" ? res.model : null;
       setFactResult(res);
       setAiFeedback({
-        tone: provider === "mock" ? "warning" : "success",
+        tone: provider === "mock" || Boolean(res?.replay) ? "warning" : "success",
         text: toUserFacingGenerationSuccess({
           provider,
           model,
+          replay: Boolean(res?.replay),
           defaultMessage: "Verificação editorial concluída. Revise o veredito antes de seguir.",
           mockMessage: "Verificação editorial entregue em modo beta simulado. Revise antes de tratar o retorno como definitivo.",
+          replayMessage: "Esta verificação reaproveitou uma execução recente com segurança. Revise o veredito antes de seguir.",
         }),
       });
       const verdict = res?.verdict || res?.result?.verdict || "(sem veredito)";
-      setAiSteps(pushStep(aiSteps, `Verificação editorial: ${verdict}`, "Resultado disponível no painel"));
+      setAiSteps((current) => pushStep(current, `Verificação editorial: ${verdict}`, "Resultado disponível no painel"));
     } catch (e: any) {
       const message = toUserFacingError(typeof e === "string" ? e : (e?.message || e?.error?.message || "Falha na verificação editorial"), "Falha na verificação editorial.");
       setErr(message);
-      setAiSteps(pushStep(aiSteps, "Erro na verificação editorial", String(e?.error?.message || e)));
+      setAiSteps((current) => pushStep(current, "Erro na verificação editorial", String(e?.error?.message || e)));
     } finally {
       setAiBusy((current) => (current === "fact" ? null : current));
     }
@@ -484,6 +493,13 @@ export default function EditorProjectPage() {
         <div className={`state-ea ${aiFeedback.tone === "warning" ? "state-ea-warning" : "state-ea-success"}`}>
           <p className="state-ea-title">{aiFeedback.tone === "warning" ? "Resposta da IA em modo beta" : "Atualização da IA concluída"}</p>
           <div className="state-ea-text">{aiFeedback.text}</div>
+        </div>
+      ) : null}
+
+      {saveFeedback ? (
+        <div className="state-ea state-ea-success">
+          <p className="state-ea-title">Projeto sincronizado</p>
+          <div className="state-ea-text">{saveFeedback}</div>
         </div>
       ) : null}
 

@@ -3828,6 +3828,7 @@ router.post(
         });
       }
       if (replay.kind === "replay") {
+        const replayPayload = { ...(replay.payload || {}), replay: true };
         await trackAIUsage(req, {
           feature: "text_generate",
           action: "generate",
@@ -3837,7 +3838,7 @@ router.post(
           costs: { common: 0, pro: 0, ultra: 0 },
           meta: { provider: replay.payload?.provider || "mock", model: replay.payload?.model || "mock", replay: true },
         });
-        return res.json(replay.payload);
+        return res.json(replayPayload);
       }
 
       try {
@@ -3953,6 +3954,7 @@ router.post(
           requestHash,
         });
         if (replay.kind === "replay") {
+          const replayPayload = { ...(replay.payload || {}), replay: true };
           await trackAIUsage(req, {
             feature: "text_generate",
             action: "generate",
@@ -3962,7 +3964,7 @@ router.post(
             costs: { common: 0, pro: 0, ultra: 0 },
             meta: { provider: replay.payload?.provider || "mock", model: replay.payload?.model || "mock", replay: true },
           });
-          return res.json(replay.payload);
+          return res.json(replayPayload);
         }
         if (replay.kind === "conflict") {
           return res.status(409).json({
@@ -3978,6 +3980,7 @@ router.post(
           endpoint,
         });
         if (reconstructed) {
+          const reconstructedPayload = { ...(reconstructed || {}), replay: true, reconstructed: true };
           await trackAIUsage(req, {
             feature: "text_generate",
             action: "generate",
@@ -3987,7 +3990,7 @@ router.post(
             costs: { common: 0, pro: 0, ultra: 0 },
             meta: { replay: true, reconstructed: true },
           });
-          return res.json(reconstructed);
+          return res.json(reconstructedPayload);
         }
 
         return res.status(409).json({
@@ -4104,6 +4107,7 @@ router.post(
         });
       }
       if (replay.kind === "replay") {
+        const replayPayload = { ...(replay.payload || {}), replay: true };
         await trackAIUsage(req, {
           feature: "fact_check",
           action: "generate",
@@ -4113,7 +4117,7 @@ router.post(
           costs: { common: 0, pro: 0, ultra: 0 },
           meta: { provider: replay.payload?.provider || "mock", model: replay.payload?.model || "mock", replay: true },
         });
-        return res.json(replay.payload);
+        return res.json(replayPayload);
       }
 
       coinsCharge = {
@@ -4255,6 +4259,7 @@ router.post(
           requestHash,
         });
         if (replay.kind === "replay") {
+          const replayPayload = { ...(replay.payload || {}), replay: true };
           await trackAIUsage(req, {
             feature: "fact_check",
             action: "generate",
@@ -4264,7 +4269,7 @@ router.post(
             costs: { common: 0, pro: 0, ultra: 0 },
             meta: { provider: replay.payload?.provider || "mock", model: replay.payload?.model || "mock", replay: true },
           });
-          return res.json(replay.payload);
+          return res.json(replayPayload);
         }
         if (replay.kind === "conflict") {
           return res.status(409).json({
@@ -4280,6 +4285,7 @@ router.post(
           endpoint,
         });
         if (reconstructed) {
+          const reconstructedPayload = { ...(reconstructed || {}), replay: true, reconstructed: true };
           await trackAIUsage(req, {
             feature: "fact_check",
             action: "generate",
@@ -4289,7 +4295,7 @@ router.post(
             costs: { common: 0, pro: 0, ultra: 0 },
             meta: { replay: true, reconstructed: true },
           });
-          return res.json(reconstructed);
+          return res.json(reconstructedPayload);
         }
 
         return res.status(409).json({

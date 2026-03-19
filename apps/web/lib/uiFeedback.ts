@@ -62,6 +62,17 @@ export function toUserFacingError(input: unknown, fallback = "Não foi possível
     return "Não foi possível confirmar o progresso desta ação com segurança agora. Tente novamente em instantes.";
   }
 
+  if (
+    normalized.includes("failed_to_load_idempotency") ||
+    normalized.includes("failed_to_save_idempotency")
+  ) {
+    return "Não foi possível registrar ou recuperar o andamento desta execução agora. Aguarde alguns instantes e tente novamente.";
+  }
+
+  if (normalized.includes("failed_to_load_wallet") || normalized.includes("wallet_unavailable")) {
+    return "Não foi possível consultar seu saldo com segurança agora. Atualize a tela e tente novamente em instantes.";
+  }
+
   if (normalized.includes("coins_debit_failed")) {
     return "Não foi possível debitar os créditos desta ação agora. Tente novamente em instantes.";
   }
@@ -72,6 +83,10 @@ export function toUserFacingError(input: unknown, fallback = "Não foi possível
 
   if (normalized.includes("provider_unavailable")) {
     return "Serviço de IA indisponível no momento. Tente novamente em instantes.";
+  }
+
+  if (normalized.includes("provider_failed")) {
+    return "O provedor de IA não concluiu esta solicitação agora. Tente novamente em instantes.";
   }
 
   if (normalized.includes("creator_post_prompt_failed")) {
@@ -88,6 +103,34 @@ export function toUserFacingError(input: unknown, fallback = "Não foi possível
 
   if (normalized.includes("creator_music_generate_failed")) {
     return "Não foi possível gerar a música agora. Tente novamente em instantes.";
+  }
+
+  if (normalized.includes("falha ao gerar clipe")) {
+    return "Não foi possível gerar o clipe agora. Tente novamente em instantes ou acompanhe o status do job.";
+  }
+
+  if (normalized.includes("falha ao consultar status do clipe")) {
+    return "Não foi possível consultar o status do clipe agora. Atualize novamente em instantes.";
+  }
+
+  if (normalized.includes("falha ao consultar status da música")) {
+    return "Não foi possível consultar o status da música agora. Atualize novamente em instantes.";
+  }
+
+  if (
+    normalized.includes("resposta de geração inválida") ||
+    normalized.includes("falha ao interpretar a resposta da música") ||
+    normalized.includes("falha ao interpretar o status retornado")
+  ) {
+    return "O provedor respondeu sem dados suficientes para continuar com segurança. Tente novamente em instantes.";
+  }
+
+  if (normalized.includes("falha ao gerar texto")) {
+    return "Não foi possível gerar o texto agora. Tente novamente em instantes.";
+  }
+
+  if (normalized.includes("falha ao checar a afirmação")) {
+    return "Não foi possível concluir a verificação editorial agora. Tente novamente em instantes.";
   }
 
   if (normalized.includes("plan_unavailable")) {
@@ -139,6 +182,18 @@ export function toUserFacingError(input: unknown, fallback = "Não foi possível
   return raw;
 }
 
+export function extractApiErrorMessage(payload: any, fallback: string): string {
+  if (!payload || typeof payload !== "object") return fallback;
+
+  const parts = [payload?.message, payload?.detail, payload?.details, payload?.error, payload?.reason, payload?.hint]
+    .filter((value): value is string => typeof value === "string" && value.trim().length > 0)
+    .map((value) => value.trim());
+
+  if (!parts.length) return fallback;
+
+  return Array.from(new Set(parts)).join(" | ");
+}
+
 type GenerationSuccessMessageOptions = {
   provider?: string | null;
   model?: string | null;
@@ -171,4 +226,98 @@ export function toUserFacingGenerationSuccess({
   }
 
   return `${defaultMessage} Via ${provider}${model ? ` · ${model}` : ""}.`;
+}
+
+type AsyncJobStatusOptions = {
+  status?: string | null;
+  provider?: string | null;
+  replay?: boolean;
+  hasResultUrl?: boolean;
+};
+
+export function describeAsyncJobStatus({
+  status,
+  provider,
+  replay = false,
+  hasResultUrl = false,
+}: AsyncJobStatusOptions): {
+  label: string;
+  detail: string;
+  tone: "success" | "warning" | "error";
+  isPending: boolean;
+} {
+  const normalized = String(status || "").trim().toLowerCase();
+  const providerName = String(provider || "").trim();
+
+  if (replay || providerName.toLowerCase() === "replay") {
+    return {
+      label: "Execução anterior recuperada",
+      detail: hasResultUrl
+        ? "O retorno desta solicitação já existia e foi recuperado com segurança."
+        : "Esta solicitação já estava em andamento. Atualize o status para acompanhar o retorno final.",
+      tone: "warning",
+      isPending: !hasResultUrl,
+    };
+  }
+
+  if (normalized === "queued" || normalized === "pending") {
+    return {
+      label: "Na fila do provedor",
+      detail: "O job foi aceito e aguarda processamento. Você pode acompanhar o status sem reenviar a solicitação.",
+      tone: "warning",
+      isPending: true,
+    };
+  }
+
+  if (normalized === "processing" || normalized === "running" || normalized === "in_progress") {
+    return {
+      label: "Processando no provedor",
+      detail: hasResultUrl
+        ? "Há uma prévia disponível enquanto o provedor conclui o resultado final."
+        : "O provedor está processando o job. Atualize o status em instantes para buscar o retorno final.",
+      tone: "warning",
+      isPending: true,
+    };
+  }
+
+  if (normalized === "succeeded" || normalized === "completed" || normalized === "done" || (hasResultUrl && !normalized)) {
+    return {
+      label: "Resultado pronto",
+      detail: hasResultUrl
+        ? "O retorno final já está disponível para revisão, salvamento e continuidade."
+        : "O job foi concluído, mas o provedor não devolveu um link final nesta resposta.",
+      tone: hasResultUrl ? "success" : "warning",
+      isPending: false,
+    };
+  }
+
+  if (normalized === "failed" || normalized === "error" || normalized === "canceled" || normalized === "cancelled" || normalized === "timeout") {
+    return {
+      label: "Execução interrompida",
+      detail: "O provedor não concluiu o job. Revise o briefing e tente novamente com o mesmo projeto aberto.",
+      tone: "error",
+      isPending: false,
+    };
+  }
+
+  if (normalized) {
+    return {
+      label: `Status do provedor: ${status}`,
+      detail: "Acompanhe o retorno e atualize novamente se o resultado final ainda não aparecer.",
+      tone: hasResultUrl ? "success" : "warning",
+      isPending: !hasResultUrl,
+    };
+  }
+
+  return {
+    label: "Aguardando retorno do provedor",
+    detail: "Esta execução ainda não devolveu um status legível. Atualize em instantes para confirmar o andamento.",
+    tone: "warning",
+    isPending: true,
+  };
+}
+
+export function shouldAutoRefreshAsyncJob(status?: string | null): boolean {
+  const normalized = String(status || "").trim().toLowerCase();
+  return normalized === "queued" || normalized === "pending" || normalized === "processing" || normalized === "running" || normalized === "in_progress";
 }

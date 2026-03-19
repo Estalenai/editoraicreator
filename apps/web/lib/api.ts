@@ -1,5 +1,6 @@
 import { supabase } from "./supabaseClient";
 import { createIdempotencyKey } from "./idempotencyKey";
+import { extractApiErrorMessage } from "./uiFeedback";
 
 const DEV_DEFAULT_API_URL = "http://127.0.0.1:3000";
 const DEV_FALLBACK_API_URL = "http://127.0.0.1:3100";
@@ -55,7 +56,7 @@ async function apiJson(path: string, options: RequestInit = {}) {
   const res = await apiFetch(path, options);
   const payload = await readJsonSafe(res);
   if (!res.ok) {
-    throw new Error(payload?.error || payload?.message || "Erro ao comunicar com a API");
+    throw new Error(extractApiErrorMessage(payload, "Erro ao comunicar com a API"));
   }
   return payload;
 }
