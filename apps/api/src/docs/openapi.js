@@ -1097,7 +1097,7 @@ export function getOpenApiSpec(lang = "pt-BR", { serverUrl = "/api" } = {}) {
                     plans: [
                       {
                         code: "FREE",
-                        name: normalizeLang(lang) === "en-US" ? "Free" : "Free",
+                        name: normalizeLang(lang) === "en-US" ? "Free" : "Gratuito",
                         visible: false,
                         coming_soon: false,
                         purchasable: false,
@@ -1113,12 +1113,12 @@ export function getOpenApiSpec(lang = "pt-BR", { serverUrl = "/api" } = {}) {
                           avatar_preview: { enabled: false, sessions_per_day: 0, seconds_per_session: 0 },
                         },
                         addons: {
-                          purchase: { allowed_coin_types: ["common"], fee_percent: 10 },
+                          purchase: { allowed_coin_types: ["common"], fee_percent: 3 },
                           convert: { enabled: false, pairs: [], fee_percent: 0 },
                         },
                       },
                       {
-                        code: "INICIANTE",
+                        code: "EDITOR_FREE",
                         name: normalizeLang(lang) === "en-US" ? "Starter" : "Iniciante",
                         visible: true,
                         coming_soon: false,
@@ -1135,8 +1135,8 @@ export function getOpenApiSpec(lang = "pt-BR", { serverUrl = "/api" } = {}) {
                           avatar_preview: { enabled: false, sessions_per_day: 0, seconds_per_session: 0 },
                         },
                         addons: {
-                          purchase: { allowed_coin_types: ["common", "pro"], fee_percent: 5 },
-                          convert: { enabled: true, pairs: ["common->pro", "common->ultra", "pro->common", "pro->ultra", "ultra->common", "ultra->pro"], fee_percent: 15 },
+                          purchase: { allowed_coin_types: ["common", "pro"], fee_percent: 0 },
+                          convert: { enabled: true, pairs: ["common->pro", "common->ultra", "pro->common", "pro->ultra", "ultra->common", "ultra->pro"], fee_percent: 8 },
                         },
                       },
                       {
@@ -1157,13 +1157,13 @@ export function getOpenApiSpec(lang = "pt-BR", { serverUrl = "/api" } = {}) {
                           avatar_preview: { enabled: false, sessions_per_day: 0, seconds_per_session: 0 },
                         },
                         addons: {
-                          purchase: { allowed_coin_types: ["common", "pro", "ultra"], fee_percent: 3 },
-                          convert: { enabled: true, pairs: ["common->pro", "common->ultra", "pro->common", "pro->ultra", "ultra->common", "ultra->pro"], fee_percent: 10 },
+                          purchase: { allowed_coin_types: ["common", "pro", "ultra"], fee_percent: 0 },
+                          convert: { enabled: true, pairs: ["common->pro", "common->ultra", "pro->common", "pro->ultra", "ultra->common", "ultra->pro"], fee_percent: 4 },
                         },
                       },
                       {
-                        code: "CREATOR_PRO",
-                        name: "Creator Pro",
+                        code: "EDITOR_ULTRA",
+                        name: "Editor Ultra",
                         visible: true,
                         coming_soon: false,
                         purchasable: true,
@@ -1179,13 +1179,13 @@ export function getOpenApiSpec(lang = "pt-BR", { serverUrl = "/api" } = {}) {
                           avatar_preview: { enabled: true, sessions_per_day: 1, seconds_per_session: 120 },
                         },
                         addons: {
-                          purchase: { allowed_coin_types: ["common", "pro", "ultra"], fee_percent: 1 },
-                          convert: { enabled: true, pairs: ["common->pro", "common->ultra", "pro->common", "pro->ultra", "ultra->common", "ultra->pro"], fee_percent: 5 },
+                          purchase: { allowed_coin_types: ["common", "pro", "ultra"], fee_percent: 0 },
+                          convert: { enabled: true, pairs: ["common->pro", "common->ultra", "pro->common", "pro->ultra", "ultra->common", "ultra->pro"], fee_percent: 2 },
                         },
                       },
                       {
-                        code: "EMPRESARIAL",
-                        name: normalizeLang(lang) === "en-US" ? "Business" : "Empresarial",
+                        code: "ENTERPRISE",
+                        name: "Enterprise",
                         visible: true,
                         coming_soon: true,
                         purchasable: false,
@@ -1201,8 +1201,8 @@ export function getOpenApiSpec(lang = "pt-BR", { serverUrl = "/api" } = {}) {
                           avatar_preview: { enabled: true, sessions_per_day: 1, seconds_per_session: 120 },
                         },
                         addons: {
-                          purchase: { allowed_coin_types: ["common", "pro", "ultra"], fee_percent: 1 },
-                          convert: { enabled: true, pairs: ["common->pro", "common->ultra", "pro->common", "pro->ultra", "ultra->common", "ultra->pro"], fee_percent: 5 },
+                          purchase: { allowed_coin_types: ["common", "pro", "ultra"], fee_percent: 0 },
+                          convert: { enabled: true, pairs: ["common->pro", "common->ultra", "pro->common", "pro->ultra", "ultra->common", "ultra->pro"], fee_percent: 0 },
                         },
                       },
                     ],

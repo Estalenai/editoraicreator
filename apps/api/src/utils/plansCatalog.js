@@ -14,7 +14,7 @@ const CONVERT_PAIRS = [
 ];
 const ALL_COIN_TYPES = ["common", "pro", "ultra"];
 const FREE_COIN_TYPES = ["common"];
-const STARTER_COIN_TYPES = ["common", "pro"];
+const EDITOR_FREE_COIN_TYPES = ["common", "pro"];
 
 const BASE_FEATURES = [
   { key: "ai_text", enabled: true },
@@ -40,11 +40,11 @@ const PLAN_DEFS = [
     purchasable: false,
   },
   {
-    code: "INICIANTE",
-    nameKey: "plans.name.starter",
+    code: "EDITOR_FREE",
+    nameKey: "plans.name.editor_free",
     priceAmountBrl: 19.9,
     credits: { common: 300, pro: 120, ultra: 0 },
-    allowedCoinTypes: STARTER_COIN_TYPES,
+    allowedCoinTypes: EDITOR_FREE_COIN_TYPES,
     avatarSessionsPerDay: 0,
     avatarSecondsPerSession: 0,
   },
@@ -58,8 +58,8 @@ const PLAN_DEFS = [
     avatarSecondsPerSession: 0,
   },
   {
-    code: "CREATOR_PRO",
-    nameKey: "plans.name.creator_pro",
+    code: "EDITOR_ULTRA",
+    nameKey: "plans.name.editor_ultra",
     priceAmountBrl: 139.9,
     credits: { common: 2000, pro: 1200, ultra: 600 },
     allowedCoinTypes: ALL_COIN_TYPES,
@@ -67,14 +67,13 @@ const PLAN_DEFS = [
     avatarSecondsPerSession: 120,
   },
   {
-    code: "EMPRESARIAL",
-    nameKey: "plans.name.empresarial",
+    code: "ENTERPRISE",
+    nameKey: "plans.name.enterprise",
     priceAmountBrl: 499.9,
     credits: { common: 6000, pro: 3500, ultra: 1800 },
     allowedCoinTypes: ALL_COIN_TYPES,
     avatarSessionsPerDay: 1,
     avatarSecondsPerSession: 120,
-    purchaseFeePercentOverride: 1,
     conversionFeePercentOverride: 0,
     comingSoon: true,
     purchasable: false,

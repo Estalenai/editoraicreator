@@ -3,7 +3,7 @@ import { normalizePlanCode } from "./usageLimits.js";
 const ACTIVE_STATUSES = ["active", "trialing", "past_due"];
 
 export async function getUserPlanCode(db, userId) {
-  if (!db || !userId) return "EDITOR_FREE";
+  if (!db || !userId) return "FREE";
 
   const { data, error } = await db
     .from("subscriptions")
@@ -14,6 +14,6 @@ export async function getUserPlanCode(db, userId) {
     .limit(1)
     .maybeSingle();
 
-  if (error || !data) return "EDITOR_FREE";
+  if (error || !data) return "FREE";
   return normalizePlanCode(data.plan_code);
 }

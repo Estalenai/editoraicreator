@@ -1,22 +1,23 @@
 const PLAN_KIND = {
   FREE: "FREE",
-  INICIANTE: "INICIANTE",
+  EDITOR_FREE: "EDITOR_FREE",
   EDITOR_PRO: "EDITOR_PRO",
-  CREATOR_PRO: "CREATOR_PRO",
+  EDITOR_ULTRA: "EDITOR_ULTRA",
   ENTERPRISE: "ENTERPRISE",
 };
 
 const PLAN_ALIASES = new Map([
   ["FREE", PLAN_KIND.FREE],
-  ["EDITOR_FREE", PLAN_KIND.INICIANTE],
-  ["INICIANTE", PLAN_KIND.INICIANTE],
-  ["STARTER", PLAN_KIND.INICIANTE],
+  ["EDITOR_FREE", PLAN_KIND.EDITOR_FREE],
+  ["INICIANTE", PLAN_KIND.EDITOR_FREE],
+  ["STARTER", PLAN_KIND.EDITOR_FREE],
+  ["EDITOR_STARTER", PLAN_KIND.EDITOR_FREE],
   ["EDITOR_PRO", PLAN_KIND.EDITOR_PRO],
   ["PRO", PLAN_KIND.EDITOR_PRO],
-  ["CRIADOR_PRO", PLAN_KIND.CREATOR_PRO],
-  ["CREATOR_PRO", PLAN_KIND.CREATOR_PRO],
-  ["EDITOR_ULTRA", PLAN_KIND.CREATOR_PRO],
-  ["ULTRA", PLAN_KIND.CREATOR_PRO],
+  ["CRIADOR_PRO", PLAN_KIND.EDITOR_ULTRA],
+  ["CREATOR_PRO", PLAN_KIND.EDITOR_ULTRA],
+  ["EDITOR_ULTRA", PLAN_KIND.EDITOR_ULTRA],
+  ["ULTRA", PLAN_KIND.EDITOR_ULTRA],
   ["EMPRESARIAL", PLAN_KIND.ENTERPRISE],
   ["ENTERPRISE", PLAN_KIND.ENTERPRISE],
   ["ENTERPRISE_ULTRA", PLAN_KIND.ENTERPRISE],
@@ -24,25 +25,25 @@ const PLAN_ALIASES = new Map([
 
 const CONVERSION_FEE_PERCENT_BY_PLAN = {
   [PLAN_KIND.FREE]: null,
-  [PLAN_KIND.INICIANTE]: 8,
+  [PLAN_KIND.EDITOR_FREE]: 8,
   [PLAN_KIND.EDITOR_PRO]: 4,
-  [PLAN_KIND.CREATOR_PRO]: 2,
+  [PLAN_KIND.EDITOR_ULTRA]: 2,
   [PLAN_KIND.ENTERPRISE]: 0,
 };
 
 const PURCHASE_FEE_PERCENT_BY_PLAN = {
   [PLAN_KIND.FREE]: 3,
-  [PLAN_KIND.INICIANTE]: 0,
+  [PLAN_KIND.EDITOR_FREE]: 0,
   [PLAN_KIND.EDITOR_PRO]: 0,
-  [PLAN_KIND.CREATOR_PRO]: 0,
+  [PLAN_KIND.EDITOR_ULTRA]: 0,
   [PLAN_KIND.ENTERPRISE]: 0,
 };
 
 const PURCHASE_ALLOWED_BY_PLAN = {
   [PLAN_KIND.FREE]: new Set(["common"]),
-  [PLAN_KIND.INICIANTE]: new Set(["common", "pro"]),
+  [PLAN_KIND.EDITOR_FREE]: new Set(["common", "pro"]),
   [PLAN_KIND.EDITOR_PRO]: new Set(["common", "pro", "ultra"]),
-  [PLAN_KIND.CREATOR_PRO]: new Set(["common", "pro", "ultra"]),
+  [PLAN_KIND.EDITOR_ULTRA]: new Set(["common", "pro", "ultra"]),
   [PLAN_KIND.ENTERPRISE]: new Set(["common", "pro", "ultra"]),
 };
 
@@ -81,7 +82,7 @@ export function canPurchaseCoin(planCode, coinType) {
 
 export function canUseAvatarPreview(planCode) {
   const normalized = normalizeProductPlanCode(planCode);
-  return normalized === PLAN_KIND.CREATOR_PRO || normalized === PLAN_KIND.ENTERPRISE;
+  return normalized === PLAN_KIND.EDITOR_ULTRA || normalized === PLAN_KIND.ENTERPRISE;
 }
 
 export function isSupportedConversionPair(from, to) {

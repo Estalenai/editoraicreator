@@ -9,10 +9,9 @@ const TIER_BY_MODEL_HINT = {
 
 const TIER_SET = {
   FREE: ["basic"],
-  INICIANTE: ["basic", "standard"],
+  EDITOR_FREE: ["basic", "standard"],
   EDITOR_PRO: ["basic", "standard", "intermediate"],
-  CREATOR_PRO: ["basic", "standard", "intermediate", "pro"],
-  EMPRESARIAL: ["basic", "standard", "intermediate", "pro"],
+  EDITOR_ULTRA: ["basic", "standard", "intermediate", "pro"],
   ENTERPRISE: ["basic", "standard", "intermediate", "pro"],
 };
 
@@ -112,45 +111,45 @@ const PLAN_POLICIES = {
       slides_generate: createFeaturePolicy({ mockOnly: true }),
     },
   },
-  INICIANTE: {
-    tiers: [...TIER_SET.INICIANTE],
+  EDITOR_FREE: {
+    tiers: [...TIER_SET.EDITOR_FREE],
     byFeature: {
       text_generate: createFeaturePolicy({
         providers: {
-          openai: [...TIER_SET.INICIANTE],
-          gemini: [...TIER_SET.INICIANTE],
+          openai: [...TIER_SET.EDITOR_FREE],
+          gemini: [...TIER_SET.EDITOR_FREE],
           deepseek: ["standard"],
         },
         modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.INICIANTE),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.INICIANTE),
+          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.EDITOR_FREE),
+          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.EDITOR_FREE),
           deepseek: pickModelByTier(DEEPSEEK_MODEL_BY_TIER, ["standard"]),
         },
       }),
       fact_check: createFeaturePolicy({
         providers: {
-          openai: [...TIER_SET.INICIANTE],
-          gemini: [...TIER_SET.INICIANTE],
+          openai: [...TIER_SET.EDITOR_FREE],
+          gemini: [...TIER_SET.EDITOR_FREE],
           deepseek: ["standard"],
         },
         modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.INICIANTE),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.INICIANTE),
+          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.EDITOR_FREE),
+          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.EDITOR_FREE),
           deepseek: pickModelByTier(DEEPSEEK_MODEL_BY_TIER, ["standard"]),
         },
       }),
       image_generate: createFeaturePolicy({
-        providers: { openai: [...TIER_SET.INICIANTE], gemini: [...TIER_SET.INICIANTE] },
+        providers: { openai: [...TIER_SET.EDITOR_FREE], gemini: [...TIER_SET.EDITOR_FREE] },
         modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.INICIANTE),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.INICIANTE),
+          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.EDITOR_FREE),
+          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.EDITOR_FREE),
         },
       }),
       image_variation: createFeaturePolicy({
-        providers: { openai: [...TIER_SET.INICIANTE], gemini: [...TIER_SET.INICIANTE] },
+        providers: { openai: [...TIER_SET.EDITOR_FREE], gemini: [...TIER_SET.EDITOR_FREE] },
         modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.INICIANTE),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.INICIANTE),
+          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.EDITOR_FREE),
+          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.EDITOR_FREE),
         },
       }),
       video_generate: createFeaturePolicy({
@@ -236,45 +235,45 @@ const PLAN_POLICIES = {
       }),
     },
   },
-  CREATOR_PRO: {
-    tiers: [...TIER_SET.CREATOR_PRO],
+  EDITOR_ULTRA: {
+    tiers: [...TIER_SET.EDITOR_ULTRA],
     byFeature: {
       text_generate: createFeaturePolicy({
         providers: {
-          openai: [...TIER_SET.CREATOR_PRO],
-          gemini: [...TIER_SET.CREATOR_PRO],
+          openai: [...TIER_SET.EDITOR_ULTRA],
+          gemini: [...TIER_SET.EDITOR_ULTRA],
           deepseek: ["standard", "intermediate", "pro"],
         },
         modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.CREATOR_PRO),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.CREATOR_PRO),
+          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.EDITOR_ULTRA),
+          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.EDITOR_ULTRA),
           deepseek: pickModelByTier(DEEPSEEK_MODEL_BY_TIER, ["standard", "intermediate", "pro"]),
         },
       }),
       fact_check: createFeaturePolicy({
         providers: {
-          openai: [...TIER_SET.CREATOR_PRO],
-          gemini: [...TIER_SET.CREATOR_PRO],
+          openai: [...TIER_SET.EDITOR_ULTRA],
+          gemini: [...TIER_SET.EDITOR_ULTRA],
           deepseek: ["standard", "intermediate", "pro"],
         },
         modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.CREATOR_PRO),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.CREATOR_PRO),
+          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.EDITOR_ULTRA),
+          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.EDITOR_ULTRA),
           deepseek: pickModelByTier(DEEPSEEK_MODEL_BY_TIER, ["standard", "intermediate", "pro"]),
         },
       }),
       image_generate: createFeaturePolicy({
-        providers: { openai: [...TIER_SET.CREATOR_PRO], gemini: [...TIER_SET.CREATOR_PRO] },
+        providers: { openai: [...TIER_SET.EDITOR_ULTRA], gemini: [...TIER_SET.EDITOR_ULTRA] },
         modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.CREATOR_PRO),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.CREATOR_PRO),
+          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.EDITOR_ULTRA),
+          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.EDITOR_ULTRA),
         },
       }),
       image_variation: createFeaturePolicy({
-        providers: { openai: [...TIER_SET.CREATOR_PRO], gemini: [...TIER_SET.CREATOR_PRO] },
+        providers: { openai: [...TIER_SET.EDITOR_ULTRA], gemini: [...TIER_SET.EDITOR_ULTRA] },
         modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.CREATOR_PRO),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.CREATOR_PRO),
+          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.EDITOR_ULTRA),
+          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.EDITOR_ULTRA),
         },
       }),
       video_generate: createFeaturePolicy({
@@ -298,45 +297,45 @@ const PLAN_POLICIES = {
       }),
     },
   },
-  EMPRESARIAL: {
-    tiers: [...TIER_SET.EMPRESARIAL],
+  ENTERPRISE: {
+    tiers: [...TIER_SET.ENTERPRISE],
     byFeature: {
       text_generate: createFeaturePolicy({
         providers: {
-          openai: [...TIER_SET.EMPRESARIAL],
-          gemini: [...TIER_SET.EMPRESARIAL],
+          openai: [...TIER_SET.ENTERPRISE],
+          gemini: [...TIER_SET.ENTERPRISE],
           deepseek: ["standard", "intermediate", "pro"],
         },
         modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.EMPRESARIAL),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.EMPRESARIAL),
+          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.ENTERPRISE),
+          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.ENTERPRISE),
           deepseek: pickModelByTier(DEEPSEEK_MODEL_BY_TIER, ["standard", "intermediate", "pro"]),
         },
       }),
       fact_check: createFeaturePolicy({
         providers: {
-          openai: [...TIER_SET.EMPRESARIAL],
-          gemini: [...TIER_SET.EMPRESARIAL],
+          openai: [...TIER_SET.ENTERPRISE],
+          gemini: [...TIER_SET.ENTERPRISE],
           deepseek: ["standard", "intermediate", "pro"],
         },
         modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.EMPRESARIAL),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.EMPRESARIAL),
+          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.ENTERPRISE),
+          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.ENTERPRISE),
           deepseek: pickModelByTier(DEEPSEEK_MODEL_BY_TIER, ["standard", "intermediate", "pro"]),
         },
       }),
       image_generate: createFeaturePolicy({
-        providers: { openai: [...TIER_SET.EMPRESARIAL], gemini: [...TIER_SET.EMPRESARIAL] },
+        providers: { openai: [...TIER_SET.ENTERPRISE], gemini: [...TIER_SET.ENTERPRISE] },
         modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.EMPRESARIAL),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.EMPRESARIAL),
+          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.ENTERPRISE),
+          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.ENTERPRISE),
         },
       }),
       image_variation: createFeaturePolicy({
-        providers: { openai: [...TIER_SET.EMPRESARIAL], gemini: [...TIER_SET.EMPRESARIAL] },
+        providers: { openai: [...TIER_SET.ENTERPRISE], gemini: [...TIER_SET.ENTERPRISE] },
         modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.EMPRESARIAL),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.EMPRESARIAL),
+          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.ENTERPRISE),
+          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.ENTERPRISE),
         },
       }),
       video_generate: createFeaturePolicy({
@@ -426,16 +425,17 @@ const PLAN_POLICIES = {
 
 const PLAN_ALIASES = new Map([
   ["FREE", "FREE"],
-  ["EDITOR_FREE", "INICIANTE"],
-  ["INICIANTE", "INICIANTE"],
-  ["STARTER", "INICIANTE"],
+  ["EDITOR_FREE", "EDITOR_FREE"],
+  ["INICIANTE", "EDITOR_FREE"],
+  ["STARTER", "EDITOR_FREE"],
+  ["EDITOR_STARTER", "EDITOR_FREE"],
   ["EDITOR_PRO", "EDITOR_PRO"],
   ["PRO", "EDITOR_PRO"],
-  ["EDITOR_ULTRA", "CREATOR_PRO"],
-  ["CREATOR_PRO", "CREATOR_PRO"],
-  ["CRIADOR_PRO", "CREATOR_PRO"],
-  ["ULTRA", "CREATOR_PRO"],
-  ["EMPRESARIAL", "EMPRESARIAL"],
+  ["EDITOR_ULTRA", "EDITOR_ULTRA"],
+  ["CREATOR_PRO", "EDITOR_ULTRA"],
+  ["CRIADOR_PRO", "EDITOR_ULTRA"],
+  ["ULTRA", "EDITOR_ULTRA"],
+  ["EMPRESARIAL", "ENTERPRISE"],
   ["ENTERPRISE", "ENTERPRISE"],
   ["ENTERPRISE_ULTRA", "ENTERPRISE"],
 ]);

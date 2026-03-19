@@ -317,15 +317,16 @@ function resolveRequestRiskSignal(req) {
 
 function normalizeTestPlanCode(rawPlanCode) {
   const normalized = String(rawPlanCode || "").trim().toUpperCase();
-  if (
-    normalized === "FREE" ||
-    normalized === "INICIANTE" ||
-    normalized === "EDITOR_PRO" ||
-    normalized === "CREATOR_PRO" ||
-    normalized === "EMPRESARIAL" ||
-    normalized === "ENTERPRISE"
-  ) {
-    return normalized;
+  if (normalized === "FREE") return "FREE";
+  if (normalized === "EDITOR_FREE" || normalized === "INICIANTE" || normalized === "STARTER" || normalized === "EDITOR_STARTER") {
+    return "EDITOR_FREE";
+  }
+  if (normalized === "EDITOR_PRO" || normalized === "PRO") return "EDITOR_PRO";
+  if (normalized === "EDITOR_ULTRA" || normalized === "CREATOR_PRO" || normalized === "CRIADOR_PRO" || normalized === "ULTRA") {
+    return "EDITOR_ULTRA";
+  }
+  if (normalized === "ENTERPRISE" || normalized === "EMPRESARIAL" || normalized === "ENTERPRISE_ULTRA") {
+    return "ENTERPRISE";
   }
   return null;
 }

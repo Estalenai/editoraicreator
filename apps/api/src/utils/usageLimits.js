@@ -1,4 +1,8 @@
 const PLAN_LIMITS = {
+  FREE: {
+    creator_post_generate: { monthly: 30 },
+    creator_music_generate: { monthly: 10 },
+  },
   EDITOR_FREE: {
     creator_post_generate: { monthly: 30 },
     creator_music_generate: { monthly: 10 },
@@ -11,22 +15,27 @@ const PLAN_LIMITS = {
     creator_post_generate: { monthly: 2000 },
     creator_music_generate: { monthly: 500 },
   },
+  ENTERPRISE: {
+    creator_post_generate: { monthly: 2000 },
+    creator_music_generate: { monthly: 500 },
+  },
 };
 
 const PLAN_ALIASES = new Map([
-  ["FREE", "EDITOR_FREE"],
+  ["FREE", "FREE"],
   ["EDITOR_FREE", "EDITOR_FREE"],
   ["INICIANTE", "EDITOR_FREE"],
   ["STARTER", "EDITOR_FREE"],
+  ["EDITOR_STARTER", "EDITOR_FREE"],
   ["EDITOR_PRO", "EDITOR_PRO"],
   ["PRO", "EDITOR_PRO"],
   ["EDITOR_ULTRA", "EDITOR_ULTRA"],
   ["CREATOR_PRO", "EDITOR_ULTRA"],
   ["CRIADOR_PRO", "EDITOR_ULTRA"],
   ["ULTRA", "EDITOR_ULTRA"],
-  ["EMPRESARIAL", "EDITOR_ULTRA"],
-  ["ENTERPRISE", "EDITOR_ULTRA"],
-  ["ENTERPRISE_ULTRA", "EDITOR_ULTRA"],
+  ["EMPRESARIAL", "ENTERPRISE"],
+  ["ENTERPRISE", "ENTERPRISE"],
+  ["ENTERPRISE_ULTRA", "ENTERPRISE"],
 ]);
 
 export function normalizePlanCode(planCode) {
@@ -35,12 +44,12 @@ export function normalizePlanCode(planCode) {
     .toUpperCase()
     .replace(/\s+/g, "_")
     .replace(/-/g, "_");
-  return PLAN_ALIASES.get(raw) || "EDITOR_FREE";
+  return PLAN_ALIASES.get(raw) || "FREE";
 }
 
 export function getUsageLimits(planCode) {
   const normalized = normalizePlanCode(planCode);
-  return PLAN_LIMITS[normalized] || PLAN_LIMITS.EDITOR_FREE;
+  return PLAN_LIMITS[normalized] || PLAN_LIMITS.FREE;
 }
 
 export function getMonthlyWindow(referenceDate = new Date()) {

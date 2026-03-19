@@ -1,4 +1,5 @@
 import supabaseAdmin from "../config/supabaseAdmin.js";
+import { normalizeProductPlanCode } from "../utils/coinsProductRules.js";
 
 const AUTO_CONVERT_KEY = "auto_convert";
 
@@ -6,11 +7,10 @@ const AUTO_CONVERT_KEY = "auto_convert";
  * Config: limites mensais por plano
  */
 const CONVERSION_LIMITS = {
-  INICIANTE: 1,
+  EDITOR_FREE: 1,
   EDITOR_PRO: 3,
-  CRIADOR_PRO: 6,
-  EMPRESARIAL: 999999,
-  ENTERPRISE_ULTRA: 999999,
+  EDITOR_ULTRA: 6,
+  ENTERPRISE: 999999,
   FREE: 0,
 };
 
@@ -237,7 +237,7 @@ export async function ensureCreditsOrAutoConvert({
   }
 
   const plan = await getPlan(userId);
-  const effectivePlan = planCode || plan.planCode || "FREE";
+  const effectivePlan = normalizeProductPlanCode(planCode || plan.planCode || "FREE");
   const status = plan.status || "inactive";
   const allowedStatuses =
     process.env.NODE_ENV === "production" ? ["active"] : ["active", "pending"];

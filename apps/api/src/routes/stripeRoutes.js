@@ -553,9 +553,15 @@ function runtimePlanCatalogRows() {
     },
     {
       code: "EDITOR_ULTRA",
-      name: "Creator Pro",
+      name: "Editor Ultra",
       tier: 3,
       features: { family: "editor_ai_creator", alias_of: "CREATOR_PRO" },
+    },
+    {
+      code: "ENTERPRISE",
+      name: "Enterprise",
+      tier: 4,
+      features: { family: "editor_ai_creator", alias_of: "EMPRESARIAL" },
     },
   ];
 }
@@ -1716,13 +1722,13 @@ router.post("/subscription/refresh", authMiddleware, async (req, res) => {
     if (!customerId) {
       await upsertSubscription({
         userId,
-        planCode: "EDITOR_FREE",
+        planCode: "FREE",
         status: "canceled",
       });
       trackBillingEvent({
         event: "checkout.subscription.refresh",
         req,
-        planCode: "EDITOR_FREE",
+        planCode: "FREE",
         additional: {
           source: "stripe.subscription_refresh",
           status: "success",
@@ -1748,14 +1754,14 @@ router.post("/subscription/refresh", authMiddleware, async (req, res) => {
     if (!chosen) {
       await upsertSubscription({
         userId,
-        planCode: "EDITOR_FREE",
+        planCode: "FREE",
         status: "canceled",
         stripeCustomerId: customerId,
       });
       trackBillingEvent({
         event: "checkout.subscription.refresh",
         req,
-        planCode: "EDITOR_FREE",
+        planCode: "FREE",
         additional: {
           source: "stripe.subscription_refresh",
           status: "success",
@@ -1766,7 +1772,7 @@ router.post("/subscription/refresh", authMiddleware, async (req, res) => {
     }
 
     const priceId = extractSubscriptionPriceId(chosen);
-    const mappedPlan = getPlanCodeByPriceId(priceId) || "EDITOR_FREE";
+    const mappedPlan = getPlanCodeByPriceId(priceId) || "FREE";
     const normalizedStatus = String(chosen.status || "canceled");
 
     await upsertSubscription({
@@ -2198,7 +2204,7 @@ router.post("/webhook", express.raw({ type: "application/json" }), async (req, r
       }
       await upsertSubscription({
         userId,
-        planCode: shouldDowngrade ? "EDITOR_FREE" : planCode || "EDITOR_FREE",
+        planCode: shouldDowngrade ? "FREE" : planCode || "FREE",
         status: incomingStatus,
         stripeSubscriptionId: subscriptionId,
         stripeCustomerId: customerId,
@@ -2227,7 +2233,7 @@ router.post("/webhook", express.raw({ type: "application/json" }), async (req, r
 
       await upsertSubscription({
         userId,
-        planCode: planCode || "EDITOR_FREE",
+        planCode: planCode || "FREE",
         status: isSubscription ? "active" : "inactive",
         stripeSubscriptionId: isSubscription && typeof eventObject.subscription === "string" ? eventObject.subscription : null,
         stripeCustomerId: customerId,
@@ -2299,7 +2305,7 @@ router.post("/webhook", express.raw({ type: "application/json" }), async (req, r
 
       await upsertSubscription({
         userId,
-        planCode: planCode || "EDITOR_FREE",
+        planCode: planCode || "FREE",
         status: "active",
         stripeSubscriptionId: subscriptionId,
         stripeCustomerId: customerId,

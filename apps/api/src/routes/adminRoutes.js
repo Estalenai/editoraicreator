@@ -229,7 +229,7 @@ router.get("/users/search", async (req, res) => {
       .map((userId) => ({
         user_id: userId,
         email: emailByUser[userId] || null,
-        plan_code: latestSubByUser[userId]?.plan_code || "EDITOR_FREE",
+        plan_code: latestSubByUser[userId]?.plan_code || "FREE",
         coins: walletByUser[userId] || { common: 0, pro: 0, ultra: 0 },
         last_seen_at: lastSeen[userId] || null,
         created_at: latestSubByUser[userId]?.created_at || null,

@@ -33,7 +33,6 @@ function planShortDescription(code: string): string {
   if (code === "EDITOR_FREE") return "Entrada guiada para validar rotinas com IA sem sobrecarga.";
   if (code === "EDITOR_PRO") return "Operação recorrente com mais volume, previsibilidade e eficiência.";
   if (code === "EDITOR_ULTRA") return "Escala de criação intensiva para times que entregam em alta cadência.";
-  if (code === "EMPRESARIAL") return "Operação assistida para equipe com governança, atendimento dedicado e conversão sem taxa.";
   if (code === "ENTERPRISE") return "Implantação corporativa com controle avançado e suporte estratégico.";
   return "Plano disponível no catálogo beta.";
 }
@@ -54,7 +53,7 @@ function totalCreditsIncluded(credits?: CatalogPlan["credits"]): number {
 
 function isEnterpriseConversionPlan(code: string): boolean {
   const normalized = normalizePlanCode(code);
-  return normalized === "EMPRESARIAL" || normalized === "ENTERPRISE" || normalized === "ENTERPRISE_ULTRA";
+  return normalized === "ENTERPRISE";
 }
 
 function resolvePlanConversionState(code: string, plan: CatalogPlan) {
@@ -111,15 +110,15 @@ function planNarrative(code: string): PlanNarrative {
     };
   }
 
-  if (code === "EMPRESARIAL") {
+  if (code === "ENTERPRISE") {
     return {
-      audience: "Ideal para times em fase de expansão com operação assistida.",
+      audience: "Ideal para operação corporativa com implantação assistida e governança mais forte.",
       valueBullets: [
-        "Capacidade ampliada para múltiplos perfis de uso.",
-        "Estrutura voltada para coordenação de equipe e governança.",
-        "Conversão entre tipos com taxa 0% para preservar crédito líquido da equipe.",
+        "Capacidade ampliada para múltiplos perfis de uso e equipes maiores.",
+        "Conversão entre tipos com taxa 0% para preservar crédito líquido da operação.",
+        "Entrada assistida para contratos, suporte e alinhamento estratégico.",
       ],
-      limits: ["Roadmap enterprise", "Entrada assistida"],
+      limits: ["Implantação assistida", "Contrato corporativo"],
     };
   }
 
@@ -149,8 +148,7 @@ function planPriority(code: string): number {
   if (normalized === "EDITOR_PRO") return 0;
   if (normalized === "EDITOR_ULTRA") return 1;
   if (normalized === "EDITOR_FREE") return 2;
-  if (normalized === "EMPRESARIAL") return 3;
-  if (normalized === "ENTERPRISE" || normalized === "ENTERPRISE_ULTRA") return 4;
+  if (normalized === "ENTERPRISE") return 3;
   return 10;
 }
 
@@ -241,7 +239,7 @@ function PlansPageContent() {
   }, []);
 
   const currentPlanCodeNormalized = useMemo(
-    () => normalizePlanCode(planCodeRaw || planLabel || "EDITOR_FREE"),
+    () => normalizePlanCode(planCodeRaw || planLabel || "FREE"),
     [planCodeRaw, planLabel]
   );
 
@@ -581,7 +579,7 @@ function PlansPageContent() {
       <section className="premium-card-soft plans-confidence-strip">
         <div className="plans-confidence-note">
           <strong>Plano principal do beta</strong>
-          <span>Editor Pro é o ponto mais forte para operação recorrente; Free valida encaixe e Ultra expande cadência.</span>
+          <span>Editor Pro é o ponto mais forte para operação recorrente; Iniciante valida encaixe e Editor Ultra expande cadência.</span>
         </div>
         <div className="plans-confidence-note">
           <strong>Checkout claro</strong>
@@ -790,11 +788,9 @@ function PlansPageContent() {
                     </div>
                   ) : comingSoon ? (
                     <div className="plan-card-support-note">
-                      {codeUpper === "EMPRESARIAL"
-                        ? "Plano Empresarial em breve no beta."
-                        : codeUpper === "ENTERPRISE" || codeUpper === "ENTERPRISE_ULTRA"
-                          ? "Plano Enterprise em breve no beta."
-                          : "Disponível em breve no beta."}
+                      {normalizePlanCode(codeUpper) === "ENTERPRISE"
+                        ? "Plano Enterprise em breve no beta."
+                        : "Disponível em breve no beta."}
                     </div>
                   ) : requiresAssistedActivation ? (
                     <div className="plan-card-support-note">

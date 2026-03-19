@@ -57,23 +57,13 @@ const CREDIT_GUIDE = [
   },
 ];
 
-function normalizePlanForConversion(planCodeRaw: string | null | undefined): string {
-  const canonical = normalizePlanCode(planCodeRaw);
-  if (canonical === "EDITOR_FREE") return "INICIANTE";
-  if (canonical === "EDITOR_PRO") return "EDITOR_PRO";
-  if (canonical === "EDITOR_ULTRA") return "CREATOR_PRO";
-  if (canonical === "EMPRESARIAL" || canonical === "ENTERPRISE") return canonical;
-  if (canonical === "FREE") return "FREE";
-  return canonical;
-}
-
 function getConversionFeePercentByPlan(planCodeRaw: string | null | undefined): number | null {
-  const normalized = normalizePlanForConversion(planCodeRaw);
+  const normalized = normalizePlanCode(planCodeRaw);
   if (normalized === "FREE") return null;
-  if (normalized === "INICIANTE") return 8;
+  if (normalized === "EDITOR_FREE") return 8;
   if (normalized === "EDITOR_PRO") return 4;
-  if (normalized === "CREATOR_PRO") return 2;
-  if (normalized === "EMPRESARIAL" || normalized === "ENTERPRISE") return 0;
+  if (normalized === "EDITOR_ULTRA") return 2;
+  if (normalized === "ENTERPRISE") return 0;
   return null;
 }
 
