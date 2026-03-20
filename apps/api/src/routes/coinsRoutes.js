@@ -1007,6 +1007,53 @@ router.get("/transactions", async (req, res) => {
 });
 
 /**
+ * GET /api/coins/packages/status?quote_id=...
+ */
+router.get("/packages/status", async (req, res) => {
+  try {
+    const quoteId = String(req.query.quote_id || "").trim();
+    if (!quoteId) {
+      return res.status(400).json({ error: "quote_id_required" });
+    }
+
+    const quoteRecord = await readPackageQuote({
+      quoteId,
+      userId: req.user.id,
+    });
+
+    if (!quoteRecord) {
+      return res.status(404).json({ error: "package_quote_not_found" });
+    }
+
+    const wallet = await getWalletSnapshotAuthed(req.access_token, req.user.id);
+
+    return res.json({
+      ok: true,
+      quote: {
+        quote_id: quoteRecord.quote?.quote_id || quoteId,
+        plan_code: quoteRecord.quote?.plan_code || null,
+        package_total: Number(quoteRecord.quote?.package_total || 0),
+        breakdown: normalizePackageBreakdown(quoteRecord.quote?.breakdown),
+        created_at: quoteRecord.created_at || null,
+        expires_at: quoteRecord.expires_at || null,
+        used_at: quoteRecord.used_at || null,
+        checkout_session_id: quoteRecord.checkout_session_id || null,
+        payment_intent_id: quoteRecord.payment_intent_id || null,
+        source: normalizeQuoteStore(quoteRecord.source),
+      },
+      wallet,
+    });
+  } catch (error) {
+    logger.error("coins_package_status_failed", {
+      userId: req.user?.id || null,
+      quoteIdPrefix: idemPrefix(req.query?.quote_id),
+      message: error?.message || String(error),
+    });
+    return res.status(500).json({ error: "server_error", message: error?.message || String(error) });
+  }
+});
+
+/**
  * GET /api/coins/auto-convert
  */
 router.get("/auto-convert", async (req, res) => {

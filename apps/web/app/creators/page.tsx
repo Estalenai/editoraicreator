@@ -390,7 +390,7 @@ function CreatorsPageContent() {
         </div>
       ) : null}
 
-      <section className="proof-value-section premium-card-soft creators-proof-section creators-flow-section surface-flow-region creators-flow-section-start" data-reveal data-reveal-delay="60">
+      <section className="proof-value-section creators-proof-section creators-flow-section surface-flow-region creators-flow-section-start" data-reveal data-reveal-delay="60">
         <div className="proof-value-header">
           <div className="section-stack-tight">
             <p className="section-kicker">Exemplos de resultado</p>
@@ -430,7 +430,7 @@ function CreatorsPageContent() {
         </div>
       </section>
 
-      <section className="premium-card creators-hero-core-section creators-flow-section surface-flow-region creators-flow-section-middle" data-reveal data-reveal-delay="90">
+      <section className="creators-hero-core-section creators-flow-section surface-flow-region creators-flow-section-middle" data-reveal data-reveal-delay="90">
         <div className="proof-value-header creators-hero-core-header">
           <div className="section-stack-tight">
             <p className="section-kicker">Creators hero</p>
@@ -489,7 +489,7 @@ function CreatorsPageContent() {
         </div>
       </section>
 
-      <section className="premium-card-soft creators-secondary-section creators-flow-section surface-flow-region creators-flow-section-middle" data-reveal data-reveal-delay="120">
+      <section className="creators-secondary-section creators-flow-section surface-flow-region creators-flow-section-middle" data-reveal data-reveal-delay="120">
         <div className="proof-value-header creators-secondary-header">
           <div className="section-stack-tight">
             <p className="section-kicker">Apoio e labs</p>
@@ -525,7 +525,7 @@ function CreatorsPageContent() {
       </section>
 
       <section ref={workspaceRef} className="creator-workspace-grid creators-flow-section surface-flow-region creators-flow-section-end">
-        <aside className="premium-card creator-workspace-side creators-sidebar creators-sidebar-soft" data-reveal data-reveal-delay="140">
+        <aside className="creator-workspace-side creators-sidebar creators-sidebar-soft" data-reveal data-reveal-delay="140">
           <div className="creators-side-note creators-side-note-primary">
             <strong>Comece pelos creators hero</strong>
             <span>
@@ -610,7 +610,7 @@ function CreatorsPageContent() {
                   <span>Saldo, plano e disponibilidade continuam sendo atualizados em segundo plano.</span>
                 </div>
               ) : null}
-              <div className="premium-card-soft creator-active-panel">
+              <div className="creator-active-panel">
                 <div className="creator-active-panel-head">
                   <div className="section-stack">
                     <p className="section-kicker">Ferramenta ativa</p>

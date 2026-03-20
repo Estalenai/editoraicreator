@@ -113,15 +113,15 @@ export default function NewEditorProjectPage() {
         </div>
 
         <div className="hero-kpi-grid editor-new-kpi-grid">
-          <div className="premium-card-soft hero-kpi">
+          <div className="hero-kpi">
             <span className="hero-kpi-label">Escolha inicial</span>
             <strong className="hero-kpi-value">Formato mais próximo do fluxo</strong>
           </div>
-          <div className="premium-card-soft hero-kpi">
+          <div className="hero-kpi">
             <span className="hero-kpi-label">Continuidade</span>
             <strong className="hero-kpi-value">Projeto salvo desde o primeiro clique</strong>
           </div>
-          <div className="premium-card-soft hero-kpi">
+          <div className="hero-kpi">
             <span className="hero-kpi-label">Pronto para editar</span>
             <strong className="hero-kpi-value">Entrada guiada para editar e exportar</strong>
           </div>
@@ -135,7 +135,7 @@ export default function NewEditorProjectPage() {
         </div>
       ) : null}
 
-      <section className="premium-card editor-new-selection surface-flow-region surface-flow-region-start">
+      <section className="editor-new-selection surface-flow-region surface-flow-region-start">
         <div className="section-header-ea">
           <p className="section-kicker">Escolha inicial</p>
           <h2 style={{ margin: 0 }}>Comece pelo formato que melhor sustenta o beta hoje</h2>
@@ -191,7 +191,7 @@ export default function NewEditorProjectPage() {
         </div>
       </section>
 
-      <section className="premium-card-soft editor-new-footer surface-flow-region surface-flow-region-end">
+      <section className="editor-new-footer surface-flow-region surface-flow-region-end">
         <div className="editor-new-flow">
           <div className="premium-card-soft editor-new-flow-note">
             <strong>1. Escolha o formato</strong>

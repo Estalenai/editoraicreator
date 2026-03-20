@@ -25,6 +25,34 @@ type CoinTransaction = {
 type CoinType = "common" | "pro" | "ultra";
 type NoticeTone = "info" | "warning" | "success";
 const ALL_COIN_TYPES: CoinType[] = ["common", "pro", "ultra"];
+const COINS_CHECKOUT_CONTEXT_PREFIX = "ea:coins_checkout:";
+
+type WalletSnapshot = {
+  common: number;
+  pro: number;
+  ultra: number;
+};
+
+type StoredCoinsCheckoutContext = {
+  quoteId: string;
+  walletBefore: WalletSnapshot;
+  expectedBreakdown: WalletSnapshot;
+  latestTransactionId?: string;
+  createdAt?: string;
+};
+
+type CoinsPackageStatusResponse = {
+  ok?: boolean;
+  quote?: {
+    quote_id?: string;
+    package_total?: number;
+    breakdown?: WalletSnapshot;
+    used_at?: string | null;
+    checkout_session_id?: string | null;
+    payment_intent_id?: string | null;
+  } | null;
+  wallet?: WalletSnapshot | null;
+};
 
 type ConversionResponse = {
   ok?: boolean;
@@ -83,6 +111,67 @@ function txReasonLabel(tx: CoinTransaction): string {
 
 function waitForCheckoutSync(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function normalizeWalletSnapshot(wallet: any | null | undefined): WalletSnapshot {
+  return {
+    common: Number(wallet?.common ?? 0),
+    pro: Number(wallet?.pro ?? 0),
+    ultra: Number(wallet?.ultra ?? 0),
+  };
+}
+
+function walletChanged(nextWallet: WalletSnapshot | null | undefined, baselineWallet: WalletSnapshot | null | undefined): boolean {
+  if (!nextWallet || !baselineWallet) return false;
+  return (
+    Number(nextWallet.common || 0) !== Number(baselineWallet.common || 0) ||
+    Number(nextWallet.pro || 0) !== Number(baselineWallet.pro || 0) ||
+    Number(nextWallet.ultra || 0) !== Number(baselineWallet.ultra || 0)
+  );
+}
+
+function walletReflectsGrantedPackage(
+  nextWallet: WalletSnapshot | null | undefined,
+  baselineWallet: WalletSnapshot | null | undefined,
+  expectedBreakdown: WalletSnapshot | null | undefined
+): boolean {
+  if (!nextWallet || !baselineWallet || !expectedBreakdown) return false;
+  return (
+    Number(nextWallet.common || 0) >= Number(baselineWallet.common || 0) + Number(expectedBreakdown.common || 0) &&
+    Number(nextWallet.pro || 0) >= Number(baselineWallet.pro || 0) + Number(expectedBreakdown.pro || 0) &&
+    Number(nextWallet.ultra || 0) >= Number(baselineWallet.ultra || 0) + Number(expectedBreakdown.ultra || 0)
+  );
+}
+
+function readCoinsCheckoutContext(quoteId: string): StoredCoinsCheckoutContext | null {
+  if (typeof window === "undefined") return null;
+  const safeQuoteId = String(quoteId || "").trim();
+  if (!safeQuoteId) return null;
+  try {
+    const raw = window.sessionStorage.getItem(`${COINS_CHECKOUT_CONTEXT_PREFIX}${safeQuoteId}`);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    return {
+      quoteId: safeQuoteId,
+      walletBefore: normalizeWalletSnapshot(parsed?.walletBefore),
+      expectedBreakdown: normalizeWalletSnapshot(parsed?.expectedBreakdown),
+      latestTransactionId: String(parsed?.latestTransactionId || ""),
+      createdAt: String(parsed?.createdAt || ""),
+    };
+  } catch {
+    return null;
+  }
+}
+
+function clearCoinsCheckoutContext(quoteId: string) {
+  if (typeof window === "undefined") return;
+  const safeQuoteId = String(quoteId || "").trim();
+  if (!safeQuoteId) return;
+  try {
+    window.sessionStorage.removeItem(`${COINS_CHECKOUT_CONTEXT_PREFIX}${safeQuoteId}`);
+  } catch {
+    // non-blocking
+  }
 }
 
 function clearCheckoutSearchParams(keys: string[]) {
@@ -223,79 +312,139 @@ export default function CreditsPage() {
 
   useEffect(() => {
     if (loading || betaBlocked || typeof window === "undefined") return;
-    const checkoutState = String(new URLSearchParams(window.location.search).get("coins_package") || "").toLowerCase();
+    const currentUrl = new URL(window.location.href);
+    const checkoutState = String(currentUrl.searchParams.get("coins_package") || "").toLowerCase();
+    const checkoutQuoteId = String(currentUrl.searchParams.get("quote_id") || "").trim();
     if (checkoutState !== "success" && checkoutState !== "cancel") return;
-    if (handledCheckoutState === checkoutState) return;
+    const checkoutHandleKey = `${checkoutState}:${checkoutQuoteId || "none"}`;
+    if (handledCheckoutState === checkoutHandleKey) return;
 
-    setHandledCheckoutState(checkoutState);
+    setHandledCheckoutState(checkoutHandleKey);
 
     if (checkoutState === "cancel") {
       setCheckoutNotice({
         tone: "warning",
         message: "Checkout cancelado. Nenhuma compra foi concluída e você pode tentar novamente quando quiser.",
       });
-      clearCheckoutSearchParams(["coins_package"]);
+      clearCoinsCheckoutContext(checkoutQuoteId);
+      clearCheckoutSearchParams(["coins_package", "quote_id"]);
       return;
     }
 
     let cancelled = false;
-    const baselineLatestTransactionId = String(transactions[0]?.id || "");
+    const checkoutContext = readCoinsCheckoutContext(checkoutQuoteId);
+    const baselineLatestTransactionId = String(checkoutContext?.latestTransactionId || "");
+    const baselineWallet = checkoutContext?.walletBefore || null;
 
     setCheckoutNotice({
       tone: "info",
-      message: "Pagamento confirmado na Stripe. Validando saldo e histórico de créditos nesta página...",
+      message: checkoutQuoteId
+        ? "Pagamento confirmado na Stripe. Validando o pacote comprado, o saldo e o histórico diretamente nesta conta..."
+        : "Pagamento confirmado na Stripe. Validando saldo e histórico de créditos nesta página...",
     });
 
     (async () => {
+      let checkoutStatus: CoinsPackageStatusResponse | null = null;
+      let grantConfirmed = false;
       let transactionChanged = false;
+      let walletConfirmed = false;
       let syncFailed = false;
+      let statusError: any = null;
 
-      for (const delayMs of [0, 1200, 2400]) {
+      for (const delayMs of [0, 1200, 2400, 4200, 6400]) {
         if (cancelled) return;
         if (delayMs > 0) {
           await waitForCheckoutSync(delayMs);
         }
 
-        await refresh();
-        const items = await loadTransactions();
-        if (!Array.isArray(items)) {
-          syncFailed = true;
+        try {
+          checkoutStatus = checkoutQuoteId ? ((await api.getCoinsPackageStatus(checkoutQuoteId)) as CoinsPackageStatusResponse) : null;
+          statusError = null;
+        } catch (statusLoadError: any) {
+          statusError = statusLoadError;
+          checkoutStatus = null;
+        }
+
+        const expectedBreakdown = normalizeWalletSnapshot(
+          checkoutStatus?.quote?.breakdown || checkoutContext?.expectedBreakdown || null
+        );
+        const statusWallet = normalizeWalletSnapshot(checkoutStatus?.wallet || null);
+        const hasStatusWallet = Boolean(checkoutStatus?.wallet);
+        const walletAlreadyUpdated =
+          hasStatusWallet &&
+          (
+            walletReflectsGrantedPackage(statusWallet, baselineWallet, expectedBreakdown) ||
+            walletChanged(statusWallet, baselineWallet)
+          );
+
+        if (checkoutQuoteId && !checkoutStatus?.quote?.used_at && !walletAlreadyUpdated) {
           continue;
         }
 
-        const nextLatestTransactionId = String(items[0]?.id || "");
-        if (!baselineLatestTransactionId || (nextLatestTransactionId && nextLatestTransactionId !== baselineLatestTransactionId)) {
-          transactionChanged = true;
-          break;
+        grantConfirmed = !checkoutQuoteId || Boolean(checkoutStatus?.quote?.used_at) || walletAlreadyUpdated;
+
+        try {
+          await refresh();
+          const items = await loadTransactions();
+          if (!Array.isArray(items)) {
+            syncFailed = true;
+            continue;
+          }
+
+          const nextLatestTransactionId = String(items[0]?.id || "");
+          transactionChanged = Boolean(
+            nextLatestTransactionId &&
+            (!baselineLatestTransactionId || nextLatestTransactionId !== baselineLatestTransactionId)
+          );
+          const nextWallet = statusWallet;
+          walletConfirmed =
+            walletReflectsGrantedPackage(nextWallet, baselineWallet, expectedBreakdown) ||
+            walletChanged(nextWallet, baselineWallet) ||
+            (!baselineWallet && grantConfirmed);
+          if (grantConfirmed && (walletConfirmed || transactionChanged || !checkoutQuoteId)) {
+            break;
+          }
+        } catch (syncError: any) {
+          syncFailed = true;
+          statusError = syncError;
         }
       }
 
       if (cancelled) return;
 
-      if (transactionChanged) {
+      if (grantConfirmed && (walletConfirmed || transactionChanged || !checkoutQuoteId)) {
         setCheckoutNotice({
           tone: "success",
-          message: "Pagamento confirmado. Saldo e histórico já foram atualizados nesta tela.",
+          message: "Pagamento confirmado. O pacote foi conciliado com a conta e saldo/histórico já foram revalidados nesta tela.",
         });
-      } else if (syncFailed) {
+        clearCoinsCheckoutContext(checkoutQuoteId);
+      } else if (grantConfirmed) {
         setCheckoutNotice({
           tone: "warning",
-          message: "Pagamento confirmado na Stripe, mas não foi possível revalidar saldo e histórico agora. Atualize novamente em alguns instantes.",
+          message: "Pagamento confirmado e grant concluído, mas a tela ainda não conseguiu refletir o novo estado com segurança. Atualize novamente em instantes.",
+        });
+      } else if (syncFailed || statusError) {
+        setCheckoutNotice({
+          tone: "warning",
+          message: toUserFacingError(
+            statusError?.message,
+            "Pagamento confirmado na Stripe, mas não foi possível validar o pacote, o saldo e o histórico agora. Atualize novamente em alguns instantes."
+          ),
         });
       } else {
         setCheckoutNotice({
-          tone: "info",
-          message: "Pagamento confirmado. O retorno da Stripe foi recebido. Se o novo saldo ainda não apareceu, atualize saldo e histórico em instantes.",
+          tone: "warning",
+          message: "O retorno da Stripe foi recebido, mas o pacote ainda não terminou de ser conciliado nesta conta. Aguarde alguns instantes e atualize saldo e histórico novamente.",
         });
       }
 
-      clearCheckoutSearchParams(["coins_package"]);
+      clearCheckoutSearchParams(["coins_package", "quote_id"]);
     })();
 
     return () => {
       cancelled = true;
     };
-  }, [loading, betaBlocked, refresh, loadTransactions, handledCheckoutState, transactions]);
+  }, [loading, betaBlocked, refresh, loadTransactions, handledCheckoutState]);
 
   async function onConvertCredits() {
     setConversionError(null);
@@ -387,7 +536,7 @@ export default function CreditsPage() {
               </div>
             </div>
           </div>
-          <div className="premium-card-soft hero-side-panel credits-hero-panel">
+          <div className="hero-side-panel credits-hero-panel">
             <span className="plan-card-section-label">Segurança e controle</span>
             <div className="hero-side-list hero-side-list-compact">
               <div className="hero-side-note">
@@ -417,17 +566,17 @@ export default function CreditsPage() {
           </div>
         </div>
         <div className="hero-kpi-grid hero-kpi-grid-compact">
-          <div className="premium-card-soft hero-kpi">
+          <div className="hero-kpi">
             <span className="hero-kpi-label">Saldo total</span>
             <strong className="hero-kpi-value">{totalWalletDisplay}</strong>
             <span className="helper-text-ea">{walletSummaryDisplay}</span>
           </div>
-          <div className="premium-card-soft hero-kpi">
+          <div className="hero-kpi">
             <span className="hero-kpi-label">Taxa no plano atual</span>
             <strong className="hero-kpi-value">{conversionFeeDisplay}</strong>
             <span className="helper-text-ea">{conversionFeeHelper}</span>
           </div>
-          <div className="premium-card-soft hero-kpi">
+          <div className="hero-kpi">
             <span className="hero-kpi-label">Última movimentação</span>
             <strong className="hero-kpi-value">{latestTransactionCountDisplay}</strong>
             <span className="helper-text-ea">{latestTransactionDisplay}</span>
@@ -463,7 +612,7 @@ export default function CreditsPage() {
         </div>
       ) : null}
 
-      <section className="premium-card credits-guide-section surface-flow-region surface-flow-region-start">
+      <section className="credits-guide-section surface-flow-region surface-flow-region-start">
         <div className="section-header-ea">
           <h3 className="heading-reset">Como ler seus créditos</h3>
           <p className="helper-text-ea">Saldo, estimativa e histórico em três sinais fáceis de ler.</p>
@@ -527,10 +676,10 @@ export default function CreditsPage() {
       </section>
 
       <section id="credits-packages" className="credits-packages-section surface-flow-region surface-flow-region-middle">
-        <CreditsPackagesCard wallet={wallet} loading={loading} />
+        <CreditsPackagesCard wallet={wallet} loading={loading} latestTransactionId={latestTransaction?.id || null} />
       </section>
 
-      <section className="premium-card credits-section-card surface-flow-region surface-flow-region-middle">
+      <section className="credits-section-card surface-flow-region surface-flow-region-middle">
         <div className="section-head">
           <div className="section-header-ea">
             <h3 className="heading-reset">Conversão de créditos</h3>
@@ -724,7 +873,7 @@ export default function CreditsPage() {
         </div>
       ) : null}
 
-      <section id="credits-history" className="premium-card credits-section-card surface-flow-region surface-flow-region-end">
+      <section id="credits-history" className="credits-section-card surface-flow-region surface-flow-region-end">
         <div className="section-head">
           <div className="section-header-ea">
             <h3 className="heading-reset">Histórico recente de créditos</h3>

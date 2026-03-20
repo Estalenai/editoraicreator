@@ -140,15 +140,15 @@ export function EditorShell({
           </div>
 
           <div className="editor-shell-trust-grid">
-            <div className="premium-card-soft trust-note editor-shell-trust-card">
+            <div className="trust-note editor-shell-trust-card">
               <strong>Documento vivo</strong>
               <span>O projeto continua editável e pronto para novas iterações sem perder a base salva.</span>
             </div>
-            <div className="premium-card-soft trust-note editor-shell-trust-card">
+            <div className="trust-note editor-shell-trust-card">
               <strong>IA com clareza</strong>
               <span>Professor e Transparência ajudam a acompanhar o que a EditexAI fez em cada passo.</span>
             </div>
-            <div className="premium-card-soft trust-note editor-shell-trust-card">
+            <div className="trust-note editor-shell-trust-card">
               <strong>Saída controlada</strong>
               <span>Fluxo padrão de entrega: salve a versão, registre exported com clareza e confirme published quando a etapa manual estiver realmente concluída. GitHub e Vercel entram como handoff secundário.</span>
             </div>

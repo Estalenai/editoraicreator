@@ -133,9 +133,41 @@ function sameBreakdown(left?: Partial<PackageBreakdown> | null, right?: Partial<
 type Props = {
   wallet: any | null;
   loading?: boolean;
+  latestTransactionId?: string | null;
 };
 
-export function CreditsPackagesCard({ wallet, loading = false }: Props) {
+function normalizeWalletSnapshot(wallet: any | null) {
+  return {
+    common: Number(wallet?.common ?? 0),
+    pro: Number(wallet?.pro ?? 0),
+    ultra: Number(wallet?.ultra ?? 0),
+  };
+}
+
+function persistCoinsCheckoutContext(input: {
+  quoteId: string;
+  wallet: any | null;
+  breakdown: PackageBreakdown;
+  latestTransactionId?: string | null;
+}) {
+  if (typeof window === "undefined") return;
+  try {
+    window.sessionStorage.setItem(
+      `ea:coins_checkout:${input.quoteId}`,
+      JSON.stringify({
+        quoteId: input.quoteId,
+        walletBefore: normalizeWalletSnapshot(input.wallet),
+        expectedBreakdown: normalizeWalletSnapshot(input.breakdown),
+        latestTransactionId: String(input.latestTransactionId || ""),
+        createdAt: new Date().toISOString(),
+      })
+    );
+  } catch {
+    // non-blocking
+  }
+}
+
+export function CreditsPackagesCard({ wallet, loading = false, latestTransactionId = null }: Props) {
   const [coinsPanelOpen, setCoinsPanelOpen] = useState(false);
   const [coinsPackageMode, setCoinsPackageMode] = useState<CoinsPackageMode>("packages");
   const [selectedPackage, setSelectedPackage] = useState<number>(300);
@@ -346,11 +378,17 @@ export function CreditsPackagesCard({ wallet, loading = false }: Props) {
       const baseUrl = window.location.origin;
       const response = await api.createCoinsPackageCheckout({
         quote_id: quote.quote_id,
-        success_url: `${baseUrl}/credits?coins_package=success`,
+        success_url: `${baseUrl}/credits?coins_package=success&quote_id=${encodeURIComponent(String(quote.quote_id))}`,
         cancel_url: `${baseUrl}/credits?coins_package=cancel`,
       });
       const checkoutUrl = String(response?.checkout?.url || "");
       if (!checkoutUrl) throw new Error("checkout_url_missing");
+      persistCoinsCheckoutContext({
+        quoteId: quote.quote_id,
+        wallet,
+        breakdown: quote.breakdown,
+        latestTransactionId,
+      });
       window.location.href = checkoutUrl;
     } catch (e: any) {
       const message = toUserFacingError(e?.message, "Falha ao criar checkout de créditos avulsos.");

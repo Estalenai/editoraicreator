@@ -104,7 +104,7 @@ export default function SupportPage() {
             </div>
           </div>
 
-          <div className="premium-card-soft hero-side-panel support-hero-panel">
+          <div className="hero-side-panel support-hero-panel">
             <div className="hero-side-list hero-side-list-compact">
               <div className="hero-side-note">
                 <strong>Conta conectada</strong>
@@ -134,7 +134,7 @@ export default function SupportPage() {
         </div>
       </section>
 
-      <section className="premium-card support-guide-section surface-flow-region surface-flow-region-start">
+      <section className="support-guide-section surface-flow-region surface-flow-region-start">
         <div className="section-head">
           <div className="section-header-ea">
             <h2 className="heading-reset">Caminhos rápidos de ajuda</h2>
@@ -154,7 +154,7 @@ export default function SupportPage() {
         </div>
       </section>
 
-      <section className="premium-card-soft privacy-trust-note support-trust-note surface-flow-region surface-flow-region-middle">
+      <section className="privacy-trust-note support-trust-note surface-flow-region surface-flow-region-middle">
         <strong>Privacidade e confidencialidade</strong>
         <span>Dados enviados em tickets e projetos não são usados para treinar modelos. O suporte opera com processamento isolado e foco em segurança operacional.</span>
       </section>
@@ -174,7 +174,7 @@ export default function SupportPage() {
         </div>
       ) : null}
 
-      <section className="premium-card support-faq-section surface-flow-region surface-flow-region-middle">
+      <section className="support-faq-section surface-flow-region surface-flow-region-middle">
         <div className="section-head">
           <div className="section-header-ea">
             <h2 className="heading-reset">Perguntas frequentes</h2>

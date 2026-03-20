@@ -520,7 +520,7 @@ function PlansPageContent() {
               </div>
             </div>
           </div>
-          <div className="premium-card-soft hero-side-panel plans-hero-panel">
+          <div className="hero-side-panel plans-hero-panel">
             <span className="plan-card-section-label">Cobrança e segurança</span>
             <div className="hero-side-list hero-side-list-compact">
               <div className="hero-side-note">
@@ -611,7 +611,7 @@ function PlansPageContent() {
         </div>
       </section>
 
-      <section className="premium-card-soft plans-confidence-strip surface-flow-region surface-flow-region-middle">
+      <section className="plans-confidence-strip surface-flow-region surface-flow-region-middle">
         <div className="plans-confidence-note">
           <strong>Plano principal do beta</strong>
           <span>Editor Pro é o ponto mais forte para operação recorrente; Iniciante valida encaixe e Editor Ultra expande cadência.</span>
@@ -634,7 +634,7 @@ function PlansPageContent() {
         </div>
       </section>
 
-      <section className="premium-card plans-catalog-section section-card surface-flow-region surface-flow-region-end">
+      <section className="plans-catalog-section section-card surface-flow-region surface-flow-region-end">
         <div className="section-head">
           <div className="section-header-ea">
             <h3 className="heading-reset">Catálogo de planos</h3>

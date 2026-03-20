@@ -23,11 +23,15 @@ export const API_URL = trimTrailingSlash(PUBLIC_API_URL || (IS_DEV ? DEV_DEFAULT
 export async function apiFetch(path: string, options: RequestInit = {}) {
   const headers = new Headers(options.headers || {});
   if (!headers.has("Accept")) headers.set("Accept", "application/json");
+  const method = String(options.method || "GET").toUpperCase();
 
   const requestOptions: RequestInit = {
     ...options,
     headers,
   };
+  if (!requestOptions.cache && (method === "GET" || method === "HEAD")) {
+    requestOptions.cache = "no-store";
+  }
 
   const primaryUrl = buildUrl(path, API_URL);
 
@@ -308,6 +312,10 @@ export const api = {
 
   async getCoinsTransactions(limit = 30) {
     return authJson(`/api/coins/transactions?limit=${encodeURIComponent(String(limit))}`);
+  },
+
+  async getCoinsPackageStatus(quoteId: string) {
+    return authJson(`/api/coins/packages/status?quote_id=${encodeURIComponent(String(quoteId || "").trim())}`);
   },
 
   async convertCoins(body: {

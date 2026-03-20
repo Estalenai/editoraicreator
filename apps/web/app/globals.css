@@ -8840,3 +8840,206 @@ body {
     padding: var(--ea-card-padding);
   }
 }
+
+/* Critical workspace continuity and interaction consolidation */
+.app-nav-links,
+.creators-sidebar-group-list,
+.editor-shell-tab-row {
+  position: relative;
+  z-index: 0;
+}
+
+.app-nav-link,
+.creator-tab-btn,
+.editor-shell-tab-trigger,
+.dashboard-quick-link,
+.dashboard-project-link,
+.purchase-option-card,
+.editor-kind-card {
+  position: relative;
+  isolation: isolate;
+  z-index: 0;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.app-nav-link::before,
+.app-nav-link::after,
+.creator-tab-btn::before,
+.creator-tab-btn::after,
+.editor-shell-tab-trigger::before,
+.editor-shell-tab-trigger::after,
+.dashboard-quick-link::after,
+.dashboard-project-link::after,
+.purchase-option-card::after,
+.editor-kind-card::after {
+  pointer-events: none !important;
+}
+
+.app-nav-link > *,
+.creator-tab-btn > *,
+.editor-shell-tab-trigger > *,
+.dashboard-quick-link > *,
+.dashboard-project-link > *,
+.purchase-option-card > *,
+.editor-kind-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.app-nav-link,
+.app-nav-link:hover,
+.app-nav-link:active,
+.app-nav-link-active,
+.creator-tab-btn,
+.creator-tab-btn:hover,
+.creator-tab-btn:active,
+.creator-tab-btn[data-active="true"],
+.editor-shell-tab-trigger,
+.editor-shell-tab-trigger:hover,
+.editor-shell-tab-trigger:active,
+.editor-shell-tab-trigger[data-active="true"] {
+  transform: none !important;
+}
+
+.app-nav-link,
+.app-nav-link:hover,
+.app-nav-link:active,
+.app-nav-link-active,
+.creator-tab-btn,
+.creator-tab-btn:hover,
+.creator-tab-btn:active,
+.creator-tab-btn[data-active="true"],
+.editor-shell-tab-trigger,
+.editor-shell-tab-trigger:hover,
+.editor-shell-tab-trigger:active,
+.editor-shell-tab-trigger[data-active="true"] {
+  box-shadow: none !important;
+}
+
+.app-nav-link {
+  min-height: 68px;
+  padding: 14px 16px 14px 18px;
+  align-content: center;
+  overflow: clip;
+}
+
+.app-nav-link:hover,
+.app-nav-link-active {
+  filter: none;
+}
+
+.app-nav-link::after {
+  right: auto;
+  left: 10px;
+  top: 12px;
+  bottom: 12px;
+  width: 2px;
+  height: auto;
+  border-radius: 999px;
+  border: 0;
+  background: transparent;
+  opacity: 0.92;
+  transform: none;
+}
+
+.app-nav-link-active::after {
+  background: linear-gradient(180deg, rgba(75, 232, 255, 0.96), rgba(191, 239, 255, 0.72));
+}
+
+.creators-sidebar-group-list {
+  gap: 10px;
+  padding: 2px 0;
+}
+
+.creator-tab-btn {
+  width: 100%;
+  min-height: 112px;
+  padding: 14px 16px 14px 18px !important;
+  justify-items: stretch;
+  align-content: start;
+  overflow: clip;
+}
+
+.creator-tab-btn::before {
+  left: 0;
+  top: 14px;
+  bottom: 14px;
+}
+
+.editor-shell-tab-row {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 10px;
+  align-items: stretch;
+  overflow-x: auto;
+  overflow-y: visible;
+  padding: 4px;
+  margin: -4px;
+  scroll-padding-inline: 4px;
+}
+
+.editor-shell-tab-row > * {
+  min-width: 0;
+}
+
+.editor-shell-tab-trigger {
+  display: inline-flex;
+  flex: 0 0 clamp(144px, 14vw, 172px);
+  min-width: clamp(144px, 14vw, 172px);
+  min-height: 52px;
+  padding: 0 16px !important;
+  align-items: stretch;
+  justify-content: stretch;
+  overflow: clip;
+}
+
+.editor-shell-tab-trigger-label {
+  display: flex;
+  min-height: 100%;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.surface-flow-hero .hero-side-panel,
+.surface-flow-hero .hero-kpi,
+.surface-flow-hero .signal-chip,
+.creators-page .creator-active-panel,
+.creators-page .creators-sidebar,
+.credits-page .credits-guide-section,
+.credits-page .credits-section-card,
+.plans-page .plans-confidence-strip,
+.plans-page .plans-catalog-section,
+.support-page .support-guide-section,
+.support-page .support-trust-note,
+.support-page .support-faq-section,
+.projects-page .projects-list-section,
+.projects-page .projects-publish-section,
+.projects-page .projects-handoff-section,
+.editor-new-page .editor-new-selection,
+.editor-new-page .editor-new-footer {
+  box-shadow: none !important;
+}
+
+.surface-flow-hero .hero-side-panel > * + *,
+.credits-page .credits-guide-section > * + *,
+.credits-page .credits-section-card > * + *,
+.plans-page .plans-catalog-section > * + *,
+.support-page .support-guide-section > * + *,
+.support-page .support-faq-section > * + *,
+.projects-page .projects-publish-section > * + *,
+.projects-page .projects-handoff-section > * + *,
+.editor-new-page .editor-new-footer > * + * {
+  margin-top: 14px;
+}
+
+.plans-page .plan-card,
+.support-page .support-guide-card,
+.support-page .support-faq-item,
+.editor-new-page .editor-kind-card,
+.editor-new-page .editor-new-flow-note {
+  box-shadow: none !important;
+}

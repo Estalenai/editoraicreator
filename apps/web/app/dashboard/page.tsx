@@ -149,9 +149,16 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const checkoutState = String(new URLSearchParams(window.location.search).get("coins_package") || "").toLowerCase();
+    const currentUrl = new URL(window.location.href);
+    const checkoutState = String(currentUrl.searchParams.get("coins_package") || "").toLowerCase();
     if (checkoutState !== "success" && checkoutState !== "cancel") return;
-    window.location.replace(`/credits?coins_package=${checkoutState}`);
+    const nextSearch = new URLSearchParams();
+    nextSearch.set("coins_package", checkoutState);
+    const quoteId = String(currentUrl.searchParams.get("quote_id") || "").trim();
+    if (quoteId) {
+      nextSearch.set("quote_id", quoteId);
+    }
+    window.location.replace(`/credits?${nextSearch.toString()}`);
   }, []);
 
   const recentProjects = useMemo(() => projects.slice(0, 6), [projects]);
@@ -252,7 +259,7 @@ export default function DashboardPage() {
               </div>
             </div>
           </div>
-          <div className="premium-card-soft hero-side-panel dashboard-hero-panel">
+          <div className="hero-side-panel dashboard-hero-panel">
             <span className="plan-card-section-label">Operação</span>
             <div className="hero-side-list">
               <div className="hero-side-note">
@@ -287,17 +294,17 @@ export default function DashboardPage() {
           </div>
         </div>
         <div className="hero-kpi-grid hero-kpi-grid-compact">
-          <div className="premium-card-soft hero-kpi" data-reveal data-reveal-delay="70">
+          <div className="hero-kpi" data-reveal data-reveal-delay="70">
             <span className="hero-kpi-label">Saldo total</span>
             <strong className="hero-kpi-value">{walletSummaryDisplay}</strong>
             <span className="helper-text-ea">{loading ? "Saldo e distribuição estão sendo sincronizados." : "Distribuição pronta para operação e conversão."}</span>
           </div>
-          <div className="premium-card-soft hero-kpi" data-reveal data-reveal-delay="120">
+          <div className="hero-kpi" data-reveal data-reveal-delay="120">
             <span className="hero-kpi-label">Uso recente</span>
             <strong className="hero-kpi-value">{recentUsageValueDisplay}</strong>
             <span className="helper-text-ea">{recentUsageDetailDisplay}</span>
           </div>
-          <div className="premium-card-soft hero-kpi" data-reveal data-reveal-delay="170">
+          <div className="hero-kpi" data-reveal data-reveal-delay="170">
             <span className="hero-kpi-label">Próxima decisão</span>
             <strong className="hero-kpi-value">{nextActionTitleDisplay}</strong>
             <span className="helper-text-ea">{nextActionCtaDisplay}</span>
@@ -393,7 +400,7 @@ export default function DashboardPage() {
 
       <ApprovedBetaOnboardingCard email={email} wallet={wallet} loading={loading} />
 
-      <section className="premium-card dashboard-section-card dashboard-flow-section surface-flow-region dashboard-flow-section-start" data-reveal data-reveal-delay="120">
+      <section className="dashboard-section-card dashboard-flow-section surface-flow-region dashboard-flow-section-start" data-reveal data-reveal-delay="120">
         <div className="section-head">
           <div className="section-header-ea">
             <h3 className="heading-reset">Transparência de consumo</h3>
@@ -416,7 +423,7 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      <section className="premium-card dashboard-section-card dashboard-flow-section surface-flow-region dashboard-flow-section-middle" data-reveal data-reveal-delay="150">
+      <section className="dashboard-section-card dashboard-flow-section surface-flow-region dashboard-flow-section-middle" data-reveal data-reveal-delay="150">
         <div className="section-head">
           <div className="section-header-ea">
             <h3 className="heading-reset">Projetos recentes</h3>
@@ -483,7 +490,7 @@ export default function DashboardPage() {
         )}
       </section>
 
-      <section className="premium-card dashboard-section-card dashboard-flow-section surface-flow-region dashboard-flow-section-middle" data-reveal data-reveal-delay="180">
+      <section className="dashboard-section-card dashboard-flow-section surface-flow-region dashboard-flow-section-middle" data-reveal data-reveal-delay="180">
         <div className="section-header-ea">
           <h3 className="heading-reset">Núcleo do beta pago/controlado</h3>
           <p className="helper-text-ea">Atalhos para o que precisa carregar valor, retenção e continuidade real no uso recorrente.</p>
@@ -537,7 +544,7 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      <section className="premium-card dashboard-section-card dashboard-flow-section surface-flow-region dashboard-flow-section-end" data-reveal data-reveal-delay="210">
+      <section className="dashboard-section-card dashboard-flow-section surface-flow-region dashboard-flow-section-end" data-reveal data-reveal-delay="210">
         <div className="section-header-ea">
           <h3 className="heading-reset">Uso por feature</h3>
           <p className="helper-text-ea">Consumo por módulo para ajustar ritmo, plano e próxima ação.</p>
