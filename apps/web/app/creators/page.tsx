@@ -390,7 +390,7 @@ function CreatorsPageContent() {
         </div>
       ) : null}
 
-      <section className="proof-value-section premium-card-soft creators-proof-section" data-reveal data-reveal-delay="60">
+      <section className="proof-value-section premium-card-soft creators-proof-section creators-flow-section creators-flow-section-start" data-reveal data-reveal-delay="60">
         <div className="proof-value-header">
           <div className="section-stack-tight">
             <p className="section-kicker">Exemplos de resultado</p>
@@ -430,7 +430,7 @@ function CreatorsPageContent() {
         </div>
       </section>
 
-      <section className="premium-card creators-hero-core-section" data-reveal data-reveal-delay="90">
+      <section className="premium-card creators-hero-core-section creators-flow-section creators-flow-section-middle" data-reveal data-reveal-delay="90">
         <div className="proof-value-header creators-hero-core-header">
           <div className="section-stack-tight">
             <p className="section-kicker">Creators hero</p>
@@ -489,7 +489,7 @@ function CreatorsPageContent() {
         </div>
       </section>
 
-      <section className="premium-card-soft creators-secondary-section" data-reveal data-reveal-delay="120">
+      <section className="premium-card-soft creators-secondary-section creators-flow-section creators-flow-section-middle" data-reveal data-reveal-delay="120">
         <div className="proof-value-header creators-secondary-header">
           <div className="section-stack-tight">
             <p className="section-kicker">Apoio e labs</p>
@@ -524,7 +524,7 @@ function CreatorsPageContent() {
         </div>
       </section>
 
-      <section ref={workspaceRef} className="creator-workspace-grid">
+      <section ref={workspaceRef} className="creator-workspace-grid creators-flow-section creators-flow-section-end">
         <aside className="premium-card creator-workspace-side creators-sidebar creators-sidebar-soft" data-reveal data-reveal-delay="140">
           <div className="creators-side-note creators-side-note-primary">
             <strong>Comece pelos creators hero</strong>

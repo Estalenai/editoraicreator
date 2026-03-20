@@ -332,7 +332,7 @@ export default function DashboardPage() {
         </div>
       ) : null}
 
-      <section className="summary-grid dashboard-summary-grid" data-reveal data-reveal-delay="60">
+      <section className="summary-grid dashboard-summary-grid dashboard-summary-surface" data-reveal data-reveal-delay="60">
         {loading ? (
           Array.from({ length: 4 }).map((_, index) => (
             <div key={`summary-skeleton-${index}`} className="premium-card executive-card">
@@ -393,7 +393,7 @@ export default function DashboardPage() {
 
       <ApprovedBetaOnboardingCard email={email} wallet={wallet} loading={loading} />
 
-      <section className="premium-card dashboard-section-card" data-reveal data-reveal-delay="120">
+      <section className="premium-card dashboard-section-card dashboard-flow-section dashboard-flow-section-start" data-reveal data-reveal-delay="120">
         <div className="section-head">
           <div className="section-header-ea">
             <h3 className="heading-reset">Transparência de consumo</h3>
@@ -416,7 +416,7 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      <section className="premium-card dashboard-section-card" data-reveal data-reveal-delay="150">
+      <section className="premium-card dashboard-section-card dashboard-flow-section dashboard-flow-section-middle" data-reveal data-reveal-delay="150">
         <div className="section-head">
           <div className="section-header-ea">
             <h3 className="heading-reset">Projetos recentes</h3>
@@ -483,7 +483,7 @@ export default function DashboardPage() {
         )}
       </section>
 
-      <section className="premium-card dashboard-section-card" data-reveal data-reveal-delay="180">
+      <section className="premium-card dashboard-section-card dashboard-flow-section dashboard-flow-section-middle" data-reveal data-reveal-delay="180">
         <div className="section-header-ea">
           <h3 className="heading-reset">Núcleo do beta pago/controlado</h3>
           <p className="helper-text-ea">Atalhos para o que precisa carregar valor, retenção e continuidade real no uso recorrente.</p>
@@ -537,7 +537,7 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      <section className="premium-card dashboard-section-card" data-reveal data-reveal-delay="210">
+      <section className="premium-card dashboard-section-card dashboard-flow-section dashboard-flow-section-end" data-reveal data-reveal-delay="210">
         <div className="section-header-ea">
           <h3 className="heading-reset">Uso por feature</h3>
           <p className="helper-text-ea">Consumo por módulo para ajustar ritmo, plano e próxima ação.</p>

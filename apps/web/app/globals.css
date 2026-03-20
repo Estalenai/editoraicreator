@@ -8176,3 +8176,116 @@ body {
     min-height: 64px;
   }
 }
+
+/* Residual fragmentation pass: Dashboard, Creators, Projects */
+:root {
+  --ea-continuity-surface:
+    radial-gradient(340px 136px at 100% 0%, rgba(75, 232, 255, 0.11), transparent 72%),
+    radial-gradient(280px 124px at 0% 100%, rgba(20, 75, 154, 0.16), transparent 76%),
+    linear-gradient(166deg, rgba(8, 30, 74, 0.88), rgba(5, 18, 46, 0.94));
+  --ea-continuity-bridge: linear-gradient(180deg, rgba(7, 25, 62, 0.78), rgba(7, 25, 62, 0.94));
+  --ea-continuity-border: rgba(191, 239, 255, 0.12);
+}
+
+.dashboard-summary-surface {
+  position: relative;
+  padding: clamp(18px, 2.3vw, 24px);
+  border-radius: 24px;
+  border: 1px solid var(--ea-continuity-border);
+  background: var(--ea-continuity-surface);
+  box-shadow: 0 18px 34px rgba(1, 10, 30, 0.24);
+}
+
+.dashboard-summary-surface > * {
+  min-width: 0;
+}
+
+.dashboard-summary-surface .dashboard-summary-card {
+  box-shadow: none;
+  border-color: rgba(191, 239, 255, 0.12);
+}
+
+.dashboard-page .onboarding-card-ea {
+  border-color: var(--ea-continuity-border);
+  background:
+    radial-gradient(300px 130px at 100% 0%, rgba(75, 232, 255, 0.1), transparent 72%),
+    linear-gradient(166deg, rgba(8, 30, 74, 0.82), rgba(5, 18, 46, 0.92));
+  box-shadow: 0 16px 30px rgba(1, 10, 30, 0.24);
+}
+
+.dashboard-page .onboarding-objective-card,
+.dashboard-page .onboarding-credit-panel,
+.creators-flow-section .proof-value-card,
+.creators-flow-section .creators-hero-core-card,
+.creators-flow-section .creators-secondary-card,
+.projects-flow-section .proof-value-card,
+.projects-flow-section .github-workspace-card,
+.projects-flow-section .vercel-publish-card {
+  box-shadow: none;
+}
+
+.dashboard-flow-section,
+.creators-flow-section,
+.projects-flow-section {
+  position: relative;
+  isolation: isolate;
+  overflow: visible;
+  border-color: var(--ea-continuity-border);
+  background: var(--ea-continuity-surface);
+  box-shadow: 0 14px 28px rgba(1, 10, 30, 0.24);
+}
+
+.creator-workspace-grid.creators-flow-section {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 14px 28px rgba(1, 10, 30, 0.24);
+}
+
+.dashboard-flow-section::before,
+.creators-flow-section::before,
+.projects-flow-section::before {
+  content: "";
+  position: absolute;
+  left: clamp(18px, 2.2vw, 28px);
+  right: clamp(18px, 2.2vw, 28px);
+  top: calc(var(--ea-page-gap) * -1 + 1px);
+  height: calc(var(--ea-page-gap) - 2px);
+  border-left: 1px solid var(--ea-continuity-border);
+  border-right: 1px solid var(--ea-continuity-border);
+  background: var(--ea-continuity-bridge);
+  pointer-events: none;
+}
+
+.dashboard-flow-section-start::before,
+.creators-flow-section-start::before,
+.projects-flow-section-start::before {
+  display: none;
+}
+
+.dashboard-flow-section:not(.dashboard-flow-section-start),
+.creators-flow-section:not(.creators-flow-section-start),
+.projects-flow-section:not(.projects-flow-section-start) {
+  border-top-color: rgba(191, 239, 255, 0.08);
+}
+
+.dashboard-flow-section .dashboard-quick-link,
+.dashboard-flow-section .dashboard-project-link {
+  box-shadow: none;
+  border-color: rgba(191, 239, 255, 0.1);
+  background:
+    radial-gradient(220px 96px at 100% 0%, rgba(75, 232, 255, 0.08), transparent 74%),
+    linear-gradient(160deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.018));
+}
+
+@media (max-width: 768px) {
+  .dashboard-summary-surface {
+    padding: var(--ea-card-padding);
+  }
+
+  .dashboard-flow-section::before,
+  .creators-flow-section::before,
+  .projects-flow-section::before {
+    left: 14px;
+    right: 14px;
+  }
+}

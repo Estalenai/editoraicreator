@@ -121,7 +121,7 @@ export default function ProjectsPage() {
         </div>
       ) : null}
 
-      <section className="premium-card projects-list-section" data-reveal data-reveal-delay="70">
+      <section className="premium-card projects-list-section projects-flow-section projects-flow-section-start" data-reveal data-reveal-delay="70">
         <div className="section-head">
           <div className="section-header-ea">
             <h2 className="heading-reset">Abrir no editor</h2>
@@ -181,7 +181,7 @@ export default function ProjectsPage() {
         )}
       </section>
 
-      <section className="premium-card-soft projects-publish-section" data-reveal data-reveal-delay="110">
+      <section className="premium-card-soft projects-publish-section projects-flow-section projects-flow-section-middle" data-reveal data-reveal-delay="110">
         <div className="section-header-ea">
           <p className="section-kicker">Pipeline de saída</p>
           <h2 className="heading-reset">Draft, exported e published sem ambiguidade</h2>
@@ -214,7 +214,7 @@ export default function ProjectsPage() {
         </div>
       </section>
 
-      <section className="premium-card projects-handoff-section" data-reveal data-reveal-delay="150">
+      <section className="premium-card projects-handoff-section projects-flow-section projects-flow-section-end" data-reveal data-reveal-delay="150">
         <div className="section-head">
           <div className="section-header-ea">
             <h2 className="heading-reset">Handoff beta e publicação manual</h2>
