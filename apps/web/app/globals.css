@@ -9043,3 +9043,226 @@ body {
 .editor-new-page .editor-new-flow-note {
   box-shadow: none !important;
 }
+
+/* Layout Contract
+   1. Cada página deve ter um canvas dominante.
+   2. Regiões internas e rails não podem reinstalar `premium-card` como wrapper estrutural.
+   3. Itens repetidos dentro de uma região usam `layout-contract-item`.
+   4. Cards reais ficam restritos a módulos complexos, handoff e estados isolados. */
+
+.layout-contract-shell,
+.layout-contract-shell-head,
+.layout-contract-workspace,
+.layout-contract-main,
+.layout-contract-editor,
+.layout-contract-canvas,
+.layout-contract-region,
+.layout-contract-rail,
+.layout-contract-collection,
+.layout-contract-item,
+.layout-contract-note,
+.layout-contract-card,
+.layout-contract-panel {
+  min-width: 0;
+}
+
+.layout-contract-shell-head {
+  border-bottom-color: var(--ea-unified-divider);
+}
+
+.layout-contract-workspace {
+  background: var(--ea-canvas-surface);
+}
+
+.layout-contract-main {
+  display: grid;
+  align-content: start;
+}
+
+.layout-contract-canvas,
+.layout-contract-region {
+  position: relative;
+  isolation: isolate;
+  border: 1px solid var(--ea-unified-border);
+  box-shadow: none !important;
+}
+
+.layout-contract-canvas {
+  border-radius: 28px;
+  background: var(--ea-unified-surface-strong);
+}
+
+.layout-contract-region {
+  border-radius: 24px;
+  background: var(--ea-unified-surface);
+}
+
+.layout-contract-summary {
+  background: var(--ea-unified-surface-strong);
+}
+
+.layout-contract-rail {
+  position: relative;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.layout-contract-rail-head {
+  border-bottom-color: var(--ea-unified-divider);
+}
+
+.layout-contract-collection {
+  display: grid;
+  gap: 10px;
+}
+
+.layout-contract-item,
+.layout-contract-note,
+.layout-contract-card {
+  position: relative;
+  isolation: isolate;
+  border: 1px solid var(--ea-unified-divider) !important;
+  box-shadow: none !important;
+}
+
+.layout-contract-item,
+.layout-contract-card {
+  background: var(--ea-unified-surface-soft);
+}
+
+.layout-contract-note {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.036), rgba(255, 255, 255, 0.015));
+}
+
+.layout-contract-item {
+  border-radius: 18px;
+}
+
+.layout-contract-note {
+  border-radius: 16px;
+}
+
+.layout-contract-card {
+  border-radius: 20px;
+}
+
+.layout-contract-panel {
+  min-height: 0;
+}
+
+.layout-contract-item::before,
+.layout-contract-item::after,
+.layout-contract-note::before,
+.layout-contract-note::after,
+.layout-contract-card::before,
+.layout-contract-card::after {
+  display: none !important;
+}
+
+.app-nav-link.layout-contract-rail-link,
+.app-nav-link.layout-contract-rail-link:hover,
+.app-nav-link.layout-contract-rail-link:active,
+.app-nav-link.layout-contract-rail-link.app-nav-link-active {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.024), rgba(255, 255, 255, 0.012)),
+    rgba(255, 255, 255, 0.012) !important;
+}
+
+.app-nav-link.layout-contract-rail-link.app-nav-link-active {
+  border-color: rgba(75, 232, 255, 0.22) !important;
+  background:
+    linear-gradient(180deg, rgba(75, 232, 255, 0.11), rgba(255, 255, 255, 0.016)),
+    rgba(255, 255, 255, 0.02) !important;
+}
+
+.support-assistant-card.layout-contract-region {
+  padding: clamp(18px, 2.1vw, 24px);
+}
+
+.support-trust-note.layout-contract-note,
+.credits-guide-note.layout-contract-note,
+.editor-new-flow-note.layout-contract-note,
+.trust-note.layout-contract-note,
+.dashboard-balance-chip.layout-contract-note,
+.support-category-hint.layout-contract-note,
+.support-guidelines-card.layout-contract-note {
+  padding: 12px 14px;
+}
+
+.credits-guide-card.layout-contract-item,
+.credits-history-item.layout-contract-item,
+.support-guide-card.layout-contract-item,
+.support-faq-item.layout-contract-item,
+.support-history-item.layout-contract-item,
+.dashboard-progress-card.layout-contract-item,
+.dashboard-project-link.layout-contract-item,
+.dashboard-quick-link.layout-contract-item,
+.proof-value-card.layout-contract-item,
+.creators-hero-core-card.layout-contract-item,
+.creators-secondary-card.layout-contract-item,
+.editor-kind-card.layout-contract-item,
+.plan-card.layout-contract-item,
+.github-workspace-pane.layout-contract-item,
+.conversion-metric-card.layout-contract-item {
+  background: var(--ea-unified-surface-soft) !important;
+}
+
+.dashboard-summary-card-primary.layout-contract-item {
+  background:
+    radial-gradient(280px 120px at 100% 0%, rgba(52, 245, 255, 0.12), transparent 70%),
+    var(--ea-unified-surface-strong) !important;
+}
+
+.dashboard-summary-card-action.layout-contract-item {
+  background:
+    linear-gradient(180deg, rgba(75, 232, 255, 0.08), rgba(255, 255, 255, 0.016)),
+    var(--ea-unified-surface-soft) !important;
+}
+
+.dashboard-summary-card-secondary.layout-contract-item,
+.dashboard-summary-card-monitor.layout-contract-item,
+.credits-summary-card.layout-contract-item,
+.plans-summary-card.layout-contract-item {
+  background: var(--ea-unified-surface-soft) !important;
+}
+
+.creators-hero-core-card.layout-contract-item {
+  background:
+    radial-gradient(220px 90px at 100% 0%, rgba(75, 232, 255, 0.12), transparent 72%),
+    linear-gradient(165deg, rgba(255, 255, 255, 0.085), rgba(255, 255, 255, 0.03)) !important;
+}
+
+.creators-secondary-card[data-priority="secondary"].layout-contract-item {
+  background:
+    radial-gradient(180px 80px at 100% 0%, rgba(255, 191, 107, 0.08), transparent 72%),
+    linear-gradient(162deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.026)) !important;
+}
+
+.creators-secondary-card[data-priority="labs"].layout-contract-item {
+  background:
+    radial-gradient(180px 80px at 100% 0%, rgba(127, 183, 255, 0.08), transparent 72%),
+    linear-gradient(162deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.02)) !important;
+}
+
+.plan-card-current.layout-contract-item {
+  background:
+    linear-gradient(180deg, rgba(75, 232, 255, 0.1), rgba(255, 255, 255, 0.016)),
+    var(--ea-unified-surface-soft) !important;
+}
+
+.plan-card-recommended.layout-contract-item {
+  background:
+    radial-gradient(220px 80px at 100% 0%, rgba(75, 232, 255, 0.1), transparent 72%),
+    linear-gradient(180deg, rgba(75, 232, 255, 0.08), rgba(255, 255, 255, 0.018)) !important;
+}
+
+.plan-card-featured.layout-contract-item {
+  background:
+    radial-gradient(220px 80px at 100% 0%, rgba(127, 183, 255, 0.09), transparent 72%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.02)) !important;
+}
+
+.creator-active-panel.layout-contract-region {
+  border-color: var(--ea-unified-border) !important;
+}

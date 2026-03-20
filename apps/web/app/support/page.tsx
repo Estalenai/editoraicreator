@@ -104,7 +104,7 @@ export default function SupportPage() {
             </div>
           </div>
 
-          <div className="hero-side-panel support-hero-panel">
+          <div className="hero-side-panel support-hero-panel layout-contract-rail">
             <div className="hero-side-list hero-side-list-compact">
               <div className="hero-side-note">
                 <strong>Conta conectada</strong>
@@ -134,7 +134,7 @@ export default function SupportPage() {
         </div>
       </section>
 
-      <section className="support-guide-section surface-flow-region surface-flow-region-start">
+      <section className="support-guide-section surface-flow-region surface-flow-region-start layout-contract-region">
         <div className="section-head">
           <div className="section-header-ea">
             <h2 className="heading-reset">Caminhos rápidos de ajuda</h2>
@@ -143,7 +143,7 @@ export default function SupportPage() {
         </div>
         <div className="support-guide-grid">
           {SUPPORT_PATHS.map((item) => (
-            <Link key={item.title} href={item.href} className="premium-card-soft support-guide-card">
+            <Link key={item.title} href={item.href} className="support-guide-card layout-contract-item">
               <div className="support-guide-card-stack">
                 <strong>{item.title}</strong>
                 <span>{item.description}</span>
@@ -154,13 +154,13 @@ export default function SupportPage() {
         </div>
       </section>
 
-      <section className="privacy-trust-note support-trust-note surface-flow-region surface-flow-region-middle">
+      <section className="privacy-trust-note support-trust-note surface-flow-region surface-flow-region-middle layout-contract-note">
         <strong>Privacidade e confidencialidade</strong>
         <span>Dados enviados em tickets e projetos não são usados para treinar modelos. O suporte opera com processamento isolado e foco em segurança operacional.</span>
       </section>
 
       {loading ? (
-        <div className="premium-card support-loading-card">
+        <div className="support-loading-card layout-contract-card">
           <div className="premium-skeleton premium-skeleton-line" style={{ width: "32%" }} />
           <div className="premium-skeleton premium-skeleton-line" style={{ width: "70%" }} />
           <div className="premium-skeleton premium-skeleton-card" />
@@ -174,7 +174,7 @@ export default function SupportPage() {
         </div>
       ) : null}
 
-      <section className="support-faq-section surface-flow-region surface-flow-region-middle">
+      <section className="support-faq-section surface-flow-region surface-flow-region-middle layout-contract-region">
         <div className="section-head">
           <div className="section-header-ea">
             <h2 className="heading-reset">Perguntas frequentes</h2>
@@ -183,7 +183,7 @@ export default function SupportPage() {
         </div>
         <div className="support-faq-grid">
           {SUPPORT_FAQ.map((item) => (
-            <article key={item.question} className="premium-card-soft support-faq-item">
+            <article key={item.question} className="support-faq-item layout-contract-item">
               <strong>{item.question}</strong>
               <p>{item.answer}</p>
             </article>

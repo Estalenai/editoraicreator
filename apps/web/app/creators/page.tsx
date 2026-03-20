@@ -175,7 +175,7 @@ function creatorStageTone(group: CreatorGroupId): "phase" | "warning" | "soon" {
 
 export default function CreatorsPage() {
   return (
-    <Suspense fallback={<div className="page-shell"><div className="premium-card" style={{ padding: 16 }}>Carregando área de Creators...</div></div>}>
+    <Suspense fallback={<div className="page-shell"><div className="layout-contract-card" style={{ padding: 16 }}>Carregando área de Creators...</div></div>}>
       <CreatorsPageContent />
     </Suspense>
   );
@@ -322,17 +322,17 @@ function CreatorsPageContent() {
             </div>
 
             <div className="hero-kpi-grid creators-hero-metrics creators-hero-metrics-compact">
-              <div className="premium-card-soft hero-kpi creators-hero-metric">
+              <div className="hero-kpi creators-hero-metric layout-contract-note">
                 <span className="hero-kpi-label">Ferramenta ativa</span>
                 <strong className="hero-kpi-value">{activeTabMeta.label}</strong>
                 <span className="hero-kpi-text">{activeTabMeta.bestFor}</span>
               </div>
-              <div className="premium-card-soft hero-kpi creators-hero-metric">
+              <div className="hero-kpi creators-hero-metric layout-contract-note">
                 <span className="hero-kpi-label">Saldo para operar</span>
                 <strong className="hero-kpi-value">{walletSummaryDisplay}</strong>
                 <span className="hero-kpi-text">{loading ? "Saldo, plano e regras de uso estão sendo sincronizados." : "Estimativa antes da geração. Consumo real em Créditos."}</span>
               </div>
-              <div className="premium-card-soft hero-kpi creators-hero-metric">
+              <div className="hero-kpi creators-hero-metric layout-contract-note">
                 <span className="hero-kpi-label">Próximo passo</span>
                 <strong className="hero-kpi-value">Gerar → editar → exportar</strong>
                 <span className="hero-kpi-text">Projeto salvo, refinamento no editor e exportação local quando a peça estiver pronta.</span>
@@ -340,7 +340,7 @@ function CreatorsPageContent() {
             </div>
           </div>
 
-          <div className="hero-side-panel creators-hero-panel">
+          <div className="hero-side-panel creators-hero-panel layout-contract-rail">
             <div className="section-stack">
               <p className="section-kicker">Controle operacional</p>
               <h2 style={{ margin: 0 }}>Criatividade com estrutura</h2>
@@ -390,7 +390,7 @@ function CreatorsPageContent() {
         </div>
       ) : null}
 
-      <section className="proof-value-section creators-proof-section creators-flow-section surface-flow-region creators-flow-section-start" data-reveal data-reveal-delay="60">
+      <section className="proof-value-section creators-proof-section creators-flow-section surface-flow-region creators-flow-section-start layout-contract-region" data-reveal data-reveal-delay="60">
         <div className="proof-value-header">
           <div className="section-stack-tight">
             <p className="section-kicker">Exemplos de resultado</p>
@@ -406,7 +406,7 @@ function CreatorsPageContent() {
 
         <div className="proof-value-grid proof-value-grid-creators">
           {CREATOR_SHOWCASES.map((item, index) => (
-            <article key={item.creator} className="proof-value-card premium-card-soft" data-reveal data-reveal-delay={String(70 + index * 55)}>
+            <article key={item.creator} className="proof-value-card layout-contract-item" data-reveal data-reveal-delay={String(70 + index * 55)}>
               <div className="proof-value-meta-row">
                 <span className="proof-value-kicker">{item.kicker}</span>
                 <span className="proof-value-chip">{item.creator}</span>
@@ -430,7 +430,7 @@ function CreatorsPageContent() {
         </div>
       </section>
 
-      <section className="creators-hero-core-section creators-flow-section surface-flow-region creators-flow-section-middle" data-reveal data-reveal-delay="90">
+      <section className="creators-hero-core-section creators-flow-section surface-flow-region creators-flow-section-middle layout-contract-region" data-reveal data-reveal-delay="90">
         <div className="proof-value-header creators-hero-core-header">
           <div className="section-stack-tight">
             <p className="section-kicker">Creators hero</p>
@@ -449,7 +449,7 @@ function CreatorsPageContent() {
           {heroCoreCards.map((tab, index) => (
             <article
               key={tab.id}
-              className={`premium-card-soft creators-hero-core-card ${tab.group !== "hero" ? "creators-hero-core-card-support" : ""}`}
+              className={`creators-hero-core-card layout-contract-item ${tab.group !== "hero" ? "creators-hero-core-card-support" : ""}`}
               data-active={activeTab === tab.id}
               data-reveal
               data-reveal-delay={String(70 + index * 50)}
@@ -489,7 +489,7 @@ function CreatorsPageContent() {
         </div>
       </section>
 
-      <section className="creators-secondary-section creators-flow-section surface-flow-region creators-flow-section-middle" data-reveal data-reveal-delay="120">
+      <section className="creators-secondary-section creators-flow-section surface-flow-region creators-flow-section-middle layout-contract-region" data-reveal data-reveal-delay="120">
         <div className="proof-value-header creators-secondary-header">
           <div className="section-stack-tight">
             <p className="section-kicker">Apoio e labs</p>
@@ -502,7 +502,7 @@ function CreatorsPageContent() {
 
         <div className="creators-secondary-grid">
           {secondaryCatalog.map((tab, index) => (
-            <article key={tab.id} className="creators-secondary-card premium-card-soft" data-priority={tab.group} data-reveal data-reveal-delay={String(70 + index * 45)}>
+            <article key={tab.id} className="creators-secondary-card layout-contract-item" data-priority={tab.group} data-reveal data-reveal-delay={String(70 + index * 45)}>
               <div className="creators-secondary-card-head">
                 <strong>{tab.label}</strong>
                 <span className={`premium-badge premium-badge-${creatorStageTone(tab.group)}`}>{tab.stageLabel}</span>
@@ -524,8 +524,8 @@ function CreatorsPageContent() {
         </div>
       </section>
 
-      <section ref={workspaceRef} className="creator-workspace-grid creators-flow-section surface-flow-region creators-flow-section-end">
-        <aside className="creator-workspace-side creators-sidebar creators-sidebar-soft" data-reveal data-reveal-delay="140">
+      <section ref={workspaceRef} className="creator-workspace-grid creators-flow-section surface-flow-region creators-flow-section-end layout-contract-region">
+        <aside className="creator-workspace-side creators-sidebar creators-sidebar-soft layout-contract-rail" data-reveal data-reveal-delay="140">
           <div className="creators-side-note creators-side-note-primary">
             <strong>Comece pelos creators hero</strong>
             <span>
@@ -594,9 +594,9 @@ function CreatorsPageContent() {
           </div>
         </aside>
 
-        <div className="creator-workspace-main" data-reveal data-reveal-delay="180">
+        <div className="creator-workspace-main layout-contract-panel" data-reveal data-reveal-delay="180">
           {initialLoading ? (
-            <div className="premium-card creators-loading-card">
+            <div className="creators-loading-card layout-contract-card">
               <div className="premium-skeleton premium-skeleton-line" style={{ width: "40%" }} />
               <div className="premium-skeleton premium-skeleton-line" style={{ width: "78%" }} />
               <div className="premium-skeleton premium-skeleton-card" />
@@ -605,12 +605,12 @@ function CreatorsPageContent() {
           ) : (
             <>
               {loading ? (
-                <div className="premium-card-soft creators-inline-note">
+                <div className="creators-inline-note layout-contract-note">
                   <strong>Sincronização em segundo plano</strong>
                   <span>Saldo, plano e disponibilidade continuam sendo atualizados em segundo plano.</span>
                 </div>
               ) : null}
-              <div className="creator-active-panel">
+              <div className="creator-active-panel layout-contract-region">
                 <div className="creator-active-panel-head">
                   <div className="section-stack">
                     <p className="section-kicker">Ferramenta ativa</p>

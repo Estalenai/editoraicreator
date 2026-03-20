@@ -339,10 +339,10 @@ export default function DashboardPage() {
         </div>
       ) : null}
 
-      <section className="summary-grid dashboard-summary-grid dashboard-summary-surface surface-flow-summary" data-reveal data-reveal-delay="60">
+      <section className="summary-grid dashboard-summary-grid dashboard-summary-surface surface-flow-summary layout-contract-region layout-contract-summary" data-reveal data-reveal-delay="60">
         {loading ? (
           Array.from({ length: 4 }).map((_, index) => (
-            <div key={`summary-skeleton-${index}`} className="premium-card executive-card">
+            <div key={`summary-skeleton-${index}`} className="executive-card layout-contract-item layout-contract-metric">
               <div className="premium-skeleton premium-skeleton-line" style={{ width: "42%" }} />
               <div className="premium-skeleton premium-skeleton-line" style={{ width: "68%", marginTop: 10 }} />
               <div className="premium-skeleton premium-skeleton-line" style={{ width: "54%", marginTop: 18 }} />
@@ -350,12 +350,12 @@ export default function DashboardPage() {
           ))
         ) : (
           <>
-            <div className="premium-card executive-card dashboard-summary-card dashboard-summary-card-primary">
+            <div className="executive-card dashboard-summary-card dashboard-summary-card-primary layout-contract-item layout-contract-metric">
               <p className="executive-eyebrow">Saldo de créditos</p>
               <p className="executive-value metric-value-compact">{walletSummary}</p>
               <div className="dashboard-balance-stack">
                 {walletBreakdown.map((item) => (
-                  <div key={item.coinType} className="premium-card-soft dashboard-balance-chip">
+                  <div key={item.coinType} className="dashboard-balance-chip layout-contract-note">
                     <span className="helper-text-ea">
                       {coinTypeLabel(item.coinType)} • {item.description}
                     </span>
@@ -368,7 +368,7 @@ export default function DashboardPage() {
               </Link>
             </div>
 
-            <Link href={nextAction.href} className="premium-card executive-card dashboard-summary-card dashboard-summary-card-action dashboard-summary-card-link">
+            <Link href={nextAction.href} className="executive-card dashboard-summary-card dashboard-summary-card-action dashboard-summary-card-link layout-contract-item layout-contract-metric">
               <p className="executive-eyebrow">Próxima ação</p>
               <p className="executive-value metric-value-compact">{nextActionTitleDisplay}</p>
               <p className="executive-detail">{nextActionDescriptionDisplay}</p>
@@ -377,7 +377,7 @@ export default function DashboardPage() {
               </span>
             </Link>
 
-            <div className="premium-card executive-card dashboard-summary-card dashboard-summary-card-secondary">
+            <div className="executive-card dashboard-summary-card dashboard-summary-card-secondary layout-contract-item layout-contract-metric">
               <p className="executive-eyebrow">Plano atual</p>
               <p className="executive-value">{planLabel ?? "—"}</p>
               <p className="executive-detail">Revise assinatura, créditos incluídos, checkout e benefícios no catálogo.</p>
@@ -386,7 +386,7 @@ export default function DashboardPage() {
               </Link>
             </div>
 
-            <div className="premium-card executive-card dashboard-summary-card dashboard-summary-card-monitor">
+            <div className="executive-card dashboard-summary-card dashboard-summary-card-monitor layout-contract-item layout-contract-metric">
               <p className="executive-eyebrow">Uso recente</p>
               <p className="executive-value">{recentUsageValue}</p>
               <p className="executive-detail">{recentUsageText}</p>
@@ -400,7 +400,7 @@ export default function DashboardPage() {
 
       <ApprovedBetaOnboardingCard email={email} wallet={wallet} loading={loading} />
 
-      <section className="dashboard-section-card dashboard-flow-section surface-flow-region dashboard-flow-section-start" data-reveal data-reveal-delay="120">
+      <section className="dashboard-section-card dashboard-flow-section surface-flow-region dashboard-flow-section-start layout-contract-region" data-reveal data-reveal-delay="120">
         <div className="section-head">
           <div className="section-header-ea">
             <h3 className="heading-reset">Transparência de consumo</h3>
@@ -412,7 +412,7 @@ export default function DashboardPage() {
         </div>
         <div className="trust-grid dashboard-section-body">
           {CREDIT_GUIDE_ITEMS.map((item) => (
-            <div key={item.coinType} className="premium-card-soft trust-note">
+            <div key={item.coinType} className="trust-note layout-contract-note">
               <strong>{item.title}</strong>
               <span>{item.description}</span>
             </div>
@@ -423,7 +423,7 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      <section className="dashboard-section-card dashboard-flow-section surface-flow-region dashboard-flow-section-middle" data-reveal data-reveal-delay="150">
+      <section className="dashboard-section-card dashboard-flow-section surface-flow-region dashboard-flow-section-middle layout-contract-region" data-reveal data-reveal-delay="150">
         <div className="section-head">
           <div className="section-header-ea">
             <h3 className="heading-reset">Projetos recentes</h3>
@@ -469,7 +469,7 @@ export default function DashboardPage() {
                 <Link
                   key={projectId || JSON.stringify(project)}
                   href={`/editor/${projectId}`}
-                  className="premium-card-soft dashboard-project-link"
+                  className="dashboard-project-link layout-contract-item"
                   data-reveal
                   data-reveal-delay={String(70 + Math.min(index, 5) * 35)}
                 >
@@ -478,7 +478,7 @@ export default function DashboardPage() {
               ) : (
                 <div
                   key={projectId || JSON.stringify(project)}
-                  className="premium-card-soft dashboard-project-link"
+                  className="dashboard-project-link layout-contract-item"
                   data-reveal
                   data-reveal-delay={String(70 + Math.min(index, 5) * 35)}
                 >
@@ -490,7 +490,7 @@ export default function DashboardPage() {
         )}
       </section>
 
-      <section className="dashboard-section-card dashboard-flow-section surface-flow-region dashboard-flow-section-middle" data-reveal data-reveal-delay="180">
+      <section className="dashboard-section-card dashboard-flow-section surface-flow-region dashboard-flow-section-middle layout-contract-region" data-reveal data-reveal-delay="180">
         <div className="section-header-ea">
           <h3 className="heading-reset">Núcleo do beta pago/controlado</h3>
           <p className="helper-text-ea">Atalhos para o que precisa carregar valor, retenção e continuidade real no uso recorrente.</p>
@@ -503,7 +503,7 @@ export default function DashboardPage() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="premium-card-soft dashboard-quick-link"
+                  className="dashboard-quick-link layout-contract-item"
                   data-reveal
                   data-reveal-delay={String(70 + index * 40)}
                 >
@@ -527,7 +527,7 @@ export default function DashboardPage() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="premium-card-soft dashboard-quick-link"
+                  className="dashboard-quick-link layout-contract-item"
                   data-reveal
                   data-reveal-delay={String(90 + index * 35)}
                 >
@@ -544,7 +544,7 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      <section className="dashboard-section-card dashboard-flow-section surface-flow-region dashboard-flow-section-end" data-reveal data-reveal-delay="210">
+      <section className="dashboard-section-card dashboard-flow-section surface-flow-region dashboard-flow-section-end layout-contract-region" data-reveal data-reveal-delay="210">
         <div className="section-header-ea">
           <h3 className="heading-reset">Uso por feature</h3>
           <p className="helper-text-ea">Consumo por módulo para ajustar ritmo, plano e próxima ação.</p>
@@ -552,7 +552,7 @@ export default function DashboardPage() {
         {loading || usageLoading ? (
           <div className="dashboard-section-body">
             {Array.from({ length: 3 }).map((_, index) => (
-              <div key={`usage-skeleton-${index}`} className="premium-card-soft dashboard-progress-card">
+              <div key={`usage-skeleton-${index}`} className="dashboard-progress-card layout-contract-item">
                 <div className="premium-skeleton premium-skeleton-line" style={{ width: "45%" }} />
                 <div className="premium-skeleton premium-skeleton-line" style={{ width: "75%", marginTop: 9 }} />
               </div>
@@ -578,7 +578,7 @@ export default function DashboardPage() {
             {usageItems.map((item) => {
               const progress = usageProgress(item);
               return (
-                <div key={item.feature} className="premium-card-soft dashboard-progress-card">
+                <div key={item.feature} className="dashboard-progress-card layout-contract-item">
                   <div className="dashboard-progress-row">
                     <span>{item.feature}</span>
                     <strong>{item.used}/{item.limit}</strong>

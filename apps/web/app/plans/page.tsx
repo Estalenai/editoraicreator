@@ -218,7 +218,7 @@ const CHECKOUT_PLAN_BY_CATALOG_CODE: Record<string, "EDITOR_FREE" | "EDITOR_PRO"
 
 export default function PlansPage() {
   return (
-    <Suspense fallback={<div className="page-shell"><div className="premium-card" style={{ padding: 16 }}>Carregando opções de plano...</div></div>}>
+    <Suspense fallback={<div className="page-shell"><div className="layout-contract-card" style={{ padding: 16 }}>Carregando opções de plano...</div></div>}>
       <PlansPageContent />
     </Suspense>
   );
@@ -549,7 +549,7 @@ function PlansPageContent() {
               </div>
             </div>
           </div>
-          <div className="hero-side-panel plans-hero-panel">
+          <div className="hero-side-panel plans-hero-panel layout-contract-rail">
             <span className="plan-card-section-label">Cobrança e segurança</span>
             <div className="hero-side-list hero-side-list-compact">
               <div className="hero-side-note">
@@ -626,48 +626,48 @@ function PlansPageContent() {
         </div>
       ) : null}
 
-      <section className="summary-grid plans-summary-grid surface-flow-summary surface-flow-region surface-flow-region-start">
-        <div className="premium-card executive-card plans-summary-card">
+      <section className="summary-grid plans-summary-grid surface-flow-summary surface-flow-region surface-flow-region-start layout-contract-region layout-contract-summary">
+        <div className="executive-card plans-summary-card layout-contract-item layout-contract-metric">
           <p className="executive-eyebrow">Plano atual</p>
           <p className="executive-value">{planLabelDisplay}</p>
           <p className="executive-detail">{currentPlanAudience}</p>
         </div>
-        <div className="premium-card executive-card plans-summary-card">
+        <div className="executive-card plans-summary-card layout-contract-item layout-contract-metric">
           <p className="executive-eyebrow">Créditos incluídos</p>
           <p className="executive-value metric-value-compact">{currentPlanCreditsValue}</p>
           <p className="executive-detail">{currentPlanCreditsDetail}</p>
         </div>
-        <div className="premium-card executive-card plans-summary-card">
+        <div className="executive-card plans-summary-card layout-contract-item layout-contract-metric">
           <p className="executive-eyebrow">Conversão entre tipos</p>
           <p className="executive-value">{currentPlanFeeValue}</p>
           <p className="executive-detail">{currentPlanFeeDetail}</p>
         </div>
       </section>
 
-      <section className="plans-confidence-strip surface-flow-region surface-flow-region-middle">
-        <div className="plans-confidence-note">
+      <section className="plans-confidence-strip surface-flow-region surface-flow-region-middle layout-contract-region">
+        <div className="plans-confidence-note layout-contract-note">
           <strong>Plano principal do beta</strong>
           <span>Editor Pro é o ponto mais forte para operação recorrente; Iniciante valida encaixe e Editor Ultra expande cadência.</span>
         </div>
-        <div className="plans-confidence-note">
+        <div className="plans-confidence-note layout-contract-note">
           <strong>Checkout claro</strong>
           <span>Planos com checkout automático seguem para assinatura imediata via Stripe; os assistidos continuam via suporte.</span>
         </div>
-        <div className="plans-confidence-note">
+        <div className="plans-confidence-note layout-contract-note">
           <strong>Controle comercial</strong>
           <span>Preço, disponibilidade e diferenças principais ficam expostos sem leitura longa.</span>
         </div>
-        <div className="plans-confidence-note">
+        <div className="plans-confidence-note layout-contract-note">
           <strong>Enterprise fora do aberto</strong>
           <span>Enterprise opera por contrato e fica fora da comparação pública, sem preço, créditos ou composição abertos nesta página.</span>
         </div>
-        <div className="plans-confidence-note plans-confidence-note-trust">
+        <div className="plans-confidence-note plans-confidence-note-trust layout-contract-note">
           <strong>Privacidade aplicada</strong>
           <span>Dados operacionais não são usados para treino de modelos e o processamento segue isolado por conta.</span>
         </div>
       </section>
 
-      <section className="plans-catalog-section section-card surface-flow-region surface-flow-region-end">
+      <section className="plans-catalog-section section-card surface-flow-region surface-flow-region-end layout-contract-region">
         <div className="section-head">
           <div className="section-header-ea">
             <h3 className="heading-reset">Catálogo de planos</h3>
@@ -743,7 +743,7 @@ function PlansPageContent() {
               return (
                 <div
                   key={item.code}
-                  className={`premium-card-soft plan-card ${
+                  className={`plan-card layout-contract-item layout-contract-card ${
                     isCurrentPlan
                       ? "plan-card-current"
                       : isRecommendedPlan

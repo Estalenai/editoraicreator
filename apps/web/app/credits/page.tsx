@@ -612,31 +612,31 @@ export default function CreditsPage() {
         </div>
       ) : null}
 
-      <section className="credits-guide-section surface-flow-region surface-flow-region-start">
+      <section className="credits-guide-section surface-flow-region surface-flow-region-start layout-contract-region">
         <div className="section-header-ea">
           <h3 className="heading-reset">Como ler seus créditos</h3>
           <p className="helper-text-ea">Saldo, estimativa e histórico em três sinais fáceis de ler.</p>
         </div>
         <div className="credits-guide-grid">
           {CREDIT_GUIDE.map((item) => (
-            <div key={item.coinType} className="premium-card-soft credits-guide-card">
+            <div key={item.coinType} className="credits-guide-card layout-contract-item">
               <div className="dashboard-project-link-title">{item.title}</div>
               <div className="helper-text-ea">{item.description}</div>
             </div>
           ))}
         </div>
         <div className="credits-guide-notes">
-          <div className="premium-card-soft credits-guide-note">
+          <div className="credits-guide-note layout-contract-note">
             <strong>Estimativa nos Creators:</strong> mostra uma prévia antes de consumir saldo real.
           </div>
-          <div className="premium-card-soft credits-guide-note">
+          <div className="credits-guide-note layout-contract-note">
             <strong>Histórico de créditos:</strong> confirma consumo, compra e conversão depois do processamento.
           </div>
         </div>
       </section>
 
-      <section className="credits-summary-grid surface-flow-summary surface-flow-region surface-flow-region-middle">
-        <div className="premium-card credits-summary-card credits-summary-card-primary">
+      <section className="credits-summary-grid surface-flow-summary surface-flow-region surface-flow-region-middle layout-contract-region layout-contract-summary">
+        <div className="credits-summary-card credits-summary-card-primary layout-contract-item layout-contract-metric">
           <p className="executive-eyebrow">Saldo por tipo</p>
           <p className="executive-value metric-value-compact">{walletSummaryDisplay}</p>
           <div className="credits-balance-list">
@@ -648,7 +648,7 @@ export default function CreditsPage() {
             ))}
           </div>
         </div>
-        <div className="premium-card credits-summary-card credits-summary-card-action">
+        <div className="credits-summary-card credits-summary-card-action layout-contract-item layout-contract-metric">
           <p className="executive-eyebrow">Conversão no plano atual</p>
           <p className="executive-value">{conversionFeeDisplay}</p>
           <p className="executive-detail">
@@ -661,12 +661,12 @@ export default function CreditsPage() {
                 : "Seu plano atual ainda não habilita conversão entre tipos de crédito."}
           </p>
         </div>
-        <div className="premium-card credits-summary-card">
+        <div className="credits-summary-card layout-contract-item layout-contract-metric">
           <p className="executive-eyebrow">Última movimentação</p>
           <p className="executive-value metric-value-compact">{latestTransactionCountDisplay}</p>
           <p className="executive-detail">{latestTransactionDisplay}</p>
         </div>
-        <div className="premium-card credits-summary-card">
+        <div className="credits-summary-card layout-contract-item layout-contract-metric">
           <p className="executive-eyebrow">Estimativa x consumo real</p>
           <p className="executive-value metric-value-compact">Clareza total</p>
           <p className="executive-detail">
@@ -675,11 +675,11 @@ export default function CreditsPage() {
         </div>
       </section>
 
-      <section id="credits-packages" className="credits-packages-section surface-flow-region surface-flow-region-middle">
+      <section id="credits-packages" className="credits-packages-section surface-flow-region surface-flow-region-middle layout-contract-region">
         <CreditsPackagesCard wallet={wallet} loading={loading} latestTransactionId={latestTransaction?.id || null} />
       </section>
 
-      <section className="credits-section-card surface-flow-region surface-flow-region-middle">
+      <section className="credits-section-card surface-flow-region surface-flow-region-middle layout-contract-region">
         <div className="section-head">
           <div className="section-header-ea">
             <h3 className="heading-reset">Conversão de créditos</h3>
@@ -712,11 +712,11 @@ export default function CreditsPage() {
         ) : (
           <>
             <div className="trust-grid credits-conversion-notes">
-              <div className="premium-card-soft trust-note">
+              <div className="trust-note layout-contract-note">
                 <strong>Origem e destino claros</strong>
                 <span>Escolha qualquer combinação válida entre Comum, Pro e Ultra, exceto origem = destino.</span>
               </div>
-              <div className="premium-card-soft trust-note">
+              <div className="trust-note layout-contract-note">
                 <strong>Débito previsível</strong>
                 <span>Taxa, total debitado e saldo estimado aparecem antes da confirmação.</span>
               </div>
@@ -782,23 +782,23 @@ export default function CreditsPage() {
               Escolha pares válidos entre Comum, Pro e Ultra. A taxa é aplicada na origem e o histórico confirma o resultado final.
             </div>
             <div className="conversion-metrics-grid credits-conversion-metrics">
-              <div className="conversion-metric-card">
+              <div className="conversion-metric-card layout-contract-item">
                 <span className="helper-text-ea">Saldo disponível em {coinTypeLabel(conversionFrom)}</span>
                 <strong>{sourceBalance}</strong>
               </div>
-              <div className="conversion-metric-card">
+              <div className="conversion-metric-card layout-contract-item">
                 <span className="helper-text-ea">Total debitado ({coinTypeLabel(conversionFrom)})</span>
                 <strong>{estimatedDebitedAmount}</strong>
               </div>
-              <div className="conversion-metric-card">
+              <div className="conversion-metric-card layout-contract-item">
                 <span className="helper-text-ea">Crédito recebido ({coinTypeLabel(conversionTo)})</span>
                 <strong>{estimatedTargetAmount}</strong>
               </div>
-              <div className="conversion-metric-card">
+              <div className="conversion-metric-card layout-contract-item">
                 <span className="helper-text-ea">Taxa aplicada</span>
                 <strong>{estimatedFeeAmount}</strong>
               </div>
-              <div className="conversion-metric-card">
+              <div className="conversion-metric-card layout-contract-item">
                 <span className="helper-text-ea">Saldo final estimado ({coinTypeLabel(conversionTo)})</span>
                 <strong>{Number(wallet?.[conversionTo] ?? 0) + estimatedTargetAmount}</strong>
               </div>
@@ -848,7 +848,7 @@ export default function CreditsPage() {
       </section>
 
       {loading ? (
-        <div className="premium-card section-card">
+        <div className="section-card layout-contract-card">
           <div className="premium-skeleton premium-skeleton-line" style={{ width: "36%" }} />
           <div className="premium-skeleton premium-skeleton-line" style={{ width: "72%" }} />
           <div className="premium-skeleton premium-skeleton-card" />
@@ -873,7 +873,7 @@ export default function CreditsPage() {
         </div>
       ) : null}
 
-      <section id="credits-history" className="credits-section-card surface-flow-region surface-flow-region-end">
+      <section id="credits-history" className="credits-section-card surface-flow-region surface-flow-region-end layout-contract-region">
         <div className="section-head">
           <div className="section-header-ea">
             <h3 className="heading-reset">Histórico recente de créditos</h3>
@@ -927,7 +927,7 @@ export default function CreditsPage() {
               return (
                 <div
                   key={tx.id}
-                  className="premium-card-soft credits-history-item"
+                  className="credits-history-item layout-contract-item"
                 >
                   <div className="credits-history-head">
                     <div className="credits-history-main">

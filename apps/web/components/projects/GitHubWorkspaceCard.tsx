@@ -646,7 +646,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
 
   if (!ready) {
     return (
-      <section className={`premium-card github-workspace-card github-workspace-card-${variant}`}>
+      <section className={`github-workspace-card github-workspace-card-${variant} layout-contract-card`}>
         <div className="premium-skeleton premium-skeleton-line" style={{ width: "38%" }} />
         <div className="premium-skeleton premium-skeleton-line" style={{ width: "72%" }} />
         <div className="premium-skeleton premium-skeleton-card" />
@@ -656,7 +656,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
 
   if (variant === "compact") {
     return (
-      <section className="premium-card-soft github-workspace-card github-workspace-card-compact">
+      <section className="github-workspace-card github-workspace-card-compact layout-contract-card">
         <div className="section-stack-tight">
           <p className="section-kicker">GitHub beta</p>
           <h4 className="heading-reset">Handoff GitHub do projeto</h4>
@@ -738,7 +738,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
   }
 
   return (
-    <section id="github-workspace" className="premium-card github-workspace-card github-workspace-card-full github-workspace-anchor">
+    <section id="github-workspace" className="github-workspace-card github-workspace-card-full github-workspace-anchor layout-contract-card">
       <div className="github-workspace-head">
         <div className="section-header-ea">
           <p className="section-kicker">GitHub beta</p>
@@ -783,7 +783,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
       ) : null}
 
       <div className="github-workspace-grid">
-        <article className="premium-card-soft github-workspace-pane">
+        <article className="github-workspace-pane layout-contract-item">
           <div className="section-stack-tight">
             <p className="section-kicker">1. Conta da equipe</p>
             <h3 className="heading-reset">Identidade GitHub quando disponível</h3>
@@ -815,7 +815,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
           </div>
         </article>
 
-        <article className="premium-card-soft github-workspace-pane">
+        <article className="github-workspace-pane layout-contract-item">
           <div className="section-stack-tight">
             <p className="section-kicker">2. Base do repositório</p>
             <h3 className="heading-reset">Owner, branch e destino</h3>
@@ -867,7 +867,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
           </div>
         </article>
 
-        <article className="premium-card-soft github-workspace-pane">
+        <article className="github-workspace-pane layout-contract-item">
           <div className="section-stack-tight">
             <p className="section-kicker">3. Continuidade</p>
             <h3 className="heading-reset">Salvar versão e exportar snapshot</h3>

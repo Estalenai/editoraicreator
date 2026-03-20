@@ -89,7 +89,7 @@ export default function NewEditorProjectPage() {
             </div>
           </div>
 
-          <div className="hero-side-panel">
+          <div className="hero-side-panel layout-contract-rail">
             <p className="section-kicker">Como começa</p>
             <div className="hero-side-list">
               <div className="hero-side-note">
@@ -135,7 +135,7 @@ export default function NewEditorProjectPage() {
         </div>
       ) : null}
 
-      <section className="editor-new-selection surface-flow-region surface-flow-region-start">
+      <section className="editor-new-selection surface-flow-region surface-flow-region-start layout-contract-region">
         <div className="section-header-ea">
           <p className="section-kicker">Escolha inicial</p>
           <h2 style={{ margin: 0 }}>Comece pelo formato que melhor sustenta o beta hoje</h2>
@@ -153,7 +153,7 @@ export default function NewEditorProjectPage() {
             {PRIMARY_KINDS.map((kind) => (
               <button
                 key={kind}
-                className={`editor-kind-card ${creating === kind ? "editor-kind-card-loading" : ""}`}
+                className={`editor-kind-card layout-contract-item ${creating === kind ? "editor-kind-card-loading" : ""}`}
                 onClick={() => create(kind)}
                 disabled={!!creating}
               >
@@ -176,7 +176,7 @@ export default function NewEditorProjectPage() {
             {SECONDARY_KINDS.map((kind) => (
               <button
                 key={kind}
-                className={`editor-kind-card ${creating === kind ? "editor-kind-card-loading" : ""}`}
+                className={`editor-kind-card layout-contract-item ${creating === kind ? "editor-kind-card-loading" : ""}`}
                 onClick={() => create(kind)}
                 disabled={!!creating}
               >
@@ -191,17 +191,17 @@ export default function NewEditorProjectPage() {
         </div>
       </section>
 
-      <section className="editor-new-footer surface-flow-region surface-flow-region-end">
+      <section className="editor-new-footer surface-flow-region surface-flow-region-end layout-contract-region">
         <div className="editor-new-flow">
-          <div className="premium-card-soft editor-new-flow-note">
+          <div className="editor-new-flow-note layout-contract-note">
             <strong>1. Escolha o formato</strong>
             <span>Comece pela estrutura que melhor representa o seu fluxo de trabalho.</span>
           </div>
-          <div className="premium-card-soft editor-new-flow-note">
+          <div className="editor-new-flow-note layout-contract-note">
             <strong>2. Edite com apoio da IA</strong>
             <span>Use o painel lateral para acelerar ajustes e preparar a peça para entrega.</span>
           </div>
-          <div className="premium-card-soft editor-new-flow-note">
+          <div className="editor-new-flow-note layout-contract-note">
             <strong>3. Salve, exporte ou publique</strong>
             <span>O padrão atual é salvar em draft, registrar exported com clareza e só então usar handoff beta ou publicação manual quando fizer sentido.</span>
           </div>

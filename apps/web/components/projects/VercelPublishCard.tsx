@@ -496,7 +496,7 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
 
   if (!selectedProject) {
     return (
-      <section className={`premium-card vercel-publish-card${compact ? " vercel-publish-card-compact" : ""}`}>
+      <section className={`vercel-publish-card layout-contract-card${compact ? " vercel-publish-card-compact" : ""}`}>
         <div className="vercel-publish-head">
           <div className="vercel-publish-copy">
             <p className="section-kicker">Vercel beta</p>
@@ -524,7 +524,7 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
   }
 
   return (
-    <section className={`premium-card vercel-publish-card${compact ? " vercel-publish-card-compact" : ""}`} id="vercel-publish">
+    <section className={`vercel-publish-card layout-contract-card${compact ? " vercel-publish-card-compact" : ""}`} id="vercel-publish">
       <div className="vercel-publish-head">
         <div className="vercel-publish-copy">
           <p className="section-kicker">Vercel beta</p>

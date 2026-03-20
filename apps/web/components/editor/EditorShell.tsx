@@ -59,9 +59,9 @@ export function EditorShell({
   );
 
   return (
-    <div className="editor-shell-root editor-shell-workspace">
-      <section className="editor-shell-canvas editor-shell-surface">
-        <header className="editor-shell-header editor-shell-region">
+    <div className="editor-shell-root editor-shell-workspace layout-contract-editor">
+      <section className="editor-shell-canvas editor-shell-surface layout-contract-canvas">
+        <header className="editor-shell-header editor-shell-region layout-contract-region">
           <div className="editor-shell-header-grid">
             <div className="editor-shell-title-panel">
               <div className="hero-title-stack editor-shell-title-stack">
@@ -77,7 +77,7 @@ export function EditorShell({
               </div>
             </div>
 
-            <div className="editor-shell-status-panel editor-shell-status-rail">
+            <div className="editor-shell-status-panel editor-shell-status-rail layout-contract-rail">
               <div className="editor-shell-status-grid">
                 <div className="editor-shell-status-item">
                   <span>Entregável</span>
@@ -140,22 +140,22 @@ export function EditorShell({
           </div>
 
           <div className="editor-shell-trust-grid">
-            <div className="trust-note editor-shell-trust-card">
+            <div className="trust-note editor-shell-trust-card layout-contract-note">
               <strong>Documento vivo</strong>
               <span>O projeto continua editável e pronto para novas iterações sem perder a base salva.</span>
             </div>
-            <div className="trust-note editor-shell-trust-card">
+            <div className="trust-note editor-shell-trust-card layout-contract-note">
               <strong>IA com clareza</strong>
               <span>Professor e Transparência ajudam a acompanhar o que a EditexAI fez em cada passo.</span>
             </div>
-            <div className="trust-note editor-shell-trust-card">
+            <div className="trust-note editor-shell-trust-card layout-contract-note">
               <strong>Saída controlada</strong>
               <span>Fluxo padrão de entrega: salve a versão, registre exported com clareza e confirme published quando a etapa manual estiver realmente concluída. GitHub e Vercel entram como handoff secundário.</span>
             </div>
           </div>
         </header>
 
-        <nav className="editor-shell-toolbar toolbar-surface editor-shell-region">
+        <nav className="editor-shell-toolbar toolbar-surface editor-shell-region layout-contract-region">
           <div className="editor-shell-toolbar-head">
             <div className="editor-shell-toolbar-copy">
               <p className="section-kicker">Fluxo do editor</p>
@@ -172,7 +172,7 @@ export function EditorShell({
                 key={t.id}
                 type="button"
                 onClick={() => onTab(t.id)}
-                className="editor-shell-tab-trigger"
+                className="editor-shell-tab-trigger layout-contract-item"
                 data-active={t.id === tab}
                 role="tab"
                 aria-selected={t.id === tab}
@@ -185,12 +185,12 @@ export function EditorShell({
         </nav>
 
         <div className="editor-shell-grid editor-shell-grid-continuous">
-          <aside className="editor-shell-panel editor-shell-panel-secondary editor-shell-panel-rail">{left}</aside>
-          <main className="editor-shell-panel editor-shell-panel-primary editor-shell-panel-core">{center}</main>
-          <aside className="editor-shell-panel editor-shell-panel-secondary editor-shell-panel-support editor-shell-panel-rail">{right}</aside>
+          <aside className="editor-shell-panel editor-shell-panel-secondary editor-shell-panel-rail layout-contract-panel">{left}</aside>
+          <main className="editor-shell-panel editor-shell-panel-primary editor-shell-panel-core layout-contract-panel">{center}</main>
+          <aside className="editor-shell-panel editor-shell-panel-secondary editor-shell-panel-support editor-shell-panel-rail layout-contract-panel">{right}</aside>
         </div>
 
-        <footer className="editor-shell-footer editor-shell-region">
+        <footer className="editor-shell-footer editor-shell-region layout-contract-region">
           {footer ?? (
             <p className="editor-shell-note">
               Dica: ative o Modo Transparente para ver o passo a passo da EditexAI em tempo real.

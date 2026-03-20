@@ -77,7 +77,7 @@ export default function ProjectsPage() {
             </div>
           </div>
 
-          <div className="hero-side-panel">
+          <div className="hero-side-panel layout-contract-rail">
             <div className="hero-side-list">
               <div className="hero-side-note">
                 <strong>Abra e continue</strong>
@@ -121,7 +121,7 @@ export default function ProjectsPage() {
         </div>
       ) : null}
 
-      <section className="projects-list-section projects-flow-section surface-flow-region projects-flow-section-start" data-reveal data-reveal-delay="70">
+      <section className="projects-list-section projects-flow-section surface-flow-region projects-flow-section-start layout-contract-region" data-reveal data-reveal-delay="70">
         <div className="section-head">
           <div className="section-header-ea">
             <h2 className="heading-reset">Abrir no editor</h2>
@@ -161,7 +161,7 @@ export default function ProjectsPage() {
               <Link
                 key={project.id || project.title}
                 href={project.id ? `/editor/${project.id}` : "/editor/new"}
-                className="dashboard-project-link"
+                className="dashboard-project-link layout-contract-item"
                 data-reveal
                 data-reveal-delay={String(70 + Math.min(index, 5) * 40)}
               >
@@ -181,7 +181,7 @@ export default function ProjectsPage() {
         )}
       </section>
 
-      <section className="projects-publish-section projects-flow-section surface-flow-region projects-flow-section-middle" data-reveal data-reveal-delay="110">
+      <section className="projects-publish-section projects-flow-section surface-flow-region projects-flow-section-middle layout-contract-region" data-reveal data-reveal-delay="110">
         <div className="section-header-ea">
           <p className="section-kicker">Pipeline de saída</p>
           <h2 className="heading-reset">Draft, exported e published sem ambiguidade</h2>
@@ -190,21 +190,21 @@ export default function ProjectsPage() {
           </p>
         </div>
         <div className="proof-value-grid">
-          <div className="proof-value-card" data-reveal data-reveal-delay="70">
+          <div className="proof-value-card layout-contract-item" data-reveal data-reveal-delay="70">
             <div className="proof-value-block">
               <span className="proof-value-chip">Draft</span>
               <strong>No editor e em Projetos</strong>
               <p>Projeto salvo, contexto ativo e entregável ainda em refinamento.</p>
             </div>
           </div>
-          <div className="proof-value-card" data-reveal data-reveal-delay="120">
+          <div className="proof-value-card layout-contract-item" data-reveal data-reveal-delay="120">
             <div className="proof-value-block">
               <span className="proof-value-chip">Exported</span>
               <strong>Handoff beta gerado</strong>
               <p>Snapshot GitHub ou manifest Vercel já saíram da plataforma para continuidade manual.</p>
             </div>
           </div>
-          <div className="proof-value-card" data-reveal data-reveal-delay="170">
+          <div className="proof-value-card layout-contract-item" data-reveal data-reveal-delay="170">
             <div className="proof-value-block">
               <span className="proof-value-chip">Published</span>
               <strong>Publicado com confirmação manual</strong>
@@ -214,7 +214,7 @@ export default function ProjectsPage() {
         </div>
       </section>
 
-      <section className="projects-handoff-section projects-flow-section surface-flow-region projects-flow-section-end" data-reveal data-reveal-delay="150">
+      <section className="projects-handoff-section projects-flow-section surface-flow-region projects-flow-section-end layout-contract-region" data-reveal data-reveal-delay="150">
         <div className="section-head">
           <div className="section-header-ea">
             <h2 className="heading-reset">Handoff beta e publicação manual</h2>
