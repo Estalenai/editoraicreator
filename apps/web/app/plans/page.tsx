@@ -23,6 +23,22 @@ type CatalogPlan = {
   price?: { amount_brl?: number | null; period?: string };
 };
 
+function normalizePlanIdentity(planCodeOrLabel: string | null | undefined): string {
+  const raw = String(planCodeOrLabel || "")
+    .trim()
+    .toUpperCase()
+    .replace(/\s+/g, "_")
+    .replace(/-/g, "_");
+  if (!raw) return "FREE";
+  if (raw === "EMPRESARIAL") return "EMPRESARIAL";
+  if (raw === "ENTERPRISE" || raw === "ENTERPRISE_ULTRA") return "ENTERPRISE";
+  return normalizePlanCode(raw);
+}
+
+function isContractOnlyPlan(planCodeOrLabel: string | null | undefined): boolean {
+  return normalizePlanIdentity(planCodeOrLabel) === "ENTERPRISE";
+}
+
 function resolvePlanBadgeLabel(badge: CatalogPlan["badge_label"]): string {
   if (!badge) return "";
   if (typeof badge === "string") return badge;
@@ -125,11 +141,11 @@ function planNarrative(code: string): PlanNarrative {
 
   if (code === "ENTERPRISE") {
     return {
-      audience: "Ideal para operação corporativa com implantação assistida e governança mais forte.",
+      audience: "Plano por contrato para operação corporativa, fora do catálogo self-serve nesta fase.",
       valueBullets: [
-        "Capacidade ampliada para múltiplos perfis de uso e equipes maiores.",
-        "Conversão entre tipos com taxa 0% para preservar crédito líquido da operação.",
-        "Entrada assistida para contratos, suporte e alinhamento estratégico.",
+        "Escopo comercial, volume e condições definidos por contrato.",
+        "Ativação assistida para operação corporativa com governança mais forte.",
+        "Fora da comparação pública com os planos abertos do produto.",
       ],
       limits: ["Implantação assistida", "Contrato corporativo"],
     };
@@ -239,21 +255,15 @@ function PlansPageContent() {
       }
       const payload = await response.json().catch(() => null);
       const plans: CatalogPlan[] = Array.isArray(payload?.plans) ? payload.plans : [];
-      const visiblePlans: CatalogPlan[] = plans.filter((item) => item?.visible !== false);
+      const visiblePlans: CatalogPlan[] = plans.filter((item) => {
+        if (item?.visible === false) return false;
+        return !isContractOnlyPlan(item?.code);
+      });
 
       if (!visiblePlans.some((item: CatalogPlan) => String(item?.code || "").toUpperCase() === "EMPRESARIAL")) {
         visiblePlans.push({
           code: "EMPRESARIAL",
           name: "Empresarial",
-          coming_soon: true,
-          purchasable: false,
-          price: { amount_brl: null, period: "month" },
-        });
-      }
-      if (!visiblePlans.some((item: CatalogPlan) => String(item?.code || "").toUpperCase() === "ENTERPRISE")) {
-        visiblePlans.push({
-          code: "ENTERPRISE",
-          name: "Enterprise",
           coming_soon: true,
           purchasable: false,
           price: { amount_brl: null, period: "month" },
@@ -273,30 +283,37 @@ function PlansPageContent() {
     }
   }, []);
 
-  const currentPlanCodeNormalized = useMemo(
-    () => normalizePlanCode(planCodeRaw || planLabel || "FREE"),
+  const currentPlanIdentity = useMemo(
+    () => normalizePlanIdentity(planCodeRaw || planLabel || "FREE"),
     [planCodeRaw, planLabel]
+  );
+  const currentPlanIsContract = useMemo(
+    () => currentPlanIdentity === "ENTERPRISE",
+    [currentPlanIdentity]
   );
 
   const currentPlanVisibleInCatalog = useMemo(
-    () => catalogPlans.some((plan) => normalizePlanCode(plan.code) === currentPlanCodeNormalized),
-    [catalogPlans, currentPlanCodeNormalized]
+    () => catalogPlans.some((plan) => normalizePlanIdentity(plan.code) === currentPlanIdentity),
+    [catalogPlans, currentPlanIdentity]
   );
   const orderedCatalogPlans = useMemo(
     () => [...catalogPlans].sort((a, b) => planPriority(a.code) - planPriority(b.code)),
     [catalogPlans]
   );
   const currentCatalogPlan = useMemo(
-    () => catalogPlans.find((plan) => normalizePlanCode(plan.code) === currentPlanCodeNormalized) || null,
-    [catalogPlans, currentPlanCodeNormalized]
+    () => catalogPlans.find((plan) => normalizePlanIdentity(plan.code) === currentPlanIdentity) || null,
+    [catalogPlans, currentPlanIdentity]
   );
   const currentPlanFeePercent = useMemo(() => {
-    if (!currentCatalogPlan) {
-      return isEnterpriseConversionPlan(currentPlanCodeNormalized) ? 0 : null;
+    if (currentPlanIsContract) {
+      return null;
     }
-    const conversionState = resolvePlanConversionState(currentPlanCodeNormalized, currentCatalogPlan);
+    if (!currentCatalogPlan) {
+      return null;
+    }
+    const conversionState = resolvePlanConversionState(currentPlanIdentity, currentCatalogPlan);
     return conversionState.enabled ? conversionState.feePercent : null;
-  }, [currentCatalogPlan, currentPlanCodeNormalized]);
+  }, [currentCatalogPlan, currentPlanIdentity, currentPlanIsContract]);
   const currentPlanCredits = useMemo(
     () => formatCreditsIncluded(currentCatalogPlan?.credits || undefined),
     [currentCatalogPlan]
@@ -306,27 +323,39 @@ function PlansPageContent() {
     [currentCatalogPlan]
   );
   const currentPlanNarrative = useMemo(
-    () => planNarrative(currentPlanCodeNormalized),
-    [currentPlanCodeNormalized]
+    () => planNarrative(currentPlanIdentity),
+    [currentPlanIdentity]
   );
-  const planLabelDisplay = loading ? "Plano em sincronização" : resolvePlanLabel(planCodeRaw || planLabel || "EDITOR_FREE");
+  const planLabelDisplay = loading
+    ? "Plano em sincronização"
+    : currentPlanIsContract
+      ? "Enterprise por contrato"
+      : resolvePlanLabel(planCodeRaw || planLabel || "EDITOR_FREE");
   const currentPlanCreditsValue = loading
     ? "Créditos do plano em sincronização"
+    : currentPlanIsContract
+      ? "Sob contrato"
     : currentPlanCreditsTotal > 0
       ? `${currentPlanCreditsTotal} créditos totais`
       : "Consulte o catálogo";
   const currentPlanCreditsDetail = loading
     ? "A composição, os limites e a disponibilidade aparecem assim que o catálogo for confirmado."
+    : currentPlanIsContract
+      ? "Créditos, composição e volume do Enterprise são definidos por contrato e não aparecem no catálogo público."
     : currentPlanCredits.length > 0
       ? currentPlanCredits.join(" • ")
       : "Detalhamento completo no catálogo abaixo.";
   const currentPlanFeeValue = loading
     ? "..."
+    : currentPlanIsContract
+      ? "Sob contrato"
     : currentPlanFeePercent != null
       ? `${currentPlanFeePercent}%`
       : "—";
   const currentPlanFeeDetail = loading
     ? "Sincronizando regras de conversão e benefícios do plano."
+    : currentPlanIsContract
+      ? "Condições de conversão, limites e escopo operacional do Enterprise são definidos comercialmente."
     : currentPlanFeePercent === 0
       ? "Taxa zero na conversão entre tipos: todo o crédito líquido permanece com a equipe."
       : currentPlanFeePercent != null
@@ -424,7 +453,7 @@ function PlansPageContent() {
       return;
     }
 
-    if (normalized === currentPlanCodeNormalized) {
+    if (normalized === normalizePlanCode(currentPlanIdentity)) {
       setCheckoutNotice({
         tone: "info",
         message: "Este já é o seu plano atual.",
@@ -498,7 +527,7 @@ function PlansPageContent() {
               <p className="section-kicker">Assinatura e disponibilidade</p>
               <h1 className="heading-reset">Planos</h1>
               <p className="section-header-copy hero-copy-compact">
-                O beta pago/controlado precisa de uma oferta clara. Hoje o centro comercial é <strong>Editor Pro</strong>, com checkout seguro, créditos visíveis e continuidade forte; o restante cobre entrada, escala ou ativação assistida.
+                O beta pago/controlado precisa de uma oferta clara. Hoje o centro comercial é <strong>Editor Pro</strong>, com checkout seguro, créditos visíveis e continuidade forte; <strong>Enterprise</strong> fica fora do catálogo aberto e segue apenas por contrato.
               </p>
             </div>
             <div className="hero-meta-row hero-meta-row-compact">
@@ -532,8 +561,8 @@ function PlansPageContent() {
                 <span>Planos com checkout automático seguem por Stripe com retorno controlado ao produto para sincronizar assinatura e disponibilidade.</span>
               </div>
               <div className="hero-side-note hero-side-note-trust">
-                <strong>Confidencialidade empresarial</strong>
-                <span>Planos assistidos reforçam processamento isolado, dados fora de treino de modelos e governança para operações sensíveis.</span>
+                <strong>Enterprise por contrato</strong>
+                <span>Enterprise não entra no catálogo aberto: escopo, créditos e condições comerciais ficam reservados à negociação contratual.</span>
               </div>
             </div>
             <div className="hero-actions-row">
@@ -582,13 +611,17 @@ function PlansPageContent() {
       ) : null}
 
       {!catalogLoading &&
-      currentPlanCodeNormalized !== "FREE" &&
-      currentPlanCodeNormalized !== "EDITOR_FREE" &&
+      currentPlanIdentity !== "FREE" &&
+      currentPlanIdentity !== "EDITOR_FREE" &&
       !currentPlanVisibleInCatalog ? (
         <div className="state-ea">
-          <p className="state-ea-title">Plano atual fora do catálogo exibido</p>
+          <p className="state-ea-title">
+            {currentPlanIsContract ? "Enterprise fora do catálogo aberto" : "Plano atual fora do catálogo exibido"}
+          </p>
           <div className="state-ea-text">
-            Seu plano atual ({resolvePlanLabel(planCodeRaw || planLabel || "EDITOR_FREE")}) não aparece como card nesta visão. Use o resumo acima para consultar créditos, taxa e disponibilidade.
+            {currentPlanIsContract
+              ? "Sua conta está em Enterprise por contrato. Esse plano não aparece como card comparável, não expõe créditos públicos e não participa do fluxo aberto desta página."
+              : `Seu plano atual (${resolvePlanLabel(planCodeRaw || planLabel || "EDITOR_FREE")}) não aparece como card nesta visão. Use o resumo acima para consultar créditos, taxa e disponibilidade.`}
           </div>
         </div>
       ) : null}
@@ -625,8 +658,8 @@ function PlansPageContent() {
           <span>Preço, disponibilidade e diferenças principais ficam expostos sem leitura longa.</span>
         </div>
         <div className="plans-confidence-note">
-          <strong>Sincronização pós-checkout</strong>
-          <span>Depois da compra, a página tenta sincronizar automaticamente e você pode atualizar novamente se precisar.</span>
+          <strong>Enterprise fora do aberto</strong>
+          <span>Enterprise opera por contrato e fica fora da comparação pública, sem preço, créditos ou composição abertos nesta página.</span>
         </div>
         <div className="plans-confidence-note plans-confidence-note-trust">
           <strong>Privacidade aplicada</strong>
@@ -668,11 +701,11 @@ function PlansPageContent() {
             {orderedCatalogPlans.map((item) => {
               const comingSoon = item?.coming_soon === true || item?.purchasable === false;
               const codeUpper = String(item?.code || "").toUpperCase();
-              const visibleCatalogCode = codeUpper === "EMPRESARIAL" ? "EMPRESARIAL" : normalizePlanCode(codeUpper);
+              const visibleCatalogCode = normalizePlanIdentity(codeUpper);
               const normalizedCatalogCode = normalizePlanCode(codeUpper);
               const mappedCheckoutPlanCode = CHECKOUT_PLAN_BY_CATALOG_CODE[normalizedCatalogCode];
               const checkoutSupported = Boolean(mappedCheckoutPlanCode);
-              const isCurrentPlan = normalizedCatalogCode === currentPlanCodeNormalized;
+              const isCurrentPlan = visibleCatalogCode === currentPlanIdentity;
               const hasInteractiveCheckout = !comingSoon && checkoutSupported && !isCurrentPlan;
               const requiresAssistedActivation = !comingSoon && !checkoutSupported && !isCurrentPlan;
               const rawAmount = Number(item?.price?.amount_brl);
@@ -697,7 +730,7 @@ function PlansPageContent() {
                     ? "Checkout imediato via Stripe"
                     : "Ativação assistida";
               const isMostPopular = String(item.highlight || "").toLowerCase() === "most_popular";
-              const isRecommendedPlan = normalizedCatalogCode === "EDITOR_PRO" && !isCurrentPlan;
+              const isRecommendedPlan = visibleCatalogCode === "EDITOR_PRO" && !isCurrentPlan;
               const isLoadingCheckout = checkoutLoadingCode === normalizedCatalogCode;
               const buttonLabel = isCurrentPlan
                 ? "Plano atual"

@@ -69,14 +69,15 @@ const PLAN_DEFS = [
   {
     code: "ENTERPRISE",
     nameKey: "plans.name.enterprise",
-    priceAmountBrl: 499.9,
-    credits: { common: 6000, pro: 3500, ultra: 1800 },
+    priceAmountBrl: null,
+    credits: null,
     allowedCoinTypes: ALL_COIN_TYPES,
     avatarSessionsPerDay: 1,
     avatarSecondsPerSession: 120,
     conversionFeePercentOverride: 0,
     comingSoon: true,
     purchasable: false,
+    visible: false,
   },
 ];
 
@@ -121,12 +122,12 @@ function buildPlanEntry(def, lang) {
     coming_soon: def.comingSoon === true,
     purchasable: def.purchasable !== false,
     price: {
-      amount_brl: Number(def.priceAmountBrl.toFixed(2)),
+      amount_brl: Number.isFinite(def.priceAmountBrl) ? Number(def.priceAmountBrl.toFixed(2)) : null,
       period: PERIOD_MONTH,
     },
     highlight,
     badge_label: highlight ? badgeLabel?.[locale] || t(locale, "plans.badge.most_popular") : null,
-    credits: { ...def.credits },
+    credits: def.credits ? { ...def.credits } : null,
     features,
     limits: {
       avatar_preview: {
