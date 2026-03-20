@@ -15,9 +15,11 @@
     "test:operational:api": "npm --workspace apps/api run test:operational",
     "test:smoke:api": "node scripts/smoke-api-routes.mjs",
     "test:smoke:web": "node scripts/smoke-web-routes.mjs",
-    "security:secrets": "node scripts/check-secrets.mjs"
+    "security:secrets": "node scripts/check-secrets.mjs",
+    "test:e2e:critical": "node scripts/e2e-critical-flows.mjs"
   },
   "devDependencies": {
-    "concurrently": "^9.0.1"
+    "concurrently": "^9.0.1",
+    "playwright-core": "^1.58.2"
   }
 }

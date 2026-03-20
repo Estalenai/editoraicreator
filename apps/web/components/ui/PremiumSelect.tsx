@@ -106,6 +106,28 @@ export function PremiumSelect({
 
   return (
     <div ref={rootRef} className={`ea-select ${className}`.trim()}>
+      <select
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        aria-label={ariaLabel || placeholder}
+        disabled={disabled}
+        tabIndex={-1}
+        style={{
+          position: "fixed",
+          left: "-9999px",
+          top: 0,
+          width: 1,
+          height: 1,
+          opacity: 0,
+          pointerEvents: "none",
+        }}
+      >
+        {options.map((option) => (
+          <option key={`native-${option.value}`} value={option.value} disabled={option.disabled}>
+            {option.label}
+          </option>
+        ))}
+      </select>
       <button
         type="button"
         className={`ea-select-trigger ${triggerClassName}`.trim()}

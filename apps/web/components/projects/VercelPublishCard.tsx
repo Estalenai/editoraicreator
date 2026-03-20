@@ -188,6 +188,9 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
     () => availableProjects.find((item) => item.id === selectedProjectId) || availableProjects[0] || null,
     [availableProjects, selectedProjectId]
   );
+  const selectedProjectIdValue = selectedProject?.id || "";
+  const selectedProjectTitle = selectedProject?.title || "";
+  const selectedProjectKind = selectedProject?.kind || "";
   const selectedProjectData = selectedProject ? projectDataMap[selectedProject.id] ?? selectedProject.data : null;
   const selectedProjectCanonical = useMemo(
     () =>
@@ -211,17 +214,38 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
   }, [selectedProject, selectedProjectCanonical]);
 
   useEffect(() => {
-    if (!selectedProject) return;
-    const suggestedFramework = recommendVercelFramework(selectedProject.kind);
+    if (!selectedProjectIdValue) return;
+    const suggestedFramework = recommendVercelFramework(selectedProjectKind);
     setTeamSlug(currentBinding?.teamSlug || workspace?.defaultTeamSlug || "");
-    setVercelProjectName(currentBinding?.vercelProjectName || buildDefaultProjectName(selectedProject));
+    setVercelProjectName(
+      currentBinding?.vercelProjectName ||
+        buildDefaultProjectName({
+          id: selectedProjectIdValue,
+          title: selectedProjectTitle,
+          kind: selectedProjectKind,
+          data: selectedProjectData,
+        })
+    );
     setFramework(currentBinding?.framework || suggestedFramework);
     setRootDirectory(currentBinding?.rootDirectory || recommendedRootDirectory(currentBinding?.framework || suggestedFramework));
     setDeployStatus(currentBinding?.deployStatus || "draft");
     setPreviewUrl(currentBinding?.previewUrl || "");
     setProductionUrl(currentBinding?.productionUrl || "");
     setNotice(null);
-  }, [currentBinding, selectedProject, workspace?.defaultTeamSlug]);
+  }, [
+    selectedProjectIdValue,
+    selectedProjectTitle,
+    selectedProjectKind,
+    selectedProjectData,
+    currentBinding?.teamSlug,
+    currentBinding?.vercelProjectName,
+    currentBinding?.framework,
+    currentBinding?.rootDirectory,
+    currentBinding?.deployStatus,
+    currentBinding?.previewUrl,
+    currentBinding?.productionUrl,
+    workspace?.defaultTeamSlug,
+  ]);
 
   const compact = variant === "compact";
   const connected = Boolean(currentBinding);
