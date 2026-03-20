@@ -14,16 +14,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <MotionRuntime />
         <div className="app-shell-bg">
           <div className="app-shell-wrapper">
-            <header className="app-brand-bar">
-              <div className="app-brand-mark-group">
-                <div className="app-brand-mark" />
-                <strong>Editor AI Creator</strong>
+            <div className="app-shell-frame">
+              <header className="app-shell-head">
+                <div className="app-brand-mark-group">
+                  <div className="app-brand-mark" />
+                  <div className="app-shell-head-copy">
+                    <strong>Editor AI Creator</strong>
+                    <span className="app-shell-head-note">Workspace integrado para creators, editor, projetos e saída.</span>
+                  </div>
+                </div>
+                <span className="app-brand-badge">EditexAI</span>
+              </header>
+              <div className="app-shell-body">
+                <AppTopNav />
+                <main className="app-shell-main">{children}</main>
               </div>
-              <span className="app-brand-badge">EditexAI</span>
-            </header>
-            <div className="app-shell-body">
-              <AppTopNav />
-              <main className="app-shell-main">{children}</main>
             </div>
           </div>
         </div>
