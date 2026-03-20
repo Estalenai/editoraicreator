@@ -17,6 +17,7 @@ import {
   toUserFacingError,
   toUserFacingGenerationSuccess,
 } from "../../lib/uiFeedback";
+import { createCreatorClipsProjectData } from "../../lib/projectModel";
 
 type ClipResult = {
   ok?: boolean;
@@ -502,8 +503,7 @@ export function CreatorClipsCard({ walletCommon, onRefetch }: Props) {
 
     try {
       const ideaSnippet = clipIdea.trim().slice(0, 60) || "clipe";
-      const payload = {
-        type: "creator_clips",
+      const payload = createCreatorClipsProjectData({
         clipIdea,
         visualStyle,
         tone,
@@ -515,11 +515,11 @@ export function CreatorClipsCard({ walletCommon, onRefetch }: Props) {
         language,
         notes,
         generated: {
-          prompt_used: lastPromptUsed,
+          prompt_used: lastPromptUsed || undefined,
           result: clipResult,
           clip_url: pickClipUrl(clipResult),
         },
-      };
+      });
 
       const created = savedProjectId
         ? await api.updateProject(savedProjectId, {

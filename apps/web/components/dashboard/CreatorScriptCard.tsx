@@ -11,6 +11,7 @@ import { usePromptPreferences } from "../../hooks/usePromptPreferences";
 import { PremiumSelect } from "../ui/PremiumSelect";
 import { CreatorPlannerPanel } from "./CreatorPlannerPanel";
 import { extractApiErrorMessage, toUserFacingError, toUserFacingGenerationSuccess } from "../../lib/uiFeedback";
+import { createCreatorScriptsProjectData } from "../../lib/projectModel";
 
 type ScriptStructuredResult = {
   title?: string;
@@ -381,8 +382,7 @@ export function CreatorScriptCard({ walletCommon, onRefetch }: Props) {
 
     try {
       const themeSnippet = theme.trim().slice(0, 60) || "roteiro";
-      const payload = {
-        type: "creator_scripts",
+      const payload = createCreatorScriptsProjectData({
         theme,
         format,
         tone,
@@ -394,9 +394,9 @@ export function CreatorScriptCard({ walletCommon, onRefetch }: Props) {
         generated: {
           structured: resultStructured,
           raw_text: resultText,
-          prompt_used: lastPromptUsed,
+          prompt_used: lastPromptUsed || undefined,
         },
-      };
+      });
 
       const created = savedProjectId
         ? await api.updateProject(savedProjectId, {

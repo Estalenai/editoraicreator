@@ -1,5 +1,7 @@
 "use client";
 
+import { ensureCanonicalProjectData } from "./projectModel";
+
 export type VercelFramework = "nextjs" | "vite" | "static";
 export type VercelDeployStatus = "draft" | "ready" | "published";
 export type VercelOutputStage = "draft" | "exported" | "published";
@@ -17,6 +19,7 @@ export type VercelProjectSummary = {
   id: string;
   title: string;
   kind?: string;
+  data?: any;
 };
 
 export type VercelProjectBinding = {
@@ -235,6 +238,11 @@ export function buildVercelDeployManifest(
   project: VercelProjectSummary,
   binding: Omit<VercelProjectBinding, "updatedAt"> | VercelProjectBinding
 ) {
+  const canonical = ensureCanonicalProjectData(project.data, {
+    projectKind: project.kind,
+    projectTitle: project.title,
+  });
+
   return {
     kind: "editor-ai-creator.vercel-beta",
     version: 1,
@@ -244,6 +252,10 @@ export function buildVercelDeployManifest(
       id: project.id,
       title: project.title,
       kind: project.kind || "general",
+      source: canonical.source,
+      output: canonical.output,
+      deliverable: canonical.deliverable,
+      delivery: canonical.delivery,
     },
     vercel: {
       projectName: binding.vercelProjectName,

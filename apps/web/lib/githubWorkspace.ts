@@ -1,3 +1,5 @@
+import { ensureCanonicalProjectData } from "./projectModel";
+
 export type GitHubWorkspaceTarget = "app" | "site";
 
 export type GitHubWorkspace = {
@@ -273,13 +275,17 @@ function buildStarterStructure(target: GitHubWorkspaceTarget): string[] {
 
 export function buildGitHubProjectBundle(project: GitHubProjectRef, workspace: GitHubWorkspace | null) {
   const handoffTarget = workspace?.target === "app" ? "app" : "site";
+  const canonical = ensureCanonicalProjectData(project.data, {
+    projectKind: project.kind,
+    projectTitle: project.title,
+  });
 
   return {
     schema: "editor-ai-creator.github-beta.v1",
     exportedAt: new Date().toISOString(),
     product: "Editor AI Creator",
     handoff: {
-      stage: "exported",
+      stage: canonical.delivery.stage === "published" ? "published" : "exported",
       target: handoffTarget,
       steps: ["gerar", "editar", "salvar", "exportar"],
       starterStructure: buildStarterStructure(handoffTarget),
@@ -300,6 +306,10 @@ export function buildGitHubProjectBundle(project: GitHubProjectRef, workspace: G
       id: project.id,
       title: project.title,
       kind: project.kind,
+      source: canonical.source,
+      output: canonical.output,
+      deliverable: canonical.deliverable,
+      delivery: canonical.delivery,
       data: project.data ?? null,
     },
   };

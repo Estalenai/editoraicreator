@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
 import { toUserFacingError } from "../../lib/uiFeedback";
+import { getCanonicalProjectSummary } from "../../lib/projectModel";
 import {
   clearGitHubWorkspace,
   downloadGitHubProjectBundle,
@@ -147,6 +148,16 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
   }, [projectId]);
 
   const repoLabel = useMemo(() => formatGitHubRepoLabel(workspace), [workspace]);
+  const projectSummary = useMemo(
+    () =>
+      project
+        ? getCanonicalProjectSummary(project.data, {
+            projectKind: project.kind,
+            projectTitle: project.title,
+          })
+        : null,
+    [project]
+  );
   const canLinkIdentity = useMemo(() => typeof (supabase.auth as any)?.linkIdentity === "function", []);
   const versionSummaryLabel = useMemo(() => {
     if (project) {
@@ -383,10 +394,10 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
           <div className="github-workspace-status-item">
             <span className="github-workspace-status-label">Projeto atual</span>
             <strong>{project?.title || "Abra um projeto para preparar a continuidade"}</strong>
-            <small>{project ? `${project.kind} • ${versionSummaryLabel}` : "O editor usa essa base para salvar versões e exportar snapshots."}</small>
+            <small>{project ? `${project.kind} • ${projectSummary?.outputStageLabel || "Draft"} • ${versionSummaryLabel}` : "O editor usa essa base para salvar versões e exportar snapshots."}</small>
           </div>
           <div className="github-workspace-status-item">
-            <span className="github-workspace-status-label">Saída atual</span>
+            <span className="github-workspace-status-label">Handoff GitHub</span>
             <strong>{githubDeliveryStage.label}</strong>
             <small>{githubDeliveryStage.detail}</small>
           </div>
@@ -576,7 +587,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
               <small>Última atualização: {formatDateLabel(lastVersionSavedAt)}</small>
             </div>
             <div className="github-workspace-status-item">
-              <span className="github-workspace-status-label">Saída atual</span>
+              <span className="github-workspace-status-label">Handoff GitHub</span>
               <strong>{githubDeliveryStage.label}</strong>
               <small>{githubDeliveryStage.detail}</small>
             </div>

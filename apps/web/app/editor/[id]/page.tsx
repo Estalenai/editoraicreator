@@ -7,6 +7,7 @@ import { EditorShell, EditorTab } from "../../../components/editor/EditorShell";
 import { GitHubWorkspaceCard } from "../../../components/projects/GitHubWorkspaceCard";
 import { VercelPublishCard } from "../../../components/projects/VercelPublishCard";
 import { toUserFacingError, toUserFacingGenerationSuccess } from "../../../lib/uiFeedback";
+import { ensureCanonicalProjectData, parseLegacyProjectPayload, syncProjectDataFromEditor } from "../../../lib/projectModel";
 
 type Project = { id: string; title: string; kind: string; data?: any };
 
@@ -169,7 +170,7 @@ function extractProjectPayload(payload: any): Project {
 }
 
 function ensureEditor(project: Project): EditorDoc {
-  const d = (project.data || {}) as any;
+  const d = ensureCanonicalProjectData(project.data, { projectKind: project.kind, projectTitle: project.title }) as any;
   const e = (d.editor || {}) as any;
 
   return {
@@ -235,32 +236,7 @@ function ensureEditor(project: Project): EditorDoc {
 }
 
 function parseCreatorProjectData(project: Project): any | null {
-  const rawData = project.data;
-  if (!rawData || typeof rawData !== "object") return null;
-
-  if (typeof rawData.content === "string") {
-    try {
-      const parsed = JSON.parse(rawData.content);
-      if (parsed && typeof parsed === "object") return parsed;
-    } catch {
-      return {
-        type: "legacy_content",
-        raw_text: String(rawData.content || "").trim(),
-      };
-    }
-  }
-
-  if (
-    rawData.type ||
-    rawData.generated ||
-    rawData.result ||
-    rawData.projectName ||
-    rawData.clipIdea
-  ) {
-    return rawData;
-  }
-
-  return null;
+  return parseLegacyProjectPayload(project.data);
 }
 
 function normalizeStringList(value: unknown): string[] {
@@ -271,236 +247,28 @@ function normalizeStringList(value: unknown): string[] {
 }
 
 function buildCreatorSnapshot(project: Project): CreatorSnapshot | null {
-  const payload = parseCreatorProjectData(project);
-  if (!payload || typeof payload !== "object") return null;
+  const canonical = ensureCanonicalProjectData(project.data, {
+    projectKind: project.kind,
+    projectTitle: project.title,
+  });
 
-  if (payload.type === "creator_post") {
-    const result = payload.result || {};
-    const platform = String(payload.platform || "").trim();
-    const contentType = String(payload.contentType || "").trim();
-    const tone = String(payload.tone || "").trim();
-    const objective = String(payload.objective || "").trim();
-    const theme = String(payload.theme || "").trim();
-    const caption = String(result.caption || "").trim();
-    const cta = String(result.cta || "").trim();
-    const hashtagsList = normalizeStringList(result.hashtags);
-    const hashtags = hashtagsList.join(" ");
-    const variations = normalizeStringList(result.variations);
-    const mediaSuggestion = String(result.mediaSuggestion || "").trim();
-    const checklist = normalizeStringList(result.platformChecklist);
-    return {
-      source: "Creator Post",
-      summary: "Post salvo a partir de Creators com briefing, legenda e próximos passos prontos para continuidade no editor.",
-      details: [
-        platform ? `Plataforma\n${platform}` : "",
-        contentType ? `Formato\n${contentType}` : "",
-        theme ? `Briefing\n${theme}` : "",
-        caption ? `Legenda\n${caption}` : "",
-        hashtags ? `Hashtags\n${hashtags}` : "",
-        cta ? `CTA\n${cta}` : "",
-        mediaSuggestion ? `Midia sugerida\n${mediaSuggestion}` : "",
-        variations.length ? `Variacoes\n- ${variations.join("\n- ")}` : "",
-        checklist.length ? `Checklist\n- ${checklist.join("\n- ")}` : "",
-      ]
-        .filter(Boolean)
-        .join("\n\n"),
-      prefillText: [caption, hashtags, cta ? `CTA: ${cta}` : ""].filter(Boolean).join("\n\n"),
-      briefingFields: [
-        { label: "Plataforma", value: platform },
-        { label: "Formato", value: contentType },
-        { label: "Tom", value: tone },
-        { label: "Objetivo", value: objective },
-      ].filter((item) => item.value),
-      outputFields: [
-        { label: "Hashtags", value: hashtagsList.length ? `${hashtagsList.length} conectadas` : "" },
-        { label: "CTA", value: cta },
-        { label: "Mídia sugerida", value: mediaSuggestion },
-        { label: "Variações", value: variations.length ? `${variations.length} prontas para iteração` : "" },
-      ].filter((item) => item.value),
-      nextAction: "Refine a legenda principal, salve a primeira versão do post e registre exported quando a peça realmente sair da plataforma.",
-    };
+  if (canonical.source.origin === "editor_new" && !parseCreatorProjectData(project)) {
+    return null;
   }
 
-  if (payload.type === "creator_music") {
-    const result = payload.result || {};
-    const lyrics = String(result.lyrics || "").trim();
-    const audioUrl = String(result.audio_url || "").trim();
-    return {
-      source: "Creator Music",
-      summary: "Trilha salva a partir de Creators com metadados e referencia de audio.",
-      details: [
-        result.title ? `Titulo\n${String(result.title).trim()}` : "",
-        audioUrl ? `Audio\n${audioUrl}` : "",
-        result.provider ? `Provedor\n${String(result.provider).trim()}` : "",
-        lyrics ? `Letras / direcao\n${lyrics}` : "",
-      ]
-        .filter(Boolean)
-        .join("\n\n"),
-      prefillText: [
-        result.title ? `Titulo: ${String(result.title).trim()}` : "",
-        audioUrl ? `Audio: ${audioUrl}` : "",
-        lyrics,
-      ]
-        .filter(Boolean)
-        .join("\n\n"),
-    };
+  if (!canonical.source.label || !canonical.source.summary) {
+    return null;
   }
 
-  if (payload.type === "creator_scripts") {
-    const generated = payload.generated || {};
-    const structured = generated.structured || {};
-    const theme = String(payload.theme || "").trim();
-    const format = String(payload.format || "").trim();
-    const tone = String(payload.tone || "").trim();
-    const audience = String(payload.audience || "").trim();
-    const duration = String(payload.duration || "").trim();
-    const objective = String(payload.objective || "").trim();
-    const finalScript = String(structured.final_script || generated.raw_text || "").trim();
-    const developmentPoints = normalizeStringList(structured.development_points);
-    return {
-      source: "Creator Scripts",
-      summary: "Roteiro salvo a partir de Creators com estrutura, CTA e continuidade prontos para revisão editorial.",
-      details: [
-        format ? `Formato\n${format}` : "",
-        theme ? `Tema\n${theme}` : "",
-        structured.title ? `Titulo\n${String(structured.title).trim()}` : "",
-        structured.opening ? `Abertura\n${String(structured.opening).trim()}` : "",
-        developmentPoints.length ? `Desenvolvimento\n- ${developmentPoints.join("\n- ")}` : "",
-        structured.closing ? `Encerramento\n${String(structured.closing).trim()}` : "",
-        finalScript ? `Roteiro final\n${finalScript}` : "",
-        structured.cta ? `CTA\n${String(structured.cta).trim()}` : "",
-      ]
-        .filter(Boolean)
-        .join("\n\n"),
-      prefillText: finalScript,
-      briefingFields: [
-        { label: "Formato", value: format },
-        { label: "Tom", value: tone },
-        { label: "Público", value: audience },
-        { label: "Objetivo", value: objective },
-        { label: "Duração", value: duration },
-      ].filter((item) => item.value),
-      outputFields: [
-        { label: "Hook", value: structured.opening ? "Abertura pronta" : "" },
-        { label: "Desenvolvimento", value: developmentPoints.length ? `${developmentPoints.length} bloco(s)` : "" },
-        { label: "Fechamento", value: structured.closing ? "Encerramento pronto" : "" },
-        { label: "CTA", value: structured.cta ? "CTA definido" : "" },
-      ].filter((item) => item.value),
-      nextAction: "Abra a revisão editorial, marque o roteiro como pronto para revisão e salve um checkpoint antes de registrar exported.",
-    };
-  }
-
-  if (payload.type === "creator_ads") {
-    const generated = payload.generated || {};
-    const structured = generated.structured || {};
-    const fullVersion = String(structured.full_version || generated.raw_text || "").trim();
-    return {
-      source: "Creator Ads",
-      summary: "Peca de anuncio salva a partir de Creators com copy pronta para refinamento.",
-      details: [
-        structured.headline ? `Headline\n${String(structured.headline).trim()}` : "",
-        fullVersion ? `Versao completa\n${fullVersion}` : "",
-        structured.cta ? `CTA\n${String(structured.cta).trim()}` : "",
-      ]
-        .filter(Boolean)
-        .join("\n\n"),
-      prefillText: fullVersion,
-    };
-  }
-
-  if (payload.type === "creator_clips") {
-    const generated = payload.generated || {};
-    const result = generated.result || {};
-    const clipIdea = String(payload.clipIdea || "").trim();
-    const visualStyle = String(payload.visualStyle || "").trim();
-    const tone = String(payload.tone || "").trim();
-    const platform = String(payload.platform || "").trim();
-    const duration = Number.isFinite(Number(payload.durationSec)) ? `${Number(payload.durationSec)}s` : "";
-    const aspectRatio = String(payload.aspectRatio || "").trim();
-    const quality = String(payload.quality || "").trim();
-    const clipStatus = String(result.status || "").trim();
-    const provider = String(result.provider || "").trim();
-    const model = String(result.model || "").trim();
-    const clipUrl = String(generated.clip_url || result?.output?.video_url || result?.assets?.preview_url || "").trim();
-    const thumbnailUrl = String(result?.output?.thumbnail_url || "").trim();
-    return {
-      source: "Creator Clips",
-      summary: clipUrl
-        ? "Clipe salvo a partir de Creators com link visual pronto para revisão, checkpoint e saída."
-        : "Job de vídeo salvo a partir de Creators com status, briefing visual e continuidade pronta para o editor.",
-      details: [
-        clipIdea ? `Ideia do clipe\n${clipIdea}` : "",
-        visualStyle ? `Estilo visual\n${visualStyle}` : "",
-        platform ? `Plataforma\n${platform}` : "",
-        result.jobId ? `Job ID\n${String(result.jobId).trim()}` : "",
-        clipStatus ? `Status\n${clipStatus}` : "",
-        provider ? `Provedor\n${provider}${model ? ` · ${model}` : ""}` : "",
-        clipUrl ? `URL do vídeo\n${clipUrl}` : "",
-        thumbnailUrl ? `Thumbnail\n${thumbnailUrl}` : "",
-        generated.prompt_used ? `Prompt usado\n${String(generated.prompt_used).trim()}` : "",
-      ]
-        .filter(Boolean)
-        .join("\n\n"),
-      prefillText: [
-        clipIdea ? `Ideia: ${clipIdea}` : "",
-        clipStatus ? `Status: ${clipStatus}` : "",
-        clipUrl ? `Video: ${clipUrl}` : "",
-      ]
-        .filter(Boolean)
-        .join("\n\n"),
-      briefingFields: [
-        { label: "Estilo", value: visualStyle },
-        { label: "Tom", value: tone },
-        { label: "Plataforma", value: platform },
-        { label: "Duração", value: duration },
-        { label: "Formato", value: aspectRatio },
-        { label: "Qualidade", value: quality },
-      ].filter((item) => item.value),
-      outputFields: [
-        { label: "Job", value: result.jobId ? `ID ${String(result.jobId).trim()}` : "" },
-        { label: "Status", value: clipStatus || "" },
-        { label: "Saída visual", value: clipUrl ? "Link do clipe disponível" : "Aguardando link final" },
-        { label: "Publicação", value: clipUrl ? "Pronto para revisão visual" : "Acompanhar job antes da saída" },
-      ].filter((item) => item.value),
-      nextAction: clipUrl
-        ? "Abra o clipe no editor, valide o ativo visual, salve um checkpoint e registre exported quando a saída realmente sair da plataforma."
-        : "Leve o job para o editor, acompanhe o status do clipe e só registre exported quando o link final estiver disponível.",
-    };
-  }
-
-  if (payload.type === "creator_no_code") {
-    const generated = payload.generated || {};
-    const structured = generated.structured || {};
-    const overview = String(structured.product_overview || generated.raw_text || "").trim();
-    const modules = normalizeStringList(structured.core_modules);
-    return {
-      source: "Creator No Code",
-      summary: "Blueprint salvo a partir de Creators com estrutura inicial do produto.",
-      details: [
-        payload.projectName ? `Projeto\n${String(payload.projectName).trim()}` : "",
-        overview ? `Visao do produto\n${overview}` : "",
-        modules.length ? `Modulos principais\n- ${modules.join("\n- ")}` : "",
-      ]
-        .filter(Boolean)
-        .join("\n\n"),
-      prefillText: [payload.projectName ? `Projeto: ${String(payload.projectName).trim()}` : "", overview]
-        .filter(Boolean)
-        .join("\n\n"),
-    };
-  }
-
-  if (payload.type === "legacy_content") {
-    const rawText = String(payload.raw_text || "").trim();
-    if (!rawText) return null;
-    return {
-      source: "Contexto importado",
-      summary: "Projeto salvo antes da estrutura atual do editor.",
-      details: rawText,
-      prefillText: rawText,
-    };
-  }
-
-  return null;
+  return {
+    source: canonical.source.label,
+    summary: canonical.source.summary,
+    details: canonical.source.details,
+    prefillText: canonical.source.prefillText,
+    briefingFields: canonical.source.briefingFields,
+    outputFields: canonical.source.outputFields,
+    nextAction: canonical.source.nextAction,
+  };
 }
 
 function pushStep(list: AiStep[], title: string, details?: string): AiStep[] {
@@ -1206,24 +974,60 @@ export default function EditorProjectPage() {
   async function persistEditor(next: EditorDoc, feedbackText: string) {
     if (!project) return null;
 
-    const updated = await api.updateProject(project.id, {
-      data: {
-        ...(project.data || {}),
-        editor: {
-          version: 1,
-          mode: next.mode,
-          doc: next.doc,
-          timeline: next.timeline,
-          workflow: next.workflow,
-          course: next.course,
-          website: next.website,
-          aiSteps: next.aiSteps,
-          review: next.review,
-          versions: next.versions,
-          checkpoints: next.checkpoints,
-          delivery: next.delivery,
+    const nextOutputStageMeta = OUTPUT_STAGE_META[next.delivery.outputStage];
+    const nextReviewStatus = (next.review.status || "draft") as ReviewStatus;
+    const nextReviewStatusMeta = REVIEW_STATUS_META[nextReviewStatus];
+    const nextPrimaryOutput = primaryAsset
+      ? {
+          id: primaryAsset.id,
+          label: primaryAsset.label,
+          kind: primaryAsset.type,
+          value: primaryAsset.value,
+          note: primaryAsset.note,
+          body: primaryAsset.id === "main-doc" ? next.doc.text : undefined,
+          url: primaryAsset.url || null,
+          state: primaryAsset.state,
         }
-      }
+      : null;
+    const nextData = syncProjectDataFromEditor(project.data, {
+      projectKind: project.kind,
+      editor: {
+        version: 1,
+        mode: next.mode,
+        doc: next.doc,
+        timeline: next.timeline,
+        workflow: next.workflow,
+        course: next.course,
+        website: next.website,
+        aiSteps: next.aiSteps,
+        review: next.review,
+        versions: next.versions,
+        checkpoints: next.checkpoints,
+        delivery: next.delivery,
+      },
+      outputAssets,
+      primaryOutput: nextPrimaryOutput,
+      delivery: {
+        stage: next.delivery.outputStage,
+        exportTarget: next.delivery.exportTarget,
+        connectedStorage: next.delivery.connectedStorage,
+        mediaRetention: "externalized",
+        lastExportedAt: next.delivery.lastExportedAt,
+        lastPublishedAt: next.delivery.lastPublishedAt,
+        history: next.delivery.history,
+      },
+      deliverable: {
+        label: activeDeliverableLabel,
+        summary: `${nextOutputStageMeta.label} · ${nextReviewStatusMeta.label} · ${outputMetrics.ready} saída(s) pronta(s)`,
+        reviewStatus: nextReviewStatus,
+        latestVersionId: next.versions[0]?.id || null,
+        latestCheckpointId: next.checkpoints[0]?.id || null,
+        nextAction: deliverableStages.find((item) => item.status === "active")?.detail || "Refinar a peça principal",
+      },
+    });
+
+    const updated = await api.updateProject(project.id, {
+      data: nextData,
     });
 
     const proj = extractProjectPayload(updated);
@@ -1232,7 +1036,7 @@ export default function EditorProjectPage() {
     setTransparentMode(next.mode.transparent);
     setAiSteps(next.aiSteps);
     setFactResult(next.review.factCheck || null);
-    setReviewStatus(next.review.status || "draft");
+    setReviewStatus(nextReviewStatus);
     setSaveFeedback(feedbackText);
     return proj;
   }
@@ -2264,7 +2068,7 @@ export default function EditorProjectPage() {
             />
             <VercelPublishCard
               variant="compact"
-              project={project ? { id: project.id, title, kind: project.kind } : null}
+              project={project ? { id: project.id, title, kind: project.kind, data: project.data } : null}
             />
           </div>
         }

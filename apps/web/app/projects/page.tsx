@@ -6,6 +6,7 @@ import { useDashboardBootstrap } from "../../hooks/useDashboardBootstrap";
 import { BetaAccessBlockedView } from "../../components/waitlist/BetaAccessBlockedView";
 import { GitHubWorkspaceCard } from "../../components/projects/GitHubWorkspaceCard";
 import { VercelPublishCard } from "../../components/projects/VercelPublishCard";
+import { ensureCanonicalProjectData, getCanonicalProjectSummary } from "../../lib/projectModel";
 
 function getProjectId(project: any) {
   return String(project?.id || project?.project_id || "").trim();
@@ -26,12 +27,26 @@ export default function ProjectsPage() {
 
   const normalizedProjects = useMemo(
     () =>
-      projects.map((project: any) => ({
-        id: getProjectId(project),
-        title: project?.name || project?.title || project?.id || "Projeto sem título",
-        kind: String(project?.kind || project?.type || "projeto"),
-        updatedAt: project?.updated_at || project?.created_at || null,
-      })),
+      projects.map((project: any) => {
+        const title = project?.name || project?.title || project?.id || "Projeto sem título";
+        const kind = String(project?.kind || project?.type || "projeto");
+        const data = ensureCanonicalProjectData(project?.data, {
+          projectKind: kind,
+          projectTitle: title,
+        });
+        const summary = getCanonicalProjectSummary(data, {
+          projectKind: kind,
+          projectTitle: title,
+        });
+        return {
+          id: getProjectId(project),
+          title,
+          kind,
+          updatedAt: project?.updated_at || project?.created_at || null,
+          data,
+          summary,
+        };
+      }),
     [projects]
   );
 
@@ -151,13 +166,13 @@ export default function ProjectsPage() {
                 <div className="dashboard-project-link-main">
                   <span className="dashboard-project-link-title">{project.title}</span>
                   <span className="dashboard-project-link-meta">
-                    {project.kind}
+                    {project.kind} • {project.summary.outputStageLabel} • {project.summary.reviewStatusLabel}
                     {project.updatedAt
                       ? ` • atualizado em ${new Date(project.updatedAt).toLocaleDateString("pt-BR")}`
                       : ""}
                   </span>
                 </div>
-                <span className="dashboard-project-link-cta">Abrir</span>
+                <span className="dashboard-project-link-cta">{project.summary.deliverable.label}</span>
               </Link>
             ))}
           </div>
@@ -211,7 +226,7 @@ export default function ProjectsPage() {
         </div>
         <div className="dashboard-section-body">
           <GitHubWorkspaceCard />
-          <VercelPublishCard projects={normalizedProjects.map((project) => ({ id: project.id, title: project.title, kind: project.kind }))} />
+          <VercelPublishCard projects={normalizedProjects.map((project) => ({ id: project.id, title: project.title, kind: project.kind, data: project.data }))} />
         </div>
         <div className="helper-text-ea">
           Use essas integrações quando o projeto já estiver suficientemente maduro para sair da plataforma. O núcleo do beta pago/controlado continua sendo creators hero, editor, projetos e saída rastreada.

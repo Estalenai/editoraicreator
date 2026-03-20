@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { api } from "../../../lib/api";
+import { createEditorProjectData } from "../../../lib/projectModel";
 
 type Kind = "video" | "text" | "automation" | "course" | "website";
 
@@ -54,30 +55,7 @@ export default function NewEditorProjectPage() {
       const created = await api.createProject({
         title,
         kind,
-        data: {
-          editor: {
-            version: 1,
-            mode: { professor: false, transparent: false },
-            timeline: { clips: [] },
-            doc: { text: "" },
-            workflow: { nodes: [], edges: [] },
-            course: { sections: [] },
-            website: { blocks: [] },
-            aiSteps: [],
-            review: { factCheck: null, status: "draft" },
-            versions: [],
-            checkpoints: [],
-            delivery: {
-              exportTarget: "device",
-              connectedStorage: null,
-              mediaRetention: "externalized",
-              outputStage: "draft",
-              lastExportedAt: null,
-              lastPublishedAt: null,
-              history: [],
-            }
-          }
-        }
+        data: createEditorProjectData({ kind, title }),
       });
 
       const id = extractProjectId(created);

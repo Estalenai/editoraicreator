@@ -11,6 +11,7 @@ import { usePromptPreferences } from "../../hooks/usePromptPreferences";
 import { PremiumSelect } from "../ui/PremiumSelect";
 import { CreatorPlannerPanel } from "./CreatorPlannerPanel";
 import { extractApiErrorMessage, toUserFacingError, toUserFacingGenerationSuccess } from "../../lib/uiFeedback";
+import { createCreatorPostProjectData } from "../../lib/projectModel";
 
 type CreatorPostResult = {
   caption: string;
@@ -539,8 +540,7 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
 
     const themeSnippet = theme.trim().slice(0, 60) || "sem tema";
     const title = `${platform} ${contentType} - ${themeSnippet}`;
-    const dataPayload = {
-      type: "creator_post",
+    const dataPayload = createCreatorPostProjectData({
       platform,
       contentType,
       tone,
@@ -548,20 +548,19 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
       language,
       theme,
       result,
-    };
-    const content = JSON.stringify(dataPayload);
+    });
 
     try {
       const body = savedProjectId
         ? await api.updateProject(savedProjectId, {
             title,
             kind: "post",
-            data: { content },
+            data: dataPayload,
           })
         : await api.createProject({
             title,
             kind: "post",
-            data: { content },
+            data: dataPayload,
           });
 
       const projectId = String(body?.item?.id || body?.id || savedProjectId || "").trim();

@@ -23,6 +23,7 @@ import {
   type VercelProjectSummary,
   type VercelWorkspaceState,
 } from "../../lib/vercelWorkspace";
+import { getCanonicalProjectSummary } from "../../lib/projectModel";
 
 type ProjectInput = {
   id?: string;
@@ -31,6 +32,7 @@ type ProjectInput = {
   name?: string;
   kind?: string;
   type?: string;
+  data?: any;
 };
 
 type Props = {
@@ -58,6 +60,7 @@ function normalizeProject(project: ProjectInput | null | undefined): VercelProje
     id,
     title: String(project?.title || project?.name || "Projeto sem título").trim(),
     kind: String(project?.kind || project?.type || "").trim(),
+    data: project?.data,
   };
 }
 
@@ -150,6 +153,16 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
   const currentBinding = selectedProject ? workspace?.projectBindings?.[selectedProject.id] || null : null;
   const connected = Boolean(currentBinding);
   const outputStage = resolveVercelOutputStage(currentBinding);
+  const projectSummary = useMemo(
+    () =>
+      selectedProject
+        ? getCanonicalProjectSummary(selectedProject.data, {
+            projectKind: selectedProject.kind,
+            projectTitle: selectedProject.title,
+          })
+        : null,
+    [selectedProject]
+  );
   const outputHistory = useMemo(() => currentBinding?.history || [], [currentBinding]);
   const visibleOutputHistory = useMemo(
     () => (compact ? outputHistory.slice(0, 3) : outputHistory),
@@ -357,7 +370,11 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
           <strong>{vercelDeployStatusLabel(deployStatus)}</strong>
         </div>
         <div className="vercel-publish-status-item">
-          <span>Saída atual</span>
+          <span>Estado do projeto</span>
+          <strong>{projectSummary?.outputStageLabel || "Draft"}</strong>
+        </div>
+        <div className="vercel-publish-status-item">
+          <span>Handoff Vercel</span>
           <strong>{outputStage.label}</strong>
         </div>
         <div className="vercel-publish-status-item">
