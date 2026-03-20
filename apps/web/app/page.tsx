@@ -28,7 +28,7 @@ const HOME_PROOF_SAMPLES = [
 export default function HomePage() {
   return (
     <div className="page-shell beta-entry-page">
-      <section className="premium-hero beta-entry-hero">
+      <section className="premium-hero beta-entry-hero" data-reveal>
         <div className="beta-entry-hero-grid">
           <div className="beta-entry-hero-copy">
             <div className="premium-badge premium-badge-phase beta-entry-badge">
@@ -79,7 +79,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="proof-value-section premium-card-soft">
+      <section className="proof-value-section premium-card-soft" data-reveal data-reveal-delay="60">
         <div className="proof-value-header">
           <div className="section-stack-tight">
             <p className="section-kicker">Prova de valor</p>
@@ -94,8 +94,8 @@ export default function HomePage() {
         </div>
 
         <div className="proof-value-grid">
-          {HOME_PROOF_SAMPLES.map((sample) => (
-            <article key={sample.label} className="proof-value-card premium-card-soft">
+          {HOME_PROOF_SAMPLES.map((sample, index) => (
+            <article key={sample.label} className="proof-value-card premium-card-soft" data-reveal data-reveal-delay={String(70 + index * 55)}>
               <div className="proof-value-meta-row">
                 <span className="proof-value-kicker">{sample.label}</span>
                 <span className="proof-value-chip">{sample.creator}</span>
@@ -119,13 +119,15 @@ export default function HomePage() {
         </div>
       </section>
 
-      <ClosedBetaAccessCard
-        compact
-        title="Fila de espera"
-        description="Informe seu e-mail para entrar na fila de liberação do beta pago/controlado."
-      />
+      <div data-reveal data-reveal-delay="100">
+        <ClosedBetaAccessCard
+          compact
+          title="Fila de espera"
+          description="Informe o e-mail de trabalho para entrar na fila de liberação do beta pago/controlado."
+        />
+      </div>
 
-      <div className="helper-text-ea">
+      <div className="helper-text-ea" data-reveal data-reveal-delay="140">
         Plataforma: Editor AI Creator • Assistente interno: EditexAI
       </div>
     </div>

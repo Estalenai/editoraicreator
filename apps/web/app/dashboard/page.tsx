@@ -223,7 +223,7 @@ export default function DashboardPage() {
 
   return (
     <div className="page-shell dashboard-page">
-      <section className="premium-hero dashboard-hero">
+      <section className="premium-hero dashboard-hero" data-reveal>
         <div className="hero-split">
           <div className="hero-copy">
             <div className="hero-title-stack">
@@ -287,17 +287,17 @@ export default function DashboardPage() {
           </div>
         </div>
         <div className="hero-kpi-grid hero-kpi-grid-compact">
-          <div className="premium-card-soft hero-kpi">
+          <div className="premium-card-soft hero-kpi" data-reveal data-reveal-delay="70">
             <span className="hero-kpi-label">Saldo total</span>
             <strong className="hero-kpi-value">{walletSummaryDisplay}</strong>
             <span className="helper-text-ea">{loading ? "Saldo e distribuição estão sendo sincronizados." : "Distribuição pronta para operação e conversão."}</span>
           </div>
-          <div className="premium-card-soft hero-kpi">
+          <div className="premium-card-soft hero-kpi" data-reveal data-reveal-delay="120">
             <span className="hero-kpi-label">Uso recente</span>
             <strong className="hero-kpi-value">{recentUsageValueDisplay}</strong>
             <span className="helper-text-ea">{recentUsageDetailDisplay}</span>
           </div>
-          <div className="premium-card-soft hero-kpi">
+          <div className="premium-card-soft hero-kpi" data-reveal data-reveal-delay="170">
             <span className="hero-kpi-label">Próxima decisão</span>
             <strong className="hero-kpi-value">{nextActionTitleDisplay}</strong>
             <span className="helper-text-ea">{nextActionCtaDisplay}</span>
@@ -332,7 +332,7 @@ export default function DashboardPage() {
         </div>
       ) : null}
 
-      <section className="summary-grid dashboard-summary-grid">
+      <section className="summary-grid dashboard-summary-grid" data-reveal data-reveal-delay="60">
         {loading ? (
           Array.from({ length: 4 }).map((_, index) => (
             <div key={`summary-skeleton-${index}`} className="premium-card executive-card">
@@ -393,7 +393,7 @@ export default function DashboardPage() {
 
       <ApprovedBetaOnboardingCard email={email} wallet={wallet} loading={loading} />
 
-      <section className="premium-card dashboard-section-card">
+      <section className="premium-card dashboard-section-card" data-reveal data-reveal-delay="120">
         <div className="section-head">
           <div className="section-header-ea">
             <h3 className="heading-reset">Transparência de consumo</h3>
@@ -416,7 +416,7 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      <section className="premium-card dashboard-section-card">
+      <section className="premium-card dashboard-section-card" data-reveal data-reveal-delay="150">
         <div className="section-head">
           <div className="section-header-ea">
             <h3 className="heading-reset">Projetos recentes</h3>
@@ -447,7 +447,7 @@ export default function DashboardPage() {
           </div>
         ) : (
           <div className="dashboard-section-body">
-            {recentProjects.map((project: any) => {
+            {recentProjects.map((project: any, index: number) => {
               const projectId = String(project.id || project.project_id || "");
               const content = (
                 <>
@@ -463,6 +463,8 @@ export default function DashboardPage() {
                   key={projectId || JSON.stringify(project)}
                   href={`/editor/${projectId}`}
                   className="premium-card-soft dashboard-project-link"
+                  data-reveal
+                  data-reveal-delay={String(70 + Math.min(index, 5) * 35)}
                 >
                   {content}
                 </Link>
@@ -470,6 +472,8 @@ export default function DashboardPage() {
                 <div
                   key={projectId || JSON.stringify(project)}
                   className="premium-card-soft dashboard-project-link"
+                  data-reveal
+                  data-reveal-delay={String(70 + Math.min(index, 5) * 35)}
                 >
                   {content}
                 </div>
@@ -479,7 +483,7 @@ export default function DashboardPage() {
         )}
       </section>
 
-      <section className="premium-card dashboard-section-card">
+      <section className="premium-card dashboard-section-card" data-reveal data-reveal-delay="180">
         <div className="section-header-ea">
           <h3 className="heading-reset">Núcleo do beta pago/controlado</h3>
           <p className="helper-text-ea">Atalhos para o que precisa carregar valor, retenção e continuidade real no uso recorrente.</p>
@@ -488,11 +492,13 @@ export default function DashboardPage() {
           <div className="section-stack-tight">
             <p className="section-kicker">Centro da experiência</p>
             <div className="dashboard-quick-links-grid">
-              {coreQuickLinks.map((item) => (
+              {coreQuickLinks.map((item, index) => (
                 <Link
                   key={item.href}
                   href={item.href}
                   className="premium-card-soft dashboard-quick-link"
+                  data-reveal
+                  data-reveal-delay={String(70 + index * 40)}
                 >
                   <div className="dashboard-quick-link-kicker">{item.tag}</div>
                   <div className="dashboard-project-link-title">{item.title}</div>
@@ -510,11 +516,13 @@ export default function DashboardPage() {
               Financeiro, suporte e leitura do beta continuam acessíveis, mas como apoio ao núcleo criativo e editorial.
             </p>
             <div className="dashboard-quick-links-grid">
-              {supportQuickLinks.map((item) => (
+              {supportQuickLinks.map((item, index) => (
                 <Link
                   key={item.href}
                   href={item.href}
                   className="premium-card-soft dashboard-quick-link"
+                  data-reveal
+                  data-reveal-delay={String(90 + index * 35)}
                 >
                   <div className="dashboard-quick-link-kicker">{item.tag}</div>
                   <div className="dashboard-project-link-title">{item.title}</div>
@@ -529,7 +537,7 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      <section className="premium-card dashboard-section-card">
+      <section className="premium-card dashboard-section-card" data-reveal data-reveal-delay="210">
         <div className="section-header-ea">
           <h3 className="heading-reset">Uso por feature</h3>
           <p className="helper-text-ea">Consumo por módulo para ajustar ritmo, plano e próxima ação.</p>

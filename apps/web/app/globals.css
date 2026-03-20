@@ -7745,3 +7745,99 @@ body {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+
+@keyframes premium-section-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0) scale(0.992);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+.motion-runtime [data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 18px, 0) scale(0.985);
+  filter: saturate(0.92);
+  transition:
+    opacity var(--reveal-duration, 560ms) cubic-bezier(0.22, 1, 0.36, 1),
+    transform calc(var(--reveal-duration, 560ms) + 70ms) cubic-bezier(0.16, 1, 0.3, 1),
+    filter 640ms ease;
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: transform, opacity, filter;
+}
+
+.motion-runtime [data-reveal][data-reveal-axis="x"] {
+  transform: translate3d(24px, 0, 0) scale(0.985);
+}
+
+.motion-runtime [data-reveal].is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  filter: saturate(1);
+}
+
+.premium-hero,
+.premium-card,
+.premium-card-soft,
+.proof-value-card {
+  backface-visibility: hidden;
+}
+
+.creator-active-panel,
+.creator-workspace-card {
+  animation: premium-section-enter 420ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.creators-hero-core-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.creators-hero-core-card {
+  transition:
+    transform 0.18s ease,
+    border-color 0.2s ease,
+    box-shadow 0.24s ease,
+    background 0.24s ease;
+}
+
+.creators-hero-core-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(220, 244, 255, 0.32);
+  box-shadow: 0 18px 34px rgba(2, 6, 23, 0.24);
+}
+
+.creators-hero-core-card-support {
+  border-color: rgba(255, 214, 10, 0.22);
+  background:
+    radial-gradient(200px 88px at 100% 0%, rgba(255, 214, 10, 0.08), transparent 72%),
+    linear-gradient(165deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.026));
+}
+
+.onboarding-objective-card-support {
+  border-color: rgba(255, 214, 10, 0.22);
+  background:
+    radial-gradient(180px 82px at 100% 0%, rgba(255, 214, 10, 0.07), transparent 74%),
+    linear-gradient(165deg, rgba(255, 255, 255, 0.072), rgba(255, 255, 255, 0.025));
+}
+
+@media (max-width: 1180px) {
+  .creators-hero-core-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-runtime [data-reveal],
+  .creator-active-panel,
+  .creator-workspace-card {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+}

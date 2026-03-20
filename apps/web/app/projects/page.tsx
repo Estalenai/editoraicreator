@@ -61,7 +61,7 @@ export default function ProjectsPage() {
 
   return (
     <div className="page-shell projects-page">
-      <section className="premium-hero projects-hero">
+      <section className="premium-hero projects-hero" data-reveal>
         <div className="hero-split">
           <div className="hero-copy">
             <div className="hero-title-stack">
@@ -121,7 +121,7 @@ export default function ProjectsPage() {
         </div>
       ) : null}
 
-      <section className="premium-card projects-list-section">
+      <section className="premium-card projects-list-section" data-reveal data-reveal-delay="70">
         <div className="section-head">
           <div className="section-header-ea">
             <h2 className="heading-reset">Abrir no editor</h2>
@@ -157,11 +157,13 @@ export default function ProjectsPage() {
           </div>
         ) : (
           <div className="dashboard-section-body">
-            {normalizedProjects.map((project) => (
+            {normalizedProjects.map((project, index) => (
               <Link
                 key={project.id || project.title}
                 href={project.id ? `/editor/${project.id}` : "/editor/new"}
                 className="dashboard-project-link"
+                data-reveal
+                data-reveal-delay={String(70 + Math.min(index, 5) * 40)}
               >
                 <div className="dashboard-project-link-main">
                   <span className="dashboard-project-link-title">{project.title}</span>
@@ -179,7 +181,7 @@ export default function ProjectsPage() {
         )}
       </section>
 
-      <section className="premium-card-soft projects-publish-section">
+      <section className="premium-card-soft projects-publish-section" data-reveal data-reveal-delay="110">
         <div className="section-header-ea">
           <p className="section-kicker">Pipeline de saída</p>
           <h2 className="heading-reset">Draft, exported e published sem ambiguidade</h2>
@@ -188,21 +190,21 @@ export default function ProjectsPage() {
           </p>
         </div>
         <div className="proof-value-grid">
-          <div className="proof-value-card">
+          <div className="proof-value-card" data-reveal data-reveal-delay="70">
             <div className="proof-value-block">
               <span className="proof-value-chip">Draft</span>
               <strong>No editor e em Projetos</strong>
               <p>Projeto salvo, contexto ativo e entregável ainda em refinamento.</p>
             </div>
           </div>
-          <div className="proof-value-card">
+          <div className="proof-value-card" data-reveal data-reveal-delay="120">
             <div className="proof-value-block">
               <span className="proof-value-chip">Exported</span>
               <strong>Handoff beta gerado</strong>
               <p>Snapshot GitHub ou manifest Vercel já saíram da plataforma para continuidade manual.</p>
             </div>
           </div>
-          <div className="proof-value-card">
+          <div className="proof-value-card" data-reveal data-reveal-delay="170">
             <div className="proof-value-block">
               <span className="proof-value-chip">Published</span>
               <strong>Publicado com confirmação manual</strong>
@@ -212,7 +214,7 @@ export default function ProjectsPage() {
         </div>
       </section>
 
-      <section className="premium-card projects-handoff-section">
+      <section className="premium-card projects-handoff-section" data-reveal data-reveal-delay="150">
         <div className="section-head">
           <div className="section-header-ea">
             <h2 className="heading-reset">Handoff beta e publicação manual</h2>

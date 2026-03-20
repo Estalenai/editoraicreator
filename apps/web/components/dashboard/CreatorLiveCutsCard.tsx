@@ -180,7 +180,7 @@ export function CreatorLiveCutsCard() {
     <div className="premium-card creator-workspace-card creator-workspace-card-modular">
       <div className="creator-workspace-header">
         <div className="hero-title-stack section-stack-tight">
-          <p className="section-kicker">O que você quer criar</p>
+          <p className="section-kicker">Configuração da sessão</p>
           <h3 className="heading-reset">Creator Live Cuts</h3>
         </div>
         <p className="creator-workspace-subtitle">

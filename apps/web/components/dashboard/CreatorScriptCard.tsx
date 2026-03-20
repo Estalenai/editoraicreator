@@ -472,7 +472,7 @@ export function CreatorScriptCard({ walletCommon, onRefetch }: Props) {
     >
       <div className="creator-workspace-header">
         <div className="hero-title-stack section-stack-tight">
-          <p className="section-kicker">O que você quer criar</p>
+          <p className="section-kicker">Briefing da geração</p>
           <h3 className="heading-reset">Creator Scripts</h3>
         </div>
         <p className="creator-workspace-subtitle">
@@ -694,7 +694,7 @@ export function CreatorScriptCard({ walletCommon, onRefetch }: Props) {
 
       {loadingApply && (
         <div className="premium-card-soft creator-loading-panel">
-          <div className="helper-note-inline">EditexAI está montando seu roteiro...</div>
+          <div className="helper-note-inline">EditexAI está montando o roteiro...</div>
           <div className="premium-skeleton premium-skeleton-line" style={{ width: "38%" }} />
           <div className="premium-skeleton premium-skeleton-line" style={{ width: "84%" }} />
           <div className="premium-skeleton premium-skeleton-line" style={{ width: "66%" }} />

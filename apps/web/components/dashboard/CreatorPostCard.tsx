@@ -633,7 +633,7 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
     >
       <div className="creator-workspace-header">
         <div className="hero-title-stack section-stack-tight">
-          <p className="section-kicker">O que você quer criar</p>
+          <p className="section-kicker">Briefing da geração</p>
           <h3 className="heading-reset">Creator Post</h3>
         </div>
         <p className="creator-workspace-subtitle">
@@ -841,7 +841,7 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
 
       {loadingApply && (
         <div className="premium-card-soft creator-loading-panel">
-          <div className="helper-note-inline">EditexAI está estruturando seu conteúdo...</div>
+          <div className="helper-note-inline">EditexAI está estruturando o conteúdo...</div>
           <div className="premium-skeleton premium-skeleton-line" style={{ width: "42%" }} />
           <div className="premium-skeleton premium-skeleton-line" style={{ width: "86%" }} />
           <div className="premium-skeleton premium-skeleton-line" style={{ width: "73%" }} />
@@ -937,7 +937,7 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
               </div>
 
               <div className="creator-zone-copy">
-                Dica: você pode ajustar o prompt (tom, tamanho, emojis, etc.) e gerar novamente.
+                Ajustes de prompt continuam disponíveis para refinar tom, tamanho, emojis e gerar uma nova versão.
               </div>
             </div>
           )}

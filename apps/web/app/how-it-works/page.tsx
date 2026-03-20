@@ -55,14 +55,14 @@ const RESULT_EXAMPLES = [
 export default function HowItWorksPage() {
   return (
     <div className="page-shell how-it-works-page">
-      <section className="premium-hero how-it-works-hero">
+      <section className="premium-hero how-it-works-hero" data-reveal>
         <div className="hero-split">
           <div className="hero-copy">
             <div className="hero-title-stack">
               <p className="section-kicker">Fluxo da plataforma</p>
               <h1 style={{ margin: 0, letterSpacing: -0.3 }}>Como funciona</h1>
               <p className="hero-copy-compact">
-                Uma visão curta do fluxo que o beta pago/controlado realmente sustenta hoje: gerar nos creators hero, continuar no editor, salvar em projeto e fechar a saída com clareza.
+                Uma visão curta do fluxo que o beta pago/controlado realmente sustenta hoje: creators hero, projeto, editor e saída rastreada em sequência clara.
               </p>
             </div>
           </div>
@@ -87,8 +87,8 @@ export default function HowItWorksPage() {
       </section>
 
       <section className="summary-grid how-it-works-grid">
-        {STEPS.map((step) => (
-          <article key={step.title} className="premium-card summary-card how-it-works-step">
+        {STEPS.map((step, index) => (
+          <article key={step.title} className="premium-card summary-card how-it-works-step" data-reveal data-reveal-delay={String(60 + index * 50)}>
             <div className="section-stack-tight">
               <h2 className="heading-reset">{step.title}</h2>
               <p className="helper-text-ea">{step.description}</p>
@@ -100,7 +100,7 @@ export default function HowItWorksPage() {
         ))}
       </section>
 
-      <section className="proof-value-section premium-card-soft how-it-works-proof-section">
+      <section className="proof-value-section premium-card-soft how-it-works-proof-section" data-reveal data-reveal-delay="90">
         <div className="proof-value-header">
           <div className="section-stack-tight">
             <p className="section-kicker">Exemplos concretos</p>
@@ -112,8 +112,8 @@ export default function HowItWorksPage() {
         </div>
 
         <div className="proof-value-grid">
-          {RESULT_EXAMPLES.map((example) => (
-            <article key={example.title} className="proof-value-card premium-card-soft">
+          {RESULT_EXAMPLES.map((example, index) => (
+            <article key={example.title} className="proof-value-card premium-card-soft" data-reveal data-reveal-delay={String(70 + index * 50)}>
               <div className="proof-value-stack">
                 <h3 className="heading-reset">{example.title}</h3>
                 <div className="proof-value-block">
@@ -134,10 +134,10 @@ export default function HowItWorksPage() {
         </div>
       </section>
 
-      <section className="premium-card-soft info-note how-it-works-note">
+      <section className="premium-card-soft info-note how-it-works-note" data-reveal data-reveal-delay="120">
         <strong>Entrada rápida</strong>
         <span>
-          Se você já sabe o formato do trabalho, vá direto para{" "}
+          Se o formato do trabalho já estiver claro, vá direto para{" "}
           <Link href="/editor/new" className="text-link-ea">
             /editor/new
           </Link>{" "}
@@ -145,7 +145,7 @@ export default function HowItWorksPage() {
         </span>
       </section>
 
-      <section className="premium-card-soft privacy-trust-note how-it-works-trust-note">
+      <section className="premium-card-soft privacy-trust-note how-it-works-trust-note" data-reveal data-reveal-delay="150">
         <strong>Privacidade sem ruído jurídico</strong>
         <span>O produto prioriza processamento isolado, confidencialidade operacional e não usa os dados da sua conta para treinar modelos.</span>
       </section>

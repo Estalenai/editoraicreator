@@ -25,31 +25,31 @@ function walletSummary(wallet: any | null, loading = false): string {
 const OBJECTIVE_PATHS = [
   {
     key: "post",
-    title: "Quero publicar rápido",
-    description: "Comece com Creator Post para gerar a peça-base com CTA e levar isso para o editor.",
+    title: "Publicação rápida",
+    description: "Creator Post abre o fluxo mais direto para gerar, salvar e seguir para o editor.",
     href: "/creators?tab=post",
-    cta: "Começar em Creator Post",
+    cta: "Abrir Creator Post",
   },
   {
     key: "scripts",
-    title: "Quero estruturar um vídeo",
-    description: "Use Creator Scripts para organizar a narrativa antes de gravar, editar ou transformar em clipe.",
+    title: "Roteiro e narrativa",
+    description: "Creator Scripts organiza estrutura, revisão editorial e continuidade antes da gravação.",
     href: "/creators?tab=scripts",
     cta: "Abrir Creator Scripts",
   },
   {
     key: "clips",
-    title: "Quero sair com um clipe",
-    description: "Creator Clips é o creator hero visual para transformar ideia em vídeo curto com continuidade.",
+    title: "Saída visual premium",
+    description: "Creator Clips concentra o fluxo visual com job assíncrono, status legível e handoff para o editor.",
     href: "/creators?tab=clips",
     cta: "Abrir Creator Clips",
   },
   {
     key: "supporting",
-    title: "Quero explorar apoio e labs",
-    description: "Ads, Music, Live Cuts e No Code continuam disponíveis, mas fora do núcleo principal agora.",
-    href: "/creators",
-    cta: "Ver catálogo completo",
+    title: "Campanha complementar",
+    description: "Creator Ads fecha o núcleo com peças de conversão para lançamento, mídia e distribuição.",
+    href: "/creators?tab=ads",
+    cta: "Abrir Creator Ads",
   },
 ];
 
@@ -92,13 +92,13 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
   if (!ready || !visible) return null;
 
   return (
-    <section className="premium-card onboarding-card-ea">
+    <section className="premium-card onboarding-card-ea" data-reveal data-reveal-delay="90">
       <div className="onboarding-card-head">
         <div className="section-stack">
           <p className="section-kicker">Onboarding</p>
           <h3 style={{ margin: 0 }}>Primeiros passos no beta</h3>
           <p className="meta-text-ea">
-            Entre no workspace com um fluxo simples: escolha um creator, revise a estimativa e continue em projetos.
+            Entre no workspace com um fluxo objetivo: selecione um creator hero, valide a estimativa e leve a saída para projeto e editor.
           </p>
         </div>
         <button onClick={dismiss} className="btn-ea btn-ghost btn-sm">
@@ -107,39 +107,41 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
       </div>
 
       <div className="trust-grid onboarding-trust-grid">
-        <div className="premium-card-soft trust-note">
+        <div className="premium-card-soft trust-note" data-reveal data-reveal-delay="120">
           <strong>1) Escolha um Creator</strong>
-          <span>Comece com um módulo rápido e gere sua primeira saída com contexto claro.</span>
+          <span>O núcleo hero já organiza o caminho de publicação, roteiro e clipe sem dispersar a decisão inicial.</span>
         </div>
-        <div className="premium-card-soft trust-note">
+        <div className="premium-card-soft trust-note" data-reveal data-reveal-delay="160">
           <strong>2) Revise a estimativa</strong>
-          <span>Cada geração mostra estimativa prévia de consumo antes de debitar saldo.</span>
+          <span>Cada geração mostra a estimativa operacional antes de consumir saldo.</span>
         </div>
-        <div className="premium-card-soft trust-note">
+        <div className="premium-card-soft trust-note" data-reveal data-reveal-delay="200">
           <strong>3) Salve, edite e exporte</strong>
-          <span>Projetos é o hub central: salve, retome no editor e avance para exportação.</span>
+          <span>Projetos funciona como hub central: salva, retoma no editor e preserva continuidade até a saída.</span>
         </div>
-        <div className="premium-card-soft trust-note trust-note-privacy">
+        <div className="premium-card-soft trust-note trust-note-privacy" data-reveal data-reveal-delay="240">
           <strong>4) Trabalhe com confidencialidade</strong>
-          <span>Seus dados não entram em treino de modelos; o processamento fica isolado e focado no seu workspace.</span>
+          <span>Os dados não entram em treino de modelos; o processamento permanece isolado e focado no workspace.</span>
         </div>
       </div>
 
       <div className="onboarding-objective-shell">
         <div className="section-stack">
-          <p className="section-kicker">Escolha seu objetivo inicial</p>
-          <h4 style={{ margin: 0 }}>Comece por um creator hero</h4>
+          <p className="section-kicker">Rotas iniciais recomendadas</p>
+          <h4 style={{ margin: 0 }}>Núcleo principal com um apoio complementar</h4>
           <p className="helper-text-ea">
-            O melhor ponto de entrada hoje está em Post, Scripts e Clips. O restante do catálogo continua disponível, mas sai do centro da promessa.
+            As entradas abaixo priorizam o trio hero e fecham a grade com um fluxo complementar de campanha.
           </p>
         </div>
         <div className="onboarding-objective-grid">
-          {OBJECTIVE_PATHS.map((item) => (
+          {OBJECTIVE_PATHS.map((item, index) => (
             <Link
               key={item.key}
               href={item.href}
-              className="premium-card-soft onboarding-objective-card"
+              className={`premium-card-soft onboarding-objective-card ${index === OBJECTIVE_PATHS.length - 1 ? "onboarding-objective-card-support" : ""}`}
               onClick={dismiss}
+              data-reveal
+              data-reveal-delay={String(80 + index * 55)}
             >
               <strong>{item.title}</strong>
               <div className="helper-text-ea">{item.description}</div>
@@ -153,9 +155,9 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
 
       <div className="premium-card-soft onboarding-credit-panel">
         <div className="section-stack">
-          <strong>Créditos no seu fluxo</strong>
+          <strong>Créditos no fluxo atual</strong>
           <div className="helper-text-ea">
-            Saldo atual: {summary}. A estimativa aparece antes da ação e o débito final fica no histórico.
+            Saldo atual: {summary}. A estimativa aparece antes da ação e o débito final permanece rastreável no histórico.
           </div>
         </div>
         <div className="hero-meta-row">
@@ -167,7 +169,7 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
 
       <div className="onboarding-action-row">
         <Link href="/creators?tab=post" onClick={dismiss} className="btn-link-ea btn-primary">
-          Iniciar fluxo gerar → editar → exportar
+          Iniciar fluxo gerar → salvar
         </Link>
         <Link href="/credits" onClick={dismiss} className="btn-link-ea btn-secondary">
           Entender créditos

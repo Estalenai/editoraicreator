@@ -47,7 +47,7 @@ const CREATOR_TABS: Array<{
     group: "hero",
     label: "Creator Post",
     description: "Posts com legenda, CTA e variações prontos para virar peça-mãe no editor.",
-    bestFor: "Quando você precisa publicar rápido com clareza de saída e alta chance de uso recorrente.",
+    bestFor: "Publicação rápida com clareza de saída, repetição alta e continuidade pronta para o editor.",
     expectedOutput: "Legenda principal, CTA e variações prontas para salvar em projeto.",
     continuity: "Entra no editor como base de copy, versão e exportação.",
     stageLabel: "Hero",
@@ -57,7 +57,7 @@ const CREATOR_TABS: Array<{
     group: "hero",
     label: "Creator Scripts",
     description: "Roteiros curtos e estruturados para vídeo, gravação e continuidade no editor.",
-    bestFor: "Quando precisa organizar a narrativa antes de gravar, editar ou transformar em clipe.",
+    bestFor: "Narrativa estruturada antes de gravar, editar, anunciar ou transformar em clipe.",
     expectedOutput: "Roteiro com gancho, desenvolvimento e fechamento utilizável de imediato.",
     continuity: "Vira linha mestra de vídeo, anúncio, apresentação ou refinamento editorial.",
     stageLabel: "Hero",
@@ -67,7 +67,7 @@ const CREATOR_TABS: Array<{
     group: "secondary",
     label: "Creator Ads",
     description: "Peças de conversão com briefing, headline e CTA.",
-    bestFor: "Quando o objetivo é testar mensagem e performance depois que o núcleo de conteúdo já está claro.",
+    bestFor: "Campanhas e testes de mensagem quando o núcleo editorial já está claro.",
     expectedOutput: "Copy de anúncio e variações de conversão.",
     continuity: "Complementa campanhas, mas não é o ponto mais forte do produto agora.",
     stageLabel: "Apoio",
@@ -77,7 +77,7 @@ const CREATOR_TABS: Array<{
     group: "secondary",
     label: "Creator Music",
     description: "Trilhas e direção sonora para acelerar produção.",
-    bestFor: "Quando o conteúdo já está definido e precisa ganhar identidade sonora com contexto salvo.",
+    bestFor: "Identidade sonora complementar quando o conteúdo principal já está definido.",
     expectedOutput: "Direção musical e job de trilha com acompanhamento.",
     continuity: "Apoia o pipeline criativo, mas ainda não deve carregar a promessa principal.",
     stageLabel: "Apoio",
@@ -87,7 +87,7 @@ const CREATOR_TABS: Array<{
     group: "hero",
     label: "Creator Clips",
     description: "Clipes com job assíncrono, status legível e continuidade para edição e publicação.",
-    bestFor: "Quando você quer transformar uma ideia em vídeo curto com o maior potencial de impacto visual do produto.",
+    bestFor: "Ideia transformada em vídeo curto com o maior potencial de impacto visual do produto.",
     expectedOutput: "Job de clipe com status real, preview e rota clara para o editor.",
     continuity: "Fecha a narrativa de vídeo: ideia, roteiro, geração, revisão e saída.",
     stageLabel: "Hero",
@@ -97,7 +97,7 @@ const CREATOR_TABS: Array<{
     group: "labs",
     label: "Creator Live Cuts",
     description: "Sessões de cortes ao vivo em fase inicial.",
-    bestFor: "Quando quer explorar uma operação recorrente de live, mas ainda fora do centro da proposta atual.",
+    bestFor: "Operação recorrente de live ainda fora do centro da proposta atual.",
     expectedOutput: "Sessão operacional com estimativa e acompanhamento.",
     continuity: "É promissor, porém mais especializado e menos forte como wedge neste momento.",
     stageLabel: "Lab",
@@ -107,7 +107,7 @@ const CREATOR_TABS: Array<{
     group: "labs",
     label: "Creator No Code",
     description: "Blueprint inicial de produto para exploração.",
-    bestFor: "Quando precisa organizar uma ideia, mas isso ainda não deve competir com o núcleo criativo da plataforma.",
+    bestFor: "Estruturação de ideia fora do núcleo criativo principal da plataforma.",
     expectedOutput: "Estrutura inicial de produto e escopo.",
     continuity: "Serve como exploração lateral; não deve carregar aquisição nem retenção agora.",
     stageLabel: "Lab",
@@ -147,7 +147,7 @@ const CREATOR_SHOWCASES = [
 const CREATOR_STAGE_GUIDANCE: Record<CreatorGroupId, { title: string; description: string }> = {
   hero: {
     title: "Creator hero do produto",
-    description: "Este creator faz parte do trio que precisa carregar aquisição, repetição de uso e continuidade com o editor. Se você quer medir o valor real do beta pago/controlado, comece por aqui.",
+    description: "Este creator faz parte do trio que precisa carregar aquisição, repetição de uso e continuidade com o editor. O valor real do beta pago/controlado começa aqui.",
   },
   secondary: {
     title: "Creator de apoio estratégico",
@@ -243,6 +243,18 @@ function CreatorsPageContent() {
   const labCreators = tabsByGroup.find((group) => group.id === "labs")?.items ?? [];
   const activeStageTone = creatorStageTone(activeTabMeta.group);
   const activeStageGuidance = CREATOR_STAGE_GUIDANCE[activeTabMeta.group];
+  const supportHeroCreator = useMemo(
+    () => secondaryCreators.find((tab) => tab.id === "ads") ?? secondaryCreators[0] ?? null,
+    [secondaryCreators]
+  );
+  const heroCoreCards = useMemo(
+    () => (supportHeroCreator ? [...heroCreators, supportHeroCreator] : heroCreators),
+    [heroCreators, supportHeroCreator]
+  );
+  const secondaryCatalog = useMemo(
+    () => [...secondaryCreators, ...labCreators].filter((tab) => tab.id !== supportHeroCreator?.id),
+    [secondaryCreators, labCreators, supportHeroCreator]
+  );
 
   function activateTab(nextTab: CreatorTab, options?: { scrollToWorkspace?: boolean }) {
     setActiveTab(nextTab);
@@ -269,14 +281,14 @@ function CreatorsPageContent() {
 
   return (
     <div className="page-shell creators-page">
-      <section className="premium-hero creators-hero">
+      <section className="premium-hero creators-hero" data-reveal>
         <div className="hero-split creators-hero-split">
           <div className="hero-copy creators-hero-copy">
             <div className="hero-title-stack">
               <p className="section-kicker">Workspace de criação</p>
               <h1 style={{ margin: 0, letterSpacing: -0.35 }}>Creators</h1>
               <p className="creators-hero-lead">
-                Configure com clareza, gere saídas reais nos creators hero e siga para o editor com contexto preservado, projeto salvo e rota clara de continuidade. É aqui que o beta pago/controlado começa a provar valor recorrente.
+                O núcleo da plataforma concentra briefing, geração, continuidade editorial e saída rastreável em um único workspace. Os creators hero entram primeiro, o editor amadurece a peça e o projeto preserva a continuidade até a exportação.
               </p>
             </div>
 
@@ -331,11 +343,11 @@ function CreatorsPageContent() {
             <div className="creators-hero-panel-stack hero-side-list hero-side-list-compact">
               <div className="hero-side-note">
                 <strong>Briefing orientado</strong>
-                <span>Objetivo, formato e contexto ficam agrupados sem virar um formulário gigante.</span>
+                <span>Objetivo, formato e contexto ficam agrupados sem transformar o fluxo em um formulário extenso.</span>
               </div>
               <div className="hero-side-note">
                 <strong>Continuidade pronta</strong>
-                <span>Depois de gerar, salve em projeto, refine no editor e prepare a exportação no dispositivo.</span>
+                <span>Depois da geração, o resultado entra em projeto, editor e pipeline de saída com contexto preservado.</span>
               </div>
             </div>
 
@@ -369,13 +381,13 @@ function CreatorsPageContent() {
         </div>
       ) : null}
 
-      <section className="proof-value-section premium-card-soft creators-proof-section">
+      <section className="proof-value-section premium-card-soft creators-proof-section" data-reveal data-reveal-delay="60">
         <div className="proof-value-header">
           <div className="section-stack-tight">
             <p className="section-kicker">Exemplos de resultado</p>
             <h2 className="heading-reset">O que os creators hero podem destravar</h2>
             <p className="helper-text-ea">
-              Estas amostras mostram o tipo de saída que você pode esperar antes de abrir um projeto. Elas ajudam a entender o valor da IA sem vender um fluxo maior do que o beta entrega hoje.
+              Estas amostras mostram o tipo de saída que o núcleo atual já organiza antes de abrir um projeto. A leitura continua objetiva, sem vender um fluxo maior do que o beta realmente sustenta hoje.
             </p>
           </div>
           <Link href="/projects" className="btn-link-ea btn-secondary btn-sm">
@@ -384,8 +396,8 @@ function CreatorsPageContent() {
         </div>
 
         <div className="proof-value-grid proof-value-grid-creators">
-          {CREATOR_SHOWCASES.map((item) => (
-            <article key={item.creator} className="proof-value-card premium-card-soft">
+          {CREATOR_SHOWCASES.map((item, index) => (
+            <article key={item.creator} className="proof-value-card premium-card-soft" data-reveal data-reveal-delay={String(70 + index * 55)}>
               <div className="proof-value-meta-row">
                 <span className="proof-value-kicker">{item.kicker}</span>
                 <span className="proof-value-chip">{item.creator}</span>
@@ -409,13 +421,13 @@ function CreatorsPageContent() {
         </div>
       </section>
 
-      <section className="premium-card creators-hero-core-section">
+      <section className="premium-card creators-hero-core-section" data-reveal data-reveal-delay="90">
         <div className="proof-value-header creators-hero-core-header">
           <div className="section-stack-tight">
             <p className="section-kicker">Creators hero</p>
             <h2 className="heading-reset">Os 3 creators que precisam carregar a plataforma</h2>
             <p className="helper-text-ea">
-              <strong>Creator Post</strong>, <strong>Creator Scripts</strong> e <strong>Creator Clips</strong> concentram a melhor combinação atual de clareza de valor, repetição de uso, continuidade com o editor e força comercial.
+              <strong>Creator Post</strong>, <strong>Creator Scripts</strong> e <strong>Creator Clips</strong> continuam no centro da promessa. Um quarto card secundário fecha a grade com apoio de campanha sem competir com o trio hero principal.
             </p>
           </div>
           <div className="creators-hero-core-header-note">
@@ -425,15 +437,17 @@ function CreatorsPageContent() {
         </div>
 
         <div className="creators-hero-core-grid">
-          {heroCreators.map((tab) => (
+          {heroCoreCards.map((tab, index) => (
             <article
               key={tab.id}
-              className="premium-card-soft creators-hero-core-card"
+              className={`premium-card-soft creators-hero-core-card ${tab.group !== "hero" ? "creators-hero-core-card-support" : ""}`}
               data-active={activeTab === tab.id}
+              data-reveal
+              data-reveal-delay={String(70 + index * 50)}
             >
               <div className="creators-hero-core-card-head">
-                <span className="premium-badge premium-badge-phase">{tab.stageLabel}</span>
-                <span className="creators-hero-core-card-kicker">Creator central</span>
+                <span className={`premium-badge premium-badge-${creatorStageTone(tab.group)}`}>{tab.stageLabel}</span>
+                <span className="creators-hero-core-card-kicker">{tab.group === "hero" ? "Creator central" : "Apoio recomendado"}</span>
               </div>
               <div className="section-stack-tight">
                 <h3 className="heading-reset">{tab.label}</h3>
@@ -455,7 +469,7 @@ function CreatorsPageContent() {
               </div>
               <div className="creators-hero-card-actions">
                 <button onClick={() => activateTab(tab.id, { scrollToWorkspace: true })} className="btn-ea btn-primary btn-sm">
-                  Abrir no workspace
+                  {tab.group === "hero" ? "Abrir no workspace" : "Abrir apoio no workspace"}
                 </button>
                 <Link href="/projects" className="btn-link-ea btn-ghost btn-sm">
                   Ver continuidade em Projetos
@@ -466,7 +480,7 @@ function CreatorsPageContent() {
         </div>
       </section>
 
-      <section className="premium-card-soft creators-secondary-section">
+      <section className="premium-card-soft creators-secondary-section" data-reveal data-reveal-delay="120">
         <div className="proof-value-header creators-secondary-header">
           <div className="section-stack-tight">
             <p className="section-kicker">Apoio e labs</p>
@@ -478,8 +492,8 @@ function CreatorsPageContent() {
         </div>
 
         <div className="creators-secondary-grid">
-          {[...secondaryCreators, ...labCreators].map((tab) => (
-            <article key={tab.id} className="creators-secondary-card premium-card-soft" data-priority={tab.group}>
+          {secondaryCatalog.map((tab, index) => (
+            <article key={tab.id} className="creators-secondary-card premium-card-soft" data-priority={tab.group} data-reveal data-reveal-delay={String(70 + index * 45)}>
               <div className="creators-secondary-card-head">
                 <strong>{tab.label}</strong>
                 <span className={`premium-badge premium-badge-${creatorStageTone(tab.group)}`}>{tab.stageLabel}</span>
@@ -502,7 +516,7 @@ function CreatorsPageContent() {
       </section>
 
       <section ref={workspaceRef} className="creator-workspace-grid">
-        <aside className="premium-card creator-workspace-side creators-sidebar creators-sidebar-soft">
+        <aside className="premium-card creator-workspace-side creators-sidebar creators-sidebar-soft" data-reveal data-reveal-delay="140">
           <div className="creators-side-note creators-side-note-primary">
             <strong>Comece pelos creators hero</strong>
             <span>
@@ -571,7 +585,7 @@ function CreatorsPageContent() {
           </div>
         </aside>
 
-        <div className="creator-workspace-main">
+        <div className="creator-workspace-main" data-reveal data-reveal-delay="180">
           {initialLoading ? (
             <div className="premium-card creators-loading-card">
               <div className="premium-skeleton premium-skeleton-line" style={{ width: "40%" }} />
@@ -584,7 +598,7 @@ function CreatorsPageContent() {
               {loading ? (
                 <div className="premium-card-soft creators-inline-note">
                   <strong>Sincronização em segundo plano</strong>
-                  <span>Saldo, plano e disponibilidade continuam sendo atualizados enquanto você trabalha no briefing.</span>
+                  <span>Saldo, plano e disponibilidade continuam sendo atualizados em segundo plano.</span>
                 </div>
               ) : null}
               <div className="premium-card-soft creator-active-panel">

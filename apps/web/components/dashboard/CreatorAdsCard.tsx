@@ -395,7 +395,7 @@ export function CreatorAdsCard({ walletCommon, onRefetch }: Props) {
     >
       <div className="creator-workspace-header">
         <div className="hero-title-stack section-stack-tight">
-          <p className="section-kicker">O que você quer criar</p>
+          <p className="section-kicker">Briefing da campanha</p>
           <h3 className="heading-reset">Creator Ads</h3>
         </div>
         <p className="creator-workspace-subtitle">
@@ -600,7 +600,7 @@ export function CreatorAdsCard({ walletCommon, onRefetch }: Props) {
 
       {loadingApply && (
         <div className="premium-card-soft creator-loading-panel">
-          <div className="helper-note-inline">EditexAI está refinando sua peça de anúncio...</div>
+          <div className="helper-note-inline">EditexAI está refinando a peça de anúncio...</div>
           <div className="premium-skeleton premium-skeleton-line" style={{ width: "41%" }} />
           <div className="premium-skeleton premium-skeleton-line" style={{ width: "82%" }} />
           <div className="premium-skeleton premium-skeleton-line" style={{ width: "70%" }} />
@@ -695,7 +695,7 @@ export function CreatorAdsCard({ walletCommon, onRefetch }: Props) {
         <div className="state-ea creator-empty-state">
           <p className="state-ea-title">Nenhum anúncio gerado ainda</p>
           <div className="state-ea-text">
-            Defina produto e objetivo para gerar sua primeira peça e salvar em projetos.
+            Defina produto e objetivo para gerar a primeira peça e registrar continuidade em projetos.
           </div>
           <div className="state-ea-actions">
             <button

@@ -562,7 +562,7 @@ export function CreatorClipsCard({ walletCommon, onRefetch }: Props) {
     <div className="premium-card creator-workspace-card creator-workspace-card-modular">
       <div className="creator-workspace-header">
         <div className="hero-title-stack section-stack-tight">
-          <p className="section-kicker">O que você quer criar</p>
+          <p className="section-kicker">Briefing visual</p>
           <h3 className="heading-reset">Creator Clips</h3>
         </div>
         <p className="creator-workspace-subtitle">
