@@ -172,6 +172,11 @@ export default function CreditsPage() {
   const latestTransactionLabel = latestTransaction
     ? `${txReasonLabel(latestTransaction)} • ${formatDateTime(latestTransaction.created_at)}`
     : "Sem movimentações recentes";
+
+  function updateConversionAmount(nextValue: number) {
+    setConversionAmount(Math.max(1, Math.trunc(nextValue)));
+  }
+
   const planLabelDisplay = loading ? "Plano em sincronização" : planLabel ?? "—";
   const walletSummaryDisplay = loading ? "Saldo em sincronização" : walletSummary;
   const totalWalletDisplay = loading ? "..." : totalWalletAmount.toLocaleString("pt-BR");
@@ -521,6 +526,10 @@ export default function CreditsPage() {
         </div>
       </section>
 
+      <section id="credits-packages">
+        <CreditsPackagesCard wallet={wallet} loading={loading} />
+      </section>
+
       <section className="premium-card credits-section-card">
         <div className="section-head">
           <div className="section-header-ea">
@@ -585,16 +594,38 @@ export default function CreditsPage() {
                 />
               </label>
 
-              <label className="field-label-ea">
+              <label className="field-label-ea credits-conversion-amount-field">
                 <span>Quantidade a converter</span>
-                <input
-                  type="number"
-                  min={1}
-                  step={1}
-                  value={conversionAmountSafe}
-                  onChange={(e) => setConversionAmount(Math.max(1, Math.trunc(Number(e.target.value || 0))))}
-                  className="field-ea"
-                />
+                <div className="ea-amount-control">
+                  <button
+                    type="button"
+                    className="ea-amount-button"
+                    onClick={() => updateConversionAmount(conversionAmountSafe - 1)}
+                    aria-label="Diminuir quantidade a converter"
+                  >
+                    -
+                  </button>
+                  <div className="ea-amount-input-wrap">
+                    <input
+                      type="number"
+                      min={1}
+                      step={1}
+                      value={conversionAmountSafe}
+                      onChange={(e) => updateConversionAmount(Number(e.target.value || 0))}
+                      className="ea-amount-input"
+                      aria-label="Quantidade a converter"
+                    />
+                    <span className="ea-amount-suffix">{coinTypeLabel(conversionFrom)}</span>
+                  </div>
+                  <button
+                    type="button"
+                    className="ea-amount-button"
+                    onClick={() => updateConversionAmount(conversionAmountSafe + 1)}
+                    aria-label="Aumentar quantidade a converter"
+                  >
+                    +
+                  </button>
+                </div>
               </label>
             </div>
 
@@ -692,10 +723,6 @@ export default function CreditsPage() {
           </div>
         </div>
       ) : null}
-
-      <section id="credits-packages">
-        <CreditsPackagesCard wallet={wallet} loading={loading} />
-      </section>
 
       <section id="credits-history" className="premium-card credits-section-card">
         <div className="section-head">

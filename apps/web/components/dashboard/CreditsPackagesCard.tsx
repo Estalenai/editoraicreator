@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import { api } from "../../lib/api";
 import { coinTypeLabel } from "../../lib/coinTypeLabel";
 import { toUserFacingError } from "../../lib/uiFeedback";
@@ -200,7 +201,13 @@ export function CreditsPackagesCard({ wallet, loading = false }: Props) {
     if (!coinsPanelOpen || typeof document === "undefined") return;
 
     const previousOverflow = document.body.style.overflow;
+    const previousPaddingRight = document.body.style.paddingRight;
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+
     document.body.style.overflow = "hidden";
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    }
 
     function onKeyDown(event: KeyboardEvent) {
       if (event.key !== "Escape") return;
@@ -210,6 +217,7 @@ export function CreditsPackagesCard({ wallet, loading = false }: Props) {
     window.addEventListener("keydown", onKeyDown);
     return () => {
       document.body.style.overflow = previousOverflow;
+      document.body.style.paddingRight = previousPaddingRight;
       window.removeEventListener("keydown", onKeyDown);
     };
   }, [coinsPanelOpen]);
@@ -352,341 +360,394 @@ export function CreditsPackagesCard({ wallet, loading = false }: Props) {
     }
   }
 
-  return (
-    <div className="premium-card credits-purchase-card">
-      <div className="hero-title-stack credits-purchase-intro">
-        <p className="section-kicker">Compra avulsa</p>
-        <h3 className="heading-reset">Créditos avulsos</h3>
-        <div className="meta-text-ea">Saldo atual: {walletSummary}</div>
-      </div>
-      {walletUpdatedAt !== "—" ? (
-        <div className="helper-text-ea">
-          Última atualização do saldo: {walletUpdatedAt}
-        </div>
-      ) : null}
-      <p className="section-header-copy">
-        {loading
-          ? "Saldo e regras de compra estão sendo sincronizados antes da cotação."
-          : "Escolha um pacote pronto ou monte um total livre com a mistura de créditos que fizer sentido."}
-      </p>
-      <div className="trust-grid credits-purchase-notes">
-        <div className="premium-card-soft trust-note">
-          <strong>Cotação clara</strong>
-          <span>Subtotal, taxa e total aparecem antes de sair para o pagamento.</span>
-        </div>
-        <div className="premium-card-soft trust-note trust-note-privacy">
-          <strong>Pagamento via Stripe</strong>
-          <span>O checkout abre em Stripe e retorna a Créditos para confirmar saldo e histórico do pacote.</span>
-        </div>
-        <div className="premium-card-soft trust-note">
-          <strong>Mix configurável</strong>
-          <span>Distribua o total entre Comum, Pro e Ultra antes de abrir a Stripe.</span>
-        </div>
-      </div>
-      <div className="helper-note-inline credits-purchase-checkout-note">
-        {loading
-          ? "Aguarde a sincronização do saldo para abrir uma cotação segura."
-          : "Pagamento seguro via Stripe com retorno a Créditos para confirmar saldo e histórico."}
-      </div>
-      <a href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm state-ea-spaced">
-        Ver histórico de consumo
-      </a>
-      <div className="credits-coin-grid">
-        {PACKAGE_COIN_ORDER.map((coinType) => (
+  const purchaseModal =
+    coinsPanelOpen && typeof document !== "undefined"
+      ? createPortal(
           <div
-            key={coinType}
-            className={`premium-card-soft credits-coin-card credits-coin-card-${coinType}`}
+            className="credits-modal-backdrop"
+            role="presentation"
+            onClick={() => setCoinsPanelOpen(false)}
           >
-            <strong>{PACKAGE_COIN_INFO[coinType].title}</strong>
-            <div className="helper-text-ea">{PACKAGE_COIN_INFO[coinType].description}</div>
-          </div>
-        ))}
-      </div>
-      <button
-        onClick={() => {
-          setPackageError(null);
-          setCoinsPanelOpen(true);
-        }}
-        disabled={loading}
-        className="btn-ea btn-primary credits-purchase-cta"
-      >
-        {loading ? "Sincronizando saldo..." : "Comprar créditos avulsos"}
-      </button>
-
-      {coinsPanelOpen ? (
-        <div className="credits-modal-backdrop" onClick={() => setCoinsPanelOpen(false)}>
-          <div className="premium-card credits-modal" role="dialog" aria-modal="true" aria-labelledby="credits-modal-title" onClick={(event) => event.stopPropagation()}>
-            <div className="section-head credits-modal-head">
-              <div className="hero-title-stack section-stack-tight">
-                <p className="section-kicker">Compra segura</p>
-                <h3 className="heading-reset" id="credits-modal-title">Créditos avulsos</h3>
-              </div>
-              <button onClick={() => setCoinsPanelOpen(false)} className="btn-ea btn-ghost btn-sm">
-                Fechar
-              </button>
-            </div>
-            <div className="credits-modal-body">
-              <p className="section-header-copy">
-                Confirme subtotal, taxa e total antes de abrir o checkout seguro da Stripe.
-              </p>
-              <div className="trust-grid credits-modal-notes">
-                <div className="premium-card-soft trust-note">
-                  <strong>Pacotes ou total livre</strong>
-                  <span>Escolha uma base rápida ou personalize o total dentro das regras do produto.</span>
-                </div>
-                <div className="premium-card-soft trust-note">
-                  <strong>Resumo financeiro claro</strong>
-                  <span>A cotação mostra subtotal, taxa e total final antes do pagamento externo.</span>
-                </div>
-                <div className="premium-card-soft trust-note trust-note-privacy">
-                  <strong>Retorno sincronizado</strong>
-                  <span>Depois do Stripe, o produto confirma saldo e histórico em Créditos antes da próxima ação.</span>
-                </div>
-              </div>
-
-              <div className="purchase-modal-section">
-                <div className="surface-toolbar">
-                  {(["packages", "custom"] as const).map((mode) => (
-                    <button
-                      key={mode}
-                      onClick={() => switchCoinsPackageMode(mode)}
-                      className={`btn-ea ${coinsPackageMode === mode ? "btn-primary" : "btn-ghost"} btn-sm`}
-                    >
-                      {mode === "packages" ? "Pacotes" : "Personalizado"}
+            <div
+              className="premium-card credits-modal"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="credits-modal-title"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <div className="credits-modal-shell">
+                <header className="section-head credits-modal-header">
+                  <div className="hero-title-stack section-stack-tight">
+                    <p className="section-kicker">Compra segura</p>
+                    <h3 className="heading-reset" id="credits-modal-title">Créditos avulsos</h3>
+                    <p className="section-header-copy credits-modal-copy">
+                      Configure o total, feche o mix e revise a cotação antes de abrir o checkout seguro da Stripe.
+                    </p>
+                  </div>
+                  <div className="hero-actions-row credits-modal-header-actions">
+                    <span className="premium-badge premium-badge-phase">{activePackageTotal} créditos selecionados</span>
+                    <button type="button" onClick={() => setCoinsPanelOpen(false)} className="btn-ea btn-ghost btn-sm">
+                      Fechar
                     </button>
-                  ))}
-                </div>
-              </div>
+                  </div>
+                </header>
 
-              {coinsPackageMode === "packages" ? (
-                <div className="purchase-modal-section">
-                  <div className="meta-text-ea">Escolha um pacote</div>
-                  <div className="credits-package-grid">
-                  {PACKAGE_OPTIONS.map((total) => (
-                    <button
-                      key={total}
-                      onClick={() => resetPackageToDefault(total)}
-                      className={`btn-ea ${selectedPackage === total ? "btn-primary" : "btn-ghost"} btn-sm purchase-option-card`}
-                    >
-                        <div className="purchase-option-title">{total} créditos</div>
-                        <div className="helper-text-ea purchase-option-copy">
-                          {PACKAGE_OPTION_COPY[total].title} · {PACKAGE_OPTION_COPY[total].note}
+                <div className="credits-modal-body">
+                  <div className="credits-modal-main">
+                    <section className="purchase-modal-section">
+                      <div className="meta-text-ea">Formato da compra</div>
+                      <div className="purchase-mode-toggle" role="tablist" aria-label="Formato da compra de créditos">
+                        {(["packages", "custom"] as const).map((mode) => (
+                          <button
+                            key={mode}
+                            type="button"
+                            role="tab"
+                            aria-selected={coinsPackageMode === mode}
+                            className="purchase-mode-toggle-btn"
+                            data-active={coinsPackageMode === mode}
+                            onClick={() => switchCoinsPackageMode(mode)}
+                          >
+                            <strong>{mode === "packages" ? "Pacote rápido" : "Total livre"}</strong>
+                            <span>
+                              {mode === "packages"
+                                ? "Escolha uma base pronta e ajuste o mix depois."
+                                : "Defina o total primeiro e monte o mix do seu jeito."}
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    </section>
+
+                    {coinsPackageMode === "packages" ? (
+                      <section className="purchase-modal-section">
+                        <div className="meta-text-ea">Pacote base</div>
+                        <div className="credits-package-grid">
+                          {PACKAGE_OPTIONS.map((total) => (
+                            <button
+                              key={total}
+                              type="button"
+                              onClick={() => resetPackageToDefault(total)}
+                              className="purchase-option-card"
+                              data-active={selectedPackage === total}
+                            >
+                              <div className="purchase-option-title">{total} créditos</div>
+                              <div className="helper-text-ea purchase-option-copy">
+                                {PACKAGE_OPTION_COPY[total].title} · {PACKAGE_OPTION_COPY[total].note}
+                              </div>
+                            </button>
+                          ))}
                         </div>
-                    </button>
-                  ))}
-                  </div>
-                </div>
-              ) : (
-                <div className="purchase-modal-section">
-                  <div className="meta-text-ea">
-                    Digite a quantidade total que deseja comprar e personalize livremente a composição entre Comum, Pro e Ultra.
-                  </div>
-                  <label className="field-label-ea">
-                    <span>
-                      Total personalizado (mínimo {PACKAGE_MIN_TOTAL}, múltiplos de {PACKAGE_STEP})
-                    </span>
-                    <input
-                      type="number"
-                      min={PACKAGE_MIN_TOTAL}
-                      step={PACKAGE_STEP}
-                      inputMode="numeric"
-                      pattern="[0-9]*"
-                      value={customPackageTotalInput}
-                      onChange={(event) => updateCustomTotal(event.target.value)}
-                      onBlur={(event) => commitCustomTotal(event.target.value)}
-                      onKeyDown={(event) => {
-                        if (event.key !== "Enter") return;
-                        commitCustomTotal((event.currentTarget as HTMLInputElement).value);
-                      }}
-                      className="field-ea"
-                    />
-                  </label>
-                  <div className="helper-text-ea">
-                    Use mínimo de {PACKAGE_MIN_TOTAL} créditos e valores em múltiplos de {PACKAGE_STEP}.
-                  </div>
-                </div>
-              )}
+                      </section>
+                    ) : (
+                      <section className="purchase-modal-section">
+                        <div className="meta-text-ea">
+                          Total personalizado com mínimo de {PACKAGE_MIN_TOTAL} créditos e passos de {PACKAGE_STEP}.
+                        </div>
+                        <label className="field-label-ea">
+                          <span>Total da compra</span>
+                          <div className="ea-amount-control">
+                            <button
+                              type="button"
+                              className="ea-amount-button"
+                              onClick={() => commitCustomTotal(String(Math.max(PACKAGE_MIN_TOTAL, customPackageTotal - PACKAGE_STEP)))}
+                              aria-label="Diminuir total personalizado"
+                            >
+                              -
+                            </button>
+                            <div className="ea-amount-input-wrap">
+                              <input
+                                type="number"
+                                min={PACKAGE_MIN_TOTAL}
+                                step={PACKAGE_STEP}
+                                inputMode="numeric"
+                                pattern="[0-9]*"
+                                value={customPackageTotalInput}
+                                onChange={(event) => updateCustomTotal(event.target.value)}
+                                onBlur={(event) => commitCustomTotal(event.target.value)}
+                                onKeyDown={(event) => {
+                                  if (event.key !== "Enter") return;
+                                  commitCustomTotal((event.currentTarget as HTMLInputElement).value);
+                                }}
+                                className="ea-amount-input"
+                                aria-label="Total personalizado de créditos"
+                              />
+                              <span className="ea-amount-suffix">créditos</span>
+                            </div>
+                            <button
+                              type="button"
+                              className="ea-amount-button"
+                              onClick={() => commitCustomTotal(String(customPackageTotal + PACKAGE_STEP))}
+                              aria-label="Aumentar total personalizado"
+                            >
+                              +
+                            </button>
+                          </div>
+                        </label>
+                        <div className="helper-text-ea">
+                          Use mínimo de {PACKAGE_MIN_TOTAL} créditos e valores em múltiplos de {PACKAGE_STEP}.
+                        </div>
+                      </section>
+                    )}
 
-              <div className="purchase-modal-section">
-                <div className="meta-text-ea">Mix (passos de {PACKAGE_STEP})</div>
-                <div className="surface-toolbar">
-                  <button
-                    onClick={() => applyPackageMixPreset("equal")}
-                    className={`btn-ea ${mixPreset === "equal" ? "btn-primary" : "btn-ghost"} btn-sm`}
-                  >
-                    Dividir igualmente
-                  </button>
-                  <button
-                    onClick={() => applyPackageMixPreset("common")}
-                    className={`btn-ea ${mixPreset === "common" ? "btn-primary" : "btn-ghost"} btn-sm`}
-                  >
-                    Tudo Comum
-                  </button>
-                  <button
-                    onClick={() => applyPackageMixPreset("pro")}
-                    className={`btn-ea ${mixPreset === "pro" ? "btn-primary" : "btn-ghost"} btn-sm`}
-                  >
-                    Tudo Pro
-                  </button>
-                  <button
-                    onClick={() => applyPackageMixPreset("ultra")}
-                    className={`btn-ea ${mixPreset === "ultra" ? "btn-primary" : "btn-ghost"} btn-sm`}
-                  >
-                    Tudo Ultra
-                  </button>
+                    <section className="purchase-modal-section">
+                      <div className="meta-text-ea">Mix entre Comum, Pro e Ultra</div>
+                      <div className="surface-toolbar purchase-preset-row">
+                        <button
+                          type="button"
+                          onClick={() => applyPackageMixPreset("equal")}
+                          className={`btn-ea ${mixPreset === "equal" ? "btn-primary" : "btn-ghost"} btn-sm`}
+                        >
+                          Dividir igualmente
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => applyPackageMixPreset("common")}
+                          className={`btn-ea ${mixPreset === "common" ? "btn-primary" : "btn-ghost"} btn-sm`}
+                        >
+                          Tudo Comum
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => applyPackageMixPreset("pro")}
+                          className={`btn-ea ${mixPreset === "pro" ? "btn-primary" : "btn-ghost"} btn-sm`}
+                        >
+                          Tudo Pro
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => applyPackageMixPreset("ultra")}
+                          className={`btn-ea ${mixPreset === "ultra" ? "btn-primary" : "btn-ghost"} btn-sm`}
+                        >
+                          Tudo Ultra
+                        </button>
+                      </div>
+
+                      <div className="credits-mix-grid">
+                        {PACKAGE_COIN_ORDER.map((coinType) => (
+                          <label key={coinType} className="field-label-ea">
+                            <span>{coinTypeLabel(coinType)}</span>
+                            <input
+                              type="number"
+                              min={0}
+                              step={PACKAGE_STEP}
+                              value={packageBreakdown[coinType]}
+                              onChange={(event) => updatePackageBreakdown(coinType, event.target.value)}
+                              className="field-ea"
+                            />
+                          </label>
+                        ))}
+                      </div>
+                    </section>
+                  </div>
+
+                  <aside className="credits-modal-aside">
+                    <div className="trust-grid credits-modal-notes">
+                      <div className="premium-card-soft trust-note">
+                        <strong>Sem ambiguidade</strong>
+                        <span>O resumo financeiro fica visível o tempo todo, mesmo quando você ajusta o mix.</span>
+                      </div>
+                      <div className="premium-card-soft trust-note trust-note-privacy">
+                        <strong>Checkout só no final</strong>
+                        <span>Primeiro feche o total e a cotação. Depois siga para o pagamento seguro.</span>
+                      </div>
+                    </div>
+
+                    <div className="premium-card-soft creator-context-zone purchase-summary-card">
+                      <div className="purchase-summary-row">
+                        <span>Total selecionado</span>
+                        <strong>{activePackageTotal} créditos</strong>
+                      </div>
+                      <div className="purchase-summary-row">
+                        <span>Soma atual da composição</span>
+                        <strong>{packageSum} créditos</strong>
+                      </div>
+                      {packageMixValid ? (
+                        <div className="inline-alert inline-alert-success">Mix fechado corretamente. Pronto para cotação.</div>
+                      ) : null}
+                      {packageRemaining > 0 ? (
+                        <div className="inline-alert inline-alert-warning">
+                          Faltam {packageRemaining} créditos para completar o total.
+                        </div>
+                      ) : null}
+                      {packageRemaining < 0 ? (
+                        <div className="inline-alert inline-alert-error">
+                          A composição excedeu em {packageExceededBy} créditos.
+                        </div>
+                      ) : null}
+                      {!packageBreakdownStepValid ? (
+                        <div className="inline-alert inline-alert-error">
+                          Mix inválido. Cada tipo deve usar múltiplos de {PACKAGE_STEP}.
+                        </div>
+                      ) : null}
+                      <div className="metric-chip-row">
+                        {PACKAGE_COIN_ORDER.map((coinType) => (
+                          <span key={`ratio-${coinType}`} className={`metric-chip metric-chip-${coinType}`}>
+                            {coinTypeLabel(coinType)}: {mixPercentByType[coinType]}%
+                          </span>
+                        ))}
+                      </div>
+                      {!packageTotalValid ? (
+                        <div className="inline-alert inline-alert-error">
+                          Total inválido. Use mínimo de {PACKAGE_MIN_TOTAL} e múltiplos de {PACKAGE_STEP}.
+                        </div>
+                      ) : null}
+                    </div>
+
+                    {packageQuote ? (
+                      <div className="premium-card-soft quote-summary-card">
+                        <strong>Cotação pronta para revisão</strong>
+                        <div className="quote-breakdown-grid state-ea-spaced">
+                          <div className="quote-row">
+                            <span className="quote-row-label">Subtotal</span>
+                            <strong>{formatBrl(quoteSubtotal)}</strong>
+                          </div>
+                          <div className="quote-row">
+                            <span className="quote-row-label">
+                              Taxa de compra {hasFee ? `(${quoteFeePercent}%)` : ""}
+                            </span>
+                            <strong className={hasFee ? "" : "quote-row-success"}>
+                              {hasFee ? formatBrl(quoteFee) : "Sem taxa no seu plano"}
+                            </strong>
+                          </div>
+                          <div className="quote-row quote-row-total">
+                            <span>Total final ({String(packageQuote.currency || "BRL").toUpperCase()})</span>
+                            <strong>{formatBrl(quoteTotal)}</strong>
+                          </div>
+                        </div>
+                        <div className="helper-note-inline">ID da cotação: {packageQuote.quote_id}</div>
+                        <ul className="list-soft">
+                          {Array.isArray(packageQuote.line_items)
+                            ? packageQuote.line_items.map((line, idx) => (
+                                <li key={`${line.coin_type}-${idx}`}>
+                                  {coinTypeLabel(line.coin_type)}: {line.quantity} x {formatBrl(Number(line.unit_price_cents || 0) / 100)} ={" "}
+                                  {formatBrl(Number(line.subtotal_cents || 0) / 100)}
+                                </li>
+                              ))
+                            : null}
+                        </ul>
+                      </div>
+                    ) : (
+                      <div className="premium-card-soft quote-summary-card quote-summary-card-placeholder">
+                        <strong>Cotação pendente</strong>
+                        <span className="helper-text-ea">
+                          Feche o total e o mix. Depois atualize a cotação para revisar subtotal, taxa e total final.
+                        </span>
+                      </div>
+                    )}
+                  </aside>
                 </div>
 
-                <div className="credits-mix-grid">
-                  {PACKAGE_COIN_ORDER.map((coinType) => (
-                    <label key={coinType} className="field-label-ea">
-                      <span>{coinTypeLabel(coinType)}</span>
-                      <input
-                        type="number"
-                        min={0}
-                        step={PACKAGE_STEP}
-                        value={packageBreakdown[coinType]}
-                        onChange={(event) => updatePackageBreakdown(coinType, event.target.value)}
-                        className="field-ea"
-                      />
-                    </label>
-                  ))}
-                </div>
-              </div>
+                {packageError ? (
+                  <div className="state-ea state-ea-error state-ea-spaced">
+                    <p className="state-ea-title">Não foi possível preparar a compra</p>
+                    <div className="state-ea-text">{packageError}</div>
+                  </div>
+                ) : null}
 
-              <div className="creator-context-zone purchase-summary-card">
-                <div className="purchase-summary-row">
-                  <span>Total selecionado</span>
-                  <strong>{activePackageTotal} créditos</strong>
-                </div>
-                <div className="purchase-summary-row">
-                  <span>Soma atual da composição</span>
-                  <strong>{packageSum} créditos</strong>
-                </div>
-                {packageMixValid ? (
-                  <div className="inline-alert inline-alert-success">Mix fechado corretamente. Pronto para cotação.</div>
-                ) : null}
-                {packageRemaining > 0 ? (
-                  <div className="inline-alert inline-alert-warning">
-                    Faltam {packageRemaining} créditos para completar o total.
+                <footer className="purchase-modal-footer">
+                  <div className="helper-note-inline credits-modal-live-note">
+                    {packageCheckoutLoading
+                      ? "Abrindo checkout seguro na Stripe..."
+                      : packageLoading
+                        ? "Atualizando cotação..."
+                        : quoteMatchesSelection
+                          ? "Cotação pronta. Revise subtotal, taxa e total antes de seguir para o pagamento."
+                          : "Escolha total e composição. Depois gere a cotação para revisar subtotal, taxa e total antes do pagamento."}
                   </div>
-                ) : null}
-                {packageRemaining < 0 ? (
-                  <div className="inline-alert inline-alert-error">
-                    A composição excedeu em {packageExceededBy} créditos.
-                  </div>
-                ) : null}
-                {!packageBreakdownStepValid ? (
-                  <div className="inline-alert inline-alert-error">
-                    Mix inválido. Cada tipo deve usar múltiplos de {PACKAGE_STEP}.
-                  </div>
-                ) : null}
-                <div className="metric-chip-row">
-                  {PACKAGE_COIN_ORDER.map((coinType) => (
-                    <span
-                      key={`ratio-${coinType}`}
-                      className={`metric-chip metric-chip-${coinType}`}
+
+                  <div className="hero-actions-row purchase-modal-footer-actions">
+                    <button
+                      type="button"
+                      onClick={requestCoinsPackageQuote}
+                      disabled={!canRequestQuote}
+                      className="btn-ea btn-secondary"
                     >
-                      {coinTypeLabel(coinType)}: {mixPercentByType[coinType]}%
-                    </span>
-                  ))}
-                </div>
-                {!packageTotalValid ? (
-                  <div className="inline-alert inline-alert-error">
-                    Total inválido. Use mínimo de {PACKAGE_MIN_TOTAL} e múltiplos de {PACKAGE_STEP}.
+                      {packageLoading ? "Atualizando cotação..." : "Atualizar cotação"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={onBuyCoinsPackage}
+                      disabled={loading || packageLoading || packageCheckoutLoading || !packageMixValid}
+                      className="btn-ea btn-primary"
+                    >
+                      {packageCheckoutLoading
+                        ? "Abrindo checkout..."
+                        : canOpenCheckout
+                          ? "Ir para pagamento seguro"
+                          : "Gerar cotação e ir ao pagamento"}
+                    </button>
                   </div>
-                ) : null}
-              </div>
-
-              {packageError ? (
-                <div className="state-ea state-ea-error state-ea-spaced">
-                  <p className="state-ea-title">Não foi possível preparar a compra</p>
-                  <div className="state-ea-text">{packageError}</div>
-                </div>
-              ) : null}
-
-              {packageQuote ? (
-                <div className="premium-card-soft quote-summary-card">
-                  <strong>Cotação pronta para revisão</strong>
-                  <div className="quote-breakdown-grid state-ea-spaced">
-                    <div className="quote-row">
-                      <span className="quote-row-label">Subtotal</span>
-                      <strong>{formatBrl(quoteSubtotal)}</strong>
-                    </div>
-                    <div className="quote-row">
-                      <span className="quote-row-label">
-                        Taxa de compra {hasFee ? `(${quoteFeePercent}%)` : ""}
-                      </span>
-                      <strong className={hasFee ? "" : "quote-row-success"}>
-                        {hasFee ? formatBrl(quoteFee) : "Sem taxa no seu plano"}
-                      </strong>
-                    </div>
-                    <div className="quote-row quote-row-total">
-                      <span>
-                        Total final ({String(packageQuote.currency || "BRL").toUpperCase()})
-                      </span>
-                      <strong>{formatBrl(quoteTotal)}</strong>
-                    </div>
-                  </div>
-                  <div className="helper-note-inline">ID da cotação: {packageQuote.quote_id}</div>
-                  <ul className="list-soft">
-                    {Array.isArray(packageQuote.line_items)
-                      ? packageQuote.line_items.map((line, idx) => (
-                          <li key={`${line.coin_type}-${idx}`}>
-                            {coinTypeLabel(line.coin_type)}: {line.quantity} x {formatBrl(Number(line.unit_price_cents || 0) / 100)} ={" "}
-                            {formatBrl(Number(line.subtotal_cents || 0) / 100)}
-                          </li>
-                        ))
-                      : null}
-                  </ul>
-                </div>
-              ) : null}
-            </div>
-
-            <div className="premium-card-soft purchase-modal-footer">
-              {(packageLoading || packageCheckoutLoading || packageQuote) ? (
-                <div className="helper-note-inline credits-modal-live-note">
-                  {packageCheckoutLoading
-                    ? "Abrindo checkout seguro na Stripe..."
-                    : packageLoading
-                      ? "Atualizando cotação..."
-                      : quoteMatchesSelection
-                        ? "Cotação pronta. Revise subtotal, taxa e total antes de seguir para o pagamento."
-                        : "A composição mudou. Atualize a cotação antes de seguir para o checkout."}
-                </div>
-              ) : (
-                <div className="helper-note-inline credits-modal-live-note">
-                  Escolha total e composição. Depois gere a cotação para revisar subtotal, taxa e total antes do pagamento.
-                </div>
-              )}
-
-              <div className="hero-actions-row credits-modal-actions">
-                <button
-                  onClick={requestCoinsPackageQuote}
-                  disabled={!canRequestQuote}
-                  className="btn-ea btn-secondary"
-                >
-                  {packageLoading ? "Atualizando cotação..." : "Atualizar cotação"}
-                </button>
-                <button
-                  onClick={onBuyCoinsPackage}
-                  disabled={loading || packageLoading || packageCheckoutLoading || !packageMixValid}
-                  className="btn-ea btn-primary"
-                >
-                  {packageCheckoutLoading
-                    ? "Abrindo checkout..."
-                    : canOpenCheckout
-                      ? "Ir para pagamento seguro"
-                      : "Gerar cotação e ir ao pagamento"}
-                </button>
-              </div>
-
-              <div className="helper-text-ea">
-                Depois do pagamento, você volta para Créditos e esta tela tenta validar saldo e histórico automaticamente.
+                </footer>
               </div>
             </div>
+          </div>,
+          document.body
+        )
+      : null;
+
+  return (
+    <>
+      <div className="premium-card credits-purchase-card">
+        <div className="hero-title-stack credits-purchase-intro">
+          <p className="section-kicker">Compra avulsa</p>
+          <h3 className="heading-reset">Créditos avulsos</h3>
+          <div className="meta-text-ea">Saldo atual: {walletSummary}</div>
+        </div>
+        {walletUpdatedAt !== "—" ? (
+          <div className="helper-text-ea">
+            Última atualização do saldo: {walletUpdatedAt}
+          </div>
+        ) : null}
+        <p className="section-header-copy">
+          {loading
+            ? "Saldo e regras de compra estão sendo sincronizados antes da cotação."
+            : "Escolha um pacote pronto ou monte um total livre com a mistura de créditos que fizer sentido."}
+        </p>
+        <div className="trust-grid credits-purchase-notes">
+          <div className="premium-card-soft trust-note">
+            <strong>Cotação clara</strong>
+            <span>Subtotal, taxa e total aparecem antes de sair para o pagamento.</span>
+          </div>
+          <div className="premium-card-soft trust-note trust-note-privacy">
+            <strong>Pagamento via Stripe</strong>
+            <span>O checkout abre em Stripe e retorna a Créditos para confirmar saldo e histórico do pacote.</span>
+          </div>
+          <div className="premium-card-soft trust-note">
+            <strong>Mix configurável</strong>
+            <span>Distribua o total entre Comum, Pro e Ultra antes de abrir a Stripe.</span>
           </div>
         </div>
-      ) : null}
-    </div>
+        <div className="helper-note-inline credits-purchase-checkout-note">
+          {loading
+            ? "Aguarde a sincronização do saldo para abrir uma cotação segura."
+            : "Pagamento seguro via Stripe com retorno a Créditos para confirmar saldo e histórico."}
+        </div>
+        <a href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm state-ea-spaced">
+          Ver histórico de consumo
+        </a>
+        <div className="credits-coin-grid">
+          {PACKAGE_COIN_ORDER.map((coinType) => (
+            <div
+              key={coinType}
+              className={`premium-card-soft credits-coin-card credits-coin-card-${coinType}`}
+            >
+              <strong>{PACKAGE_COIN_INFO[coinType].title}</strong>
+              <div className="helper-text-ea">{PACKAGE_COIN_INFO[coinType].description}</div>
+            </div>
+          ))}
+        </div>
+        <button
+          onClick={() => {
+            setPackageError(null);
+            setCoinsPanelOpen(true);
+          }}
+          disabled={loading}
+          className="btn-ea btn-primary credits-purchase-cta"
+        >
+          {loading ? "Sincronizando saldo..." : "Comprar créditos avulsos"}
+        </button>
+      </div>
+      {purchaseModal}
+    </>
   );
 }
