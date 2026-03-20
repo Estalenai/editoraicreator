@@ -42,7 +42,7 @@ export function CreatorPlannerPanel({
   const visibleParameters = normalizeFields(parameters);
 
   return (
-    <section className="premium-card-soft creator-planner-panel creator-planner-anchor">
+    <section className="creator-planner-panel creator-planner-anchor creator-workspace-note">
       <div className="creator-planner-head">
         <div className="section-stack-tight creator-planner-copy">
           <p className="section-kicker">Planner da IA</p>

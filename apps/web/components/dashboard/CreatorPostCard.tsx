@@ -629,7 +629,7 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
 
   return (
     <div
-      className="premium-card creator-workspace-card creator-workspace-card-modular"
+      className="creator-workspace-card creator-workspace-card-modular creator-workspace-module"
     >
       <div className="creator-workspace-header">
         <div className="hero-title-stack section-stack-tight">
@@ -840,7 +840,7 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
       ) : null}
 
       {loadingApply && (
-        <div className="premium-card-soft creator-loading-panel">
+        <div className="creator-loading-panel creator-workspace-note">
           <div className="helper-note-inline">EditexAI está estruturando o conteúdo...</div>
           <div className="premium-skeleton premium-skeleton-line" style={{ width: "42%" }} />
           <div className="premium-skeleton premium-skeleton-line" style={{ width: "86%" }} />
