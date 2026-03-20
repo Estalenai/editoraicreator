@@ -81,12 +81,20 @@ export function toUserFacingError(input: unknown, fallback = "Não foi possível
     return "Serviço financeiro temporariamente indisponível. Tente novamente em alguns instantes.";
   }
 
+  if (normalized.includes("mock_requires_explicit_request")) {
+    return "Modo simulado nao entra automaticamente no beta pago/controlado. Esta execucao foi bloqueada ate haver provedor real ou solicitacao manual explicita.";
+  }
+
+  if (normalized.includes("provider_not_supported_beta")) {
+    return "Este fluxo ainda nao esta liberado como caminho principal no beta pago/controlado.";
+  }
+
   if (normalized.includes("provider_unavailable")) {
-    return "Serviço de IA indisponível no momento. Tente novamente em instantes.";
+    return "O provedor real nao respondeu com seguranca. A execucao foi bloqueada em vez de cair em mock.";
   }
 
   if (normalized.includes("provider_failed")) {
-    return "O provedor de IA não concluiu esta solicitação agora. Tente novamente em instantes.";
+    return "O provedor de IA nao concluiu esta solicitacao agora. Tente novamente em instantes.";
   }
 
   if (normalized.includes("creator_post_prompt_failed")) {
@@ -185,13 +193,19 @@ export function toUserFacingError(input: unknown, fallback = "Não foi possível
 export function extractApiErrorMessage(payload: any, fallback: string): string {
   if (!payload || typeof payload !== "object") return fallback;
 
-  const parts = [payload?.message, payload?.detail, payload?.details, payload?.error, payload?.reason, payload?.hint]
+  const primary = [payload?.message, payload?.detail, payload?.details, payload?.reason, payload?.hint]
     .filter((value): value is string => typeof value === "string" && value.trim().length > 0)
     .map((value) => value.trim());
 
-  if (!parts.length) return fallback;
+  if (primary.length) {
+    return Array.from(new Set(primary)).join(" | ");
+  }
 
-  return Array.from(new Set(parts)).join(" | ");
+  if (typeof payload?.error === "string" && payload.error.trim()) {
+    return payload.error.trim();
+  }
+
+  return fallback;
 }
 
 type GenerationSuccessMessageOptions = {

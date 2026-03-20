@@ -376,7 +376,7 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
           model: typeof payload?.model === "string" ? payload.model : null,
           replay: Boolean(payload?.replay),
           defaultMessage: "Post gerado e pronto para revisão.",
-          mockMessage: "Resposta entregue em modo beta simulado. Ative o provedor real para publicação final.",
+          mockMessage: "Resposta entregue em modo beta manual. Revise antes de tratar este retorno como saída final.",
         })
       );
 
@@ -457,7 +457,7 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
           model: typeof payload?.model === "string" ? payload.model : null,
           replay: Boolean(payload?.replay),
           defaultMessage: "Post gerado e pronto para revisão.",
-          mockMessage: "Resposta entregue em modo beta simulado. Ative o provedor real para publicação final.",
+          mockMessage: "Resposta entregue em modo beta manual. Revise antes de tratar este retorno como saída final.",
         })
       );
 
@@ -597,7 +597,7 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
     if (resultProvider === "mock") {
       return {
         tone: "warning" as const,
-        text: "Resposta entregue em modo beta simulado. Ative o provedor real antes de tratar esta peça como publicação final.",
+        text: "Resposta entregue em modo beta manual. Revise antes de tratar esta peça como publicação final.",
       };
     }
     if (resultProvider) {

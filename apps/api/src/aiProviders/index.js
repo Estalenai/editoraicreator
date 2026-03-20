@@ -1,8 +1,13 @@
-import { AIProviderError, ProviderNotConfiguredError } from "../ai/providers/providerBase.js";
+import { ProviderNotConfiguredError } from "../ai/providers/providerBase.js";
 import { factCheckReal, generateTextReal } from "../ai/providers/realTextProvider.js";
 import { geminiGenerateText } from "../ai/providers/geminiProvider.js";
 import { logger } from "../utils/logger.js";
 import { resolveRealProviderMode } from "../utils/aiProviderConfig.js";
+import {
+  assertRealProviderMode,
+  createProviderNotSupportedBetaError,
+  rethrowProviderContractError,
+} from "../utils/aiContract.js";
 import { generateVideo as runwayGenerateVideo, getVideoStatus as runwayGetVideoStatus } from "../ai/runwayVideoProvider.js";
 import { generateMusic as sunoGenerateMusic, getMusicStatus as sunoGetMusicStatus } from "../ai/sunoMusicProvider.js";
 import { generateVoice as elevenGenerateVoice, getVoiceStatus as elevenGetVoiceStatus } from "../ai/elevenLabsVoiceProvider.js";
@@ -88,62 +93,29 @@ function isManualRouting(routing) {
   return String(routing?.mode || "").trim().toLowerCase() === "manual";
 }
 
-function isProviderUnavailableError(error) {
-  if (error instanceof ProviderNotConfiguredError) return true;
-  if (error instanceof AIProviderError) {
-    const status = Number(error?.details?.status || 0);
-    if (status === 401 || status === 403 || status === 404 || status === 408 || status === 429 || status >= 500) {
-      return true;
-    }
-  }
-  const message = String(error?.message || "").trim().toLowerCase();
-  if (!message) return false;
-  return (
-    message.includes("provider_unavailable") ||
-    message.includes("provider not configured") ||
-    message.includes("missing_api_key") ||
-    message.includes("unauthorized") ||
-    message.includes("upstream_http_error") ||
-    message.includes("upstream_timeout") ||
-    message.includes("upstream_request_failed") ||
-    message.includes("api key")
-  );
-}
-
-function applyProviderUnavailableFallbackRouting(routing, mockModel) {
-  if (!routing || typeof routing !== "object") return;
-  routing.selected_provider = "mock";
-  routing.selected_model = mockModel || "mock";
-  routing.fallback_used = true;
-  routing.fallback_reason = "provider_unavailable_fallback";
-  routing.provider_mode = "mock";
-}
-
-async function executeHeavyProviderWithFallback({
+async function executeProviderWithoutRuntimeFallback({
   routing,
   feature,
   provider,
-  mockModel,
   callProvider,
 }) {
   const forceMock = String(routing?.selected_provider || "").toLowerCase() === "mock";
   try {
     return await callProvider(forceMock);
   } catch (error) {
-    if (isManualRouting(routing) || !isProviderUnavailableError(error)) {
+    if (isManualRouting(routing) && forceMock) {
       throw error;
     }
 
-    logger.warn("ai.heavy.provider_unavailable_fallback_mock", {
+    logger.warn("ai.provider.execution_blocked", {
       feature,
       provider,
-      code: error?.message || "provider_unavailable",
-      status: Number(error?.details?.status || 0) || null,
+      code: error?.code || error?.message || "provider_failed",
+      status: Number(error?.details?.status || error?.status || 0) || null,
       mode: String(routing?.mode || "quality"),
     });
 
-    applyProviderUnavailableFallbackRouting(routing, mockModel);
-    return callProvider(true);
+    rethrowProviderContractError({ error, feature, provider });
   }
 }
 
@@ -168,23 +140,14 @@ function estimateUsageTokens(text = "") {
   return Math.max(1, Math.ceil(chars / 4));
 }
 
-async function generateTextByProvider({ provider, input, plan, user }) {
+async function generateTextByProvider({ provider, input }) {
   if (provider === "mock") {
     return buildMockTextResult({ prompt: input?.prompt });
   }
 
   if (provider === "gemini") {
     const mode = await resolveGeminiTextMode();
-    if (!mode.useReal) {
-      logger.info("ai.text.mock_mode", {
-        feature: "text_generate",
-        reason: mode.reason,
-        provider: mode.provider,
-        plan: plan?.code || null,
-        userId: user?.id ? `${String(user.id).slice(0, 6)}...${String(user.id).slice(-4)}` : null,
-      });
-      return buildMockTextResult({ prompt: input?.prompt });
-    }
+    assertRealProviderMode(mode, { feature: "text_generate", provider: "gemini" });
 
     try {
       const result = await geminiGenerateText({
@@ -203,35 +166,23 @@ async function generateTextByProvider({ provider, input, plan, user }) {
         },
       };
     } catch (error) {
-      if (error instanceof ProviderNotConfiguredError) {
-        logger.warn("ai.text.real_provider_missing_key_fallback_mock", {
+      if (error instanceof ProviderNotConfiguredError || isCircuitOpenError(error)) {
+        logger.warn("ai.text.contract_blocked", {
           feature: "text_generate",
           provider: "gemini",
+          code: error?.message || "provider_failed",
         });
-        return buildMockTextResult({ prompt: input?.prompt });
       }
-      if (isCircuitOpenError(error)) {
-        logger.warn("ai.text.circuit_open_fallback_mock", {
-          feature: "text_generate",
-          provider: "gemini",
-        });
-        return buildMockTextResult({ prompt: input?.prompt });
-      }
-      throw error;
+      rethrowProviderContractError({ error, feature: "text_generate", provider: "gemini" });
     }
   }
 
-  const mode = await resolveTextMode();
-  if (!mode.useReal) {
-    logger.info("ai.text.mock_mode", {
-      feature: "text_generate",
-      reason: mode.reason,
-      provider: mode.provider,
-      plan: plan?.code || null,
-      userId: user?.id ? `${String(user.id).slice(0, 6)}...${String(user.id).slice(-4)}` : null,
-    });
-    return buildMockTextResult({ prompt: input?.prompt });
+  if (provider !== "openai") {
+    throw createProviderNotSupportedBetaError({ feature: "text_generate", provider });
   }
+
+  const mode = await resolveTextMode();
+  assertRealProviderMode(mode, { feature: "text_generate", provider: "openai" });
 
   try {
     return await generateTextReal({
@@ -241,21 +192,14 @@ async function generateTextByProvider({ provider, input, plan, user }) {
       idempotencyKey: input?.idempotencyKey,
     });
   } catch (error) {
-    if (error instanceof ProviderNotConfiguredError) {
-      logger.warn("ai.text.real_provider_missing_key_fallback_mock", {
+    if (error instanceof ProviderNotConfiguredError || isCircuitOpenError(error)) {
+      logger.warn("ai.text.contract_blocked", {
         feature: "text_generate",
         provider: "openai",
+        code: error?.message || "provider_failed",
       });
-      return buildMockTextResult({ prompt: input?.prompt });
     }
-    if (isCircuitOpenError(error)) {
-      logger.warn("ai.text.circuit_open_fallback_mock", {
-        feature: "text_generate",
-        provider: "openai",
-      });
-      return buildMockTextResult({ prompt: input?.prompt });
-    }
-    throw error;
+    rethrowProviderContractError({ error, feature: "text_generate", provider: "openai" });
   }
 }
 
@@ -266,22 +210,16 @@ export async function generateText({ input, user, plan, routing }) {
 
 export async function factCheck({ input, user, plan, routing }) {
   const selectedProvider = String(routing?.selected_provider || "openai").trim().toLowerCase();
-  if (selectedProvider !== "openai") {
-    // Fact-check remains stabilized on OpenAI path in Beta.
+  if (selectedProvider === "mock") {
     return buildMockFactCheckResult({ claim: input?.text, query: input?.query });
   }
 
-  const mode = await resolveTextMode();
-  if (!mode.useReal) {
-    logger.info("ai.text.mock_mode", {
-      feature: "fact_check",
-      reason: mode.reason,
-      provider: mode.provider,
-      plan: plan?.code || null,
-      userId: user?.id ? `${String(user.id).slice(0, 6)}...${String(user.id).slice(-4)}` : null,
-    });
-    return buildMockFactCheckResult({ claim: input?.text, query: input?.query });
+  if (selectedProvider !== "openai") {
+    throw createProviderNotSupportedBetaError({ feature: "fact_check", provider: selectedProvider || "unknown" });
   }
+
+  const mode = await resolveTextMode();
+  assertRealProviderMode(mode, { feature: "fact_check", provider: "openai" });
 
   try {
     return await factCheckReal({
@@ -291,112 +229,97 @@ export async function factCheck({ input, user, plan, routing }) {
       idempotencyKey: input?.idempotencyKey,
     });
   } catch (error) {
-    if (error instanceof ProviderNotConfiguredError) {
-      logger.warn("ai.text.real_provider_missing_key_fallback_mock", {
+    if (error instanceof ProviderNotConfiguredError || isCircuitOpenError(error)) {
+      logger.warn("ai.fact_check.contract_blocked", {
         feature: "fact_check",
         provider: "openai",
+        code: error?.message || "provider_failed",
       });
-      return buildMockFactCheckResult({ claim: input?.text, query: input?.query });
     }
-    if (isCircuitOpenError(error)) {
-      logger.warn("ai.text.circuit_open_fallback_mock", {
-        feature: "fact_check",
-        provider: "openai",
-      });
-      return buildMockFactCheckResult({ claim: input?.text, query: input?.query });
-    }
-    throw error;
+    rethrowProviderContractError({ error, feature: "fact_check", provider: "openai" });
   }
 }
 
 export async function runVideoGenerate({ input, idempotencyKey, routing }) {
-  return executeHeavyProviderWithFallback({
+  return executeProviderWithoutRuntimeFallback({
     routing,
     feature: "video_generate",
     provider: "runway",
-    mockModel: "mock-video-v1",
     callProvider: (forceMock) => runwayGenerateVideo({ ...(input || {}), idempotencyKey, forceMock }),
   });
 }
 
 export async function runVideoStatus({ input, idempotencyKey, routing }) {
-  return executeHeavyProviderWithFallback({
+  return executeProviderWithoutRuntimeFallback({
     routing,
     feature: "video_status",
     provider: "runway",
-    mockModel: "mock-video-v1",
     callProvider: (forceMock) => runwayGetVideoStatus({ ...(input || {}), idempotencyKey, forceMock }),
   });
 }
 
 export async function runMusicGenerate({ input, idempotencyKey, routing }) {
-  return executeHeavyProviderWithFallback({
+  return executeProviderWithoutRuntimeFallback({
     routing,
     feature: "music_generate",
     provider: "suno",
-    mockModel: "mock-music-v1",
     callProvider: (forceMock) => sunoGenerateMusic({ ...(input || {}), idempotencyKey, forceMock }),
   });
 }
 
 export async function runMusicStatus({ input, idempotencyKey, routing }) {
-  return executeHeavyProviderWithFallback({
+  return executeProviderWithoutRuntimeFallback({
     routing,
     feature: "music_status",
     provider: "suno",
-    mockModel: "mock-music-v1",
     callProvider: (forceMock) => sunoGetMusicStatus({ ...(input || {}), idempotencyKey, forceMock }),
   });
 }
 
 export async function runVoiceGenerate({ input, idempotencyKey, routing }) {
-  return executeHeavyProviderWithFallback({
+  return executeProviderWithoutRuntimeFallback({
     routing,
     feature: "voice_generate",
     provider: "elevenlabs",
-    mockModel: "mock-voice-v1",
     callProvider: (forceMock) => elevenGenerateVoice({ ...(input || {}), idempotencyKey, forceMock }),
   });
 }
 
 export async function runVoiceStatus({ input, idempotencyKey, routing }) {
-  return executeHeavyProviderWithFallback({
+  return executeProviderWithoutRuntimeFallback({
     routing,
     feature: "voice_status",
     provider: "elevenlabs",
-    mockModel: "mock-voice-v1",
     callProvider: (forceMock) => elevenGetVoiceStatus({ ...(input || {}), idempotencyKey, forceMock }),
   });
 }
 
 export async function runSlidesGenerate({ input, idempotencyKey, routing }) {
   const selectedProvider = String(routing?.selected_provider || "openai").trim().toLowerCase() || "openai";
-  return executeHeavyProviderWithFallback({
+  return executeProviderWithoutRuntimeFallback({
     routing,
     feature: "slides_generate",
     provider: selectedProvider,
-    mockModel: "mock-slides-v1",
     callProvider: async (forceMock) => {
       if (forceMock || selectedProvider === "mock") {
         return buildMockSlidesGenerate();
       }
-      throw new ProviderNotConfiguredError(selectedProvider);
+      throw createProviderNotSupportedBetaError({ feature: "slides_generate", provider: selectedProvider });
     },
   });
 }
 
 export async function runSlidesStatus({ input, idempotencyKey, routing }) {
   const selectedProvider = String(routing?.selected_provider || "openai").trim().toLowerCase() || "openai";
-  return executeHeavyProviderWithFallback({
+  return executeProviderWithoutRuntimeFallback({
     routing,
     feature: "slides_status",
     provider: selectedProvider,
-    mockModel: "mock-slides-v1",
     callProvider: async (forceMock) => {
       if (forceMock || selectedProvider === "mock") {
         return buildMockSlidesStatus({ jobId: input?.jobId });
       }
-      throw new ProviderNotConfiguredError(selectedProvider);
+      throw createProviderNotSupportedBetaError({ feature: "slides_status", provider: selectedProvider });
     },
   });
 }

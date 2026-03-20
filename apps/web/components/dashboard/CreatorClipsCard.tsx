@@ -228,7 +228,7 @@ export function CreatorClipsCard({ walletCommon, onRefetch }: Props) {
     if (clipResult?.provider === "mock") {
       return {
         tone: "warning" as const,
-        text: "Clipe entregue em modo beta simulado. Ative o provedor real antes de tratar esta saída como publicação final.",
+        text: "Clipe entregue em modo beta manual. Revise antes de tratar esta saída como publicação final.",
       };
     }
     if (clipResult?.provider) {
@@ -358,7 +358,7 @@ export function CreatorClipsCard({ walletCommon, onRefetch }: Props) {
           model: typeof payload?.model === "string" ? payload.model : null,
           replay: Boolean(payload?.replay),
           defaultMessage: pickClipUrl(payload || {}) ? "Clipe disponível para revisar." : "Job criado com sucesso. Atualize o status para acompanhar o clipe.",
-          mockMessage: "Clipe entregue em modo beta simulado. Ative o provedor real para publicação final.",
+          mockMessage: "Clipe entregue em modo beta manual. Revise antes de tratar este ativo como saída final.",
           replayMessage: "Este job já estava em processamento. Atualize o status para acompanhar o retorno final.",
         })
       );
@@ -420,7 +420,7 @@ export function CreatorClipsCard({ walletCommon, onRefetch }: Props) {
               model: typeof nextResult?.model === "string" ? nextResult.model : null,
               replay: Boolean(nextResult?.replay),
               defaultMessage: "Clipe atualizado e pronto para revisar.",
-              mockMessage: "Clipe entregue em modo beta simulado. Ative o provedor real para publicação final.",
+              mockMessage: "Clipe entregue em modo beta manual. Revise antes de tratar este ativo como saída final.",
               replayMessage: "Este job já estava em processamento. Atualize o status para acompanhar o retorno final.",
             })
           : "Status atualizado. O clipe ainda está sendo processado."

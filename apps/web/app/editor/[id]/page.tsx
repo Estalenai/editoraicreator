@@ -1253,7 +1253,7 @@ export default function EditorProjectPage() {
           model,
           replay: Boolean(res?.replay),
           defaultMessage: "Texto gerado e aplicado ao editor.",
-          mockMessage: "Texto entregue em modo beta simulado. Revise antes de publicar.",
+          mockMessage: "Texto entregue em modo beta manual. Revise antes de tratar o retorno como definitivo.",
           replayMessage: "Esta resposta reaproveitou uma execução recente com segurança. Revise o texto antes de publicar.",
         }),
       });
@@ -1287,7 +1287,7 @@ export default function EditorProjectPage() {
           model,
           replay: Boolean(res?.replay),
           defaultMessage: "Verificação editorial concluída. Revise o veredito antes de seguir.",
-          mockMessage: "Verificação editorial entregue em modo beta simulado. Revise antes de tratar o retorno como definitivo.",
+          mockMessage: "Verificação editorial entregue em modo beta manual. Revise antes de tratar o retorno como definitivo.",
           replayMessage: "Esta verificação reaproveitou uma execução recente com segurança. Revise o veredito antes de seguir.",
         }),
       });

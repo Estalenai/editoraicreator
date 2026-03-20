@@ -1,6 +1,7 @@
 import { AIProviderError } from "./providers/providerBase.js";
 import { generateMusicReal, getMusicStatusReal } from "./providers/realMusicProvider.js";
 import { resolveRealProviderMode } from "../utils/aiProviderConfig.js";
+import { assertRealProviderMode, rethrowProviderContractError } from "../utils/aiContract.js";
 import { logger } from "../utils/logger.js";
 
 const ALLOWED_QUALITIES = new Set(["low", "medium", "high"]);
@@ -85,15 +86,7 @@ export async function generateMusic({
   }
 
   const mode = await resolveMode();
-  if (!mode.useReal) {
-    logger.info("ai.music.mock_mode", {
-      feature: "music_generate",
-      reason: mode.reason,
-      provider: mode.provider,
-      flag_key: mode.flagKey,
-    });
-    return buildMockGenerate();
-  }
+  assertRealProviderMode(mode, { feature: "music_generate", provider: "suno" });
 
   try {
     return await generateMusicReal({
@@ -106,11 +99,10 @@ export async function generateMusic({
     });
   } catch (error) {
     if (isCircuitOpenError(error)) {
-      logger.warn("ai.music.circuit_open_fallback_mock", {
+      logger.warn("ai.music.circuit_open_blocked", {
         feature: "music_generate",
         provider: "suno",
       });
-      return buildMockGenerate();
     }
     logger.error("ai.music.real_provider_failed", {
       feature: "music_generate",
@@ -118,7 +110,7 @@ export async function generateMusic({
       code: error?.message || "provider_failed",
       status: error?.details?.status || null,
     });
-    throw error;
+    rethrowProviderContractError({ error, feature: "music_generate", provider: "suno" });
   }
 }
 
@@ -136,25 +128,16 @@ export async function getMusicStatus({ jobId, idempotencyKey, forceMock = false 
   }
 
   const mode = await resolveMode();
-  if (!mode.useReal) {
-    logger.info("ai.music.mock_mode", {
-      feature: "music_status",
-      reason: mode.reason,
-      provider: mode.provider,
-      flag_key: mode.flagKey,
-    });
-    return buildMockStatus({ jobId: safeJobId });
-  }
+  assertRealProviderMode(mode, { feature: "music_status", provider: "suno" });
 
   try {
     return await getMusicStatusReal({ jobId: safeJobId, idempotencyKey });
   } catch (error) {
     if (isCircuitOpenError(error)) {
-      logger.warn("ai.music.circuit_open_fallback_mock", {
+      logger.warn("ai.music.circuit_open_blocked", {
         feature: "music_status",
         provider: "suno",
       });
-      return buildMockStatus({ jobId: safeJobId });
     }
     logger.error("ai.music.real_provider_failed", {
       feature: "music_status",
@@ -162,6 +145,6 @@ export async function getMusicStatus({ jobId, idempotencyKey, forceMock = false 
       code: error?.message || "provider_failed",
       status: error?.details?.status || null,
     });
-    throw error;
+    rethrowProviderContractError({ error, feature: "music_status", provider: "suno" });
   }
 }

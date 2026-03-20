@@ -8,6 +8,7 @@ import { getUserPlanCode } from "../utils/planResolver.js";
 import { assertWithinQuota, QuotaExceededError } from "../utils/quotaEnforcer.js";
 import { generateLimiter, promptLimiter } from "../middlewares/rateLimit.js";
 import { logger } from "../utils/logger.js";
+import { buildAiContractErrorPayload } from "../utils/aiContract.js";
 import { runMusicGenerate } from "../aiProviders/index.js";
 import { debitThenExecuteOrRefund } from "../utils/debitThenExecuteOrRefund.js";
 
@@ -311,12 +312,22 @@ function mapRouteError(error, defaultErrorCode) {
       },
     };
   }
+  if (normalized.includes("mock_requires_explicit_request")) {
+    return {
+      status: 503,
+      payload: buildAiContractErrorPayload("mock_requires_explicit_request"),
+    };
+  }
+  if (normalized.includes("provider_not_supported_beta")) {
+    return {
+      status: 503,
+      payload: buildAiContractErrorPayload("provider_not_supported_beta"),
+    };
+  }
   if (normalized.includes("provider_unavailable")) {
     return {
       status: 502,
-      payload: {
-        error: "provider_unavailable",
-      },
+      payload: buildAiContractErrorPayload("provider_unavailable"),
     };
   }
   if (normalized.includes("failed_to_load_idempotency") || normalized.includes("failed_to_save_idempotency")) {

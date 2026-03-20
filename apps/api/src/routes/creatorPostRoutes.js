@@ -10,6 +10,8 @@ import { getUserPlanCode } from "../utils/planResolver.js";
 import { assertWithinQuota, QuotaExceededError } from "../utils/quotaEnforcer.js";
 import { generateLimiter, promptLimiter } from "../middlewares/rateLimit.js";
 import { logger } from "../utils/logger.js";
+import { selectProviderAndModel } from "../utils/aiRouter.js";
+import { buildAiContractErrorPayload, getAiContractErrorStatus } from "../utils/aiContract.js";
 
 const router = express.Router();
 
@@ -139,11 +141,6 @@ function parseWithSchema(schema, req, res) {
   }
 
   return normalizedParsed.data;
-}
-
-function isMockEnabled() {
-  const v = String(process.env.AI_MOCK || "").trim().toLowerCase();
-  return v === "true" || v === "1" || v === "yes";
 }
 
 function computePostCostCommon({ brief, variants, hashtags = false, cta = false }) {
@@ -295,12 +292,22 @@ function mapRouteError(error, defaultErrorCode) {
       },
     };
   }
+  if (normalized.includes("mock_requires_explicit_request")) {
+    return {
+      status: 503,
+      payload: buildAiContractErrorPayload("mock_requires_explicit_request"),
+    };
+  }
+  if (normalized.includes("provider_not_supported_beta")) {
+    return {
+      status: 503,
+      payload: buildAiContractErrorPayload("provider_not_supported_beta"),
+    };
+  }
   if (normalized.includes("provider_unavailable")) {
     return {
       status: 502,
-      payload: {
-        error: "provider_unavailable",
-      },
+      payload: buildAiContractErrorPayload("provider_unavailable"),
     };
   }
   if (normalized.includes("failed_to_load_idempotency") || normalized.includes("failed_to_save_idempotency")) {
@@ -650,6 +657,32 @@ router.post("/generate", generateLimiter, async (req, res) => {
       action: "generate",
     });
 
+    const routing = selectProviderAndModel({
+      feature: "text_generate",
+      plan: planCode,
+      mode: "quality",
+      requested: {},
+      signals: { risk: "low" },
+    });
+    if (routing?.rejected === true) {
+      const payload = buildAiContractErrorPayload(routing.error, {
+        detail: routing.fallback_reason || routing.error,
+        routing,
+      });
+      await trackUsage({
+        db,
+        userId,
+        feature: FEATURE_NAME,
+        action: "generate",
+        idempotencyKey,
+        requestHash,
+        costs: { common: 0, pro: 0, ultra: 0 },
+        meta: { error: routing.error || "provider_contract_blocked" },
+        status: "error",
+      });
+      return res.status(getAiContractErrorStatus(routing.error, 503)).json(payload);
+    }
+
     const walletBefore = await getWallet(db, userId);
     if (walletBefore.common < commonCost) {
       await trackUsage({
@@ -758,25 +791,19 @@ router.post("/generate", generateLimiter, async (req, res) => {
       return res.status(mapped.status).json(mapped.payload);
     }
 
-    let result = buildMockResult(body);
-    let provider = "mock";
-    let model = "mock-creator-post";
-    if (!isMockEnabled()) {
-      const ai = await AutocrieBrain.execute({
-        feature: "text_generate",
-        input: { prompt: usedPrompt, language: body.language, idempotencyKey },
-        user: req.user,
-        plan: req.plan,
-        context: { idempotencyKey },
-      });
-      provider = String(ai?.provider || "unknown");
-      model = String(ai?.model || "unknown");
-      const aiText = String(ai?.output?.text || "").trim();
-      const normalizedResult = buildCreatorPostResultFromOutput(body, aiText || body.brief);
-      result = {
-        ...normalizedResult,
-      };
-    }
+    const ai = await AutocrieBrain.execute({
+      feature: "text_generate",
+      input: { prompt: usedPrompt, language: body.language, idempotencyKey },
+      user: req.user,
+      plan: { ...(req.plan || {}), code: planCode },
+      context: { idempotencyKey, routing },
+    });
+    const provider = String(ai?.provider || "unknown");
+    const model = String(ai?.model || "unknown");
+    const aiText = String(ai?.output?.text || "").trim();
+    let result = {
+      ...buildCreatorPostResultFromOutput(body, aiText || body.brief),
+    };
 
     const createdAt = (await getTxCreatedAt(db, userId, idempotencyKey)) || new Date().toISOString();
     result.created_at = createdAt;

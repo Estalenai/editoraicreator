@@ -1,6 +1,7 @@
 import { AIProviderError } from "./providers/providerBase.js";
 import { generateVideoReal, getVideoStatusReal } from "./providers/realVideoProvider.js";
 import { resolveRealProviderMode } from "../utils/aiProviderConfig.js";
+import { assertRealProviderMode, rethrowProviderContractError } from "../utils/aiContract.js";
 import { logger } from "../utils/logger.js";
 
 const ALLOWED_ASPECT_RATIOS = new Set(["16:9", "9:16", "1:1"]);
@@ -81,8 +82,6 @@ export async function generateVideo({
 
   if (safeImageUrl) {
     try {
-      // Basic URL validation only (no fetch).
-      // eslint-disable-next-line no-new
       new URL(safeImageUrl);
     } catch {
       const error = new Error("invalid_video_request");
@@ -97,15 +96,7 @@ export async function generateVideo({
   }
 
   const mode = await resolveMode();
-  if (!mode.useReal) {
-    logger.info("ai.video.mock_mode", {
-      feature: "video_generate",
-      reason: mode.reason,
-      provider: mode.provider,
-      flag_key: mode.flagKey,
-    });
-    return buildMockGenerate();
-  }
+  assertRealProviderMode(mode, { feature: "video_generate", provider: "runway" });
 
   try {
     return await generateVideoReal({
@@ -118,11 +109,10 @@ export async function generateVideo({
     });
   } catch (error) {
     if (isCircuitOpenError(error)) {
-      logger.warn("ai.video.circuit_open_fallback_mock", {
+      logger.warn("ai.video.circuit_open_blocked", {
         feature: "video_generate",
         provider: "runway",
       });
-      return buildMockGenerate({ provider: "mock", model: "mock-video-v1" });
     }
     logger.error("ai.video.real_provider_failed", {
       feature: "video_generate",
@@ -130,7 +120,7 @@ export async function generateVideo({
       code: error?.message || "provider_failed",
       status: error?.details?.status || null,
     });
-    throw error;
+    rethrowProviderContractError({ error, feature: "video_generate", provider: "runway" });
   }
 }
 
@@ -148,25 +138,16 @@ export async function getVideoStatus({ jobId, idempotencyKey, forceMock = false 
   }
 
   const mode = await resolveMode();
-  if (!mode.useReal) {
-    logger.info("ai.video.mock_mode", {
-      feature: "video_status",
-      reason: mode.reason,
-      provider: mode.provider,
-      flag_key: mode.flagKey,
-    });
-    return buildMockStatus({ jobId: safeJobId });
-  }
+  assertRealProviderMode(mode, { feature: "video_status", provider: "runway" });
 
   try {
     return await getVideoStatusReal({ jobId: safeJobId, idempotencyKey });
   } catch (error) {
     if (isCircuitOpenError(error)) {
-      logger.warn("ai.video.circuit_open_fallback_mock", {
+      logger.warn("ai.video.circuit_open_blocked", {
         feature: "video_status",
         provider: "runway",
       });
-      return buildMockStatus({ jobId: safeJobId });
     }
     logger.error("ai.video.real_provider_failed", {
       feature: "video_status",
@@ -174,6 +155,6 @@ export async function getVideoStatus({ jobId, idempotencyKey, forceMock = false 
       code: error?.message || "provider_failed",
       status: error?.details?.status || null,
     });
-    throw error;
+    rethrowProviderContractError({ error, feature: "video_status", provider: "runway" });
   }
 }

@@ -312,7 +312,7 @@ export function CreatorScriptCard({ walletCommon, onRefetch }: Props) {
           model: typeof payload?.model === "string" ? payload.model : null,
           replay: Boolean(payload?.replay),
           defaultMessage: "Roteiro gerado e pronto para revisão.",
-          mockMessage: "Resposta entregue em modo beta simulado. Ative o provedor real para versão final.",
+          mockMessage: "Resposta entregue em modo beta manual. Revise antes de tratar este roteiro como versão final.",
           replayMessage: "Esta resposta reaproveitou uma execução recente com segurança. Revise o roteiro antes de seguir.",
         })
       );
@@ -454,7 +454,7 @@ export function CreatorScriptCard({ walletCommon, onRefetch }: Props) {
     if (resultProvider === "mock") {
       return {
         tone: "warning" as const,
-        text: "Resposta entregue em modo beta simulado. Ative o provedor real antes de tratar este roteiro como saída final.",
+        text: "Resposta entregue em modo beta manual. Revise antes de tratar este roteiro como saída final.",
       };
     }
     if (resultProvider) {

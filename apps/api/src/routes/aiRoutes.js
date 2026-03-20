@@ -17,6 +17,7 @@ import { createAuthedSupabaseClient } from "../utils/supabaseAuthed.js";
 import { ensureCreditsOrAutoConvert } from "../services/autoConvertService.js";
 import { canUseAvatarPreview } from "../utils/coinsProductRules.js";
 import { resolveLang, t } from "../utils/i18n.js";
+import { buildAiContractErrorPayload, getAiContractErrorCode, getAiContractErrorStatus } from "../utils/aiContract.js";
 import { applyHeavyFeatureAbuseGuards, recordRiskOutcome } from "../utils/abuseMitigation.js";
 import { selectProviderAndModel } from "../utils/aiRouter.js";
 import { metricIncrement, metricTiming, recordUsageMetric } from "../utils/metrics.js";
@@ -87,7 +88,7 @@ router.use((req, res, next) => {
     const selectedProvider =
       (selectedProviderRaw == null ? "" : String(selectedProviderRaw).trim().toLowerCase()) ||
       providerFromPayload ||
-      (req.aiRouting?.rejected === true || isErrorPayload ? null : "mock");
+      null;
     const providerHeaderValue = provider || String(selectedProvider || "").trim().toLowerCase();
     if (providerHeaderValue) {
       res.setHeader("X-AI-Provider-Mode", providerHeaderValue === "mock" ? "mock" : "real");
@@ -103,7 +104,7 @@ router.use((req, res, next) => {
     const selectedModelRaw = req.aiRouting?.selected_model;
     const selectedModel =
       selectedModelRaw == null
-        ? (req.aiRouting?.rejected === true || isErrorPayload ? null : String(payload?.model || "").trim() || "mock")
+        ? (req.aiRouting?.rejected === true || isErrorPayload ? null : String(payload?.model || "").trim() || null)
         : selectedModelRaw;
     const computedRouting = {
       mode: routingMode,
@@ -359,20 +360,34 @@ async function applyRoutingContext(req, { feature, body }) {
 }
 
 function rejectDisallowedManualRouting(req, res) {
-  if (req?.aiRouting?.rejected !== true || req?.aiRouting?.error !== "model_not_allowed") return false;
+  if (req?.aiRouting?.rejected !== true) return false;
   const lang = resolveLang(req);
-  return res.status(403).json({
-    error: "model_not_allowed",
-    message: t(lang, "model_not_allowed"),
-    routing: {
-      mode: "manual",
-      requested: req.aiRouting?.requested || {},
-      selected_provider: null,
-      selected_model: null,
-      fallback_used: false,
-      fallback_reason: "model_not_allowed",
-    },
-  });
+  const errorCode = String(req.aiRouting?.error || "provider_failed").trim().toLowerCase();
+  const routingPayload = {
+    mode: String(req.aiRouting?.mode || "quality").trim().toLowerCase() || "quality",
+    requested: req.aiRouting?.requested || {},
+    selected_provider: req.aiRouting?.selected_provider ?? null,
+    selected_model: req.aiRouting?.selected_model ?? null,
+    fallback_used: false,
+    fallback_reason: req.aiRouting?.fallback_reason || errorCode,
+  };
+
+  if (errorCode === "model_not_allowed") {
+    return res.status(403).json(
+      buildAiContractErrorPayload(errorCode, {
+        message: t(lang, "model_not_allowed"),
+        detail: req.aiRouting?.fallback_reason || errorCode,
+        routing: routingPayload,
+      })
+    );
+  }
+
+  return res.status(getAiContractErrorStatus(errorCode, 503)).json(
+    buildAiContractErrorPayload(errorCode, {
+      detail: req.aiRouting?.fallback_reason || errorCode,
+      routing: routingPayload,
+    })
+  );
 }
 
 function resolveProviderKeyForGuards(defaultProviderKey, req) {
@@ -466,13 +481,32 @@ function getSafeErrorDetail(error, fallback = "erro") {
   }
 }
 
-function buildHeavyRouteProviderErrorPayload(req, errorMessage, error) {
+function buildProviderRouteErrorPayload(req, errorMessage, error) {
   const detail = getSafeErrorDetail(error, "erro");
-  return {
-    error: detail === "provider_unavailable" ? "provider_failed" : errorMessage,
+  const routing = req?.aiRouting && typeof req.aiRouting === "object" ? req.aiRouting : null;
+  const errorCode = getAiContractErrorCode(error) || (detail === "provider_unavailable" ? "provider_unavailable" : null);
+
+  if (errorCode === "mock_requires_explicit_request" || errorCode === "provider_unavailable" || errorCode === "provider_not_supported_beta" || errorCode === "model_not_allowed") {
+    return buildAiContractErrorPayload(errorCode === getAiContractErrorCode(error) ? error : errorCode, {
+      detail,
+      routing,
+    });
+  }
+
+  const payload = {
+    error: "provider_failed",
+    message: errorMessage,
     detail,
-    routing: req?.aiRouting && typeof req.aiRouting === "object" ? req.aiRouting : null,
+    routing,
   };
+  if (typeof error?.hint === "string" && error.hint.trim()) {
+    payload.hint = error.hint.trim();
+  }
+  return payload;
+}
+
+function buildHeavyRouteProviderErrorPayload(req, errorMessage, error) {
+  return buildProviderRouteErrorPayload(req, errorMessage, error);
 }
 
 function assertAiQuota(req, res, feature) {
@@ -2449,7 +2483,7 @@ router.post(
         },
       });
       setHeavyRouteProviderModeHeader(res, normalizeProviderMode(routingCtx?.providerMode, routingCtx?.selectedProvider));
-      return res.status(502).json(buildHeavyRouteProviderErrorPayload(req, "Falha ao gerar video", e));
+      return res.status(getAiContractErrorStatus(e, 502)).json(buildHeavyRouteProviderErrorPayload(req, "Falha ao gerar video", e));
     }
   }
 );
@@ -2599,7 +2633,7 @@ router.post(
         },
       });
       setHeavyRouteProviderModeHeader(res, normalizeProviderMode(routingCtx?.providerMode, routingCtx?.selectedProvider));
-      return res.status(502).json(buildHeavyRouteProviderErrorPayload(req, "Falha ao consultar status do video", e));
+      return res.status(getAiContractErrorStatus(e, 502)).json(buildHeavyRouteProviderErrorPayload(req, "Falha ao consultar status do video", e));
     }
   }
 );
@@ -2838,7 +2872,7 @@ router.post(
         },
       });
       setHeavyRouteProviderModeHeader(res, normalizeProviderMode(routingCtx?.providerMode, routingCtx?.selectedProvider));
-      return res.status(502).json(buildHeavyRouteProviderErrorPayload(req, "Falha ao gerar musica", e));
+      return res.status(getAiContractErrorStatus(e, 502)).json(buildHeavyRouteProviderErrorPayload(req, "Falha ao gerar musica", e));
     }
   }
 );
@@ -2988,7 +3022,7 @@ router.post(
         },
       });
       setHeavyRouteProviderModeHeader(res, normalizeProviderMode(routingCtx?.providerMode, routingCtx?.selectedProvider));
-      return res.status(502).json(buildHeavyRouteProviderErrorPayload(req, "Falha ao consultar status da musica", e));
+      return res.status(getAiContractErrorStatus(e, 502)).json(buildHeavyRouteProviderErrorPayload(req, "Falha ao consultar status da musica", e));
     }
   }
 );
@@ -3231,7 +3265,7 @@ router.post(
         },
       });
       setHeavyRouteProviderModeHeader(res, normalizeProviderMode(routingCtx?.providerMode, routingCtx?.selectedProvider));
-      return res.status(502).json(buildHeavyRouteProviderErrorPayload(req, "Falha ao gerar voz", e));
+      return res.status(getAiContractErrorStatus(e, 502)).json(buildHeavyRouteProviderErrorPayload(req, "Falha ao gerar voz", e));
     }
   }
 );
@@ -3381,7 +3415,7 @@ router.post(
         },
       });
       setHeavyRouteProviderModeHeader(res, normalizeProviderMode(routingCtx?.providerMode, routingCtx?.selectedProvider));
-      return res.status(502).json(buildHeavyRouteProviderErrorPayload(req, "Falha ao consultar status da voz", e));
+      return res.status(getAiContractErrorStatus(e, 502)).json(buildHeavyRouteProviderErrorPayload(req, "Falha ao consultar status da voz", e));
     }
   }
 );
@@ -3620,7 +3654,7 @@ router.post(
         },
       });
       setHeavyRouteProviderModeHeader(res, normalizeProviderMode(routingCtx?.providerMode, routingCtx?.selectedProvider));
-      return res.status(502).json(buildHeavyRouteProviderErrorPayload(req, "Falha ao gerar slides", e));
+      return res.status(getAiContractErrorStatus(e, 502)).json(buildHeavyRouteProviderErrorPayload(req, "Falha ao gerar slides", e));
     }
   }
 );
@@ -3768,7 +3802,7 @@ router.post(
         },
       });
       setHeavyRouteProviderModeHeader(res, normalizeProviderMode(routingCtx?.providerMode, routingCtx?.selectedProvider));
-      return res.status(502).json(buildHeavyRouteProviderErrorPayload(req, "Falha ao consultar status dos slides", e));
+      return res.status(getAiContractErrorStatus(e, 502)).json(buildHeavyRouteProviderErrorPayload(req, "Falha ao consultar status dos slides", e));
     }
   }
 );
@@ -4052,11 +4086,9 @@ router.post(
         },
       });
 
-      return res.status(502).json({
-        error: "Falha ao gerar texto",
-        detail: e?.message || "erro",
-        hint: "Configure AI_DEFAULT_PROVIDER e a chave do provedor (OPENAI_API_KEY / GEMINI_API_KEY / ANTHROPIC_API_KEY).",
-      });
+      return res.status(getAiContractErrorStatus(e, 502)).json(
+        buildProviderRouteErrorPayload(req, "Falha ao gerar texto", e)
+      );
     }
   }
 );
@@ -4356,11 +4388,9 @@ router.post(
         },
       });
 
-      return res.status(502).json({
-        error: "Falha ao checar a afirmação",
-        detail: e?.message || "erro",
-        hint: "Configure SEARCH_PROVIDER + (SERPER_API_KEY ou TAVILY_API_KEY) e um LLM (AI_DEFAULT_PROVIDER + API KEY).",
-      });
+      return res.status(getAiContractErrorStatus(e, 502)).json(
+        buildProviderRouteErrorPayload(req, "Falha ao checar a afirmação", e)
+      );
     }
   }
 );

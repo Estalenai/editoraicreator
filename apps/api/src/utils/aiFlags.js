@@ -15,5 +15,5 @@ export function isAIDisabled() {
 }
 
 export function isAIMockForced() {
-  return parseBool(process.env.AI_MOCK, true);
+  return parseBool(process.env.AI_MOCK, false);
 }

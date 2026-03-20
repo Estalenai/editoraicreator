@@ -1,15 +1,6 @@
-// apps/api/src/autocrie/core/brain.js
-// Núcleo do Autocrie – inteligência interna (PASSO 10)
-// Orquestra múltiplos provedores e ferramentas (busca web, checagem, geração etc.)
-// Fonte de verdade de IA: ../../ai/index.js (dispatcher)
-
 import { generateText } from "../../aiProviders/index.js";
 import { webSearch } from "../../ai/search/index.js";
-
-function isMockEnabled() {
-  const v = String(process.env.AI_MOCK || "").trim().toLowerCase();
-  return v === "true" || v === "1" || v === "yes";
-}
+import { isExplicitMockRouting } from "../../utils/aiContract.js";
 
 function mockUsage() {
   return {
@@ -20,10 +11,6 @@ function mockUsage() {
 }
 
 export class AutocrieBrain {
-  /**
-   * Execução padronizada para features de IA.
-   * Retorna { output, provider, model, meta }
-   */
   static async execute({ feature, input, user, plan, context = {} }) {
     switch (feature) {
       case "text_generate":
@@ -36,13 +23,13 @@ export class AutocrieBrain {
   }
 
   static async textGenerate({ input, user, plan, context = {} }) {
-    if (isMockEnabled()) {
+    if (isExplicitMockRouting(context?.routing)) {
       const promptText = String(input?.prompt || "");
       const lowerPrompt = promptText.toLowerCase();
       const isPromptBuilder =
         lowerPrompt.includes("finalprompt") || lowerPrompt.includes("promptbuilder");
       const isCreatorPost =
-        promptText.includes("\"caption\"") ||
+        promptText.includes('"caption"') ||
         promptText.includes("platformChecklist") ||
         promptText.includes("hashtags");
 
@@ -91,7 +78,7 @@ export class AutocrieBrain {
       };
     }
 
-    const system = "Você é a Autocrie.ai (Editor AI Creator). Gere uma resposta direta e útil.";
+    const system = "Voce e a Autocrie.ai (Editor AI Creator). Gere uma resposta direta e util.";
     const prompt = String(input?.prompt || "").trim();
 
     if (!prompt) {
@@ -99,12 +86,13 @@ export class AutocrieBrain {
         output: { text: "" },
         provider: "none",
         model: "none",
-        meta: { error: "prompt é obrigatório" },
+        meta: { error: "prompt e obrigatorio" },
       };
     }
 
-    // Como o dispatcher pode não aceitar "system" separado, embutimos no prompt.
-    const combinedPrompt = `${system}\n\n${prompt}`;
+    const combinedPrompt = `${system}
+
+${prompt}`;
 
     const r = await generateText({
       input: {
@@ -118,7 +106,6 @@ export class AutocrieBrain {
       routing: context?.routing || null,
     });
 
-    // Normalização defensiva (caso o dispatcher mude o shape do retorno)
     const text =
       typeof r?.text === "string"
         ? r.text
@@ -130,17 +117,12 @@ export class AutocrieBrain {
       output: { text },
       provider: r?.provider || "unknown",
       model: r?.model || "unknown",
-      meta: { usage: r?.usage || null },
+      meta: { usage: r?.usage || r?.meta?.usage || null },
     };
   }
 
-  /**
-   * Anti Fake News / Fact-check
-   * - Busca em fontes diversas via provedor de pesquisa
-   * - Pede ao LLM para classificar e justificar citando as fontes (URLs)
-   */
   static async factCheck({ input, user, plan, context = {} }) {
-    if (isMockEnabled()) {
+    if (isExplicitMockRouting(context?.routing)) {
       const claim = String(input?.claim || "").trim();
       const summary = claim
         ? "Resumo mock: verificacao simulada sem fontes."
@@ -163,7 +145,7 @@ export class AutocrieBrain {
     const claim = String(input?.claim || "").trim();
     if (!claim) {
       return {
-        output: { verdict: "INSUFFICIENT", confidence: 0, summary: "claim é obrigatório", sources: [], citations: [] },
+        output: { verdict: "INSUFFICIENT", confidence: 0, summary: "claim e obrigatorio", sources: [], citations: [] },
         provider: "none",
         model: "none",
         meta: {},
@@ -187,24 +169,26 @@ export class AutocrieBrain {
       }));
 
     const system = [
-      "Você é a Autocrie.ai. Sua tarefa é checar veracidade de afirmações.",
+      "Voce e a Autocrie.ai. Sua tarefa e checar veracidade de afirmacoes.",
       "Regras:",
-      "- Não invente fatos.",
+      "- Nao invente fatos.",
       "- Use APENAS as fontes fornecidas (URLs e snippets) para justificar.",
-      "- Se as fontes não forem suficientes, responda 'INSUFFICIENT'.",
+      "- Se as fontes nao forem suficientes, responda 'INSUFFICIENT'.",
       "- Retorne JSON estrito com campos: verdict (TRUE|FALSE|MIXED|INSUFFICIENT), confidence (0-100), summary, citations (array de urls).",
     ].join("\n");
 
     const prompt = [
-      `AFIRMAÇÃO: ${claim}`,
+      `AFIRMACAO: ${claim}`,
       "",
-      "FONTES (use como evidência):",
+      "FONTES (use como evidencia):",
       ...sources.map((s, i) => `${i + 1}. ${s.title}\n${s.url}\n${s.snippet}`),
       "",
       "Responda somente com JSON.",
     ].join("\n");
 
-    const combinedPrompt = `${system}\n\n${prompt}`;
+    const combinedPrompt = `${system}
+
+${prompt}`;
 
     const r = await generateText({
       input: {
@@ -244,7 +228,7 @@ export class AutocrieBrain {
       },
       provider: r?.provider || "unknown",
       model: r?.model || "unknown",
-      meta: { usage: r?.usage || null, search_provider: process.env.SEARCH_PROVIDER || "serper" },
+      meta: { usage: r?.usage || r?.meta?.usage || null, search_provider: process.env.SEARCH_PROVIDER || "serper" },
     };
   }
 }

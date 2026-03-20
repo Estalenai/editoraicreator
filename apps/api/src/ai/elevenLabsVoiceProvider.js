@@ -1,6 +1,7 @@
 import { AIProviderError } from "./providers/providerBase.js";
 import { generateVoiceReal, getVoiceStatusReal } from "./providers/realVoiceProvider.js";
 import { resolveRealProviderMode } from "../utils/aiProviderConfig.js";
+import { assertRealProviderMode, rethrowProviderContractError } from "../utils/aiContract.js";
 import { logger } from "../utils/logger.js";
 
 const ALLOWED_FORMATS = new Set(["mp3", "wav"]);
@@ -103,15 +104,7 @@ export async function generateVoice({
   }
 
   const mode = await resolveMode();
-  if (!mode.useReal) {
-    logger.info("ai.voice.mock_mode", {
-      feature: "voice_generate",
-      reason: mode.reason,
-      provider: mode.provider,
-      flag_key: mode.flagKey,
-    });
-    return buildMockGenerate();
-  }
+  assertRealProviderMode(mode, { feature: "voice_generate", provider: "elevenlabs" });
 
   try {
     return await generateVoiceReal({
@@ -127,11 +120,10 @@ export async function generateVoice({
     });
   } catch (error) {
     if (isCircuitOpenError(error)) {
-      logger.warn("ai.voice.circuit_open_fallback_mock", {
+      logger.warn("ai.voice.circuit_open_blocked", {
         feature: "voice_generate",
         provider: "elevenlabs",
       });
-      return buildMockGenerate();
     }
     logger.error("ai.voice.real_provider_failed", {
       feature: "voice_generate",
@@ -139,7 +131,7 @@ export async function generateVoice({
       code: error?.message || "provider_failed",
       status: error?.details?.status || null,
     });
-    throw error;
+    rethrowProviderContractError({ error, feature: "voice_generate", provider: "elevenlabs" });
   }
 }
 
@@ -158,25 +150,16 @@ export async function getVoiceStatus({ jobId, text = "", idempotencyKey, forceMo
   }
 
   const mode = await resolveMode();
-  if (!mode.useReal) {
-    logger.info("ai.voice.mock_mode", {
-      feature: "voice_status",
-      reason: mode.reason,
-      provider: mode.provider,
-      flag_key: mode.flagKey,
-    });
-    return buildMockStatus({ jobId: safeJobId, text: safeText });
-  }
+  assertRealProviderMode(mode, { feature: "voice_status", provider: "elevenlabs" });
 
   try {
     return await getVoiceStatusReal({ jobId: safeJobId, idempotencyKey });
   } catch (error) {
     if (isCircuitOpenError(error)) {
-      logger.warn("ai.voice.circuit_open_fallback_mock", {
+      logger.warn("ai.voice.circuit_open_blocked", {
         feature: "voice_status",
         provider: "elevenlabs",
       });
-      return buildMockStatus({ jobId: safeJobId, text: safeText });
     }
     logger.error("ai.voice.real_provider_failed", {
       feature: "voice_status",
@@ -184,6 +167,6 @@ export async function getVoiceStatus({ jobId, text = "", idempotencyKey, forceMo
       code: error?.message || "provider_failed",
       status: error?.details?.status || null,
     });
-    throw error;
+    rethrowProviderContractError({ error, feature: "voice_status", provider: "elevenlabs" });
   }
 }
