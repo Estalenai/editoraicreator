@@ -348,7 +348,7 @@ export function CreatorNoCodeCard({ planCode, walletCommon, onRefetch }: Props) 
 
   if (!isAllowed) {
     return (
-      <div className="creator-workspace-card creator-workspace-card-modular creator-workspace-module">
+      <div className="premium-card creator-workspace-card creator-workspace-card-modular">
         <div className="creator-workspace-header">
           <div className="hero-title-stack section-stack-tight">
             <p className="section-kicker">Briefing do blueprint</p>
@@ -369,7 +369,7 @@ export function CreatorNoCodeCard({ planCode, walletCommon, onRefetch }: Props) 
   }
 
   return (
-    <div className="creator-workspace-card creator-workspace-card-modular creator-workspace-module">
+    <div className="premium-card creator-workspace-card creator-workspace-card-modular">
       <div className="creator-workspace-header">
         <div className="hero-title-stack section-stack-tight">
           <p className="section-kicker">Briefing do blueprint</p>

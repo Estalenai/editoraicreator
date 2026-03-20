@@ -175,7 +175,7 @@ function creatorStageTone(group: CreatorGroupId): "phase" | "warning" | "soon" {
 
 export default function CreatorsPage() {
   return (
-    <Suspense fallback={<div className="page-shell creators-page"><div className="creators-page-fallback">Carregando área de Creators...</div></div>}>
+    <Suspense fallback={<div className="page-shell"><div className="layout-contract-card" style={{ padding: 16 }}>Carregando área de Creators...</div></div>}>
       <CreatorsPageContent />
     </Suspense>
   );
@@ -290,110 +290,107 @@ function CreatorsPageContent() {
 
   return (
     <div className="page-shell creators-page">
-      <section className="creators-page-canvas">
-        <section className="creators-hero creators-page-region creators-page-hero-region" data-reveal>
-          <div className="hero-split creators-hero-split">
-            <div className="hero-copy creators-hero-copy">
-              <div className="hero-title-stack">
-                <p className="section-kicker">Workspace de criação</p>
-                <h1 style={{ margin: 0, letterSpacing: -0.35 }}>Creators</h1>
-                <p className="creators-hero-lead">
-                  O núcleo da plataforma concentra briefing, geração, continuidade editorial e saída rastreável em um único workspace. Os creators hero entram primeiro, o editor amadurece a peça e o projeto preserva a continuidade até a exportação.
-                </p>
-              </div>
+      <section className="premium-hero creators-hero surface-flow-hero" data-reveal>
+        <div className="hero-split creators-hero-split">
+          <div className="hero-copy creators-hero-copy">
+            <div className="hero-title-stack">
+              <p className="section-kicker">Workspace de criação</p>
+              <h1 style={{ margin: 0, letterSpacing: -0.35 }}>Creators</h1>
+              <p className="creators-hero-lead">
+                O núcleo da plataforma concentra briefing, geração, continuidade editorial e saída rastreável em um único workspace. Os creators hero entram primeiro, o editor amadurece a peça e o projeto preserva a continuidade até a exportação.
+              </p>
+            </div>
 
-              <div className="hero-meta-row hero-meta-row-compact">
-                <span className="premium-badge premium-badge-phase">Plano: {planLabelDisplay}</span>
-                <span className="premium-badge premium-badge-soon">Creators hero no centro do beta pago/controlado</span>
-              </div>
+            <div className="hero-meta-row hero-meta-row-compact">
+              <span className="premium-badge premium-badge-phase">Plano: {planLabelDisplay}</span>
+              <span className="premium-badge premium-badge-soon">Creators hero no centro do beta pago/controlado</span>
+            </div>
 
-              <div className="signal-strip creators-hero-signal-strip">
-                <div className="signal-chip signal-chip-creative">
-                  <strong>Briefing</strong>
-                  <span>Campos objetivos e estimativa antes de qualquer geração.</span>
-                </div>
-                <div className="signal-chip signal-chip-creative">
-                  <strong>Geração</strong>
-                  <span>Progresso claro, erro legível e retorno visível durante a execução.</span>
-                </div>
-                <div className="signal-chip signal-chip-creative">
-                  <strong>Continuidade</strong>
-                  <span>Salvar em projeto, editar no workspace e preparar exportação sem perder contexto.</span>
-                </div>
+            <div className="signal-strip creators-hero-signal-strip">
+              <div className="signal-chip signal-chip-creative">
+                <strong>Briefing</strong>
+                <span>Campos objetivos e estimativa antes de qualquer geração.</span>
               </div>
-
-              <div className="hero-kpi-grid creators-hero-metrics creators-hero-metrics-compact">
-                <div className="hero-kpi creators-hero-metric creators-page-note">
-                  <span className="hero-kpi-label">Ferramenta ativa</span>
-                  <strong className="hero-kpi-value">{activeTabMeta.label}</strong>
-                  <span className="hero-kpi-text">{activeTabMeta.bestFor}</span>
-                </div>
-                <div className="hero-kpi creators-hero-metric creators-page-note">
-                  <span className="hero-kpi-label">Saldo para operar</span>
-                  <strong className="hero-kpi-value">{walletSummaryDisplay}</strong>
-                  <span className="hero-kpi-text">{loading ? "Saldo, plano e regras de uso estão sendo sincronizados." : "Estimativa antes da geração. Consumo real em Créditos."}</span>
-                </div>
-                <div className="hero-kpi creators-hero-metric creators-page-note">
-                  <span className="hero-kpi-label">Próximo passo</span>
-                  <strong className="hero-kpi-value">Gerar → editar → exportar</strong>
-                  <span className="hero-kpi-text">Projeto salvo, refinamento no editor e exportação local quando a peça estiver pronta.</span>
-                </div>
+              <div className="signal-chip signal-chip-creative">
+                <strong>Geração</strong>
+                <span>Progresso claro, erro legível e retorno visível durante a execução.</span>
+              </div>
+              <div className="signal-chip signal-chip-creative">
+                <strong>Continuidade</strong>
+                <span>Salvar em projeto, editar no workspace e preparar exportação sem perder contexto.</span>
               </div>
             </div>
 
-            <div className="hero-side-panel creators-hero-panel creators-page-rail">
-              <div className="section-stack">
-                <p className="section-kicker">Controle operacional</p>
-                <h2 style={{ margin: 0 }}>Criatividade com estrutura</h2>
-                <p className="meta-text-ea">
-                  Briefing, configuração, ação e resultado ficam separados para reduzir ruído, acelerar leitura e manter previsibilidade.
-                </p>
+            <div className="hero-kpi-grid creators-hero-metrics creators-hero-metrics-compact">
+              <div className="hero-kpi creators-hero-metric layout-contract-note">
+                <span className="hero-kpi-label">Ferramenta ativa</span>
+                <strong className="hero-kpi-value">{activeTabMeta.label}</strong>
+                <span className="hero-kpi-text">{activeTabMeta.bestFor}</span>
               </div>
-
-              <div className="creators-hero-panel-stack hero-side-list hero-side-list-compact">
-                <div className="hero-side-note">
-                  <strong>Briefing orientado</strong>
-                  <span>Objetivo, formato e contexto ficam agrupados sem transformar o fluxo em um formulário extenso.</span>
-                </div>
-                <div className="hero-side-note">
-                  <strong>Continuidade pronta</strong>
-                  <span>Depois da geração, o resultado entra em projeto, editor e pipeline de saída com contexto preservado.</span>
-                </div>
+              <div className="hero-kpi creators-hero-metric layout-contract-note">
+                <span className="hero-kpi-label">Saldo para operar</span>
+                <strong className="hero-kpi-value">{walletSummaryDisplay}</strong>
+                <span className="hero-kpi-text">{loading ? "Saldo, plano e regras de uso estão sendo sincronizados." : "Estimativa antes da geração. Consumo real em Créditos."}</span>
               </div>
-
-              <div className="hero-actions-row">
-                <button
-                  onClick={async () => {
-                    await onSyncSubscription();
-                    await refresh();
-                  }}
-                  disabled={syncingSubscription || loading}
-                  className="btn-ea btn-secondary"
-                >
-                  {syncingSubscription ? "Sincronizando..." : "Sincronizar assinatura"}
-                </button>
-                <button onClick={onLogout} className="btn-ea btn-ghost">
-                  Sair
-                </button>
+              <div className="hero-kpi creators-hero-metric layout-contract-note">
+                <span className="hero-kpi-label">Próximo passo</span>
+                <strong className="hero-kpi-value">Gerar → editar → exportar</strong>
+                <span className="hero-kpi-text">Projeto salvo, refinamento no editor e exportação local quando a peça estiver pronta.</span>
               </div>
             </div>
           </div>
-        </section>
 
-        {error ? (
-          <div className="creators-page-region creators-page-state-region">
-            <div className="state-ea state-ea-error">
-              <p className="state-ea-title">Não foi possível carregar a área de Creators</p>
-              <div className="state-ea-text">{toUserFacingError(error, "Atualize o workspace e tente novamente.")}</div>
-              <div className="state-ea-actions">
-                <button onClick={refresh} className="btn-ea btn-secondary btn-sm">Atualizar</button>
-                <Link href="/support" className="btn-link-ea btn-ghost btn-sm">Pedir ajuda</Link>
+          <div className="hero-side-panel creators-hero-panel layout-contract-rail">
+            <div className="section-stack">
+              <p className="section-kicker">Controle operacional</p>
+              <h2 style={{ margin: 0 }}>Criatividade com estrutura</h2>
+              <p className="meta-text-ea">
+                Briefing, configuração, ação e resultado ficam separados para reduzir ruído, acelerar leitura e manter previsibilidade.
+              </p>
+            </div>
+
+            <div className="creators-hero-panel-stack hero-side-list hero-side-list-compact">
+              <div className="hero-side-note">
+                <strong>Briefing orientado</strong>
+                <span>Objetivo, formato e contexto ficam agrupados sem transformar o fluxo em um formulário extenso.</span>
+              </div>
+              <div className="hero-side-note">
+                <strong>Continuidade pronta</strong>
+                <span>Depois da geração, o resultado entra em projeto, editor e pipeline de saída com contexto preservado.</span>
               </div>
             </div>
-          </div>
-        ) : null}
 
-      <section className="proof-value-section creators-proof-section creators-page-region creators-page-section" data-reveal data-reveal-delay="60">
+            <div className="hero-actions-row">
+              <button
+                onClick={async () => {
+                  await onSyncSubscription();
+                  await refresh();
+                }}
+                disabled={syncingSubscription || loading}
+                className="btn-ea btn-secondary"
+              >
+                {syncingSubscription ? "Sincronizando..." : "Sincronizar assinatura"}
+              </button>
+              <button onClick={onLogout} className="btn-ea btn-ghost">
+                Sair
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {error ? (
+        <div className="state-ea state-ea-error">
+          <p className="state-ea-title">Não foi possível carregar a área de Creators</p>
+          <div className="state-ea-text">{toUserFacingError(error, "Atualize o workspace e tente novamente.")}</div>
+          <div className="state-ea-actions">
+            <button onClick={refresh} className="btn-ea btn-secondary btn-sm">Atualizar</button>
+            <Link href="/support" className="btn-link-ea btn-ghost btn-sm">Pedir ajuda</Link>
+          </div>
+        </div>
+      ) : null}
+
+      <section className="proof-value-section creators-proof-section creators-flow-section surface-flow-region creators-flow-section-start layout-contract-region" data-reveal data-reveal-delay="60">
         <div className="proof-value-header">
           <div className="section-stack-tight">
             <p className="section-kicker">Exemplos de resultado</p>
@@ -409,7 +406,7 @@ function CreatorsPageContent() {
 
         <div className="proof-value-grid proof-value-grid-creators">
           {CREATOR_SHOWCASES.map((item, index) => (
-            <article key={item.creator} className="proof-value-card creators-page-item" data-reveal data-reveal-delay={String(70 + index * 55)}>
+            <article key={item.creator} className="proof-value-card layout-contract-item" data-reveal data-reveal-delay={String(70 + index * 55)}>
               <div className="proof-value-meta-row">
                 <span className="proof-value-kicker">{item.kicker}</span>
                 <span className="proof-value-chip">{item.creator}</span>
@@ -433,7 +430,7 @@ function CreatorsPageContent() {
         </div>
       </section>
 
-      <section className="creators-hero-core-section creators-page-region creators-page-section" data-reveal data-reveal-delay="90">
+      <section className="creators-hero-core-section creators-flow-section surface-flow-region creators-flow-section-middle layout-contract-region" data-reveal data-reveal-delay="90">
         <div className="proof-value-header creators-hero-core-header">
           <div className="section-stack-tight">
             <p className="section-kicker">Creators hero</p>
@@ -452,7 +449,7 @@ function CreatorsPageContent() {
           {heroCoreCards.map((tab, index) => (
             <article
               key={tab.id}
-              className={`creators-hero-core-card creators-page-item ${tab.group !== "hero" ? "creators-hero-core-card-support" : ""}`}
+              className={`creators-hero-core-card layout-contract-item ${tab.group !== "hero" ? "creators-hero-core-card-support" : ""}`}
               data-active={activeTab === tab.id}
               data-reveal
               data-reveal-delay={String(70 + index * 50)}
@@ -492,7 +489,7 @@ function CreatorsPageContent() {
         </div>
       </section>
 
-      <section className="creators-secondary-section creators-page-region creators-page-section" data-reveal data-reveal-delay="120">
+      <section className="creators-secondary-section creators-flow-section surface-flow-region creators-flow-section-middle layout-contract-region" data-reveal data-reveal-delay="120">
         <div className="proof-value-header creators-secondary-header">
           <div className="section-stack-tight">
             <p className="section-kicker">Apoio e labs</p>
@@ -505,7 +502,7 @@ function CreatorsPageContent() {
 
         <div className="creators-secondary-grid">
           {secondaryCatalog.map((tab, index) => (
-            <article key={tab.id} className="creators-secondary-card creators-page-item" data-priority={tab.group} data-reveal data-reveal-delay={String(70 + index * 45)}>
+            <article key={tab.id} className="creators-secondary-card layout-contract-item" data-priority={tab.group} data-reveal data-reveal-delay={String(70 + index * 45)}>
               <div className="creators-secondary-card-head">
                 <strong>{tab.label}</strong>
                 <span className={`premium-badge premium-badge-${creatorStageTone(tab.group)}`}>{tab.stageLabel}</span>
@@ -527,8 +524,8 @@ function CreatorsPageContent() {
         </div>
       </section>
 
-      <section ref={workspaceRef} className="creator-workspace-grid creators-page-region creators-page-workspace">
-        <aside className="creator-workspace-side creators-sidebar creators-sidebar-soft" data-reveal data-reveal-delay="140">
+      <section ref={workspaceRef} className="creator-workspace-grid creators-flow-section surface-flow-region creators-flow-section-end layout-contract-region">
+        <aside className="creator-workspace-side creators-sidebar creators-sidebar-soft layout-contract-rail" data-reveal data-reveal-delay="140">
           <div className="creators-side-note creators-side-note-primary">
             <strong>Comece pelos creators hero</strong>
             <span>
@@ -597,9 +594,9 @@ function CreatorsPageContent() {
           </div>
         </aside>
 
-        <div className="creator-workspace-main" data-reveal data-reveal-delay="180">
+        <div className="creator-workspace-main layout-contract-panel" data-reveal data-reveal-delay="180">
           {initialLoading ? (
-            <div className="creators-loading-card">
+            <div className="creators-loading-card layout-contract-card">
               <div className="premium-skeleton premium-skeleton-line" style={{ width: "40%" }} />
               <div className="premium-skeleton premium-skeleton-line" style={{ width: "78%" }} />
               <div className="premium-skeleton premium-skeleton-card" />
@@ -608,12 +605,12 @@ function CreatorsPageContent() {
           ) : (
             <>
               {loading ? (
-                <div className="creators-inline-note creators-page-note">
+                <div className="creators-inline-note layout-contract-note">
                   <strong>Sincronização em segundo plano</strong>
                   <span>Saldo, plano e disponibilidade continuam sendo atualizados em segundo plano.</span>
                 </div>
               ) : null}
-              <div className="creator-active-panel">
+              <div className="creator-active-panel layout-contract-region">
                 <div className="creator-active-panel-head">
                   <div className="section-stack">
                     <p className="section-kicker">Ferramenta ativa</p>
@@ -669,7 +666,6 @@ function CreatorsPageContent() {
             </>
           )}
         </div>
-      </section>
       </section>
     </div>
   );

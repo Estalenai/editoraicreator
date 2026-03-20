@@ -559,7 +559,7 @@ export function CreatorClipsCard({ walletCommon, onRefetch }: Props) {
   }
 
   return (
-    <div className="creator-workspace-card creator-workspace-card-modular creator-workspace-module">
+    <div className="premium-card creator-workspace-card creator-workspace-card-modular">
       <div className="creator-workspace-header">
         <div className="hero-title-stack section-stack-tight">
           <p className="section-kicker">Briefing visual</p>
@@ -798,7 +798,7 @@ export function CreatorClipsCard({ walletCommon, onRefetch }: Props) {
       ) : null}
 
       {isBusy ? (
-        <div className="creator-loading-panel creator-workspace-note">
+        <div className="premium-card-soft creator-loading-panel">
           <div className="helper-note-inline">Processando o job visual e preparando o retorno do provedor com status legível...</div>
           <div className="premium-skeleton premium-skeleton-line" style={{ width: "36%" }} />
           <div className="premium-skeleton premium-skeleton-line" style={{ width: "82%" }} />

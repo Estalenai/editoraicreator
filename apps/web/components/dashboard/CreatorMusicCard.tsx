@@ -435,7 +435,7 @@ export function CreatorMusicCard({ walletCommon, onRefetch }: Props) {
   }
 
   return (
-    <div className="creator-workspace-card creator-workspace-card-modular creator-workspace-module">
+    <div className="premium-card creator-workspace-card creator-workspace-card-modular">
       <div className="creator-workspace-header">
         <div className="hero-title-stack section-stack-tight">
           <p className="section-kicker">Briefing sonoro</p>
@@ -589,7 +589,7 @@ export function CreatorMusicCard({ walletCommon, onRefetch }: Props) {
         ) : null}
 
         {loadingGenerate ? (
-          <div className="creator-loading-panel creator-workspace-note">
+          <div className="premium-card-soft creator-loading-panel">
             <div className="helper-note-inline">Gerando a faixa com o briefing atual...</div>
             <div className="premium-skeleton premium-skeleton-line" style={{ width: "38%" }} />
             <div className="premium-skeleton premium-skeleton-line" style={{ width: "82%" }} />
