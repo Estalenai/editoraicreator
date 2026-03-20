@@ -26,11 +26,17 @@ export function normalizePlanCode(planCodeOrLabel: string | null | undefined): s
 }
 
 export function resolvePlanLabel(planCodeOrLabel: string | null | undefined): string {
+  const raw = String(planCodeOrLabel || "")
+    .trim()
+    .toUpperCase()
+    .replace(/\s+/g, "_")
+    .replace(/-/g, "_");
   const code = normalizePlanCode(planCodeOrLabel);
+  if (raw === "EMPRESARIAL") return "Empresarial";
   if (code === "FREE") return "Gratuito";
   if (code === "EDITOR_FREE") return "Iniciante";
   if (code === "EDITOR_PRO") return "Editor Pro";
-  if (code === "EDITOR_ULTRA") return "Editor Ultra";
+  if (code === "EDITOR_ULTRA") return "Creator Pro";
   if (code === "ENTERPRISE") return "Enterprise";
   return String(planCodeOrLabel || code);
 }

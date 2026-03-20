@@ -3,8 +3,11 @@
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
-const REVEAL_THRESHOLD = [0, 0.08, 0.18];
-const REVEAL_ROOT_MARGIN = "0px 0px -10% 0px";
+const REVEAL_THRESHOLD = [0, 0.01, 0.04];
+const REVEAL_ROOT_MARGIN = "0px 0px 14% 0px";
+const REVEAL_DELAY_SCALE = 0.42;
+const REVEAL_DELAY_CAP_MS = 96;
+const REVEAL_IMMEDIATE_VIEWPORT_RATIO = 1.02;
 
 export function MotionRuntime() {
   const pathname = usePathname();
@@ -34,7 +37,7 @@ export function MotionRuntime() {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (!entry.isIntersecting && entry.intersectionRatio < 0.08) return;
+          if (!entry.isIntersecting && entry.intersectionRatio < 0.01) return;
           const element = entry.target as HTMLElement;
           element.classList.add("is-visible");
           observer.unobserve(element);
@@ -50,14 +53,18 @@ export function MotionRuntime() {
         element.dataset.revealBound = "1";
 
         if (element.dataset.revealDelay) {
-          element.style.setProperty("--reveal-delay", `${element.dataset.revealDelay}ms`);
+          const rawDelay = Number(element.dataset.revealDelay || 0);
+          const calibratedDelay = Number.isFinite(rawDelay)
+            ? Math.min(Math.round(rawDelay * REVEAL_DELAY_SCALE), REVEAL_DELAY_CAP_MS)
+            : 0;
+          element.style.setProperty("--reveal-delay", `${calibratedDelay}ms`);
         }
         if (element.dataset.revealDuration) {
           element.style.setProperty("--reveal-duration", `${element.dataset.revealDuration}ms`);
         }
 
         const bounds = element.getBoundingClientRect();
-        if (bounds.top <= window.innerHeight * 0.92) {
+        if (bounds.top <= window.innerHeight * REVEAL_IMMEDIATE_VIEWPORT_RATIO) {
           requestAnimationFrame(() => element.classList.add("is-visible"));
           return;
         }

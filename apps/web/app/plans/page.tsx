@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { api, apiFetch } from "../../lib/api";
-import { normalizePlanCode } from "../../lib/planLabel";
+import { normalizePlanCode, resolvePlanLabel } from "../../lib/planLabel";
 import { useDashboardBootstrap } from "../../hooks/useDashboardBootstrap";
 import { BetaAccessBlockedView } from "../../components/waitlist/BetaAccessBlockedView";
 import { toUserFacingError } from "../../lib/uiFeedback";
@@ -33,6 +33,7 @@ function planShortDescription(code: string): string {
   if (code === "EDITOR_FREE") return "Entrada guiada para validar rotinas com IA sem sobrecarga.";
   if (code === "EDITOR_PRO") return "Operação recorrente com mais volume, previsibilidade e eficiência.";
   if (code === "EDITOR_ULTRA") return "Escala de criação intensiva para times que entregam em alta cadência.";
+  if (code === "EMPRESARIAL") return "Operação assistida para equipes em expansão, com governança e acompanhamento dedicado.";
   if (code === "ENTERPRISE") return "Implantação corporativa com controle avançado e suporte estratégico.";
   return "Plano disponível no catálogo beta.";
 }
@@ -110,6 +111,18 @@ function planNarrative(code: string): PlanNarrative {
     };
   }
 
+  if (code === "EMPRESARIAL") {
+    return {
+      audience: "Ideal para equipes em expansão que precisam de ativação assistida e operação mais governada.",
+      valueBullets: [
+        "Capacidade ampliada para múltiplos perfis de uso com acompanhamento dedicado.",
+        "Estrutura pensada para coordenação de time, governança e entrada assistida.",
+        "Etapa comercial intermediária antes da camada enterprise completa.",
+      ],
+      limits: ["Ativação assistida", "Operação em expansão"],
+    };
+  }
+
   if (code === "ENTERPRISE") {
     return {
       audience: "Ideal para operação corporativa com implantação assistida e governança mais forte.",
@@ -144,12 +157,20 @@ function uniquePlanHighlights(primary: string[], secondary: string[]): string[] 
 }
 
 function planPriority(code: string): number {
-  const normalized = normalizePlanCode(code);
-  if (normalized === "EDITOR_PRO") return 0;
-  if (normalized === "EDITOR_ULTRA") return 1;
-  if (normalized === "EDITOR_FREE") return 2;
-  if (normalized === "ENTERPRISE") return 3;
+  const raw = String(code || "").trim().toUpperCase();
+  const normalized = normalizePlanCode(raw);
+  if (raw === "INICIANTE" || normalized === "EDITOR_FREE") return 0;
+  if (normalized === "EDITOR_PRO") return 1;
+  if (raw === "CREATOR_PRO" || normalized === "EDITOR_ULTRA") return 2;
+  if (raw === "EMPRESARIAL") return 3;
+  if (raw === "ENTERPRISE" || normalized === "ENTERPRISE") return 4;
   return 10;
+}
+
+function resolveVisiblePlanName(plan: Pick<CatalogPlan, "code" | "name">): string {
+  const raw = String(plan.code || plan.name || "").trim().toUpperCase();
+  if (raw === "EMPRESARIAL") return "Empresarial";
+  return resolvePlanLabel(plan.code || plan.name || "");
 }
 
 type NoticeTone = "info" | "warning" | "success";
@@ -220,6 +241,15 @@ function PlansPageContent() {
       const plans = Array.isArray(payload?.plans) ? payload.plans : [];
       const visiblePlans = plans.filter((item: CatalogPlan) => item?.visible !== false);
 
+      if (!visiblePlans.some((item: CatalogPlan) => String(item?.code || "").toUpperCase() === "EMPRESARIAL")) {
+        visiblePlans.push({
+          code: "EMPRESARIAL",
+          name: "Empresarial",
+          coming_soon: true,
+          purchasable: false,
+          price: { amount_brl: null, period: "month" },
+        });
+      }
       if (!visiblePlans.some((item: CatalogPlan) => String(item?.code || "").toUpperCase() === "ENTERPRISE")) {
         visiblePlans.push({
           code: "ENTERPRISE",
@@ -229,6 +259,11 @@ function PlansPageContent() {
           price: { amount_brl: null, period: "month" },
         });
       }
+      visiblePlans.sort((left, right) => {
+        const orderDiff = planPriority(left?.code || "") - planPriority(right?.code || "");
+        if (orderDiff !== 0) return orderDiff;
+        return resolveVisiblePlanName(left).localeCompare(resolveVisiblePlanName(right), "pt-BR");
+      });
       setCatalogPlans(visiblePlans);
     } catch (loadError: any) {
       setCatalogPlans([]);
@@ -274,7 +309,7 @@ function PlansPageContent() {
     () => planNarrative(currentPlanCodeNormalized),
     [currentPlanCodeNormalized]
   );
-  const planLabelDisplay = loading ? "Plano em sincronização" : planLabel ?? "—";
+  const planLabelDisplay = loading ? "Plano em sincronização" : resolvePlanLabel(planCodeRaw || planLabel || "EDITOR_FREE");
   const currentPlanCreditsValue = loading
     ? "Créditos do plano em sincronização"
     : currentPlanCreditsTotal > 0
@@ -553,7 +588,7 @@ function PlansPageContent() {
         <div className="state-ea">
           <p className="state-ea-title">Plano atual fora do catálogo exibido</p>
           <div className="state-ea-text">
-            Seu plano atual ({planLabel || "Gratuito"}) não aparece como card nesta visão. Use o resumo acima para consultar créditos, taxa e disponibilidade.
+            Seu plano atual ({resolvePlanLabel(planCodeRaw || planLabel || "EDITOR_FREE")}) não aparece como card nesta visão. Use o resumo acima para consultar créditos, taxa e disponibilidade.
           </div>
         </div>
       ) : null}
@@ -633,6 +668,7 @@ function PlansPageContent() {
             {orderedCatalogPlans.map((item) => {
               const comingSoon = item?.coming_soon === true || item?.purchasable === false;
               const codeUpper = String(item?.code || "").toUpperCase();
+              const visibleCatalogCode = codeUpper === "EMPRESARIAL" ? "EMPRESARIAL" : normalizePlanCode(codeUpper);
               const normalizedCatalogCode = normalizePlanCode(codeUpper);
               const mappedCheckoutPlanCode = CHECKOUT_PLAN_BY_CATALOG_CODE[normalizedCatalogCode];
               const checkoutSupported = Boolean(mappedCheckoutPlanCode);
@@ -648,7 +684,7 @@ function PlansPageContent() {
               const topBenefits = Array.isArray(item?.features)
                 ? item.features.filter((feature) => feature?.enabled).map((feature) => String(feature?.label || "").trim()).filter(Boolean).slice(0, 3)
                 : [];
-              const narrative = planNarrative(normalizedCatalogCode);
+              const narrative = planNarrative(visibleCatalogCode);
               const displayBenefits = uniquePlanHighlights(narrative.valueBullets, topBenefits).slice(0, 4);
               const conversionState = resolvePlanConversionState(normalizedCatalogCode, item);
               const convertEnabled = conversionState.enabled;
@@ -687,8 +723,8 @@ function PlansPageContent() {
                   <div className="plan-card-top">
                     <div className="plan-card-header">
                       <div className="plan-card-section-label">Plano</div>
-                      <strong>{item.name || item.code}</strong>
-                      <div className="plan-card-description">{planShortDescription(normalizedCatalogCode)}</div>
+                      <strong>{resolveVisiblePlanName(item)}</strong>
+                      <div className="plan-card-description">{planShortDescription(visibleCatalogCode)}</div>
                     </div>
                     {isCurrentPlan ? (
                       <span className="premium-badge premium-badge-warning plan-pill">
@@ -771,7 +807,7 @@ function PlansPageContent() {
                         return;
                       }
                       if (requiresAssistedActivation) {
-                        onRequestPlanActivation(codeUpper, item.name || item.code);
+                        onRequestPlanActivation(codeUpper, resolveVisiblePlanName(item));
                       }
                     }}
                     className={`btn-ea ${hasInteractiveCheckout ? "btn-primary" : requiresAssistedActivation ? "btn-secondary" : "btn-ghost"} btn-sm plan-card-cta ${!hasInteractiveCheckout && !requiresAssistedActivation ? "plan-card-cta-muted" : ""}`}
@@ -788,9 +824,11 @@ function PlansPageContent() {
                     </div>
                   ) : comingSoon ? (
                     <div className="plan-card-support-note">
-                      {normalizePlanCode(codeUpper) === "ENTERPRISE"
-                        ? "Plano Enterprise em breve no beta."
-                        : "Disponível em breve no beta."}
+                      {codeUpper === "EMPRESARIAL"
+                        ? "Plano Empresarial em breve no beta."
+                        : normalizePlanCode(codeUpper) === "ENTERPRISE"
+                          ? "Plano Enterprise em breve no beta."
+                          : "Disponível em breve no beta."}
                     </div>
                   ) : requiresAssistedActivation ? (
                     <div className="plan-card-support-note">
