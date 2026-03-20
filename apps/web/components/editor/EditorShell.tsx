@@ -59,9 +59,9 @@ export function EditorShell({
   );
 
   return (
-    <div className="editor-shell-root">
-      <section className="editor-shell-canvas">
-        <header className="editor-shell-header">
+    <div className="editor-shell-root editor-shell-workspace">
+      <section className="editor-shell-canvas editor-shell-surface">
+        <header className="editor-shell-header editor-shell-region">
           <div className="editor-shell-header-grid">
             <div className="editor-shell-title-panel">
               <div className="hero-title-stack editor-shell-title-stack">
@@ -77,7 +77,7 @@ export function EditorShell({
               </div>
             </div>
 
-            <div className="editor-shell-status-panel">
+            <div className="editor-shell-status-panel editor-shell-status-rail">
               <div className="editor-shell-status-grid">
                 <div className="editor-shell-status-item">
                   <span>Entregável</span>
@@ -155,7 +155,7 @@ export function EditorShell({
           </div>
         </header>
 
-        <nav className="editor-shell-toolbar toolbar-surface">
+        <nav className="editor-shell-toolbar toolbar-surface editor-shell-region">
           <div className="editor-shell-toolbar-head">
             <div className="editor-shell-toolbar-copy">
               <p className="section-kicker">Fluxo do editor</p>
@@ -184,13 +184,13 @@ export function EditorShell({
           </div>
         </nav>
 
-        <div className="editor-shell-grid">
-          <aside className="editor-shell-panel editor-shell-panel-secondary">{left}</aside>
-          <main className="editor-shell-panel editor-shell-panel-primary">{center}</main>
-          <aside className="editor-shell-panel editor-shell-panel-secondary editor-shell-panel-support">{right}</aside>
+        <div className="editor-shell-grid editor-shell-grid-continuous">
+          <aside className="editor-shell-panel editor-shell-panel-secondary editor-shell-panel-rail">{left}</aside>
+          <main className="editor-shell-panel editor-shell-panel-primary editor-shell-panel-core">{center}</main>
+          <aside className="editor-shell-panel editor-shell-panel-secondary editor-shell-panel-support editor-shell-panel-rail">{right}</aside>
         </div>
 
-        <footer className="editor-shell-footer">
+        <footer className="editor-shell-footer editor-shell-region">
           {footer ?? (
             <p className="editor-shell-note">
               Dica: ative o Modo Transparente para ver o passo a passo da EditexAI em tempo real.

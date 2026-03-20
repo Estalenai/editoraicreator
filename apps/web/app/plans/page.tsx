@@ -491,7 +491,7 @@ function PlansPageContent() {
 
   return (
     <div className="page-shell plans-page">
-      <section className="premium-hero plans-hero">
+      <section className="premium-hero plans-hero surface-flow-hero">
         <div className="hero-split">
           <div className="hero-copy">
             <div className="hero-title-stack">
@@ -593,7 +593,7 @@ function PlansPageContent() {
         </div>
       ) : null}
 
-      <section className="summary-grid plans-summary-grid">
+      <section className="summary-grid plans-summary-grid surface-flow-summary surface-flow-region surface-flow-region-start">
         <div className="premium-card executive-card plans-summary-card">
           <p className="executive-eyebrow">Plano atual</p>
           <p className="executive-value">{planLabelDisplay}</p>
@@ -611,7 +611,7 @@ function PlansPageContent() {
         </div>
       </section>
 
-      <section className="premium-card-soft plans-confidence-strip">
+      <section className="premium-card-soft plans-confidence-strip surface-flow-region surface-flow-region-middle">
         <div className="plans-confidence-note">
           <strong>Plano principal do beta</strong>
           <span>Editor Pro é o ponto mais forte para operação recorrente; Iniciante valida encaixe e Editor Ultra expande cadência.</span>
@@ -634,7 +634,7 @@ function PlansPageContent() {
         </div>
       </section>
 
-      <section className="premium-card plans-catalog-section section-card">
+      <section className="premium-card plans-catalog-section section-card surface-flow-region surface-flow-region-end">
         <div className="section-head">
           <div className="section-header-ea">
             <h3 className="heading-reset">Catálogo de planos</h3>

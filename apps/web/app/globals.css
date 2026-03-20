@@ -8289,3 +8289,554 @@ body {
     right: 14px;
   }
 }
+
+/* Structural continuity pass */
+:root {
+  --ea-unified-surface:
+    radial-gradient(360px 144px at 100% 0%, rgba(75, 232, 255, 0.08), transparent 74%),
+    radial-gradient(320px 128px at 0% 100%, rgba(20, 75, 154, 0.12), transparent 78%),
+    linear-gradient(168deg, rgba(7, 24, 58, 0.9), rgba(5, 16, 40, 0.94));
+  --ea-unified-surface-soft:
+    linear-gradient(165deg, rgba(255, 255, 255, 0.046), rgba(255, 255, 255, 0.016));
+  --ea-unified-surface-strong:
+    radial-gradient(420px 168px at 100% 0%, rgba(75, 232, 255, 0.1), transparent 72%),
+    radial-gradient(340px 144px at 0% 0%, rgba(88, 120, 255, 0.09), transparent 72%),
+    linear-gradient(168deg, rgba(8, 28, 68, 0.92), rgba(5, 17, 42, 0.96));
+  --ea-unified-border: rgba(191, 239, 255, 0.11);
+  --ea-unified-divider: rgba(191, 239, 255, 0.08);
+}
+
+.premium-card::before,
+.premium-card::after,
+.premium-card-soft::before,
+.premium-card-soft::after,
+.premium-hero::before,
+.premium-hero::after,
+.hero-side-panel::after,
+.signal-chip::before,
+.signal-chip::after,
+.hero-kpi::before,
+.hero-kpi::after,
+.dashboard-quick-link::after,
+.dashboard-project-link::after,
+.plan-card::before,
+.purchase-option-card::after,
+.creator-workspace-card::before,
+.editor-shell-panel::after,
+.editor-shell-toolbar::after,
+.app-top-nav::before,
+.app-top-nav::after {
+  display: none !important;
+  content: none !important;
+}
+
+.app-shell-system {
+  border-color: rgba(191, 239, 255, 0.14);
+  background:
+    radial-gradient(760px 260px at 0% 0%, rgba(75, 232, 255, 0.08), transparent 62%),
+    radial-gradient(620px 260px at 100% 0%, rgba(95, 118, 255, 0.1), transparent 66%),
+    linear-gradient(180deg, rgba(7, 16, 37, 0.96), rgba(6, 14, 34, 0.94));
+  box-shadow:
+    0 30px 74px rgba(2, 6, 23, 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.app-shell-head-region {
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(10, 20, 46, 0.76), rgba(7, 14, 31, 0.28)),
+    rgba(255, 255, 255, 0.015);
+  border-bottom-color: var(--ea-unified-divider);
+}
+
+.app-shell-head-region::after {
+  content: "";
+  position: absolute;
+  left: clamp(18px, 2.2vw, 26px);
+  right: clamp(18px, 2.2vw, 26px);
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(191, 239, 255, 0.12), transparent);
+}
+
+.app-shell-workspace {
+  background: transparent;
+}
+
+.app-nav-rail {
+  gap: 12px;
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 0 !important;
+}
+
+.app-nav-rail-head {
+  padding: 0 0 16px;
+  margin: 0;
+  border-bottom: 1px solid var(--ea-unified-divider);
+}
+
+.app-nav-rail-links {
+  gap: 8px;
+}
+
+.app-nav-link,
+.app-nav-link:hover,
+.app-nav-link-active {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.app-nav-link {
+  position: relative;
+  border: 1px solid transparent !important;
+  border-radius: 18px;
+  padding: 12px 14px 12px 18px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0.012));
+}
+
+.app-nav-link::before {
+  display: none !important;
+  content: none !important;
+}
+
+.app-nav-link::after {
+  content: "";
+  position: absolute;
+  left: 10px;
+  top: 12px;
+  bottom: 12px;
+  width: 2px;
+  border-radius: 999px;
+  background: transparent;
+  opacity: 0.86;
+}
+
+.app-nav-link:hover {
+  border-color: rgba(191, 239, 255, 0.12) !important;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.016));
+}
+
+.app-nav-link-active {
+  border-color: rgba(75, 232, 255, 0.2) !important;
+  background:
+    linear-gradient(90deg, rgba(75, 232, 255, 0.1), rgba(255, 255, 255, 0.026)),
+    linear-gradient(160deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.014));
+}
+
+.app-nav-link-active::after {
+  background: linear-gradient(180deg, rgba(75, 232, 255, 0.96), rgba(191, 239, 255, 0.72));
+}
+
+.app-nav-link-meta {
+  max-width: 28ch;
+}
+
+.page-shell {
+  gap: clamp(14px, 1.8vw, 18px);
+}
+
+.state-ea {
+  box-shadow: none !important;
+  border-color: var(--ea-unified-border) !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.018)) !important;
+}
+
+.surface-flow-hero,
+.dashboard-summary-surface,
+.surface-flow-summary,
+.surface-flow-region,
+.editor-shell-surface,
+.credits-page .credits-summary-grid,
+.plans-page .plans-summary-grid {
+  position: relative;
+  isolation: isolate;
+  border: 1px solid var(--ea-unified-border);
+  box-shadow: none !important;
+}
+
+.surface-flow-hero,
+.editor-shell-surface {
+  border-radius: 28px;
+  background: var(--ea-unified-surface-strong);
+}
+
+.dashboard-summary-surface,
+.surface-flow-summary,
+.surface-flow-region,
+.credits-page .credits-summary-grid,
+.plans-page .plans-summary-grid {
+  border-radius: 24px;
+  background: var(--ea-unified-surface);
+}
+
+.surface-flow-summary,
+.credits-page .credits-summary-grid,
+.plans-page .plans-summary-grid,
+.credits-page .credits-packages-section {
+  padding: clamp(18px, 2.3vw, 24px);
+}
+
+.surface-flow-hero .hero-split {
+  gap: clamp(18px, 2.4vw, 30px);
+  align-items: start;
+}
+
+.surface-flow-hero .hero-side-panel,
+.surface-flow-hero .signal-chip,
+.surface-flow-hero .hero-kpi {
+  border: 1px solid var(--ea-unified-divider) !important;
+  background: var(--ea-unified-surface-soft) !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.surface-flow-hero .hero-side-panel {
+  padding: clamp(18px, 2.1vw, 24px);
+  border-radius: 22px;
+}
+
+.surface-flow-hero .hero-side-note + .hero-side-note {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--ea-unified-divider);
+}
+
+.surface-flow-hero .signal-strip,
+.surface-flow-hero .hero-kpi-grid {
+  gap: 10px;
+}
+
+.surface-flow-region:not(.surface-flow-region-start) {
+  border-top-color: rgba(191, 239, 255, 0.07);
+}
+
+.dashboard-flow-section,
+.creators-flow-section,
+.projects-flow-section {
+  border-color: var(--ea-unified-border) !important;
+  background: var(--ea-unified-surface) !important;
+  box-shadow: none !important;
+}
+
+.dashboard-flow-section::before,
+.creators-flow-section::before,
+.projects-flow-section::before {
+  border-left-color: var(--ea-unified-divider);
+  border-right-color: var(--ea-unified-divider);
+  background: linear-gradient(180deg, rgba(7, 24, 58, 0.82), rgba(7, 24, 58, 0.96));
+}
+
+.dashboard-summary-surface {
+  background: var(--ea-unified-surface-strong);
+  border-color: var(--ea-unified-border);
+}
+
+.dashboard-page .executive-card,
+.dashboard-page .dashboard-quick-link,
+.dashboard-page .dashboard-project-link,
+.dashboard-page .dashboard-progress-card,
+.dashboard-page .dashboard-balance-chip,
+.dashboard-page .trust-note,
+.dashboard-page .onboarding-card-ea,
+.dashboard-page .onboarding-objective-card,
+.dashboard-page .onboarding-credit-panel,
+.creators-page .proof-value-card,
+.creators-page .creators-hero-core-card,
+.creators-page .creators-secondary-card,
+.creators-page .creators-side-note,
+.creators-page .creator-workspace-card,
+.creators-page .creator-form-zone,
+.creators-page .creator-context-zone,
+.creators-page .creator-inline-panel,
+.creators-page .creator-output-card,
+.creators-page .creator-next-step-panel,
+.creators-page .creator-estimate-row,
+.projects-page .dashboard-project-link,
+.projects-page .proof-value-card,
+.projects-page .github-workspace-card,
+.projects-page .github-workspace-pane,
+.projects-page .github-workspace-status-item,
+.projects-page .github-workspace-inline-note,
+.projects-page .github-workspace-activity-item,
+.projects-page .vercel-publish-card,
+.projects-page .vercel-publish-status-item,
+.projects-page .vercel-publish-link-card,
+.projects-page .vercel-publish-empty,
+.credits-page .credits-guide-card,
+.credits-page .credits-guide-note,
+.credits-page .credits-summary-card,
+.credits-page .credits-purchase-card,
+.credits-page .purchase-summary-card,
+.credits-page .quote-summary-card,
+.credits-page .credits-coin-card,
+.credits-page .purchase-option-card,
+.credits-page .credits-history-item,
+.plans-page .plans-summary-card,
+.plans-page .plan-card,
+.support-page .support-guide-card,
+.support-page .support-faq-item,
+.support-page .support-category-hint,
+.support-page .support-guidelines-card,
+.support-page .support-history-item,
+.support-page .support-history-note,
+.editor-new-page .editor-kind-card,
+.editor-new-page .editor-new-flow-note,
+.editor-project-page .editor-shell-status-item,
+.editor-project-page .editor-shell-placeholder,
+.editor-project-page .editor-shell-pre,
+.editor-project-page .editor-project-stage,
+.editor-project-page .editor-project-asset-card,
+.editor-project-page .editor-project-kpi,
+.editor-project-page .editor-project-command-card,
+.editor-project-page .editor-project-checkpoint-item,
+.editor-project-page .editor-project-version-item,
+.editor-project-page .editor-shell-result-card,
+.editor-project-page .editor-shell-empty-note,
+.editor-project-page .github-workspace-card,
+.editor-project-page .github-workspace-pane,
+.editor-project-page .github-workspace-status-item,
+.editor-project-page .github-workspace-inline-note,
+.editor-project-page .github-workspace-activity-item,
+.editor-project-page .vercel-publish-card,
+.editor-project-page .vercel-publish-status-item,
+.editor-project-page .vercel-publish-link-card,
+.editor-project-page .vercel-publish-empty {
+  border: 1px solid var(--ea-unified-divider) !important;
+  background: var(--ea-unified-surface-soft) !important;
+  box-shadow: none !important;
+}
+
+.credits-page .credits-guide-section,
+.credits-page .credits-packages-section,
+.credits-page .credits-section-card,
+.plans-page .plans-confidence-strip,
+.plans-page .plans-catalog-section,
+.support-page .support-guide-section,
+.support-page .support-trust-note,
+.support-page .support-faq-section,
+.support-page .support-assistant-card,
+.editor-new-page .editor-new-selection,
+.editor-new-page .editor-new-footer {
+  border-color: var(--ea-unified-border) !important;
+  background: var(--ea-unified-surface) !important;
+  box-shadow: none !important;
+}
+
+.credits-page .credits-summary-grid,
+.plans-page .plans-summary-grid,
+.support-page .support-assistant-card,
+.support-page .support-guide-section,
+.support-page .support-faq-section,
+.editor-new-page .editor-new-selection {
+  gap: 10px;
+}
+
+.credits-page .credits-packages-section > *,
+.credits-page .credits-summary-grid > *,
+.plans-page .plans-summary-grid > * {
+  min-width: 0;
+}
+
+.plans-page .plan-card > * + * {
+  padding-top: 12px;
+  border-top: 1px solid var(--ea-unified-divider);
+}
+
+.plans-page .plan-card-top {
+  padding-top: 0 !important;
+  border-top: 0 !important;
+}
+
+.plans-page .plans-confidence-strip {
+  gap: 14px;
+}
+
+.support-page .support-assistant-card > * + * {
+  padding-top: 14px;
+  border-top: 1px solid var(--ea-unified-divider);
+}
+
+.creators-page .creator-active-summary-card,
+.creators-page .creator-active-stage-note,
+.plans-page .plans-confidence-note,
+.credits-page .credits-balance-row,
+.support-page .support-hero-toolbar,
+.editor-project-page .editor-project-version-pill,
+.editor-project-page .editor-project-origin-note,
+.editor-project-page .editor-project-asset-link {
+  border: 1px solid var(--ea-unified-divider) !important;
+  background: rgba(255, 255, 255, 0.02) !important;
+  box-shadow: none !important;
+}
+
+.creators-page .creator-active-summary-card,
+.creators-page .creator-active-stage-note,
+.plans-page .plans-confidence-note,
+.credits-page .credits-balance-row,
+.support-page .support-hero-toolbar {
+  border-radius: 16px;
+  padding: 12px 14px;
+}
+
+.editor-project-page .editor-project-version-pill,
+.editor-project-page .editor-project-origin-note,
+.editor-project-page .editor-project-asset-link {
+  border-radius: 16px;
+}
+
+.creators-page .creator-workspace-grid {
+  border-color: var(--ea-unified-border) !important;
+  background: var(--ea-unified-surface) !important;
+  box-shadow: none !important;
+}
+
+.creators-page .creators-sidebar,
+.creators-page .creator-active-panel {
+  padding: 0;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.creators-page .creators-sidebar > * + *,
+.creators-page .creator-active-panel > * + * {
+  padding-top: 14px;
+  border-top: 1px solid var(--ea-unified-divider);
+}
+
+.creators-page .creator-workspace-side {
+  border-right: 1px solid var(--ea-unified-divider);
+  padding-right: clamp(18px, 2vw, 24px);
+}
+
+.creators-page .creator-workspace-main {
+  padding-left: clamp(18px, 2vw, 24px);
+}
+
+.editor-shell-surface {
+  gap: clamp(18px, 2.2vw, 24px);
+  padding: clamp(18px, 2.3vw, 28px);
+}
+
+.editor-shell-surface .editor-shell-header,
+.editor-shell-surface .editor-shell-toolbar,
+.editor-shell-surface .editor-shell-footer {
+  border-color: var(--ea-unified-divider);
+}
+
+.editor-shell-status-rail,
+.editor-project-page .editor-shell-inline-card {
+  padding: 0;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0;
+}
+
+.editor-shell-grid-continuous {
+  border: 1px solid var(--ea-unified-divider);
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0.012));
+  box-shadow: none !important;
+}
+
+.editor-shell-grid-continuous .editor-shell-panel {
+  padding: clamp(18px, 2vw, 22px);
+  background: transparent !important;
+}
+
+.editor-shell-grid-continuous .editor-shell-panel + .editor-shell-panel {
+  border-left: 1px solid var(--ea-unified-divider);
+}
+
+.editor-panel-stack {
+  gap: 0;
+}
+
+.editor-panel-stack > * + * {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--ea-unified-divider);
+}
+
+.editor-project-kpi-grid,
+.editor-project-command-grid,
+.editor-project-stage-grid,
+.editor-project-asset-grid,
+.editor-project-checkpoint-list,
+.editor-project-version-list,
+.support-history-list {
+  gap: 10px;
+}
+
+@media (min-width: 1200px) {
+  .app-shell-body:has(.app-nav-rail) {
+    grid-template-columns: var(--ea-shell-sidebar-width) minmax(0, 1fr);
+  }
+
+  .app-nav-rail {
+    padding: 22px 18px 22px 20px;
+    border-right: 1px solid var(--ea-unified-divider) !important;
+  }
+}
+
+@media (max-width: 1200px) {
+  .app-nav-rail {
+    padding: 0 0 18px;
+    border-right: 0 !important;
+    border-bottom: 1px solid var(--ea-unified-divider) !important;
+  }
+
+  .app-nav-rail-links {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .editor-shell-grid-continuous {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .editor-shell-grid-continuous .editor-shell-panel + .editor-shell-panel {
+    border-left: 0;
+    border-top: 1px solid var(--ea-unified-divider);
+  }
+
+  .creators-page .creator-workspace-side {
+    border-right: 0;
+    border-bottom: 1px solid var(--ea-unified-divider);
+    padding-right: 0;
+    padding-bottom: 18px;
+  }
+
+  .creators-page .creator-workspace-main {
+    padding-left: 0;
+    padding-top: 18px;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-shell-system {
+    border-radius: 22px;
+  }
+
+  .app-nav-rail-links {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .surface-flow-hero,
+  .dashboard-summary-surface,
+  .surface-flow-summary,
+  .surface-flow-region,
+  .editor-shell-surface,
+  .credits-page .credits-summary-grid,
+  .plans-page .plans-summary-grid {
+    border-radius: 20px;
+  }
+
+  .surface-flow-summary,
+  .credits-page .credits-summary-grid,
+  .plans-page .plans-summary-grid,
+  .credits-page .credits-packages-section {
+    padding: var(--ea-card-padding);
+  }
+}

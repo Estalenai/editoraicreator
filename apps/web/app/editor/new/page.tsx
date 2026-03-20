@@ -73,7 +73,7 @@ export default function NewEditorProjectPage() {
 
   return (
     <div className="page-shell editor-new-page">
-      <section className="premium-hero editor-new-hero">
+      <section className="premium-hero editor-new-hero surface-flow-hero">
         <div className="hero-split editor-new-hero-grid">
           <div className="hero-copy">
             <div className="hero-title-stack">
@@ -135,7 +135,7 @@ export default function NewEditorProjectPage() {
         </div>
       ) : null}
 
-      <section className="premium-card editor-new-selection">
+      <section className="premium-card editor-new-selection surface-flow-region surface-flow-region-start">
         <div className="section-header-ea">
           <p className="section-kicker">Escolha inicial</p>
           <h2 style={{ margin: 0 }}>Comece pelo formato que melhor sustenta o beta hoje</h2>
@@ -191,7 +191,7 @@ export default function NewEditorProjectPage() {
         </div>
       </section>
 
-      <section className="premium-card-soft editor-new-footer">
+      <section className="premium-card-soft editor-new-footer surface-flow-region surface-flow-region-end">
         <div className="editor-new-flow">
           <div className="premium-card-soft editor-new-flow-note">
             <strong>1. Escolha o formato</strong>

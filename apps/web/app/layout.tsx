@@ -14,8 +14,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <MotionRuntime />
         <div className="app-shell-bg">
           <div className="app-shell-wrapper">
-            <div className="app-shell-frame">
-              <header className="app-shell-head">
+            <div className="app-shell-frame app-shell-system">
+              <header className="app-shell-head app-shell-head-region">
                 <div className="app-brand-mark-group">
                   <div className="app-brand-mark" />
                   <div className="app-shell-head-copy">
@@ -25,9 +25,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </div>
                 <span className="app-brand-badge">EditexAI</span>
               </header>
-              <div className="app-shell-body">
+              <div className="app-shell-body app-shell-workspace">
                 <AppTopNav />
-                <main className="app-shell-main">{children}</main>
+                <main className="app-shell-main app-shell-canvas">{children}</main>
               </div>
             </div>
           </div>

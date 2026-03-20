@@ -358,7 +358,7 @@ export default function CreditsPage() {
 
   return (
     <div className="page-shell credits-page">
-      <section className="premium-hero credits-hero">
+      <section className="premium-hero credits-hero surface-flow-hero">
         <div className="hero-split">
           <div className="hero-copy">
             <div className="hero-title-stack">
@@ -463,7 +463,7 @@ export default function CreditsPage() {
         </div>
       ) : null}
 
-      <section className="premium-card credits-guide-section">
+      <section className="premium-card credits-guide-section surface-flow-region surface-flow-region-start">
         <div className="section-header-ea">
           <h3 className="heading-reset">Como ler seus créditos</h3>
           <p className="helper-text-ea">Saldo, estimativa e histórico em três sinais fáceis de ler.</p>
@@ -486,7 +486,7 @@ export default function CreditsPage() {
         </div>
       </section>
 
-      <section className="credits-summary-grid">
+      <section className="credits-summary-grid surface-flow-summary surface-flow-region surface-flow-region-middle">
         <div className="premium-card credits-summary-card credits-summary-card-primary">
           <p className="executive-eyebrow">Saldo por tipo</p>
           <p className="executive-value metric-value-compact">{walletSummaryDisplay}</p>
@@ -526,11 +526,11 @@ export default function CreditsPage() {
         </div>
       </section>
 
-      <section id="credits-packages">
+      <section id="credits-packages" className="credits-packages-section surface-flow-region surface-flow-region-middle">
         <CreditsPackagesCard wallet={wallet} loading={loading} />
       </section>
 
-      <section className="premium-card credits-section-card">
+      <section className="premium-card credits-section-card surface-flow-region surface-flow-region-middle">
         <div className="section-head">
           <div className="section-header-ea">
             <h3 className="heading-reset">Conversão de créditos</h3>
@@ -724,7 +724,7 @@ export default function CreditsPage() {
         </div>
       ) : null}
 
-      <section id="credits-history" className="premium-card credits-section-card">
+      <section id="credits-history" className="premium-card credits-section-card surface-flow-region surface-flow-region-end">
         <div className="section-head">
           <div className="section-header-ea">
             <h3 className="heading-reset">Histórico recente de créditos</h3>

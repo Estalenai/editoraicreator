@@ -68,14 +68,14 @@ export function AppTopNav() {
   if (hideNavigation) return null;
 
   return (
-    <nav className="app-top-nav" aria-label="Navegação principal">
-      <div className="app-top-nav-head">
+    <nav className="app-top-nav app-nav-rail" aria-label="Navegação principal">
+      <div className="app-top-nav-head app-nav-rail-head">
         <p className="app-top-nav-title">Workspace</p>
         <p className="app-top-nav-text">
           Creators hero, editor e projetos ficam no centro. Créditos, planos e suporte continuam como camadas operacionais do beta pago/controlado.
         </p>
       </div>
-      <div className="app-nav-links">
+      <div className="app-nav-links app-nav-rail-links">
         {navItems.map((item) => {
           const active = item.match(pathname);
           return (
