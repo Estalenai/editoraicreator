@@ -310,6 +310,7 @@ export function buildGitHubProjectBundle(project: GitHubProjectRef, workspace: G
       output: canonical.output,
       deliverable: canonical.deliverable,
       delivery: canonical.delivery,
+      integrations: canonical.integrations,
       data: project.data ?? null,
     },
   };

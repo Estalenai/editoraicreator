@@ -93,12 +93,78 @@ export type ProjectDeliverableModel = {
   nextAction: string;
 };
 
+export type ProjectGitHubBindingTarget = "app" | "site";
+
+export type ProjectGitHubBinding = {
+  provider: "github";
+  owner: string;
+  repo: string;
+  branch: string;
+  rootPath: string;
+  target: ProjectGitHubBindingTarget;
+  connectedAt: string | null;
+  updatedAt: string | null;
+  accountLabel?: string | null;
+};
+
+export type ProjectGitHubVersionRecord = {
+  id: string;
+  savedAt: string;
+  handoffTarget: ProjectGitHubBindingTarget;
+  repoLabel: string | null;
+};
+
+export type ProjectGitHubExportRecord = {
+  id: string;
+  exportedAt: string;
+  handoffTarget: ProjectGitHubBindingTarget;
+  repoLabel: string | null;
+};
+
+export type ProjectGitHubIntegration = {
+  binding: ProjectGitHubBinding | null;
+  versions: ProjectGitHubVersionRecord[];
+  exports: ProjectGitHubExportRecord[];
+};
+
+export type ProjectVercelBinding = {
+  projectName: string;
+  teamSlug: string;
+  framework: "nextjs" | "vite" | "static";
+  rootDirectory: string;
+  deployStatus: "draft" | "ready" | "published";
+  previewUrl: string;
+  productionUrl: string;
+  updatedAt: string | null;
+};
+
+export type ProjectVercelEvent = {
+  id: string;
+  ts: string;
+  type: "base_saved" | "handoff_exported" | "published_manual" | "status_updated";
+  stage: OutputStage;
+  title: string;
+  note: string;
+};
+
+export type ProjectVercelIntegration = {
+  binding: ProjectVercelBinding | null;
+  lastManifestExportedAt: string | null;
+  history: ProjectVercelEvent[];
+};
+
+export type ProjectIntegrationsModel = {
+  github: ProjectGitHubIntegration;
+  vercel: ProjectVercelIntegration;
+};
+
 export type CanonicalProjectData = {
   schema: typeof PROJECT_SCHEMA_VERSION;
   source: ProjectSourceModel;
   output: ProjectOutputModel;
   deliverable: ProjectDeliverableModel;
   delivery: ProjectDeliveryModel;
+  integrations: ProjectIntegrationsModel;
   editor?: any;
   [key: string]: any;
 };
@@ -348,6 +414,28 @@ function buildDeliveryModel(input?: Partial<ProjectDeliveryModel> | null): Proje
     lastPublishedAt: asText(input?.lastPublishedAt) || null,
     history: normalizedHistory,
   };
+}
+
+function normalizeProjectRootPath(value: any): string {
+  const trimmed = asText(value) || "/";
+  const prefixed = trimmed.startsWith("/") ? trimmed : `/${trimmed}`;
+  return prefixed.replace(/\/+/g, "/").replace(/\/$/, "") || "/";
+}
+
+function normalizeGitHubBindingTarget(value: any): ProjectGitHubBindingTarget {
+  return value === "app" ? "app" : "site";
+}
+
+function normalizeVercelFramework(value: any): ProjectVercelBinding["framework"] {
+  if (value === "vite") return "vite";
+  if (value === "static") return "static";
+  return "nextjs";
+}
+
+function normalizeVercelDeployStatus(value: any): ProjectVercelBinding["deployStatus"] {
+  if (value === "ready") return "ready";
+  if (value === "published") return "published";
+  return "draft";
 }
 
 function editorKindLabel(kind?: string): string {
@@ -956,6 +1044,176 @@ function normalizeExistingDeliverable(value: any): Partial<ProjectDeliverableMod
   };
 }
 
+
+function normalizeGitHubVersionRecords(value: any): ProjectGitHubVersionRecord[] {
+  if (!Array.isArray(value)) return [];
+  return value
+    .filter((item) => item && typeof item === "object")
+    .map((item: any) => ({
+      id: asText(item.id) || localId(),
+      savedAt: asText(item.savedAt) || new Date().toISOString(),
+      handoffTarget: normalizeGitHubBindingTarget(item.handoffTarget),
+      repoLabel: asText(item.repoLabel) || null,
+    }))
+    .slice(0, 16);
+}
+
+function normalizeGitHubExportRecords(value: any): ProjectGitHubExportRecord[] {
+  if (!Array.isArray(value)) return [];
+  return value
+    .filter((item) => item && typeof item === "object")
+    .map((item: any) => ({
+      id: asText(item.id) || localId(),
+      exportedAt: asText(item.exportedAt) || new Date().toISOString(),
+      handoffTarget: normalizeGitHubBindingTarget(item.handoffTarget),
+      repoLabel: asText(item.repoLabel) || null,
+    }))
+    .slice(0, 16);
+}
+
+function normalizeExistingGitHubBinding(value: any): ProjectGitHubBinding | null {
+  if (!value || typeof value !== "object") return null;
+  const owner = asText(value.owner);
+  const repo = asText(value.repo);
+  if (!owner || !repo) return null;
+  return {
+    provider: "github",
+    owner,
+    repo,
+    branch: asText(value.branch) || "main",
+    rootPath: normalizeProjectRootPath(value.rootPath),
+    target: normalizeGitHubBindingTarget(value.target),
+    connectedAt: asText(value.connectedAt) || null,
+    updatedAt: asText(value.updatedAt) || null,
+    accountLabel: asText(value.accountLabel) || null,
+  };
+}
+
+function normalizeExistingGitHubIntegration(value: any): ProjectGitHubIntegration {
+  return {
+    binding: normalizeExistingGitHubBinding(value?.binding),
+    versions: normalizeGitHubVersionRecords(value?.versions),
+    exports: normalizeGitHubExportRecords(value?.exports),
+  };
+}
+
+function normalizeVercelHistory(value: any): ProjectVercelEvent[] {
+  if (!Array.isArray(value)) return [];
+  return value
+    .filter((item) => item && typeof item === "object")
+    .map((item: any) => ({
+      id: asText(item.id) || localId(),
+      ts: asText(item.ts) || new Date().toISOString(),
+      type:
+        item.type === "handoff_exported" || item.type === "published_manual" || item.type === "status_updated"
+          ? item.type
+          : "base_saved",
+      stage: normalizeOutputStage(item.stage),
+      title: asText(item.title) || "Evento Vercel",
+      note: asText(item.note),
+    }))
+    .slice(0, 12);
+}
+
+function normalizeExistingVercelBinding(value: any): ProjectVercelBinding | null {
+  if (!value || typeof value !== "object") return null;
+  const projectName = asText(value.projectName || value.vercelProjectName);
+  if (!projectName) return null;
+  return {
+    projectName,
+    teamSlug: asText(value.teamSlug),
+    framework: normalizeVercelFramework(value.framework),
+    rootDirectory: asText(value.rootDirectory) || "",
+    deployStatus: normalizeVercelDeployStatus(value.deployStatus),
+    previewUrl: asText(value.previewUrl),
+    productionUrl: asText(value.productionUrl),
+    updatedAt: asText(value.updatedAt) || null,
+  };
+}
+
+function normalizeExistingVercelIntegration(value: any): ProjectVercelIntegration {
+  return {
+    binding: normalizeExistingVercelBinding(value?.binding),
+    lastManifestExportedAt: asText(value?.lastManifestExportedAt) || null,
+    history: normalizeVercelHistory(value?.history),
+  };
+}
+
+function buildBaseProjectIntegrations(): ProjectIntegrationsModel {
+  return {
+    github: {
+      binding: null,
+      versions: [],
+      exports: [],
+    },
+    vercel: {
+      binding: null,
+      lastManifestExportedAt: null,
+      history: [],
+    },
+  };
+}
+
+function normalizeExistingIntegrations(value: any): ProjectIntegrationsModel {
+  const base = buildBaseProjectIntegrations();
+  if (!value || typeof value !== "object") return base;
+  return {
+    github: normalizeExistingGitHubIntegration(value.github),
+    vercel: normalizeExistingVercelIntegration(value.vercel),
+  };
+}
+
+function mergeProjectIntegrations(
+  current: ProjectIntegrationsModel,
+  patch?: {
+    github?: Partial<ProjectGitHubIntegration>;
+    vercel?: Partial<ProjectVercelIntegration>;
+  } | null
+): ProjectIntegrationsModel {
+  if (!patch || typeof patch !== "object") return current;
+
+  const githubPatch = patch.github;
+  const vercelPatch = patch.vercel;
+
+  const nextGitHub = githubPatch
+    ? normalizeExistingGitHubIntegration({
+        ...current.github,
+        ...githubPatch,
+        binding: Object.prototype.hasOwnProperty.call(githubPatch, "binding")
+          ? githubPatch.binding === null
+            ? null
+            : {
+                ...(current.github.binding || {}),
+                ...(githubPatch.binding || {}),
+              }
+          : current.github.binding,
+        versions: Object.prototype.hasOwnProperty.call(githubPatch, "versions") ? githubPatch.versions : current.github.versions,
+        exports: Object.prototype.hasOwnProperty.call(githubPatch, "exports") ? githubPatch.exports : current.github.exports,
+      })
+    : current.github;
+
+  const nextVercel = vercelPatch
+    ? normalizeExistingVercelIntegration({
+        ...current.vercel,
+        ...vercelPatch,
+        binding: Object.prototype.hasOwnProperty.call(vercelPatch, "binding")
+          ? vercelPatch.binding === null
+            ? null
+            : {
+                ...(current.vercel.binding || {}),
+                ...(vercelPatch.binding || {}),
+              }
+          : current.vercel.binding,
+        history: Object.prototype.hasOwnProperty.call(vercelPatch, "history") ? vercelPatch.history : current.vercel.history,
+      })
+    : current.vercel;
+
+  return {
+    github: nextGitHub,
+    vercel: nextVercel,
+  };
+}
+
 export function ensureCanonicalProjectData(rawData: any, meta: ProjectMeta = {}): CanonicalProjectData {
   const baseData = rawData && typeof rawData === "object" ? rawData : {};
   const payload = parseLegacyProjectPayload(baseData);
@@ -977,6 +1235,7 @@ export function ensureCanonicalProjectData(rawData: any, meta: ProjectMeta = {})
         })
       : null;
   const delivery = existingDelivery || legacyEditorDelivery || buildBaseDelivery();
+  const integrations = normalizeExistingIntegrations(baseData.integrations);
   const deliverableBase = normalizeExistingDeliverable(baseData.deliverable) || null;
   const derivedDeliverable = buildDeliverableFromData(baseData, meta, source, output, delivery);
   const deliverable: ProjectDeliverableModel = {
@@ -995,13 +1254,24 @@ export function ensureCanonicalProjectData(rawData: any, meta: ProjectMeta = {})
     output,
     deliverable,
     delivery,
+    integrations,
     editor: baseData.editor,
   };
 }
 
 export function mergeCanonicalProjectData(
   rawData: any,
-  patch: Partial<Pick<CanonicalProjectData, "source" | "output" | "deliverable" | "delivery" | "editor">> & Record<string, any>
+  patch: {
+    source?: Partial<ProjectSourceModel>;
+    output?: Partial<ProjectOutputModel>;
+    deliverable?: Partial<ProjectDeliverableModel>;
+    delivery?: Partial<ProjectDeliveryModel>;
+    integrations?: {
+      github?: Partial<ProjectGitHubIntegration>;
+      vercel?: Partial<ProjectVercelIntegration>;
+    };
+    editor?: any;
+  } & Record<string, any>
 ): CanonicalProjectData {
   const current = ensureCanonicalProjectData(rawData);
   const nextSource = patch.source
@@ -1027,6 +1297,10 @@ export function mergeCanonicalProjectData(
         ...patch.delivery,
       })
     : current.delivery;
+
+  const nextIntegrations = patch.integrations
+    ? mergeProjectIntegrations(current.integrations, patch.integrations)
+    : current.integrations;
 
   const deliverablePatch: Partial<ProjectDeliverableModel> = patch.deliverable || {};
   const nextDeliverable: ProjectDeliverableModel = {
@@ -1057,6 +1331,7 @@ export function mergeCanonicalProjectData(
     output: nextOutput,
     deliverable: nextDeliverable,
     delivery: nextDelivery,
+    integrations: nextIntegrations,
     editor: patch.editor !== undefined ? patch.editor : current.editor,
   };
 
@@ -1247,6 +1522,7 @@ export function getCanonicalProjectSummary(rawData: any, meta: ProjectMeta = {})
     output: data.output,
     deliverable: data.deliverable,
     delivery: data.delivery,
+    integrations: data.integrations,
     outputStageLabel: outputStageLabel(data.delivery.stage),
     reviewStatusLabel: reviewStatusLabel(data.deliverable.reviewStatus),
   };

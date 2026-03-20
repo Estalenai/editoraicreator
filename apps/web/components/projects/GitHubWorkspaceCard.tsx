@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import { PremiumSelect } from "../ui/PremiumSelect";
+import { api } from "../../lib/api";
 import { supabase } from "../../lib/supabaseClient";
 import { toUserFacingError } from "../../lib/uiFeedback";
-import { getCanonicalProjectSummary } from "../../lib/projectModel";
+import { ensureCanonicalProjectData, getCanonicalProjectSummary, mergeCanonicalProjectData } from "../../lib/projectModel";
 import {
   clearGitHubWorkspace,
   downloadGitHubProjectBundle,
@@ -27,6 +29,8 @@ import {
 type Props = {
   variant?: "full" | "compact";
   project?: GitHubProjectRef | null;
+  projects?: GitHubProjectRef[];
+  onProjectDataChange?: (projectId: string, data: any) => void;
 };
 
 type WorkspaceDraft = {
@@ -76,24 +80,151 @@ function targetLabel(target: GitHubWorkspaceTarget): string {
   return target === "app" ? "App" : "Site";
 }
 
-export function GitHubWorkspaceCard({ variant = "full", project = null }: Props) {
-  const projectId = project?.id || null;
+function createClientId(): string {
+  try {
+    return globalThis.crypto?.randomUUID?.() || Math.random().toString(36).slice(2);
+  } catch {
+    return Math.random().toString(36).slice(2);
+  }
+}
+
+function normalizeProject(project: GitHubProjectRef | null | undefined): GitHubProjectRef | null {
+  const id = String(project?.id || "").trim();
+  if (!id) return null;
+  return {
+    id,
+    title: String(project?.title || "Projeto").trim() || "Projeto",
+    kind: String(project?.kind || "projeto").trim() || "projeto",
+    data: project?.data,
+  };
+}
+
+function workspaceFromBinding(binding: any): GitHubWorkspace | null {
+  if (!binding || typeof binding !== "object") return null;
+  const owner = String(binding.owner || "").trim();
+  const repo = String(binding.repo || "").trim();
+  if (!owner || !repo) return null;
+  return {
+    provider: "github",
+    owner,
+    repo,
+    branch: String(binding.branch || "main").trim() || "main",
+    rootPath: normalizeRootPath(binding.rootPath || "/"),
+    target: binding.target === "app" ? "app" : "site",
+    connectedAt: String(binding.connectedAt || new Date().toISOString()),
+    updatedAt: String(binding.updatedAt || new Date().toISOString()),
+    accountLabel: binding.accountLabel ? String(binding.accountLabel) : null,
+  };
+}
+
+function toProjectVersions(project: GitHubProjectRef | null, value: any): GitHubProjectVersion[] {
+  if (!project || !Array.isArray(value)) return [];
+  return value
+    .filter((item) => item && typeof item === "object")
+    .map((item: any) => ({
+      id: String(item.id || createClientId()),
+      projectId: project.id,
+      projectTitle: project.title,
+      projectKind: project.kind,
+      savedAt: String(item.savedAt || new Date().toISOString()),
+      handoffTarget: (item.handoffTarget === "app" ? "app" : "site") as GitHubWorkspaceTarget,
+      repoLabel: item.repoLabel ? String(item.repoLabel) : null,
+    }))
+    .slice(0, 16);
+}
+
+function toProjectExports(project: GitHubProjectRef | null, value: any): GitHubProjectExport[] {
+  if (!project || !Array.isArray(value)) return [];
+  return value
+    .filter((item) => item && typeof item === "object")
+    .map((item: any) => ({
+      id: String(item.id || createClientId()),
+      projectId: project.id,
+      projectTitle: project.title,
+      exportedAt: String(item.exportedAt || new Date().toISOString()),
+      handoffTarget: (item.handoffTarget === "app" ? "app" : "site") as GitHubWorkspaceTarget,
+      repoLabel: item.repoLabel ? String(item.repoLabel) : null,
+    }))
+    .slice(0, 16);
+}
+
+function extractUpdatedProjectData(response: any, fallback: any): any {
+  const item = response?.item || response?.data?.item || response;
+  return item?.data ?? fallback;
+}
+
+export function GitHubWorkspaceCard({ variant = "full", project = null, projects = [], onProjectDataChange }: Props) {
+  const availableProjects = useMemo(() => {
+    const single = normalizeProject(project);
+    if (single) return [single];
+    return projects.map((item) => normalizeProject(item)).filter(Boolean) as GitHubProjectRef[];
+  }, [project, projects]);
+
   const [ready, setReady] = useState(false);
   const [accountKey, setAccountKey] = useState<string | null>(null);
   const [connected, setConnected] = useState(false);
   const [identityLabel, setIdentityLabel] = useState<string | null>(null);
   const [workspace, setWorkspace] = useState<GitHubWorkspace | null>(null);
   const [draft, setDraft] = useState<WorkspaceDraft>(DEFAULT_DRAFT);
-  const [versionCount, setVersionCount] = useState(0);
-  const [projectVersionCount, setProjectVersionCount] = useState(0);
-  const [lastVersionSavedAt, setLastVersionSavedAt] = useState<string | null>(null);
-  const [projectExportCount, setProjectExportCount] = useState(0);
-  const [lastExportedAt, setLastExportedAt] = useState<string | null>(null);
-  const [projectVersions, setProjectVersions] = useState<GitHubProjectVersion[]>([]);
-  const [projectExports, setProjectExports] = useState<GitHubProjectExport[]>([]);
+  const [localVersions, setLocalVersions] = useState<GitHubProjectVersion[]>([]);
+  const [localExports, setLocalExports] = useState<GitHubProjectExport[]>([]);
+  const [projectDataMap, setProjectDataMap] = useState<Record<string, any>>({});
+  const [selectedProjectId, setSelectedProjectId] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [busyAction, setBusyAction] = useState<"connect" | "save" | "clear" | "version" | "export" | null>(null);
+
+  useEffect(() => {
+    setProjectDataMap((current) => {
+      const next: Record<string, any> = {};
+      for (const item of availableProjects) {
+        next[item.id] = Object.prototype.hasOwnProperty.call(current, item.id) ? current[item.id] : item.data;
+      }
+      return next;
+    });
+  }, [availableProjects]);
+
+  useEffect(() => {
+    if (availableProjects.length === 0) {
+      setSelectedProjectId("");
+      return;
+    }
+    setSelectedProjectId((current) => {
+      if (current && availableProjects.some((item) => item.id === current)) return current;
+      return availableProjects[0].id;
+    });
+  }, [availableProjects]);
+
+  const selectedProject = useMemo(
+    () => availableProjects.find((item) => item.id === selectedProjectId) || availableProjects[0] || null,
+    [availableProjects, selectedProjectId]
+  );
+  const selectedProjectData = selectedProject ? projectDataMap[selectedProject.id] ?? selectedProject.data : null;
+  const selectedProjectCanonical = useMemo(
+    () =>
+      selectedProject
+        ? ensureCanonicalProjectData(selectedProjectData, {
+            projectKind: selectedProject.kind,
+            projectTitle: selectedProject.title,
+          })
+        : null,
+    [selectedProject, selectedProjectData]
+  );
+  const projectSummary = useMemo(
+    () =>
+      selectedProject
+        ? getCanonicalProjectSummary(selectedProjectData, {
+            projectKind: selectedProject.kind,
+            projectTitle: selectedProject.title,
+          })
+        : null,
+    [selectedProject, selectedProjectData]
+  );
+  const projectIntegration = selectedProjectCanonical?.integrations.github || null;
+  const projectWorkspace = useMemo(() => workspaceFromBinding(projectIntegration?.binding), [projectIntegration?.binding]);
+  const activeWorkspace = selectedProject ? projectWorkspace || workspace : workspace;
+  const repoLabel = useMemo(() => formatGitHubRepoLabel(activeWorkspace), [activeWorkspace]);
+  const canLinkIdentity = useMemo(() => typeof (supabase.auth as any)?.linkIdentity === "function", []);
 
   useEffect(() => {
     let cancelled = false;
@@ -113,14 +244,8 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
       setConnected(connection.connected);
       setIdentityLabel(connection.label);
       setWorkspace(storedWorkspace);
-      setDraft(draftFromWorkspace(storedWorkspace));
-      setVersionCount(versions.length);
-      setProjectVersionCount(projectId ? versions.filter((item) => item.projectId === projectId).length : versions.length);
-      setLastVersionSavedAt(versions[0]?.savedAt || null);
-      setProjectExportCount(projectId ? exports.filter((item) => item.projectId === projectId).length : exports.length);
-      setLastExportedAt(projectId ? exports.find((item) => item.projectId === projectId)?.exportedAt || null : exports[0]?.exportedAt || null);
-      setProjectVersions(projectId ? versions.filter((item) => item.projectId === projectId).slice(0, 4) : versions.slice(0, 4));
-      setProjectExports(projectId ? exports.filter((item) => item.projectId === projectId).slice(0, 4) : exports.slice(0, 4));
+      setLocalVersions(versions);
+      setLocalExports(exports);
       setReady(true);
 
       if (typeof window !== "undefined") {
@@ -145,36 +270,57 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
       cancelled = true;
       authListener.subscription.unsubscribe();
     };
-  }, [projectId]);
+  }, []);
 
-  const repoLabel = useMemo(() => formatGitHubRepoLabel(workspace), [workspace]);
-  const projectSummary = useMemo(
-    () =>
-      project
-        ? getCanonicalProjectSummary(project.data, {
-            projectKind: project.kind,
-            projectTitle: project.title,
-          })
-        : null,
-    [project]
+  useEffect(() => {
+    if (!ready) return;
+    setDraft(draftFromWorkspace(activeWorkspace));
+  }, [activeWorkspace, ready]);
+
+  const fallbackProjectVersions = useMemo(
+    () => (selectedProject ? localVersions.filter((item) => item.projectId === selectedProject.id) : localVersions),
+    [localVersions, selectedProject]
   );
-  const canLinkIdentity = useMemo(() => typeof (supabase.auth as any)?.linkIdentity === "function", []);
+  const fallbackProjectExports = useMemo(
+    () => (selectedProject ? localExports.filter((item) => item.projectId === selectedProject.id) : localExports),
+    [localExports, selectedProject]
+  );
+  const canonicalProjectVersions = useMemo(
+    () => toProjectVersions(selectedProject, projectIntegration?.versions || []),
+    [selectedProject, projectIntegration?.versions]
+  );
+  const canonicalProjectExports = useMemo(
+    () => toProjectExports(selectedProject, projectIntegration?.exports || []),
+    [selectedProject, projectIntegration?.exports]
+  );
+  const effectiveProjectVersions = selectedProject
+    ? canonicalProjectVersions.length
+      ? canonicalProjectVersions
+      : fallbackProjectVersions
+    : localVersions;
+  const effectiveProjectExports = selectedProject
+    ? canonicalProjectExports.length
+      ? canonicalProjectExports
+      : fallbackProjectExports
+    : localExports;
   const versionSummaryLabel = useMemo(() => {
-    if (project) {
-      return projectVersionCount > 0
-        ? `${projectVersionCount} versão(ões) locais para este projeto`
+    if (selectedProject) {
+      return effectiveProjectVersions.length > 0
+        ? `${effectiveProjectVersions.length} versão(ões) locais para este projeto`
         : "Nenhuma versão local salva para este projeto";
     }
-    return versionCount > 0 ? `${versionCount} versão(ões) locais prontas para continuidade` : "Nenhuma versão local salva ainda";
-  }, [project, projectVersionCount, versionCount]);
+    return localVersions.length > 0 ? `${localVersions.length} versão(ões) locais prontas para continuidade` : "Nenhuma versão local salva ainda";
+  }, [effectiveProjectVersions.length, localVersions.length, selectedProject]);
+  const lastVersionSavedAt = effectiveProjectVersions[0]?.savedAt || null;
+  const lastExportedAt = effectiveProjectExports[0]?.exportedAt || null;
   const githubDeliveryStage = useMemo(() => {
-    if (projectExportCount > 0) {
+    if (effectiveProjectExports.length > 0) {
       return {
         label: "Exported",
         detail: "Snapshot exportado e pronto para handoff beta fora da plataforma.",
       };
     }
-    if (workspace) {
+    if (activeWorkspace) {
       return {
         label: "Draft",
         detail: "Base do repositório salva. Falta exportar o snapshot para o handoff beta.",
@@ -184,26 +330,26 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
       label: "Draft",
       detail: "Defina owner, repositório e branch antes de preparar a saída.",
     };
-  }, [projectExportCount, workspace]);
+  }, [activeWorkspace, effectiveProjectExports.length]);
   const recentGitHubActivity = useMemo(
     () =>
       [
-        ...projectVersions.map((item) => ({
+        ...effectiveProjectVersions.map((item) => ({
           id: `version-${item.id}`,
           ts: item.savedAt,
           title: "Versão local registrada",
-          detail: `${item.projectTitle} • ${targetLabel(item.handoffTarget)}${item.repoLabel ? ` • ${item.repoLabel}` : ""}`,
+          detail: `${selectedProject ? selectedProject.title : item.projectTitle} • ${targetLabel(item.handoffTarget)}${item.repoLabel ? ` • ${item.repoLabel}` : ""}`,
         })),
-        ...projectExports.map((item) => ({
+        ...effectiveProjectExports.map((item) => ({
           id: `export-${item.id}`,
           ts: item.exportedAt,
           title: "Snapshot exportado",
-          detail: `${item.projectTitle} • ${targetLabel(item.handoffTarget)}${item.repoLabel ? ` • ${item.repoLabel}` : ""}`,
+          detail: `${selectedProject ? selectedProject.title : item.projectTitle} • ${targetLabel(item.handoffTarget)}${item.repoLabel ? ` • ${item.repoLabel}` : ""}`,
         })),
       ]
         .sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())
         .slice(0, 5),
-    [projectExports, projectVersions]
+    [effectiveProjectExports, effectiveProjectVersions, selectedProject]
   );
   const visibleGitHubActivity = useMemo(
     () => (variant === "compact" ? recentGitHubActivity.slice(0, 3) : recentGitHubActivity),
@@ -212,6 +358,18 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
 
   function updateDraft(field: keyof WorkspaceDraft, value: string) {
     setDraft((current) => ({ ...current, [field]: value }));
+  }
+
+  async function persistProjectData(nextData: any) {
+    if (!selectedProject) return nextData;
+    const response = await api.updateProject(selectedProject.id, { data: nextData });
+    const persistedData = extractUpdatedProjectData(response, nextData);
+    setProjectDataMap((current) => ({
+      ...current,
+      [selectedProject.id]: persistedData,
+    }));
+    onProjectDataChange?.(selectedProject.id, persistedData);
+    return persistedData;
   }
 
   async function handleConnectGitHub() {
@@ -258,11 +416,11 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
     }
   }
 
-  function handleSaveWorkspace() {
+  async function handleSaveWorkspace() {
     setError(null);
     setSuccess(null);
 
-    if (!accountKey) {
+    if (!accountKey && !selectedProject) {
       setError("Abra uma sessão válida para salvar a base GitHub deste workspace.");
       return;
     }
@@ -275,21 +433,37 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
     setBusyAction("save");
     try {
       const now = new Date().toISOString();
-      const nextWorkspace = saveGitHubWorkspace(accountKey, {
+      const nextWorkspace: GitHubWorkspace = {
         provider: "github",
         owner: draft.owner.trim(),
         repo: draft.repo.trim(),
         branch: draft.branch.trim() || "main",
         rootPath: normalizeRootPath(draft.rootPath),
         target: draft.target,
-        connectedAt: workspace?.connectedAt || now,
+        connectedAt: activeWorkspace?.connectedAt || now,
         updatedAt: now,
         accountLabel: identityLabel,
-      });
+      };
 
+      if (accountKey) {
+        saveGitHubWorkspace(accountKey, nextWorkspace);
+      }
       setWorkspace(nextWorkspace);
       setDraft(draftFromWorkspace(nextWorkspace));
-      setSuccess("Base GitHub salva neste navegador. O editor já pode registrar versões locais e exportar snapshots com owner/repositório definidos.");
+
+      if (selectedProject) {
+        const nextData = mergeCanonicalProjectData(selectedProjectData, {
+          integrations: {
+            github: {
+              binding: nextWorkspace,
+            },
+          },
+        });
+        await persistProjectData(nextData);
+        setSuccess("Base GitHub salva no projeto e espelhada neste navegador. A continuidade do handoff agora fica persistida no próprio projeto.");
+      } else {
+        setSuccess("Base GitHub salva neste navegador. O editor já pode registrar versões locais e exportar snapshots com owner/repositório definidos.");
+      }
     } catch (saveError: any) {
       setError(
         toUserFacingError(saveError?.message, "Não foi possível salvar a base GitHub agora.")
@@ -299,37 +473,86 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
     }
   }
 
-  function handleClearWorkspace() {
-    if (!accountKey) return;
-
+  async function handleClearWorkspace() {
     setBusyAction("clear");
+    setError(null);
+    setSuccess(null);
+
     try {
-      clearGitHubWorkspace(accountKey);
+      if (accountKey) {
+        clearGitHubWorkspace(accountKey);
+      }
       setWorkspace(null);
       setDraft(DEFAULT_DRAFT);
-      setSuccess("Base GitHub removida deste navegador. Se a conta já estiver conectada, ela continua disponível para a próxima configuração.");
-      setError(null);
+
+      if (selectedProject) {
+        const nextData = mergeCanonicalProjectData(selectedProjectData, {
+          integrations: {
+            github: {
+              binding: null,
+            },
+          },
+        });
+        await persistProjectData(nextData);
+        setSuccess("Base GitHub removida do projeto. O cache local deste navegador também foi limpo.");
+      } else {
+        setSuccess("Base GitHub removida deste navegador. Se a conta já estiver conectada, ela continua disponível para a próxima configuração.");
+      }
+    } catch (clearError: any) {
+      setError(toUserFacingError(clearError?.message, "Não foi possível limpar a base GitHub agora."));
     } finally {
       setBusyAction(null);
     }
   }
 
-  function handleSaveVersion() {
-    if (!accountKey || !project) {
+  async function handleSaveVersion() {
+    if (!selectedProject) {
       setError("Abra um projeto válido antes de registrar uma versão para GitHub.");
       return;
     }
 
     setBusyAction("version");
+    setError(null);
+    setSuccess(null);
+
     try {
-      const entry = saveGitHubProjectVersion(accountKey, project, workspace);
-      const versions = listGitHubProjectVersions(accountKey);
-      setVersionCount(versions.length);
-      setProjectVersionCount(versions.filter((item) => item.projectId === project.id).length);
-      setLastVersionSavedAt(entry.savedAt);
-      setProjectVersions(versions.filter((item) => item.projectId === project.id).slice(0, 4));
-      setSuccess("Versão do projeto registrada. Agora você pode baixar o snapshot ou continuar a evolução fora da plataforma.");
-      setError(null);
+      const projectRef = {
+        ...selectedProject,
+        data: selectedProjectData,
+      };
+      const fallbackEntry: GitHubProjectVersion = {
+        id: createClientId(),
+        projectId: selectedProject.id,
+        projectTitle: selectedProject.title,
+        projectKind: selectedProject.kind,
+        savedAt: new Date().toISOString(),
+        handoffTarget: activeWorkspace?.target === "app" ? "app" : "site",
+        repoLabel: activeWorkspace ? formatGitHubRepoLabel(activeWorkspace) : null,
+      };
+      const entry = accountKey ? saveGitHubProjectVersion(accountKey, projectRef, activeWorkspace) : fallbackEntry;
+      if (accountKey) {
+        setLocalVersions(listGitHubProjectVersions(accountKey));
+      }
+
+      const nextData = mergeCanonicalProjectData(selectedProjectData, {
+        integrations: {
+          github: {
+            ...(activeWorkspace ? { binding: activeWorkspace } : {}),
+            versions: [
+              {
+                id: entry.id,
+                savedAt: entry.savedAt,
+                handoffTarget: entry.handoffTarget,
+                repoLabel: entry.repoLabel,
+              },
+              ...(selectedProjectCanonical?.integrations.github.versions || []),
+            ].slice(0, 16),
+          },
+        },
+      });
+
+      await persistProjectData(nextData);
+      setSuccess("Versão GitHub registrada no projeto. A trilha principal de continuidade agora fica persistida no próprio projeto, com cache local como conveniência.");
     } catch (versionError: any) {
       setError(toUserFacingError(versionError?.message, "Não foi possível registrar a versão local agora."));
     } finally {
@@ -337,24 +560,83 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
     }
   }
 
-  function handleExportBundle() {
-    if (!project) {
+  async function handleExportBundle() {
+    if (!selectedProject) {
       setError("Abra um projeto antes de exportar o snapshot GitHub beta.");
       return;
     }
 
     setBusyAction("export");
+    setError(null);
+    setSuccess(null);
+
     try {
-      downloadGitHubProjectBundle(project, workspace);
+      const projectRef = {
+        ...selectedProject,
+        data: selectedProjectData,
+      };
+      downloadGitHubProjectBundle(projectRef, activeWorkspace);
+
+      const fallbackEntry: GitHubProjectExport = {
+        id: createClientId(),
+        projectId: selectedProject.id,
+        projectTitle: selectedProject.title,
+        exportedAt: new Date().toISOString(),
+        handoffTarget: activeWorkspace?.target === "app" ? "app" : "site",
+        repoLabel: activeWorkspace ? formatGitHubRepoLabel(activeWorkspace) : null,
+      };
+      const entry = accountKey ? saveGitHubProjectExport(accountKey, projectRef, activeWorkspace) : fallbackEntry;
       if (accountKey) {
-        const exportEntry = saveGitHubProjectExport(accountKey, project, workspace);
-        const exports = listGitHubProjectExports(accountKey);
-        setProjectExportCount(exports.filter((item) => item.projectId === project.id).length);
-        setLastExportedAt(exportEntry.exportedAt);
-        setProjectExports(exports.filter((item) => item.projectId === project.id).slice(0, 4));
+        setLocalExports(listGitHubProjectExports(accountKey));
       }
-      setSuccess("Snapshot do projeto baixado. Use esse bundle para continuar o app ou site fora da plataforma enquanto push direto, PRs e CI entram na próxima fase.");
-      setError(null);
+
+      const currentCanonical = selectedProjectCanonical || ensureCanonicalProjectData(selectedProjectData, {
+        projectKind: selectedProject.kind,
+        projectTitle: selectedProject.title,
+      });
+      const nextStage = currentCanonical.delivery.stage === "published" ? "published" : "exported";
+      const nextData = mergeCanonicalProjectData(selectedProjectData, {
+        delivery: {
+          stage: nextStage,
+          exportTarget: "connected_storage",
+          connectedStorage: "github",
+          lastExportedAt: entry.exportedAt,
+          history: [
+            {
+              id: createClientId(),
+              ts: entry.exportedAt,
+              stage: "exported" as const,
+              channel: "github" as const,
+              title: "Snapshot GitHub exportado",
+              note: `Snapshot beta exportado${entry.repoLabel ? ` para ${entry.repoLabel}` : ""} para continuidade manual fora da plataforma.`,
+            },
+            ...currentCanonical.delivery.history,
+          ].slice(0, 12),
+        },
+        integrations: {
+          github: {
+            ...(activeWorkspace ? { binding: activeWorkspace } : {}),
+            exports: [
+              {
+                id: entry.id,
+                exportedAt: entry.exportedAt,
+                handoffTarget: entry.handoffTarget,
+                repoLabel: entry.repoLabel,
+              },
+              ...(currentCanonical.integrations.github.exports || []),
+            ].slice(0, 16),
+          },
+        },
+        deliverable: {
+          nextAction:
+            nextStage === "published"
+              ? "A publicação já foi registrada no projeto. Use GitHub apenas para acompanhar novos handoffs ou iterações locais."
+              : "Snapshot GitHub exportado. Continue fora da plataforma e registre novos handoffs quando o projeto pedir uma nova saída.",
+        },
+      });
+
+      await persistProjectData(nextData);
+      setSuccess("Snapshot do projeto baixado. O projeto agora guarda o handoff GitHub como source of truth, com cache local apenas como conveniência beta.");
     } catch (exportError: any) {
       setError(toUserFacingError(exportError?.message, "Não foi possível exportar o snapshot agora."));
     } finally {
@@ -393,8 +675,8 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
         <div className="github-workspace-status-list github-workspace-status-list-compact">
           <div className="github-workspace-status-item">
             <span className="github-workspace-status-label">Projeto atual</span>
-            <strong>{project?.title || "Abra um projeto para preparar a continuidade"}</strong>
-            <small>{project ? `${project.kind} • ${projectSummary?.outputStageLabel || "Draft"} • ${versionSummaryLabel}` : "O editor usa essa base para salvar versões e exportar snapshots."}</small>
+            <strong>{selectedProject?.title || "Abra um projeto para preparar a continuidade"}</strong>
+            <small>{selectedProject ? `${selectedProject.kind} • ${projectSummary?.outputStageLabel || "Draft"} • ${versionSummaryLabel}` : "O editor usa essa base para salvar versões e exportar snapshots."}</small>
           </div>
           <div className="github-workspace-status-item">
             <span className="github-workspace-status-label">Handoff GitHub</span>
@@ -421,10 +703,10 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
           <Link href="/projects#github-workspace" className="btn-link-ea btn-secondary btn-sm">
             Configurar base GitHub
           </Link>
-          <button onClick={handleSaveVersion} disabled={!project || busyAction === "version"} className="btn-ea btn-ghost btn-sm">
+          <button onClick={handleSaveVersion} disabled={!selectedProject || busyAction === "version"} className="btn-ea btn-ghost btn-sm">
             {busyAction === "version" ? "Salvando versão..." : "Salvar versão"}
           </button>
-          <button onClick={handleExportBundle} disabled={!project || busyAction === "export"} className="btn-ea btn-primary btn-sm">
+          <button onClick={handleExportBundle} disabled={!selectedProject || busyAction === "export"} className="btn-ea btn-primary btn-sm">
             {busyAction === "export" ? "Preparando snapshot..." : "Exportar snapshot .json"}
           </button>
         </div>
@@ -472,6 +754,20 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
         </div>
       </div>
 
+      {availableProjects.length > 1 ? (
+        <div className="github-workspace-form-grid">
+          <label className="field-label-ea">
+            <span>Projeto para handoff GitHub</span>
+            <PremiumSelect
+              value={selectedProject?.id || ""}
+              onChange={setSelectedProjectId}
+              options={availableProjects.map((item) => ({ value: item.id, label: item.title }))}
+              ariaLabel="Projeto selecionado para handoff GitHub"
+            />
+          </label>
+        </div>
+      ) : null}
+
       {error ? (
         <div className="state-ea state-ea-error">
           <p className="state-ea-title">Não foi possível preparar o GitHub agora</p>
@@ -504,8 +800,8 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
             </div>
             <div className="github-workspace-status-item">
               <span className="github-workspace-status-label">Escopo atual</span>
-              <strong>Identidade opcional + handoff local</strong>
-              <small>Push direto, branches, PRs e CI entram na próxima fase do beta.</small>
+              <strong>Identidade opcional + handoff por projeto</strong>
+              <small>O estado canônico da integração fica no projeto. O navegador guarda só a conveniência local.</small>
             </div>
           </div>
 
@@ -513,8 +809,8 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
             <button onClick={handleConnectGitHub} disabled={busyAction === "connect" || connected || !canLinkIdentity} className="btn-ea btn-primary btn-sm">
               {connected ? "Conta conectada" : busyAction === "connect" ? "Conectando..." : canLinkIdentity ? "Conectar GitHub" : "Conexão indisponível aqui"}
             </button>
-            <Link href="/editor/new" className="btn-link-ea btn-ghost btn-sm">
-              Abrir projeto para app/site
+            <Link href={selectedProject ? `/editor/${selectedProject.id}` : "/editor/new"} className="btn-link-ea btn-ghost btn-sm">
+              {selectedProject ? "Abrir projeto no editor" : "Abrir projeto para app/site"}
             </Link>
           </div>
         </article>
@@ -524,7 +820,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
             <p className="section-kicker">2. Base do repositório</p>
             <h3 className="heading-reset">Owner, branch e destino</h3>
             <p className="helper-text-ea">
-              Salve uma base única para importar a referência do repositório e usar o editor como ponto de continuidade do app ou site.
+              Salve uma base por projeto para importar a referência do repositório e usar o editor como ponto de continuidade do app ou site.
             </p>
           </div>
 
@@ -563,10 +859,10 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
 
           <div className="github-workspace-cta-row">
             <button onClick={handleSaveWorkspace} disabled={busyAction === "save"} className="btn-ea btn-secondary btn-sm">
-              {busyAction === "save" ? "Salvando base..." : "Salvar base GitHub"}
+              {busyAction === "save" ? "Salvando base..." : selectedProject ? "Salvar base no projeto" : "Salvar base GitHub"}
             </button>
-            <button onClick={handleClearWorkspace} disabled={busyAction === "clear" || !workspace} className="btn-ea btn-ghost btn-sm">
-              {busyAction === "clear" ? "Limpando..." : "Remover base local"}
+            <button onClick={handleClearWorkspace} disabled={busyAction === "clear" || (!activeWorkspace && !selectedProject)} className="btn-ea btn-ghost btn-sm">
+              {busyAction === "clear" ? "Limpando..." : selectedProject ? "Remover base do projeto" : "Remover base local"}
             </button>
           </div>
         </article>
@@ -582,9 +878,9 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
 
           <div className="github-workspace-status-list">
             <div className="github-workspace-status-item">
-              <span className="github-workspace-status-label">Versões locais</span>
-              <strong>{versionSummaryLabel}</strong>
-              <small>Última atualização: {formatDateLabel(lastVersionSavedAt)}</small>
+              <span className="github-workspace-status-label">Projeto atual</span>
+              <strong>{selectedProject?.title || "Selecione ou abra um projeto"}</strong>
+              <small>{selectedProject ? `${selectedProject.kind} • ${projectSummary?.outputStageLabel || "Draft"} • ${versionSummaryLabel}` : versionSummaryLabel}</small>
             </div>
             <div className="github-workspace-status-item">
               <span className="github-workspace-status-label">Handoff GitHub</span>
@@ -594,19 +890,27 @@ export function GitHubWorkspaceCard({ variant = "full", project = null }: Props)
             <div className="github-workspace-status-item">
               <span className="github-workspace-status-label">Último snapshot</span>
               <strong>{lastExportedAt ? formatDateLabel(lastExportedAt) : "Nenhum snapshot exportado"}</strong>
-              <small>{workspace ? `Destino ${targetLabel(workspace.target)} em ${workspace.branch}${repoLabel ? ` • ${repoLabel}` : ""}.` : "Configure owner/repositório/branch e depois exporte o snapshot do projeto."}</small>
+              <small>{activeWorkspace ? `Destino ${targetLabel(activeWorkspace.target)} em ${activeWorkspace.branch}${repoLabel ? ` • ${repoLabel}` : ""}.` : "Configure owner/repositório/branch e depois exporte o snapshot do projeto."}</small>
             </div>
           </div>
 
           <ol className="github-workspace-checklist">
             <li>Conecte a conta GitHub, quando disponível, ou mantenha a base local salva para este navegador.</li>
-            <li>Abra um projeto em <Link href="/editor/new" className="text-link-ea">/editor/new</Link> ou retome um já salvo.</li>
+            <li>Abra um projeto no editor para consolidar a base canônica da continuidade.</li>
             <li>Salve versões e exporte o snapshot .json enquanto push, PR e CI entram na próxima fase.</li>
           </ol>
 
           <div className="github-workspace-inline-note">
-            <strong>Fluxo preparado para app/site</strong>
-            <span>O handoff atual é leve e honesto: base do repositório, versões locais e bundle exportável para continuar fora da plataforma.</span>
+            <strong>Source of truth por projeto</strong>
+            <span>Binding, versões e snapshots GitHub agora ficam persistidos no projeto. O navegador só espelha esse estado como conveniência beta.</span>
+          </div>
+          <div className="github-workspace-cta-row">
+            <button onClick={handleSaveVersion} disabled={!selectedProject || busyAction === "version"} className="btn-ea btn-secondary btn-sm">
+              {busyAction === "version" ? "Salvando versão..." : "Salvar versão local"}
+            </button>
+            <button onClick={handleExportBundle} disabled={!selectedProject || busyAction === "export"} className="btn-ea btn-primary btn-sm">
+              {busyAction === "export" ? "Preparando snapshot..." : "Exportar snapshot .json"}
+            </button>
           </div>
           <div className="github-workspace-activity-list">
             {visibleGitHubActivity.length ? visibleGitHubActivity.map((item) => (

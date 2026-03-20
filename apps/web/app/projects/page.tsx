@@ -225,7 +225,7 @@ export default function ProjectsPage() {
           </Link>
         </div>
         <div className="dashboard-section-body">
-          <GitHubWorkspaceCard />
+          <GitHubWorkspaceCard projects={normalizedProjects.map((project) => ({ id: project.id, title: project.title, kind: project.kind, data: project.data }))} />
           <VercelPublishCard projects={normalizedProjects.map((project) => ({ id: project.id, title: project.title, kind: project.kind, data: project.data }))} />
         </div>
         <div className="helper-text-ea">

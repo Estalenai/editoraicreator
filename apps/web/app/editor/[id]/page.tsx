@@ -2065,10 +2065,16 @@ export default function EditorProjectPage() {
             <GitHubWorkspaceCard
               variant="compact"
               project={project ? { id: project.id, title, kind: project.kind, data: project.data } : null}
+              onProjectDataChange={(projectId, data) => {
+                setProject((current) => (current && current.id === projectId ? { ...current, data } : current));
+              }}
             />
             <VercelPublishCard
               variant="compact"
               project={project ? { id: project.id, title, kind: project.kind, data: project.data } : null}
+              onProjectDataChange={(projectId, data) => {
+                setProject((current) => (current && current.id === projectId ? { ...current, data } : current));
+              }}
             />
           </div>
         }

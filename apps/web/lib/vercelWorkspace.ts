@@ -256,6 +256,7 @@ export function buildVercelDeployManifest(
       output: canonical.output,
       deliverable: canonical.deliverable,
       delivery: canonical.delivery,
+      integrations: canonical.integrations,
     },
     vercel: {
       projectName: binding.vercelProjectName,
