@@ -238,9 +238,18 @@ function CreatorsPageContent() {
       })),
     []
   );
-  const heroCreators = tabsByGroup.find((group) => group.id === "hero")?.items ?? [];
-  const secondaryCreators = tabsByGroup.find((group) => group.id === "secondary")?.items ?? [];
-  const labCreators = tabsByGroup.find((group) => group.id === "labs")?.items ?? [];
+  const heroCreators = useMemo(
+    () => tabsByGroup.find((group) => group.id === "hero")?.items ?? [],
+    [tabsByGroup]
+  );
+  const secondaryCreators = useMemo(
+    () => tabsByGroup.find((group) => group.id === "secondary")?.items ?? [],
+    [tabsByGroup]
+  );
+  const labCreators = useMemo(
+    () => tabsByGroup.find((group) => group.id === "labs")?.items ?? [],
+    [tabsByGroup]
+  );
   const activeStageTone = creatorStageTone(activeTabMeta.group);
   const activeStageGuidance = CREATOR_STAGE_GUIDANCE[activeTabMeta.group];
   const supportHeroCreator = useMemo(
