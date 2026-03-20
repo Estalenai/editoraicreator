@@ -238,8 +238,8 @@ function PlansPageContent() {
         throw new Error("Falha ao carregar catálogo de planos.");
       }
       const payload = await response.json().catch(() => null);
-      const plans = Array.isArray(payload?.plans) ? payload.plans : [];
-      const visiblePlans = plans.filter((item: CatalogPlan) => item?.visible !== false);
+      const plans: CatalogPlan[] = Array.isArray(payload?.plans) ? payload.plans : [];
+      const visiblePlans: CatalogPlan[] = plans.filter((item) => item?.visible !== false);
 
       if (!visiblePlans.some((item: CatalogPlan) => String(item?.code || "").toUpperCase() === "EMPRESARIAL")) {
         visiblePlans.push({
