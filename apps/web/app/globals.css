@@ -10100,6 +10100,9 @@ body {
 
 .dashboard-page-canvas {
   gap: clamp(22px, 2.5vw, 32px);
+  max-width: 100%;
+  border-color: rgba(191, 239, 255, 0.08);
+  box-shadow: none;
 }
 
 .dashboard-status-stack {
@@ -10171,6 +10174,20 @@ body {
   gap: 14px;
 }
 
+.dashboard-page-canvas,
+.dashboard-overview-region,
+.dashboard-summary-grid,
+.dashboard-workspace-grid,
+.dashboard-workspace-main,
+.dashboard-workspace-rail,
+.dashboard-core-links-grid,
+.dashboard-support-links-list,
+.dashboard-projects-list,
+.dashboard-usage-list {
+  min-width: 0;
+  max-width: 100%;
+}
+
 .dashboard-page-canvas .dashboard-summary-surface {
   padding: 0;
 }
@@ -10211,7 +10228,7 @@ body {
 
 .dashboard-workspace-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.9fr);
+  grid-template-columns: minmax(0, 1.4fr) minmax(clamp(15rem, 28vw, 21rem), 0.9fr);
   gap: clamp(20px, 2.4vw, 30px);
   align-items: start;
 }
@@ -10314,16 +10331,27 @@ body {
 
 .dashboard-page .dashboard-onboarding-card {
   padding: 0 !important;
+  padding-bottom: 18px !important;
   border: 0 !important;
+  border-bottom: 1px solid var(--ea-page-canvas-divider) !important;
   background: transparent !important;
   box-shadow: none !important;
   gap: 20px;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .dashboard-page .dashboard-onboarding-card .onboarding-trust-grid,
 .dashboard-page .dashboard-onboarding-card .onboarding-objective-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
+}
+
+.dashboard-page .dashboard-onboarding-card .onboarding-card-head,
+.dashboard-page .dashboard-onboarding-card .onboarding-action-row,
+.dashboard-page .dashboard-onboarding-card .hero-meta-row {
+  min-width: 0;
+  max-width: 100%;
 }
 
 .dashboard-page .dashboard-onboarding-step,
@@ -10402,5 +10430,23 @@ body {
   .dashboard-page-canvas .hero-kpi-grid.hero-kpi-grid-compact .hero-kpi:first-child {
     padding-top: 0;
     border-top: 0 !important;
+  }
+
+  .dashboard-page .dashboard-onboarding-card .onboarding-card-head,
+  .dashboard-page .dashboard-onboarding-card .onboarding-action-row,
+  .dashboard-page .dashboard-onboarding-card .hero-meta-row {
+    display: grid;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-page-canvas {
+    padding: clamp(14px, 4vw, 18px);
+  }
+
+  .dashboard-workspace-grid,
+  .dashboard-workspace-main,
+  .dashboard-workspace-rail {
+    gap: 18px;
   }
 }

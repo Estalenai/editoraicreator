@@ -403,8 +403,6 @@ export default function DashboardPage() {
         )}
       </section>
 
-      <ApprovedBetaOnboardingCard email={email} wallet={wallet} loading={loading} />
-
       <div className="dashboard-workspace-grid">
         <div className="dashboard-workspace-main">
           <section className="dashboard-section-card dashboard-pane-section" data-reveal data-reveal-delay="150">
@@ -506,6 +504,8 @@ export default function DashboardPage() {
         </div>
 
         <aside className="dashboard-workspace-rail">
+          <ApprovedBetaOnboardingCard email={email} wallet={wallet} loading={loading} />
+
           <section className="dashboard-section-card dashboard-pane-section dashboard-pane-section-quiet" data-reveal data-reveal-delay="120">
             <div className="section-head">
               <div className="section-header-ea">
