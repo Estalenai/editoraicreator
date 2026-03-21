@@ -92,7 +92,7 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
   if (!ready || !visible) return null;
 
   return (
-    <section className="premium-card onboarding-card-ea" data-reveal data-reveal-delay="90">
+    <section className="onboarding-card-ea dashboard-onboarding-card" data-reveal data-reveal-delay="90">
       <div className="onboarding-card-head">
         <div className="section-stack">
           <p className="section-kicker">Onboarding</p>
@@ -107,19 +107,19 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
       </div>
 
       <div className="trust-grid onboarding-trust-grid">
-        <div className="premium-card-soft trust-note" data-reveal data-reveal-delay="120">
+        <div className="trust-note dashboard-onboarding-step" data-reveal data-reveal-delay="120">
           <strong>1) Escolha um Creator</strong>
           <span>O núcleo hero já organiza o caminho de publicação, roteiro e clipe sem dispersar a decisão inicial.</span>
         </div>
-        <div className="premium-card-soft trust-note" data-reveal data-reveal-delay="160">
+        <div className="trust-note dashboard-onboarding-step" data-reveal data-reveal-delay="160">
           <strong>2) Revise a estimativa</strong>
           <span>Cada geração mostra a estimativa operacional antes de consumir saldo.</span>
         </div>
-        <div className="premium-card-soft trust-note" data-reveal data-reveal-delay="200">
+        <div className="trust-note dashboard-onboarding-step" data-reveal data-reveal-delay="200">
           <strong>3) Salve, edite e exporte</strong>
           <span>Projetos funciona como hub central: salva, retoma no editor e preserva continuidade até a saída.</span>
         </div>
-        <div className="premium-card-soft trust-note trust-note-privacy" data-reveal data-reveal-delay="240">
+        <div className="trust-note trust-note-privacy dashboard-onboarding-step" data-reveal data-reveal-delay="240">
           <strong>4) Trabalhe com confidencialidade</strong>
           <span>Os dados não entram em treino de modelos; o processamento permanece isolado e focado no workspace.</span>
         </div>
@@ -138,7 +138,7 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
             <Link
               key={item.key}
               href={item.href}
-              className={`premium-card-soft onboarding-objective-card ${index === OBJECTIVE_PATHS.length - 1 ? "onboarding-objective-card-support" : ""}`}
+              className={`onboarding-objective-card dashboard-onboarding-path ${index === OBJECTIVE_PATHS.length - 1 ? "onboarding-objective-card-support" : ""}`}
               onClick={dismiss}
               data-reveal
               data-reveal-delay={String(80 + index * 55)}
@@ -153,7 +153,7 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
         </div>
       </div>
 
-      <div className="premium-card-soft onboarding-credit-panel">
+      <div className="onboarding-credit-panel dashboard-onboarding-credit">
         <div className="section-stack">
           <strong>Créditos no fluxo atual</strong>
           <div className="helper-text-ea">
@@ -167,7 +167,7 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
         </div>
       </div>
 
-      <div className="onboarding-action-row">
+      <div className="onboarding-action-row dashboard-onboarding-actions">
         <Link href="/creators?tab=post" onClick={dismiss} className="btn-link-ea btn-primary">
           Iniciar fluxo gerar → salvar
         </Link>

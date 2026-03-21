@@ -313,34 +313,38 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      {error ? (
-        <div className="state-ea state-ea-error">
-          <p className="state-ea-title">Não foi possível carregar painel, plano e saldo agora</p>
-          <div className="state-ea-text">{toUserFacingError(error, "Atualize a página e tente novamente.")}</div>
-          <div className="state-ea-actions">
-            <button onClick={refresh} className="btn-ea btn-secondary btn-sm">
-              Atualizar dashboard
-            </button>
-            <Link href="/support" className="btn-link-ea btn-ghost btn-sm">
-              Pedir ajuda
-            </Link>
-          </div>
+      {error || usageError ? (
+        <div className="dashboard-status-stack">
+          {error ? (
+            <div className="state-ea state-ea-error">
+              <p className="state-ea-title">Não foi possível carregar painel, plano e saldo agora</p>
+              <div className="state-ea-text">{toUserFacingError(error, "Atualize a página e tente novamente.")}</div>
+              <div className="state-ea-actions">
+                <button onClick={refresh} className="btn-ea btn-secondary btn-sm">
+                  Atualizar dashboard
+                </button>
+                <Link href="/support" className="btn-link-ea btn-ghost btn-sm">
+                  Pedir ajuda
+                </Link>
+              </div>
+            </div>
+          ) : null}
+
+          {usageError ? (
+            <div className="state-ea state-ea-warning">
+              <p className="state-ea-title">Uso do período indisponível no momento</p>
+              <div className="state-ea-text">{toUserFacingError(usageError, "Atualize as métricas para tentar novamente.")}</div>
+              <div className="state-ea-actions">
+                <button onClick={loadUsage} className="btn-ea btn-secondary btn-sm">
+                  Atualizar uso
+                </button>
+              </div>
+            </div>
+          ) : null}
         </div>
       ) : null}
 
-      {usageError ? (
-        <div className="state-ea state-ea-warning">
-          <p className="state-ea-title">Uso do período indisponível no momento</p>
-          <div className="state-ea-text">{toUserFacingError(usageError, "Atualize as métricas para tentar novamente.")}</div>
-          <div className="state-ea-actions">
-            <button onClick={loadUsage} className="btn-ea btn-secondary btn-sm">
-              Atualizar uso
-            </button>
-          </div>
-        </div>
-      ) : null}
-
-      <section className="summary-grid dashboard-summary-grid dashboard-summary-surface surface-flow-summary layout-contract-region layout-contract-summary" data-reveal data-reveal-delay="60">
+      <section className="summary-grid dashboard-summary-grid dashboard-summary-surface surface-flow-summary layout-contract-region layout-contract-summary dashboard-overview-region" data-reveal data-reveal-delay="60">
         {loading ? (
           Array.from({ length: 4 }).map((_, index) => (
             <div key={`summary-skeleton-${index}`} className="executive-card layout-contract-item layout-contract-metric">
@@ -401,134 +405,141 @@ export default function DashboardPage() {
 
       <ApprovedBetaOnboardingCard email={email} wallet={wallet} loading={loading} />
 
-      <section className="dashboard-section-card dashboard-flow-section surface-flow-region dashboard-flow-section-start layout-contract-region" data-reveal data-reveal-delay="120">
-        <div className="section-head">
-          <div className="section-header-ea">
-            <h3 className="heading-reset">Transparência de consumo</h3>
-            <p className="helper-text-ea">Estimativa antes da ação e confirmação no histórico.</p>
-          </div>
-          <Link href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
-            Ver histórico completo
-          </Link>
-        </div>
-        <div className="trust-grid dashboard-section-body">
-          {CREDIT_GUIDE_ITEMS.map((item) => (
-            <div key={item.coinType} className="trust-note layout-contract-note">
-              <strong>{item.title}</strong>
-              <span>{item.description}</span>
+      <div className="dashboard-workspace-grid">
+        <div className="dashboard-workspace-main">
+          <section className="dashboard-section-card dashboard-pane-section" data-reveal data-reveal-delay="150">
+            <div className="section-head">
+              <div className="section-header-ea">
+                <h3 className="heading-reset">Projetos recentes</h3>
+                <p className="helper-text-ea">Retome uma entrega recente sem reconstruir contexto.</p>
+              </div>
+              <Link href="/projects" className="btn-link-ea btn-ghost btn-sm">Abrir página de projetos</Link>
             </div>
-          ))}
-        </div>
-        <div className="helper-text-ea">
-          Os Creators mostram estimativas antes da geração. O consumo final fica registrado no histórico de créditos.
-        </div>
-      </section>
-
-      <section className="dashboard-section-card dashboard-flow-section surface-flow-region dashboard-flow-section-middle layout-contract-region" data-reveal data-reveal-delay="150">
-        <div className="section-head">
-          <div className="section-header-ea">
-            <h3 className="heading-reset">Projetos recentes</h3>
-            <p className="helper-text-ea">Retome uma entrega recente sem reconstruir contexto.</p>
-          </div>
-          <Link href="/projects" className="btn-link-ea btn-ghost btn-sm">Abrir página de projetos</Link>
-        </div>
-        {loading ? (
-          <div className="dashboard-section-body">
-            {Array.from({ length: 3 }).map((_, index) => (
-              <div key={`project-skeleton-${index}`} className="premium-skeleton premium-skeleton-card" />
-            ))}
-          </div>
-        ) : recentProjects.length === 0 ? (
-          <div className="state-ea state-ea-spaced">
-            <p className="state-ea-title">Nenhum projeto criado ainda</p>
-            <div className="state-ea-text">
-              Gere seu primeiro conteúdo em Creators e salve em Projetos para continuar no editor.
-            </div>
-            <div className="state-ea-actions">
-              <Link href="/creators" className="btn-link-ea btn-primary btn-sm">
-                Ir para Creators
-              </Link>
-              <Link href="/editor/new" className="btn-link-ea btn-ghost btn-sm">
-                Criar projeto manual
-              </Link>
-            </div>
-          </div>
-        ) : (
-          <div className="dashboard-section-body">
-            {recentProjects.map((project: any, index: number) => {
-              const projectId = String(project.id || project.project_id || "");
-              const content = (
-                <>
-                  <div className="dashboard-project-link-main">
-                    <span className="dashboard-project-link-title">{project.name || project.title || project.id}</span>
-                    <span className="dashboard-project-link-meta">{String(project.kind || project.type || "projeto")}</span>
-                  </div>
-                  {projectId ? <span className="dashboard-project-link-cta">Abrir</span> : null}
-                </>
-              );
-              return projectId ? (
-                <Link
-                  key={projectId || JSON.stringify(project)}
-                  href={`/editor/${projectId}`}
-                  className="dashboard-project-link layout-contract-item"
-                  data-reveal
-                  data-reveal-delay={String(70 + Math.min(index, 5) * 35)}
-                >
-                  {content}
-                </Link>
-              ) : (
-                <div
-                  key={projectId || JSON.stringify(project)}
-                  className="dashboard-project-link layout-contract-item"
-                  data-reveal
-                  data-reveal-delay={String(70 + Math.min(index, 5) * 35)}
-                >
-                  {content}
+            {loading ? (
+              <div className="dashboard-section-body dashboard-projects-list">
+                {Array.from({ length: 3 }).map((_, index) => (
+                  <div key={`project-skeleton-${index}`} className="premium-skeleton premium-skeleton-card" />
+                ))}
+              </div>
+            ) : recentProjects.length === 0 ? (
+              <div className="state-ea state-ea-spaced">
+                <p className="state-ea-title">Nenhum projeto criado ainda</p>
+                <div className="state-ea-text">
+                  Gere seu primeiro conteúdo em Creators e salve em Projetos para continuar no editor.
                 </div>
-              );
-            })}
-          </div>
-        )}
-      </section>
+                <div className="state-ea-actions">
+                  <Link href="/creators" className="btn-link-ea btn-primary btn-sm">
+                    Ir para Creators
+                  </Link>
+                  <Link href="/editor/new" className="btn-link-ea btn-ghost btn-sm">
+                    Criar projeto manual
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <div className="dashboard-section-body dashboard-projects-list">
+                {recentProjects.map((project: any, index: number) => {
+                  const projectId = String(project.id || project.project_id || "");
+                  const content = (
+                    <>
+                      <div className="dashboard-project-link-main">
+                        <span className="dashboard-project-link-title">{project.name || project.title || project.id}</span>
+                        <span className="dashboard-project-link-meta">{String(project.kind || project.type || "projeto")}</span>
+                      </div>
+                      {projectId ? <span className="dashboard-project-link-cta">Abrir</span> : null}
+                    </>
+                  );
+                  return projectId ? (
+                    <Link
+                      key={projectId || JSON.stringify(project)}
+                      href={`/editor/${projectId}`}
+                      className="dashboard-project-link layout-contract-item"
+                      data-reveal
+                      data-reveal-delay={String(70 + Math.min(index, 5) * 35)}
+                    >
+                      {content}
+                    </Link>
+                  ) : (
+                    <div
+                      key={projectId || JSON.stringify(project)}
+                      className="dashboard-project-link layout-contract-item"
+                      data-reveal
+                      data-reveal-delay={String(70 + Math.min(index, 5) * 35)}
+                    >
+                      {content}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </section>
 
-      <section className="dashboard-section-card dashboard-flow-section surface-flow-region dashboard-flow-section-middle layout-contract-region" data-reveal data-reveal-delay="180">
-        <div className="section-header-ea">
-          <h3 className="heading-reset">Núcleo do beta pago/controlado</h3>
-          <p className="helper-text-ea">Atalhos para o que precisa carregar valor, retenção e continuidade real no uso recorrente.</p>
+          <section className="dashboard-section-card dashboard-pane-section" data-reveal data-reveal-delay="180">
+            <div className="section-header-ea">
+              <h3 className="heading-reset">Núcleo do beta pago/controlado</h3>
+              <p className="helper-text-ea">Atalhos para o que precisa carregar valor, retenção e continuidade real no uso recorrente.</p>
+            </div>
+            <div className="dashboard-quick-links-stack">
+              <div className="section-stack-tight">
+                <p className="section-kicker">Centro da experiência</p>
+                <div className="dashboard-quick-links-grid dashboard-core-links-grid">
+                  {coreQuickLinks.map((item, index) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="dashboard-quick-link layout-contract-item"
+                      data-reveal
+                      data-reveal-delay={String(70 + index * 40)}
+                    >
+                      <div className="dashboard-quick-link-kicker">{item.tag}</div>
+                      <div className="dashboard-project-link-title">{item.title}</div>
+                      <div className="dashboard-quick-link-copy helper-text-ea">{item.description}</div>
+                      <div className="dashboard-quick-link-footer">
+                        <span className="dashboard-quick-link-cta">{item.cta}</span>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
-        <div className="dashboard-quick-links-stack">
-          <div className="section-stack-tight">
-            <p className="section-kicker">Centro da experiência</p>
-            <div className="dashboard-quick-links-grid">
-              {coreQuickLinks.map((item, index) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="dashboard-quick-link layout-contract-item"
-                  data-reveal
-                  data-reveal-delay={String(70 + index * 40)}
-                >
-                  <div className="dashboard-quick-link-kicker">{item.tag}</div>
-                  <div className="dashboard-project-link-title">{item.title}</div>
-                  <div className="dashboard-quick-link-copy helper-text-ea">{item.description}</div>
-                  <div className="dashboard-quick-link-footer">
-                    <span className="dashboard-quick-link-cta">{item.cta}</span>
-                  </div>
-                </Link>
+
+        <aside className="dashboard-workspace-rail">
+          <section className="dashboard-section-card dashboard-pane-section dashboard-pane-section-quiet" data-reveal data-reveal-delay="120">
+            <div className="section-head">
+              <div className="section-header-ea">
+                <h3 className="heading-reset">Transparência de consumo</h3>
+                <p className="helper-text-ea">Estimativa antes da ação e confirmação no histórico.</p>
+              </div>
+              <Link href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
+                Ver histórico completo
+              </Link>
+            </div>
+            <div className="dashboard-context-list">
+              {CREDIT_GUIDE_ITEMS.map((item) => (
+                <div key={item.coinType} className="trust-note layout-contract-note">
+                  <strong>{item.title}</strong>
+                  <span>{item.description}</span>
+                </div>
               ))}
             </div>
-          </div>
-          <div className="section-stack-tight dashboard-quick-links-secondary">
-            <p className="section-kicker">Camadas operacionais</p>
-            <p className="helper-text-ea">
-              Financeiro, suporte e leitura do beta continuam acessíveis, mas como apoio ao núcleo criativo e editorial.
-            </p>
-            <div className="dashboard-quick-links-grid">
+            <div className="helper-text-ea">
+              Os Creators mostram estimativas antes da geração. O consumo final fica registrado no histórico de créditos.
+            </div>
+          </section>
+
+          <section className="dashboard-section-card dashboard-pane-section dashboard-pane-section-quiet" data-reveal data-reveal-delay="195">
+            <div className="section-header-ea">
+              <h3 className="heading-reset">Camadas operacionais</h3>
+              <p className="helper-text-ea">Financeiro, suporte e leitura do beta seguem acessíveis como apoio ao núcleo criativo e editorial.</p>
+            </div>
+            <div className="dashboard-support-links-list">
               {supportQuickLinks.map((item, index) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="dashboard-quick-link layout-contract-item"
+                  className="dashboard-quick-link dashboard-quick-link-quiet layout-contract-item"
                   data-reveal
                   data-reveal-delay={String(90 + index * 35)}
                 >
@@ -541,58 +552,58 @@ export default function DashboardPage() {
                 </Link>
               ))}
             </div>
-          </div>
-        </div>
-      </section>
+          </section>
 
-      <section className="dashboard-section-card dashboard-flow-section surface-flow-region dashboard-flow-section-end layout-contract-region" data-reveal data-reveal-delay="210">
-        <div className="section-header-ea">
-          <h3 className="heading-reset">Uso por feature</h3>
-          <p className="helper-text-ea">Consumo por módulo para ajustar ritmo, plano e próxima ação.</p>
-        </div>
-        {loading || usageLoading ? (
-          <div className="dashboard-section-body">
-            {Array.from({ length: 3 }).map((_, index) => (
-              <div key={`usage-skeleton-${index}`} className="dashboard-progress-card layout-contract-item">
-                <div className="premium-skeleton premium-skeleton-line" style={{ width: "45%" }} />
-                <div className="premium-skeleton premium-skeleton-line" style={{ width: "75%", marginTop: 9 }} />
+          <section className="dashboard-section-card dashboard-pane-section dashboard-pane-section-quiet" data-reveal data-reveal-delay="210">
+            <div className="section-header-ea">
+              <h3 className="heading-reset">Uso por feature</h3>
+              <p className="helper-text-ea">Consumo por módulo para ajustar ritmo, plano e próxima ação.</p>
+            </div>
+            {loading || usageLoading ? (
+              <div className="dashboard-section-body dashboard-usage-list">
+                {Array.from({ length: 3 }).map((_, index) => (
+                  <div key={`usage-skeleton-${index}`} className="dashboard-progress-card layout-contract-item">
+                    <div className="premium-skeleton premium-skeleton-line" style={{ width: "45%" }} />
+                    <div className="premium-skeleton premium-skeleton-line" style={{ width: "75%", marginTop: 9 }} />
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        ) : usageItems.length === 0 ? (
-          <div className="state-ea">
-            <p className="state-ea-title">Sem uso registrado neste mês</p>
-            <div className="state-ea-text">
-              Assim que você gerar conteúdo em algum Creator, o consumo aparece aqui e no histórico de créditos.
-            </div>
-            <div className="state-ea-actions">
-              <Link href="/creators" className="btn-link-ea btn-primary btn-sm">
-                Gerar agora
-              </Link>
-              <Link href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
-                Ver histórico
-              </Link>
-            </div>
-          </div>
-        ) : (
-          <div className="dashboard-section-body">
-            {usageItems.map((item) => {
-              const progress = usageProgress(item);
-              return (
-                <div key={item.feature} className="dashboard-progress-card layout-contract-item">
-                  <div className="dashboard-progress-row">
-                    <span>{item.feature}</span>
-                    <strong>{item.used}/{item.limit}</strong>
-                  </div>
-                  <div className="dashboard-progress-track">
-                    <div className="dashboard-progress-bar" style={{ width: `${progress}%` }} />
-                  </div>
+            ) : usageItems.length === 0 ? (
+              <div className="state-ea">
+                <p className="state-ea-title">Sem uso registrado neste mês</p>
+                <div className="state-ea-text">
+                  Assim que você gerar conteúdo em algum Creator, o consumo aparece aqui e no histórico de créditos.
                 </div>
-              );
-            })}
-          </div>
-        )}
-      </section>
+                <div className="state-ea-actions">
+                  <Link href="/creators" className="btn-link-ea btn-primary btn-sm">
+                    Gerar agora
+                  </Link>
+                  <Link href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
+                    Ver histórico
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <div className="dashboard-section-body dashboard-usage-list">
+                {usageItems.map((item) => {
+                  const progress = usageProgress(item);
+                  return (
+                    <div key={item.feature} className="dashboard-progress-card layout-contract-item">
+                      <div className="dashboard-progress-row">
+                        <span>{item.feature}</span>
+                        <strong>{item.used}/{item.limit}</strong>
+                      </div>
+                      <div className="dashboard-progress-track">
+                        <div className="dashboard-progress-bar" style={{ width: `${progress}%` }} />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </section>
+        </aside>
+      </div>
       </div>
     </div>
   );
