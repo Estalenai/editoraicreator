@@ -77,6 +77,7 @@ export default function SupportPage() {
 
   return (
     <div className="page-shell support-page">
+      <div className="support-page-canvas">
       <section className="premium-hero support-hero surface-flow-hero">
         <div className="hero-split support-hero-split">
           <div className="hero-copy">
@@ -192,6 +193,7 @@ export default function SupportPage() {
       </section>
 
       <SupportAssistantCard />
+      </div>
     </div>
   );
 }

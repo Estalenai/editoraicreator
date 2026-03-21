@@ -230,6 +230,7 @@ export default function DashboardPage() {
 
   return (
     <div className="page-shell dashboard-page">
+      <div className="dashboard-page-canvas">
       <section className="premium-hero dashboard-hero surface-flow-hero" data-reveal>
         <div className="hero-split">
           <div className="hero-copy">
@@ -592,6 +593,7 @@ export default function DashboardPage() {
           </div>
         )}
       </section>
+      </div>
     </div>
   );
 }

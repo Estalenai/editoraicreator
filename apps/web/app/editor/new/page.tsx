@@ -73,6 +73,7 @@ export default function NewEditorProjectPage() {
 
   return (
     <div className="page-shell editor-new-page">
+      <div className="editor-new-page-canvas">
       <section className="premium-hero editor-new-hero surface-flow-hero">
         <div className="hero-split editor-new-hero-grid">
           <div className="hero-copy">
@@ -208,6 +209,7 @@ export default function NewEditorProjectPage() {
         </div>
         <a href="/dashboard" className="btn-link-ea btn-ghost btn-sm">Voltar ao dashboard</a>
       </section>
+      </div>
     </div>
   );
 }

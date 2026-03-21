@@ -391,7 +391,7 @@ export function CreatorAdsCard({ walletCommon, onRefetch }: Props) {
 
   return (
     <div
-      className="premium-card creator-workspace-card creator-workspace-card-modular"
+      className="creator-workspace-card creator-workspace-card-modular"
     >
       <div className="creator-workspace-header">
         <div className="hero-title-stack section-stack-tight">
@@ -599,7 +599,7 @@ export function CreatorAdsCard({ walletCommon, onRefetch }: Props) {
       ) : null}
 
       {loadingApply && (
-        <div className="premium-card-soft creator-loading-panel">
+        <div className="creator-loading-panel layout-contract-note">
           <div className="helper-note-inline">EditexAI está refinando a peça de anúncio...</div>
           <div className="premium-skeleton premium-skeleton-line" style={{ width: "41%" }} />
           <div className="premium-skeleton premium-skeleton-line" style={{ width: "82%" }} />

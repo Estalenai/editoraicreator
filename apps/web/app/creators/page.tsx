@@ -290,6 +290,7 @@ function CreatorsPageContent() {
 
   return (
     <div className="page-shell creators-page">
+      <div className="creators-page-canvas">
       <section className="premium-hero creators-hero surface-flow-hero" data-reveal>
         <div className="hero-split creators-hero-split">
           <div className="hero-copy creators-hero-copy">
@@ -667,6 +668,7 @@ function CreatorsPageContent() {
           )}
         </div>
       </section>
+      </div>
     </div>
   );
 }

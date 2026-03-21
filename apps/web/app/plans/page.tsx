@@ -520,6 +520,7 @@ function PlansPageContent() {
 
   return (
     <div className="page-shell plans-page">
+      <div className="plans-page-canvas">
       <section className="premium-hero plans-hero surface-flow-hero">
         <div className="hero-split">
           <div className="hero-copy">
@@ -874,6 +875,7 @@ function PlansPageContent() {
           </div>
         )}
       </section>
+      </div>
     </div>
   );
 }
