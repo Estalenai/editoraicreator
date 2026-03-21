@@ -507,180 +507,147 @@ export default function CreditsPage() {
 
   return (
     <div className="page-shell credits-page">
-      <section className="premium-hero credits-hero surface-flow-hero">
-        <div className="hero-split">
-          <div className="hero-copy">
-            <div className="hero-title-stack">
-              <p className="section-kicker">Transparência de consumo</p>
-              <h1 className="heading-reset">Créditos</h1>
-              <p className="section-header-copy hero-copy-compact">
-                Créditos é a camada operacional do beta pago/controlado: saldo, compra avulsa, conversão e histórico ficam claros sem competir com o núcleo criativo do produto.
-              </p>
-            </div>
-            <div className="hero-meta-row hero-meta-row-compact">
-              <span className="premium-badge premium-badge-phase">Plano: {planLabelDisplay}</span>
-              <span className="premium-badge premium-badge-warning">Histórico confirma o consumo real</span>
-            </div>
-            <div className="signal-strip credits-hero-signal-strip">
-              <div className="signal-chip signal-chip-sober">
-                <strong>Saldo por tipo</strong>
-                <span>Comum, Pro e Ultra permanecem visíveis no mesmo painel.</span>
+      <div className="credits-page-canvas">
+        <section className="premium-hero credits-hero surface-flow-hero credits-page-hero-region">
+          <div className="hero-split">
+            <div className="hero-copy">
+              <div className="hero-title-stack">
+                <p className="section-kicker">Transparência de consumo</p>
+                <h1 className="heading-reset">Créditos</h1>
+                <p className="section-header-copy hero-copy-compact">
+                  Créditos é a camada operacional do beta pago/controlado: saldo, compra avulsa, conversão e histórico ficam claros sem competir com o núcleo criativo do produto.
+                </p>
               </div>
-              <div className="signal-chip signal-chip-sober">
-                <strong>Conversão previsível</strong>
-                <span>Débito, taxa e destino aparecem antes da confirmação.</span>
+              <div className="hero-meta-row hero-meta-row-compact">
+                <span className="premium-badge premium-badge-phase">Plano: {planLabelDisplay}</span>
+                <span className="premium-badge premium-badge-warning">Histórico confirma o consumo real</span>
               </div>
-              <div className="signal-chip signal-chip-sober">
-                <strong>Histórico auditável</strong>
-                <span>Compras, conversões e consumo entram no registro final.</span>
+              <div className="signal-strip credits-hero-signal-strip">
+                <div className="signal-chip signal-chip-sober">
+                  <strong>Saldo por tipo</strong>
+                  <span>Comum, Pro e Ultra permanecem visíveis no mesmo plano de leitura.</span>
+                </div>
+                <div className="signal-chip signal-chip-sober">
+                  <strong>Conversão previsível</strong>
+                  <span>Débito, taxa e destino aparecem antes da confirmação.</span>
+                </div>
+                <div className="signal-chip signal-chip-sober">
+                  <strong>Histórico auditável</strong>
+                  <span>Compras, conversões e consumo entram no registro final.</span>
+                </div>
+              </div>
+            </div>
+            <div className="hero-side-panel credits-hero-panel">
+              <span className="plan-card-section-label">Segurança e controle</span>
+              <div className="hero-side-list hero-side-list-compact">
+                <div className="hero-side-note">
+                  <strong>Apoio ao núcleo do produto</strong>
+                  <span>Use esta área para sustentar creators, editor e projetos com leitura rápida de saldo e consumo.</span>
+                </div>
+                <div className="hero-side-note">
+                  <strong>Checkout via Stripe</strong>
+                  <span>Compras avulsas seguem por Stripe e retornam a Créditos com confirmação operacional do saldo e do histórico.</span>
+                </div>
+                <div className="hero-side-note hero-side-note-trust">
+                  <strong>Histórico persistido</strong>
+                  <span>Saldo, movimentos e continuidade da conta ficam persistidos para auditoria operacional e retomada segura.</span>
+                </div>
+              </div>
+              <div className="hero-actions-row">
+                <button
+                  onClick={async () => {
+                    await refresh();
+                    await loadTransactions();
+                  }}
+                  className="btn-ea btn-secondary"
+                >
+                  Atualizar saldos e histórico
+                </button>
               </div>
             </div>
           </div>
-          <div className="hero-side-panel credits-hero-panel">
-            <span className="plan-card-section-label">Segurança e controle</span>
-            <div className="hero-side-list hero-side-list-compact">
-              <div className="hero-side-note">
-                <strong>Apoio ao núcleo do produto</strong>
-                <span>Use esta área para sustentar creators, editor e projetos com leitura rápida de saldo e consumo.</span>
-              </div>
-              <div className="hero-side-note">
-                <strong>Checkout via Stripe</strong>
-                <span>Compras avulsas seguem por Stripe e retornam a Créditos com confirmação operacional do saldo e do histórico.</span>
-              </div>
-              <div className="hero-side-note hero-side-note-trust">
-                <strong>Histórico persistido</strong>
-                <span>Saldo, movimentos e continuidade da conta ficam persistidos para auditoria operacional e retomada segura.</span>
-              </div>
+          <div className="hero-kpi-grid hero-kpi-grid-compact">
+            <div className="hero-kpi">
+              <span className="hero-kpi-label">Saldo total</span>
+              <strong className="hero-kpi-value">{totalWalletDisplay}</strong>
+              <span className="helper-text-ea">{walletSummaryDisplay}</span>
             </div>
-            <div className="hero-actions-row">
-              <button
-                onClick={async () => {
-                  await refresh();
-                  await loadTransactions();
-                }}
-                className="btn-ea btn-secondary"
-              >
-                Atualizar saldos e histórico
-              </button>
+            <div className="hero-kpi">
+              <span className="hero-kpi-label">Taxa no plano atual</span>
+              <strong className="hero-kpi-value">{conversionFeeDisplay}</strong>
+              <span className="helper-text-ea">{conversionFeeHelper}</span>
+            </div>
+            <div className="hero-kpi">
+              <span className="hero-kpi-label">Última movimentação</span>
+              <strong className="hero-kpi-value">{latestTransactionCountDisplay}</strong>
+              <span className="helper-text-ea">{latestTransactionDisplay}</span>
             </div>
           </div>
-        </div>
-        <div className="hero-kpi-grid hero-kpi-grid-compact">
-          <div className="hero-kpi">
-            <span className="hero-kpi-label">Saldo total</span>
-            <strong className="hero-kpi-value">{totalWalletDisplay}</strong>
-            <span className="helper-text-ea">{walletSummaryDisplay}</span>
-          </div>
-          <div className="hero-kpi">
-            <span className="hero-kpi-label">Taxa no plano atual</span>
-            <strong className="hero-kpi-value">{conversionFeeDisplay}</strong>
-            <span className="helper-text-ea">{conversionFeeHelper}</span>
-          </div>
-          <div className="hero-kpi">
-            <span className="hero-kpi-label">Última movimentação</span>
-            <strong className="hero-kpi-value">{latestTransactionCountDisplay}</strong>
-            <span className="helper-text-ea">{latestTransactionDisplay}</span>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      {checkoutNotice ? (
-        <div className={`state-ea state-ea-spaced ${checkoutNotice.tone === "success" ? "state-ea-success" : checkoutNotice.tone === "warning" ? "state-ea-warning" : ""}`}>
-          <p className="state-ea-title">
-            {checkoutNotice.tone === "success"
-              ? "Compra confirmada na Stripe"
-              : checkoutNotice.tone === "warning"
-                ? "Atenção no retorno do checkout"
-                : "Sincronizando retorno do checkout"}
-          </p>
-          <div className="state-ea-text">{checkoutNotice.message}</div>
-          <div className="state-ea-actions">
-            <button
-              onClick={async () => {
-                await refresh();
-                await loadTransactions();
-              }}
-              disabled={loading || txLoading}
-              className="btn-ea btn-secondary btn-sm"
-            >
-              {loading || txLoading ? "Atualizando..." : "Atualizar saldo e histórico"}
-            </button>
-            <Link href="#credits-history" className="btn-link-ea btn-ghost btn-sm">
-              Ver histórico
-            </Link>
-          </div>
-        </div>
-      ) : null}
-
-      <section className="credits-guide-section surface-flow-region surface-flow-region-start layout-contract-region">
-        <div className="section-header-ea">
-          <h3 className="heading-reset">Como ler seus créditos</h3>
-          <p className="helper-text-ea">Saldo, estimativa e histórico em três sinais fáceis de ler.</p>
-        </div>
-        <div className="credits-guide-grid">
-          {CREDIT_GUIDE.map((item) => (
-            <div key={item.coinType} className="credits-guide-card layout-contract-item">
-              <div className="dashboard-project-link-title">{item.title}</div>
-              <div className="helper-text-ea">{item.description}</div>
-            </div>
-          ))}
-        </div>
-        <div className="credits-guide-notes">
-          <div className="credits-guide-note layout-contract-note">
-            <strong>Estimativa nos Creators:</strong> mostra uma prévia antes de consumir saldo real.
-          </div>
-          <div className="credits-guide-note layout-contract-note">
-            <strong>Histórico de créditos:</strong> confirma consumo, compra e conversão depois do processamento.
-          </div>
-        </div>
-      </section>
-
-      <section className="credits-summary-grid surface-flow-summary surface-flow-region surface-flow-region-middle layout-contract-region layout-contract-summary">
-        <div className="credits-summary-card credits-summary-card-primary layout-contract-item layout-contract-metric">
-          <p className="executive-eyebrow">Saldo por tipo</p>
-          <p className="executive-value metric-value-compact">{walletSummaryDisplay}</p>
-          <div className="credits-balance-list">
-            {CREDIT_GUIDE.map((item) => (
-              <div key={item.coinType} className="credits-balance-row">
-                <span>{item.title} • {item.description}</span>
-                <strong>{loading ? "…" : Number(wallet?.[item.coinType] ?? 0)}</strong>
+        <div className="credits-page-layout">
+          <section className="credits-main-region" aria-label="Operação principal de créditos">
+            <section className="credits-main-section credits-summary-region">
+              <div className="section-header-ea credits-region-heading">
+                <h3 className="heading-reset">Saldo, compra e conversão na mesma trilha</h3>
+                <p className="helper-text-ea">A região principal concentra o que altera o saldo e o que confirma o consumo real, sem virar uma pilha de painéis independentes.</p>
               </div>
-            ))}
-          </div>
-        </div>
-        <div className="credits-summary-card credits-summary-card-action layout-contract-item layout-contract-metric">
-          <p className="executive-eyebrow">Conversão no plano atual</p>
-          <p className="executive-value">{conversionFeeDisplay}</p>
-          <p className="executive-detail">
-            {loading
-              ? "Sincronizando regras de conversão do seu plano e saldo disponível."
-              : conversionEnabled
-                ? conversionFeePercent === 0
-                  ? "Taxa zero na conversão entre tipos: todo o crédito líquido permanece com você."
-                  : "A taxa é aplicada sobre a origem. Planos maiores preservam mais crédito líquido."
-                : "Seu plano atual ainda não habilita conversão entre tipos de crédito."}
-          </p>
-        </div>
-        <div className="credits-summary-card layout-contract-item layout-contract-metric">
-          <p className="executive-eyebrow">Última movimentação</p>
-          <p className="executive-value metric-value-compact">{latestTransactionCountDisplay}</p>
-          <p className="executive-detail">{latestTransactionDisplay}</p>
-        </div>
-        <div className="credits-summary-card layout-contract-item layout-contract-metric">
-          <p className="executive-eyebrow">Estimativa x consumo real</p>
-          <p className="executive-value metric-value-compact">Clareza total</p>
-          <p className="executive-detail">
-            Creators estimam antes da geração; o histórico confirma o movimento final.
-          </p>
-        </div>
-      </section>
+              <div className="credits-summary-grid">
+                <div className="credits-summary-card credits-summary-card-primary">
+                  <p className="executive-eyebrow">Saldo por tipo</p>
+                  <p className="executive-value metric-value-compact">{walletSummaryDisplay}</p>
+                  <div className="credits-balance-list">
+                    {CREDIT_GUIDE.map((item) => (
+                      <div key={item.coinType} className="credits-balance-row">
+                        <span>{item.title} • {item.description}</span>
+                        <strong>{loading ? "…" : Number(wallet?.[item.coinType] ?? 0)}</strong>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="credits-summary-card credits-summary-card-action">
+                  <p className="executive-eyebrow">Conversão no plano atual</p>
+                  <p className="executive-value">{conversionFeeDisplay}</p>
+                  <p className="executive-detail">
+                    {loading
+                      ? "Sincronizando regras de conversão do seu plano e saldo disponível."
+                      : conversionEnabled
+                        ? conversionFeePercent === 0
+                          ? "Taxa zero na conversão entre tipos: todo o crédito líquido permanece com você."
+                          : "A taxa é aplicada sobre a origem. Planos maiores preservam mais crédito líquido."
+                        : "Seu plano atual ainda não habilita conversão entre tipos de crédito."}
+                  </p>
+                </div>
+                <div className="credits-summary-card">
+                  <p className="executive-eyebrow">Última movimentação</p>
+                  <p className="executive-value metric-value-compact">{latestTransactionCountDisplay}</p>
+                  <p className="executive-detail">{latestTransactionDisplay}</p>
+                </div>
+                <div className="credits-summary-card">
+                  <p className="executive-eyebrow">Estimativa x consumo real</p>
+                  <p className="executive-value metric-value-compact">Clareza total</p>
+                  <p className="executive-detail">
+                    Creators estimam antes da geração; o histórico confirma o movimento final.
+                  </p>
+                </div>
+              </div>
+            </section>
 
-      <section id="credits-packages" className="credits-packages-section surface-flow-region surface-flow-region-middle layout-contract-region">
-        <CreditsPackagesCard wallet={wallet} loading={loading} latestTransactionId={latestTransaction?.id || null} />
-      </section>
+            <section id="credits-packages" className="credits-packages-section credits-main-section">
+              <div className="section-head credits-region-head">
+                <div className="section-header-ea">
+                  <h3 className="heading-reset">Compra avulsa</h3>
+                  <p className="helper-text-ea">Abra uma cotação segura e monte o mix sem transformar a compra em um painel concorrente do saldo.</p>
+                </div>
+                <Link href="#credits-history" className="btn-link-ea btn-ghost btn-sm">
+                  Ver histórico
+                </Link>
+              </div>
+              <CreditsPackagesCard wallet={wallet} loading={loading} latestTransactionId={latestTransaction?.id || null} />
+            </section>
 
-      <section className="credits-section-card surface-flow-region surface-flow-region-middle layout-contract-region">
-        <div className="section-head">
+      <section className="credits-section-card credits-main-section credits-conversion-region">
+        <div className="section-head credits-region-head">
           <div className="section-header-ea">
             <h3 className="heading-reset">Conversão de créditos</h3>
             <p className="helper-text-ea">Veja débito, taxa, crédito recebido e saldo estimado antes de confirmar.</p>
@@ -712,11 +679,11 @@ export default function CreditsPage() {
         ) : (
           <>
             <div className="trust-grid credits-conversion-notes">
-              <div className="trust-note layout-contract-note">
+              <div className="trust-note">
                 <strong>Origem e destino claros</strong>
                 <span>Escolha qualquer combinação válida entre Comum, Pro e Ultra, exceto origem = destino.</span>
               </div>
-              <div className="trust-note layout-contract-note">
+              <div className="trust-note">
                 <strong>Débito previsível</strong>
                 <span>Taxa, total debitado e saldo estimado aparecem antes da confirmação.</span>
               </div>
@@ -782,23 +749,23 @@ export default function CreditsPage() {
               Escolha pares válidos entre Comum, Pro e Ultra. A taxa é aplicada na origem e o histórico confirma o resultado final.
             </div>
             <div className="conversion-metrics-grid credits-conversion-metrics">
-              <div className="conversion-metric-card layout-contract-item">
+              <div className="conversion-metric-card">
                 <span className="helper-text-ea">Saldo disponível em {coinTypeLabel(conversionFrom)}</span>
                 <strong>{sourceBalance}</strong>
               </div>
-              <div className="conversion-metric-card layout-contract-item">
+              <div className="conversion-metric-card">
                 <span className="helper-text-ea">Total debitado ({coinTypeLabel(conversionFrom)})</span>
                 <strong>{estimatedDebitedAmount}</strong>
               </div>
-              <div className="conversion-metric-card layout-contract-item">
+              <div className="conversion-metric-card">
                 <span className="helper-text-ea">Crédito recebido ({coinTypeLabel(conversionTo)})</span>
                 <strong>{estimatedTargetAmount}</strong>
               </div>
-              <div className="conversion-metric-card layout-contract-item">
+              <div className="conversion-metric-card">
                 <span className="helper-text-ea">Taxa aplicada</span>
                 <strong>{estimatedFeeAmount}</strong>
               </div>
-              <div className="conversion-metric-card layout-contract-item">
+              <div className="conversion-metric-card">
                 <span className="helper-text-ea">Saldo final estimado ({coinTypeLabel(conversionTo)})</span>
                 <strong>{Number(wallet?.[conversionTo] ?? 0) + estimatedTargetAmount}</strong>
               </div>
@@ -847,34 +814,82 @@ export default function CreditsPage() {
         ) : null}
       </section>
 
-      {loading ? (
-        <div className="section-card layout-contract-card">
-          <div className="premium-skeleton premium-skeleton-line" style={{ width: "36%" }} />
-          <div className="premium-skeleton premium-skeleton-line" style={{ width: "72%" }} />
-          <div className="premium-skeleton premium-skeleton-card" />
-        </div>
-      ) : null}
+        </section>
 
-      {error ? (
-        <div className="state-ea state-ea-error">
-          <p className="state-ea-title">Não foi possível carregar saldo, histórico e regras de crédito</p>
-          <div className="state-ea-text">{toUserFacingError(error, "Atualize os dados e tente novamente.")}</div>
-          <div className="state-ea-actions">
-            <button
-              onClick={async () => {
-                await refresh();
-                await loadTransactions();
-              }}
-              className="btn-ea btn-secondary btn-sm"
-            >
-              Atualizar agora
-            </button>
-          </div>
-        </div>
-      ) : null}
+        <aside className="credits-support-rail" aria-label="Apoio contextual de créditos">
+          {checkoutNotice ? (
+            <div className={`state-ea state-ea-spaced credits-support-state ${checkoutNotice.tone === "success" ? "state-ea-success" : checkoutNotice.tone === "warning" ? "state-ea-warning" : ""}`}>
+              <p className="state-ea-title">
+                {checkoutNotice.tone === "success"
+                  ? "Compra confirmada na Stripe"
+                  : checkoutNotice.tone === "warning"
+                    ? "Atenção no retorno do checkout"
+                    : "Sincronizando retorno do checkout"}
+              </p>
+              <div className="state-ea-text">{checkoutNotice.message}</div>
+              <div className="state-ea-actions">
+                <button
+                  onClick={async () => {
+                    await refresh();
+                    await loadTransactions();
+                  }}
+                  disabled={loading || txLoading}
+                  className="btn-ea btn-secondary btn-sm"
+                >
+                  {loading || txLoading ? "Atualizando..." : "Atualizar saldo e histórico"}
+                </button>
+                <Link href="#credits-history" className="btn-link-ea btn-ghost btn-sm">
+                  Ver histórico
+                </Link>
+              </div>
+            </div>
+          ) : null}
 
-      <section id="credits-history" className="credits-section-card surface-flow-region surface-flow-region-end layout-contract-region">
-        <div className="section-head">
+          <section className="credits-guide-section credits-support-section">
+            <div className="section-header-ea">
+              <h3 className="heading-reset">Leitura rápida</h3>
+              <p className="helper-text-ea">Apoio secundário para interpretar saldo, estimativa e histórico sem competir com a operação central.</p>
+            </div>
+            <div className="credits-guide-grid">
+              {CREDIT_GUIDE.map((item) => (
+                <div key={item.coinType} className="credits-guide-card">
+                  <div className="dashboard-project-link-title">{item.title}</div>
+                  <div className="helper-text-ea">{item.description}</div>
+                </div>
+              ))}
+            </div>
+            <div className="credits-guide-notes">
+              <div className="credits-guide-note">
+                <strong>Estimativa nos Creators:</strong> mostra uma prévia antes de consumir saldo real.
+              </div>
+              <div className="credits-guide-note">
+                <strong>Histórico de créditos:</strong> confirma consumo, compra e conversão depois do processamento.
+              </div>
+            </div>
+          </section>
+
+          {error ? (
+            <div className="state-ea state-ea-error credits-support-state">
+              <p className="state-ea-title">Não foi possível carregar saldo, histórico e regras de crédito</p>
+              <div className="state-ea-text">{toUserFacingError(error, "Atualize os dados e tente novamente.")}</div>
+              <div className="state-ea-actions">
+                <button
+                  onClick={async () => {
+                    await refresh();
+                    await loadTransactions();
+                  }}
+                  className="btn-ea btn-secondary btn-sm"
+                >
+                  Atualizar agora
+                </button>
+              </div>
+            </div>
+          ) : null}
+        </aside>
+      </div>
+
+      <section id="credits-history" className="credits-section-card credits-history-region">
+        <div className="section-head credits-region-head">
           <div className="section-header-ea">
             <h3 className="heading-reset">Histórico recente de créditos</h3>
             <p className="helper-text-ea">Fonte de verdade para consumo real, compras aprovadas e conversões processadas.</p>
@@ -927,7 +942,7 @@ export default function CreditsPage() {
               return (
                 <div
                   key={tx.id}
-                  className="credits-history-item layout-contract-item"
+                  className="credits-history-item"
                 >
                   <div className="credits-history-head">
                     <div className="credits-history-main">
@@ -947,6 +962,7 @@ export default function CreditsPage() {
           </div>
         )}
       </section>
+      </div>
     </div>
   );
 }

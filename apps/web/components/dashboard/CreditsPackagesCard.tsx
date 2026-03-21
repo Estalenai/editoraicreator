@@ -725,65 +725,71 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
 
   return (
     <>
-      <div className="premium-card credits-purchase-card">
-        <div className="hero-title-stack credits-purchase-intro">
-          <p className="section-kicker">Compra avulsa</p>
-          <h3 className="heading-reset">Créditos avulsos</h3>
-          <div className="meta-text-ea">Saldo atual: {walletSummary}</div>
-        </div>
-        {walletUpdatedAt !== "—" ? (
-          <div className="helper-text-ea">
-            Última atualização do saldo: {walletUpdatedAt}
+      <div className="credits-purchase-card">
+        <div className="credits-purchase-head">
+          <div className="hero-title-stack credits-purchase-intro">
+            <p className="section-kicker">Compra avulsa</p>
+            <h3 className="heading-reset">Créditos avulsos</h3>
+            <div className="meta-text-ea">Saldo atual: {walletSummary}</div>
           </div>
-        ) : null}
-        <p className="section-header-copy">
-          {loading
-            ? "Saldo e regras de compra estão sendo sincronizados antes da cotação."
-            : "Escolha um pacote pronto ou monte um total livre com a mistura de créditos que fizer sentido."}
-        </p>
+          {walletUpdatedAt !== "—" ? (
+            <div className="helper-text-ea">
+              Última atualização do saldo: {walletUpdatedAt}
+            </div>
+          ) : null}
+          <p className="section-header-copy">
+            {loading
+              ? "Saldo e regras de compra estão sendo sincronizados antes da cotação."
+              : "Escolha um pacote pronto ou monte um total livre com a mistura de créditos que fizer sentido."}
+          </p>
+        </div>
         <div className="trust-grid credits-purchase-notes">
-          <div className="premium-card-soft trust-note">
+          <div className="trust-note credits-purchase-note">
             <strong>Cotação clara</strong>
             <span>Subtotal, taxa e total aparecem antes de sair para o pagamento.</span>
           </div>
-          <div className="premium-card-soft trust-note trust-note-privacy">
+          <div className="trust-note credits-purchase-note trust-note-privacy">
             <strong>Pagamento via Stripe</strong>
             <span>O checkout abre em Stripe e retorna a Créditos para confirmar saldo e histórico do pacote.</span>
           </div>
-          <div className="premium-card-soft trust-note">
+          <div className="trust-note credits-purchase-note">
             <strong>Mix configurável</strong>
             <span>Distribua o total entre Comum, Pro e Ultra antes de abrir a Stripe.</span>
           </div>
         </div>
-        <div className="helper-note-inline credits-purchase-checkout-note">
-          {loading
-            ? "Aguarde a sincronização do saldo para abrir uma cotação segura."
-            : "Pagamento seguro via Stripe com retorno a Créditos para confirmar saldo e histórico."}
-        </div>
-        <a href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm state-ea-spaced">
-          Ver histórico de consumo
-        </a>
         <div className="credits-coin-grid">
           {PACKAGE_COIN_ORDER.map((coinType) => (
             <div
               key={coinType}
-              className={`premium-card-soft credits-coin-card credits-coin-card-${coinType}`}
+              className={`credits-coin-card credits-coin-card-${coinType}`}
             >
               <strong>{PACKAGE_COIN_INFO[coinType].title}</strong>
               <div className="helper-text-ea">{PACKAGE_COIN_INFO[coinType].description}</div>
             </div>
           ))}
         </div>
-        <button
-          onClick={() => {
-            setPackageError(null);
-            setCoinsPanelOpen(true);
-          }}
-          disabled={loading}
-          className="btn-ea btn-primary credits-purchase-cta"
-        >
-          {loading ? "Sincronizando saldo..." : "Comprar créditos avulsos"}
-        </button>
+        <div className="credits-purchase-actions">
+          <div className="helper-note-inline credits-purchase-checkout-note">
+            {loading
+              ? "Aguarde a sincronização do saldo para abrir uma cotação segura."
+              : "Pagamento seguro via Stripe com retorno a Créditos para confirmar saldo e histórico."}
+          </div>
+          <div className="credits-purchase-action-row">
+            <a href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
+              Ver histórico de consumo
+            </a>
+            <button
+              onClick={() => {
+                setPackageError(null);
+                setCoinsPanelOpen(true);
+              }}
+              disabled={loading}
+              className="btn-ea btn-primary credits-purchase-cta"
+            >
+              {loading ? "Sincronizando saldo..." : "Comprar créditos avulsos"}
+            </button>
+          </div>
+        </div>
       </div>
       {purchaseModal}
     </>
