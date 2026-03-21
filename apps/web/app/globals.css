@@ -9401,8 +9401,8 @@ body {
 .credits-page .conversion-metric-card,
 .credits-page .credits-history-item,
 .credits-page .credits-balance-row {
-  border: 1px solid var(--ea-unified-divider) !important;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015)) !important;
+  border: 1px solid rgba(191, 239, 255, 0.08) !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.012)) !important;
   box-shadow: none !important;
   transform: none !important;
 }
@@ -9449,13 +9449,13 @@ body {
 .credits-page .credits-summary-card-primary {
   grid-column: 1 / -1;
   background:
-    radial-gradient(260px 110px at 100% 0%, rgba(75, 232, 255, 0.12), transparent 72%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.018)) !important;
+    radial-gradient(260px 110px at 100% 0%, rgba(75, 232, 255, 0.08), transparent 72%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.042), rgba(255, 255, 255, 0.015)) !important;
 }
 
 .credits-page .credits-summary-card-action {
   background:
-    linear-gradient(180deg, rgba(75, 232, 255, 0.06), rgba(255, 255, 255, 0.015)),
+    linear-gradient(180deg, rgba(75, 232, 255, 0.04), rgba(255, 255, 255, 0.012)),
     rgba(255, 255, 255, 0.02) !important;
 }
 
@@ -9506,6 +9506,14 @@ body {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.credits-page .credits-purchase-note {
+  padding: 0 0 0 14px;
+  border: 0 !important;
+  border-left: 1px solid var(--ea-unified-divider) !important;
+  border-radius: 0;
+  background: transparent !important;
+}
+
 .credits-page .credits-purchase-checkout-note {
   padding: 0;
   border: 0;
@@ -9533,10 +9541,46 @@ body {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.credits-page .credits-coin-card {
+  padding: 0 0 0 14px;
+  border: 0 !important;
+  border-left: 1px solid rgba(191, 239, 255, 0.12) !important;
+  border-radius: 0;
+  background: transparent !important;
+}
+
+.credits-page .credits-coin-card::before {
+  left: 0;
+  top: 2px;
+  bottom: 2px;
+}
+
 .credits-page .credits-conversion-form,
 .credits-page .credits-conversion-notes,
 .credits-page .credits-conversion-metrics {
   margin-top: 0;
+}
+
+.credits-page .credits-conversion-notes {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.credits-page .credits-conversion-notes .trust-note {
+  padding: 0 0 0 14px;
+  border: 0 !important;
+  border-left: 1px solid var(--ea-unified-divider) !important;
+  border-radius: 0;
+  background: transparent !important;
+}
+
+.credits-page .credits-conversion-notes .trust-note::before {
+  display: none;
+}
+
+.credits-page .conversion-metric-card {
+  border-radius: 14px;
+  border-color: rgba(191, 239, 255, 0.06) !important;
+  background: rgba(255, 255, 255, 0.018) !important;
 }
 
 .credits-page .credits-history-region {
@@ -9546,11 +9590,65 @@ body {
 
 .credits-page .credits-history-list {
   margin-top: 0;
-  gap: 10px;
+  gap: 0;
 }
 
 .credits-page .credits-history-item {
   gap: 10px;
+  padding: 16px 0;
+  border: 0 !important;
+  border-bottom: 1px solid var(--ea-unified-divider) !important;
+  border-radius: 0;
+  background: transparent !important;
+}
+
+.credits-page .credits-history-item:last-child {
+  border-bottom: 0 !important;
+  padding-bottom: 0;
+}
+
+.credits-page .credits-support-section .credits-guide-grid,
+.credits-page .credits-support-section .credits-guide-notes {
+  gap: 0;
+}
+
+.credits-page .credits-support-section .credits-guide-card,
+.credits-page .credits-support-section .credits-guide-note {
+  padding: 12px 0 0 14px;
+  border: 0 !important;
+  border-left: 1px solid var(--ea-unified-divider) !important;
+  border-radius: 0;
+  background: transparent !important;
+}
+
+.credits-page .credits-support-section .credits-guide-card:first-child,
+.credits-page .credits-support-section .credits-guide-note:first-child {
+  padding-top: 0;
+}
+
+.credits-page .credits-support-section .credits-guide-card + .credits-guide-card,
+.credits-page .credits-support-section .credits-guide-note + .credits-guide-note {
+  margin-top: 12px;
+  border-top: 1px solid rgba(191, 239, 255, 0.08);
+}
+
+.credits-page .credits-page-hero-region:hover,
+.credits-page .credits-summary-card:hover,
+.credits-page .credits-purchase-note:hover,
+.credits-page .credits-coin-card:hover,
+.credits-page .conversion-metric-card:hover,
+.credits-page .credits-history-item:hover,
+.credits-page .credits-guide-card:hover,
+.credits-page .credits-guide-note:hover,
+.credits-page .credits-support-state:hover,
+.credits-page .trust-note:hover {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.credits-page .credits-support-state {
+  border-color: rgba(191, 239, 255, 0.1) !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.034), rgba(255, 255, 255, 0.014)) !important;
 }
 
 @media (max-width: 1180px) {
@@ -9575,6 +9673,10 @@ body {
   .credits-page .credits-purchase-notes,
   .credits-page .credits-coin-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .credits-page .credits-conversion-notes {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
