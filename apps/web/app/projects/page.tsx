@@ -61,7 +61,6 @@ export default function ProjectsPage() {
 
   return (
     <div className="page-shell projects-page">
-      <div className="projects-page-canvas">
       <section className="premium-hero projects-hero surface-flow-hero" data-reveal>
         <div className="hero-split">
           <div className="hero-copy">
@@ -235,7 +234,6 @@ export default function ProjectsPage() {
           Use essas integrações quando o projeto já estiver suficientemente maduro para sair da plataforma. O núcleo do beta pago/controlado continua sendo creators hero, editor, projetos e saída rastreada.
         </div>
       </section>
-      </div>
     </div>
   );
 }
