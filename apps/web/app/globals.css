@@ -10126,6 +10126,11 @@ body {
   gap: clamp(18px, 2.2vw, 26px);
 }
 
+.dashboard-page-canvas .dashboard-hero-main {
+  display: grid;
+  gap: clamp(16px, 2vw, 22px);
+}
+
 .dashboard-page-canvas .dashboard-hero .hero-copy {
   gap: clamp(16px, 2vw, 24px);
 }
@@ -10149,6 +10154,56 @@ body {
 .dashboard-page-canvas .dashboard-hero-signal-strip .signal-chip:first-child {
   padding-left: 0;
   border-left: 0 !important;
+}
+
+.dashboard-page-canvas .dashboard-hero-support {
+  display: grid;
+  gap: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--ea-page-canvas-divider);
+}
+
+.dashboard-page-canvas .dashboard-hero-support-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.dashboard-page-canvas .dashboard-hero-actions {
+  justify-content: flex-end;
+}
+
+.dashboard-page-canvas .dashboard-hero-actions > .btn-ea,
+.dashboard-page-canvas .dashboard-hero-actions > .btn-link-ea {
+  flex: 0 1 auto;
+  min-width: clamp(132px, 14vw, 176px);
+}
+
+.dashboard-page-canvas .dashboard-hero-support-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.dashboard-page-canvas .dashboard-hero-support-note {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  padding: 0 0 0 14px;
+  border-left: 1px solid var(--ea-page-canvas-divider);
+}
+
+.dashboard-page-canvas .dashboard-hero-support-note strong {
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.dashboard-page-canvas .dashboard-hero-support-note span {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--ea-text-muted);
 }
 
 .dashboard-page-canvas .hero-kpi-grid.hero-kpi-grid-compact {
@@ -10457,6 +10512,16 @@ body {
     padding-top: 0;
     border-top: 0 !important;
   }
+
+  .dashboard-page-canvas .dashboard-hero-support-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .dashboard-page-canvas .dashboard-hero-support-note {
+    padding-left: 0;
+    border-left: 0;
+  }
 }
 
 @media (max-width: 900px) {
@@ -10512,6 +10577,20 @@ body {
 
   .app-shell-body:has(.dashboard-page) .app-nav-link-meta {
     display: none;
+  }
+
+  .dashboard-page-canvas .dashboard-hero-support-head {
+    display: grid;
+  }
+
+  .dashboard-page-canvas .dashboard-hero-actions {
+    justify-content: stretch;
+  }
+
+  .dashboard-page-canvas .dashboard-hero-actions > .btn-ea,
+  .dashboard-page-canvas .dashboard-hero-actions > .btn-link-ea {
+    flex: 1 1 0;
+    min-width: 0;
   }
 
   .dashboard-page-canvas .hero-kpi-grid.hero-kpi-grid-compact {

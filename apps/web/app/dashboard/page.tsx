@@ -232,7 +232,7 @@ export default function DashboardPage() {
     <div className="page-shell dashboard-page">
       <div className="dashboard-page-canvas">
       <section className="premium-hero dashboard-hero surface-flow-hero" data-reveal>
-        <div className="hero-split">
+        <div className="dashboard-hero-main">
           <div className="hero-copy">
             <div className="hero-title-stack">
               <p className="section-kicker">Painel executivo</p>
@@ -260,23 +260,11 @@ export default function DashboardPage() {
               </div>
             </div>
           </div>
-          <div className="hero-side-panel dashboard-hero-panel">
+        </div>
+        <div className="dashboard-hero-support">
+          <div className="dashboard-hero-support-head">
             <span className="plan-card-section-label">Operação</span>
-            <div className="hero-side-list">
-              <div className="hero-side-note">
-                <strong>Núcleo do beta pago/controlado</strong>
-                <span>Creators hero, editor e projetos concentram a maior parte do valor recorrente da plataforma hoje.</span>
-              </div>
-              <div className="hero-side-note">
-                <strong>Operação rastreada</strong>
-                <span>Conta, saldo, projetos e continuidade operacional ficam persistidos para retomar o trabalho com contexto.</span>
-              </div>
-              <div className="hero-side-note">
-                <strong>Camadas de apoio</strong>
-                <span>Plans, Credits e Support continuam visíveis, mas sem disputar o centro da experiência criativa.</span>
-              </div>
-            </div>
-            <div className="hero-actions-row">
+            <div className="hero-actions-row dashboard-hero-actions">
               <button
                 onClick={async () => {
                   await onSyncSubscription();
@@ -291,6 +279,20 @@ export default function DashboardPage() {
               <button onClick={onLogout} className="btn-ea btn-ghost">
                 Sair
               </button>
+            </div>
+          </div>
+          <div className="dashboard-hero-support-grid">
+            <div className="dashboard-hero-support-note">
+                <strong>Núcleo do beta pago/controlado</strong>
+                <span>Creators hero, editor e projetos concentram a maior parte do valor recorrente da plataforma hoje.</span>
+            </div>
+            <div className="dashboard-hero-support-note">
+                <strong>Operação rastreada</strong>
+                <span>Conta, saldo, projetos e continuidade operacional ficam persistidos para retomar o trabalho com contexto.</span>
+            </div>
+            <div className="dashboard-hero-support-note">
+                <strong>Camadas de apoio</strong>
+                <span>Plans, Credits e Support continuam visíveis, mas sem disputar o centro da experiência criativa.</span>
             </div>
           </div>
         </div>
