@@ -416,7 +416,7 @@ export default function DashboardPage() {
             {loading ? (
               <div className="dashboard-section-body dashboard-projects-list">
                 {Array.from({ length: 3 }).map((_, index) => (
-                  <div key={`project-skeleton-${index}`} className="premium-skeleton premium-skeleton-card" />
+                  <div key={`project-skeleton-${index}`} className="dashboard-project-skeleton-row" />
                 ))}
               </div>
             ) : recentProjects.length === 0 ? (
@@ -501,11 +501,11 @@ export default function DashboardPage() {
               </div>
             </div>
           </section>
+
+          <ApprovedBetaOnboardingCard email={email} wallet={wallet} loading={loading} />
         </div>
 
         <aside className="dashboard-workspace-rail">
-          <ApprovedBetaOnboardingCard email={email} wallet={wallet} loading={loading} />
-
           <section className="dashboard-section-card dashboard-pane-section dashboard-pane-section-quiet" data-reveal data-reveal-delay="120">
             <div className="section-head">
               <div className="section-header-ea">
