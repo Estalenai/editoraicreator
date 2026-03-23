@@ -9703,9 +9703,11 @@ body {
 
 /* Canvas-forward structural pass */
 :root {
-  --ea-page-max-width: 1640px;
-  --ea-shell-sidebar-width: clamp(204px, 15vw, 236px);
-  --ea-shell-main-padding: clamp(22px, 2.4vw, 34px);
+  --ea-page-max-width: 1720px;
+  --ea-page-padding-x: clamp(8px, 1.25vw, 18px);
+  --ea-page-padding-y: clamp(8px, 1.2vw, 16px);
+  --ea-shell-sidebar-width: clamp(188px, 13.5vw, 220px);
+  --ea-shell-main-padding: clamp(18px, 2vw, 28px);
   --ea-page-canvas-gap: clamp(18px, 2.2vw, 28px);
   --ea-page-canvas-padding: clamp(20px, 2.5vw, 32px);
   --ea-page-canvas-border: rgba(191, 239, 255, 0.09);
@@ -9713,23 +9715,58 @@ body {
   --ea-page-subtle-surface: linear-gradient(180deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0.012));
 }
 
+.app-shell-wrapper {
+  max-width: min(100%, var(--ea-page-max-width));
+  padding: var(--ea-page-padding-y) var(--ea-page-padding-x);
+}
+
 .app-shell-frame {
-  border-color: rgba(191, 239, 255, 0.12);
+  border-radius: 22px;
+  border-color: rgba(191, 239, 255, 0.08);
+  background:
+    radial-gradient(820px 220px at 0% 0%, rgba(52, 245, 255, 0.045), transparent 62%),
+    radial-gradient(620px 220px at 100% 0%, rgba(95, 118, 255, 0.065), transparent 64%),
+    linear-gradient(180deg, rgba(8, 16, 37, 0.82), rgba(7, 13, 31, 0.76));
   box-shadow:
-    0 22px 56px rgba(2, 6, 23, 0.26),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    0 14px 34px rgba(2, 6, 23, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.025);
 }
 
 .app-shell-head {
-  padding: 14px clamp(18px, 2vw, 24px);
+  padding: 12px clamp(16px, 1.8vw, 22px);
+  border-bottom-color: rgba(191, 239, 255, 0.045);
+  background: linear-gradient(180deg, rgba(8, 16, 37, 0.26), rgba(8, 16, 37, 0));
+}
+
+.app-shell-body {
+  background: transparent;
 }
 
 .app-shell-main {
   padding: var(--ea-shell-main-padding);
 }
 
-.app-nav-rail {
+.app-nav-rail,
+.app-top-nav {
   gap: 10px;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.app-top-nav::before,
+.app-top-nav::after {
+  display: none;
+}
+
+.app-top-nav-head {
+  padding-bottom: 12px;
+  border-bottom-color: rgba(191, 239, 255, 0.045);
+}
+
+.app-brand-badge {
+  border-color: rgba(191, 239, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .app-nav-link.layout-contract-rail-link,
@@ -9737,18 +9774,139 @@ body {
 .app-nav-link.layout-contract-rail-link:active {
   background: transparent !important;
   border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.app-nav-link.layout-contract-rail-link {
+  border-radius: 14px;
 }
 
 .app-nav-link.layout-contract-rail-link:hover {
-  background: rgba(255, 255, 255, 0.022) !important;
-  border-color: rgba(191, 239, 255, 0.08) !important;
+  background: rgba(255, 255, 255, 0.016) !important;
+  border-color: rgba(191, 239, 255, 0.06) !important;
 }
 
 .app-nav-link.layout-contract-rail-link.app-nav-link-active {
   background:
-    linear-gradient(90deg, rgba(75, 232, 255, 0.08), rgba(255, 255, 255, 0.012)),
-    rgba(255, 255, 255, 0.012) !important;
-  border-color: rgba(75, 232, 255, 0.14) !important;
+    linear-gradient(90deg, rgba(75, 232, 255, 0.05), rgba(255, 255, 255, 0.008)),
+    rgba(255, 255, 255, 0.008) !important;
+  border-color: rgba(75, 232, 255, 0.1) !important;
+}
+
+.app-nav-link.layout-contract-rail-link::after {
+  opacity: 0.8;
+}
+
+.app-nav-link.layout-contract-rail-link.app-nav-link-active::after {
+  background: linear-gradient(180deg, rgba(75, 232, 255, 0.82), rgba(191, 239, 255, 0.56));
+}
+
+@media (min-width: 1200px) {
+  .app-nav-rail,
+  .app-top-nav {
+    padding: 20px 16px 18px;
+    border-right-color: rgba(191, 239, 255, 0.05) !important;
+  }
+}
+
+@media (max-width: 1200px) {
+  .app-nav-rail,
+  .app-top-nav {
+    padding: 0 0 16px;
+    border-bottom-color: rgba(191, 239, 255, 0.05) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-shell-wrapper {
+    padding: 6px 6px 10px;
+  }
+
+  .app-shell-frame {
+    min-height: calc(100dvh - 16px);
+    border-radius: 16px;
+    box-shadow:
+      0 10px 24px rgba(2, 6, 23, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.02);
+  }
+
+  .app-shell-head {
+    gap: 6px;
+    padding: 10px 12px 8px;
+  }
+
+  .app-shell-main {
+    padding: 12px;
+  }
+
+  .app-nav-rail,
+  .app-top-nav {
+    gap: 8px;
+    padding: 8px 12px 10px;
+  }
+
+  .app-nav-links {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(8.75rem, max-content);
+    gap: 6px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+
+  .app-nav-links::-webkit-scrollbar {
+    display: none;
+  }
+
+  .app-nav-link {
+    min-height: 48px;
+    padding: 8px 12px;
+    border-radius: 14px;
+  }
+
+  .app-nav-link-meta {
+    display: none;
+  }
+
+  .app-brand-badge {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-shell-wrapper {
+    padding: 4px 4px 8px;
+  }
+
+  .app-shell-frame {
+    min-height: calc(100dvh - 12px);
+    border-radius: 14px;
+  }
+
+  .app-shell-head {
+    padding: 9px 10px 6px;
+  }
+
+  .app-shell-head-note,
+  .app-brand-badge {
+    display: none;
+  }
+
+  .app-shell-main {
+    padding: 10px;
+  }
+
+  .app-nav-rail,
+  .app-top-nav {
+    padding: 6px 10px 8px;
+  }
+
+  .app-nav-links {
+    grid-auto-columns: minmax(7.5rem, max-content);
+  }
 }
 
 .dashboard-page-canvas,
