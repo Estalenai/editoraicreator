@@ -10257,74 +10257,89 @@ body {
 }
 
 .app-shell-frame:has(.dashboard-page) {
-  border-radius: 24px;
-  border-color: rgba(191, 239, 255, 0.08);
+  border-radius: 20px;
+  border-color: rgba(191, 239, 255, 0.06);
   background:
-    radial-gradient(640px 200px at 0% 0%, rgba(52, 245, 255, 0.05), transparent 62%),
-    radial-gradient(420px 200px at 100% 0%, rgba(95, 118, 255, 0.08), transparent 64%),
-    linear-gradient(180deg, rgba(8, 16, 37, 0.88), rgba(7, 13, 31, 0.8));
+    radial-gradient(540px 180px at 0% 0%, rgba(52, 245, 255, 0.03), transparent 62%),
+    radial-gradient(360px 180px at 100% 0%, rgba(95, 118, 255, 0.05), transparent 64%),
+    linear-gradient(180deg, rgba(8, 16, 37, 0.82), rgba(7, 13, 31, 0.76));
   box-shadow:
-    0 16px 40px rgba(2, 6, 23, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    0 12px 28px rgba(2, 6, 23, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.02);
 }
 
 .app-shell-frame:has(.dashboard-page) .app-shell-head {
-  padding: 12px clamp(16px, 2vw, 22px);
-  border-bottom-color: rgba(191, 239, 255, 0.04);
+  padding: 10px clamp(14px, 1.6vw, 20px) 8px;
+  border-bottom-color: transparent;
   background: transparent;
+}
+
+.app-shell-frame:has(.dashboard-page) .app-shell-head::after {
+  display: none;
 }
 
 .app-shell-frame:has(.dashboard-page) .app-shell-main {
-  padding-top: clamp(14px, 1.8vw, 18px);
+  padding-top: clamp(10px, 1.5vw, 14px);
 }
 
 .app-shell-body:has(.dashboard-page) .app-top-nav {
-  gap: 10px;
-  padding-top: 14px;
-  padding-bottom: 12px;
+  gap: 8px;
+  padding-top: 10px;
+  padding-bottom: 8px;
   background: transparent;
+  border-bottom: 0;
 }
 
 .app-shell-body:has(.dashboard-page) .app-nav-links {
-  gap: 8px;
+  gap: 6px;
 }
 
 .app-shell-body:has(.dashboard-page) .app-nav-link,
 .app-shell-body:has(.dashboard-page) .app-nav-link:hover,
 .app-shell-body:has(.dashboard-page) .app-nav-link:active,
 .app-shell-body:has(.dashboard-page) .app-nav-link-active {
-  border-radius: 16px;
+  border-radius: 12px;
+  border-color: transparent !important;
   background: transparent !important;
   box-shadow: none !important;
 }
 
 .app-shell-body:has(.dashboard-page) .app-nav-link {
-  min-height: 60px;
-  padding: 12px 14px 12px 16px;
-  border-color: transparent !important;
+  min-height: 56px;
+  padding: 10px 12px 10px 18px;
 }
 
 .app-shell-body:has(.dashboard-page) .app-nav-link:hover {
-  border-color: rgba(191, 239, 255, 0.08) !important;
-  background: rgba(255, 255, 255, 0.018) !important;
+  background: rgba(255, 255, 255, 0.012) !important;
 }
 
 .app-shell-body:has(.dashboard-page) .app-nav-link-active {
-  border-color: rgba(75, 232, 255, 0.08) !important;
-  background:
-    linear-gradient(90deg, rgba(75, 232, 255, 0.05), rgba(255, 255, 255, 0.01)),
-    rgba(255, 255, 255, 0.01) !important;
+  background: rgba(255, 255, 255, 0.006) !important;
+}
+
+.app-shell-body:has(.dashboard-page) .app-nav-link-active .app-nav-link-label {
+  color: rgba(248, 252, 255, 0.98);
+}
+
+.app-shell-body:has(.dashboard-page) .app-nav-link-active .app-nav-link-meta {
+  color: rgba(226, 244, 255, 0.7);
 }
 
 .app-shell-body:has(.dashboard-page) .app-nav-link::after {
-  left: 8px;
-  top: 14px;
-  bottom: 14px;
-  opacity: 0.78;
+  left: 6px;
+  top: 12px;
+  bottom: 12px;
+  width: 2px;
+  opacity: 0.42;
 }
 
 .app-shell-body:has(.dashboard-page) .app-nav-link-active::after {
-  background: linear-gradient(180deg, rgba(75, 232, 255, 0.84), rgba(191, 239, 255, 0.58));
+  left: 4px;
+  top: 10px;
+  bottom: 10px;
+  width: 2px;
+  opacity: 1;
+  background: linear-gradient(180deg, rgba(75, 232, 255, 0.9), rgba(191, 239, 255, 0.62));
 }
 
 .dashboard-page-canvas {
@@ -10775,26 +10790,32 @@ body {
 
 @media (max-width: 768px) {
   .app-shell-frame:has(.dashboard-page) {
-    border-radius: 18px;
-    border-color: rgba(191, 239, 255, 0.06);
+    border-radius: 14px;
+    border-color: rgba(191, 239, 255, 0.05);
     box-shadow:
-      0 12px 28px rgba(2, 6, 23, 0.14),
-      inset 0 1px 0 rgba(255, 255, 255, 0.025);
+      0 8px 18px rgba(2, 6, 23, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.018);
   }
 
   .app-shell-frame:has(.dashboard-page) .app-shell-head {
-    gap: 6px;
-    padding: 10px 12px 6px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    padding: 8px 10px 4px;
     border-bottom: 0;
   }
 
   .app-shell-frame:has(.dashboard-page) .app-shell-head-note {
-    font-size: 11px;
-    line-height: 1.35;
+    display: none;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .app-brand-badge {
+    display: none;
   }
 
   .app-shell-frame:has(.dashboard-page) .app-shell-main {
-    padding: 10px 12px 12px;
+    padding: 8px 10px 10px;
   }
 
   .app-shell-body:has(.dashboard-page) .app-top-nav-head {
@@ -10802,19 +10823,20 @@ body {
   }
 
   .app-shell-body:has(.dashboard-page) .app-top-nav {
-    gap: 6px;
-    padding: 4px 0 4px;
+    gap: 4px;
+    margin-top: -2px;
+    padding: 0 0 2px;
     border-bottom: 0;
   }
 
   .app-shell-body:has(.dashboard-page) .app-nav-links {
     grid-template-columns: none;
     grid-auto-flow: column;
-    grid-auto-columns: minmax(9rem, max-content);
-    gap: 6px;
+    grid-auto-columns: minmax(8rem, max-content);
+    gap: 4px;
     overflow-x: auto;
     overscroll-behavior-x: contain;
-    padding-bottom: 2px;
+    padding-bottom: 0;
     scrollbar-width: none;
   }
 
@@ -10823,14 +10845,26 @@ body {
   }
 
   .app-shell-body:has(.dashboard-page) .app-nav-link {
-    min-height: 46px;
+    min-height: 40px;
     align-content: center;
-    padding: 8px 12px;
-    border-radius: 14px;
+    padding: 6px 10px 6px 16px;
+    border-radius: 10px;
   }
 
   .app-shell-body:has(.dashboard-page) .app-nav-link-meta {
     display: none;
+  }
+
+  .app-shell-body:has(.dashboard-page) .app-nav-link::after {
+    left: 5px;
+    top: 9px;
+    bottom: 9px;
+  }
+
+  .app-shell-body:has(.dashboard-page) .app-nav-link-active::after {
+    left: 4px;
+    top: 8px;
+    bottom: 8px;
   }
 
   .dashboard-page-canvas .dashboard-hero-support-head {
@@ -10872,7 +10906,7 @@ body {
 
 @media (max-width: 480px) {
   .app-shell-frame:has(.dashboard-page) .app-shell-head {
-    padding: 9px 10px 5px;
+    padding: 7px 8px 3px;
   }
 
   .app-shell-frame:has(.dashboard-page) .app-shell-head-note {
@@ -10880,15 +10914,16 @@ body {
   }
 
   .app-shell-frame:has(.dashboard-page) .app-shell-main {
-    padding: 8px 10px 10px;
+    padding: 7px 8px 9px;
   }
 
   .app-shell-body:has(.dashboard-page) .app-top-nav {
-    padding: 2px 0 2px;
+    margin-top: -3px;
+    padding: 0;
   }
 
   .app-shell-body:has(.dashboard-page) .app-nav-links {
-    grid-auto-columns: minmax(7.5rem, max-content);
+    grid-auto-columns: minmax(6.7rem, max-content);
   }
 
   .dashboard-page-canvas {
