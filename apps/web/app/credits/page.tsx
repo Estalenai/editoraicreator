@@ -508,8 +508,8 @@ export default function CreditsPage() {
   return (
     <div className="page-shell credits-page">
       <div className="credits-page-canvas">
-        <section className="premium-hero credits-hero surface-flow-hero credits-page-hero-region">
-          <div className="hero-split">
+        <section className="credits-hero credits-page-hero-region">
+          <div className="credits-hero-intro">
             <div className="hero-copy">
               <div className="hero-title-stack">
                 <p className="section-kicker">Transparência de consumo</p>
@@ -518,68 +518,49 @@ export default function CreditsPage() {
                   Créditos é a camada operacional do beta pago/controlado: saldo, compra avulsa, conversão e histórico ficam claros sem competir com o núcleo criativo do produto.
                 </p>
               </div>
-              <div className="hero-meta-row hero-meta-row-compact">
+              <div className="hero-meta-row hero-meta-row-compact credits-hero-meta">
                 <span className="premium-badge premium-badge-phase">Plano: {planLabelDisplay}</span>
                 <span className="premium-badge premium-badge-warning">Histórico confirma o consumo real</span>
-              </div>
-              <div className="signal-strip credits-hero-signal-strip">
-                <div className="signal-chip signal-chip-sober">
-                  <strong>Saldo por tipo</strong>
-                  <span>Comum, Pro e Ultra permanecem visíveis no mesmo plano de leitura.</span>
-                </div>
-                <div className="signal-chip signal-chip-sober">
-                  <strong>Conversão previsível</strong>
-                  <span>Débito, taxa e destino aparecem antes da confirmação.</span>
-                </div>
-                <div className="signal-chip signal-chip-sober">
-                  <strong>Histórico auditável</strong>
-                  <span>Compras, conversões e consumo entram no registro final.</span>
-                </div>
-              </div>
-            </div>
-            <div className="hero-side-panel credits-hero-panel">
-              <span className="plan-card-section-label">Segurança e controle</span>
-              <div className="hero-side-list hero-side-list-compact">
-                <div className="hero-side-note">
-                  <strong>Apoio ao núcleo do produto</strong>
-                  <span>Use esta área para sustentar creators, editor e projetos com leitura rápida de saldo e consumo.</span>
-                </div>
-                <div className="hero-side-note">
-                  <strong>Checkout via Stripe</strong>
-                  <span>Compras avulsas seguem por Stripe e retornam a Créditos com confirmação operacional do saldo e do histórico.</span>
-                </div>
-                <div className="hero-side-note hero-side-note-trust">
-                  <strong>Histórico persistido</strong>
-                  <span>Saldo, movimentos e continuidade da conta ficam persistidos para auditoria operacional e retomada segura.</span>
-                </div>
-              </div>
-              <div className="hero-actions-row">
                 <button
                   onClick={async () => {
                     await refresh();
                     await loadTransactions();
                   }}
-                  className="btn-ea btn-secondary"
+                  className="btn-link-ea btn-ghost btn-sm credits-hero-refresh"
                 >
                   Atualizar saldos e histórico
                 </button>
               </div>
             </div>
+            <div className="credits-hero-signals" aria-label="Pontos-chave da operação de créditos">
+                <div className="credits-hero-signal">
+                  <strong>Saldo por tipo</strong>
+                  <span>Comum, Pro e Ultra permanecem visíveis no mesmo plano de leitura.</span>
+                </div>
+                <div className="credits-hero-signal">
+                  <strong>Conversão previsível</strong>
+                  <span>Débito, taxa e destino aparecem antes da confirmação.</span>
+                </div>
+                <div className="credits-hero-signal">
+                  <strong>Histórico auditável</strong>
+                  <span>Compras, conversões e consumo entram no registro final.</span>
+                </div>
+              </div>
           </div>
-          <div className="hero-kpi-grid hero-kpi-grid-compact">
-            <div className="hero-kpi">
-              <span className="hero-kpi-label">Saldo total</span>
-              <strong className="hero-kpi-value">{totalWalletDisplay}</strong>
+          <div className="credits-hero-glance" aria-label="Resumo rápido de saldo, taxa e histórico">
+            <div className="credits-hero-glance-item">
+              <span className="credits-hero-glance-label">Saldo total</span>
+              <strong className="credits-hero-glance-value">{totalWalletDisplay}</strong>
               <span className="helper-text-ea">{walletSummaryDisplay}</span>
             </div>
-            <div className="hero-kpi">
-              <span className="hero-kpi-label">Taxa no plano atual</span>
-              <strong className="hero-kpi-value">{conversionFeeDisplay}</strong>
+            <div className="credits-hero-glance-item">
+              <span className="credits-hero-glance-label">Taxa no plano atual</span>
+              <strong className="credits-hero-glance-value">{conversionFeeDisplay}</strong>
               <span className="helper-text-ea">{conversionFeeHelper}</span>
             </div>
-            <div className="hero-kpi">
-              <span className="hero-kpi-label">Última movimentação</span>
-              <strong className="hero-kpi-value">{latestTransactionCountDisplay}</strong>
+            <div className="credits-hero-glance-item">
+              <span className="credits-hero-glance-label">Última movimentação</span>
+              <strong className="credits-hero-glance-value">{latestTransactionCountDisplay}</strong>
               <span className="helper-text-ea">{latestTransactionDisplay}</span>
             </div>
           </div>
@@ -844,6 +825,27 @@ export default function CreditsPage() {
               </div>
             </div>
           ) : null}
+
+          <section className="credits-support-section credits-context-section">
+            <div className="section-header-ea">
+              <h3 className="heading-reset">Segurança e controle</h3>
+              <p className="helper-text-ea">Camada de apoio para checkout, persistência e retomada operacional, sem competir com a trilha principal.</p>
+            </div>
+            <div className="credits-context-list">
+              <div className="credits-context-item">
+                <strong>Apoio ao núcleo do produto</strong>
+                <span>Use esta área para sustentar creators, editor e projetos com leitura rápida de saldo e consumo.</span>
+              </div>
+              <div className="credits-context-item">
+                <strong>Checkout via Stripe</strong>
+                <span>Compras avulsas seguem por Stripe e retornam a Créditos com confirmação operacional do saldo e do histórico.</span>
+              </div>
+              <div className="credits-context-item">
+                <strong>Histórico persistido</strong>
+                <span>Saldo, movimentos e continuidade da conta ficam persistidos para auditoria operacional e retomada segura.</span>
+              </div>
+            </div>
+          </section>
 
           <section className="credits-guide-section credits-support-section">
             <div className="section-header-ea">
