@@ -117,15 +117,15 @@ function LoginPageContent() {
   if (checkingSession) {
     return (
       <div className="auth-entry-shell">
-        <div className="premium-card auth-entry-loading">Verificando sessão...</div>
+        <div className="auth-entry-loading">Verificando sessão...</div>
       </div>
     );
   }
 
   return (
     <div className="auth-entry-shell">
-      <section className="premium-hero auth-entry-frame">
-        <div className="auth-entry-grid">
+      <section className="auth-entry-frame-open">
+        <div className="auth-entry-grid auth-entry-grid-open">
           <div className="auth-entry-hero">
             <div className="section-stack">
               <p className="section-kicker">Acesso à plataforma</p>
@@ -144,23 +144,23 @@ function LoginPageContent() {
               <span className="premium-badge premium-badge-warning">Acesso controlado</span>
             </div>
 
-            <div className="signal-strip auth-entry-signal-strip">
-              <div className="signal-chip signal-chip-creative">
+            <div className="auth-entry-context-grid">
+              <div className="auth-entry-context-item">
                 <strong>Conta protegida</strong>
                 <span>Autenticação e liberação de acesso continuam sob controle no beta.</span>
               </div>
-              <div className="signal-chip signal-chip-creative">
+              <div className="auth-entry-context-item">
                 <strong>Fluxo curto</strong>
                 <span>Cadastro, aprovação e entrada no workspace sem ruído desnecessário.</span>
               </div>
-              <div className="signal-chip signal-chip-creative">
+              <div className="auth-entry-context-item">
                 <strong>Privacidade operacional</strong>
                 <span>Seus dados não entram em treino de modelos; o processamento fica isolado e auditável no workspace.</span>
               </div>
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="premium-card auth-entry-card">
+          <form onSubmit={handleSubmit} className="auth-entry-card-open">
             <div className="section-stack">
               <p className="section-kicker">Acesso à plataforma</p>
               <h2 className="auth-entry-card-title">
@@ -245,12 +245,12 @@ function LoginPageContent() {
               </span>
             </div>
 
-            <div className="premium-card-soft privacy-trust-note privacy-trust-note-inline">
+            <div className="auth-entry-inline-note">
               <strong>Segurança e confidencialidade</strong>
               <span>Dados da sua conta não são usados para treinar modelos. O processamento segue isolado e com prioridade para privacidade.</span>
             </div>
 
-            <div className="premium-card-soft infra-note infra-note-inline">
+            <div className="auth-entry-inline-note">
               <strong>Base profissional de acesso</strong>
               <span>Autenticação, sessão e continuidade da conta operam sobre Supabase para manter entrada segura e histórico consistente.</span>
             </div>
@@ -294,7 +294,7 @@ export default function LoginPage() {
     <Suspense
       fallback={
         <div className="auth-entry-shell">
-          <div className="premium-card auth-entry-loading">
+          <div className="auth-entry-loading">
             Carregando acesso...
           </div>
         </div>

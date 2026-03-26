@@ -21,30 +21,47 @@ export function BetaAccessBlockedView({
 }: Props) {
   return (
     <div className="page-shell beta-access-page">
-      <section className="premium-hero beta-access-hero">
-        <div className="beta-access-hero-head">
-          <div className="section-stack">
-            <p className="section-kicker">Controle de acesso</p>
-            <h1 style={{ margin: 0 }}>{title}</h1>
-            <p className="meta-text-ea">Acesso por aprovacao manual para manter o beta controlado e a operacao consistente.</p>
+      <div className="beta-access-page-canvas">
+        <section className="beta-access-hero-open">
+          <div className="beta-access-hero-head">
+            <div className="section-stack">
+              <p className="section-kicker">Controle de acesso</p>
+              <h1 style={{ margin: 0 }}>{title}</h1>
+              <p className="meta-text-ea">Acesso por aprovacao manual para manter o beta controlado e a operacao consistente.</p>
+            </div>
+            <div className="hero-actions-row beta-access-hero-actions">
+              <Link href="/how-it-works" className="btn-link-ea btn-ghost">
+                Como funciona
+              </Link>
+              <button onClick={onLogout} className="btn-ea btn-ghost">
+                Sair
+              </button>
+            </div>
           </div>
-          <div className="hero-actions-row">
-            <Link href="/how-it-works" className="btn-link-ea btn-ghost">
-              Como funciona
-            </Link>
-            <button onClick={onLogout} className="btn-ea btn-ghost">
-              Sair
-            </button>
-          </div>
-        </div>
-      </section>
 
-      <ClosedBetaAccessCard
-        initialEmail={email}
-        initialStatus={status}
-        title="Acesso antecipado"
-        description={description}
-      />
+          <div className="beta-access-context-grid">
+            <div className="beta-access-context-item">
+              <strong>Fluxo controlado</strong>
+              <span>O acesso continua liberado por análise manual para manter o beta estável e o onboarding consistente.</span>
+            </div>
+            <div className="beta-access-context-item">
+              <strong>Entrada clara</strong>
+              <span>Assim que a conta é aprovada, o login leva direto para o workspace sem outra etapa paralela.</span>
+            </div>
+            <div className="beta-access-context-item">
+              <strong>Privacidade preservada</strong>
+              <span>O contexto da conta permanece isolado e não entra em treino de modelos.</span>
+            </div>
+          </div>
+        </section>
+
+        <ClosedBetaAccessCard
+          initialEmail={email}
+          initialStatus={status}
+          title="Acesso antecipado"
+          description={description}
+        />
+      </div>
     </div>
   );
 }

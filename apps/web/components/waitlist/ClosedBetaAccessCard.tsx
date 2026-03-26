@@ -67,32 +67,34 @@ export function ClosedBetaAccessCard({
   }
 
   return (
-    <div className={`premium-card beta-access-card${compact ? " beta-access-card-compact" : ""}`}>
-      <div className="section-stack">
-        <p className="section-kicker">Beta fechado</p>
-        <h2 style={{ margin: 0, letterSpacing: -0.2 }}>{title}</h2>
-        <p className="meta-text-ea">{description}</p>
+    <div className={`beta-access-card-open${compact ? " beta-access-card-compact" : ""}`}>
+      <div className="beta-access-summary">
+        <div className="section-stack beta-access-card-head">
+          <p className="section-kicker">Beta fechado</p>
+          <h2 style={{ margin: 0, letterSpacing: -0.2 }}>{title}</h2>
+          <p className="meta-text-ea">{description}</p>
+        </div>
+
+        <div className="beta-access-status-open">
+          <div className="beta-access-status-row">
+            <strong>Status:</strong>
+            <span className="premium-badge premium-badge-phase">
+              {resolvedStatus}
+            </span>
+          </div>
+          <div className="helper-text-ea">{statusMessage(status)}</div>
+          <div className="beta-access-action-row">
+            <Link href="/login" className="btn-link-ea btn-primary btn-sm">
+              Já tenho acesso
+            </Link>
+            <Link href="/login?mode=signup" className="btn-link-ea btn-secondary btn-sm">
+              Criar conta
+            </Link>
+          </div>
+        </div>
       </div>
 
-      <div className="beta-access-status-card">
-        <div className="beta-access-status-row">
-          <strong>Status:</strong>
-          <span className="premium-badge premium-badge-phase">
-            {resolvedStatus}
-          </span>
-        </div>
-        <div className="helper-text-ea">{statusMessage(status)}</div>
-        <div className="beta-access-action-row">
-          <Link href="/login" className="btn-link-ea btn-primary btn-sm">
-            Já tenho acesso
-          </Link>
-          <Link href="/login?mode=signup" className="btn-link-ea btn-secondary btn-sm">
-            Criar conta
-          </Link>
-        </div>
-      </div>
-
-      <form onSubmit={onSubmit} className="beta-access-form">
+      <form onSubmit={onSubmit} className="beta-access-form beta-access-form-open">
         <label htmlFor="waitlist-email" className="field-label-ea">
           <span>E-mail</span>
           <input
