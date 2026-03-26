@@ -110,6 +110,7 @@ function createError(message, details = {}) {
 }
 
 async function waitForLoginUiReady(page) {
+  const authForm = page.locator("form.auth-entry-card-open").first();
   const emailInput = page
     .locator('input[type="email"], input[name="email"], input[autocomplete="email"]')
     .first();
@@ -117,10 +118,9 @@ async function waitForLoginUiReady(page) {
     .locator('input[type="password"], input[name="password"], input[autocomplete="current-password"]')
     .first();
   const loginTab = page.getByRole("tab", { name: /^entrar$/i }).first();
-  const submitButton = page
-    .locator("form.auth-entry-card button.auth-entry-submit, form.auth-entry-card button[type='submit']")
-    .first();
+  const submitButton = authForm.locator("button.auth-entry-submit, button[type='submit']").first();
 
+  await authForm.waitFor({ state: "visible", timeout: LOGIN_TIMEOUT });
   await emailInput.waitFor({ state: "visible", timeout: LOGIN_TIMEOUT });
   await passwordInput.waitFor({ state: "visible", timeout: LOGIN_TIMEOUT });
 
@@ -143,6 +143,7 @@ async function waitForLoginUiReady(page) {
   await page.waitForTimeout(500);
 
   return {
+    authForm,
     emailInput,
     passwordInput,
     loginTab,
@@ -197,6 +198,7 @@ async function loginIfNeeded(page, { email, password, outDir }) {
   }
 
   const {
+    authForm,
     emailInput,
     passwordInput,
     loginTab,
@@ -228,15 +230,40 @@ async function loginIfNeeded(page, { email, password, outDir }) {
     await passwordInput.press("Enter");
   }
 
-  const loginError = page
-    .locator('[role="alert"], .error, .state-ea-error, [data-error], .text-red-500, .text-danger, .state-ea-title, .state-ea-text')
+  const loginError = authForm
+    .locator(".state-ea.state-ea-error, .state-ea-error, [role='alert'], [data-error]")
+    .filter({
+      hasText: /n[aã]o foi poss[ií]vel continuar|inv[aá]lid|tente novamente/i,
+    })
     .first();
+  const submitFinished = page
+    .waitForFunction(
+      (button) => {
+        if (!button) return false;
+        const text = (button.textContent || "").toLowerCase();
+        return !text.includes("processando");
+      },
+      submitButton,
+      { timeout: LOGIN_TIMEOUT },
+    )
+    .catch(() => {});
 
   await Promise.race([
     page.waitForURL(/\/dashboard(?:[/?#]|$)/, { timeout: LOGIN_TIMEOUT }).catch(() => {}),
     loginError.waitFor({ state: "visible", timeout: LOGIN_TIMEOUT }).catch(() => {}),
-    page.waitForTimeout(LOGIN_TIMEOUT),
+    submitFinished,
   ]);
+
+  if (page.url().includes(LOGIN_PATH) || page.url().includes("/auth")) {
+    const currentButtonText = ((await submitButton.textContent().catch(() => "")) || "").trim();
+    const hasExplicitError = await isVisible(loginError, 1500);
+
+    if (!hasExplicitError && /processando/i.test(currentButtonText)) {
+      await page.waitForURL(/\/dashboard(?:[/?#]|$)/, {
+        timeout: 10000,
+      }).catch(() => {});
+    }
+  }
 
   await page.waitForTimeout(1200);
   await page.screenshot({
@@ -246,15 +273,27 @@ async function loginIfNeeded(page, { email, password, outDir }) {
 
   if (page.url().includes(LOGIN_PATH) || page.url().includes("/auth")) {
     const errorText = (await loginError.textContent().catch(() => ""))?.trim() || "";
+    const submitButtonText = ((await submitButton.textContent().catch(() => "")) || "").trim();
+    const loginStillProcessing = /processando/i.test(submitButtonText);
     await page.screenshot({
       path: path.join(outDir, "03-login-error.png"),
       fullPage: true,
     });
-    throw createError("Automatic login failed and the session remained on the login flow.", {
+
+    const errorMessage =
+      errorText
+        ? "Automatic login failed and the session remained on the login flow."
+        : loginStillProcessing
+          ? "Automatic login stalled on the login flow without redirecting or rendering an explicit auth error."
+          : "Automatic login returned to an idle login state without redirecting or rendering an explicit auth error.";
+
+    throw createError(errorMessage, {
       currentUrl: page.url(),
       loginError: errorText || null,
       loginTabSelected: await loginTab.getAttribute("aria-selected").catch(() => null),
       emailValue: await emailInput.inputValue().catch(() => null),
+      submitButtonText: submitButtonText || null,
+      loginStillProcessing,
     });
   }
 
