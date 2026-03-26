@@ -520,9 +520,8 @@ function PlansPageContent() {
 
   return (
     <div className="page-shell plans-page">
-      <div className="plans-page-canvas">
-      <section className="premium-hero plans-hero surface-flow-hero">
-        <div className="hero-split">
+      <section className="plans-hero plans-hero-open">
+        <div className="plans-hero-intro">
           <div className="hero-copy">
             <div className="hero-title-stack">
               <p className="section-kicker">Assinatura e disponibilidade</p>
@@ -531,54 +530,35 @@ function PlansPageContent() {
                 O beta pago/controlado precisa de uma oferta clara. Hoje o centro comercial é <strong>Editor Pro</strong>, com checkout seguro, créditos visíveis e continuidade forte; <strong>Enterprise</strong> fica fora do catálogo aberto e segue apenas por contrato.
               </p>
             </div>
-            <div className="hero-meta-row hero-meta-row-compact">
+            <div className="hero-meta-row hero-meta-row-compact plans-hero-meta">
               <span className="premium-badge premium-badge-phase">Plano atual: {planLabelDisplay}</span>
               <span className="premium-badge premium-badge-warning">Editor Pro é o plano principal do beta</span>
-            </div>
-            <div className="signal-strip plans-hero-signal-strip">
-              <div className="signal-chip signal-chip-sober">
-                <strong>Oferta mais decidida</strong>
-                <span>Entrada, plano principal e escala aparecem com papéis comerciais mais claros.</span>
-              </div>
-              <div className="signal-chip signal-chip-sober">
-                <strong>Checkout seguro</strong>
-                <span>Planos com checkout automático seguem para a Stripe; os demais continuam assistidos.</span>
-              </div>
-              <div className="signal-chip signal-chip-sober">
-                <strong>Menos ruído comercial</strong>
-                <span>Preço, créditos, conversão e disponibilidade ficam expostos antes de qualquer decisão.</span>
-              </div>
-            </div>
-          </div>
-          <div className="hero-side-panel plans-hero-panel layout-contract-rail">
-            <span className="plan-card-section-label">Cobrança e segurança</span>
-            <div className="hero-side-list hero-side-list-compact">
-              <div className="hero-side-note">
-                <strong>Plano principal claro</strong>
-                <span>Editor Pro é a melhor leitura comercial atual para quem quer usar o produto de forma recorrente no beta pago/controlado.</span>
-              </div>
-              <div className="hero-side-note">
-                <strong>Checkout via Stripe</strong>
-                <span>Planos com checkout automático seguem por Stripe com retorno controlado ao produto para sincronizar assinatura e disponibilidade.</span>
-              </div>
-              <div className="hero-side-note hero-side-note-trust">
-                <strong>Enterprise por contrato</strong>
-                <span>Enterprise não entra no catálogo aberto: escopo, créditos e condições comerciais ficam reservados à negociação contratual.</span>
-              </div>
-            </div>
-            <div className="hero-actions-row">
               <button
                 onClick={async () => {
                   await refresh();
                   await loadCatalog();
                 }}
-                className="btn-ea btn-secondary"
+                className="btn-link-ea btn-ghost btn-sm plans-hero-refresh"
               >
                 Atualizar plano e catálogo
               </button>
             </div>
           </div>
-        </div>
+          <div className="plans-hero-signals" aria-label="Pontos-chave da comparação de planos">
+              <div className="plans-hero-signal">
+                <strong>Oferta mais decidida</strong>
+                <span>Entrada, plano principal e escala aparecem com papéis comerciais mais claros.</span>
+              </div>
+              <div className="plans-hero-signal">
+                <strong>Checkout seguro</strong>
+                <span>Planos com checkout automático seguem para a Stripe; os demais continuam assistidos.</span>
+              </div>
+              <div className="plans-hero-signal">
+                <strong>Menos ruído comercial</strong>
+                <span>Preço, créditos, conversão e disponibilidade ficam expostos antes de qualquer decisão.</span>
+              </div>
+            </div>
+          </div>
       </section>
 
       {error ? (
@@ -627,48 +607,48 @@ function PlansPageContent() {
         </div>
       ) : null}
 
-      <section className="summary-grid plans-summary-grid surface-flow-summary surface-flow-region surface-flow-region-start layout-contract-region layout-contract-summary">
-        <div className="executive-card plans-summary-card layout-contract-item layout-contract-metric">
+      <section className="summary-grid plans-summary-grid">
+        <div className="executive-card plans-summary-card">
           <p className="executive-eyebrow">Plano atual</p>
           <p className="executive-value">{planLabelDisplay}</p>
           <p className="executive-detail">{currentPlanAudience}</p>
         </div>
-        <div className="executive-card plans-summary-card layout-contract-item layout-contract-metric">
+        <div className="executive-card plans-summary-card">
           <p className="executive-eyebrow">Créditos incluídos</p>
           <p className="executive-value metric-value-compact">{currentPlanCreditsValue}</p>
           <p className="executive-detail">{currentPlanCreditsDetail}</p>
         </div>
-        <div className="executive-card plans-summary-card layout-contract-item layout-contract-metric">
+        <div className="executive-card plans-summary-card">
           <p className="executive-eyebrow">Conversão entre tipos</p>
           <p className="executive-value">{currentPlanFeeValue}</p>
           <p className="executive-detail">{currentPlanFeeDetail}</p>
         </div>
       </section>
 
-      <section className="plans-confidence-strip surface-flow-region surface-flow-region-middle layout-contract-region">
-        <div className="plans-confidence-note layout-contract-note">
+      <section className="plans-confidence-strip">
+        <div className="plans-confidence-note">
           <strong>Plano principal do beta</strong>
           <span>Editor Pro é o ponto mais forte para operação recorrente; Iniciante valida encaixe e Editor Ultra expande cadência.</span>
         </div>
-        <div className="plans-confidence-note layout-contract-note">
+        <div className="plans-confidence-note">
           <strong>Checkout claro</strong>
           <span>Planos com checkout automático seguem para assinatura imediata via Stripe; os assistidos continuam via suporte.</span>
         </div>
-        <div className="plans-confidence-note layout-contract-note">
+        <div className="plans-confidence-note">
           <strong>Controle comercial</strong>
           <span>Preço, disponibilidade e diferenças principais ficam expostos sem leitura longa.</span>
         </div>
-        <div className="plans-confidence-note layout-contract-note">
+        <div className="plans-confidence-note">
           <strong>Enterprise fora do aberto</strong>
           <span>Enterprise opera por contrato e fica fora da comparação pública, sem preço, créditos ou composição abertos nesta página.</span>
         </div>
-        <div className="plans-confidence-note plans-confidence-note-trust layout-contract-note">
+        <div className="plans-confidence-note plans-confidence-note-trust">
           <strong>Privacidade aplicada</strong>
           <span>Dados operacionais não são usados para treino de modelos e o processamento segue isolado por conta.</span>
         </div>
       </section>
 
-      <section className="plans-catalog-section section-card surface-flow-region surface-flow-region-end layout-contract-region">
+      <section className="plans-catalog-section">
         <div className="section-head">
           <div className="section-header-ea">
             <h3 className="heading-reset">Catálogo de planos</h3>
@@ -744,7 +724,7 @@ function PlansPageContent() {
               return (
                 <div
                   key={item.code}
-                  className={`plan-card layout-contract-item layout-contract-card ${
+                  className={`plan-card ${
                     isCurrentPlan
                       ? "plan-card-current"
                       : isRecommendedPlan
@@ -875,7 +855,6 @@ function PlansPageContent() {
           </div>
         )}
       </section>
-      </div>
     </div>
   );
 }
