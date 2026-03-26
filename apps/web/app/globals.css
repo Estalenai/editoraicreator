@@ -10647,21 +10647,33 @@ body {
 }
 
 .plans-page .plans-summary-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px 22px;
-  padding: 0;
+  padding: 0 !important;
   margin: 0;
+  align-items: start;
+  border: 0 !important;
+  border-radius: 0;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
 .plans-page .plans-summary-card {
   display: grid;
   gap: 10px;
   min-height: 0;
-  padding: 14px 0 0;
+  padding: 0 0 0 16px;
   border: 0 !important;
-  border-top: 1px solid var(--ea-page-canvas-divider) !important;
+  border-top: 0 !important;
+  border-left: 1px solid var(--ea-page-canvas-divider) !important;
   border-radius: 0;
   background: transparent !important;
   box-shadow: none !important;
+}
+
+.plans-page .plans-summary-grid > .plans-summary-card:first-child {
+  padding-left: 0;
+  border-left: 0 !important;
 }
 
 .plans-page .plans-confidence-strip {
@@ -10763,6 +10775,17 @@ body {
   .plans-page .plans-summary-grid,
   .plans-page .plans-confidence-strip {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .plans-page .plans-summary-card {
+    padding: 14px 0 0;
+    border-left: 0 !important;
+    border-top: 1px solid var(--ea-page-canvas-divider) !important;
+  }
+
+  .plans-page .plans-summary-grid > .plans-summary-card:first-child {
+    padding-top: 0;
+    border-top: 0 !important;
   }
 
   .plans-page .plan-catalog-grid {
