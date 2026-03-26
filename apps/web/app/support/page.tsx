@@ -77,9 +77,8 @@ export default function SupportPage() {
 
   return (
     <div className="page-shell support-page">
-      <div className="support-page-canvas">
-      <section className="premium-hero support-hero surface-flow-hero">
-        <div className="hero-split support-hero-split">
+      <section className="support-hero support-hero-open">
+        <div className="support-hero-intro">
           <div className="hero-copy">
             <div className="hero-title-stack">
               <p className="section-kicker">Canal operacional</p>
@@ -89,53 +88,50 @@ export default function SupportPage() {
               </p>
             </div>
 
-            <div className="signal-strip support-signal-strip">
-              <div className="signal-chip signal-chip-sober">
+            <div className="support-hero-signals">
+              <div className="support-hero-signal">
                 <strong>FAQ útil</strong>
                 <span>Respostas curtas para as dúvidas mais comuns antes de abrir uma solicitação.</span>
               </div>
-              <div className="signal-chip signal-chip-sober">
+              <div className="support-hero-signal">
                 <strong>Contexto claro</strong>
                 <span>Planos, créditos, checkout e publicação aparecem como trilhas de ajuda separadas.</span>
               </div>
-              <div className="signal-chip signal-chip-sober">
+              <div className="support-hero-signal">
                 <strong>Suporte real</strong>
                 <span>Solicitações ficam registradas com status, nota interna e acompanhamento dentro do produto.</span>
               </div>
             </div>
           </div>
-
-          <div className="hero-side-panel support-hero-panel layout-contract-rail">
-            <div className="hero-side-list hero-side-list-compact">
-              <div className="hero-side-note">
-                <strong>Conta conectada</strong>
-                <span>{email || "Sessão em validação no momento."}</span>
-              </div>
-              <div className="hero-side-note">
-                <strong>Próximo passo sugerido</strong>
-                <span>Consulte o FAQ e a trilha certa antes de abrir uma solicitação. Isso reduz ida e volta e protege a experiência de um beta pago/controlado mais sério.</span>
-              </div>
-              <div className="hero-side-note hero-side-note-trust">
-                <strong>Privacidade aplicada</strong>
-                <span>Dados enviados em tickets e projetos não são usados para treinar modelos e permanecem em processamento isolado.</span>
-              </div>
-            </div>
-
-            {email ? (
-              <div className="surface-toolbar support-hero-toolbar">
-                <span className="toolbar-label">Conta conectada</span>
-                <span style={{ fontWeight: 600 }}>{email}</span>
+        </div>
+        <div className="support-context-strip" aria-label="Contexto operacional do suporte">
+          <div className="support-context-item">
+            <strong>Conta conectada</strong>
+            <span>{email || "Sessão em validação no momento."}</span>
+          </div>
+          <div className="support-context-item">
+            <strong>Próximo passo sugerido</strong>
+            <span>Consulte o FAQ e a trilha certa antes de abrir uma solicitação. Isso reduz ida e volta e protege a experiência de um beta pago/controlado mais sério.</span>
+          </div>
+          <div className="support-context-item">
+            <strong>Privacidade aplicada</strong>
+            <span>Dados enviados em tickets e projetos não são usados para treinar modelos e permanecem em processamento isolado.</span>
+          </div>
+          {email ? (
+            <div className="support-context-item support-context-item-account">
+              <strong>Fila interna acompanhada</strong>
+              <div className="support-context-actions">
                 <span className="premium-badge premium-badge-phase">Resposta por fila interna</span>
                 <Link href="/how-it-works" className="btn-link-ea btn-ghost btn-sm">
                   Como funciona
                 </Link>
               </div>
-            ) : null}
-          </div>
+            </div>
+          ) : null}
         </div>
       </section>
 
-      <section className="support-guide-section surface-flow-region surface-flow-region-start layout-contract-region">
+      <section className="support-guide-section">
         <div className="section-head">
           <div className="section-header-ea">
             <h2 className="heading-reset">Caminhos rápidos de ajuda</h2>
@@ -144,7 +140,7 @@ export default function SupportPage() {
         </div>
         <div className="support-guide-grid">
           {SUPPORT_PATHS.map((item) => (
-            <Link key={item.title} href={item.href} className="support-guide-card layout-contract-item">
+            <Link key={item.title} href={item.href} className="support-guide-card">
               <div className="support-guide-card-stack">
                 <strong>{item.title}</strong>
                 <span>{item.description}</span>
@@ -155,7 +151,7 @@ export default function SupportPage() {
         </div>
       </section>
 
-      <section className="privacy-trust-note support-trust-note surface-flow-region surface-flow-region-middle layout-contract-note">
+      <section className="privacy-trust-note support-trust-note">
         <strong>Privacidade e confidencialidade</strong>
         <span>Dados enviados em tickets e projetos não são usados para treinar modelos. O suporte opera com processamento isolado e foco em segurança operacional.</span>
       </section>
@@ -175,7 +171,7 @@ export default function SupportPage() {
         </div>
       ) : null}
 
-      <section className="support-faq-section surface-flow-region surface-flow-region-middle layout-contract-region">
+      <section className="support-faq-section">
         <div className="section-head">
           <div className="section-header-ea">
             <h2 className="heading-reset">Perguntas frequentes</h2>
@@ -184,7 +180,7 @@ export default function SupportPage() {
         </div>
         <div className="support-faq-grid">
           {SUPPORT_FAQ.map((item) => (
-            <article key={item.question} className="support-faq-item layout-contract-item">
+            <article key={item.question} className="support-faq-item">
               <strong>{item.question}</strong>
               <p>{item.answer}</p>
             </article>
@@ -193,7 +189,6 @@ export default function SupportPage() {
       </section>
 
       <SupportAssistantCard />
-      </div>
     </div>
   );
 }

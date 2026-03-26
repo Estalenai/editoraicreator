@@ -121,7 +121,7 @@ export function SupportAssistantCard({ onRefetch }: Props) {
   }
 
   return (
-    <section className="support-assistant-card surface-flow-region surface-flow-region-end layout-contract-region">
+    <section className="support-assistant-card support-assistant-open">
       <div className="section-head support-assistant-head">
         <div className="section-header-ea">
           <p className="section-kicker">Atendimento interno</p>
@@ -158,7 +158,7 @@ export function SupportAssistantCard({ onRefetch }: Props) {
             </label>
           </div>
 
-          <div className="support-category-hint layout-contract-note">
+          <div className="support-category-hint">
             <strong>{selectedCategory.label}</strong>
             <span>{selectedCategory.hint}</span>
           </div>
@@ -210,7 +210,7 @@ export function SupportAssistantCard({ onRefetch }: Props) {
         </div>
 
         <aside className="support-assistant-side">
-          <div className="support-guidelines-card layout-contract-note">
+          <div className="support-guidelines-card">
             <strong>Como acelerar a resposta</strong>
             <ul className="support-guidelines-list">
               {SUPPORT_EXPECTATIONS.map((item) => (
@@ -219,7 +219,7 @@ export function SupportAssistantCard({ onRefetch }: Props) {
             </ul>
           </div>
 
-          <div className="support-guidelines-card layout-contract-note">
+          <div className="support-guidelines-card">
             <strong>Quando falar com suporte</strong>
             <span>
               Use suporte quando checkout, saldo, histórico, plano, publicação ou integrações não refletirem o comportamento esperado após atualização da tela.
@@ -270,7 +270,7 @@ export function SupportAssistantCard({ onRefetch }: Props) {
       ) : (
         <div className="support-history-list">
           {items.map((item) => (
-            <article key={item.id} className="support-history-item layout-contract-item">
+            <article key={item.id} className="support-history-item">
               <div className="support-history-headline">
                 <strong>{formatSubject(item.subject)}</strong>
                 <span className={`premium-badge ${item.status === "resolved" ? "premium-badge-phase" : item.status === "in_review" ? "premium-badge-warning" : "premium-badge-soon"}`}>
