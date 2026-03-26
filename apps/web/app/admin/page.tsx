@@ -216,11 +216,7 @@ function eventLabel(event: string): string {
 }
 
 const panelStyle = {
-  padding: 12,
-  borderRadius: 12,
-  background: "linear-gradient(165deg, rgba(255,255,255,0.09), rgba(255,255,255,0.045))",
-  border: "1px solid rgba(255,255,255,0.14)",
-  boxShadow: "0 12px 28px rgba(2,6,23,0.22)",
+  padding: 0,
 } as const;
 
 const PERIOD_OPTIONS = [
@@ -619,27 +615,30 @@ export default function AdminPage() {
 
   return (
     <div className="page-shell admin-page">
-      <div className="premium-hero admin-hero">
-        <p className="section-kicker">Console operacional</p>
-        <h1 style={{ marginTop: 4, marginBottom: 12 }}>Admin</h1>
-        <div className="surface-toolbar">
-          <label className="toolbar-label">Período</label>
-          <PremiumSelect
-            className="field-inline"
-            value={String(days)}
-            options={PERIOD_OPTIONS}
-            ariaLabel="Período do painel"
-            onChange={(nextValue) => {
-              const next = Number(nextValue || 7);
-              setDays(next);
-              refreshAdminScreen(next);
-            }}
-          />
-          <button onClick={() => refreshAdminScreen(days)} className="btn-ea btn-secondary">Atualizar</button>
-          <button onClick={() => api.adminExportUsageCsv(days)} className="btn-ea btn-ghost btn-sm">Exportar CSV de uso</button>
-          <button onClick={() => api.adminExportCoinsCsv(days)} className="btn-ea btn-ghost btn-sm">Exportar CSV de créditos</button>
+      <div className="admin-page-canvas">
+        <div className="admin-hero-open">
+          <div className="section-stack-tight">
+            <p className="section-kicker">Console operacional</p>
+            <h1 style={{ marginTop: 4, marginBottom: 0 }}>Admin</h1>
+          </div>
+          <div className="surface-toolbar admin-hero-toolbar">
+            <label className="toolbar-label">Período</label>
+            <PremiumSelect
+              className="field-inline"
+              value={String(days)}
+              options={PERIOD_OPTIONS}
+              ariaLabel="Período do painel"
+              onChange={(nextValue) => {
+                const next = Number(nextValue || 7);
+                setDays(next);
+                refreshAdminScreen(next);
+              }}
+            />
+            <button onClick={() => refreshAdminScreen(days)} className="btn-ea btn-secondary">Atualizar</button>
+            <button onClick={() => api.adminExportUsageCsv(days)} className="btn-ea btn-ghost btn-sm">Exportar CSV de uso</button>
+            <button onClick={() => api.adminExportCoinsCsv(days)} className="btn-ea btn-ghost btn-sm">Exportar CSV de créditos</button>
+          </div>
         </div>
-      </div>
 
       {error ? (
         <div className="state-ea state-ea-error">
@@ -653,9 +652,8 @@ export default function AdminPage() {
       ) : null}
       {adminNotice ? (
         <div
-          className="premium-card-soft"
+          className="premium-card-soft admin-inline-notice"
           style={{
-            marginTop: 8,
             padding: 10,
             borderRadius: 8,
             border:
@@ -676,7 +674,7 @@ export default function AdminPage() {
         </div>
       ) : null}
       {loading && (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12 }}>
+        <div className="admin-loading-grid">
           {Array.from({ length: 4 }).map((_, index) => (
             <div key={`admin-skeleton-${index}`} className="premium-skeleton premium-skeleton-card" />
           ))}
@@ -684,14 +682,14 @@ export default function AdminPage() {
       )}
 
       {!loading && overview && (
-        <div style={{ display: "grid", gap: 12, gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))" }}>
-          <div className="premium-card" style={panelStyle}>
+        <div className="admin-overview-strip">
+          <div className="admin-overview-item">
             <strong>Uso</strong>
             <div>Total: {overview?.usage?.total ?? 0}</div>
             <div>Erros: {overview?.usage?.errors ?? 0}</div>
             <div>Replays: {overview?.usage?.replays ?? 0}</div>
           </div>
-          <div className="premium-card" style={panelStyle}>
+          <div className="admin-overview-item">
             <strong>Créditos</strong>
             <div>
               Débito Comum/Pro/Ultra: {overview?.coins?.debit?.common ?? 0}/{overview?.coins?.debit?.pro ?? 0}/
@@ -702,14 +700,14 @@ export default function AdminPage() {
               {overview?.coins?.credit?.ultra ?? 0}
             </div>
           </div>
-          <div className="premium-card" style={panelStyle}>
+          <div className="admin-overview-item">
             <strong>Assinaturas</strong>
             <div>
               ativas {overview?.subs?.active ?? 0} | trialing {overview?.subs?.trialing ?? 0} | past_due{" "}
               {overview?.subs?.past_due ?? 0} | canceladas {overview?.subs?.canceled ?? 0}
             </div>
           </div>
-          <div className="premium-card" style={panelStyle}>
+          <div className="admin-overview-item">
             <strong>Stripe</strong>
             <div>
               processados {overview?.stripe?.processed ?? 0} | ignorados {overview?.stripe?.ignored ?? 0} | falhas{" "}
@@ -719,7 +717,7 @@ export default function AdminPage() {
         </div>
       )}
 
-      <div className="premium-card" style={{ ...panelStyle, marginTop: 16 }}>
+      <div className="premium-card admin-console-section" style={panelStyle}>
         <div className="section-head" style={{ marginBottom: 8 }}>
           <div>
             <p className="section-kicker">Saude do produto</p>
@@ -734,8 +732,8 @@ export default function AdminPage() {
           <div className="empty-ea">Sincronizando sinais operacionais...</div>
         ) : (
           <>
-            <div style={{ display: "grid", gap: 10, gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))" }}>
-              <div className="premium-card-soft" style={{ padding: "10px 12px" }}>
+            <div className="admin-observability-grid">
+              <div className="premium-card-soft admin-subpanel admin-subpanel-stat">
                 <div style={{ opacity: 0.76, fontSize: 12 }}>Readiness da API</div>
                 <div style={{ marginTop: 6, fontSize: 22, fontWeight: 700 }}>
                   {healthReady?.ok ? "OK" : healthReady ? "Degradado" : "Sem resposta"}
@@ -745,7 +743,7 @@ export default function AdminPage() {
                 </div>
               </div>
 
-              <div className="premium-card-soft" style={{ padding: "10px 12px" }}>
+              <div className="premium-card-soft admin-subpanel admin-subpanel-stat">
                 <div style={{ opacity: 0.76, fontSize: 12 }}>Uptime e trilha</div>
                 <div style={{ marginTop: 6, fontSize: 18, fontWeight: 700 }}>
                   {statusSnapshot?.uptime_seconds ? `${Math.round(statusSnapshot.uptime_seconds)}s` : "n/d"}
@@ -755,7 +753,7 @@ export default function AdminPage() {
                 </div>
               </div>
 
-              <div className="premium-card-soft" style={{ padding: "10px 12px" }}>
+              <div className="premium-card-soft admin-subpanel admin-subpanel-stat">
                 <div style={{ opacity: 0.76, fontSize: 12 }}>Routing de IA</div>
                 <div style={{ marginTop: 6, fontSize: 18, fontWeight: 700 }}>
                   Default: {statusSnapshot?.routing_defaults?.default_mode || "n/d"}
@@ -765,7 +763,7 @@ export default function AdminPage() {
                 </div>
               </div>
 
-              <div className="premium-card-soft" style={{ padding: "10px 12px" }}>
+              <div className="premium-card-soft admin-subpanel admin-subpanel-stat">
                 <div style={{ opacity: 0.76, fontSize: 12 }}>Custo interno agregado</div>
                 <div style={{ marginTop: 6, fontSize: 18, fontWeight: 700 }}>
                   {statusSnapshot?.internal_cost_totals?.global?.total_cost_score?.toFixed?.(2) ?? "0.00"}
@@ -776,8 +774,8 @@ export default function AdminPage() {
               </div>
             </div>
 
-            <div style={{ display: "grid", gap: 10, gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", marginTop: 12 }}>
-              <div className="premium-card-soft" style={{ padding: 12 }}>
+            <div className="admin-observability-detail-grid">
+              <div className="premium-card-soft admin-subpanel admin-subpanel-list">
                 <div style={{ fontWeight: 700, marginBottom: 8 }}>Top erros recentes</div>
                 {topOperationalErrors.length === 0 ? (
                   <div style={{ opacity: 0.78, fontSize: 13 }}>Sem erros agregados no buffer atual.</div>
@@ -793,7 +791,7 @@ export default function AdminPage() {
                 )}
               </div>
 
-              <div className="premium-card-soft" style={{ padding: 12 }}>
+              <div className="premium-card-soft admin-subpanel admin-subpanel-list">
                 <div style={{ fontWeight: 700, marginBottom: 8 }}>Providers e roteamento</div>
                 {topOperationalProviders.length === 0 ? (
                   <div style={{ opacity: 0.78, fontSize: 13 }}>Sem providers amostrados no buffer atual.</div>
@@ -809,7 +807,7 @@ export default function AdminPage() {
                 )}
               </div>
 
-              <div className="premium-card-soft" style={{ padding: 12 }}>
+              <div className="premium-card-soft admin-subpanel admin-subpanel-list">
                 <div style={{ fontWeight: 700, marginBottom: 8 }}>Eventos recentes do produto</div>
                 {recentEvents.length === 0 ? (
                   <div style={{ opacity: 0.78, fontSize: 13 }}>Sem eventos recentes no buffer atual.</div>
@@ -834,19 +832,19 @@ export default function AdminPage() {
         )}
       </div>
 
-      <div className="premium-card" style={{ ...panelStyle, marginTop: 16 }}>
+      <div className="premium-card admin-console-section" style={panelStyle}>
         <h3 style={{ marginTop: 0 }}>Radar operacional</h3>
         <div style={{ opacity: 0.8, marginBottom: 10, fontSize: 13 }}>
           Indicadores baseados na lista atual (filtros aplicados).
         </div>
-        <div style={{ display: "grid", gap: 10, gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}>
-          <div className="premium-card-soft" style={{ padding: "10px 12px" }}>
+        <div className="admin-radar-grid">
+          <div className="premium-card-soft admin-subpanel admin-subpanel-stat">
             <div style={{ opacity: 0.76, fontSize: 12 }}>Fila beta • pendentes</div>
             <div style={{ marginTop: 6, fontSize: 22, fontWeight: 700 }}>{betaAccessStats.pending}</div>
             <div style={{ marginTop: 6, fontSize: 12, opacity: 0.82 }}>Taxa pendente: {betaAccessStats.pendingRate}</div>
           </div>
 
-          <div className="premium-card-soft" style={{ padding: "10px 12px" }}>
+          <div className="premium-card-soft admin-subpanel admin-subpanel-stat">
             <div style={{ opacity: 0.76, fontSize: 12 }}>Fila beta • aprovados / reprovados</div>
             <div style={{ marginTop: 6, fontSize: 18, fontWeight: 700 }}>
               {betaAccessStats.approved} / {betaAccessStats.rejected}
@@ -856,7 +854,7 @@ export default function AdminPage() {
             </div>
           </div>
 
-          <div className="premium-card-soft" style={{ padding: "10px 12px" }}>
+          <div className="premium-card-soft admin-subpanel admin-subpanel-stat">
             <div style={{ opacity: 0.76, fontSize: 12 }}>Suporte • em aberto / em análise</div>
             <div style={{ marginTop: 6, fontSize: 18, fontWeight: 700 }}>
               {supportStats.open} / {supportStats.inReview}
@@ -866,7 +864,7 @@ export default function AdminPage() {
             </div>
           </div>
 
-          <div className="premium-card-soft" style={{ padding: "10px 12px" }}>
+          <div className="premium-card-soft admin-subpanel admin-subpanel-stat">
             <div style={{ opacity: 0.76, fontSize: 12 }}>Suporte • resolvidos</div>
             <div style={{ marginTop: 6, fontSize: 22, fontWeight: 700 }}>{supportStats.resolved}</div>
             <div style={{ marginTop: 6, fontSize: 12, opacity: 0.82 }}>
@@ -874,7 +872,7 @@ export default function AdminPage() {
             </div>
           </div>
 
-          <div className="premium-card-soft" style={{ padding: "10px 12px" }}>
+          <div className="premium-card-soft admin-subpanel admin-subpanel-stat">
             <div style={{ opacity: 0.76, fontSize: 12 }}>Movimento hoje</div>
             <div style={{ marginTop: 6, fontSize: 14, fontWeight: 700 }}>
               +{todayStats.betaApprovedToday} aprovados • {todayStats.betaRejectedToday} reprovados
@@ -886,15 +884,15 @@ export default function AdminPage() {
         </div>
       </div>
 
-      <div className="premium-card" style={{ ...panelStyle, marginTop: 16 }}>
+      <div className="premium-card admin-console-section" style={panelStyle}>
         <h3 style={{ marginTop: 0 }}>Ações que exigem atenção</h3>
         {supportNeedsAttention.length === 0 && betaNeedsAttention.length === 0 ? (
-          <div className="premium-card-soft" style={{ padding: 10 }}>
+          <div className="premium-card-soft admin-subpanel">
             Nenhuma pendência crítica no momento.
           </div>
         ) : (
-          <div style={{ display: "grid", gap: 10, gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))" }}>
-            <div className="premium-card-soft" style={{ padding: 10 }}>
+          <div className="admin-attention-grid">
+            <div className="premium-card-soft admin-subpanel admin-attention-item">
               <div style={{ fontWeight: 700 }}>Fila beta pendente</div>
               <div style={{ marginTop: 4, opacity: 0.82, fontSize: 13 }}>
                 {betaAccessStats.pending} solicitação(ões) aguardando decisão.
@@ -922,7 +920,7 @@ export default function AdminPage() {
               </button>
             </div>
 
-            <div className="premium-card-soft" style={{ padding: 10 }}>
+            <div className="premium-card-soft admin-subpanel admin-attention-item">
               <div style={{ fontWeight: 700 }}>Tickets de suporte ativos</div>
               <div style={{ marginTop: 4, opacity: 0.82, fontSize: 13 }}>
                 {supportStats.unresolved} ticket(s) sem resolução.
@@ -953,7 +951,7 @@ export default function AdminPage() {
         )}
       </div>
 
-      <div className="premium-card" style={{ ...panelStyle, marginTop: 16 }}>
+      <div className="premium-card admin-console-section" style={panelStyle}>
         <div className="section-head" style={{ marginBottom: 8 }}>
           <div>
             <p className="section-kicker">Consulta rápida</p>
@@ -970,9 +968,9 @@ export default function AdminPage() {
           />
           <button onClick={onSearch} className="btn-ea btn-secondary">Buscar</button>
         </div>
-        <ul style={{ listStyle: "none", paddingLeft: 0, marginTop: 10, marginBottom: 0, display: "grid", gap: 8 }}>
+        <ul className="admin-search-results">
           {users.map((u) => (
-            <li key={u.user_id} className="premium-card-soft" style={{ wordBreak: "break-word", padding: 10 }}>
+            <li key={u.user_id} className="premium-card-soft admin-search-result">
               {u.user_id} | {u.email || "sem-email"} | {u.plan_code} | créditos (Comum/Pro/Ultra) {u.coins?.common ?? 0}/
               {u.coins?.pro ?? 0}/{u.coins?.ultra ?? 0}{" "}
               <button onClick={() => onOpenTimeline(u.user_id)} className="btn-ea btn-ghost btn-sm">Timeline</button>
@@ -987,11 +985,11 @@ export default function AdminPage() {
       </div>
 
       {selectedUserId && (
-        <div className="premium-card" style={{ ...panelStyle, marginTop: 16 }}>
+        <div className="premium-card admin-console-section" style={panelStyle}>
           <h3 style={{ marginTop: 0 }}>Timeline: {selectedUserId}</h3>
-          <ul>
+          <ul className="admin-timeline-list">
             {timeline.map((item, i) => (
-              <li key={`${item.type}-${item.created_at}-${i}`} style={{ wordBreak: "break-word", marginBottom: 6 }}>
+              <li key={`${item.type}-${item.created_at}-${i}`} className="admin-timeline-item">
                 [{item.type}] {item.created_at} {item.feature || item.event_type || item.plan_code || ""}{" "}
                 {item.status || ""}
               </li>
@@ -1000,7 +998,7 @@ export default function AdminPage() {
         </div>
       )}
 
-      <div className="premium-card" style={{ ...panelStyle, marginTop: 16 }}>
+      <div className="premium-card admin-console-section" style={panelStyle}>
         <div className="section-head" style={{ marginBottom: 8 }}>
           <div>
             <p className="section-kicker">Operação de tickets</p>
@@ -1067,9 +1065,9 @@ export default function AdminPage() {
             </div>
           </div>
         ) : (
-          <div style={{ display: "grid", gap: 8 }}>
+          <div className="admin-record-list">
             {supportItems.map((item) => (
-              <div key={item.id} className="premium-card-soft" style={{ padding: 10, borderRadius: 10, background: "rgba(0,0,0,0.25)" }}>
+              <div key={item.id} className="premium-card-soft admin-record-item">
                 <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
                   <strong>{item.subject}</strong>
                   <span style={supportStatusPillStyle(item.status)}>{supportStatusLabel(item.status)}</span>
@@ -1084,7 +1082,7 @@ export default function AdminPage() {
                 ) : null}
                 <div style={{ marginTop: 8, whiteSpace: "pre-wrap" }}>{item.message}</div>
                 {item.admin_note ? (
-                  <div style={{ marginTop: 8, padding: 8, borderRadius: 8, background: "rgba(255,255,255,0.06)" }}>
+                  <div className="admin-record-note">
                     Nota interna: {item.admin_note}
                   </div>
                 ) : null}
@@ -1105,7 +1103,7 @@ export default function AdminPage() {
         )}
       </div>
 
-      <div className="premium-card" style={{ ...panelStyle, marginTop: 16 }}>
+      <div className="premium-card admin-console-section" style={panelStyle}>
         <div className="section-head" style={{ marginBottom: 8 }}>
           <div>
             <p className="section-kicker">Controle de acesso</p>
@@ -1188,9 +1186,9 @@ export default function AdminPage() {
             </div>
           </div>
         ) : (
-          <div style={{ display: "grid", gap: 8 }}>
+          <div className="admin-record-list">
             {betaAccessItems.map((item) => (
-              <div key={item.id} className="premium-card-soft" style={{ padding: 10, borderRadius: 10, background: "rgba(0,0,0,0.25)" }}>
+              <div key={item.id} className="premium-card-soft admin-record-item">
                 <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
                   <strong>{item.email}</strong>
                   <span style={betaStatusPillStyle(item.status)}>{betaAccessStatusLabel(item.status)}</span>
@@ -1205,7 +1203,7 @@ export default function AdminPage() {
                   </div>
                 ) : null}
                 {item.admin_note ? (
-                  <div style={{ marginTop: 8, padding: 8, borderRadius: 8, background: "rgba(255,255,255,0.06)" }}>
+                  <div className="admin-record-note">
                     Nota interna: {item.admin_note}
                   </div>
                 ) : null}
@@ -1242,6 +1240,7 @@ export default function AdminPage() {
           </div>
         )}
       </div>
+      </div>
 
       {actionDraft ? (
         <div
@@ -1261,7 +1260,7 @@ export default function AdminPage() {
           }}
         >
           <div
-            className="premium-card"
+            className="premium-card admin-modal-card"
             style={{ width: "min(520px, 100%)", padding: 14, display: "grid", gap: 10 }}
             onClick={(event) => event.stopPropagation()}
           >
