@@ -306,21 +306,6 @@ function CreatorsPageContent() {
               <span className="premium-badge premium-badge-soon">Creators hero no centro do beta pago/controlado</span>
             </div>
 
-            <div className="signal-strip creators-hero-signal-strip">
-              <div className="creators-hero-signal">
-                <strong>Briefing</strong>
-                <span>Campos objetivos e estimativa antes de qualquer geração.</span>
-              </div>
-              <div className="creators-hero-signal">
-                <strong>Geração</strong>
-                <span>Progresso claro, erro legível e retorno visível durante a execução.</span>
-              </div>
-              <div className="creators-hero-signal">
-                <strong>Continuidade</strong>
-                <span>Salvar em projeto, editar no workspace e preparar exportação sem perder contexto.</span>
-              </div>
-            </div>
-
             <div className="hero-kpi-grid creators-hero-metrics creators-hero-metrics-compact">
               <div className="creators-hero-metric-card">
                 <span className="hero-kpi-label">Ferramenta ativa</span>
@@ -343,8 +328,8 @@ function CreatorsPageContent() {
           <div className="creators-hero-panel creators-hero-panel-quiet">
             <div className="section-stack">
               <p className="section-kicker">Controle operacional</p>
-              <h2 style={{ margin: 0 }}>Criatividade com estrutura</h2>
-              <p className="meta-text-ea">
+              <h2 className="creators-hero-panel-title">Criatividade com estrutura</h2>
+              <p className="meta-text-ea creators-hero-panel-copy">
                 Briefing, configuração, ação e resultado ficam separados para reduzir ruído, acelerar leitura e manter previsibilidade.
               </p>
             </div>
