@@ -4,7 +4,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { chromium } from "playwright";
 
-const DEFAULT_BASE_URL = "https://editor-ai-creator-web.vercel.app";
+const DEFAULT_BASE_URL = "https://editor-ai-creator-web-git-main-estalenais-projects.vercel.app";
 const LOGIN_PATH = "/login";
 const OUTPUT_ROOT = ["output", "playwright", "post-deploy-validation"];
 const WAIT_TIMEOUT = 120000;
@@ -109,6 +109,47 @@ function createError(message, details = {}) {
   return error;
 }
 
+async function waitForLoginUiReady(page) {
+  const emailInput = page
+    .locator('input[type="email"], input[name="email"], input[autocomplete="email"]')
+    .first();
+  const passwordInput = page
+    .locator('input[type="password"], input[name="password"], input[autocomplete="current-password"]')
+    .first();
+  const loginTab = page.getByRole("tab", { name: /^entrar$/i }).first();
+  const submitButton = page
+    .locator("form.auth-entry-card button.auth-entry-submit, form.auth-entry-card button[type='submit']")
+    .first();
+
+  await emailInput.waitFor({ state: "visible", timeout: LOGIN_TIMEOUT });
+  await passwordInput.waitFor({ state: "visible", timeout: LOGIN_TIMEOUT });
+
+  if (await isVisible(loginTab, 2000)) {
+    const selected = await loginTab.getAttribute("aria-selected").catch(() => null);
+    if (selected !== "true") {
+      await loginTab.click();
+      await page.waitForFunction(
+        (element) => element?.getAttribute("aria-selected") === "true",
+        loginTab,
+        { timeout: 4000 },
+      ).catch(() => {});
+    }
+  }
+
+  if (await isVisible(submitButton, 2000)) {
+    await submitButton.waitFor({ state: "visible", timeout: 4000 }).catch(() => {});
+  }
+
+  await page.waitForTimeout(500);
+
+  return {
+    emailInput,
+    passwordInput,
+    loginTab,
+    submitButton,
+  };
+}
+
 async function waitForRouteReady(page, route) {
   await page.waitForURL(new RegExp(`${route.path}(?:[/?#]|$)`), {
     timeout: ROUTE_TIMEOUT,
@@ -155,13 +196,12 @@ async function loginIfNeeded(page, { email, password, outDir }) {
     };
   }
 
-  const emailInput = page
-    .locator('input[type="email"], input[name="email"], input[autocomplete="email"]')
-    .first();
-  const passwordInput = page
-    .locator('input[type="password"], input[name="password"], input[autocomplete="current-password"]')
-    .first();
-  const loginTab = page.getByRole("tab", { name: /^entrar$/i }).first();
+  const {
+    emailInput,
+    passwordInput,
+    loginTab,
+    submitButton,
+  } = await waitForLoginUiReady(page);
 
   const emailVisible = await isVisible(emailInput, 4000);
   const passwordVisible = await isVisible(passwordInput, 4000);
@@ -173,60 +213,55 @@ async function loginIfNeeded(page, { email, password, outDir }) {
     });
   }
 
-  if (await isVisible(loginTab, 2000)) {
-    const selected = await loginTab.getAttribute("aria-selected").catch(() => null);
-    if (selected !== "true") {
-      await loginTab.click();
-      await page.waitForTimeout(300);
-    }
-  }
-
   await emailInput.fill(email);
   await passwordInput.fill(password);
+  await page.waitForTimeout(250);
 
-  const loginForm = page.locator("form.auth-entry-card").first();
-  const submitButton = loginForm
-    .locator("button.auth-entry-submit, button[type='submit']")
-    .first();
+  await page.screenshot({
+    path: path.join(outDir, "01-login-ready.png"),
+    fullPage: true,
+  });
 
   if (await isVisible(submitButton, 2000)) {
-    await loginForm.evaluate((form) => {
-      if (form instanceof HTMLFormElement) {
-        form.requestSubmit();
-      }
-    });
+    await submitButton.click({ delay: 50 });
   } else {
     await passwordInput.press("Enter");
   }
-
-  await Promise.race([
-    page.waitForURL(/\/dashboard(?:[/?#]|$)/, { timeout: LOGIN_TIMEOUT }).catch(() => {}),
-    page.waitForLoadState("networkidle", { timeout: LOGIN_TIMEOUT }).catch(() => {}),
-    page.waitForTimeout(LOGIN_TIMEOUT),
-  ]);
-
-  await page.waitForTimeout(1200);
-  await page.screenshot({
-    path: path.join(outDir, "01-after-submit.png"),
-    fullPage: true,
-  });
 
   const loginError = page
     .locator('[role="alert"], .error, .state-ea-error, [data-error], .text-red-500, .text-danger, .state-ea-title, .state-ea-text')
     .first();
 
+  await Promise.race([
+    page.waitForURL(/\/dashboard(?:[/?#]|$)/, { timeout: LOGIN_TIMEOUT }).catch(() => {}),
+    loginError.waitFor({ state: "visible", timeout: LOGIN_TIMEOUT }).catch(() => {}),
+    page.waitForTimeout(LOGIN_TIMEOUT),
+  ]);
+
+  await page.waitForTimeout(1200);
+  await page.screenshot({
+    path: path.join(outDir, "02-after-submit.png"),
+    fullPage: true,
+  });
+
   if (page.url().includes(LOGIN_PATH) || page.url().includes("/auth")) {
     const errorText = (await loginError.textContent().catch(() => ""))?.trim() || "";
+    await page.screenshot({
+      path: path.join(outDir, "03-login-error.png"),
+      fullPage: true,
+    });
     throw createError("Automatic login failed and the session remained on the login flow.", {
       currentUrl: page.url(),
       loginError: errorText || null,
+      loginTabSelected: await loginTab.getAttribute("aria-selected").catch(() => null),
+      emailValue: await emailInput.inputValue().catch(() => null),
     });
   }
 
   await waitForRouteReady(page, routes[0]);
 
   await page.screenshot({
-    path: path.join(outDir, "02-after-login.png"),
+    path: path.join(outDir, "03-after-login.png"),
     fullPage: true,
   });
 
@@ -356,8 +391,9 @@ try {
   const captures = [];
   const generatedFiles = [
     path.join(OUT_DIR, "00-entry.png"),
-    path.join(OUT_DIR, "01-after-submit.png"),
-    path.join(OUT_DIR, "02-after-login.png"),
+    path.join(OUT_DIR, "01-login-ready.png"),
+    path.join(OUT_DIR, "02-after-submit.png"),
+    path.join(OUT_DIR, "03-after-login.png"),
   ];
 
   for (const route of routes) {
