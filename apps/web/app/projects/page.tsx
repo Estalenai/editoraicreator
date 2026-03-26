@@ -61,8 +61,8 @@ export default function ProjectsPage() {
 
   return (
     <div className="page-shell projects-page">
-      <section className="premium-hero projects-hero surface-flow-hero" data-reveal>
-        <div className="hero-split">
+      <section className="projects-hero projects-hero-open">
+        <div className="hero-split projects-hero-split">
           <div className="hero-copy">
             <div className="hero-title-stack">
               <p className="section-kicker">Continuidade</p>
@@ -77,27 +77,27 @@ export default function ProjectsPage() {
             </div>
           </div>
 
-          <div className="hero-side-panel layout-contract-rail">
-            <div className="hero-side-list">
-              <div className="hero-side-note">
+          <div className="projects-hero-panel projects-hero-panel-quiet">
+            <div className="projects-hero-panel-list">
+              <div className="projects-hero-note">
                 <strong>Abra e continue</strong>
                 <span>Use a lista abaixo para retomar do ponto em que o projeto foi salvo.</span>
               </div>
-              <div className="hero-side-note">
+              <div className="projects-hero-note">
                 <strong>Estado de saída claro</strong>
                 <span>Draft, exported e published aparecem como estados distintos para separar trabalho em andamento de entrega já encerrada.</span>
               </div>
-              <div className="hero-side-note">
+              <div className="projects-hero-note">
                 <strong>Handoff beta secundário</strong>
                 <span>GitHub e Vercel seguem úteis para continuidade manual, mas fora do centro da promessa principal desta fase.</span>
               </div>
-              <div className="hero-side-note hero-side-note-trust">
+              <div className="projects-hero-note projects-hero-note-trust">
                 <strong>Persistência com Supabase</strong>
                 <span>Projetos, histórico e continuidade da conta ficam persistidos em Supabase para retomar o trabalho sem perder contexto.</span>
               </div>
             </div>
 
-            <div className="hero-actions-row">
+            <div className="hero-actions-row projects-hero-actions">
               <Link href="/editor/new" className="btn-link-ea btn-primary">
                 Novo projeto
               </Link>
@@ -121,7 +121,7 @@ export default function ProjectsPage() {
         </div>
       ) : null}
 
-      <section className="projects-list-section projects-flow-section surface-flow-region projects-flow-section-start layout-contract-region" data-reveal data-reveal-delay="70">
+      <section className="projects-list-section projects-list-open projects-flow-section projects-flow-section-start" data-reveal data-reveal-delay="70">
         <div className="section-head">
           <div className="section-header-ea">
             <h2 className="heading-reset">Abrir no editor</h2>
@@ -156,7 +156,7 @@ export default function ProjectsPage() {
             </div>
           </div>
         ) : (
-          <div className="dashboard-section-body">
+          <div className="dashboard-section-body projects-list-stack">
             {normalizedProjects.map((project, index) => (
               <Link
                 key={project.id || project.title}
@@ -181,7 +181,7 @@ export default function ProjectsPage() {
         )}
       </section>
 
-      <section className="projects-publish-section projects-flow-section surface-flow-region projects-flow-section-middle layout-contract-region" data-reveal data-reveal-delay="110">
+      <section className="projects-publish-section projects-publish-open projects-flow-section projects-flow-section-middle" data-reveal data-reveal-delay="110">
         <div className="section-header-ea">
           <p className="section-kicker">Pipeline de saída</p>
           <h2 className="heading-reset">Draft, exported e published sem ambiguidade</h2>
@@ -189,7 +189,7 @@ export default function ProjectsPage() {
             O beta pago/controlado separa três estados e mantém trilha de saída: o que ainda está em rascunho no projeto, o que já saiu como handoff exportado e o que já foi publicado manualmente fora da plataforma.
           </p>
         </div>
-        <div className="proof-value-grid">
+        <div className="proof-value-grid projects-publish-grid">
           <div className="proof-value-card layout-contract-item" data-reveal data-reveal-delay="70">
             <div className="proof-value-block">
               <span className="proof-value-chip">Draft</span>
@@ -214,7 +214,7 @@ export default function ProjectsPage() {
         </div>
       </section>
 
-      <section className="projects-handoff-section projects-flow-section surface-flow-region projects-flow-section-end layout-contract-region" data-reveal data-reveal-delay="150">
+      <section className="projects-handoff-section projects-handoff-open projects-flow-section projects-flow-section-end" data-reveal data-reveal-delay="150">
         <div className="section-head">
           <div className="section-header-ea">
             <h2 className="heading-reset">Handoff beta e publicação manual</h2>
@@ -226,11 +226,11 @@ export default function ProjectsPage() {
             Entender limites do beta
           </Link>
         </div>
-        <div className="dashboard-section-body">
+        <div className="projects-handoff-stack">
           <GitHubWorkspaceCard projects={normalizedProjects.map((project) => ({ id: project.id, title: project.title, kind: project.kind, data: project.data }))} />
           <VercelPublishCard projects={normalizedProjects.map((project) => ({ id: project.id, title: project.title, kind: project.kind, data: project.data }))} />
         </div>
-        <div className="helper-text-ea">
+        <div className="helper-text-ea projects-handoff-note">
           Use essas integrações quando o projeto já estiver suficientemente maduro para sair da plataforma. O núcleo do beta pago/controlado continua sendo creators hero, editor, projetos e saída rastreada.
         </div>
       </section>
