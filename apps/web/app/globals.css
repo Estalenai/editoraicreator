@@ -10144,6 +10144,185 @@ body {
   border-color: rgba(191, 239, 255, 0.06) !important;
 }
 
+.creators-page .creators-hero-open,
+.creators-page .creators-proof-section,
+.creators-page .creators-hero-core-section,
+.creators-page .creators-secondary-section {
+  padding: 0;
+  border: 0 !important;
+  border-radius: 0;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.creators-page .creators-hero-open::before,
+.creators-page .creators-hero-open::after {
+  display: none;
+}
+
+.creators-page .creators-hero-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 0.38fr);
+  gap: clamp(20px, 2.8vw, 36px);
+  align-items: start;
+}
+
+.creators-page .creators-hero-copy {
+  gap: clamp(14px, 1.8vw, 20px);
+}
+
+.creators-page .creators-hero-open .hero-title-stack {
+  gap: 10px;
+}
+
+.creators-page .creators-hero-signal-strip,
+.creators-page .creators-hero-metrics-compact {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.creators-page .creators-hero-signal,
+.creators-page .creators-hero-metric-card {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  min-height: 0;
+  padding: 0 0 0 14px;
+  border: 0;
+  border-left: 1px solid var(--ea-page-canvas-divider);
+  border-radius: 0;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.creators-page .creators-hero-signal strong,
+.creators-page .creators-hero-metric-card .hero-kpi-value {
+  color: var(--ea-text-strong);
+}
+
+.creators-page .creators-hero-signal span,
+.creators-page .creators-hero-metric-card .hero-kpi-text {
+  color: var(--ea-text-muted);
+  line-height: 1.58;
+}
+
+.creators-page .creators-hero-panel-quiet {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+  padding: 4px 0 0 clamp(16px, 2vw, 22px);
+  border: 0;
+  border-left: 1px solid var(--ea-page-canvas-divider);
+  border-radius: 0;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.creators-page .creators-hero-panel-stack {
+  gap: 12px;
+}
+
+.creators-page .creators-hero-panel-note {
+  display: grid;
+  gap: 6px;
+  padding: 0 0 0 12px;
+  border: 0;
+  border-left: 1px solid rgba(191, 239, 255, 0.12);
+  border-radius: 0;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.creators-page .creators-hero-panel-note span {
+  color: var(--ea-text-muted);
+  line-height: 1.58;
+}
+
+.creators-page .creators-hero-panel-actions {
+  justify-content: flex-start;
+  padding-top: 4px;
+}
+
+.creators-page .creators-hero-core-card,
+.creators-page .creators-secondary-card {
+  border-color: rgba(191, 239, 255, 0.08) !important;
+  background: var(--ea-page-subtle-surface) !important;
+  box-shadow: none !important;
+}
+
+.creators-page .creators-hero-core-card[data-active="true"] {
+  border-color: rgba(75, 232, 255, 0.2) !important;
+  box-shadow: none !important;
+}
+
+@media (max-width: 1100px) {
+  .creators-page .creators-hero-shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .creators-page .creators-hero-panel-quiet {
+    padding-left: 0;
+    padding-top: 14px;
+    border-left: 0;
+    border-top: 1px solid var(--ea-page-canvas-divider);
+  }
+}
+
+@media (max-width: 768px) {
+  .creators-page .creators-hero-signal-strip,
+  .creators-page .creators-hero-metrics-compact {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .creators-page .creators-hero-signal,
+  .creators-page .creators-hero-metric-card {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .creators-page .creators-hero-signal-strip > * + *,
+  .creators-page .creators-hero-metrics-compact > * + * {
+    padding-top: 10px;
+    border-top: 1px solid var(--ea-page-canvas-divider);
+  }
+}
+
+@media (max-width: 480px) {
+  .creators-page {
+    gap: 14px;
+  }
+
+  .creators-page .creators-hero-open {
+    gap: 12px;
+  }
+
+  .creators-page .creators-hero-open .hero-title-stack {
+    gap: 8px;
+  }
+
+  .creators-page .creators-hero-lead {
+    font-size: 14px;
+    line-height: 1.58;
+  }
+
+  .creators-page .creators-hero-panel-quiet {
+    gap: 10px;
+    padding-top: 10px;
+  }
+
+  .creators-page .creators-hero-panel-note {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .creators-page .creators-hero-panel-stack > * + * {
+    padding-top: 10px;
+    border-top: 1px solid var(--ea-page-canvas-divider);
+  }
+}
+
 .projects-page .projects-list-section,
 .projects-page .projects-publish-section,
 .projects-page .projects-handoff-section,

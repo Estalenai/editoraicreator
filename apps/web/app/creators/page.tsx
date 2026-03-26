@@ -290,8 +290,8 @@ function CreatorsPageContent() {
 
   return (
     <div className="page-shell creators-page">
-      <section className="premium-hero creators-hero surface-flow-hero" data-reveal>
-        <div className="hero-split creators-hero-split">
+      <section className="creators-hero creators-hero-open">
+        <div className="hero-split creators-hero-split creators-hero-shell">
           <div className="hero-copy creators-hero-copy">
             <div className="hero-title-stack">
               <p className="section-kicker">Workspace de criação</p>
@@ -307,32 +307,32 @@ function CreatorsPageContent() {
             </div>
 
             <div className="signal-strip creators-hero-signal-strip">
-              <div className="signal-chip signal-chip-creative">
+              <div className="creators-hero-signal">
                 <strong>Briefing</strong>
                 <span>Campos objetivos e estimativa antes de qualquer geração.</span>
               </div>
-              <div className="signal-chip signal-chip-creative">
+              <div className="creators-hero-signal">
                 <strong>Geração</strong>
                 <span>Progresso claro, erro legível e retorno visível durante a execução.</span>
               </div>
-              <div className="signal-chip signal-chip-creative">
+              <div className="creators-hero-signal">
                 <strong>Continuidade</strong>
                 <span>Salvar em projeto, editar no workspace e preparar exportação sem perder contexto.</span>
               </div>
             </div>
 
             <div className="hero-kpi-grid creators-hero-metrics creators-hero-metrics-compact">
-              <div className="hero-kpi creators-hero-metric layout-contract-note">
+              <div className="creators-hero-metric-card">
                 <span className="hero-kpi-label">Ferramenta ativa</span>
                 <strong className="hero-kpi-value">{activeTabMeta.label}</strong>
                 <span className="hero-kpi-text">{activeTabMeta.bestFor}</span>
               </div>
-              <div className="hero-kpi creators-hero-metric layout-contract-note">
+              <div className="creators-hero-metric-card">
                 <span className="hero-kpi-label">Saldo para operar</span>
                 <strong className="hero-kpi-value">{walletSummaryDisplay}</strong>
                 <span className="hero-kpi-text">{loading ? "Saldo, plano e regras de uso estão sendo sincronizados." : "Estimativa antes da geração. Consumo real em Créditos."}</span>
               </div>
-              <div className="hero-kpi creators-hero-metric layout-contract-note">
+              <div className="creators-hero-metric-card">
                 <span className="hero-kpi-label">Próximo passo</span>
                 <strong className="hero-kpi-value">Gerar → editar → exportar</strong>
                 <span className="hero-kpi-text">Projeto salvo, refinamento no editor e exportação local quando a peça estiver pronta.</span>
@@ -340,7 +340,7 @@ function CreatorsPageContent() {
             </div>
           </div>
 
-          <div className="hero-side-panel creators-hero-panel layout-contract-rail">
+          <div className="creators-hero-panel creators-hero-panel-quiet">
             <div className="section-stack">
               <p className="section-kicker">Controle operacional</p>
               <h2 style={{ margin: 0 }}>Criatividade com estrutura</h2>
@@ -350,17 +350,17 @@ function CreatorsPageContent() {
             </div>
 
             <div className="creators-hero-panel-stack hero-side-list hero-side-list-compact">
-              <div className="hero-side-note">
+              <div className="creators-hero-panel-note">
                 <strong>Briefing orientado</strong>
                 <span>Objetivo, formato e contexto ficam agrupados sem transformar o fluxo em um formulário extenso.</span>
               </div>
-              <div className="hero-side-note">
+              <div className="creators-hero-panel-note">
                 <strong>Continuidade pronta</strong>
                 <span>Depois da geração, o resultado entra em projeto, editor e pipeline de saída com contexto preservado.</span>
               </div>
             </div>
 
-            <div className="hero-actions-row">
+            <div className="hero-actions-row creators-hero-panel-actions">
               <button
                 onClick={async () => {
                   await onSyncSubscription();
