@@ -20,24 +20,84 @@ const breakpoints = [
 
 const routes = [
   {
+    slug: "home",
+    path: "/",
+    readySelector: ".beta-entry-page",
+    headingPattern: /acesso ao n[úu]cleo do editor ai creator/i,
+    requiresAuth: false,
+  },
+  {
+    slug: "login",
+    path: "/login",
+    readySelector: ".auth-entry-shell",
+    headingPattern: /entrar|criar conta|editor ai creator/i,
+    requiresAuth: false,
+  },
+  {
     slug: "dashboard",
     path: "/dashboard",
     readySelector: ".dashboard-page",
     headingPattern: /dashboard/i,
+    requiresAuth: true,
   },
   {
     slug: "credits",
     path: "/credits",
     readySelector: ".credits-page",
     headingPattern: /cr[eé]ditos/i,
+    requiresAuth: true,
   },
   {
     slug: "creators",
     path: "/creators",
     readySelector: ".creators-page",
     headingPattern: /creators/i,
+    requiresAuth: true,
+  },
+  {
+    slug: "projects",
+    path: "/projects",
+    readySelector: ".projects-page",
+    headingPattern: /projetos/i,
+    requiresAuth: true,
+  },
+  {
+    slug: "plans",
+    path: "/plans",
+    readySelector: ".plans-page",
+    headingPattern: /planos/i,
+    requiresAuth: true,
+  },
+  {
+    slug: "support",
+    path: "/support",
+    readySelector: ".support-page",
+    headingPattern: /suporte/i,
+    requiresAuth: true,
+  },
+  {
+    slug: "how-it-works",
+    path: "/how-it-works",
+    readySelector: ".how-it-works-page",
+    headingPattern: /como funciona/i,
+    requiresAuth: true,
+  },
+  {
+    slug: "admin",
+    path: "/admin",
+    readySelector: ".admin-page",
+    headingPattern: /admin|acesso restrito/i,
+    requiresAuth: true,
   },
 ];
+
+const dashboardRoute = routes.find((route) => route.path === "/dashboard");
+const publicRoutes = routes.filter((route) => !route.requiresAuth);
+const privateRoutes = routes.filter((route) => route.requiresAuth);
+
+if (!dashboardRoute) {
+  throw new Error("Dashboard route configuration is required for the post-deploy capture flow.");
+}
 
 function getArg(flag) {
   const index = process.argv.indexOf(flag);
@@ -152,9 +212,11 @@ async function waitForLoginUiReady(page) {
 }
 
 async function waitForRouteReady(page, route) {
-  await page.waitForURL(new RegExp(`${route.path}(?:[/?#]|$)`), {
-    timeout: ROUTE_TIMEOUT,
-  }).catch(() => {});
+  await page.waitForFunction(
+    (expectedPath) => window.location.pathname === expectedPath,
+    route.path,
+    { timeout: ROUTE_TIMEOUT },
+  ).catch(() => {});
 
   const pageRoot = page.locator(route.readySelector).first();
   const pageHeading = page.getByRole("heading", { name: route.headingPattern }).first();
@@ -190,7 +252,7 @@ async function loginIfNeeded(page, { email, password, outDir }) {
   });
 
   if (page.url().includes("/dashboard")) {
-    await waitForRouteReady(page, routes[0]);
+    await waitForRouteReady(page, dashboardRoute);
     return {
       status: "already_authenticated",
       finalUrl: page.url(),
@@ -297,7 +359,7 @@ async function loginIfNeeded(page, { email, password, outDir }) {
     });
   }
 
-  await waitForRouteReady(page, routes[0]);
+  await waitForRouteReady(page, dashboardRoute);
 
   await page.screenshot({
     path: path.join(outDir, "03-after-login.png"),
@@ -345,6 +407,24 @@ async function captureRouteBreakpoint(page, route, breakpoint, rootOutDir) {
       fullPage: fullPageShot,
     },
     snapshot: await collectSnapshot(page),
+  };
+}
+
+async function captureRouteSet(page, routeList, rootOutDir) {
+  const captures = [];
+  const generatedFiles = [];
+
+  for (const route of routeList) {
+    for (const breakpoint of breakpoints) {
+      const capture = await captureRouteBreakpoint(page, route, breakpoint, rootOutDir);
+      captures.push(capture);
+      generatedFiles.push(capture.files.viewport, capture.files.fullPage);
+    }
+  }
+
+  return {
+    captures,
+    generatedFiles,
   };
 }
 
@@ -421,27 +501,23 @@ page.on("pageerror", (error) => {
 });
 
 try {
+  const publicCaptureResult = await captureRouteSet(page, publicRoutes, OUT_DIR);
   const loginResult = await loginIfNeeded(page, {
     email: EMAIL,
     password: PASSWORD,
     outDir: OUT_DIR,
   });
 
-  const captures = [];
+  const privateCaptureResult = await captureRouteSet(page, privateRoutes, OUT_DIR);
   const generatedFiles = [
     path.join(OUT_DIR, "00-entry.png"),
     path.join(OUT_DIR, "01-login-ready.png"),
     path.join(OUT_DIR, "02-after-submit.png"),
     path.join(OUT_DIR, "03-after-login.png"),
+    ...publicCaptureResult.generatedFiles,
+    ...privateCaptureResult.generatedFiles,
   ];
-
-  for (const route of routes) {
-    for (const breakpoint of breakpoints) {
-      const capture = await captureRouteBreakpoint(page, route, breakpoint, OUT_DIR);
-      captures.push(capture);
-      generatedFiles.push(capture.files.viewport, capture.files.fullPage);
-    }
-  }
+  const captures = [...publicCaptureResult.captures, ...privateCaptureResult.captures];
 
   await saveJson(path.join(OUT_DIR, "summary.json"), {
     baseUrl: BASE_URL,
