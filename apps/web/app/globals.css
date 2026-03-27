@@ -14108,3 +14108,33 @@ body {
     opacity: 0.2;
   }
 }
+
+/* How-it-works desktop visibility regression fix */
+.how-it-works-page-canvas {
+  position: relative;
+  z-index: 1;
+}
+
+.how-it-works-page-canvas > *,
+.motion-runtime .how-it-works-page [data-reveal],
+.motion-runtime .how-it-works-page [data-reveal].is-visible {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+  transition: none !important;
+}
+
+@supports (animation-timeline: view()) {
+  .how-it-works-page > *,
+  .how-it-works-page .how-it-works-page-canvas,
+  .how-it-works-page [data-reveal],
+  .how-it-works-page .how-it-works-step-open,
+  .how-it-works-page .how-it-works-example,
+  .how-it-works-page .how-it-works-note-open {
+    animation-name: none !important;
+    animation-duration: 0s !important;
+    animation-fill-mode: none !important;
+    animation-timeline: auto !important;
+    animation-range: normal !important;
+  }
+}
