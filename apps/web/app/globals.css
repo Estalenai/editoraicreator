@@ -10978,9 +10978,9 @@ body {
 .plans-page .plan-catalog-grid {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   column-gap: 0;
-  row-gap: 24px;
+  row-gap: 20px;
   align-items: start;
-  padding-top: 14px;
+  padding-top: 12px;
   border-top: 1px solid var(--ea-page-canvas-divider);
 }
 
@@ -10992,9 +10992,9 @@ body {
   position: relative;
   display: grid;
   align-content: start;
-  gap: 12px;
+  gap: 10px;
   min-height: 0;
-  padding: 0 22px;
+  padding: 0 18px;
   border: 0 !important;
   border-left: 1px solid var(--ea-page-canvas-divider) !important;
   border-radius: 0;
@@ -11037,18 +11037,23 @@ body {
 .plans-page .plan-card-top {
   padding-top: 0 !important;
   border-top: 0 !important;
-  gap: 8px;
+  gap: 6px;
 }
 
 .plans-page .plan-card-header,
 .plans-page .plan-card-credits,
 .plans-page .plan-card-bullets {
-  gap: 6px;
+  gap: 5px;
 }
 
 .plans-page .plan-card > * + * {
   padding-top: 0;
   border-top: 0;
+}
+
+.plans-page .plan-card-top .plan-card-section-label,
+.plans-page .plan-card-bullets .plan-card-section-label {
+  display: none;
 }
 
 .plans-page .plan-card-price {
@@ -11058,16 +11063,22 @@ body {
 
 .plans-page .plan-card-mode,
 .plans-page .plan-card-credits,
-.plans-page .plan-card-bullets,
-.plans-page .plan-card-footer {
-  padding-top: 10px;
-  border-top: 1px solid rgba(191, 239, 255, 0.07);
+.plans-page .plan-card-bullets {
+  padding-top: 0;
+  border-top: 0;
 }
 
 .plans-page .plan-card-mode,
 .plans-page .plan-card-footer {
   display: grid;
   gap: 8px;
+}
+
+.plans-page .plan-card-footer {
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  padding-top: 12px;
+  border-top: 1px solid rgba(191, 239, 255, 0.08);
 }
 
 .plans-page .plan-card-mode strong,
@@ -11093,6 +11104,12 @@ body {
 .plans-page .plan-card-limits {
   padding-top: 0;
   border-top: 0;
+}
+
+.plans-page .plan-card-total {
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--ea-text-subtle);
 }
 
 .plans-page .plan-card-support-note,
@@ -11187,6 +11204,23 @@ body {
 
   .plans-page .plans-hero-meta {
     gap: 8px;
+  }
+
+  .plans-page .plans-hero-meta .premium-badge-warning {
+    display: none;
+  }
+
+  .plans-page .plans-hero-signals {
+    gap: 10px;
+  }
+
+  .plans-page .plans-hero-signal {
+    gap: 4px;
+    padding-left: 10px;
+  }
+
+  .plans-page .plans-hero-signals > .plans-hero-signal:last-child {
+    display: none;
   }
 
   .plans-page .plans-confidence-strip {
