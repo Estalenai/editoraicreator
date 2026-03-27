@@ -13446,6 +13446,56 @@ body {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
   }
+
+  .beta-entry-page-canvas {
+    gap: 18px;
+  }
+
+  .beta-entry-hero-open {
+    position: relative;
+    gap: 14px;
+    padding-top: 6px;
+  }
+
+  .beta-entry-hero-open::before {
+    content: "";
+    position: absolute;
+    inset: -20px 18% auto -12px;
+    height: 128px;
+    pointer-events: none;
+    background:
+      radial-gradient(180px 88px at 44% 50%, rgba(178, 246, 255, 0.18), transparent 68%),
+      conic-gradient(from 214deg at 34% 54%, transparent 0 58deg, rgba(178, 238, 255, 0.16) 58deg 116deg, transparent 116deg 360deg);
+    filter: blur(10px);
+    opacity: 0.74;
+    z-index: 0;
+  }
+
+  .beta-entry-hero-open > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .beta-entry-hero-copy,
+  .beta-entry-headline-stack {
+    gap: 12px;
+  }
+
+  .beta-entry-title {
+    max-width: 11ch;
+    font-size: clamp(26px, 9vw, 32px);
+    line-height: 1.02;
+  }
+
+  .beta-entry-copy {
+    max-width: 28ch;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  .beta-entry-proof-open {
+    gap: 12px;
+  }
 }
 
 /* Post-structure route robustness sweep */
@@ -13520,10 +13570,37 @@ body {
   line-height: 1.25;
 }
 
+.beta-entry-page > * {
+  animation: none;
+}
+
+.motion-runtime .beta-entry-page [data-reveal] {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  transition: none;
+}
+
+.motion-runtime .beta-entry-page [data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
 @media (max-width: 1100px) {
   .beta-entry-page .beta-entry-points,
   .beta-entry-page .beta-entry-proof-grid-open {
     grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  .beta-entry-page > * {
+    animation-name: none;
+    animation-duration: 0s;
+    animation-fill-mode: none;
+    animation-timeline: auto;
+    animation-range: normal;
   }
 }
 
