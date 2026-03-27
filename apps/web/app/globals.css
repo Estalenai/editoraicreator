@@ -10509,8 +10509,8 @@ body {
 .projects-page .projects-list-stack > * + *,
 .projects-page .projects-handoff-stack > * + * {
   margin-top: 0;
-  padding-top: 12px;
-  border-top: 1px solid var(--ea-page-canvas-divider);
+  padding-top: 10px;
+  border-top: 1px solid rgba(191, 239, 255, 0.1);
 }
 
 .projects-page .dashboard-project-link {
@@ -10557,6 +10557,19 @@ body {
   border-left: 0 !important;
 }
 
+.projects-page .projects-handoff-section .section-head {
+  align-items: flex-end;
+  gap: 10px 16px;
+}
+
+.projects-page .projects-handoff-section .section-header-ea {
+  gap: 4px;
+}
+
+.projects-page .projects-handoff-section .btn-link-ea {
+  opacity: 0.78;
+}
+
 .projects-page .github-workspace-card,
 .projects-page .vercel-publish-card {
   padding: 0;
@@ -10568,24 +10581,106 @@ body {
 
 .projects-page .github-workspace-card > * + *,
 .projects-page .vercel-publish-card > * + * {
-  padding-top: 12px;
-  border-top: 1px solid var(--ea-page-canvas-divider);
+  padding-top: 10px;
+  border-top: 1px solid rgba(191, 239, 255, 0.08);
 }
 
 .projects-page .github-workspace-grid,
 .projects-page .vercel-publish-grid,
-.projects-page .vercel-publish-status-grid {
+.projects-page .vercel-publish-status-grid,
+.projects-page .vercel-publish-links {
+  gap: 0;
+}
+
+.projects-page .github-workspace-head,
+.projects-page .vercel-publish-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 6px;
+}
+
+.projects-page .github-workspace-head .section-header-ea,
+.projects-page .vercel-publish-copy,
+.projects-page .github-workspace-pane .section-stack-tight,
+.projects-page .vercel-publish-history .section-stack-tight {
+  gap: 4px;
+}
+
+.projects-page .github-workspace-head .heading-reset,
+.projects-page .vercel-publish-copy h3,
+.projects-page .vercel-publish-history .heading-reset {
+  font-size: clamp(1rem, 1.25vw, 1.125rem);
+  line-height: 1.2;
+}
+
+.projects-page .github-workspace-head .section-header-copy,
+.projects-page .vercel-publish-copy .helper-text-ea,
+.projects-page .vercel-publish-history .helper-text-ea {
+  max-width: 76ch;
+  font-size: 13px;
+  line-height: 1.56;
+}
+
+.projects-page .github-workspace-meta-row,
+.projects-page .vercel-publish-head > .premium-badge {
+  display: none;
+}
+
+.projects-page .vercel-publish-grid > *,
+.projects-page .vercel-publish-links > * {
+  padding-left: 14px;
+  border-left: 1px solid var(--ea-page-canvas-divider);
+}
+
+.projects-page .github-workspace-grid > :first-child,
+.projects-page .vercel-publish-grid > :first-child,
+.projects-page .vercel-publish-links > :first-child {
+  padding-left: 0;
+  border-left: 0 !important;
+}
+
+.projects-page .github-workspace-status-list,
+.projects-page .github-workspace-activity-list,
+.projects-page .vercel-publish-history-list {
+  gap: 0;
+}
+
+.projects-page .github-workspace-status-list > * + *,
+.projects-page .github-workspace-activity-list > * + *,
+.projects-page .vercel-publish-history-list > * + * {
+  padding-top: 8px;
+  border-top: 1px solid rgba(191, 239, 255, 0.08);
+}
+
+.projects-page .github-workspace-target-row,
+.projects-page .github-workspace-cta-row,
+.projects-page .vercel-publish-actions {
+  gap: 8px;
+}
+
+.projects-page .vercel-publish-form,
+.projects-page .vercel-publish-history {
   gap: 10px;
 }
 
-.projects-page .github-workspace-pane,
+.projects-page .github-workspace-pane {
+  padding: 0 0 0 14px;
+  border: 0 !important;
+  border-left: 1px solid var(--ea-page-canvas-divider) !important;
+  border-radius: 0;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
 .projects-page .github-workspace-status-item,
 .projects-page .github-workspace-inline-note,
 .projects-page .github-workspace-activity-item,
 .projects-page .vercel-publish-status-item,
 .projects-page .vercel-publish-link-card,
 .projects-page .vercel-publish-empty,
-.projects-page .vercel-publish-note {
+.projects-page .vercel-publish-note,
+.projects-page .vercel-publish-history-item {
+  padding: 2px 0 2px 10px;
   border: 0 !important;
   border-left: 1px solid rgba(191, 239, 255, 0.08) !important;
   border-radius: 0;
@@ -10593,8 +10688,7 @@ body {
   box-shadow: none !important;
 }
 
-.projects-page .github-workspace-meta-row,
-.projects-page .vercel-publish-head {
+.projects-page .github-workspace-meta-row {
   gap: 10px;
 }
 
@@ -10647,6 +10741,22 @@ body {
 
   .projects-page .projects-publish-grid > * + * {
     padding-top: 12px;
+    border-top: 1px solid var(--ea-page-canvas-divider);
+  }
+}
+
+@media (max-width: 900px) {
+  .projects-page .github-workspace-pane,
+  .projects-page .vercel-publish-grid > *,
+  .projects-page .vercel-publish-links > * {
+    padding-left: 0;
+    border-left: 0 !important;
+  }
+
+  .projects-page .github-workspace-grid > * + *,
+  .projects-page .vercel-publish-grid > * + *,
+  .projects-page .vercel-publish-links > * + * {
+    padding-top: 10px;
     border-top: 1px solid var(--ea-page-canvas-divider);
   }
 }
