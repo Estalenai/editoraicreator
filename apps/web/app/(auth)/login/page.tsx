@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "../../../lib/supabaseClient";
@@ -9,6 +9,7 @@ import { toUserFacingError } from "../../../lib/uiFeedback";
 function LoginPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const formRef = useRef<HTMLFormElement | null>(null);
   const initialMode = searchParams.get("mode") === "signup" ? "signup" : "login";
 
   const [mode, setMode] = useState<"login" | "signup">(initialMode);
@@ -155,7 +156,7 @@ function LoginPageContent() {
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="auth-entry-card-open">
+          <form ref={formRef} onSubmit={handleSubmit} className="auth-entry-card-open">
             <div className="section-stack">
               <p className="section-kicker">Acesso à plataforma</p>
               <h2 className="auth-entry-card-title">
@@ -174,7 +175,14 @@ function LoginPageContent() {
                 role="tab"
                 aria-selected={mode === "login"}
                 data-active={mode === "login" ? "true" : "false"}
-                onClick={() => setAuthMode("login")}
+                onClick={() => {
+                  if (mode === "login") {
+                    formRef.current?.requestSubmit();
+                    return;
+                  }
+                  setAuthMode("login");
+                }}
+                disabled={loading && mode === "login"}
                 className={`btn-ea ${mode === "login" ? "btn-primary" : "btn-ghost"}`}
               >
                 Entrar
