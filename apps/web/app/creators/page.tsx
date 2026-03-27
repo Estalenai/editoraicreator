@@ -336,12 +336,8 @@ function CreatorsPageContent() {
 
             <div className="creators-hero-panel-stack hero-side-list hero-side-list-compact">
               <div className="creators-hero-panel-note">
-                <strong>Briefing orientado</strong>
-                <span>Objetivo, formato e contexto ficam agrupados sem transformar o fluxo em um formulário extenso.</span>
-              </div>
-              <div className="creators-hero-panel-note">
-                <strong>Continuidade pronta</strong>
-                <span>Depois da geração, o resultado entra em projeto, editor e pipeline de saída com contexto preservado.</span>
+                <strong>Briefing e continuidade em sequência curta</strong>
+                <span>Objetivo, contexto e resultado seguem na mesma trilha para reduzir ruído e manter a passagem para projeto e editor sem quebra.</span>
               </div>
             </div>
 
@@ -352,11 +348,11 @@ function CreatorsPageContent() {
                   await refresh();
                 }}
                 disabled={syncingSubscription || loading}
-                className="btn-ea btn-secondary"
+                className="btn-ea btn-ghost btn-sm"
               >
                 {syncingSubscription ? "Sincronizando..." : "Sincronizar assinatura"}
               </button>
-              <button onClick={onLogout} className="btn-ea btn-ghost">
+              <button onClick={onLogout} className="btn-ea btn-ghost btn-sm">
                 Sair
               </button>
             </div>
