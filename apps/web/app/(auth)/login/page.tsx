@@ -250,11 +250,6 @@ function LoginPageContent() {
               <span>Dados da sua conta não são usados para treinar modelos. O processamento segue isolado e com prioridade para privacidade.</span>
             </div>
 
-            <div className="auth-entry-inline-note">
-              <strong>Base profissional de acesso</strong>
-              <span>Autenticação, sessão e continuidade da conta operam sobre Supabase para manter entrada segura e histórico consistente.</span>
-            </div>
-
             {error ? (
               <div className="state-ea state-ea-error">
                 <p className="state-ea-title">Não foi possível continuar</p>
