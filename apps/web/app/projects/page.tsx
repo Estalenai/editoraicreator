@@ -54,6 +54,17 @@ export default function ProjectsPage() {
   const projectCountLabel = loading
     ? "Projetos em sincronização"
     : `${normalizedProjects.length} projeto(s) disponível(is)`;
+  const leadProject = normalizedProjects[0] ?? null;
+  const leadProjectHref = leadProject?.id ? `/editor/${leadProject.id}` : "/editor/new";
+  const leadProjectMeta = loading
+    ? "A lista completa entra logo abaixo, assim que a base terminar de sincronizar."
+    : leadProject
+      ? `${leadProject.kind} • ${leadProject.summary.outputStageLabel} • ${leadProject.summary.reviewStatusLabel}${
+          leadProject.updatedAt
+            ? ` • atualizado em ${new Date(leadProject.updatedAt).toLocaleDateString("pt-BR")}`
+            : ""
+        }`
+      : "Abra um novo projeto e siga pela mesma trilha operacional que continua logo abaixo.";
 
   if (betaBlocked) {
     return <BetaAccessBlockedView email={email} status={betaAccess?.status} onLogout={onLogout} />;
@@ -75,17 +86,41 @@ export default function ProjectsPage() {
               <span className="premium-badge premium-badge-phase">Plano: {planLabelDisplay}</span>
               <span className="premium-badge premium-badge-soon">{projectCountLabel}</span>
             </div>
+            <div className="projects-hero-bridge-stack">
+              <span className="projects-hero-bridge-label">
+                {loading ? "Sincronizando continuidade" : leadProject ? "Continue agora" : "Pronto para abrir"}
+              </span>
+              {loading ? (
+                <div className="projects-hero-bridge" aria-live="polite">
+                  <div className="projects-hero-bridge-main">
+                    <strong>Carregando projetos salvos</strong>
+                    <span className="projects-hero-bridge-meta">{leadProjectMeta}</span>
+                  </div>
+                  <span className="projects-hero-bridge-cta">Sincronizando</span>
+                </div>
+              ) : (
+                <Link href={leadProjectHref} className="projects-hero-bridge">
+                  <div className="projects-hero-bridge-main">
+                    <strong>{leadProject ? leadProject.title : "Abrir um novo projeto"}</strong>
+                    <span className="projects-hero-bridge-meta">{leadProjectMeta}</span>
+                  </div>
+                  <span className="projects-hero-bridge-cta">
+                    {leadProject ? "Continuar" : "Criar agora"}
+                  </span>
+                </Link>
+              )}
+            </div>
           </div>
 
           <div className="projects-hero-panel projects-hero-panel-quiet">
             <div className="projects-hero-panel-list">
               <div className="projects-hero-note">
                 <strong>Abra e continue</strong>
-                <span>Use a lista abaixo para retomar do ponto em que o projeto foi salvo.</span>
+                <span>Retome um draft salvo diretamente na lista logo abaixo.</span>
               </div>
               <div className="projects-hero-note">
                 <strong>Saída e handoff em apoio</strong>
-                <span>Draft, exported e published ficam claros, enquanto GitHub e Vercel seguem como camada secundária da continuidade.</span>
+                <span>Draft, exported e published ficam claros, com GitHub e Vercel só como camada secundária.</span>
               </div>
             </div>
 
@@ -121,9 +156,6 @@ export default function ProjectsPage() {
               Retome um projeto existente ou crie um novo para seguir no núcleo principal do beta: creators hero, editor, checkpoint e saída.
             </p>
           </div>
-          <Link href="/editor/new" className="btn-link-ea btn-secondary btn-sm">
-            Abrir editor novo
-          </Link>
         </div>
 
         {loading ? (
