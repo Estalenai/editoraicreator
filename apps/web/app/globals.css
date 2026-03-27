@@ -10294,6 +10294,126 @@ body {
   padding-top: 0;
 }
 
+.creators-page .proof-value-grid-creators {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+}
+
+.creators-page .creators-hero-core-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 232px), 1fr));
+}
+
+.creators-page .creators-secondary-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 208px), 1fr));
+}
+
+.creators-page .creator-active-summary-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 188px), 1fr));
+}
+
+.creators-page .creators-sidebar-group-list {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 244px), 1fr));
+}
+
+.creators-page .proof-value-card,
+.creators-page .creators-hero-core-card,
+.creators-page .creators-secondary-card,
+.creators-page .creator-tab-btn,
+.creators-page .creator-active-summary-card,
+.creators-page .creator-workspace-zones > *,
+.creators-page .creator-output-grid > * {
+  min-width: 0;
+  min-height: 0;
+}
+
+.creators-page .proof-value-header,
+.creators-page .creator-active-panel-head,
+.creators-page .proof-value-meta-row,
+.creators-page .creators-hero-core-card-head,
+.creators-page .creators-secondary-card-head,
+.creators-page .creator-tab-head,
+.creators-page .creator-output-card-stat-row,
+.creators-page .creator-session-card-head,
+.creators-page .creators-wallet-row {
+  flex-wrap: wrap;
+}
+
+.creators-page .proof-value-header > *,
+.creators-page .creator-active-panel-head > *,
+.creators-page .proof-value-meta-row > *,
+.creators-page .creators-hero-core-card-head > *,
+.creators-page .creators-secondary-card-head > *,
+.creators-page .creator-tab-head > *,
+.creators-page .creator-output-card-stat-row > *,
+.creators-page .creator-session-card-head > *,
+.creators-page .creators-wallet-row > * {
+  min-width: 0;
+}
+
+.creators-page .creators-hero-core-card-head,
+.creators-page .creators-secondary-card-head,
+.creators-page .creator-tab-head,
+.creators-page .creator-session-card-head,
+.creators-page .creator-output-card-stat-row,
+.creators-page .creators-wallet-row {
+  align-items: flex-start;
+}
+
+.creators-page .creator-tab-head {
+  row-gap: 6px;
+}
+
+.creators-page .creator-tab-title,
+.creators-page .creators-secondary-card-head strong {
+  flex: 1 1 160px;
+}
+
+.creators-page .creator-tab-title,
+.creators-page .creator-tab-meta,
+.creators-page .creator-tab-support,
+.creators-page .creators-secondary-card-head strong,
+.creators-page .creator-active-panel-copy,
+.creators-page .creators-hero-lead,
+.creators-page .creators-hero-panel-copy,
+.creators-page .proof-value-block p,
+.creators-page .creator-zone-copy,
+.creators-page .creator-inline-panel-header p,
+.creators-page .creator-result-copy,
+.creators-page .creator-output-card-meta,
+.creators-page .creator-output-card-list-item,
+.creators-page .creators-wallet-row span {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.creators-page .premium-badge,
+.creators-page .creator-tab-chip,
+.creators-page .proof-value-chip {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.25;
+  text-align: center;
+}
+
+.creators-page .creator-tab-chip,
+.creators-page .proof-value-chip {
+  flex: 0 0 auto;
+}
+
+.creators-page .creators-hero-card-actions,
+.creators-page .creator-action-buttons,
+.creators-page .creator-inline-actions,
+.creators-page .creator-output-card-actions {
+  align-items: stretch;
+}
+
+.creators-page .creators-hero-card-actions > *,
+.creators-page .creator-action-buttons > *,
+.creators-page .creator-inline-actions > *,
+.creators-page .creator-output-card-actions > * {
+  min-width: min(100%, 176px);
+}
+
 .creators-page .creators-hero-core-card,
 .creators-page .creators-secondary-card {
   border-color: rgba(191, 239, 255, 0.08) !important;
@@ -10332,6 +10452,13 @@ body {
 @media (max-width: 768px) {
   .creators-page .creators-hero-metrics-compact {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .creators-page .proof-value-grid-creators,
+  .creators-page .creators-hero-core-grid,
+  .creators-page .creators-secondary-grid,
+  .creators-page .creator-active-summary-grid {
     gap: 10px;
   }
 
@@ -10382,6 +10509,16 @@ body {
 
   .creators-page .creators-hero-metric-card {
     gap: 3px;
+  }
+
+  .creators-page .creator-tab-btn {
+    min-height: 0;
+  }
+
+  .creators-page .creator-tab-head,
+  .creators-page .creators-secondary-card-head,
+  .creators-page .proof-value-meta-row {
+    gap: 8px;
   }
 
   .creators-page .creators-hero-metrics-compact > :last-child {
