@@ -607,44 +607,36 @@ function PlansPageContent() {
         </div>
       ) : null}
 
-      <section className="summary-grid plans-summary-grid">
-        <div className="executive-card plans-summary-card">
-          <p className="executive-eyebrow">Plano atual</p>
-          <p className="executive-value">{planLabelDisplay}</p>
-          <p className="executive-detail">{currentPlanAudience}</p>
+      <section className="plans-summary-strip" aria-label="Resumo do plano atual">
+        <div className="plans-summary-stat">
+          <p className="plans-summary-label">Plano atual</p>
+          <p className="plans-summary-primary">{planLabelDisplay}</p>
+          <p className="plans-summary-detail">{currentPlanAudience}</p>
         </div>
-        <div className="executive-card plans-summary-card">
-          <p className="executive-eyebrow">Créditos incluídos</p>
-          <p className="executive-value metric-value-compact">{currentPlanCreditsValue}</p>
-          <p className="executive-detail">{currentPlanCreditsDetail}</p>
+        <div className="plans-summary-stat">
+          <p className="plans-summary-label">Créditos incluídos</p>
+          <p className="plans-summary-primary">{currentPlanCreditsValue}</p>
+          <p className="plans-summary-detail">{currentPlanCreditsDetail}</p>
         </div>
-        <div className="executive-card plans-summary-card">
-          <p className="executive-eyebrow">Conversão entre tipos</p>
-          <p className="executive-value">{currentPlanFeeValue}</p>
-          <p className="executive-detail">{currentPlanFeeDetail}</p>
+        <div className="plans-summary-stat">
+          <p className="plans-summary-label">Conversão entre tipos</p>
+          <p className="plans-summary-primary">{currentPlanFeeValue}</p>
+          <p className="plans-summary-detail">{currentPlanFeeDetail}</p>
         </div>
       </section>
 
       <section className="plans-confidence-strip">
         <div className="plans-confidence-note">
-          <strong>Plano principal do beta</strong>
-          <span>Editor Pro é o ponto mais forte para operação recorrente; Iniciante valida encaixe e Editor Ultra expande cadência.</span>
+          <strong>Editor Pro como centro comercial</strong>
+          <span>Iniciante valida encaixe, Editor Pro concentra recorrência e Editor Ultra amplia cadência sem espalhar a comparação.</span>
         </div>
         <div className="plans-confidence-note">
-          <strong>Checkout claro</strong>
-          <span>Planos com checkout automático seguem para assinatura imediata via Stripe; os assistidos continuam via suporte.</span>
-        </div>
-        <div className="plans-confidence-note">
-          <strong>Controle comercial</strong>
-          <span>Preço, disponibilidade e diferenças principais ficam expostos sem leitura longa.</span>
-        </div>
-        <div className="plans-confidence-note">
-          <strong>Enterprise fora do aberto</strong>
-          <span>Enterprise opera por contrato e fica fora da comparação pública, sem preço, créditos ou composição abertos nesta página.</span>
+          <strong>Checkout ou ativação assistida</strong>
+          <span>Stripe para o fluxo self-serve; suporte quando o plano ainda exige ativação acompanhada.</span>
         </div>
         <div className="plans-confidence-note plans-confidence-note-trust">
-          <strong>Privacidade aplicada</strong>
-          <span>Dados operacionais não são usados para treino de modelos e o processamento segue isolado por conta.</span>
+          <strong>Enterprise e privacidade fora do ruído</strong>
+          <span>Enterprise segue por contrato; dados operacionais continuam isolados por conta e sem exposição desnecessária.</span>
         </div>
       </section>
 
@@ -764,54 +756,30 @@ function PlansPageContent() {
                     <span className="premium-badge premium-badge-phase plan-pill">
                       {statusText}
                     </span>
-                    {convertEnabled ? (
-                      <span className="premium-badge premium-badge-warning plan-pill">
-                        {convertFee === 0 ? "Conversão com taxa 0%" : `Taxa de conversão: ${convertFee}%`}
-                      </span>
-                    ) : (
-                      <span className="premium-badge premium-badge-soon plan-pill">
-                        Conversão indisponível
-                      </span>
-                    )}
-                  </div>
-                  {convertEnabled ? (
-                    <div className="plan-card-support-note">
-                      {convertFee === 0
-                        ? "Conversão entre tipos com taxa 0% neste plano."
-                        : `Conversão entre tipos com taxa de ${convertFee}% neste plano.`}
+                    <div className="plan-card-status-note">
+                      {convertEnabled
+                        ? convertFee === 0
+                          ? "Conversão entre tipos com taxa 0% neste plano."
+                          : `Conversão entre tipos com taxa de ${convertFee}% neste plano.`
+                        : "Conversão entre tipos indisponível neste plano."}
                     </div>
-                  ) : null}
+                  </div>
                   {creditsIncluded.length > 0 ? (
                     <div className="plan-card-credits">
                       <div className="plan-card-section-label">Créditos incluídos</div>
-                      <div className="plan-card-metrics">
-                        {creditsIncluded.map((itemCredit) => (
-                          <span
-                            key={`${codeUpper}-${itemCredit}`}
-                            className="plan-credit-pill"
-                          >
-                            {itemCredit}
-                          </span>
-                        ))}
-                      </div>
+                      <div className="plan-card-credit-line">{creditsIncluded.join(" • ")}</div>
                       <div className="plan-card-total">Total agregado: {creditsTotal} créditos</div>
                     </div>
                   ) : null}
                   <div className="plan-card-bullets">
                     <div className="plan-card-section-label">Principais diferenças</div>
                     {displayBenefits.map((benefit) => (
-                      <div key={`${codeUpper}-highlight-${benefit}`}>• {benefit}</div>
+                      <div key={`${codeUpper}-highlight-${benefit}`} className="plan-card-bullet">• {benefit}</div>
                     ))}
                   </div>
                   <div className="plan-card-limits">
-                    {narrative.limits.map((itemLimit) => (
-                      <span
-                        key={`${codeUpper}-limit-${itemLimit}`}
-                        className="premium-badge premium-badge-soon plan-pill"
-                      >
-                        {itemLimit}
-                      </span>
-                    ))}
+                    <div className="plan-card-section-label">Ritmo de uso</div>
+                    <div className="plan-card-limit-line">{narrative.limits.join(" • ")}</div>
                   </div>
                   <button
                     disabled={(!hasInteractiveCheckout && !requiresAssistedActivation) || isLoadingCheckout}
