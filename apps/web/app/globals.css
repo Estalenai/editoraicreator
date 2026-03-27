@@ -10504,6 +10504,7 @@ body {
 .projects-page .projects-handoff-stack {
   display: grid;
   gap: 0;
+  overflow: visible;
 }
 
 .projects-page .projects-list-stack > * + *,
@@ -10577,6 +10578,17 @@ body {
   border-radius: 0;
   background: transparent !important;
   box-shadow: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+  overflow: visible;
+  will-change: auto;
+}
+
+.projects-page .projects-handoff-stack > * {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
 }
 
 .projects-page .github-workspace-card > * + *,
@@ -10697,6 +10709,17 @@ body {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
+  }
+
+  .projects-page .github-workspace-card,
+  .projects-page .vercel-publish-card,
+  .projects-page .projects-handoff-stack > * {
+    animation: none !important;
+    animation-timeline: auto !important;
+    animation-range: normal !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
   }
 }
 
