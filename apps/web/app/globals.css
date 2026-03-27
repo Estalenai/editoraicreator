@@ -8417,15 +8417,31 @@ body {
   background: linear-gradient(160deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.016));
 }
 
-.app-nav-link-active {
+.app-nav-link-active,
+.app-nav-link[aria-current="page"],
+.app-nav-link[data-active="true"] {
   border-color: rgba(75, 232, 255, 0.2) !important;
   background:
     linear-gradient(90deg, rgba(75, 232, 255, 0.1), rgba(255, 255, 255, 0.026)),
     linear-gradient(160deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.014));
 }
 
-.app-nav-link-active::after {
+.app-nav-link-active::after,
+.app-nav-link[aria-current="page"]::after,
+.app-nav-link[data-active="true"]::after {
   background: linear-gradient(180deg, rgba(75, 232, 255, 0.96), rgba(191, 239, 255, 0.72));
+}
+
+.app-nav-link-active .app-nav-link-label,
+.app-nav-link[aria-current="page"] .app-nav-link-label,
+.app-nav-link[data-active="true"] .app-nav-link-label {
+  color: rgba(248, 252, 255, 0.98);
+}
+
+.app-nav-link-active .app-nav-link-meta,
+.app-nav-link[aria-current="page"] .app-nav-link-meta,
+.app-nav-link[data-active="true"] .app-nav-link-meta {
+  color: rgba(226, 244, 255, 0.7);
 }
 
 .app-nav-link-meta {
@@ -11760,11 +11776,15 @@ body {
   background: rgba(255, 255, 255, 0.006) !important;
 }
 
-.app-shell-body:has(.dashboard-page) .app-nav-link-active .app-nav-link-label {
+.app-shell-body:has(.dashboard-page) .app-nav-link-active .app-nav-link-label,
+.app-shell-body:has(.dashboard-page) .app-nav-link[aria-current="page"] .app-nav-link-label,
+.app-shell-body:has(.dashboard-page) .app-nav-link[data-active="true"] .app-nav-link-label {
   color: rgba(248, 252, 255, 0.98);
 }
 
-.app-shell-body:has(.dashboard-page) .app-nav-link-active .app-nav-link-meta {
+.app-shell-body:has(.dashboard-page) .app-nav-link-active .app-nav-link-meta,
+.app-shell-body:has(.dashboard-page) .app-nav-link[aria-current="page"] .app-nav-link-meta,
+.app-shell-body:has(.dashboard-page) .app-nav-link[data-active="true"] .app-nav-link-meta {
   color: rgba(226, 244, 255, 0.7);
 }
 
@@ -11776,7 +11796,9 @@ body {
   opacity: 0.42;
 }
 
-.app-shell-body:has(.dashboard-page) .app-nav-link-active::after {
+.app-shell-body:has(.dashboard-page) .app-nav-link-active::after,
+.app-shell-body:has(.dashboard-page) .app-nav-link[aria-current="page"]::after,
+.app-shell-body:has(.dashboard-page) .app-nav-link[data-active="true"]::after {
   left: 4px;
   top: 10px;
   bottom: 10px;
