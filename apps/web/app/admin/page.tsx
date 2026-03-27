@@ -622,21 +622,25 @@ export default function AdminPage() {
             <h1 style={{ marginTop: 4, marginBottom: 0 }}>Admin</h1>
           </div>
           <div className="surface-toolbar admin-hero-toolbar">
-            <label className="toolbar-label">Período</label>
-            <PremiumSelect
-              className="field-inline"
-              value={String(days)}
-              options={PERIOD_OPTIONS}
-              ariaLabel="Período do painel"
-              onChange={(nextValue) => {
-                const next = Number(nextValue || 7);
-                setDays(next);
-                refreshAdminScreen(next);
-              }}
-            />
-            <button onClick={() => refreshAdminScreen(days)} className="btn-ea btn-secondary">Atualizar</button>
-            <button onClick={() => api.adminExportUsageCsv(days)} className="btn-ea btn-ghost btn-sm">Exportar CSV de uso</button>
-            <button onClick={() => api.adminExportCoinsCsv(days)} className="btn-ea btn-ghost btn-sm">Exportar CSV de créditos</button>
+            <div className="admin-hero-period">
+              <label className="toolbar-label">Período</label>
+              <PremiumSelect
+                className="field-inline"
+                value={String(days)}
+                options={PERIOD_OPTIONS}
+                ariaLabel="Período do painel"
+                onChange={(nextValue) => {
+                  const next = Number(nextValue || 7);
+                  setDays(next);
+                  refreshAdminScreen(next);
+                }}
+              />
+            </div>
+            <div className="admin-hero-actions">
+              <button onClick={() => refreshAdminScreen(days)} className="btn-ea btn-secondary">Atualizar</button>
+              <button onClick={() => api.adminExportUsageCsv(days)} className="btn-ea btn-ghost btn-sm">Exportar CSV de uso</button>
+              <button onClick={() => api.adminExportCoinsCsv(days)} className="btn-ea btn-ghost btn-sm">Exportar CSV de créditos</button>
+            </div>
           </div>
         </div>
 
@@ -1005,10 +1009,10 @@ export default function AdminPage() {
             <h3 style={{ margin: "4px 0 0" }}>Suporte interno</h3>
           </div>
         </div>
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 8 }}>
-          <span className="premium-badge premium-badge-warning">Em aberto: {supportStats.open}</span>
-          <span className="premium-badge premium-badge-phase">Em análise: {supportStats.inReview}</span>
-          <span className="premium-badge premium-badge-soon">Resolvidos: {supportStats.resolved}</span>
+        <div className="admin-inline-stats">
+          <span>Em aberto: {supportStats.open}</span>
+          <span>Em análise: {supportStats.inReview}</span>
+          <span>Resolvidos: {supportStats.resolved}</span>
         </div>
         <div className="surface-toolbar" style={{ marginBottom: 10 }}>
           <PremiumSelect
@@ -1110,11 +1114,11 @@ export default function AdminPage() {
             <h3 style={{ margin: "4px 0 0" }}>Beta fechado - fila de espera</h3>
           </div>
         </div>
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 8 }}>
-          <span className="premium-badge premium-badge-warning">Pendentes: {betaAccessStats.pending}</span>
-          <span className="premium-badge premium-badge-phase">Aprovados: {betaAccessStats.approved}</span>
-          <span className="premium-badge premium-badge-soon">Reprovados: {betaAccessStats.rejected}</span>
-          <span className="premium-badge premium-badge-phase">Taxa de aprovação: {betaAccessStats.approvalRate}</span>
+        <div className="admin-inline-stats">
+          <span>Pendentes: {betaAccessStats.pending}</span>
+          <span>Aprovados: {betaAccessStats.approved}</span>
+          <span>Reprovados: {betaAccessStats.rejected}</span>
+          <span>Taxa de aprovação: {betaAccessStats.approvalRate}</span>
         </div>
         <div style={{ opacity: 0.78, marginBottom: 8, fontSize: 12 }}>
           Hoje: +{todayStats.betaApprovedToday} aprovados • {todayStats.betaRejectedToday} reprovados • {todayStats.betaPendingToday} novos pendentes
