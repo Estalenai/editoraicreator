@@ -6078,11 +6078,7 @@ html {
 
 body {
   min-height: 100%;
-  background:
-    radial-gradient(880px 360px at 50% -10%, rgba(75, 232, 255, 0.18), transparent 60%),
-    radial-gradient(620px 280px at 12% 0%, rgba(20, 75, 154, 0.34), transparent 68%),
-    radial-gradient(680px 340px at 88% 12%, rgba(12, 47, 115, 0.22), transparent 72%),
-    linear-gradient(180deg, #071b44 0%, #06173a 42%, #05112b 100%);
+  background: var(--ea-global-bg-base);
   color: var(--ea-text-strong);
 }
 
@@ -6095,13 +6091,16 @@ body {
   content: "";
   position: absolute;
   inset: 0 0 auto 0;
-  height: 220px;
+  height: clamp(180px, 22vw, 260px);
   pointer-events: none;
   background:
-    repeating-linear-gradient(90deg, transparent 0 116px, rgba(124, 244, 255, 0.05) 116px 118px, transparent 118px 232px),
-    repeating-linear-gradient(180deg, transparent 0 94px, rgba(191, 239, 255, 0.035) 94px 96px, transparent 96px 192px);
-  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.3), transparent 82%);
-  opacity: 0.22;
+    linear-gradient(90deg, transparent 0 14%, rgba(124, 244, 255, 0.055) 14% 14.14%, transparent 14.14% 46%, rgba(124, 244, 255, 0.04) 46% 46.14%, transparent 46.14% 100%),
+    linear-gradient(180deg, transparent 0 18%, rgba(191, 239, 255, 0.04) 18% 18.14%, transparent 18.14% 58%, rgba(124, 244, 255, 0.032) 58% 58.14%, transparent 58.14% 100%),
+    repeating-linear-gradient(90deg, transparent 0 132px, rgba(124, 244, 255, 0.03) 132px 133px, transparent 133px 266px),
+    repeating-linear-gradient(180deg, transparent 0 104px, rgba(191, 239, 255, 0.022) 104px 105px, transparent 105px 210px);
+  -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.42), rgba(0, 0, 0, 0.18) 58%, transparent 86%);
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.42), rgba(0, 0, 0, 0.18) 58%, transparent 86%);
+  opacity: 0.2;
   z-index: 0;
 }
 
@@ -7365,11 +7364,53 @@ body {
 
 .app-shell-bg {
   min-height: 100dvh;
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
   color: #fff;
   background:
-    radial-gradient(1200px 480px at 15% -15%, rgba(52, 245, 255, 0.2), transparent 60%),
-    radial-gradient(900px 360px at 85% -20%, rgba(95, 118, 255, 0.24), transparent 58%),
-    #0a0f24;
+    var(--ea-global-bg-ambient),
+    var(--ea-global-bg-base);
+}
+
+.app-shell-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent 0 16%, rgba(124, 244, 255, 0.06) 16% 16.12%, transparent 16.12% 48%, rgba(124, 244, 255, 0.045) 48% 48.12%, transparent 48.12% 100%),
+    linear-gradient(180deg, transparent 0 21%, rgba(191, 239, 255, 0.045) 21% 21.12%, transparent 21.12% 54%, rgba(124, 244, 255, 0.03) 54% 54.12%, transparent 54.12% 100%),
+    repeating-linear-gradient(90deg, transparent 0 156px, rgba(191, 239, 255, 0.026) 156px 157px, transparent 157px 312px),
+    repeating-linear-gradient(180deg, transparent 0 116px, rgba(191, 239, 255, 0.02) 116px 117px, transparent 117px 232px);
+  -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.54), rgba(0, 0, 0, 0.2) 40%, transparent 82%);
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.54), rgba(0, 0, 0, 0.2) 40%, transparent 82%);
+  opacity: 0.52;
+  z-index: 0;
+}
+
+.app-shell-bg::after {
+  content: "";
+  position: absolute;
+  inset: clamp(48px, 7vw, 92px) clamp(-6vw, -32px, 0px) auto clamp(-8vw, -48px, 0px);
+  height: clamp(280px, 34vw, 430px);
+  pointer-events: none;
+  background:
+    radial-gradient(112px 112px at 46% 54%, rgba(178, 246, 255, 0.24), transparent 56%),
+    radial-gradient(240px 156px at 48% 52%, rgba(75, 232, 255, 0.12), transparent 72%),
+    conic-gradient(from 212deg at 38% 54%, transparent 0 52deg, rgba(183, 240, 255, 0.16) 52deg 116deg, transparent 116deg 360deg),
+    radial-gradient(220px 116px at 70% 24%, rgba(75, 232, 255, 0.1), transparent 72%),
+    radial-gradient(180px 96px at 78% 20%, rgba(127, 183, 255, 0.08), transparent 74%);
+  filter: blur(10px) saturate(112%);
+  -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.82), rgba(0, 0, 0, 0.5) 66%, transparent 100%);
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.82), rgba(0, 0, 0, 0.5) 66%, transparent 100%);
+  opacity: 0.8;
+  z-index: 0;
+}
+
+.app-shell-bg > * {
+  position: relative;
+  z-index: 1;
 }
 
 .app-shell-wrapper {
@@ -9763,6 +9804,12 @@ body {
   --ea-page-canvas-border: rgba(191, 239, 255, 0.09);
   --ea-page-canvas-divider: rgba(191, 239, 255, 0.07);
   --ea-page-subtle-surface: linear-gradient(180deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0.012));
+  --ea-global-bg-base: linear-gradient(180deg, #071735 0%, #0a2257 34%, #081b44 58%, #050d22 100%);
+  --ea-global-bg-ambient:
+    radial-gradient(980px 360px at 50% -12%, rgba(75, 232, 255, 0.16), transparent 60%),
+    radial-gradient(760px 340px at 18% 8%, rgba(47, 121, 255, 0.18), transparent 70%),
+    radial-gradient(700px 340px at 84% 16%, rgba(12, 85, 201, 0.16), transparent 74%),
+    radial-gradient(480px 220px at 52% 32%, rgba(190, 244, 255, 0.06), transparent 72%);
 }
 
 .app-shell-wrapper {
@@ -9892,6 +9939,22 @@ body {
     padding: 0;
   }
 
+  .app-shell-bg::before {
+    opacity: 0.38;
+  }
+
+  .app-shell-bg::after {
+    inset: 56px -18% auto -18%;
+    height: 240px;
+    opacity: 0.62;
+    filter: blur(12px) saturate(108%);
+  }
+
+  .page-shell::before {
+    height: 168px;
+    opacity: 0.16;
+  }
+
   .app-shell-frame {
     min-height: 100dvh;
   }
@@ -9953,6 +10016,21 @@ body {
 @media (max-width: 480px) {
   .app-shell-wrapper {
     padding: 0;
+  }
+
+  .app-shell-bg::before {
+    opacity: 0.3;
+  }
+
+  .app-shell-bg::after {
+    inset: 48px -24% auto -24%;
+    height: 208px;
+    opacity: 0.48;
+  }
+
+  .page-shell::before {
+    height: 144px;
+    opacity: 0.13;
   }
 
   .app-shell-frame {
