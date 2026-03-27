@@ -13073,9 +13073,9 @@ body {
 
 .beta-entry-hero-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.12fr) minmax(clamp(15rem, 28vw, 22rem), 0.82fr);
-  gap: clamp(24px, 3vw, 40px);
-  align-items: start;
+  grid-template-columns: minmax(0, 1.02fr) minmax(clamp(18rem, 30vw, 25rem), 0.98fr);
+  gap: clamp(28px, 4vw, 54px);
+  align-items: center;
 }
 
 .beta-entry-headline-stack,
@@ -13088,6 +13088,77 @@ body {
 .beta-entry-actions,
 .beta-access-hero-actions {
   justify-content: flex-start;
+}
+
+.beta-entry-hero-copy {
+  max-width: min(42rem, 100%);
+  display: grid;
+  gap: clamp(16px, 2vw, 24px);
+}
+
+.beta-entry-headline-stack {
+  gap: clamp(12px, 1.6vw, 18px);
+}
+
+.beta-entry-title {
+  max-width: 11ch;
+  font-size: clamp(40px, 5.9vw, 68px);
+  line-height: 0.96;
+  letter-spacing: -0.055em;
+}
+
+.beta-entry-copy {
+  max-width: 37ch;
+  font-size: clamp(15px, 1.15vw, 18px);
+  line-height: 1.62;
+  color: rgba(223, 240, 255, 0.82);
+}
+
+.beta-entry-hero-open {
+  position: relative;
+  isolation: isolate;
+  overflow: visible;
+}
+
+.beta-entry-hero-open::before {
+  content: "";
+  position: absolute;
+  inset: clamp(12px, 1.6vw, 24px) 18% auto -2%;
+  height: clamp(180px, 24vw, 320px);
+  pointer-events: none;
+  background:
+    radial-gradient(90px 90px at 42% 50%, rgba(214, 251, 255, 0.24), transparent 52%),
+    radial-gradient(180px 120px at 52% 52%, rgba(88, 242, 255, 0.12), transparent 68%),
+    conic-gradient(from 214deg at 40% 52%, transparent 0 56deg, rgba(193, 244, 255, 0.16) 56deg 118deg, transparent 118deg 360deg),
+    linear-gradient(104deg, rgba(88, 242, 255, 0.06), transparent 44%);
+  filter: blur(14px);
+  opacity: 0.82;
+  z-index: 0;
+}
+
+.beta-entry-hero-open::after {
+  content: "";
+  position: absolute;
+  top: clamp(28px, 4vw, 54px);
+  right: clamp(8px, 2vw, 24px);
+  width: clamp(160px, 18vw, 240px);
+  height: clamp(104px, 12vw, 154px);
+  pointer-events: none;
+  background:
+    radial-gradient(4px 4px at 20% 44%, rgba(214, 251, 255, 0.26), transparent 72%),
+    radial-gradient(3px 3px at 42% 28%, rgba(88, 242, 255, 0.22), transparent 74%),
+    radial-gradient(3px 3px at 74% 18%, rgba(214, 251, 255, 0.2), transparent 76%),
+    linear-gradient(132deg, transparent 0 46%, rgba(191, 239, 255, 0.12) 46% 51%, transparent 51% 100%) 66% 22% / 58px 26px no-repeat,
+    linear-gradient(152deg, transparent 0 46%, rgba(88, 242, 255, 0.1) 46% 52%, transparent 52% 100%) 88% 36% / 42px 20px no-repeat;
+  -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.54), transparent 92%);
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.54), transparent 92%);
+  opacity: 0.62;
+  z-index: 0;
+}
+
+.beta-entry-hero-open > * {
+  position: relative;
+  z-index: 1;
 }
 
 .beta-entry-points,
@@ -13155,6 +13226,162 @@ body {
   border-top: 0;
 }
 
+.beta-entry-command-surface {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  padding: clamp(18px, 2.2vw, 24px);
+  border: 1px solid rgba(191, 239, 255, 0.1);
+  border-radius: 28px;
+  background:
+    radial-gradient(240px 120px at 100% 0%, rgba(88, 242, 255, 0.06), transparent 72%),
+    linear-gradient(180deg, rgba(9, 23, 56, 0.48), rgba(6, 17, 40, 0.18));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 24px 54px rgba(1, 8, 24, 0.14);
+  overflow: clip;
+}
+
+.beta-entry-command-surface::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(120px 120px at 18% 34%, rgba(214, 251, 255, 0.18), transparent 56%),
+    conic-gradient(from 214deg at 16% 48%, transparent 0 54deg, rgba(193, 244, 255, 0.14) 54deg 116deg, transparent 116deg 360deg),
+    linear-gradient(136deg, transparent 0 54%, rgba(88, 242, 255, 0.07) 54% 56%, transparent 56% 100%) 92% 18% / 96px 38px no-repeat;
+  opacity: 0.9;
+  z-index: 0;
+}
+
+.beta-entry-command-surface > * {
+  position: relative;
+  z-index: 1;
+}
+
+.beta-entry-command-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.beta-entry-command-kicker,
+.beta-entry-command-status,
+.beta-entry-command-prompt-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.beta-entry-command-kicker {
+  color: rgba(222, 246, 255, 0.74);
+}
+
+.beta-entry-command-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(191, 239, 255, 0.12);
+  color: rgba(235, 248, 255, 0.9);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.beta-entry-command-prompt {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  padding: 14px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(191, 239, 255, 0.08);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.014)),
+    rgba(3, 12, 31, 0.18);
+}
+
+.beta-entry-command-prompt-label {
+  color: rgba(203, 240, 255, 0.54);
+}
+
+.beta-entry-command-prompt strong {
+  margin: 0;
+  font-size: clamp(18px, 1.7vw, 24px);
+  line-height: 1.32;
+  letter-spacing: -0.026em;
+  color: rgba(248, 252, 255, 0.96);
+}
+
+.beta-entry-command-route {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.beta-entry-command-node {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  padding: 12px 12px 12px 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(191, 239, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.beta-entry-command-node strong,
+.beta-entry-command-proof-item strong,
+.beta-entry-trust-item strong {
+  line-height: 1.32;
+  color: rgba(248, 252, 255, 0.96);
+}
+
+.beta-entry-command-node span,
+.beta-entry-command-proof-item span,
+.beta-entry-trust-item span {
+  line-height: 1.58;
+  color: var(--ea-text-muted);
+}
+
+.beta-entry-command-proof {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.beta-entry-command-proof-item,
+.beta-entry-trust-item {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.beta-entry-command-proof-item {
+  padding-top: 12px;
+  border-top: 1px solid var(--ea-page-canvas-divider);
+}
+
+.beta-entry-trust-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.beta-entry-trust-item {
+  padding-left: 18px;
+  border-left: 1px solid var(--ea-page-canvas-divider);
+}
+
+.beta-entry-trust-item:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+
 .beta-entry-proof-open {
   display: flex;
   align-items: flex-end;
@@ -13216,6 +13443,50 @@ body {
 .beta-entry-footnote {
   padding-top: 14px;
   border-top: 1px solid var(--ea-page-canvas-divider);
+}
+
+.app-shell-frame:has(.beta-entry-page) .app-shell-head-region::before {
+  inset: -24px 40% auto 2%;
+  height: clamp(118px, 13vw, 148px);
+  background:
+    radial-gradient(76px 76px at 16% 54%, rgba(221, 252, 255, 0.38), transparent 52%),
+    radial-gradient(172px 94px at 24% 48%, rgba(88, 242, 255, 0.16), transparent 68%),
+    conic-gradient(from 216deg at 14% 54%, transparent 0 58deg, rgba(193, 244, 255, 0.2) 58deg 118deg, transparent 118deg 360deg);
+  opacity: 0.9;
+}
+
+.app-shell-frame:has(.beta-entry-page) .app-brand-mark-group::before {
+  width: clamp(106px, 10vw, 142px);
+  opacity: 0.88;
+}
+
+.app-shell-frame:has(.beta-entry-page) .app-brand-mark-group::after {
+  right: -40px;
+  background: linear-gradient(90deg, rgba(88, 242, 255, 0.24), rgba(191, 239, 255, 0.08), transparent 76%);
+  opacity: 0.86;
+}
+
+.app-shell-frame:has(.beta-entry-page) .app-brand-mark {
+  box-shadow:
+    0 0 0 1px rgba(88, 242, 255, 0.12),
+    0 0 32px rgba(52, 245, 255, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.38);
+}
+
+.app-shell-frame:has(.beta-entry-page) .app-shell-head-copy strong {
+  letter-spacing: -0.024em;
+}
+
+.app-shell-frame:has(.beta-entry-page) .app-shell-head-note {
+  color: rgba(226, 242, 255, 0.8);
+}
+
+.app-shell-frame:has(.beta-entry-page) .app-brand-badge {
+  border-color: rgba(191, 239, 255, 0.12);
+  background:
+    radial-gradient(100px 36px at 18% 0%, rgba(88, 242, 255, 0.14), transparent 78%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.052), rgba(255, 255, 255, 0.016));
+  color: rgba(235, 248, 255, 0.9);
 }
 
 .auth-entry-shell {
@@ -13368,7 +13639,8 @@ body {
   .beta-entry-points,
   .auth-entry-context-grid,
   .beta-access-context-grid,
-  .beta-entry-proof-grid-open {
+  .beta-entry-proof-grid-open,
+  .beta-entry-trust-strip {
     grid-template-columns: minmax(0, 1fr);
   }
 
@@ -13389,6 +13661,16 @@ body {
   .beta-entry-hero-layout,
   .auth-entry-grid-open,
   .beta-access-card-open {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .beta-entry-hero-layout {
+    gap: 18px;
+    align-items: start;
+  }
+
+  .beta-entry-command-route,
+  .beta-entry-command-proof {
     grid-template-columns: minmax(0, 1fr);
   }
 
@@ -13444,7 +13726,11 @@ body {
   .beta-entry-actions,
   .beta-access-hero-actions {
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .beta-entry-actions > :last-child {
+    grid-column: 1 / -1;
   }
 
   .beta-entry-page-canvas {
@@ -13458,22 +13744,21 @@ body {
   }
 
   .beta-entry-hero-open::before {
-    content: "";
-    position: absolute;
     inset: -20px 18% auto -12px;
     height: 128px;
-    pointer-events: none;
     background:
       radial-gradient(180px 88px at 44% 50%, rgba(178, 246, 255, 0.18), transparent 68%),
       conic-gradient(from 214deg at 34% 54%, transparent 0 58deg, rgba(178, 238, 255, 0.16) 58deg 116deg, transparent 116deg 360deg);
     filter: blur(10px);
     opacity: 0.74;
-    z-index: 0;
   }
 
-  .beta-entry-hero-open > * {
-    position: relative;
-    z-index: 1;
+  .beta-entry-hero-open::after {
+    top: 92px;
+    right: -6px;
+    width: 116px;
+    height: 84px;
+    opacity: 0.36;
   }
 
   .beta-entry-hero-copy,
@@ -13482,19 +13767,79 @@ body {
   }
 
   .beta-entry-title {
-    max-width: 11ch;
-    font-size: clamp(26px, 9vw, 32px);
-    line-height: 1.02;
+    max-width: 10ch;
+    font-size: clamp(34px, 10.4vw, 42px);
+    line-height: 0.98;
   }
 
   .beta-entry-copy {
-    max-width: 28ch;
+    max-width: 31ch;
     font-size: 14px;
-    line-height: 1.55;
+    line-height: 1.58;
+  }
+
+  .beta-entry-command-surface {
+    gap: 12px;
+    padding: 16px;
+    border-radius: 24px;
+  }
+
+  .beta-entry-command-prompt strong {
+    font-size: 18px;
+  }
+
+  .beta-entry-command-node {
+    padding: 10px 10px 10px 12px;
+  }
+
+  .beta-entry-trust-item {
+    padding-left: 0;
+    border-left: 0;
+    padding-top: 12px;
+    border-top: 1px solid var(--ea-page-canvas-divider);
+  }
+
+  .beta-entry-trust-item:first-child {
+    padding-top: 0;
+    border-top: 0;
   }
 
   .beta-entry-proof-open {
     gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .beta-entry-hero-open::before {
+    inset: -18px 10% auto -10px;
+    height: 120px;
+    opacity: 0.7;
+  }
+
+  .beta-entry-command-surface {
+    border-radius: 22px;
+  }
+
+  .beta-entry-command-head {
+    gap: 8px;
+  }
+
+  .beta-entry-command-kicker,
+  .beta-entry-command-status,
+  .beta-entry-command-prompt-label {
+    font-size: 10px;
+  }
+
+  .beta-entry-command-route {
+    gap: 8px;
+  }
+
+  .beta-entry-command-node strong {
+    font-size: 13px;
+  }
+
+  .beta-entry-command-node span {
+    font-size: 12px;
   }
 }
 
@@ -13505,7 +13850,7 @@ body {
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
 }
 
-.beta-entry-page :where(.beta-entry-proof-meta, .beta-entry-actions, .beta-entry-proof-open),
+.beta-entry-page :where(.beta-entry-proof-meta, .beta-entry-actions, .beta-entry-proof-open, .beta-entry-command-head),
 .auth-entry-frame-open :where(.auth-entry-meta-row, .auth-entry-link-row),
 .dashboard-page-canvas :where(.dashboard-hero-support-head),
 .projects-page :where(.projects-handoff-section .section-head, .projects-hero-actions, .github-workspace-target-row, .github-workspace-cta-row, .vercel-publish-actions),
@@ -13517,7 +13862,7 @@ body {
   flex-wrap: wrap;
 }
 
-.beta-entry-page :where(.beta-entry-proof-meta, .beta-entry-actions, .beta-entry-proof-open) > *,
+.beta-entry-page :where(.beta-entry-proof-meta, .beta-entry-actions, .beta-entry-proof-open, .beta-entry-command-head) > *,
 .auth-entry-frame-open :where(.auth-entry-meta-row, .auth-entry-link-row) > *,
 .dashboard-page-canvas :where(.dashboard-hero-support-head) > *,
 .projects-page :where(.projects-handoff-section .section-head, .projects-hero-actions, .github-workspace-target-row, .github-workspace-cta-row, .vercel-publish-actions) > *,
@@ -13529,7 +13874,7 @@ body {
   min-width: 0;
 }
 
-.beta-entry-page :where(.beta-entry-point, .beta-entry-context-item, .beta-entry-proof-item),
+.beta-entry-page :where(.beta-entry-point, .beta-entry-context-item, .beta-entry-proof-item, .beta-entry-command-surface, .beta-entry-command-node, .beta-entry-command-proof-item, .beta-entry-trust-item),
 .auth-entry-frame-open :where(.auth-entry-card-open, .auth-entry-context-item, .auth-entry-support-note, .auth-entry-inline-note),
 .dashboard-page-canvas :where(.dashboard-hero-support-note, .signal-chip, .hero-kpi, .dashboard-summary-card),
 .projects-page :where(.projects-hero-note, .dashboard-project-link, .proof-value-card, .github-workspace-pane, .github-workspace-status-item, .github-workspace-inline-note, .github-workspace-activity-item, .vercel-publish-status-item, .vercel-publish-link-card, .vercel-publish-history-item),
@@ -13542,7 +13887,7 @@ body {
   min-height: 0;
 }
 
-.beta-entry-page :where(.beta-entry-point span, .beta-entry-context-item span, .beta-entry-proof-row p, .beta-entry-proof-row strong),
+.beta-entry-page :where(.beta-entry-point span, .beta-entry-context-item span, .beta-entry-proof-row p, .beta-entry-proof-row strong, .beta-entry-command-node span, .beta-entry-command-node strong, .beta-entry-command-proof-item span, .beta-entry-command-proof-item strong, .beta-entry-command-prompt strong, .beta-entry-trust-item span, .beta-entry-trust-item strong),
 .auth-entry-frame-open :where(.auth-entry-copy, .auth-entry-context-item span, .auth-entry-support-note span, .auth-entry-inline-note span),
 .dashboard-page-canvas :where(.dashboard-hero-support-note span, .dashboard-hero-support-note strong, .hero-kpi-text, .signal-chip strong, .signal-chip span),
 .projects-page :where(.projects-hero-note span, .section-header-copy, .github-workspace-head .section-header-copy, .vercel-publish-copy .helper-text-ea, .projects-handoff-note, .github-workspace-status-item, .github-workspace-inline-note, .github-workspace-activity-item, .vercel-publish-note, .vercel-publish-history-item),

@@ -25,6 +25,36 @@ const HOME_PROOF_SAMPLES = [
   },
 ];
 
+const HOME_HERO_FLOW = [
+  {
+    label: "Creator Post",
+    meta: "base comercial",
+  },
+  {
+    label: "Creator Scripts",
+    meta: "roteiro pronto",
+  },
+  {
+    label: "Creator Clips",
+    meta: "saída visual",
+  },
+];
+
+const HOME_HERO_TRUST = [
+  {
+    title: "Fluxo contínuo",
+    detail: "Gerar, salvar em projeto, editar e exportar sem trocar de ambiente.",
+  },
+  {
+    title: "Escopo decidido",
+    detail: "O beta pago/controlado foca no que já sustenta valor real hoje.",
+  },
+  {
+    title: "Confidencialidade",
+    detail: "O contexto da conta permanece privado e não vira dado de treino.",
+  },
+];
+
 export default function HomePage() {
   return (
     <div className="page-shell beta-entry-page">
@@ -38,7 +68,7 @@ export default function HomePage() {
                 </div>
                 <h1 className="beta-entry-title">Acesso ao núcleo do Editor AI Creator</h1>
                 <p className="beta-entry-copy">
-                  O Editor AI Creator concentra hoje o que já sustenta valor real: <strong>Creator Post</strong>, <strong>Creator Scripts</strong>, <strong>Creator Clips</strong>, editor central, projetos e saída rastreada. Solicite acesso para entrar no beta pago/controlado com escopo claro, onboarding assistido e continuidade séria até a exportação.
+                  O Editor AI Creator reúne hoje o que já sustenta valor real: <strong>Creator Post</strong>, <strong>Creator Scripts</strong>, <strong>Creator Clips</strong>, editor central, projetos e saída rastreada em um único fluxo para gerar, salvar, editar e exportar com clareza.
                 </p>
               </div>
 
@@ -47,38 +77,49 @@ export default function HomePage() {
                 <Link href="/login?mode=signup" className="btn-link-ea btn-secondary">Criar conta</Link>
                 <Link href="/how-it-works" className="btn-link-ea btn-ghost">Como funciona</Link>
               </div>
-
-              <div className="beta-entry-points">
-                <div className="beta-entry-point">
-                  <strong>Núcleo focado</strong>
-                  <span>Post, Scripts e Clips ficam no centro da promessa e do uso recorrente.</span>
-                </div>
-                <div className="beta-entry-point">
-                  <strong>Editor central</strong>
-                  <span>Creators, projetos e checkpoints convergem para o mesmo workspace até a saída final.</span>
-                </div>
-                <div className="beta-entry-point">
-                  <strong>Saída rastreada</strong>
-                  <span>Draft, exported e published aparecem com clareza para reduzir ambiguidade no fechamento.</span>
-                </div>
-              </div>
             </div>
 
-            <div className="beta-entry-context">
-              <div className="beta-entry-context-item">
-                <strong>Escopo decidido</strong>
-                <span>O centro do beta pago/controlado é criar, editar, salvar e exportar com força comercial real.</span>
+            <div className="beta-entry-command-surface" aria-label="Fluxo principal do beta pago/controlado">
+              <div className="beta-entry-command-head">
+                <span className="beta-entry-command-kicker">Fluxo principal</span>
+                <span className="beta-entry-command-status">Criar → editar → exportar</span>
               </div>
-              <div className="beta-entry-context-item">
-                <strong>Amplitude reduzida</strong>
-                <span>O que ainda está cedo demais saiu do centro da promessa e virou camada secundária ou handoff beta.</span>
+
+              <div className="beta-entry-command-prompt">
+                <span className="beta-entry-command-prompt-label">Briefing central</span>
+                <strong>Montar uma peça comercial com creator, projeto salvo e base pronta para editar até a saída final.</strong>
               </div>
-              <div className="beta-entry-context-item">
-                <strong>Confidencialidade priorizada</strong>
-                <span>Fluxos de geração e edição preservam contexto da conta sem usar seus dados para treinar modelos.</span>
+
+              <div className="beta-entry-command-route" aria-label="Creators centrais do beta">
+                {HOME_HERO_FLOW.map((item) => (
+                  <div key={item.label} className="beta-entry-command-node">
+                    <strong>{item.label}</strong>
+                    <span>{item.meta}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="beta-entry-command-proof">
+                <div className="beta-entry-command-proof-item">
+                  <span>Centro do produto</span>
+                  <strong>Creators + editor + projetos</strong>
+                </div>
+                <div className="beta-entry-command-proof-item">
+                  <span>Saída clara</span>
+                  <strong>Draft, exported e published rastreados</strong>
+                </div>
               </div>
             </div>
           </div>
+        </section>
+
+        <section className="beta-entry-trust-strip" data-reveal data-reveal-delay="35">
+          {HOME_HERO_TRUST.map((item) => (
+            <div key={item.title} className="beta-entry-trust-item">
+              <strong>{item.title}</strong>
+              <span>{item.detail}</span>
+            </div>
+          ))}
         </section>
 
         <section className="beta-entry-proof-open" data-reveal data-reveal-delay="60">
