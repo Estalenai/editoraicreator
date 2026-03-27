@@ -139,23 +139,18 @@ function LoginPageContent() {
               </p>
             </div>
 
-            <div className="hero-meta-row">
+            <div className="hero-meta-row auth-entry-meta-row">
               <span className="premium-badge premium-badge-phase">Beta fechado</span>
-              <span className="premium-badge premium-badge-warning">Acesso controlado</span>
             </div>
 
             <div className="auth-entry-context-grid">
               <div className="auth-entry-context-item">
                 <strong>Conta protegida</strong>
-                <span>Autenticação e liberação de acesso continuam sob controle no beta.</span>
+                <span>Somente contas aprovadas entram no workspace e seguem com sessão protegida.</span>
               </div>
               <div className="auth-entry-context-item">
-                <strong>Fluxo curto</strong>
-                <span>Cadastro, aprovação e entrada no workspace sem ruído desnecessário.</span>
-              </div>
-              <div className="auth-entry-context-item">
-                <strong>Privacidade operacional</strong>
-                <span>Seus dados não entram em treino de modelos; o processamento fica isolado e auditável no workspace.</span>
+                <strong>Entrada profissional</strong>
+                <span>Login curto, dados isolados de treino e continuidade segura para abrir o editor.</span>
               </div>
             </div>
           </div>
