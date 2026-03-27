@@ -10722,6 +10722,7 @@ body {
 
 .plans-page .plans-hero-signal span,
 .plans-page .plans-confidence-note span,
+.plans-page .plan-card-mode span,
 .plans-page .plan-card-description,
 .plans-page .plan-card-support-note,
 .plans-page .plan-note-subtle {
@@ -10886,21 +10887,21 @@ body {
   line-height: 1.1;
 }
 
-.plans-page .plan-card-metrics,
+.plans-page .plan-card-mode,
 .plans-page .plan-card-credits,
 .plans-page .plan-card-bullets,
-.plans-page .plan-card-limits {
+.plans-page .plan-card-footer {
   padding-top: 10px;
   border-top: 1px solid rgba(191, 239, 255, 0.07);
 }
 
-.plans-page .plan-card-metrics {
+.plans-page .plan-card-mode,
+.plans-page .plan-card-footer {
   display: grid;
   gap: 8px;
-  justify-items: start;
 }
 
-.plans-page .plan-card-status-note,
+.plans-page .plan-card-mode strong,
 .plans-page .plan-card-credit-line,
 .plans-page .plan-card-limit-line,
 .plans-page .plan-card-bullet {
@@ -10908,9 +10909,21 @@ body {
   line-height: 1.56;
 }
 
+.plans-page .plan-card-mode strong,
+.plans-page .plan-card-credit-line strong,
+.plans-page .plan-card-limit-line strong {
+  color: var(--ea-text-body);
+  font-weight: 700;
+}
+
 .plans-page .plan-card-credit-line,
 .plans-page .plan-card-limit-line {
   font-size: 0.95rem;
+}
+
+.plans-page .plan-card-limits {
+  padding-top: 0;
+  border-top: 0;
 }
 
 .plans-page .plan-card-support-note,
@@ -10922,8 +10935,9 @@ body {
 
 .plans-page .plan-card-cta {
   width: max-content;
-  min-width: min(100%, 180px);
-  margin-top: 6px;
+  min-width: min(100%, 168px);
+  margin-top: 2px;
+  box-shadow: none;
 }
 
 @media (max-width: 1240px) {
@@ -11004,6 +11018,10 @@ body {
 
   .plans-page .plans-hero-meta {
     gap: 8px;
+  }
+
+  .plans-page .plans-confidence-strip {
+    display: none;
   }
 
   .plans-page .plans-hero-refresh {

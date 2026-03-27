@@ -752,22 +752,19 @@ function PlansPageContent() {
                   <div className="helper-text-ea">
                     {narrative.audience}
                   </div>
-                  <div className="plan-card-metrics">
-                    <span className="premium-badge premium-badge-phase plan-pill">
-                      {statusText}
-                    </span>
-                    <div className="plan-card-status-note">
+                  <div className="plan-card-mode">
+                    <strong>{statusText}</strong>
+                    <span>
                       {convertEnabled
                         ? convertFee === 0
                           ? "Conversão entre tipos com taxa 0% neste plano."
                           : `Conversão entre tipos com taxa de ${convertFee}% neste plano.`
                         : "Conversão entre tipos indisponível neste plano."}
-                    </div>
+                    </span>
                   </div>
                   {creditsIncluded.length > 0 ? (
                     <div className="plan-card-credits">
-                      <div className="plan-card-section-label">Créditos incluídos</div>
-                      <div className="plan-card-credit-line">{creditsIncluded.join(" • ")}</div>
+                      <div className="plan-card-credit-line"><strong>Créditos:</strong> {creditsIncluded.join(" • ")}</div>
                       <div className="plan-card-total">Total agregado: {creditsTotal} créditos</div>
                     </div>
                   ) : null}
@@ -778,45 +775,46 @@ function PlansPageContent() {
                     ))}
                   </div>
                   <div className="plan-card-limits">
-                    <div className="plan-card-section-label">Ritmo de uso</div>
-                    <div className="plan-card-limit-line">{narrative.limits.join(" • ")}</div>
+                    <div className="plan-card-limit-line"><strong>Uso:</strong> {narrative.limits.join(" • ")}</div>
                   </div>
-                  <button
-                    disabled={(!hasInteractiveCheckout && !requiresAssistedActivation) || isLoadingCheckout}
-                    onClick={() => {
-                      if (hasInteractiveCheckout) {
-                        onStartPlanCheckout(codeUpper);
-                        return;
-                      }
-                      if (requiresAssistedActivation) {
-                        onRequestPlanActivation(codeUpper, resolveVisiblePlanName(item));
-                      }
-                    }}
-                    className={`btn-ea ${hasInteractiveCheckout ? "btn-primary" : requiresAssistedActivation ? "btn-secondary" : "btn-ghost"} btn-sm plan-card-cta ${!hasInteractiveCheckout && !requiresAssistedActivation ? "plan-card-cta-muted" : ""}`}
-                  >
-                    {buttonLabel}
-                  </button>
-                  {isCurrentPlan ? (
-                    <div className="plan-note-subtle">
-                      Este plano já está ativo e com benefícios aplicados na sua conta.
-                    </div>
-                  ) : isRecommendedPlan ? (
-                    <div className="plan-card-support-note">
-                      Melhor ponto de entrada comercial para o beta pago/controlado nesta fase.
-                    </div>
-                  ) : comingSoon ? (
-                    <div className="plan-card-support-note">
-                      {codeUpper === "EMPRESARIAL"
-                        ? "Plano Empresarial em breve no beta."
-                        : normalizePlanCode(codeUpper) === "ENTERPRISE"
-                          ? "Plano Enterprise em breve no beta."
-                          : "Disponível em breve no beta."}
-                    </div>
-                  ) : requiresAssistedActivation ? (
-                    <div className="plan-card-support-note">
-                      Disponível no beta com ativação assistida via suporte.
-                    </div>
-                  ) : null}
+                  <div className="plan-card-footer">
+                    <button
+                      disabled={(!hasInteractiveCheckout && !requiresAssistedActivation) || isLoadingCheckout}
+                      onClick={() => {
+                        if (hasInteractiveCheckout) {
+                          onStartPlanCheckout(codeUpper);
+                          return;
+                        }
+                        if (requiresAssistedActivation) {
+                          onRequestPlanActivation(codeUpper, resolveVisiblePlanName(item));
+                        }
+                      }}
+                      className={`btn-ea ${hasInteractiveCheckout ? "btn-primary" : requiresAssistedActivation ? "btn-secondary" : "btn-ghost"} btn-sm plan-card-cta ${!hasInteractiveCheckout && !requiresAssistedActivation ? "plan-card-cta-muted" : ""}`}
+                    >
+                      {buttonLabel}
+                    </button>
+                    {isCurrentPlan ? (
+                      <div className="plan-note-subtle">
+                        Este plano já está ativo e com benefícios aplicados na sua conta.
+                      </div>
+                    ) : isRecommendedPlan ? (
+                      <div className="plan-card-support-note">
+                        Melhor ponto de entrada comercial para o beta pago/controlado nesta fase.
+                      </div>
+                    ) : comingSoon ? (
+                      <div className="plan-card-support-note">
+                        {codeUpper === "EMPRESARIAL"
+                          ? "Plano Empresarial em breve no beta."
+                          : normalizePlanCode(codeUpper) === "ENTERPRISE"
+                            ? "Plano Enterprise em breve no beta."
+                            : "Disponível em breve no beta."}
+                      </div>
+                    ) : requiresAssistedActivation ? (
+                      <div className="plan-card-support-note">
+                        Disponível no beta com ativação assistida via suporte.
+                      </div>
+                    ) : null}
+                  </div>
                 </div>
               );
             })}
