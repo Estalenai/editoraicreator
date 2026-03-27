@@ -10,6 +10,34 @@ const OUTPUT_ROOT = ["output", "playwright", "post-deploy-validation"];
 const WAIT_TIMEOUT = 120000;
 const LOGIN_TIMEOUT = 45000;
 const ROUTE_TIMEOUT = 45000;
+const STABLE_TIMEOUT = 15000;
+const STABLE_STYLE_TAG_ID = "codex-postdeploy-stable-capture";
+const STABLE_CAPTURE_STYLE = `
+html {
+  scroll-behavior: auto !important;
+}
+
+*,
+*::before,
+*::after {
+  animation: none !important;
+  animation-delay: 0ms !important;
+  animation-duration: 0ms !important;
+  animation-timeline: auto !important;
+  transition: none !important;
+  caret-color: transparent !important;
+}
+
+[data-reveal],
+[data-reveal].is-visible,
+.motion-runtime [data-reveal],
+.motion-runtime [data-reveal].is-visible {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+  visibility: visible !important;
+}
+`;
 
 const breakpoints = [
   { name: "1440", width: 1440, height: 900 },
@@ -24,6 +52,7 @@ const routes = [
     path: "/",
     readySelector: ".beta-entry-page",
     headingPattern: /acesso ao n[úu]cleo do editor ai creator/i,
+    visualSelector: ".beta-entry-hero-open, .beta-entry-proof-open, .beta-entry-proof-item",
     requiresAuth: false,
   },
   {
@@ -31,6 +60,7 @@ const routes = [
     path: "/login",
     readySelector: ".auth-entry-shell",
     headingPattern: /entrar|criar conta|editor ai creator/i,
+    visualSelector: ".auth-entry-frame-open, form.auth-entry-card-open",
     requiresAuth: false,
   },
   {
@@ -38,6 +68,7 @@ const routes = [
     path: "/dashboard",
     readySelector: ".dashboard-page",
     headingPattern: /dashboard/i,
+    visualSelector: ".dashboard-page h1, .dashboard-summary-grid, .dashboard-pane-section",
     requiresAuth: true,
   },
   {
@@ -45,6 +76,7 @@ const routes = [
     path: "/credits",
     readySelector: ".credits-page",
     headingPattern: /cr[eé]ditos/i,
+    visualSelector: ".credits-page h1, .credits-page .credits-page-canvas, .credits-page .credits-summary-card, .credits-page .credits-guide-section",
     requiresAuth: true,
   },
   {
@@ -52,6 +84,7 @@ const routes = [
     path: "/creators",
     readySelector: ".creators-page",
     headingPattern: /creators/i,
+    visualSelector: ".creators-page h1, .creators-page .creators-proof-section, .creators-page .creator-workspace-card",
     requiresAuth: true,
   },
   {
@@ -59,6 +92,7 @@ const routes = [
     path: "/projects",
     readySelector: ".projects-page",
     headingPattern: /projetos/i,
+    visualSelector: ".projects-page h1, .projects-page .dashboard-project-link, .projects-page .proof-value-card, .projects-page .github-workspace-card",
     requiresAuth: true,
   },
   {
@@ -66,6 +100,7 @@ const routes = [
     path: "/plans",
     readySelector: ".plans-page",
     headingPattern: /planos/i,
+    visualSelector: ".plans-page h1, .plans-page .plan-card, .plans-page .plans-catalog-section",
     requiresAuth: true,
   },
   {
@@ -73,6 +108,7 @@ const routes = [
     path: "/support",
     readySelector: ".support-page",
     headingPattern: /suporte/i,
+    visualSelector: ".support-page h1, .support-page .support-guide-section, .support-page .support-faq-section, .support-page .support-assistant-card",
     requiresAuth: true,
   },
   {
@@ -80,6 +116,7 @@ const routes = [
     path: "/how-it-works",
     readySelector: ".how-it-works-page",
     headingPattern: /como funciona/i,
+    visualSelector: ".how-it-works-page h1, .how-it-works-step-open, .how-it-works-example",
     requiresAuth: true,
   },
   {
@@ -87,13 +124,12 @@ const routes = [
     path: "/admin",
     readySelector: ".admin-page",
     headingPattern: /admin|acesso restrito/i,
+    visualSelector: ".admin-page h1, .admin-page .state-ea, .admin-page .admin-console-section",
     requiresAuth: true,
   },
 ];
 
 const dashboardRoute = routes.find((route) => route.path === "/dashboard");
-const publicRoutes = routes.filter((route) => !route.requiresAuth);
-const privateRoutes = routes.filter((route) => route.requiresAuth);
 
 if (!dashboardRoute) {
   throw new Error("Dashboard route configuration is required for the post-deploy capture flow.");
@@ -110,6 +146,9 @@ function getArg(flag) {
 function hasFlag(flag) {
   return process.argv.includes(flag);
 }
+
+const FORCE_STABLE_VISUALS =
+  hasFlag("--force-stable") || process.env.EAC_CAPTURE_FORCE_STABLE === "1";
 
 function normalizeBaseUrl(value) {
   return value.replace(/\/+$/, "");
@@ -152,6 +191,46 @@ async function isVisible(locator, timeout = 1200) {
 
 async function saveJson(filePath, value) {
   await fs.writeFile(filePath, `${JSON.stringify(value, null, 2)}\n`, "utf8");
+}
+
+async function applyStableCaptureMode(page) {
+  if (!FORCE_STABLE_VISUALS) {
+    return;
+  }
+
+  await page.emulateMedia({ reducedMotion: "reduce" }).catch(() => {});
+  await page
+    .evaluate(
+      async ({ styleText, styleId }) => {
+        const doc = document;
+        let style = doc.getElementById(styleId);
+        if (!style) {
+          style = doc.createElement("style");
+          style.id = styleId;
+          style.textContent = styleText;
+          doc.head.appendChild(style);
+        }
+
+        doc.documentElement.classList.add("codex-capture-stable");
+        doc.querySelectorAll("[data-reveal]").forEach((element) => {
+          element.classList.add("is-visible");
+        });
+
+        if (doc.fonts?.ready) {
+          try {
+            await doc.fonts.ready;
+          } catch {}
+        }
+
+        await new Promise((resolve) => {
+          requestAnimationFrame(() => requestAnimationFrame(resolve));
+        });
+      },
+      { styleText: STABLE_CAPTURE_STYLE, styleId: STABLE_STYLE_TAG_ID },
+    )
+    .catch(() => {});
+
+  await page.waitForTimeout(180);
 }
 
 async function collectSnapshot(page) {
@@ -232,7 +311,21 @@ async function waitForRouteReady(page, route) {
   }
 
   await waitForLoad(page);
+  await applyStableCaptureMode(page);
   await resetScroll(page);
+
+  if (route.visualSelector) {
+    const visualLocator = page.locator(route.visualSelector).first();
+    await visualLocator.waitFor({ state: "visible", timeout: STABLE_TIMEOUT }).catch(() => {});
+    const visualVisible = await isVisible(visualLocator, 1800);
+    if (!visualVisible) {
+      throw createError(`Route ${route.path} loaded but did not render visual content in time.`, {
+        currentUrl: page.url(),
+        expectedPath: route.path,
+        visualSelector: route.visualSelector,
+      });
+    }
+  }
 }
 
 async function loginIfNeeded(page, { email, password, outDir }) {
@@ -244,6 +337,7 @@ async function loginIfNeeded(page, { email, password, outDir }) {
   });
 
   await waitForLoad(page);
+  await applyStableCaptureMode(page);
   await resetScroll(page);
 
   await page.screenshot({
@@ -437,7 +531,9 @@ Options:
   --email <email>     Login email
   --password <pass>   Login password
   --out-dir <dir>     Output directory
+  --route <slug>      Capture only one configured route (example: projects)
   --headed            Run with visible browser
+  --force-stable      Disable motion/reveal and force visual content visible before capture
   --help              Show this message
 
 Environment alternatives:
@@ -452,10 +548,27 @@ const BASE_URL = normalizeBaseUrl(
 const EMAIL = getArg("--email") ?? process.env.EAC_EMAIL;
 const PASSWORD = getArg("--password") ?? process.env.EAC_PASSWORD;
 const HEADED = hasFlag("--headed");
+const ROUTE_FILTER = (getArg("--route") ?? process.env.EAC_CAPTURE_ROUTE ?? "").trim();
 const timestamp = buildTimestamp();
 const OUT_DIR =
   getArg("--out-dir") ??
   path.join(process.cwd(), ...OUTPUT_ROOT, timestamp);
+
+const selectedRoute = ROUTE_FILTER
+  ? routes.find((route) => {
+      const normalized = ROUTE_FILTER.replace(/^\/+/, "");
+      return route.slug === ROUTE_FILTER || route.path === ROUTE_FILTER || route.slug === normalized || route.path === `/${normalized}`;
+    }) ?? null
+  : null;
+
+if (ROUTE_FILTER && !selectedRoute) {
+  console.error(`Unknown route filter: ${ROUTE_FILTER}`);
+  process.exit(1);
+}
+
+const selectedRoutes = selectedRoute ? [selectedRoute] : routes;
+const publicRoutes = selectedRoutes.filter((route) => !route.requiresAuth);
+const privateRoutes = selectedRoutes.filter((route) => route.requiresAuth);
 
 if (!EMAIL || !PASSWORD) {
   console.error(
@@ -477,6 +590,8 @@ const context = await browser.newContext({
   },
   deviceScaleFactor: 1,
   ignoreHTTPSErrors: true,
+  reducedMotion: FORCE_STABLE_VISUALS ? "reduce" : "no-preference",
+  serviceWorkers: FORCE_STABLE_VISUALS ? "block" : "allow",
 });
 
 const page = await context.newPage();
@@ -524,7 +639,8 @@ try {
     timestamp,
     loginStatus: loginResult.status,
     loginResult,
-    routes: routes.map(({ slug, path: routePath }) => ({ slug, path: routePath })),
+    captureMode: FORCE_STABLE_VISUALS ? "stable" : "default",
+    routes: selectedRoutes.map(({ slug, path: routePath }) => ({ slug, path: routePath })),
     breakpoints,
     generatedFiles,
     captures,
@@ -539,7 +655,8 @@ try {
     message: error instanceof Error ? error.message : String(error),
     details: error && typeof error === "object" ? error.details ?? null : null,
     baseUrl: BASE_URL,
-    routes: routes.map(({ slug, path: routePath }) => ({ slug, path: routePath })),
+    captureMode: FORCE_STABLE_VISUALS ? "stable" : "default",
+    routes: selectedRoutes.map(({ slug, path: routePath }) => ({ slug, path: routePath })),
     breakpoints,
     consoleEvents,
     pageErrors,
