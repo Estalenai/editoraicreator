@@ -10448,8 +10448,8 @@ body {
 
 .projects-page .projects-hero-split {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(220px, 0.33fr);
-  gap: clamp(18px, 2.2vw, 28px);
+  grid-template-columns: minmax(0, 1fr) minmax(196px, 0.29fr);
+  gap: clamp(16px, 1.9vw, 22px);
   align-items: start;
 }
 
@@ -10463,9 +10463,9 @@ body {
 
 .projects-page .projects-hero-panel-quiet {
   display: grid;
-  gap: 10px;
+  gap: 8px;
   align-content: start;
-  padding: 2px 0 0 clamp(14px, 1.8vw, 18px);
+  padding: 2px 0 0 clamp(10px, 1.3vw, 14px);
   border: 0;
   border-left: 1px solid var(--ea-page-canvas-divider);
   border-radius: 0;
@@ -10475,13 +10475,13 @@ body {
 
 .projects-page .projects-hero-panel-list {
   display: grid;
-  gap: 10px;
+  gap: 8px;
 }
 
 .projects-page .projects-hero-note {
   display: grid;
-  gap: 6px;
-  padding: 0 0 0 12px;
+  gap: 4px;
+  padding: 0 0 0 10px;
   border: 0;
   border-left: 1px solid rgba(191, 239, 255, 0.12);
   border-radius: 0;
@@ -10509,7 +10509,7 @@ body {
 .projects-page .projects-list-stack > * + *,
 .projects-page .projects-handoff-stack > * + * {
   margin-top: 0;
-  padding-top: 16px;
+  padding-top: 12px;
   border-top: 1px solid var(--ea-page-canvas-divider);
 }
 
@@ -10536,11 +10536,11 @@ body {
 }
 
 .projects-page .projects-publish-grid {
-  gap: 12px;
+  gap: 0;
 }
 
 .projects-page .proof-value-card {
-  padding: 0 0 0 14px;
+  padding: 0 0 0 12px;
   border: 0 !important;
   border-left: 1px solid var(--ea-page-canvas-divider) !important;
   border-radius: 0;
@@ -10549,7 +10549,12 @@ body {
 }
 
 .projects-page .proof-value-block {
-  gap: 8px;
+  gap: 6px;
+}
+
+.projects-page .projects-publish-grid > .proof-value-card:first-child {
+  padding-left: 0;
+  border-left: 0 !important;
 }
 
 .projects-page .github-workspace-card,
@@ -10563,14 +10568,14 @@ body {
 
 .projects-page .github-workspace-card > * + *,
 .projects-page .vercel-publish-card > * + * {
-  padding-top: 16px;
+  padding-top: 12px;
   border-top: 1px solid var(--ea-page-canvas-divider);
 }
 
 .projects-page .github-workspace-grid,
 .projects-page .vercel-publish-grid,
 .projects-page .vercel-publish-status-grid {
-  gap: 12px;
+  gap: 10px;
 }
 
 .projects-page .github-workspace-pane,
@@ -10581,8 +10586,10 @@ body {
 .projects-page .vercel-publish-link-card,
 .projects-page .vercel-publish-empty,
 .projects-page .vercel-publish-note {
-  border-color: rgba(191, 239, 255, 0.06) !important;
-  background: var(--ea-page-subtle-surface) !important;
+  border: 0 !important;
+  border-left: 1px solid rgba(191, 239, 255, 0.08) !important;
+  border-radius: 0;
+  background: transparent !important;
   box-shadow: none !important;
 }
 

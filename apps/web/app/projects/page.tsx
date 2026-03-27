@@ -84,16 +84,8 @@ export default function ProjectsPage() {
                 <span>Use a lista abaixo para retomar do ponto em que o projeto foi salvo.</span>
               </div>
               <div className="projects-hero-note">
-                <strong>Estado de saída claro</strong>
-                <span>Draft, exported e published aparecem como estados distintos para separar trabalho em andamento de entrega já encerrada.</span>
-              </div>
-              <div className="projects-hero-note">
-                <strong>Handoff beta secundário</strong>
-                <span>GitHub e Vercel seguem úteis para continuidade manual, mas fora do centro da promessa principal desta fase.</span>
-              </div>
-              <div className="projects-hero-note projects-hero-note-trust">
-                <strong>Persistência com Supabase</strong>
-                <span>Projetos, histórico e continuidade da conta ficam persistidos em Supabase para retomar o trabalho sem perder contexto.</span>
+                <strong>Saída e handoff em apoio</strong>
+                <span>Draft, exported e published ficam claros, enquanto GitHub e Vercel seguem como camada secundária da continuidade.</span>
               </div>
             </div>
 
@@ -217,7 +209,7 @@ export default function ProjectsPage() {
           <div className="section-header-ea">
             <h2 className="heading-reset">Handoff beta e publicação manual</h2>
             <p className="helper-text-ea">
-              GitHub e Vercel continuam acessíveis como fundações úteis de continuidade fora da plataforma, mas agora aparecem como camada secundária ao fluxo principal.
+              GitHub e Vercel continuam disponíveis para saída manual, mas entram apenas como continuação do fluxo principal de projetos.
             </p>
           </div>
           <Link href="/support" className="btn-link-ea btn-ghost btn-sm">
@@ -227,9 +219,6 @@ export default function ProjectsPage() {
         <div className="projects-handoff-stack">
           <GitHubWorkspaceCard projects={normalizedProjects.map((project) => ({ id: project.id, title: project.title, kind: project.kind, data: project.data }))} />
           <VercelPublishCard projects={normalizedProjects.map((project) => ({ id: project.id, title: project.title, kind: project.kind, data: project.data }))} />
-        </div>
-        <div className="helper-text-ea projects-handoff-note">
-          Use essas integrações quando o projeto já estiver suficientemente maduro para sair da plataforma. O núcleo do beta pago/controlado continua sendo creators hero, editor, projetos e saída rastreada.
         </div>
       </section>
     </div>
