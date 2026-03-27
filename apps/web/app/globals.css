@@ -13347,3 +13347,88 @@ body {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* Post-structure route robustness sweep */
+.beta-entry-page .beta-entry-points,
+.beta-entry-page .beta-entry-proof-grid-open,
+.auth-entry-frame-open .auth-entry-context-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+}
+
+.beta-entry-page :where(.beta-entry-proof-meta, .beta-entry-actions, .beta-entry-proof-open),
+.auth-entry-frame-open :where(.auth-entry-meta-row, .auth-entry-link-row),
+.dashboard-page-canvas :where(.dashboard-hero-support-head),
+.projects-page :where(.projects-handoff-section .section-head, .projects-hero-actions, .github-workspace-target-row, .github-workspace-cta-row, .vercel-publish-actions),
+.credits-page :where(.credits-hero-meta, .credits-history-head),
+.plans-page :where(.plans-hero-meta, .plan-card-top, .plan-card-footer),
+.support-page :where(.support-context-actions),
+.how-it-works-page-canvas :where(.how-it-works-example-row),
+.admin-page :where(.admin-hero-open, .admin-hero-toolbar, .admin-hero-actions, .admin-inline-stats) {
+  flex-wrap: wrap;
+}
+
+.beta-entry-page :where(.beta-entry-proof-meta, .beta-entry-actions, .beta-entry-proof-open) > *,
+.auth-entry-frame-open :where(.auth-entry-meta-row, .auth-entry-link-row) > *,
+.dashboard-page-canvas :where(.dashboard-hero-support-head) > *,
+.projects-page :where(.projects-handoff-section .section-head, .projects-hero-actions, .github-workspace-target-row, .github-workspace-cta-row, .vercel-publish-actions) > *,
+.credits-page :where(.credits-hero-meta, .credits-history-head) > *,
+.plans-page :where(.plans-hero-meta, .plan-card-top, .plan-card-footer) > *,
+.support-page :where(.support-context-actions) > *,
+.how-it-works-page-canvas :where(.how-it-works-example-row) > *,
+.admin-page :where(.admin-hero-open, .admin-hero-toolbar, .admin-hero-actions, .admin-inline-stats) > * {
+  min-width: 0;
+}
+
+.beta-entry-page :where(.beta-entry-point, .beta-entry-context-item, .beta-entry-proof-item),
+.auth-entry-frame-open :where(.auth-entry-card-open, .auth-entry-context-item, .auth-entry-support-note, .auth-entry-inline-note),
+.dashboard-page-canvas :where(.dashboard-hero-support-note, .signal-chip, .hero-kpi, .dashboard-summary-card),
+.projects-page :where(.projects-hero-note, .dashboard-project-link, .proof-value-card, .github-workspace-pane, .github-workspace-status-item, .github-workspace-inline-note, .github-workspace-activity-item, .vercel-publish-status-item, .vercel-publish-link-card, .vercel-publish-history-item),
+.credits-page :where(.credits-hero-signal, .credits-hero-glance-item, .credits-context-item, .credits-guide-card, .credits-guide-note, .credits-summary-card, .credits-history-item, .conversion-metric-card),
+.plans-page :where(.plans-hero-signal, .plans-summary-stat, .plans-confidence-note, .plan-card),
+.support-page :where(.support-hero-signal, .support-context-item, .support-guide-card, .support-faq-item, .support-guidelines-card, .support-history-item, .support-history-note),
+.how-it-works-page-canvas :where(.how-it-works-context-item, .how-it-works-step-open, .how-it-works-example, .how-it-works-note-open),
+.admin-page :where(.admin-overview-item, .admin-subpanel, .admin-search-result, .admin-record-item, .admin-timeline-item) {
+  min-width: 0;
+  min-height: 0;
+}
+
+.beta-entry-page :where(.beta-entry-point span, .beta-entry-context-item span, .beta-entry-proof-row p, .beta-entry-proof-row strong),
+.auth-entry-frame-open :where(.auth-entry-copy, .auth-entry-context-item span, .auth-entry-support-note span, .auth-entry-inline-note span),
+.dashboard-page-canvas :where(.dashboard-hero-support-note span, .dashboard-hero-support-note strong, .hero-kpi-text, .signal-chip strong, .signal-chip span),
+.projects-page :where(.projects-hero-note span, .section-header-copy, .github-workspace-head .section-header-copy, .vercel-publish-copy .helper-text-ea, .projects-handoff-note, .github-workspace-status-item, .github-workspace-inline-note, .github-workspace-activity-item, .vercel-publish-note, .vercel-publish-history-item),
+.credits-page :where(.credits-hero-signal span, .credits-hero-glance-label, .credits-history-meta, .credits-balance-row span, .credits-context-item span, .credits-guide-card span, .credits-guide-note span, .credits-support-state),
+.plans-page :where(.plans-summary-detail, .plans-confidence-note span, .plan-card-description, .plan-card-support-note, .plan-note-subtle, .plan-card-bullet, .plan-card-credit-line, .plan-card-limit-line),
+.support-page :where(.support-hero-signal span, .support-context-item span, .support-guide-card span, .support-faq-item p, .support-guidelines-card span, .support-history-message, .support-history-meta, .support-history-note span),
+.how-it-works-page-canvas :where(.how-it-works-context-item span, .how-it-works-step-open .helper-text-ea, .how-it-works-example-row p, .how-it-works-example-row strong, .how-it-works-note-open span),
+.admin-page :where(.admin-overview-item div, .admin-inline-stats span, .admin-record-note, .admin-search-result, .admin-timeline-item, .admin-record-item, .admin-inline-notice) {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.beta-entry-page :where(.premium-badge, .beta-entry-proof-chip),
+.auth-entry-frame-open :where(.premium-badge),
+.dashboard-page-canvas :where(.premium-badge),
+.projects-page :where(.premium-badge),
+.credits-page :where(.premium-badge),
+.plans-page :where(.premium-badge, .plan-card-section-label),
+.support-page :where(.premium-badge),
+.how-it-works-page-canvas :where(.premium-badge),
+.admin-page :where(.premium-badge) {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.25;
+}
+
+@media (max-width: 1100px) {
+  .beta-entry-page .beta-entry-points,
+  .beta-entry-page .beta-entry-proof-grid-open {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 980px) {
+  .auth-entry-frame-open .auth-entry-context-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
