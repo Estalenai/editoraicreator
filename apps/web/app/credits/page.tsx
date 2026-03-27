@@ -528,22 +528,18 @@ export default function CreditsPage() {
                   }}
                   className="btn-link-ea btn-ghost btn-sm credits-hero-refresh"
                 >
-                  Atualizar saldos e histórico
+                  Atualizar leitura
                 </button>
               </div>
             </div>
             <div className="credits-hero-signals" aria-label="Pontos-chave da operação de créditos">
                 <div className="credits-hero-signal">
                   <strong>Saldo por tipo</strong>
-                  <span>Comum, Pro e Ultra permanecem visíveis no mesmo plano de leitura.</span>
+                  <span>Comum, Pro e Ultra seguem visíveis sem abrir painéis paralelos.</span>
                 </div>
                 <div className="credits-hero-signal">
-                  <strong>Conversão previsível</strong>
-                  <span>Débito, taxa e destino aparecem antes da confirmação.</span>
-                </div>
-                <div className="credits-hero-signal">
-                  <strong>Histórico auditável</strong>
-                  <span>Compras, conversões e consumo entram no registro final.</span>
+                  <strong>Conversão e histórico</strong>
+                  <span>Taxa, débito e movimento final aparecem na mesma trilha operacional.</span>
                 </div>
               </div>
           </div>
@@ -829,7 +825,7 @@ export default function CreditsPage() {
           <section className="credits-support-section credits-context-section">
             <div className="section-header-ea">
               <h3 className="heading-reset">Segurança e controle</h3>
-              <p className="helper-text-ea">Camada de apoio para checkout, persistência e retomada operacional, sem competir com a trilha principal.</p>
+              <p className="helper-text-ea">Apoio contextual para checkout e persistência, sem disputar a operação central.</p>
             </div>
             <div className="credits-context-list">
               <div className="credits-context-item">
@@ -837,12 +833,8 @@ export default function CreditsPage() {
                 <span>Use esta área para sustentar creators, editor e projetos com leitura rápida de saldo e consumo.</span>
               </div>
               <div className="credits-context-item">
-                <strong>Checkout via Stripe</strong>
-                <span>Compras avulsas seguem por Stripe e retornam a Créditos com confirmação operacional do saldo e do histórico.</span>
-              </div>
-              <div className="credits-context-item">
-                <strong>Histórico persistido</strong>
-                <span>Saldo, movimentos e continuidade da conta ficam persistidos para auditoria operacional e retomada segura.</span>
+                <strong>Checkout e histórico persistidos</strong>
+                <span>Compras avulsas seguem por Stripe e retornam com confirmação operacional do saldo, do histórico e da retomada segura.</span>
               </div>
             </div>
           </section>
@@ -850,7 +842,7 @@ export default function CreditsPage() {
           <section className="credits-guide-section credits-support-section">
             <div className="section-header-ea">
               <h3 className="heading-reset">Leitura rápida</h3>
-              <p className="helper-text-ea">Apoio secundário para interpretar saldo, estimativa e histórico sem competir com a operação central.</p>
+              <p className="helper-text-ea">Referência curta para interpretar saldo, estimativa e confirmação final.</p>
             </div>
             <div className="credits-guide-grid">
               {CREDIT_GUIDE.map((item) => (
@@ -862,10 +854,7 @@ export default function CreditsPage() {
             </div>
             <div className="credits-guide-notes">
               <div className="credits-guide-note">
-                <strong>Estimativa nos Creators:</strong> mostra uma prévia antes de consumir saldo real.
-              </div>
-              <div className="credits-guide-note">
-                <strong>Histórico de créditos:</strong> confirma consumo, compra e conversão depois do processamento.
+                <strong>Estimativa e confirmação:</strong> creators mostram a prévia antes do consumo; o histórico confirma compra, conversão e saldo final.
               </div>
             </div>
           </section>

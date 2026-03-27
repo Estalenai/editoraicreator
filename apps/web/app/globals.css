@@ -9284,8 +9284,8 @@ body {
 
 .credits-page-hero-region {
   display: grid;
-  gap: clamp(18px, 2.4vw, 28px);
-  padding: 0 0 clamp(20px, 2.6vw, 30px);
+  gap: clamp(16px, 2.1vw, 24px);
+  padding: 0 0 clamp(18px, 2.2vw, 26px);
   border: 0 !important;
   border-bottom: 1px solid var(--ea-unified-divider);
   border-radius: 0;
@@ -9313,7 +9313,7 @@ body {
 }
 
 .credits-hero-meta {
-  gap: 10px 12px;
+  gap: 8px 10px;
   align-items: center;
   flex-wrap: wrap;
 }
@@ -9324,8 +9324,8 @@ body {
 
 .credits-hero-signals {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 14px;
 }
 
 .credits-hero-signal,
@@ -9338,9 +9338,9 @@ body {
 .credits-page .credits-conversion-notes .trust-note,
 .credits-page .conversion-metric-card {
   display: grid;
-  gap: 6px;
+  gap: 5px;
   min-width: 0;
-  padding: 0 0 0 14px;
+  padding: 0 0 0 12px;
   border: 0 !important;
   border-left: 1px solid var(--ea-unified-divider) !important;
   border-radius: 0;
@@ -9362,7 +9362,7 @@ body {
 .credits-hero-glance {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px 18px;
+  gap: 12px 16px;
 }
 
 .credits-hero-glance-item {
@@ -9387,8 +9387,8 @@ body {
 
 .credits-page-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.48fr) minmax(240px, 0.58fr);
-  gap: clamp(22px, 2.6vw, 32px);
+  grid-template-columns: minmax(0, 1.56fr) minmax(216px, 0.48fr);
+  gap: clamp(18px, 2vw, 26px);
   align-items: start;
   padding-top: 0;
   border-top: 0;
@@ -9419,15 +9419,28 @@ body {
 .credits-support-section + .credits-support-section,
 .credits-support-state + .credits-support-section,
 .credits-support-section + .credits-support-state {
-  padding-top: clamp(18px, 2.1vw, 24px);
+  padding-top: clamp(14px, 1.8vw, 20px);
   border-top: 1px solid var(--ea-unified-divider);
 }
 
 .credits-support-rail {
   display: grid;
-  gap: 18px;
+  gap: 14px;
   align-content: start;
-  padding-left: clamp(8px, 1vw, 16px);
+  padding-left: clamp(4px, 0.8vw, 10px);
+}
+
+.credits-support-rail .section-header-ea {
+  gap: 8px;
+}
+
+.credits-support-rail .section-header-ea h3 {
+  font-size: clamp(1rem, 1.25vw, 1.14rem);
+  line-height: 1.08;
+}
+
+.credits-support-rail .section-header-ea .helper-text-ea {
+  max-width: 30ch;
 }
 
 .credits-region-head,
@@ -9486,7 +9499,7 @@ body {
 .credits-page .credits-guide-notes,
 .credits-page .credits-context-list,
 .credits-page .credits-conversion-metrics {
-  gap: 12px 18px;
+  gap: 10px 14px;
 }
 
 .credits-page .credits-guide-grid,
@@ -9659,7 +9672,11 @@ body {
   }
 
   .credits-hero-signals,
-  .credits-hero-glance,
+  .credits-hero-glance {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px 12px;
+  }
+
   .credits-page .credits-summary-grid,
   .credits-page .credits-purchase-notes,
   .credits-page .credits-coin-grid,
@@ -9690,6 +9707,11 @@ body {
     gap: 8px;
   }
 
+  .credits-hero-meta .premium-badge-warning,
+  .credits-hero-signals {
+    display: none;
+  }
+
   .credits-hero-refresh {
     width: 100%;
     justify-content: flex-start;
@@ -9699,12 +9721,17 @@ body {
     gap: 20px;
   }
 
+  .credits-hero-glance,
   .credits-page .credits-summary-grid,
   .credits-page .credits-purchase-notes,
   .credits-page .credits-coin-grid,
   .credits-page .credits-conversion-notes,
   .credits-page .credits-conversion-metrics {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .credits-hero-glance {
+    gap: 10px;
   }
 }
 
