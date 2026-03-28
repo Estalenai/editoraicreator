@@ -249,11 +249,12 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
   const projectWorkspace = useMemo(() => workspaceFromBinding(projectIntegration?.binding), [projectIntegration?.binding]);
   const visibleWorkspace = selectedProject ? projectWorkspace : workspace;
   const suggestedWorkspace = useMemo(() => projectWorkspace || workspace, [projectWorkspace, workspace]);
+  const inheritedConnectedAt = projectWorkspace
+    ? projectWorkspace.connectedAt
+    : workspace?.connectedAt || null;
   const actionWorkspace = useMemo(
-    () =>
-      projectWorkspace ||
-      workspaceFromDraft(draft, identityLabel, projectWorkspace?.connectedAt || workspace?.connectedAt || null),
-    [draft, identityLabel, projectWorkspace, workspace]
+    () => projectWorkspace || workspaceFromDraft(draft, identityLabel, inheritedConnectedAt),
+    [draft, identityLabel, inheritedConnectedAt, projectWorkspace]
   );
   const repoLabel = useMemo(() => formatGitHubRepoLabel(visibleWorkspace), [visibleWorkspace]);
   const canLinkIdentity = useMemo(() => typeof (supabase.auth as any)?.linkIdentity === "function", []);
@@ -527,6 +528,9 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
     setBusyAction("save");
     try {
       const now = new Date().toISOString();
+      const existingConnectedAt = projectWorkspace
+        ? projectWorkspace.connectedAt
+        : workspace?.connectedAt || null;
       const nextWorkspace: GitHubWorkspace = {
         provider: "github",
         owner: draft.owner.trim(),
@@ -534,7 +538,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
         branch: draft.branch.trim() || "main",
         rootPath: normalizeRootPath(draft.rootPath),
         target: draft.target,
-        connectedAt: projectWorkspace?.connectedAt || workspace?.connectedAt || now,
+        connectedAt: existingConnectedAt || now,
         updatedAt: now,
         accountLabel: identityLabel,
       };
