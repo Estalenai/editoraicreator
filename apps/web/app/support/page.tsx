@@ -97,10 +97,31 @@ export default function SupportPage() {
                 <strong>Contexto claro</strong>
                 <span>Planos, créditos, checkout e publicação aparecem como trilhas de ajuda separadas.</span>
               </div>
-              <div className="support-hero-signal">
-                <strong>Suporte real</strong>
-                <span>Solicitações ficam registradas com status, nota interna e acompanhamento dentro do produto.</span>
-              </div>
+            </div>
+          </div>
+          <div className="support-hero-focus">
+            <span className="support-hero-focus-label">
+              {email ? "Triagem interna pronta" : "Triagem guiada"}
+            </span>
+            <strong>Entre pelo FAQ, valide a trilha certa e leve o caso para a fila quando precisar de análise real.</strong>
+            <p className="support-hero-focus-copy">
+              O Support Assistant mantém categoria, contexto e histórico no mesmo fluxo para reduzir ida e volta e preservar a continuidade do beta pago/controlado.
+            </p>
+            <div className="support-hero-focus-meta">
+              <span className="premium-badge premium-badge-phase">
+                {email ? "Fila interna acompanhada" : "Fluxo de ajuda orientado"}
+              </span>
+              <span className="support-hero-focus-meta-copy">
+                {email || "Conta em validação no momento."}
+              </span>
+            </div>
+            <div className="hero-actions-row support-hero-actions">
+              <a href="#support-assistant" className="btn-link-ea btn-primary">
+                Abrir assistant
+              </a>
+              <Link href="/how-it-works" className="btn-link-ea btn-ghost">
+                Como funciona
+              </Link>
             </div>
           </div>
         </div>
@@ -117,17 +138,6 @@ export default function SupportPage() {
             <strong>Privacidade aplicada</strong>
             <span>Dados enviados em tickets e projetos não são usados para treinar modelos e permanecem em processamento isolado.</span>
           </div>
-          {email ? (
-            <div className="support-context-item support-context-item-account">
-              <strong>Fila interna acompanhada</strong>
-              <div className="support-context-actions">
-                <span className="premium-badge premium-badge-phase">Resposta por fila interna</span>
-                <Link href="/how-it-works" className="btn-link-ea btn-ghost btn-sm">
-                  Como funciona
-                </Link>
-              </div>
-            </div>
-          ) : null}
         </div>
       </section>
 

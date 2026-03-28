@@ -121,7 +121,7 @@ export function SupportAssistantCard({ onRefetch }: Props) {
   }
 
   return (
-    <section className="support-assistant-card support-assistant-open">
+    <section id="support-assistant" className="support-assistant-card support-assistant-open">
       <div className="section-head support-assistant-head">
         <div className="section-header-ea">
           <p className="section-kicker">Atendimento interno</p>
