@@ -10011,8 +10011,8 @@ body {
 
   .app-nav-rail,
   .app-top-nav {
-    gap: 6px;
-    padding: 0 12px 8px;
+    gap: 4px;
+    padding: 0 12px 5px;
   }
 
   .app-top-nav-head {
@@ -10022,12 +10022,13 @@ body {
   .app-nav-links {
     grid-template-columns: none;
     grid-auto-flow: column;
-    grid-auto-columns: minmax(7.8rem, max-content);
-    gap: 4px;
+    grid-auto-columns: minmax(7.25rem, max-content);
+    gap: 3px;
     overflow-x: auto;
     overscroll-behavior-x: contain;
     padding-bottom: 0;
     scrollbar-width: none;
+    scroll-snap-type: x proximity;
   }
 
   .app-nav-links::-webkit-scrollbar {
@@ -10035,9 +10036,10 @@ body {
   }
 
   .app-nav-link {
-    min-height: 40px;
-    padding: 6px 0 6px 14px;
-    border-radius: 0;
+    min-height: 38px;
+    padding: 5px 0 5px 13px;
+    border-radius: 12px;
+    scroll-snap-align: start;
   }
 
   .app-nav-link-meta {
@@ -10045,8 +10047,9 @@ body {
   }
 
   .app-nav-link::after {
-    top: 9px;
-    bottom: 9px;
+    left: 8px;
+    top: 8px;
+    bottom: 8px;
   }
 
   .app-brand-badge {
@@ -10093,11 +10096,11 @@ body {
 
   .app-nav-rail,
   .app-top-nav {
-    padding: 0 10px 6px;
+    padding: 0 10px 4px;
   }
 
   .app-nav-links {
-    grid-auto-columns: minmax(6.5rem, max-content);
+    grid-auto-columns: minmax(6.4rem, max-content);
   }
 }
 
@@ -12557,15 +12560,15 @@ body {
   .app-shell-body:has(.dashboard-page) .app-top-nav {
     gap: 4px;
     margin-top: -2px;
-    padding: 0 0 2px;
+    padding: 0 0 1px;
     border-bottom: 0;
   }
 
   .app-shell-body:has(.dashboard-page) .app-nav-links {
     grid-template-columns: none;
     grid-auto-flow: column;
-    grid-auto-columns: minmax(8rem, max-content);
-    gap: 4px;
+    grid-auto-columns: minmax(7.25rem, max-content);
+    gap: 3px;
     overflow-x: auto;
     overscroll-behavior-x: contain;
     padding-bottom: 0;
@@ -12577,10 +12580,10 @@ body {
   }
 
   .app-shell-body:has(.dashboard-page) .app-nav-link {
-    min-height: 40px;
+    min-height: 38px;
     align-content: center;
-    padding: 6px 10px 6px 16px;
-    border-radius: 10px;
+    padding: 5px 10px 5px 14px;
+    border-radius: 11px;
   }
 
   .app-shell-body:has(.dashboard-page) .app-nav-link-meta {
@@ -12589,14 +12592,14 @@ body {
 
   .app-shell-body:has(.dashboard-page) .app-nav-link::after {
     left: 5px;
-    top: 9px;
-    bottom: 9px;
+    top: 8px;
+    bottom: 8px;
   }
 
   .app-shell-body:has(.dashboard-page) .app-nav-link-active::after {
     left: 4px;
-    top: 8px;
-    bottom: 8px;
+    top: 7px;
+    bottom: 7px;
   }
 
   .dashboard-page-canvas .dashboard-hero-support-head {
@@ -12655,7 +12658,7 @@ body {
   }
 
   .app-shell-body:has(.dashboard-page) .app-nav-links {
-    grid-auto-columns: minmax(6.7rem, max-content);
+    grid-auto-columns: minmax(6.4rem, max-content);
   }
 
   .dashboard-page-canvas {
@@ -14437,7 +14440,25 @@ body {
 
   .app-nav-rail,
   .app-top-nav {
-    border-radius: 18px;
+    border-radius: 16px;
+    padding-bottom: 4px;
+  }
+
+  .app-nav-links {
+    grid-auto-columns: minmax(6.8rem, max-content);
+    gap: 2px;
+  }
+
+  .app-nav-link {
+    min-height: 36px;
+    padding: 4px 0 4px 12px;
+    border-radius: 11px;
+  }
+
+  .app-nav-link::after {
+    left: 7px;
+    top: 7px;
+    bottom: 7px;
   }
 }
 
