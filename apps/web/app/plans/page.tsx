@@ -21,6 +21,44 @@ type CatalogPlan = {
   features?: Array<{ key?: string; label?: string; enabled?: boolean }> | null;
   addons?: { convert?: { enabled?: boolean; fee_percent?: number | null; pairs?: string[] } } | null;
   price?: { amount_brl?: number | null; period?: string };
+  short_description?: string | null;
+  expanded_description?: string | null;
+  stripe_description?: string | null;
+  audience?: string | null;
+  highlights?: string[] | null;
+  limits_summary?: string[] | null;
+  status_note?: string | null;
+};
+
+type PlanCopy = {
+  shortDescription: string;
+  expandedDescription: string;
+  stripeDescription: string;
+  audience: string;
+  highlights: string[];
+  limits: string[];
+  statusNote: string | null;
+};
+
+const EMPRESARIAL_PLAN: CatalogPlan = {
+  code: "EMPRESARIAL",
+  name: "Empresarial",
+  coming_soon: true,
+  purchasable: false,
+  price: { amount_brl: null, period: "month" },
+  short_description: "Para equipes criativas e operações internas que precisam de escala, coordenação e governança.",
+  expanded_description:
+    "Plano voltado para times que precisam centralizar criação, organização e continuidade em um fluxo mais robusto, ainda com ativação assistida no beta.",
+  stripe_description:
+    "Camada assistida para equipes em expansão. Ainda não abre checkout self-serve no beta atual.",
+  audience: "Equipes criativas e operações internas em fase de coordenação e escala.",
+  highlights: [
+    "Concentra criação, projeto e continuidade para uso compartilhado com mais coordenação.",
+    "Abre espaço para governança e suporte mais próximos sem prometer uma camada corporativa completa.",
+    "Permanece como ativação assistida no beta atual, sem checkout automático.",
+  ],
+  limits_summary: ["Ativação assistida", "Operação de equipe em expansão"],
+  status_note: "Empresarial deve continuar como ativação assistida durante o beta atual.",
 };
 
 function normalizePlanIdentity(planCodeOrLabel: string | null | undefined): string {
@@ -43,15 +81,6 @@ function resolvePlanBadgeLabel(badge: CatalogPlan["badge_label"]): string {
   if (!badge) return "";
   if (typeof badge === "string") return badge;
   return String(badge["pt-BR"] || badge["en-US"] || "").trim();
-}
-
-function planShortDescription(code: string): string {
-  if (code === "EDITOR_FREE") return "Entrada guiada para validar rotinas com IA sem sobrecarga.";
-  if (code === "EDITOR_PRO") return "Operação recorrente com mais volume, previsibilidade e eficiência.";
-  if (code === "EDITOR_ULTRA") return "Escala de criação intensiva para times que entregam em alta cadência.";
-  if (code === "EMPRESARIAL") return "Operação assistida para equipes em expansão, com governança e acompanhamento dedicado.";
-  if (code === "ENTERPRISE") return "Implantação corporativa com controle avançado e suporte estratégico.";
-  return "Plano disponível no catálogo beta.";
 }
 
 function formatCreditsIncluded(credits?: CatalogPlan["credits"]): string[] {
@@ -84,81 +113,27 @@ function resolvePlanConversionState(code: string, plan: CatalogPlan) {
   return { enabled: Boolean(plan?.addons?.convert?.enabled), feePercent: 0 };
 }
 
-type PlanNarrative = {
-  audience: string;
-  valueBullets: string[];
-  limits: string[];
-};
-
-function planNarrative(code: string): PlanNarrative {
-  if (code === "EDITOR_FREE") {
-    return {
-      audience: "Ideal para quem está começando e quer estruturar o primeiro fluxo.",
-      valueBullets: [
-        "Base para creators essenciais com investimento inicial baixo.",
-        "Créditos equilibrados para testes e produção leve.",
-        "Entrada simples no beta com upgrade rápido para operação contínua.",
-      ],
-      limits: ["Uso individual", "Ritmo leve a moderado"],
-    };
-  }
-
-  if (code === "EDITOR_PRO") {
-    return {
-      audience: "Ideal para operação recorrente com foco em consistência e qualidade.",
-      valueBullets: [
-        "Maior volume mensal para manter calendário ativo.",
-        "Melhor equilíbrio entre custo operacional e alcance.",
-        "Conversão de créditos mais eficiente para manter o ritmo.",
-      ],
-      limits: ["Uso profissional", "Fluxo recorrente de campanhas"],
-    };
-  }
-
-  if (code === "EDITOR_ULTRA") {
-    return {
-      audience: "Ideal para criação intensiva com múltiplas entregas e experimentação.",
-      valueBullets: [
-        "Pacote robusto para criadores e squads com produção diária.",
-        "Maior flexibilidade para alternar formatos e intensidade.",
-        "Taxa de conversão otimizada para preservar escala.",
-      ],
-      limits: ["Uso intensivo", "Escala criativa avançada"],
-    };
-  }
-
-  if (code === "EMPRESARIAL") {
-    return {
-      audience: "Ideal para equipes em expansão que precisam de ativação assistida e operação mais governada.",
-      valueBullets: [
-        "Capacidade ampliada para múltiplos perfis de uso com acompanhamento dedicado.",
-        "Estrutura pensada para coordenação de time, governança e entrada assistida.",
-        "Etapa comercial intermediária antes da camada enterprise completa.",
-      ],
-      limits: ["Ativação assistida", "Operação em expansão"],
-    };
-  }
-
-  if (code === "ENTERPRISE") {
-    return {
-      audience: "Plano por contrato para operação corporativa, fora do catálogo self-serve nesta fase.",
-      valueBullets: [
-        "Escopo comercial, volume e condições definidos por contrato.",
-        "Ativação assistida para operação corporativa com governança mais forte.",
-        "Fora da comparação pública com os planos abertos do produto.",
-      ],
-      limits: ["Implantação assistida", "Contrato corporativo"],
-    };
-  }
+function resolvePlanCopy(plan: CatalogPlan | null): PlanCopy {
+  const shortDescription = String(plan?.short_description || "Plano beta disponível nesta fase.").trim();
+  const expandedDescription = String(plan?.expanded_description || shortDescription).trim();
+  const stripeDescription = String(plan?.stripe_description || expandedDescription).trim();
+  const audience = String(plan?.audience || expandedDescription).trim();
+  const highlights = Array.isArray(plan?.highlights)
+    ? plan.highlights.map((item) => String(item || "").trim()).filter(Boolean)
+    : [];
+  const limits = Array.isArray(plan?.limits_summary)
+    ? plan.limits_summary.map((item) => String(item || "").trim()).filter(Boolean)
+    : [];
+  const statusNote = String(plan?.status_note || "").trim() || null;
 
   return {
-    audience: "Ideal para operação corporativa com requisitos avançados de escala.",
-    valueBullets: [
-      "Camada corporativa para implantação personalizada.",
-      "Governança e controle com suporte estratégico contínuo.",
-      "Ambiente preparado para grandes volumes e políticas internas.",
-    ],
-    limits: ["Implantação customizada", "Contrato corporativo"],
+    shortDescription,
+    expandedDescription,
+    stripeDescription,
+    audience,
+    highlights,
+    limits,
+    statusNote,
   };
 }
 
@@ -255,26 +230,11 @@ function PlansPageContent() {
       }
       const payload = await response.json().catch(() => null);
       const plans: CatalogPlan[] = Array.isArray(payload?.plans) ? payload.plans : [];
-      const visiblePlans: CatalogPlan[] = plans.filter((item) => {
-        if (item?.visible === false) return false;
-        return !isContractOnlyPlan(item?.code);
-      });
-
-      if (!visiblePlans.some((item: CatalogPlan) => String(item?.code || "").toUpperCase() === "EMPRESARIAL")) {
-        visiblePlans.push({
-          code: "EMPRESARIAL",
-          name: "Empresarial",
-          coming_soon: true,
-          purchasable: false,
-          price: { amount_brl: null, period: "month" },
-        });
+      const nextPlans = [...plans];
+      if (!nextPlans.some((item: CatalogPlan) => String(item?.code || "").toUpperCase() === "EMPRESARIAL")) {
+        nextPlans.push(EMPRESARIAL_PLAN);
       }
-      visiblePlans.sort((left, right) => {
-        const orderDiff = planPriority(left?.code || "") - planPriority(right?.code || "");
-        if (orderDiff !== 0) return orderDiff;
-        return resolveVisiblePlanName(left).localeCompare(resolveVisiblePlanName(right), "pt-BR");
-      });
-      setCatalogPlans(visiblePlans);
+      setCatalogPlans(nextPlans);
     } catch (loadError: any) {
       setCatalogPlans([]);
       setCatalogError(loadError?.message || "Falha ao carregar catálogo de planos.");
@@ -291,19 +251,33 @@ function PlansPageContent() {
     () => currentPlanIdentity === "ENTERPRISE",
     [currentPlanIdentity]
   );
+  const visibleCatalogPlans = useMemo(
+    () =>
+      catalogPlans.filter((plan) => {
+        if (plan?.visible === false) return false;
+        return !isContractOnlyPlan(plan?.code);
+      }),
+    [catalogPlans]
+  );
 
   const currentPlanVisibleInCatalog = useMemo(
-    () => catalogPlans.some((plan) => normalizePlanIdentity(plan.code) === currentPlanIdentity),
-    [catalogPlans, currentPlanIdentity]
+    () => visibleCatalogPlans.some((plan) => normalizePlanIdentity(plan.code) === currentPlanIdentity),
+    [visibleCatalogPlans, currentPlanIdentity]
   );
   const orderedCatalogPlans = useMemo(
-    () => [...catalogPlans].sort((a, b) => planPriority(a.code) - planPriority(b.code)),
-    [catalogPlans]
+    () =>
+      [...visibleCatalogPlans].sort((left, right) => {
+        const orderDiff = planPriority(left.code) - planPriority(right.code);
+        if (orderDiff !== 0) return orderDiff;
+        return resolveVisiblePlanName(left).localeCompare(resolveVisiblePlanName(right), "pt-BR");
+      }),
+    [visibleCatalogPlans]
   );
   const currentCatalogPlan = useMemo(
     () => catalogPlans.find((plan) => normalizePlanIdentity(plan.code) === currentPlanIdentity) || null,
     [catalogPlans, currentPlanIdentity]
   );
+  const currentPlanCopy = useMemo(() => resolvePlanCopy(currentCatalogPlan), [currentCatalogPlan]);
   const currentPlanFeePercent = useMemo(() => {
     if (currentPlanIsContract) {
       return null;
@@ -321,10 +295,6 @@ function PlansPageContent() {
   const currentPlanCreditsTotal = useMemo(
     () => totalCreditsIncluded(currentCatalogPlan?.credits || undefined),
     [currentCatalogPlan]
-  );
-  const currentPlanNarrative = useMemo(
-    () => planNarrative(currentPlanIdentity),
-    [currentPlanIdentity]
   );
   const planLabelDisplay = loading
     ? "Plano em sincronização"
@@ -363,7 +333,7 @@ function PlansPageContent() {
         : "Conversão entre tipos indisponível neste plano.";
   const currentPlanAudience = loading
     ? "Sincronizando benefícios, créditos incluídos e disponibilidade do plano."
-    : currentPlanNarrative.audience;
+    : currentPlanCopy.audience;
 
   useEffect(() => {
     if (!loading && !betaBlocked) {
@@ -527,12 +497,12 @@ function PlansPageContent() {
               <p className="section-kicker">Assinatura e disponibilidade</p>
               <h1 className="heading-reset">Planos</h1>
               <p className="section-header-copy hero-copy-compact">
-                O beta pago/controlado precisa de uma oferta clara. Hoje o centro comercial é <strong>Editor Pro</strong>, com checkout seguro, créditos visíveis e continuidade forte; <strong>Enterprise</strong> fica fora do catálogo aberto e segue apenas por contrato.
+                Compare entrada, operação recorrente e escala criativa pela lógica real do produto: créditos incluídos, continuidade de projeto, intensidade de uso e ativação clara quando o fluxo ainda não é self-serve.
               </p>
             </div>
             <div className="hero-meta-row hero-meta-row-compact plans-hero-meta">
               <span className="premium-badge premium-badge-phase">Plano atual: {planLabelDisplay}</span>
-              <span className="premium-badge premium-badge-warning">Editor Pro é o plano principal do beta</span>
+              <span className="premium-badge premium-badge-warning">Editor Pro concentra o beta self-serve</span>
               <button
                 onClick={async () => {
                   await refresh();
@@ -546,16 +516,16 @@ function PlansPageContent() {
           </div>
           <div className="plans-hero-signals" aria-label="Pontos-chave da comparação de planos">
               <div className="plans-hero-signal">
-                <strong>Oferta mais decidida</strong>
-                <span>Entrada, plano principal e escala aparecem com papéis comerciais mais claros.</span>
+                <strong>Oferta por intensidade real</strong>
+                <span>Iniciante, Editor Pro e Creator Pro mostram o ritmo de operação que cada camada sustenta.</span>
               </div>
               <div className="plans-hero-signal">
-                <strong>Checkout seguro</strong>
-                <span>Planos com checkout automático seguem para a Stripe; os demais continuam assistidos.</span>
+                <strong>Checkout quando existir, suporte quando precisar</strong>
+                <span>Planos self-serve seguem para a Stripe; ativações assistidas continuam explícitas no beta.</span>
               </div>
               <div className="plans-hero-signal">
-                <strong>Menos ruído comercial</strong>
-                <span>Preço, créditos, conversão e disponibilidade ficam expostos antes de qualquer decisão.</span>
+                <strong>Contexto antes da decisão</strong>
+                <span>Preço, créditos, conversão e disponibilidade aparecem junto com o tipo de operação que o plano suporta.</span>
               </div>
             </div>
           </div>
@@ -627,16 +597,16 @@ function PlansPageContent() {
 
       <section className="plans-confidence-strip">
         <div className="plans-confidence-note">
-          <strong>Editor Pro como centro comercial</strong>
-          <span>Iniciante valida encaixe, Editor Pro concentra recorrência e Editor Ultra amplia cadência sem espalhar a comparação.</span>
+          <strong>Progressão curta e clara</strong>
+          <span>Iniciante estrutura a primeira rotina, Editor Pro sustenta operação recorrente e Creator Pro amplia escala sem perder contexto.</span>
         </div>
         <div className="plans-confidence-note">
-          <strong>Checkout ou ativação assistida</strong>
-          <span>Stripe para o fluxo self-serve; suporte quando o plano ainda exige ativação acompanhada.</span>
+          <strong>Billing sem promessa artificial</strong>
+          <span>Checkout automático quando já existe fluxo aberto; ativação assistida quando a operação ainda depende de acompanhamento real.</span>
         </div>
         <div className="plans-confidence-note plans-confidence-note-trust">
-          <strong>Enterprise e privacidade fora do ruído</strong>
-          <span>Enterprise segue por contrato; dados operacionais continuam isolados por conta e sem exposição desnecessária.</span>
+          <strong>Empresarial e Enterprise com honestidade</strong>
+          <span>Empresarial segue assistido no beta e Enterprise continua por contrato, sem entrar no catálogo aberto como promessa pronta.</span>
         </div>
       </section>
 
@@ -644,7 +614,7 @@ function PlansPageContent() {
         <div className="section-head">
           <div className="section-header-ea">
             <h3 className="heading-reset">Catálogo de planos</h3>
-            <p className="helper-text-ea">Entrada, operação recorrente e escala criativa em uma progressão curta.</p>
+            <p className="helper-text-ea">Uma progressão curta entre primeira entrega, operação recorrente, escala criativa e ativação assistida.</p>
           </div>
           <span className="premium-badge premium-badge-phase plans-catalog-badge">Escolha com contexto</span>
         </div>
@@ -654,7 +624,7 @@ function PlansPageContent() {
               <div key={`plan-skeleton-${index}`} className="premium-skeleton premium-skeleton-card" />
             ))}
           </div>
-        ) : catalogPlans.length === 0 ? (
+        ) : visibleCatalogPlans.length === 0 ? (
           <div className="state-ea">
             <p className="state-ea-title">Sem dados de catálogo nesta versão</p>
             <div className="state-ea-text">
@@ -690,8 +660,8 @@ function PlansPageContent() {
               const topBenefits = Array.isArray(item?.features)
                 ? item.features.filter((feature) => feature?.enabled).map((feature) => String(feature?.label || "").trim()).filter(Boolean).slice(0, 3)
                 : [];
-              const narrative = planNarrative(visibleCatalogCode);
-              const displayBenefits = uniquePlanHighlights(narrative.valueBullets, topBenefits).slice(0, 4);
+              const planCopy = resolvePlanCopy(item);
+              const displayBenefits = uniquePlanHighlights(planCopy.highlights, topBenefits).slice(0, 4);
               const conversionState = resolvePlanConversionState(normalizedCatalogCode, item);
               const convertEnabled = conversionState.enabled;
               const convertFee = conversionState.feePercent;
@@ -730,7 +700,7 @@ function PlansPageContent() {
                     <div className="plan-card-header">
                       <div className="plan-card-section-label">Plano</div>
                       <strong>{resolveVisiblePlanName(item)}</strong>
-                      <div className="plan-card-description">{planShortDescription(visibleCatalogCode)}</div>
+                      <div className="plan-card-description">{planCopy.shortDescription}</div>
                     </div>
                     {isCurrentPlan ? (
                       <span className="premium-badge premium-badge-warning plan-pill">
@@ -750,7 +720,7 @@ function PlansPageContent() {
                   </div>
                   <div className="plan-card-price">{priceLabel}</div>
                   <div className="helper-text-ea">
-                    {narrative.audience}
+                    {planCopy.expandedDescription}
                   </div>
                   <div className="plan-card-mode">
                     <strong>{statusText}</strong>
@@ -775,7 +745,7 @@ function PlansPageContent() {
                     ))}
                   </div>
                   <div className="plan-card-limits">
-                    <div className="plan-card-limit-line"><strong>Uso:</strong> {narrative.limits.join(" • ")}</div>
+                    <div className="plan-card-limit-line"><strong>Uso:</strong> {planCopy.limits.join(" • ")}</div>
                   </div>
                   <div className="plan-card-footer">
                     <button
@@ -803,11 +773,7 @@ function PlansPageContent() {
                       </div>
                     ) : comingSoon ? (
                       <div className="plan-card-support-note">
-                        {codeUpper === "EMPRESARIAL"
-                          ? "Plano Empresarial em breve no beta."
-                          : normalizePlanCode(codeUpper) === "ENTERPRISE"
-                            ? "Plano Enterprise em breve no beta."
-                            : "Disponível em breve no beta."}
+                        {planCopy.statusNote || "Disponível em breve no beta."}
                       </div>
                     ) : requiresAssistedActivation ? (
                       <div className="plan-card-support-note">
