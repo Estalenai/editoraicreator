@@ -62,97 +62,97 @@ const PLAN_COPY = {
   },
   EDITOR_FREE: {
     "pt-BR": {
-      shortDescription: "Para creators individuais que querem sair da ideia para a primeira entrega com contexto preservado.",
+      shortDescription: "Para creators individuais que querem sair da ideia para a primeira entrega com mais clareza operacional.",
       expandedDescription:
-        "Plano ideal para começar a criar com mais estrutura, usando a base essencial da plataforma para gerar, organizar projetos, editar com continuidade e operar por créditos sem perder contexto.",
+        "Entre no fluxo do Editor AI Creator com a base essencial para criar, organizar projetos e evoluir entregas sem perder o fio da produção. E o plano certo para começar com estrutura, validar método e transformar briefing em trabalho real sem complexidade desnecessária.",
       stripeDescription:
-        "Plano mensal para creators individuais que precisam tirar a primeira entrega do papel com contexto preservado e operação por créditos.",
+        "Plano mensal para creators individuais que querem começar a produzir com mais estrutura, clareza e continuidade.",
       audience: "Creators individuais em início de operação que precisam estruturar a primeira rotina.",
       highlights: [
-        "Organiza briefing, geração, edição e projeto salvo em um fluxo simples.",
-        "Entrega base suficiente para operar por créditos sem dispersar contexto.",
-        "Ajuda a validar método e continuidade antes de subir a cadência.",
+        "Organiza criação, projeto e continuidade em um fluxo simples.",
+        "Dá base para operar por créditos com mais previsibilidade.",
+        "Ideal para rotina individual e primeira cadência de produção.",
       ],
-      limits: ["Uso individual", "Cadência leve a moderada"],
+      limits: ["Uso individual", "Primeiras entregas", "Cadência leve a moderada"],
       statusNote: null,
     },
     "en-US": {
-      shortDescription: "For solo creators moving from idea to first delivery with preserved context.",
+      shortDescription: "For solo creators moving from idea to first delivery with more operational clarity.",
       expandedDescription:
-        "A strong starting plan for creators who need structure: generate, organize projects, edit with continuity, and operate with credits without losing context.",
+        "Enter the Editor AI Creator flow with the essential foundation to create, organize projects, and move deliveries forward without losing production clarity. It is the right plan to start with structure, validate a method, and turn briefing into real work without unnecessary complexity.",
       stripeDescription:
-        "Monthly plan for solo creators building their first repeatable delivery flow with preserved context.",
+        "Monthly plan for solo creators who want to start producing with more structure, clarity, and continuity.",
       audience: "Solo creators starting to structure their first operating rhythm.",
       highlights: [
-        "Keeps briefing, generation, editing, and saved projects in one simple flow.",
-        "Provides the essential credit foundation without losing context.",
-        "Helps validate workflow before moving into higher cadence.",
+        "Organizes creation, projects, and continuity in one simple flow.",
+        "Provides a clearer base to operate with credits.",
+        "Ideal for individual work and a first production cadence.",
       ],
-      limits: ["Individual use", "Light to moderate cadence"],
+      limits: ["Individual use", "First deliveries", "Light to moderate cadence"],
       statusNote: null,
     },
   },
   EDITOR_PRO: {
     "pt-BR": {
-      shortDescription: "Para creators profissionais que precisam de mais controle, mais cadência e mais capacidade de produção.",
+      shortDescription: "Para creators profissionais que precisam de mais controle, mais ritmo e uma operação recorrente mais confiável.",
       expandedDescription:
-        "Plano voltado para quem já produz com frequência e precisa de uma operação mais forte entre briefing, geração, edição e projeto salvo.",
+        "Feito para quem já produz com frequência e precisa de uma base mais forte entre criação, projeto salvo, revisão e próxima ação. E o plano que melhor equilibra capacidade, continuidade e controle para transformar a plataforma em rotina de trabalho de verdade.",
       stripeDescription:
-        "Plano mensal para creators profissionais com operação recorrente, contexto preservado e mais previsibilidade por créditos.",
+        "Plano mensal para creators profissionais que precisam de mais controle, mais cadência e uma operação recorrente mais forte.",
       audience: "Creators profissionais e operações enxutas que já produzem com frequência.",
       highlights: [
-        "Sustenta uma rotina recorrente entre criação, projeto e revisão.",
-        "Amplia volume mensal sem quebrar continuidade operacional.",
-        "Entrega o melhor equilíbrio entre cadência, controle e custo do beta pago.",
+        "Sustenta produção recorrente com mais previsibilidade.",
+        "Amplia margem para revisão, refinamento e continuidade.",
+        "Melhor equilíbrio entre operação profissional e custo no beta.",
       ],
-      limits: ["Uso profissional recorrente", "Operação com cadência constante"],
+      limits: ["Uso profissional recorrente", "Produção constante", "Mais controle por ciclo"],
       statusNote: "Editor Pro continua sendo o centro comercial do beta self-serve.",
     },
     "en-US": {
-      shortDescription: "For professional creators who need more control, cadence, and production capacity.",
+      shortDescription: "For professional creators who need more control, more rhythm, and a stronger recurring operation.",
       expandedDescription:
-        "Built for users who already create frequently and need a stronger operating layer across briefing, generation, editing, and saved projects.",
+        "Built for people who already produce frequently and need a stronger layer across creation, saved projects, revision, and next action. It is the plan that best balances capacity, continuity, and control for turning the platform into a real working routine.",
       stripeDescription:
-        "Monthly plan for professional creators running recurring work with preserved context and stronger credit predictability.",
+        "Monthly plan for professional creators who need more control, more cadence, and a stronger recurring operation.",
       audience: "Professional creators and lean teams producing on a frequent basis.",
       highlights: [
-        "Supports recurring creation, project continuity, and revision flow.",
-        "Expands monthly volume without breaking operational continuity.",
-        "Offers the clearest balance of cadence, control, and cost in the paid beta.",
+        "Supports recurring production with stronger predictability.",
+        "Creates more margin for revision, refinement, and continuity.",
+        "Best balance between professional operation and cost in beta.",
       ],
-      limits: ["Recurring professional use", "Consistent operating cadence"],
+      limits: ["Recurring professional use", "Consistent production", "More control per cycle"],
       statusNote: "Editor Pro remains the commercial center of the self-serve beta.",
     },
   },
   EDITOR_ULTRA: {
     "pt-BR": {
-      shortDescription: "Para creators intensivos, estúdios e operações criativas que precisam escalar sem perder contexto.",
+      shortDescription: "Para creators intensivos, estúdios e operações criativas que precisam escalar sem travar o fluxo.",
       expandedDescription:
-        "Plano pensado para fluxos mais intensos, maior volume e uso profissional mais forte da plataforma.",
+        "Pensado para quem já opera em volume maior e precisa de mais fôlego para múltiplas entregas, ciclos de refinamento e produção contínua. E o plano para transformar a plataforma em uma base criativa mais intensa, com mais elasticidade de uso e mais capacidade por mês.",
       stripeDescription:
-        "Plano mensal para operações criativas intensivas que precisam escalar produção com contexto preservado e volume ampliado.",
+        "Plano mensal para creators intensivos e estúdios que precisam escalar produção com mais capacidade, continuidade e elasticidade.",
       audience: "Creators intensivos, estúdios e squads criativos com maior volume operacional.",
       highlights: [
-        "Amplia capacidade para múltiplas entregas e ciclos de refinamento.",
-        "Sustenta uso forte por créditos com mais elasticidade entre formatos.",
-        "Mantém continuidade quando a criação já virou operação de escala.",
+        "Suporta múltiplos projetos e entregas em paralelo.",
+        "Dá mais margem para uso intenso e refinamento contínuo.",
+        "Ideal para creators avançados, estúdios e produção em escala.",
       ],
-      limits: ["Uso intensivo", "Escala criativa profissional"],
+      limits: ["Uso intensivo", "Escala criativa profissional", "Operação de maior volume"],
       statusNote: null,
     },
     "en-US": {
-      shortDescription: "For high-intensity creators, studios, and creative operations scaling without losing context.",
+      shortDescription: "For high-intensity creators, studios, and creative operations that need to scale without slowing the flow.",
       expandedDescription:
-        "Designed for more intense flows, higher volume, and a stronger professional use of the platform.",
+        "Designed for teams already operating at higher volume and needing more room for multiple deliveries, refinement cycles, and continuous production. It turns the platform into a more intense creative base, with stronger elasticity of use and more capacity per month.",
       stripeDescription:
-        "Monthly plan for creative operations that need to scale production with preserved context and expanded volume.",
+        "Monthly plan for intensive creators and studios who need to scale production with more capacity, continuity, and elasticity.",
       audience: "High-intensity creators, studios, and creative squads with larger operational volume.",
       highlights: [
-        "Expands capacity for multiple deliveries and refinement cycles.",
-        "Supports heavier credit usage with more elasticity across formats.",
-        "Maintains continuity when creation becomes scaled operation.",
+        "Supports multiple projects and deliveries in parallel.",
+        "Creates more room for intense usage and continuous refinement.",
+        "Ideal for advanced creators, studios, and scaled production.",
       ],
-      limits: ["Intensive use", "Professional creative scale"],
+      limits: ["Intensive use", "Professional creative scale", "Higher-volume operation"],
       statusNote: null,
     },
   },

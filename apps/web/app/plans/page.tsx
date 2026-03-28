@@ -48,16 +48,16 @@ const EMPRESARIAL_PLAN: CatalogPlan = {
   price: { amount_brl: null, period: "month" },
   short_description: "Para equipes criativas e operações internas que precisam de escala, coordenação e governança.",
   expanded_description:
-    "Plano voltado para times que precisam centralizar criação, organização e continuidade em um fluxo mais robusto, ainda com ativação assistida no beta.",
+    "Voltado para times que precisam centralizar criação, organização e continuidade em um fluxo mais robusto e acompanhado. No beta atual, esse plano continua em ativação assistida, pensado para operações que exigem mais coordenação, maior volume e acompanhamento mais próximo.",
   stripe_description:
-    "Camada assistida para equipes em expansão. Ainda não abre checkout self-serve no beta atual.",
+    "Camada assistida para equipes criativas e operações internas em expansão. Ativação acompanhada no beta atual.",
   audience: "Equipes criativas e operações internas em fase de coordenação e escala.",
   highlights: [
-    "Concentra criação, projeto e continuidade para uso compartilhado com mais coordenação.",
-    "Abre espaço para governança e suporte mais próximos sem prometer uma camada corporativa completa.",
-    "Permanece como ativação assistida no beta atual, sem checkout automático.",
+    "Estrutura melhor para uso compartilhado e coordenação entre pessoas.",
+    "Mais aderente a operações que precisam de governança e escala.",
+    "Mantido como ativação assistida no beta, sem checkout automático.",
   ],
-  limits_summary: ["Ativação assistida", "Operação de equipe em expansão"],
+  limits_summary: ["Ativação assistida", "Operação de equipe", "Escala com coordenação"],
   status_note: "Empresarial deve continuar como ativação assistida durante o beta atual.",
 };
 
