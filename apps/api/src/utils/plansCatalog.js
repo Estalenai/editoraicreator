@@ -333,6 +333,10 @@ function strongestTier(tiers = []) {
     .sort((left, right) => (TIER_RANK[right] || 0) - (TIER_RANK[left] || 0))[0] || null;
 }
 
+function keyByFeature(features = []) {
+  return Object.fromEntries(features.map((feature) => [String(feature?.key || ""), feature]));
+}
+
 function resolveActivationMode(def) {
   const code = String(def?.code || "").toUpperCase();
   if (code === "FREE") return "hidden_beta";
@@ -355,6 +359,111 @@ function buildRuntimeRules(planCode) {
     model_policy_plan_code: modelPolicyPlanCode,
     inherits_from: runtimeSources.filter((item) => item !== String(planCode || "").toUpperCase()),
   };
+}
+
+function buildMonthlyUsageLimits(usageLimits, avatarEnabled, def) {
+  return {
+    creator_post_generate: usageLimits?.creator_post_generate?.monthly ?? null,
+    creator_music_generate: usageLimits?.creator_music_generate?.monthly ?? null,
+    text_generate: null,
+    image_generate: null,
+    video_generate: null,
+    voice_generate: null,
+    music_generate: null,
+    slides_generate: null,
+    avatar_preview_sessions_per_day: avatarEnabled ? Number(def?.avatarSessionsPerDay || 0) : 0,
+    avatar_preview_seconds_per_session: avatarEnabled ? Number(def?.avatarSecondsPerSession || 0) : 0,
+  };
+}
+
+function buildProvidersByFeature(features = []) {
+  const byKey = keyByFeature(features);
+  const pick = (featureKey) => {
+    const feature = byKey[featureKey];
+    return {
+      enabled: Boolean(feature?.enabled),
+      availability: feature?.availability || "unavailable",
+      providers: Array.isArray(feature?.providers) ? [...feature.providers] : [],
+      max_tier: feature?.max_tier || null,
+      mock_only: feature?.mock_only === true,
+      rule_source: feature?.rule_source || null,
+    };
+  };
+
+  return {
+    text: pick("ai_text"),
+    image: pick("ai_image"),
+    video: pick("ai_video"),
+    music: pick("ai_music"),
+    voice: pick("ai_voice"),
+    slides: pick("ai_slides"),
+    avatar_preview: pick("avatar_preview"),
+    docs_manual: pick("docs_manual"),
+  };
+}
+
+function buildCommerceSnapshot(def, stripePlan, allowedCoinTypes, purchaseFeePercent, conversionFeePercent) {
+  return {
+    price_visibility: Number.isFinite(def?.priceAmountBrl),
+    storefront_visibility: def?.visible !== false,
+    purchasable: def?.purchasable !== false,
+    checkout_supported: Boolean(stripePlan?.price_id) && def?.purchasable !== false,
+    price_id_configured: Boolean(stripePlan?.price_id),
+    allowed_coin_types_to_buy: [...allowedCoinTypes],
+    purchase_fee_percent: Number(purchaseFeePercent ?? 0),
+    conversion_enabled: conversionFeePercent != null,
+    conversion_fee_percent: conversionFeePercent != null ? Number(conversionFeePercent) : null,
+  };
+}
+
+function buildHonestyNotes({
+  def,
+  code,
+  features,
+  monthlyUsageLimits,
+  runtimeRules,
+  activationMode,
+}) {
+  const notes = [];
+
+  if (activationMode === "hidden_beta") {
+    notes.push("Plano oculto no beta: não entra no storefront aberto nem no checkout self-serve.");
+  }
+
+  if (activationMode === "assisted") {
+    notes.push("Plano assistido: a disponibilidade comercial depende de ativação acompanhada, não de checkout aberto.");
+  }
+
+  if (activationMode === "contract") {
+    notes.push("Plano contratual: escopo, volume e condições seguem fluxo comercial separado.");
+  }
+
+  if (runtimeRules?.inherits_from?.length) {
+    notes.push(`Regras técnicas herdadas nesta fase: ${runtimeRules.inherits_from.join(", ")}.`);
+  }
+
+  const mockOnlyFeatures = features
+    .filter((feature) => feature?.mock_only === true)
+    .map((feature) => String(feature?.key || "").replace(/^ai_/, ""));
+  if (mockOnlyFeatures.length > 0) {
+    notes.push(`Estas features não estão liberadas como runtime real neste tier: ${mockOnlyFeatures.join(", ")}.`);
+  }
+
+  const quotaFeatures = [
+    monthlyUsageLimits?.creator_post_generate,
+    monthlyUsageLimits?.creator_music_generate,
+  ].filter((value) => value != null);
+  if (quotaFeatures.length < 2) {
+    notes.push("Nem todas as features possuem quota mensal própria formalizada; parte da capacidade continua governada por créditos e policy de providers/modelos.");
+  } else {
+    notes.push("Somente creator_post_generate e creator_music_generate possuem quota mensal explícita; as demais features seguem por créditos e policy.");
+  }
+
+  if (String(code || "").toUpperCase() === "EMPRESARIAL") {
+    notes.push("Empresarial já existe comercialmente, mas ainda não possui camada técnica totalmente separada de Enterprise.");
+  }
+
+  return notes;
 }
 
 function buildFeatureEntry(planCode, feature, locale) {
@@ -422,10 +531,29 @@ function buildPlanEntry(def, lang) {
   const usageLimits = getUsageLimits(code);
   const stripePlan = getPlanCatalog()?.[String(code || "").toUpperCase()] || null;
   const activationMode = resolveActivationMode(def);
+  const modelPolicy = getPlanModelPolicy(code);
 
   const features = BASE_FEATURES.map((feature) => buildFeatureEntry(code, feature, locale));
 
   const avatarEnabled = canUseAvatarPreview(code);
+  const qualityTier = strongestTier(modelPolicy?.tiers || []);
+  const monthlyUsageLimits = buildMonthlyUsageLimits(usageLimits, avatarEnabled, def);
+  const providersByFeature = buildProvidersByFeature(features);
+  const commerce = buildCommerceSnapshot(
+    def,
+    stripePlan,
+    def.allowedCoinTypes,
+    purchaseFeePercent,
+    conversionFeePercent
+  );
+  const honestyNotes = buildHonestyNotes({
+    def,
+    code,
+    features,
+    monthlyUsageLimits,
+    runtimeRules,
+    activationMode,
+  });
 
   return {
     code,
@@ -448,6 +576,10 @@ function buildPlanEntry(def, lang) {
     status_note: copy?.statusNote || null,
     credits: def.credits ? { ...def.credits } : null,
     features,
+    quality_tier: qualityTier,
+    providers_by_feature: providersByFeature,
+    monthly_usage_limits: monthlyUsageLimits,
+    commerce,
     availability: {
       mode: activationMode,
       storefront_visible: def.visible !== false,
@@ -456,6 +588,7 @@ function buildPlanEntry(def, lang) {
       contract_only: activationMode === "contract",
     },
     runtime_rules: runtimeRules,
+    honesty_notes: honestyNotes,
     limits: {
       usage: { ...usageLimits },
       avatar_preview: {
