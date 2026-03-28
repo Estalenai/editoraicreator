@@ -1,6 +1,8 @@
 import { getPlanCatalog } from "./stripePlans.js";
-import { canUseAvatarPreview, getConversionFeePercent, getPurchaseFeePercent } from "./coinsProductRules.js";
+import { canUseAvatarPreview, getConversionFeePercent, getPurchaseFeePercent, normalizeProductPlanCode } from "./coinsProductRules.js";
+import { getAllowedProvidersForFeature, getPlanModelPolicy } from "./aiModelPolicy.js";
 import { t } from "./i18n.js";
+import { getUsageLimits, normalizePlanCode as normalizeUsagePlanCode } from "./usageLimits.js";
 
 const CURRENCY = "BRL";
 const PERIOD_MONTH = "month";
@@ -26,6 +28,22 @@ const BASE_FEATURES = [
   { key: "avatar_preview", enabled: true },
   { key: "docs_manual", enabled: true },
 ];
+
+const FEATURE_POLICY_MAP = {
+  ai_text: "text_generate",
+  ai_image: "image_generate",
+  ai_video: "video_generate",
+  ai_music: "music_generate",
+  ai_voice: "voice_generate",
+  ai_slides: "slides_generate",
+};
+
+const TIER_RANK = {
+  basic: 1,
+  standard: 2,
+  intermediate: 3,
+  pro: 4,
+};
 
 const PLAN_COPY = {
   FREE: {
@@ -170,7 +188,7 @@ const PLAN_COPY = {
         "Mantido como ativação assistida no beta, sem checkout automático.",
       ],
       limits: ["Ativação assistida", "Operação de equipe", "Escala com coordenação"],
-      statusNote: "Empresarial deve continuar como ativação assistida durante o beta atual.",
+      statusNote: "Empresarial continua em ativação assistida no beta atual. Enquanto a camada própria evolui, as regras técnicas seguem a base Enterprise.",
     },
     "en-US": {
       shortDescription: "For creative teams and internal operations that need scale, coordination, and governance.",
@@ -185,7 +203,7 @@ const PLAN_COPY = {
         "Kept as assisted activation in beta, without automatic checkout.",
       ],
       limits: ["Assisted activation", "Team operation", "Coordinated scale"],
-      statusNote: "Business should remain assisted activation during the current beta.",
+      statusNote: "Business remains assisted activation in the current beta. Until its own tier is fully defined, technical rules follow the Enterprise layer.",
     },
   },
   ENTERPRISE: {
@@ -309,9 +327,88 @@ function getHighlightInfo(planCode) {
   return { highlight, badgeLabel };
 }
 
-function resolveFeatureEnabled(planCode, featureKey) {
-  if (featureKey === "avatar_preview") return canUseAvatarPreview(planCode);
-  return true;
+function strongestTier(tiers = []) {
+  return [...tiers]
+    .filter((tier) => TIER_RANK[tier])
+    .sort((left, right) => (TIER_RANK[right] || 0) - (TIER_RANK[left] || 0))[0] || null;
+}
+
+function resolveActivationMode(def) {
+  const code = String(def?.code || "").toUpperCase();
+  if (code === "FREE") return "hidden_beta";
+  if (code === "ENTERPRISE") return "contract";
+  if (def?.purchasable === false) return "assisted";
+  return "self_serve";
+}
+
+function buildRuntimeRules(planCode) {
+  const usageLimitsPlanCode = normalizeUsagePlanCode(planCode);
+  const purchaseRulesPlanCode = normalizeProductPlanCode(planCode);
+  const modelPolicy = getPlanModelPolicy(planCode);
+  const modelPolicyPlanCode = String(modelPolicy?.plan || "FREE").toUpperCase();
+  const runtimeSources = Array.from(
+    new Set([usageLimitsPlanCode, purchaseRulesPlanCode, modelPolicyPlanCode].filter(Boolean))
+  );
+  return {
+    usage_limits_plan_code: usageLimitsPlanCode,
+    purchase_rules_plan_code: purchaseRulesPlanCode,
+    model_policy_plan_code: modelPolicyPlanCode,
+    inherits_from: runtimeSources.filter((item) => item !== String(planCode || "").toUpperCase()),
+  };
+}
+
+function buildFeatureEntry(planCode, feature, locale) {
+  const featureKey = String(feature?.key || "");
+  const label = t(locale, `plans.feature.${featureKey}`);
+
+  if (featureKey === "avatar_preview") {
+    const enabled = canUseAvatarPreview(planCode);
+    return {
+      key: featureKey,
+      label,
+      enabled,
+      availability: enabled ? "real" : "unavailable",
+      providers: [],
+      max_tier: null,
+      rule_source: normalizeProductPlanCode(planCode),
+      mock_only: false,
+    };
+  }
+
+  if (featureKey === "docs_manual") {
+    return {
+      key: featureKey,
+      label,
+      enabled: true,
+      availability: "real",
+      providers: [],
+      max_tier: null,
+      rule_source: "CATALOG",
+      mock_only: false,
+    };
+  }
+
+  const policyFeatureKey = FEATURE_POLICY_MAP[featureKey];
+  const modelPolicy = getPlanModelPolicy(planCode);
+  const featurePolicy = modelPolicy?.byFeature?.[policyFeatureKey] || null;
+  const mockOnly = Boolean(featurePolicy?.mock_only);
+  const providers = policyFeatureKey ? getAllowedProvidersForFeature(planCode, policyFeatureKey) : [];
+  const tiers = providers.flatMap((provider) => {
+    const providerTiers = featurePolicy?.providers?.[provider];
+    return Array.isArray(providerTiers) ? providerTiers : [];
+  });
+  const enabled = providers.length > 0 && !mockOnly;
+
+  return {
+    key: featureKey,
+    label,
+    enabled,
+    availability: enabled ? "real" : mockOnly ? "mock_only" : "unavailable",
+    providers,
+    max_tier: strongestTier(tiers),
+    rule_source: String(modelPolicy?.plan || planCode || "FREE").toUpperCase(),
+    mock_only: mockOnly,
+  };
 }
 
 function buildPlanEntry(def, lang) {
@@ -321,12 +418,12 @@ function buildPlanEntry(def, lang) {
   const purchaseFeePercent = def.purchaseFeePercentOverride ?? getPurchaseFeePercent(code);
   const { highlight, badgeLabel } = getHighlightInfo(code);
   const copy = getPlanCopyByCode(code, locale);
+  const runtimeRules = buildRuntimeRules(code);
+  const usageLimits = getUsageLimits(code);
+  const stripePlan = getPlanCatalog()?.[String(code || "").toUpperCase()] || null;
+  const activationMode = resolveActivationMode(def);
 
-  const features = BASE_FEATURES.map((feature) => ({
-    key: feature.key,
-    label: t(locale, `plans.feature.${feature.key}`),
-    enabled: feature.enabled && resolveFeatureEnabled(code, feature.key),
-  }));
+  const features = BASE_FEATURES.map((feature) => buildFeatureEntry(code, feature, locale));
 
   const avatarEnabled = canUseAvatarPreview(code);
 
@@ -351,7 +448,16 @@ function buildPlanEntry(def, lang) {
     status_note: copy?.statusNote || null,
     credits: def.credits ? { ...def.credits } : null,
     features,
+    availability: {
+      mode: activationMode,
+      storefront_visible: def.visible !== false,
+      checkout_supported: Boolean(stripePlan?.price_id) && def.purchasable !== false,
+      assisted: activationMode === "assisted",
+      contract_only: activationMode === "contract",
+    },
+    runtime_rules: runtimeRules,
     limits: {
+      usage: { ...usageLimits },
       avatar_preview: {
         enabled: avatarEnabled,
         sessions_per_day: avatarEnabled ? def.avatarSessionsPerDay : 0,

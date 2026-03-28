@@ -1562,6 +1562,9 @@ router.get("/plans", authMiddleware, async (req, res) => {
         badge_label: badgeLabel,
         price: plan?.price || null,
         credits: plan?.credits || null,
+        features: Array.isArray(plan?.features) ? plan.features : [],
+        availability: plan?.availability || null,
+        runtime_rules: plan?.runtime_rules || null,
         short_description: plan?.short_description || null,
         expanded_description: plan?.expanded_description || null,
         stripe_description: plan?.stripe_description || null,
@@ -1569,6 +1572,8 @@ router.get("/plans", authMiddleware, async (req, res) => {
         highlights: plan?.highlights || [],
         limits_summary: plan?.limits_summary || [],
         status_note: plan?.status_note || null,
+        limits: plan?.limits || null,
+        addons: plan?.addons || null,
         coming_soon: plan?.coming_soon === true,
         purchasable: plan?.purchasable !== false,
       };
