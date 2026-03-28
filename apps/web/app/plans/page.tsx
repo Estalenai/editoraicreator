@@ -40,27 +40,6 @@ type PlanCopy = {
   statusNote: string | null;
 };
 
-const EMPRESARIAL_PLAN: CatalogPlan = {
-  code: "EMPRESARIAL",
-  name: "Empresarial",
-  coming_soon: true,
-  purchasable: false,
-  price: { amount_brl: null, period: "month" },
-  short_description: "Para equipes criativas e operações internas que precisam de escala, coordenação e governança.",
-  expanded_description:
-    "Voltado para times que precisam centralizar criação, organização e continuidade em um fluxo mais robusto e acompanhado. No beta atual, esse plano continua em ativação assistida, pensado para operações que exigem mais coordenação, maior volume e acompanhamento mais próximo.",
-  stripe_description:
-    "Camada assistida para equipes criativas e operações internas em expansão. Ativação acompanhada no beta atual.",
-  audience: "Equipes criativas e operações internas em fase de coordenação e escala.",
-  highlights: [
-    "Estrutura melhor para uso compartilhado e coordenação entre pessoas.",
-    "Mais aderente a operações que precisam de governança e escala.",
-    "Mantido como ativação assistida no beta, sem checkout automático.",
-  ],
-  limits_summary: ["Ativação assistida", "Operação de equipe", "Escala com coordenação"],
-  status_note: "Empresarial deve continuar como ativação assistida durante o beta atual.",
-};
-
 function normalizePlanIdentity(planCodeOrLabel: string | null | undefined): string {
   const raw = String(planCodeOrLabel || "")
     .trim()
@@ -230,11 +209,7 @@ function PlansPageContent() {
       }
       const payload = await response.json().catch(() => null);
       const plans: CatalogPlan[] = Array.isArray(payload?.plans) ? payload.plans : [];
-      const nextPlans = [...plans];
-      if (!nextPlans.some((item: CatalogPlan) => String(item?.code || "").toUpperCase() === "EMPRESARIAL")) {
-        nextPlans.push(EMPRESARIAL_PLAN);
-      }
-      setCatalogPlans(nextPlans);
+      setCatalogPlans(plans);
     } catch (loadError: any) {
       setCatalogPlans([]);
       setCatalogError(loadError?.message || "Falha ao carregar catálogo de planos.");

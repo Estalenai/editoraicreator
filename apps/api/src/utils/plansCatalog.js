@@ -156,6 +156,38 @@ const PLAN_COPY = {
       statusNote: null,
     },
   },
+  EMPRESARIAL: {
+    "pt-BR": {
+      shortDescription: "Para equipes criativas e operações internas que precisam de escala, coordenação e governança.",
+      expandedDescription:
+        "Voltado para times que precisam centralizar criação, organização e continuidade em um fluxo mais robusto e acompanhado. No beta atual, esse plano continua em ativação assistida, pensado para operações que exigem mais coordenação, maior volume e acompanhamento mais próximo.",
+      stripeDescription:
+        "Camada assistida para equipes criativas e operações internas em expansão. Ativação acompanhada no beta atual.",
+      audience: "Equipes criativas e operações internas em fase de coordenação e escala.",
+      highlights: [
+        "Estrutura melhor para uso compartilhado e coordenação entre pessoas.",
+        "Mais aderente a operações que precisam de governança e escala.",
+        "Mantido como ativação assistida no beta, sem checkout automático.",
+      ],
+      limits: ["Ativação assistida", "Operação de equipe", "Escala com coordenação"],
+      statusNote: "Empresarial deve continuar como ativação assistida durante o beta atual.",
+    },
+    "en-US": {
+      shortDescription: "For creative teams and internal operations that need scale, coordination, and governance.",
+      expandedDescription:
+        "Built for teams that need to centralize creation, organization, and continuity in a more robust and guided flow. In the current beta, this tier remains assisted activation for operations that need stronger coordination, higher volume, and closer follow-up.",
+      stripeDescription:
+        "Assisted layer for expanding creative teams and internal operations. Guided activation in the current beta.",
+      audience: "Creative teams and internal operations growing into coordinated scale.",
+      highlights: [
+        "Better structure for shared use and coordination across people.",
+        "Better fit for operations that need governance and scale.",
+        "Kept as assisted activation in beta, without automatic checkout.",
+      ],
+      limits: ["Assisted activation", "Team operation", "Coordinated scale"],
+      statusNote: "Business should remain assisted activation during the current beta.",
+    },
+  },
   ENTERPRISE: {
     "pt-BR": {
       shortDescription: "Para operações de grande escala com estrutura personalizada, governança e contratação dedicada.",
@@ -223,11 +255,23 @@ const PLAN_DEFS = [
   {
     code: "EDITOR_ULTRA",
     nameKey: "plans.name.editor_ultra",
-    priceAmountBrl: 139.9,
+    priceAmountBrl: 149.9,
     credits: { common: 2000, pro: 1200, ultra: 600 },
     allowedCoinTypes: ALL_COIN_TYPES,
     avatarSessionsPerDay: 1,
     avatarSecondsPerSession: 120,
+  },
+  {
+    code: "EMPRESARIAL",
+    nameKey: "plans.name.empresarial",
+    priceAmountBrl: 499.9,
+    credits: null,
+    allowedCoinTypes: ALL_COIN_TYPES,
+    avatarSessionsPerDay: 1,
+    avatarSecondsPerSession: 120,
+    conversionFeePercentOverride: 0,
+    comingSoon: true,
+    purchasable: false,
   },
   {
     code: "ENTERPRISE",

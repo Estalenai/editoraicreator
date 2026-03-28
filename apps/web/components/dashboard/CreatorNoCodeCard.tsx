@@ -359,7 +359,7 @@ export function CreatorNoCodeCard({ planCode, walletCommon, onRefetch }: Props) 
           </p>
         </div>
         <div className="state-ea state-ea-warning creator-empty-state">
-          <p className="state-ea-title">Disponível a partir do Editor Ultra</p>
+          <p className="state-ea-title">Disponível a partir do Creator Pro</p>
           <div className="state-ea-text">
             A Fase 1 libera a estruturação inicial do produto com contexto salvo e próximos passos claros.
           </div>

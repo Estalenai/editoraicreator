@@ -561,7 +561,7 @@ function runtimePlanCatalogRows() {
     },
     {
       code: "ENTERPRISE",
-      name: "Enterprise",
+      name: "Empresarial",
       tier: 4,
       features: { family: "editor_ai_creator", alias_of: "EMPRESARIAL" },
     },
@@ -1533,32 +1533,46 @@ async function markIgnoredForUser(eventId, userId, reason) {
 router.get("/plans", authMiddleware, async (req, res) => {
   const lang = resolveLang(req);
   const catalog = getPlansCatalog(lang);
-  const planCopyByCode = new Map(
-    (Array.isArray(catalog?.plans) ? catalog.plans : []).map((plan) => [String(plan?.code || "").toUpperCase(), plan])
+  const stripeCatalogByCode = new Map(
+    Object.values(getPlanCatalog()).map((row) => [String(row.plan_code || "").toUpperCase(), row])
   );
-  const plans = Object.values(getPlanCatalog()).map((row) => {
-    const plan = planCopyByCode.get(String(row.plan_code || "").toUpperCase()) || null;
-    return {
-      plan_code: row.plan_code,
-      name: plan?.name || row.plan_code,
-      price_id: row.price_id,
-      enabled: Boolean(row.price_id),
-      highlight: row.highlight || null,
-      badge_label:
-        row.badge_label && typeof row.badge_label === "object"
-          ? row.badge_label
-          : row.plan_code === "EDITOR_PRO"
+  const plans = (Array.isArray(catalog?.plans) ? catalog.plans : [])
+    .filter((plan) => {
+      const code = String(plan?.code || "").toUpperCase();
+      if (code === "FREE" || code === "ENTERPRISE") return false;
+      return true;
+    })
+    .map((plan) => {
+      const code = String(plan?.code || "").toUpperCase();
+      const stripePlan = stripeCatalogByCode.get(code) || null;
+      const badgeLabel =
+        plan?.badge_label && typeof plan.badge_label === "object"
+          ? plan.badge_label
+          : code === "EDITOR_PRO"
             ? { "pt-BR": "Mais popular", "en-US": "Most popular" }
-            : { "pt-BR": null, "en-US": null },
-      short_description: plan?.short_description || null,
-      expanded_description: plan?.expanded_description || null,
-      stripe_description: plan?.stripe_description || null,
-      audience: plan?.audience || null,
-      highlights: plan?.highlights || [],
-      limits_summary: plan?.limits_summary || [],
-      status_note: plan?.status_note || null,
-    };
-  });
+            : { "pt-BR": null, "en-US": null };
+
+      return {
+        plan_code: code,
+        name: plan?.name || code,
+        price_id: stripePlan?.price_id || null,
+        enabled: Boolean(stripePlan?.price_id) && plan?.purchasable !== false,
+        visible: plan?.visible !== false,
+        highlight: plan?.highlight || stripePlan?.highlight || null,
+        badge_label: badgeLabel,
+        price: plan?.price || null,
+        credits: plan?.credits || null,
+        short_description: plan?.short_description || null,
+        expanded_description: plan?.expanded_description || null,
+        stripe_description: plan?.stripe_description || null,
+        audience: plan?.audience || null,
+        highlights: plan?.highlights || [],
+        limits_summary: plan?.limits_summary || [],
+        status_note: plan?.status_note || null,
+        coming_soon: plan?.coming_soon === true,
+        purchasable: plan?.purchasable !== false,
+      };
+    });
   return res.json({ ok: true, plans });
 });
 
