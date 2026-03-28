@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PremiumSelect } from "../ui/PremiumSelect";
 import { api } from "../../lib/api";
 import {
@@ -278,17 +278,20 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
     setWorkspace(nextWorkspace);
   }
 
-  async function persistProjectData(nextData: any) {
-    if (!selectedProject) return nextData;
-    const response = await api.updateProject(selectedProject.id, { data: nextData });
-    const persistedData = extractUpdatedProjectData(response, nextData);
-    setProjectDataMap((current) => ({
-      ...current,
-      [selectedProject.id]: persistedData,
-    }));
-    onProjectDataChange?.(selectedProject.id, persistedData);
-    return persistedData;
-  }
+  const persistProjectData = useCallback(
+    async (nextData: any) => {
+      if (!selectedProject) return nextData;
+      const response = await api.updateProject(selectedProject.id, { data: nextData });
+      const persistedData = extractUpdatedProjectData(response, nextData);
+      setProjectDataMap((current) => ({
+        ...current,
+        [selectedProject.id]: persistedData,
+      }));
+      onProjectDataChange?.(selectedProject.id, persistedData);
+      return persistedData;
+    },
+    [onProjectDataChange, selectedProject]
+  );
 
   useEffect(() => {
     if (!selectedProject || !localBinding) return;
@@ -351,7 +354,7 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
     return () => {
       cancelled = true;
     };
-  }, [canonicalVercelIntegration, localBinding, selectedProject, selectedProjectData]);
+  }, [canonicalVercelIntegration, localBinding, persistProjectData, selectedProject, selectedProjectData]);
 
   function buildBinding(overrides: Partial<VercelProjectBinding> = {}): VercelProjectBinding {
     if (!selectedProject) {

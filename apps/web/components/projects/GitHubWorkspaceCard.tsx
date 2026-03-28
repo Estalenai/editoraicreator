@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PremiumSelect } from "../ui/PremiumSelect";
 import { api } from "../../lib/api";
 import { supabase } from "../../lib/supabaseClient";
@@ -392,17 +392,20 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
     setDraft((current) => ({ ...current, [field]: value }));
   }
 
-  async function persistProjectData(nextData: any) {
-    if (!selectedProject) return nextData;
-    const response = await api.updateProject(selectedProject.id, { data: nextData });
-    const persistedData = extractUpdatedProjectData(response, nextData);
-    setProjectDataMap((current) => ({
-      ...current,
-      [selectedProject.id]: persistedData,
-    }));
-    onProjectDataChange?.(selectedProject.id, persistedData);
-    return persistedData;
-  }
+  const persistProjectData = useCallback(
+    async (nextData: any) => {
+      if (!selectedProject) return nextData;
+      const response = await api.updateProject(selectedProject.id, { data: nextData });
+      const persistedData = extractUpdatedProjectData(response, nextData);
+      setProjectDataMap((current) => ({
+        ...current,
+        [selectedProject.id]: persistedData,
+      }));
+      onProjectDataChange?.(selectedProject.id, persistedData);
+      return persistedData;
+    },
+    [onProjectDataChange, selectedProject]
+  );
 
   useEffect(() => {
     if (!selectedProject || !ready) return;
@@ -457,6 +460,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
     canonicalProjectVersions.length,
     fallbackProjectExports,
     fallbackProjectVersions,
+    persistProjectData,
     ready,
     selectedProject,
     selectedProjectData,
