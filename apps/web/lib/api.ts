@@ -56,6 +56,14 @@ async function readJsonSafe(res: Response) {
   return res.json().catch(() => null);
 }
 
+function getSettledErrorMessage(result: PromiseSettledResult<any>, fallback: string) {
+  if (result.status === "fulfilled") return "";
+  const reason = result.reason;
+  if (reason instanceof Error && reason.message.trim()) return reason.message.trim();
+  if (typeof reason === "string" && reason.trim()) return reason.trim();
+  return fallback;
+}
+
 async function apiJson(path: string, options: RequestInit = {}) {
   const res = await apiFetch(path, options);
   const payload = await readJsonSafe(res);
@@ -133,6 +141,10 @@ export const api = {
       apiJson("/api/projects", { headers: authHeaders }),
     ]);
 
+    if (projects.status !== "fulfilled") {
+      throw new Error(getSettledErrorMessage(projects, "Falha ao carregar projetos."));
+    }
+
     const planCode =
       subscription.status === "fulfilled"
         ? String(subscription.value?.plan_code || "FREE").toUpperCase()
@@ -141,8 +153,7 @@ export const api = {
     const wallet =
       balance.status === "fulfilled" ? balance.value?.wallet || null : null;
 
-    const items =
-      projects.status === "fulfilled" ? projects.value?.items || [] : [];
+    const items = projects.value?.items || [];
 
     return {
       ok: true,
@@ -157,18 +168,18 @@ export const api = {
   },
 
   async myPlan() {
-    const dashboard = await this.getDashboard();
-    return { plan_code: dashboard.plan };
+    const payload = await authJson("/api/subscriptions/me");
+    return { plan_code: String(payload?.plan_code || "FREE").toUpperCase() };
   },
 
   async coinsBalance() {
-    const dashboard = await this.getDashboard();
-    return { wallet: dashboard.wallet };
+    const payload = await authJson("/api/coins/balance");
+    return { wallet: payload?.wallet || null };
   },
 
   async listProjects() {
-    const dashboard = await this.getDashboard();
-    return { data: dashboard.projects };
+    const payload = await authJson("/api/projects");
+    return { data: Array.isArray(payload?.items) ? payload.items : [] };
   },
 
   async createProject(body: { title: string; kind: string; data?: any }) {

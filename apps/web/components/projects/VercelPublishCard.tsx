@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { PremiumSelect } from "../ui/PremiumSelect";
 import { api } from "../../lib/api";
 import {
@@ -158,6 +158,7 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
   const [productionUrl, setProductionUrl] = useState("");
   const [notice, setNotice] = useState<string | null>(null);
   const [noticeTone, setNoticeTone] = useState<"info" | "success">("info");
+  const hydrationKeyRef = useRef("");
 
   useEffect(() => {
     setWorkspace(readVercelWorkspace());
@@ -202,6 +203,11 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
         : null,
     [selectedProject, selectedProjectData]
   );
+  const canonicalVercelIntegration = selectedProjectCanonical?.integrations.vercel || null;
+  const localBinding = useMemo(
+    () => (selectedProject ? getVercelProjectBinding(selectedProject.id) : null),
+    [selectedProject]
+  );
   const currentBinding = useMemo(() => {
     if (!selectedProject) return null;
     const canonical = fromCanonicalVercelBinding(
@@ -210,8 +216,8 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
       (selectedProjectCanonical?.integrations.vercel.history || []) as VercelProjectEvent[],
       selectedProjectCanonical?.integrations.vercel.lastManifestExportedAt || null
     );
-    return canonical || getVercelProjectBinding(selectedProject.id);
-  }, [selectedProject, selectedProjectCanonical]);
+    return canonical || localBinding;
+  }, [localBinding, selectedProject, selectedProjectCanonical]);
 
   useEffect(() => {
     if (!selectedProjectIdValue) return;
@@ -283,6 +289,69 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
     onProjectDataChange?.(selectedProject.id, persistedData);
     return persistedData;
   }
+
+  useEffect(() => {
+    if (!selectedProject || !localBinding) return;
+    const needsBindingHydration = !canonicalVercelIntegration?.binding;
+    const needsHistoryHydration =
+      (canonicalVercelIntegration?.history?.length || 0) === 0 && (localBinding.history?.length || 0) > 0;
+    const needsExportMarkerHydration =
+      !canonicalVercelIntegration?.lastManifestExportedAt && Boolean(localBinding.lastManifestExportedAt);
+    if (!needsBindingHydration && !needsHistoryHydration && !needsExportMarkerHydration) return;
+
+    const nextKey = `${selectedProject.id}:${localBinding.updatedAt}:${localBinding.history?.length || 0}:${localBinding.lastManifestExportedAt || ""}`;
+    if (hydrationKeyRef.current === nextKey) return;
+    hydrationKeyRef.current = nextKey;
+
+    let cancelled = false;
+
+    void (async () => {
+      try {
+        const publishedAt =
+          localBinding.deployStatus === "published"
+            ? localBinding.history?.find((item) => item.stage === "published")?.ts || null
+            : null;
+        const exportedAt = localBinding.lastManifestExportedAt || null;
+        let nextData = mergeCanonicalProjectData(selectedProjectData, {
+          integrations: {
+            vercel: {
+              ...(needsBindingHydration ? { binding: toCanonicalVercelBinding(localBinding) } : {}),
+              ...(needsExportMarkerHydration ? { lastManifestExportedAt: exportedAt } : {}),
+              ...(needsHistoryHydration ? { history: localBinding.history || [] } : {}),
+            },
+          },
+        });
+
+        if (publishedAt || exportedAt) {
+          nextData = mergeCanonicalProjectData(nextData, {
+            delivery: {
+              stage: publishedAt ? "published" : "exported",
+              exportTarget: "connected_storage",
+              connectedStorage: "vercel",
+              lastExportedAt: exportedAt,
+              lastPublishedAt: publishedAt,
+            },
+          });
+        }
+
+        await persistProjectData(nextData);
+        if (!cancelled) {
+          setNoticeTone("info");
+          setNotice("Base local da Vercel migrada para o projeto. O vínculo e o histórico agora deixam de depender só deste navegador.");
+        }
+      } catch (migrationError: any) {
+        if (!cancelled) {
+          hydrationKeyRef.current = "";
+          setNoticeTone("info");
+          setNotice(`Falha ao migrar a base local da Vercel: ${migrationError?.message || "erro desconhecido"}`);
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [canonicalVercelIntegration, localBinding, selectedProject, selectedProjectData]);
 
   function buildBinding(overrides: Partial<VercelProjectBinding> = {}): VercelProjectBinding {
     if (!selectedProject) {

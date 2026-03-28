@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { PremiumSelect } from "../ui/PremiumSelect";
 import { api } from "../../lib/api";
 import { supabase } from "../../lib/supabaseClient";
@@ -73,6 +73,30 @@ function draftFromWorkspace(workspace: GitHubWorkspace | null): WorkspaceDraft {
     branch: workspace.branch,
     rootPath: workspace.rootPath,
     target: workspace.target,
+  };
+}
+
+function isWorkspaceDraftComplete(draft: WorkspaceDraft): boolean {
+  return Boolean(draft.owner.trim() && draft.repo.trim());
+}
+
+function workspaceFromDraft(
+  draft: WorkspaceDraft,
+  identityLabel: string | null,
+  connectedAt?: string | null
+): GitHubWorkspace | null {
+  if (!isWorkspaceDraftComplete(draft)) return null;
+  const now = new Date().toISOString();
+  return {
+    provider: "github",
+    owner: draft.owner.trim(),
+    repo: draft.repo.trim(),
+    branch: draft.branch.trim() || "main",
+    rootPath: normalizeRootPath(draft.rootPath),
+    target: draft.target,
+    connectedAt: connectedAt || now,
+    updatedAt: now,
+    accountLabel: identityLabel,
   };
 }
 
@@ -173,6 +197,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [busyAction, setBusyAction] = useState<"connect" | "save" | "clear" | "version" | "export" | null>(null);
+  const hydrationKeyRef = useRef("");
 
   useEffect(() => {
     setProjectDataMap((current) => {
@@ -222,8 +247,15 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
   );
   const projectIntegration = selectedProjectCanonical?.integrations.github || null;
   const projectWorkspace = useMemo(() => workspaceFromBinding(projectIntegration?.binding), [projectIntegration?.binding]);
-  const activeWorkspace = selectedProject ? projectWorkspace || workspace : workspace;
-  const repoLabel = useMemo(() => formatGitHubRepoLabel(activeWorkspace), [activeWorkspace]);
+  const visibleWorkspace = selectedProject ? projectWorkspace : workspace;
+  const suggestedWorkspace = useMemo(() => projectWorkspace || workspace, [projectWorkspace, workspace]);
+  const actionWorkspace = useMemo(
+    () =>
+      projectWorkspace ||
+      workspaceFromDraft(draft, identityLabel, projectWorkspace?.connectedAt || workspace?.connectedAt || null),
+    [draft, identityLabel, projectWorkspace, workspace]
+  );
+  const repoLabel = useMemo(() => formatGitHubRepoLabel(visibleWorkspace), [visibleWorkspace]);
   const canLinkIdentity = useMemo(() => typeof (supabase.auth as any)?.linkIdentity === "function", []);
 
   useEffect(() => {
@@ -274,8 +306,8 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
 
   useEffect(() => {
     if (!ready) return;
-    setDraft(draftFromWorkspace(activeWorkspace));
-  }, [activeWorkspace, ready]);
+    setDraft(draftFromWorkspace(suggestedWorkspace));
+  }, [ready, suggestedWorkspace]);
 
   const fallbackProjectVersions = useMemo(
     () => (selectedProject ? localVersions.filter((item) => item.projectId === selectedProject.id) : localVersions),
@@ -320,7 +352,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
         detail: "Snapshot exportado e pronto para handoff beta fora da plataforma.",
       };
     }
-    if (activeWorkspace) {
+    if (projectWorkspace) {
       return {
         label: "Draft",
         detail: "Base do repositório salva. Falta exportar o snapshot para o handoff beta.",
@@ -330,7 +362,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
       label: "Draft",
       detail: "Defina owner, repositório e branch antes de preparar a saída.",
     };
-  }, [activeWorkspace, effectiveProjectExports.length]);
+  }, [effectiveProjectExports.length, projectWorkspace]);
   const recentGitHubActivity = useMemo(
     () =>
       [
@@ -371,6 +403,64 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
     onProjectDataChange?.(selectedProject.id, persistedData);
     return persistedData;
   }
+
+  useEffect(() => {
+    if (!selectedProject || !ready) return;
+    if (!accountKey) return;
+    if (canonicalProjectVersions.length > 0 || canonicalProjectExports.length > 0) return;
+    if (fallbackProjectVersions.length === 0 && fallbackProjectExports.length === 0) return;
+
+    const nextKey = `${selectedProject.id}:${fallbackProjectVersions.length}:${fallbackProjectExports.length}`;
+    if (hydrationKeyRef.current === nextKey) return;
+    hydrationKeyRef.current = nextKey;
+
+    let cancelled = false;
+
+    void (async () => {
+      try {
+        const nextData = mergeCanonicalProjectData(selectedProjectData, {
+          integrations: {
+            github: {
+              versions: fallbackProjectVersions.map((item) => ({
+                id: item.id,
+                savedAt: item.savedAt,
+                handoffTarget: item.handoffTarget,
+                repoLabel: item.repoLabel,
+              })),
+              exports: fallbackProjectExports.map((item) => ({
+                id: item.id,
+                exportedAt: item.exportedAt,
+                handoffTarget: item.handoffTarget,
+                repoLabel: item.repoLabel,
+              })),
+            },
+          },
+        });
+        await persistProjectData(nextData);
+        if (!cancelled) {
+          setSuccess("Histórico GitHub local migrado para o projeto. A continuidade agora deixa de depender só deste navegador.");
+        }
+      } catch (migrationError: any) {
+        if (!cancelled) {
+          hydrationKeyRef.current = "";
+          setError(toUserFacingError(migrationError?.message, "Não foi possível migrar o histórico GitHub local deste projeto."));
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    accountKey,
+    canonicalProjectExports.length,
+    canonicalProjectVersions.length,
+    fallbackProjectExports,
+    fallbackProjectVersions,
+    ready,
+    selectedProject,
+    selectedProjectData,
+  ]);
 
   async function handleConnectGitHub() {
     setError(null);
@@ -440,7 +530,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
         branch: draft.branch.trim() || "main",
         rootPath: normalizeRootPath(draft.rootPath),
         target: draft.target,
-        connectedAt: activeWorkspace?.connectedAt || now,
+        connectedAt: projectWorkspace?.connectedAt || workspace?.connectedAt || now,
         updatedAt: now,
         accountLabel: identityLabel,
       };
@@ -479,10 +569,12 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
     setSuccess(null);
 
     try {
-      if (accountKey) {
+      if (accountKey && !selectedProject) {
         clearGitHubWorkspace(accountKey);
       }
-      setWorkspace(null);
+      if (!selectedProject) {
+        setWorkspace(null);
+      }
       setDraft(DEFAULT_DRAFT);
 
       if (selectedProject) {
@@ -516,6 +608,11 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
     setSuccess(null);
 
     try {
+      const workspaceForAction = actionWorkspace;
+      if (!workspaceForAction) {
+        setError("Salve a base GitHub do projeto com owner e repositório antes de registrar uma versão.");
+        return;
+      }
       const projectRef = {
         ...selectedProject,
         data: selectedProjectData,
@@ -526,10 +623,10 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
         projectTitle: selectedProject.title,
         projectKind: selectedProject.kind,
         savedAt: new Date().toISOString(),
-        handoffTarget: activeWorkspace?.target === "app" ? "app" : "site",
-        repoLabel: activeWorkspace ? formatGitHubRepoLabel(activeWorkspace) : null,
+        handoffTarget: workspaceForAction.target === "app" ? "app" : "site",
+        repoLabel: formatGitHubRepoLabel(workspaceForAction),
       };
-      const entry = accountKey ? saveGitHubProjectVersion(accountKey, projectRef, activeWorkspace) : fallbackEntry;
+      const entry = accountKey ? saveGitHubProjectVersion(accountKey, projectRef, workspaceForAction) : fallbackEntry;
       if (accountKey) {
         setLocalVersions(listGitHubProjectVersions(accountKey));
       }
@@ -537,7 +634,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
       const nextData = mergeCanonicalProjectData(selectedProjectData, {
         integrations: {
           github: {
-            ...(activeWorkspace ? { binding: activeWorkspace } : {}),
+            binding: workspaceForAction,
             versions: [
               {
                 id: entry.id,
@@ -571,21 +668,26 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
     setSuccess(null);
 
     try {
+      const workspaceForAction = actionWorkspace;
+      if (!workspaceForAction) {
+        setError("Salve a base GitHub do projeto com owner e repositório antes de exportar o snapshot.");
+        return;
+      }
       const projectRef = {
         ...selectedProject,
         data: selectedProjectData,
       };
-      downloadGitHubProjectBundle(projectRef, activeWorkspace);
+      downloadGitHubProjectBundle(projectRef, workspaceForAction);
 
       const fallbackEntry: GitHubProjectExport = {
         id: createClientId(),
         projectId: selectedProject.id,
         projectTitle: selectedProject.title,
         exportedAt: new Date().toISOString(),
-        handoffTarget: activeWorkspace?.target === "app" ? "app" : "site",
-        repoLabel: activeWorkspace ? formatGitHubRepoLabel(activeWorkspace) : null,
+        handoffTarget: workspaceForAction.target === "app" ? "app" : "site",
+        repoLabel: formatGitHubRepoLabel(workspaceForAction),
       };
-      const entry = accountKey ? saveGitHubProjectExport(accountKey, projectRef, activeWorkspace) : fallbackEntry;
+      const entry = accountKey ? saveGitHubProjectExport(accountKey, projectRef, workspaceForAction) : fallbackEntry;
       if (accountKey) {
         setLocalExports(listGitHubProjectExports(accountKey));
       }
@@ -615,7 +717,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
         },
         integrations: {
           github: {
-            ...(activeWorkspace ? { binding: activeWorkspace } : {}),
+            binding: workspaceForAction,
             exports: [
               {
                 id: entry.id,
@@ -861,7 +963,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
             <button onClick={handleSaveWorkspace} disabled={busyAction === "save"} className="btn-ea btn-secondary btn-sm">
               {busyAction === "save" ? "Salvando base..." : selectedProject ? "Salvar base no projeto" : "Salvar base GitHub"}
             </button>
-            <button onClick={handleClearWorkspace} disabled={busyAction === "clear" || (!activeWorkspace && !selectedProject)} className="btn-ea btn-ghost btn-sm">
+            <button onClick={handleClearWorkspace} disabled={busyAction === "clear" || (!projectWorkspace && !selectedProject && !workspace)} className="btn-ea btn-ghost btn-sm">
               {busyAction === "clear" ? "Limpando..." : selectedProject ? "Remover base do projeto" : "Remover base local"}
             </button>
           </div>
@@ -890,7 +992,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
             <div className="github-workspace-status-item">
               <span className="github-workspace-status-label">Último snapshot</span>
               <strong>{lastExportedAt ? formatDateLabel(lastExportedAt) : "Nenhum snapshot exportado"}</strong>
-              <small>{activeWorkspace ? `Destino ${targetLabel(activeWorkspace.target)} em ${activeWorkspace.branch}${repoLabel ? ` • ${repoLabel}` : ""}.` : "Configure owner/repositório/branch e depois exporte o snapshot do projeto."}</small>
+              <small>{projectWorkspace ? `Destino ${targetLabel(projectWorkspace.target)} em ${projectWorkspace.branch}${repoLabel ? ` • ${repoLabel}` : ""}.` : "Salve a base GitHub no projeto antes de exportar o snapshot e manter o vínculo com o repositório."}</small>
             </div>
           </div>
 
