@@ -28,6 +28,7 @@ import {
 } from "../utils/planRuntimeGuards.js";
 import { metricIncrement, metricTiming, recordUsageMetric } from "../utils/metrics.js";
 import { extractRoutingInput, normalizeRoutingMode } from "../utils/aiRoutingInput.js";
+import { validateNoCodeRequest } from "../utils/noCodeRegistry.js";
 import {
   factCheck as runFactCheck,
   generateText as runGenerateText,
@@ -394,6 +395,16 @@ function mergePlanUsageMeta(baseMeta, body, parsedInput) {
   return {
     ...extractPlanUsageTelemetry({ body, parsedInput }),
     ...(baseMeta || {}),
+  };
+}
+
+function extractNoCodeExperience(body = {}) {
+  const experienceKey = String(body?.experience_key || body?.experienceKey || "").trim().toLowerCase();
+  const provider = String(body?.no_code_provider || body?.noCodeProvider || "").trim().toLowerCase() || null;
+  return {
+    experienceKey,
+    provider,
+    enabled: experienceKey === "creator_no_code",
   };
 }
 
@@ -3942,6 +3953,15 @@ router.post(
   async (req, res) => {
     await applyRoutingContext(req, { feature: "text_generate", body: req.body });
     if (rejectDisallowedManualRouting(req, res)) return;
+    const noCodeExperience = extractNoCodeExperience(req.body || {});
+    if (noCodeExperience.enabled) {
+      const noCodeValidation = validateNoCodeRequest({
+        planCode: req.plan?.code || "FREE",
+        mode: String(req.aiRouting?.mode || "quality").trim().toLowerCase() === "manual" ? "manual" : "automatic",
+        provider: noCodeExperience.provider,
+      });
+      if (rejectPlanFeatureViolation(req, res, noCodeValidation)) return;
+    }
     const prompt = String(req.body?.prompt || "").trim();
     const language = String(req.body?.language || "pt-BR").trim() || "pt-BR";
     const requestedMaxTokens = Number(req.body?.max_tokens ?? req.body?.maxTokens ?? MAX_TOKENS_BY_TIER.common);
@@ -4098,6 +4118,7 @@ router.post(
           credit_type: coinsCharge.pro > 0 ? "pro" : "common",
           max_tokens: requestedMaxTokens,
           language,
+          experience_key: noCodeExperience.enabled ? "creator_no_code" : null,
         },
       });
 
@@ -4206,6 +4227,7 @@ router.post(
           error: e?.message || "provider_failed",
           max_tokens: requestedMaxTokens,
           language,
+          experience_key: noCodeExperience.enabled ? "creator_no_code" : null,
         },
       });
 

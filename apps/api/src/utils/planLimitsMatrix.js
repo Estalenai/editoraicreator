@@ -84,6 +84,59 @@ function featureRule({
   };
 }
 
+function noCodePolicy({
+  enabled = false,
+  featureStatus = "disabled",
+  baseExperienceStatus = "disabled",
+  integrationStatus = "prepared",
+  currentRuntimeFeature = null,
+  providerOrder = ["codex", "claude_code"],
+  executionModeDefault = "automatic",
+  automaticProfileDefault = "quality",
+  automaticPrimary = true,
+  manualModeAllowed = false,
+  manualModeLevel = "none",
+  inheritsFrom = [],
+  toolPermissions = ["read", "propose_patch"],
+  approvalRequiredOperations = ["apply_patch"],
+  notes = [],
+} = {}) {
+  return {
+    enabled: enabled === true,
+    feature_status: String(featureStatus || "disabled").trim().toLowerCase() || "disabled",
+    base_experience_status: String(baseExperienceStatus || "disabled").trim().toLowerCase() || "disabled",
+    integration_status: String(integrationStatus || "prepared").trim().toLowerCase() || "prepared",
+    current_runtime_feature: currentRuntimeFeature == null ? null : String(currentRuntimeFeature).trim() || null,
+    provider_order: Array.isArray(providerOrder)
+      ? providerOrder.map((item) => String(item || "").trim().toLowerCase()).filter(Boolean)
+      : ["codex", "claude_code"],
+    execution_mode_default:
+      String(executionModeDefault || "automatic").trim().toLowerCase() === "manual" ? "manual" : "automatic",
+    automatic_profile_default: String(automaticProfileDefault || "quality").trim().toLowerCase() || "quality",
+    automatic_primary: automaticPrimary !== false,
+    manual_mode_allowed: manualModeAllowed === true,
+    manual_mode_level: String(manualModeLevel || "none").trim().toLowerCase() || "none",
+    apply_patch_requires_approval: true,
+    rollback_supported: true,
+    rollback_metadata_required: true,
+    rollback_strategy: "patch_reverse",
+    inherits_from: Array.isArray(inheritsFrom) ? [...inheritsFrom] : [],
+    security_policy: {
+      access_scope: "project_workspace",
+      sandbox_profile: "restricted_project_patch",
+      allow_full_repository_access: false,
+      destructive_operations_allowed: false,
+      tool_permissions: Array.isArray(toolPermissions)
+        ? toolPermissions.map((item) => String(item || "").trim()).filter(Boolean)
+        : ["read", "propose_patch"],
+      approval_required_operations: Array.isArray(approvalRequiredOperations)
+        ? approvalRequiredOperations.map((item) => String(item || "").trim()).filter(Boolean)
+        : ["apply_patch"],
+    },
+    notes: Array.isArray(notes) ? [...notes] : [],
+  };
+}
+
 function monthlyLimit(monthly = null) {
   return { monthly: Number.isFinite(monthly) ? Number(monthly) : null };
 }
@@ -492,6 +545,18 @@ const PLAN_LIMITS_MATRIX = {
       economy_mode_available: true,
       prepared_provider_flags: ["claude"],
     },
+    no_code: noCodePolicy({
+      enabled: false,
+      featureStatus: "disabled",
+      baseExperienceStatus: "disabled",
+      currentRuntimeFeature: null,
+      manualModeAllowed: false,
+      manualModeLevel: "none",
+      notes: [
+        "Creator No Code continua fora deste plano como capacidade protegida.",
+        "Adapters de Codex e Claude Code ficam apenas preparados internamente, sem execucao real neste tier.",
+      ],
+    }),
     honesty_notes: [
       "Plano oculto no beta e fora do storefront aberto.",
       "Video, voz, musica e slides ficam em camada exploratoria e nao devem ser tratados como pipeline pesado real.",
@@ -611,6 +676,18 @@ const PLAN_LIMITS_MATRIX = {
       economy_mode_available: true,
       prepared_provider_flags: ["deepseek", "claude"],
     },
+    no_code: noCodePolicy({
+      enabled: false,
+      featureStatus: "disabled",
+      baseExperienceStatus: "disabled",
+      currentRuntimeFeature: null,
+      manualModeAllowed: false,
+      manualModeLevel: "none",
+      notes: [
+        "Creator No Code continua fora deste plano para evitar bypass via blueprint no-code.",
+        "Codex e Claude Code seguem apenas preparados internamente, sem abrir selecao manual nem execucao real aqui.",
+      ],
+    }),
     honesty_notes: [
       "Upload padrao por trabalho fica em 1 GB; ate 2 GB depende de direct upload para storage.",
       "DeepSeek e Claude continuam apenas preparados por feature flag nesta etapa; OpenAI, Gemini e ElevenLabs seguem como providers reais do plano.",
@@ -737,6 +814,18 @@ const PLAN_LIMITS_MATRIX = {
       economy_mode_available: true,
       prepared_provider_flags: ["deepseek", "claude"],
     },
+    no_code: noCodePolicy({
+      enabled: false,
+      featureStatus: "disabled",
+      baseExperienceStatus: "disabled",
+      currentRuntimeFeature: null,
+      manualModeAllowed: false,
+      manualModeLevel: "none",
+      notes: [
+        "Editor Pro ainda nao abre Creator No Code como camada propria de produto.",
+        "Os adapters de patch para Codex e Claude Code seguem preparados, nao ativos, e sem acesso livre ao repositorio.",
+      ],
+    }),
     honesty_notes: [
       "Neste tier o credito passa a ser o limitador principal, mas hard caps tecnicos e anti-abuso continuam ativos em paralelo.",
       "Editor Pro fica com baseline profissional de ate 50 GB por trabalho via direct/connected flow, 90 minutos de entrada e 50 arquivos por job.",
@@ -865,6 +954,21 @@ const PLAN_LIMITS_MATRIX = {
       economy_mode_available: true,
       prepared_provider_flags: ["deepseek", "claude"],
     },
+    no_code: noCodePolicy({
+      enabled: true,
+      featureStatus: "real",
+      baseExperienceStatus: "real",
+      integrationStatus: "prepared",
+      currentRuntimeFeature: "text_generate",
+      manualModeAllowed: true,
+      manualModeLevel: "full",
+      toolPermissions: ["read", "propose_patch", "create_file", "update_file", "rename_file"],
+      approvalRequiredOperations: ["apply_patch", "delete_file", "move_file"],
+      notes: [
+        "A experiencia atual do Creator No Code continua real apenas para blueprint/plano inicial, usando runtime protegido.",
+        "Codex e Claude Code ficam preparados para integracao gradual, com patch proposal, approval e rollback antes de qualquer apply real.",
+      ],
+    }),
     honesty_notes: [
       "Creator Pro em diante libera a camada Pro de modelos na fonte de verdade do produto.",
       "Creator Pro continua premium, mas nao ilimitado: o baseline tecnico sobe para 100 GB por trabalho, 180 minutos de entrada e 100 arquivos por job.",
@@ -996,6 +1100,22 @@ const PLAN_LIMITS_MATRIX = {
       economy_mode_available: true,
       prepared_provider_flags: ["deepseek", "claude"],
     },
+    no_code: noCodePolicy({
+      enabled: true,
+      featureStatus: "real",
+      baseExperienceStatus: "real",
+      integrationStatus: "prepared",
+      currentRuntimeFeature: "text_generate",
+      manualModeAllowed: true,
+      manualModeLevel: "full",
+      inheritsFrom: ["ENTERPRISE"],
+      toolPermissions: ["read", "propose_patch", "create_file", "update_file", "rename_file"],
+      approvalRequiredOperations: ["apply_patch", "delete_file", "move_file"],
+      notes: [
+        "Empresarial recebe Creator No Code em camada assistida, ainda herdando a base tecnica de Enterprise para futuras execucoes de patch.",
+        "Codex e Claude Code continuam preparados, com approval obrigatoria antes de qualquer aplicacao real.",
+      ],
+    }),
     honesty_notes: [
       "Empresarial continua em ativacao assistida e ainda herda a base tecnica de Enterprise.",
       "Mesmo assistido, ja recebe baseline interno alto: 200 GB por trabalho, 240 minutos de entrada e 200 arquivos por job.",
@@ -1127,6 +1247,21 @@ const PLAN_LIMITS_MATRIX = {
       economy_mode_available: true,
       prepared_provider_flags: ["deepseek", "claude"],
     },
+    no_code: noCodePolicy({
+      enabled: true,
+      featureStatus: "real",
+      baseExperienceStatus: "real",
+      integrationStatus: "prepared",
+      currentRuntimeFeature: "text_generate",
+      manualModeAllowed: true,
+      manualModeLevel: "full",
+      toolPermissions: ["read", "propose_patch", "create_file", "update_file", "rename_file"],
+      approvalRequiredOperations: ["apply_patch", "delete_file", "move_file"],
+      notes: [
+        "Enterprise recebe baseline interno mais alto para Creator No Code, mas continua sem acesso irrestrito ao repositorio por padrao.",
+        "Overrides contratuais podem ajustar runtime depois, sem transformar Codex ou Claude Code em provider real nesta etapa.",
+      ],
+    }),
     honesty_notes: [
       "Enterprise permanece como camada contratual e rule layer mais alta, mas nao deve ser tratado como ilimitado.",
       "O baseline interno sobe para 500 GB por trabalho, 360 minutos de entrada e 500 arquivos por job antes de qualquer override contratual.",
@@ -1190,4 +1325,8 @@ export function getPlanMonthlyUsageConfig(planCode, { domain = "usage" } = {}) {
 
 export function getPlanCommerceConfig(planCode, { domain = "commerce" } = {}) {
   return cloneValue(getPlanLimitMatrix(planCode, { domain }).commerce || {});
+}
+
+export function getPlanNoCodeConfig(planCode, { domain = "usage" } = {}) {
+  return cloneValue(getPlanLimitMatrix(planCode, { domain }).no_code || {});
 }

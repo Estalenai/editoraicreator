@@ -1,6 +1,7 @@
 import { supabase } from "./supabaseClient";
 import { createIdempotencyKey } from "./idempotencyKey";
 import { extractApiErrorMessage } from "./uiFeedback";
+import type { NoCodeRuntimeSnapshot } from "./noCodeRuntime";
 
 const DEV_DEFAULT_API_URL = "http://127.0.0.1:3000";
 const DEV_FALLBACK_API_URL = "http://127.0.0.1:3100";
@@ -319,6 +320,10 @@ export const api = {
   async getUsageSummary(month?: string) {
     const qs = month ? `?month=${encodeURIComponent(month)}` : "";
     return authJson(`/api/usage/summary${qs}`);
+  },
+
+  async getNoCodeRuntime(): Promise<NoCodeRuntimeSnapshot> {
+    return authJson("/api/no-code/runtime");
   },
 
   async getCoinsTransactions(limit = 30) {

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { api, apiFetch } from "../../lib/api";
 import { supabase } from "../../lib/supabaseClient";
 import { createIdempotencyKey } from "../../lib/idempotencyKey";
@@ -13,6 +13,7 @@ import { isCreatorNoCodeAllowed } from "../../lib/planGates";
 import { PremiumSelect } from "../ui/PremiumSelect";
 import { AiExecutionModeFields } from "./AiExecutionModeFields";
 import { toUserFacingError } from "../../lib/uiFeedback";
+import { sanitizeNoCodeRuntimeForProject, type NoCodeRuntimeSnapshot } from "../../lib/noCodeRuntime";
 
 type NoCodeStructuredResult = {
   product_overview?: string;
@@ -184,6 +185,7 @@ export function CreatorNoCodeCard({ planCode, walletCommon, onRefetch }: Props) 
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [copyMsg, setCopyMsg] = useState<string | null>(null);
+  const [noCodeRuntime, setNoCodeRuntime] = useState<NoCodeRuntimeSnapshot | null>(null);
 
   const [inlinePromptOpen, setInlinePromptOpen] = useState(false);
   const [generatedPrompt, setGeneratedPrompt] = useState("");
@@ -194,7 +196,30 @@ export function CreatorNoCodeCard({ planCode, walletCommon, onRefetch }: Props) 
   const [resultStructured, setResultStructured] = useState<NoCodeStructuredResult | null>(null);
   const [savedProjectId, setSavedProjectId] = useState<string | null>(null);
 
-  const isAllowed = useMemo(() => isCreatorNoCodeAllowed(planCode), [planCode]);
+  useEffect(() => {
+    let mounted = true;
+
+    async function loadNoCodeRuntime() {
+      try {
+        const payload = await api.getNoCodeRuntime();
+        if (!mounted) return;
+        setNoCodeRuntime(payload);
+      } catch {
+        if (!mounted) return;
+        setNoCodeRuntime(null);
+      }
+    }
+
+    void loadNoCodeRuntime();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const isAllowed = useMemo(
+    () => (typeof noCodeRuntime?.feature_enabled === "boolean" ? noCodeRuntime.feature_enabled : isCreatorNoCodeAllowed(planCode)),
+    [noCodeRuntime?.feature_enabled, planCode]
+  );
   const estimatedCommon = 1;
   const hasCredits = walletCommon >= estimatedCommon;
   const isBusy = loadingPrompt || loadingApply || savingProject;
@@ -270,6 +295,7 @@ export function CreatorNoCodeCard({ planCode, walletCommon, onRefetch }: Props) 
         body: JSON.stringify({
           prompt: finalPrompt,
           language,
+          experience_key: "creator_no_code",
           ...executionTechnicalPayload,
           routing: execution.routing,
         }),
@@ -356,6 +382,13 @@ export function CreatorNoCodeCard({ planCode, walletCommon, onRefetch }: Props) 
           structured: resultStructured,
           raw_text: resultText,
           prompt_used: lastPromptUsed,
+          runtime_snapshot: sanitizeNoCodeRuntimeForProject(noCodeRuntime),
+          execution_snapshot: {
+            experience_key: "creator_no_code",
+            routing: execution.routing,
+            mode_label: execution.modeLabel,
+            manual_selection_label: execution.manualSelectionLabel,
+          },
         },
       };
 
