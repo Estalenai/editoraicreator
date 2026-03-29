@@ -25,6 +25,34 @@ const DOMAIN_ALIASES = {
   stripe: new Map([...PUBLIC_PLAN_ALIASES, ["EMPRESARIAL", "EMPRESARIAL"], ["BUSINESS", "EMPRESARIAL"]]),
 };
 
+const PUBLIC_READINESS_STATUS = {
+  PUBLISH_NOW: "publish_now",
+  PUBLISH_WITH_NOTE: "publish_with_note",
+  INTERNAL_ONLY: "internal_only",
+  FUTURE_ONLY: "future_only",
+  DO_NOT_PROMISE: "do_not_promise",
+};
+
+const COMMERCIAL_READINESS_STATUS = {
+  SELF_SERVE_READY: "self_serve_ready",
+  ASSISTED_ONLY: "assisted_only",
+  CONTRACT_ONLY: "contract_only",
+  INTERNAL_ONLY: "internal_only",
+  FUTURE_ONLY: "future_only",
+};
+
+const RUNTIME_DELIVERY_STATUS = {
+  REAL: "real",
+  LIMITED: "limited",
+  PREPARED: "prepared",
+  MOCK_ONLY: "mock_only",
+  UNAVAILABLE: "unavailable",
+  HIDDEN_BETA: "hidden_beta",
+  ASSISTED: "assisted",
+  CONTRACT: "contract",
+  NOT_IMPLEMENTED: "not_implemented",
+};
+
 function normalizeRawCode(planCode) {
   return String(planCode || "")
     .trim()
@@ -58,6 +86,305 @@ function featureRule({
 
 function monthlyLimit(monthly = null) {
   return { monthly: Number.isFinite(monthly) ? Number(monthly) : null };
+}
+
+function statusEntry({
+  runtimeDeliveryStatus,
+  publicReadiness,
+  commercialReadiness,
+  inheritsFrom = [],
+  publicNotes = [],
+} = {}) {
+  return {
+    runtime_delivery_status: runtimeDeliveryStatus || RUNTIME_DELIVERY_STATUS.UNAVAILABLE,
+    public_readiness: publicReadiness || PUBLIC_READINESS_STATUS.INTERNAL_ONLY,
+    commercial_readiness: commercialReadiness || COMMERCIAL_READINESS_STATUS.INTERNAL_ONLY,
+    inherits_from: Array.isArray(inheritsFrom) ? [...inheritsFrom] : [],
+    public_notes: Array.isArray(publicNotes) ? [...publicNotes] : [],
+  };
+}
+
+function getPlanPublicReadiness(plan) {
+  const availability = String(plan?.availability || "hidden_beta");
+  if (availability === "self_serve") return PUBLIC_READINESS_STATUS.PUBLISH_NOW;
+  if (availability === "assisted") return PUBLIC_READINESS_STATUS.PUBLISH_WITH_NOTE;
+  if (availability === "contract") return PUBLIC_READINESS_STATUS.INTERNAL_ONLY;
+  return PUBLIC_READINESS_STATUS.INTERNAL_ONLY;
+}
+
+function getPlanCommercialReadiness(plan) {
+  const availability = String(plan?.availability || "hidden_beta");
+  if (availability === "self_serve") return COMMERCIAL_READINESS_STATUS.SELF_SERVE_READY;
+  if (availability === "assisted") return COMMERCIAL_READINESS_STATUS.ASSISTED_ONLY;
+  if (availability === "contract") return COMMERCIAL_READINESS_STATUS.CONTRACT_ONLY;
+  return COMMERCIAL_READINESS_STATUS.INTERNAL_ONLY;
+}
+
+function buildProviderStatusMap(rule = {}) {
+  const providerStatus = {};
+  const runtimeStatus =
+    rule?.mock_only === true || rule?.availability === "mock_only"
+      ? RUNTIME_DELIVERY_STATUS.MOCK_ONLY
+      : rule?.availability === "limited"
+        ? RUNTIME_DELIVERY_STATUS.LIMITED
+        : rule?.availability === "real"
+          ? RUNTIME_DELIVERY_STATUS.REAL
+          : RUNTIME_DELIVERY_STATUS.UNAVAILABLE;
+
+  for (const provider of Array.isArray(rule?.providers) ? rule.providers : []) {
+    providerStatus[String(provider)] = runtimeStatus;
+  }
+  for (const provider of Array.isArray(rule?.prepared_providers) ? rule.prepared_providers : []) {
+    providerStatus[String(provider)] = RUNTIME_DELIVERY_STATUS.PREPARED;
+  }
+  return providerStatus;
+}
+
+function buildFeatureInternalStatus(rule = {}, plan = {}) {
+  const providerStatus = buildProviderStatusMap(rule);
+  const hasPreparedProviders = Object.values(providerStatus).includes(RUNTIME_DELIVERY_STATUS.PREPARED);
+  const inheritsFrom = Array.isArray(plan?.runtime_rules?.inherits_from) ? plan.runtime_rules.inherits_from : [];
+
+  let runtimeDeliveryStatus = RUNTIME_DELIVERY_STATUS.UNAVAILABLE;
+  if (rule?.mock_only === true || rule?.availability === "mock_only") {
+    runtimeDeliveryStatus = RUNTIME_DELIVERY_STATUS.MOCK_ONLY;
+  } else if (rule?.availability === "limited") {
+    runtimeDeliveryStatus = RUNTIME_DELIVERY_STATUS.LIMITED;
+  } else if (rule?.availability === "real") {
+    runtimeDeliveryStatus = RUNTIME_DELIVERY_STATUS.REAL;
+  } else if (hasPreparedProviders) {
+    runtimeDeliveryStatus = RUNTIME_DELIVERY_STATUS.PREPARED;
+  }
+
+  let publicReadiness = getPlanPublicReadiness(plan);
+  if (runtimeDeliveryStatus === RUNTIME_DELIVERY_STATUS.MOCK_ONLY) {
+    publicReadiness = PUBLIC_READINESS_STATUS.DO_NOT_PROMISE;
+  } else if (runtimeDeliveryStatus === RUNTIME_DELIVERY_STATUS.PREPARED) {
+    publicReadiness = PUBLIC_READINESS_STATUS.FUTURE_ONLY;
+  } else if (runtimeDeliveryStatus === RUNTIME_DELIVERY_STATUS.LIMITED) {
+    publicReadiness =
+      plan?.availability === "self_serve"
+        ? PUBLIC_READINESS_STATUS.PUBLISH_WITH_NOTE
+        : PUBLIC_READINESS_STATUS.INTERNAL_ONLY;
+  }
+
+  let commercialReadiness = getPlanCommercialReadiness(plan);
+  if (runtimeDeliveryStatus === RUNTIME_DELIVERY_STATUS.MOCK_ONLY) {
+    commercialReadiness = COMMERCIAL_READINESS_STATUS.INTERNAL_ONLY;
+  } else if (runtimeDeliveryStatus === RUNTIME_DELIVERY_STATUS.PREPARED) {
+    commercialReadiness = COMMERCIAL_READINESS_STATUS.FUTURE_ONLY;
+  }
+
+  const publicNotes = [];
+  if (runtimeDeliveryStatus === RUNTIME_DELIVERY_STATUS.MOCK_ONLY) {
+    publicNotes.push("Nao tratar como capacidade publica real enquanto o runtime continuar em mock_only.");
+  }
+  if (hasPreparedProviders) {
+    publicNotes.push("Providers preparados por flag nao devem ser tratados como runtime real.");
+  }
+  if (plan?.availability === "assisted" && inheritsFrom.length > 0) {
+    publicNotes.push("Plano assistido ainda herda parte da camada tecnica de outra runtime layer.");
+  }
+
+  return {
+    ...statusEntry({
+      runtimeDeliveryStatus,
+      publicReadiness,
+      commercialReadiness,
+      inheritsFrom,
+      publicNotes,
+    }),
+    provider_status: providerStatus,
+    feature_status: runtimeDeliveryStatus,
+  };
+}
+
+function buildCapabilityStatus({
+  runtimeDeliveryStatus,
+  publicReadiness,
+  commercialReadiness,
+  publicNotes = [],
+  inheritsFrom = [],
+} = {}) {
+  return statusEntry({
+    runtimeDeliveryStatus,
+    publicReadiness,
+    commercialReadiness,
+    publicNotes,
+    inheritsFrom,
+  });
+}
+
+function buildSensitiveCapabilityStatuses(plan = {}) {
+  const availability = String(plan?.availability || "hidden_beta");
+  const planCommercialReadiness = getPlanCommercialReadiness(plan);
+  const highestQualityOutput = Array.isArray(plan?.quality_outputs)
+    ? plan.quality_outputs[plan.quality_outputs.length - 1] || null
+    : null;
+  const directUploadConfigured =
+    Number(plan?.upload_limits?.direct_upload_max_file_size_mb || 0) >
+    Number(plan?.upload_limits?.max_file_size_mb || 0);
+  const connectedStorageRecommended =
+    String(plan?.storage_policy?.recommended_storage_mode || "") === "connected_or_dedicated" ||
+    plan?.storage_policy?.connected_storage_required_when_heavy === true;
+  const inheritsFrom = Array.isArray(plan?.runtime_rules?.inherits_from) ? plan.runtime_rules.inherits_from : [];
+
+  return {
+    commercial_use: buildCapabilityStatus({
+      runtimeDeliveryStatus: RUNTIME_DELIVERY_STATUS.NOT_IMPLEMENTED,
+      publicReadiness: PUBLIC_READINESS_STATUS.DO_NOT_PROMISE,
+      commercialReadiness: COMMERCIAL_READINESS_STATUS.FUTURE_ONLY,
+      publicNotes: ["Nao existe entitlement tecnico de uso comercial implementado no produto."],
+    }),
+    multi_user: buildCapabilityStatus({
+      runtimeDeliveryStatus: RUNTIME_DELIVERY_STATUS.NOT_IMPLEMENTED,
+      publicReadiness: PUBLIC_READINESS_STATUS.DO_NOT_PROMISE,
+      commercialReadiness: COMMERCIAL_READINESS_STATUS.FUTURE_ONLY,
+      publicNotes: ["Nao existe camada real de seats, multiplos usuarios ou permissoes por plano."],
+    }),
+    governance: buildCapabilityStatus({
+      runtimeDeliveryStatus: RUNTIME_DELIVERY_STATUS.NOT_IMPLEMENTED,
+      publicReadiness: PUBLIC_READINESS_STATUS.DO_NOT_PROMISE,
+      commercialReadiness: COMMERCIAL_READINESS_STATUS.FUTURE_ONLY,
+      publicNotes: ["Governanca ainda nao existe como regra fechada do produto."],
+    }),
+    team_coordination: buildCapabilityStatus({
+      runtimeDeliveryStatus: RUNTIME_DELIVERY_STATUS.NOT_IMPLEMENTED,
+      publicReadiness: PUBLIC_READINESS_STATUS.DO_NOT_PROMISE,
+      commercialReadiness: COMMERCIAL_READINESS_STATUS.FUTURE_ONLY,
+      publicNotes: ["Coordenacao de equipe ainda nao existe como capacidade implementada por plano."],
+    }),
+    enterprise_overrides:
+      plan?.contract_policy?.overrides_allowed === true
+        ? buildCapabilityStatus({
+            runtimeDeliveryStatus: RUNTIME_DELIVERY_STATUS.CONTRACT,
+            publicReadiness: PUBLIC_READINESS_STATUS.INTERNAL_ONLY,
+            commercialReadiness:
+              availability === "assisted"
+                ? COMMERCIAL_READINESS_STATUS.ASSISTED_ONLY
+                : availability === "contract"
+                  ? COMMERCIAL_READINESS_STATUS.CONTRACT_ONLY
+                  : COMMERCIAL_READINESS_STATUS.INTERNAL_ONLY,
+            publicNotes: ["Overrides contratuais existem como capacidade interna e nao devem virar promessa publica."],
+            inheritsFrom,
+          })
+        : buildCapabilityStatus({
+            runtimeDeliveryStatus: RUNTIME_DELIVERY_STATUS.UNAVAILABLE,
+            publicReadiness: PUBLIC_READINESS_STATUS.INTERNAL_ONLY,
+            commercialReadiness: COMMERCIAL_READINESS_STATUS.INTERNAL_ONLY,
+          }),
+    storage_connected: buildCapabilityStatus({
+      runtimeDeliveryStatus: connectedStorageRecommended ? RUNTIME_DELIVERY_STATUS.PREPARED : RUNTIME_DELIVERY_STATUS.UNAVAILABLE,
+      publicReadiness: connectedStorageRecommended
+        ? PUBLIC_READINESS_STATUS.DO_NOT_PROMISE
+        : PUBLIC_READINESS_STATUS.INTERNAL_ONLY,
+      commercialReadiness: connectedStorageRecommended
+        ? COMMERCIAL_READINESS_STATUS.FUTURE_ONLY
+        : COMMERCIAL_READINESS_STATUS.INTERNAL_ONLY,
+      publicNotes: connectedStorageRecommended
+        ? ["A politica exige ou recomenda storage conectado em fluxos pesados, mas a infraestrutura ainda nao existe ponta a ponta no repo."]
+        : ["Storage conectado nao entra como capacidade deste plano hoje."],
+    }),
+    direct_upload: buildCapabilityStatus({
+      runtimeDeliveryStatus: directUploadConfigured ? RUNTIME_DELIVERY_STATUS.PREPARED : RUNTIME_DELIVERY_STATUS.UNAVAILABLE,
+      publicReadiness: directUploadConfigured
+        ? PUBLIC_READINESS_STATUS.DO_NOT_PROMISE
+        : PUBLIC_READINESS_STATUS.INTERNAL_ONLY,
+      commercialReadiness: directUploadConfigured
+        ? COMMERCIAL_READINESS_STATUS.FUTURE_ONLY
+        : COMMERCIAL_READINESS_STATUS.INTERNAL_ONLY,
+      publicNotes: directUploadConfigured
+        ? ["A politica de upload maior ja existe, mas o fluxo de direct upload ainda nao esta implementado ponta a ponta."]
+        : ["Direct upload nao entra como capacidade deste plano hoje."],
+    }),
+    high_resolution_outputs: buildCapabilityStatus({
+      runtimeDeliveryStatus: Array.isArray(plan?.quality_outputs) && plan.quality_outputs.length > 0
+        ? RUNTIME_DELIVERY_STATUS.LIMITED
+        : RUNTIME_DELIVERY_STATUS.UNAVAILABLE,
+      publicReadiness:
+        availability === "self_serve"
+          ? PUBLIC_READINESS_STATUS.PUBLISH_WITH_NOTE
+          : availability === "assisted"
+            ? PUBLIC_READINESS_STATUS.INTERNAL_ONLY
+            : PUBLIC_READINESS_STATUS.INTERNAL_ONLY,
+      commercialReadiness:
+        availability === "self_serve"
+          ? COMMERCIAL_READINESS_STATUS.SELF_SERVE_READY
+          : planCommercialReadiness,
+      publicNotes: highestQualityOutput
+        ? [
+            `O teto tecnico atual deste plano vai ate ${highestQualityOutput}, mas a entrega depende da rota/provider visual usada.`,
+          ]
+        : ["Este plano nao formaliza saidas de alta resolucao."],
+    }),
+  };
+}
+
+function buildPlanInternalStatus(plan = {}) {
+  const availability = String(plan?.availability || "hidden_beta");
+  const inheritsFrom = Array.isArray(plan?.runtime_rules?.inherits_from) ? plan.runtime_rules.inherits_from : [];
+  const runtimeDeliveryStatus =
+    availability === "self_serve"
+      ? RUNTIME_DELIVERY_STATUS.REAL
+      : availability === "assisted"
+        ? RUNTIME_DELIVERY_STATUS.ASSISTED
+        : availability === "contract"
+          ? RUNTIME_DELIVERY_STATUS.CONTRACT
+          : RUNTIME_DELIVERY_STATUS.HIDDEN_BETA;
+  const publicNotes = [];
+  if (availability === "assisted") {
+    publicNotes.push("Plano assistido: nao tratar como self-serve.");
+  }
+  if (availability === "contract") {
+    publicNotes.push("Plano contratual: nao tratar como oferta aberta de storefront.");
+  }
+  if (availability === "hidden_beta") {
+    publicNotes.push("Plano oculto: nao entra na camada publica do beta.");
+  }
+  if (inheritsFrom.length > 0) {
+    publicNotes.push("Este plano ainda herda runtime layer tecnica de outro plano.");
+  }
+  if (plan?.coming_soon === true) {
+    publicNotes.push("O plano nao deve ser tratado como checkout aberto nesta etapa.");
+  }
+
+  return {
+    availability_status: availability,
+    inherits_from_other_runtime_layer: inheritsFrom.length > 0,
+    ...statusEntry({
+      runtimeDeliveryStatus,
+      publicReadiness: getPlanPublicReadiness(plan),
+      commercialReadiness: getPlanCommercialReadiness(plan),
+      inheritsFrom,
+      publicNotes,
+    }),
+  };
+}
+
+function enrichPlanMatrixWithInternalStatus(matrix) {
+  return Object.fromEntries(
+    Object.entries(matrix).map(([planCode, plan]) => {
+      const providers = Object.fromEntries(
+        Object.entries(plan?.providers || {}).map(([featureKey, rule]) => [
+          featureKey,
+          {
+            ...rule,
+            ...buildFeatureInternalStatus(rule, plan),
+          },
+        ])
+      );
+
+      return [
+        planCode,
+        {
+          ...plan,
+          providers,
+          internal_status: buildPlanInternalStatus(plan),
+          capability_statuses: buildSensitiveCapabilityStatuses(plan),
+        },
+      ];
+    })
+  );
 }
 
 const BASE_STORAGE_POLICY = {
@@ -811,16 +1138,18 @@ const PLAN_LIMITS_MATRIX = {
   },
 };
 
+const PLAN_LIMITS_MATRIX_ENRICHED = enrichPlanMatrixWithInternalStatus(PLAN_LIMITS_MATRIX);
+
 export function normalizePlanMatrixCode(planCode, domain = "public") {
   const raw = normalizeRawCode(planCode);
   const aliases = DOMAIN_ALIASES[domain] || DOMAIN_ALIASES.public;
   const normalized = aliases.get(raw) || raw;
-  return PLAN_LIMITS_MATRIX[normalized] ? normalized : "FREE";
+  return PLAN_LIMITS_MATRIX_ENRICHED[normalized] ? normalized : "FREE";
 }
 
 export function getPlanLimitMatrix(planCode, { domain = "public" } = {}) {
   const normalized = normalizePlanMatrixCode(planCode, domain);
-  return cloneValue(PLAN_LIMITS_MATRIX[normalized] || PLAN_LIMITS_MATRIX.FREE);
+  return cloneValue(PLAN_LIMITS_MATRIX_ENRICHED[normalized] || PLAN_LIMITS_MATRIX_ENRICHED.FREE);
 }
 
 export function getPlanLimitMatrixEntries({ domain = "public" } = {}) {
@@ -829,9 +1158,22 @@ export function getPlanLimitMatrixEntries({ domain = "public" } = {}) {
 
 export function getPlanSelfServeCodes() {
   return PLAN_ORDER.filter((code) => {
-    const plan = PLAN_LIMITS_MATRIX[code];
+    const plan = PLAN_LIMITS_MATRIX_ENRICHED[code];
     return plan?.availability === "self_serve" && plan?.purchasable !== false;
   });
+}
+
+export function getPlanInternalStatus(planCode, { domain = "public" } = {}) {
+  return cloneValue(getPlanLimitMatrix(planCode, { domain }).internal_status || {});
+}
+
+export function getPlanCapabilityStatuses(planCode, { domain = "public" } = {}) {
+  return cloneValue(getPlanLimitMatrix(planCode, { domain }).capability_statuses || {});
+}
+
+export function getPlanProviderInternalStatus(planCode, featureKey, { domain = "public" } = {}) {
+  const plan = getPlanLimitMatrix(planCode, { domain });
+  return cloneValue(plan?.providers?.[featureKey]?.provider_status || {});
 }
 
 export function getPlanStripeEnvKeys(planCode) {
