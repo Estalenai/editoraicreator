@@ -20,7 +20,11 @@ import { resolveLang, t } from "../utils/i18n.js";
 import { buildAiContractErrorPayload, getAiContractErrorCode, getAiContractErrorStatus } from "../utils/aiContract.js";
 import { applyHeavyFeatureAbuseGuards, recordRiskOutcome } from "../utils/abuseMitigation.js";
 import { selectProviderAndModel } from "../utils/aiRouter.js";
-import { getPlanAvatarPreviewLimits, validatePlanFeatureRequest } from "../utils/planRuntimeGuards.js";
+import {
+  extractPlanUsageTelemetry,
+  getPlanAvatarPreviewLimits,
+  validatePlanFeatureRequest,
+} from "../utils/planRuntimeGuards.js";
 import { metricIncrement, metricTiming, recordUsageMetric } from "../utils/metrics.js";
 import { extractRoutingInput, normalizeRoutingMode } from "../utils/aiRoutingInput.js";
 import {
@@ -383,6 +387,13 @@ function rejectPlanFeatureViolation(req, res, violation) {
     feature: violation.feature || null,
     details: violation.details || null,
   });
+}
+
+function mergePlanUsageMeta(baseMeta, body, parsedInput) {
+  return {
+    ...extractPlanUsageTelemetry({ body, parsedInput }),
+    ...(baseMeta || {}),
+  };
 }
 
 function resolveProviderKeyForGuards(defaultProviderKey, req) {
@@ -1790,14 +1801,6 @@ router.post(
     if (rejectDisallowedManualRouting(req, res)) return;
     const parsed = parseImageGenerateInput(req.body || {});
     if (parsed.error) return res.status(400).json({ error: "invalid_image_request" });
-    const imagePlanGuard = validatePlanFeatureRequest({
-      planCode: req.plan?.code,
-      feature: "image_generate",
-      body: req.body || {},
-      parsedInput: parsed,
-      mode: req.aiRouting?.mode,
-    });
-    if (rejectPlanFeatureViolation(req, res, imagePlanGuard)) return;
 
     const endpoint = "ai_image_generate";
     const idem = getCanonicalIdempotencyContext(req, res, endpoint);
@@ -1817,6 +1820,17 @@ router.post(
     let db = null;
     try {
       db = getFinancialDbOrThrow();
+      const imagePlanGuard = await validatePlanFeatureRequest({
+        planCode: req.plan?.code,
+        feature: "image_generate",
+        body: req.body || {},
+        parsedInput: parsed,
+        mode: req.aiRouting?.mode,
+        db,
+        userId: req.user?.id,
+        idempotencyKey,
+      });
+      if (rejectPlanFeatureViolation(req, res, imagePlanGuard)) return;
       const quotaResult = assertAiQuota(req, res, endpoint);
       if (quotaResult !== true) return;
 
@@ -1906,7 +1920,7 @@ router.post(
         requestHash,
         status: "success",
         costs: { common: coinsCharge.common, pro: coinsCharge.pro, ultra: coinsCharge.ultra },
-        meta: {
+        meta: mergePlanUsageMeta({
           provider: responsePayload.provider,
           model: responsePayload.model,
           replay: false,
@@ -1914,7 +1928,7 @@ router.post(
           images_count: responsePayload.images.length,
           quality,
           aspect_ratio: parsed.aspectRatio,
-        },
+        }, req.body || {}, parsed),
       });
 
       return res.json(saveResult.payload);
@@ -2259,14 +2273,6 @@ router.post(
     if (rejectDisallowedManualRouting(req, res)) return;
     const parsed = parseVideoGenerateInput(req.body || {});
     if (parsed.error) return res.status(400).json({ error: "invalid_video_request" });
-    const videoPlanGuard = validatePlanFeatureRequest({
-      planCode: req.plan?.code,
-      feature: "video_generate",
-      body: req.body || {},
-      parsedInput: parsed,
-      mode: req.aiRouting?.mode,
-    });
-    if (rejectPlanFeatureViolation(req, res, videoPlanGuard)) return;
     const routingCtx = getHeavyRouteRoutingContext(req);
 
     const endpoint = "ai_video_generate";
@@ -2289,6 +2295,17 @@ router.post(
 
     try {
       db = getFinancialDbOrThrow();
+      const videoPlanGuard = await validatePlanFeatureRequest({
+        planCode: req.plan?.code,
+        feature: "video_generate",
+        body: req.body || {},
+        parsedInput: parsed,
+        mode: req.aiRouting?.mode,
+        db,
+        userId: req.user?.id,
+        idempotencyKey,
+      });
+      if (rejectPlanFeatureViolation(req, res, videoPlanGuard)) return;
       const quotaResult = assertAiQuota(req, res, endpoint);
       if (quotaResult !== true) return;
 
@@ -2399,7 +2416,7 @@ router.post(
         requestHash,
         status: "success",
         costs: { common: coinsCharge.common, pro: coinsCharge.pro, ultra: coinsCharge.ultra },
-        meta: {
+        meta: mergePlanUsageMeta({
           provider: responsePayload.provider,
           model: responsePayload.model,
           replay: false,
@@ -2407,7 +2424,7 @@ router.post(
           durationSec: parsed.durationSec,
           quality: parsed.quality,
           aspectRatio: parsed.aspectRatio,
-        },
+        }, req.body || {}, parsed),
       });
 
       return res.json(saveResult.payload);
@@ -2662,14 +2679,6 @@ router.post(
     if (rejectDisallowedManualRouting(req, res)) return;
     const parsed = parseMusicGenerateInput(req.body || {});
     if (parsed.error) return res.status(400).json({ error: "invalid_music_request" });
-    const musicPlanGuard = validatePlanFeatureRequest({
-      planCode: req.plan?.code,
-      feature: "music_generate",
-      body: req.body || {},
-      parsedInput: parsed,
-      mode: req.aiRouting?.mode,
-    });
-    if (rejectPlanFeatureViolation(req, res, musicPlanGuard)) return;
     const routingCtx = getHeavyRouteRoutingContext(req);
 
     const endpoint = "ai_music_generate";
@@ -2692,6 +2701,17 @@ router.post(
 
     try {
       db = getFinancialDbOrThrow();
+      const musicPlanGuard = await validatePlanFeatureRequest({
+        planCode: req.plan?.code,
+        feature: "music_generate",
+        body: req.body || {},
+        parsedInput: parsed,
+        mode: req.aiRouting?.mode,
+        db,
+        userId: req.user?.id,
+        idempotencyKey,
+      });
+      if (rejectPlanFeatureViolation(req, res, musicPlanGuard)) return;
       const quotaResult = assertAiQuota(req, res, endpoint);
       if (quotaResult !== true) return;
 
@@ -2801,14 +2821,14 @@ router.post(
         requestHash,
         status: "success",
         costs: { common: coinsCharge.common, pro: coinsCharge.pro, ultra: coinsCharge.ultra },
-        meta: {
+        meta: mergePlanUsageMeta({
           provider: responsePayload.provider,
           model: responsePayload.model,
           replay: false,
           credit_type: coinsCharge.ultra > 0 ? "ultra" : "pro",
           durationSec: parsed.durationSec,
           quality: parsed.quality,
-        },
+        }, req.body || {}, parsed),
       });
 
       return res.json(saveResult.payload);
@@ -3059,14 +3079,6 @@ router.post(
     if (rejectDisallowedManualRouting(req, res)) return;
     const parsed = parseVoiceGenerateInput(req.body || {});
     if (parsed.error) return res.status(400).json({ error: "invalid_voice_request" });
-    const voicePlanGuard = validatePlanFeatureRequest({
-      planCode: req.plan?.code,
-      feature: "voice_generate",
-      body: req.body || {},
-      parsedInput: parsed,
-      mode: req.aiRouting?.mode,
-    });
-    if (rejectPlanFeatureViolation(req, res, voicePlanGuard)) return;
     const routingCtx = getHeavyRouteRoutingContext(req);
 
     const endpoint = "ai_voice_generate";
@@ -3089,6 +3101,17 @@ router.post(
 
     try {
       db = getFinancialDbOrThrow();
+      const voicePlanGuard = await validatePlanFeatureRequest({
+        planCode: req.plan?.code,
+        feature: "voice_generate",
+        body: req.body || {},
+        parsedInput: parsed,
+        mode: req.aiRouting?.mode,
+        db,
+        userId: req.user?.id,
+        idempotencyKey,
+      });
+      if (rejectPlanFeatureViolation(req, res, voicePlanGuard)) return;
       const quotaResult = assertAiQuota(req, res, endpoint);
       if (quotaResult !== true) return;
 
@@ -3198,7 +3221,7 @@ router.post(
         requestHash,
         status: "success",
         costs: { common: coinsCharge.common, pro: coinsCharge.pro, ultra: coinsCharge.ultra },
-        meta: {
+        meta: mergePlanUsageMeta({
           provider: responsePayload.provider,
           model: responsePayload.model,
           replay: false,
@@ -3207,7 +3230,7 @@ router.post(
           format: parsed.format,
           language: parsed.language,
           voiceId: parsed.voiceId,
-        },
+        }, req.body || {}, parsed),
       });
 
       return res.json(saveResult.payload);
@@ -3460,14 +3483,6 @@ router.post(
     if (rejectDisallowedManualRouting(req, res)) return;
     const parsed = parseSlidesGenerateInput(req.body || {});
     if (parsed.error) return res.status(400).json({ error: "invalid_slides_request" });
-    const slidesPlanGuard = validatePlanFeatureRequest({
-      planCode: req.plan?.code,
-      feature: "slides_generate",
-      body: req.body || {},
-      parsedInput: parsed,
-      mode: req.aiRouting?.mode,
-    });
-    if (rejectPlanFeatureViolation(req, res, slidesPlanGuard)) return;
     const routingCtx = getHeavyRouteRoutingContext(req);
 
     const endpoint = "ai_slides_generate";
@@ -3490,6 +3505,17 @@ router.post(
 
     try {
       db = getFinancialDbOrThrow();
+      const slidesPlanGuard = await validatePlanFeatureRequest({
+        planCode: req.plan?.code,
+        feature: "slides_generate",
+        body: req.body || {},
+        parsedInput: parsed,
+        mode: req.aiRouting?.mode,
+        db,
+        userId: req.user?.id,
+        idempotencyKey,
+      });
+      if (rejectPlanFeatureViolation(req, res, slidesPlanGuard)) return;
       const quotaResult = assertAiQuota(req, res, endpoint);
       if (quotaResult !== true) return;
 
@@ -3598,13 +3624,13 @@ router.post(
         requestHash,
         status: "success",
         costs: { common: coinsCharge.common, pro: coinsCharge.pro, ultra: coinsCharge.ultra },
-        meta: {
+        meta: mergePlanUsageMeta({
           provider: responsePayload.provider,
           model: responsePayload.model,
           replay: false,
           quality: parsed.quality,
           slideCount: parsed.slideCount,
-        },
+        }, req.body || {}, parsed),
       });
 
       return res.json(saveResult.payload);

@@ -110,11 +110,35 @@ export function toUserFacingError(input: unknown, fallback = "Não foi possível
   }
 
   if (normalized.includes("direct_upload_required_for_plan")) {
-    return "Este arquivo pede direct upload ou storage conectado no plano atual.";
+    return "Este arquivo excede o envio padrão do seu plano. Use um fluxo com direct upload ou storage conectado quando ele estiver habilitado.";
+  }
+
+  if (normalized.includes("large_file_flow_not_available")) {
+    return "Este arquivo excede o envio padrão do seu plano e o fluxo de storage direto ou conectado ainda não está disponível neste ambiente.";
+  }
+
+  if (normalized.includes("connected_storage_required_for_plan")) {
+    return "Esta operação exige storage conectado ou dedicado no plano atual.";
+  }
+
+  if (normalized.includes("connected_storage_not_available")) {
+    return "Esta operação exige storage conectado ou dedicado, mas esse fluxo ainda não está disponível neste ambiente.";
   }
 
   if (normalized.includes("files_per_job_limit_reached")) {
     return "A quantidade de arquivos deste job excede o que o seu plano permite.";
+  }
+
+  if (normalized.includes("files_per_day_limit_reached")) {
+    return "Você atingiu o limite diário de arquivos permitido para o seu plano.";
+  }
+
+  if (normalized.includes("jobs_per_day_limit_reached")) {
+    return "Você atingiu o limite diário de jobs permitido para o seu plano.";
+  }
+
+  if (normalized.includes("plan_policy_temporarily_unavailable")) {
+    return "Não foi possível validar a política de upload do seu plano agora. Tente novamente em instantes.";
   }
 
   if (normalized.includes("input_video_not_allowed_for_plan")) {

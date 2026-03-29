@@ -1,4 +1,5 @@
 import { getPlanLimitMatrix, normalizePlanMatrixCode } from "./planLimitsMatrix.js";
+import { getPlanStoragePolicySnapshot } from "./storageRuntimePolicy.js";
 
 const FEATURE_TO_MATRIX_KEY = {
   text_generate: "text",
@@ -31,6 +32,16 @@ const OUTPUT_QUALITY_ALIASES = new Map([
   ["4k", "2160p"],
   ["uhd", "2160p"],
 ]);
+
+const DAILY_GENERATE_BASE_FEATURES = ["image_generate", "video_generate", "music_generate", "voice_generate", "slides_generate"];
+const DAILY_GENERATE_USAGE_FEATURES = Array.from(
+  new Set(
+    DAILY_GENERATE_BASE_FEATURES.flatMap((feature) => {
+      const normalized = String(feature || "").trim().toLowerCase();
+      return normalized ? [normalized, `ai_${normalized}`] : [];
+    })
+  )
+);
 
 function toFiniteNumber(value) {
   const numeric = Number(value);
@@ -91,6 +102,111 @@ function extractFunctionCount(parsedInput, body) {
   return null;
 }
 
+function normalizeStorageMode(rawValue) {
+  const normalized = String(rawValue || "").trim().toLowerCase();
+  if (!normalized) return null;
+  if (["direct", "direct_upload", "direct-upload", "signed_upload", "signed-url", "upload_url"].includes(normalized)) {
+    return "direct_upload";
+  }
+  if (
+    ["connected", "connected_storage", "connected-storage", "external_storage", "external-storage", "s3", "bucket"].includes(
+      normalized
+    )
+  ) {
+    return "connected_storage";
+  }
+  if (["platform", "temporary", "platform_temporary", "inline", "device", "local"].includes(normalized)) {
+    return "platform_temporary";
+  }
+  return normalized;
+}
+
+function normalizeRetentionMode(rawValue) {
+  const normalized = String(rawValue || "").trim().toLowerCase();
+  if (!normalized) return null;
+  if (["long", "long_term", "long-term", "extended", "persistent", "retain"].includes(normalized)) {
+    return "long_term";
+  }
+  if (["temporary", "temp", "short", "short_term", "short-term"].includes(normalized)) {
+    return "temporary";
+  }
+  return normalized;
+}
+
+function extractBooleanFlag(source, keys) {
+  for (const key of keys) {
+    if (source?.[key] === true) return true;
+  }
+  return false;
+}
+
+function getUtcDayStartIso(reference = new Date()) {
+  const start = new Date(
+    Date.UTC(reference.getUTCFullYear(), reference.getUTCMonth(), reference.getUTCDate(), 0, 0, 0, 0)
+  );
+  return start.toISOString();
+}
+
+function toUsageFeatureKeys(feature) {
+  const normalized = normalizeFeatureKey(feature);
+  if (!normalized) return [];
+  return Array.from(new Set([normalized, normalized.startsWith("ai_") ? normalized : `ai_${normalized}`]));
+}
+
+async function hasSuccessfulUsageRecorded({ db, userId, feature, idempotencyKey }) {
+  if (!db || !userId || !idempotencyKey) return false;
+  const featureKeys = toUsageFeatureKeys(feature);
+  if (featureKeys.length === 0) return false;
+
+  const { data, error } = await db
+    .from("usage_events")
+    .select("id")
+    .eq("user_id", userId)
+    .in("feature", featureKeys)
+    .eq("idempotency_key", idempotencyKey)
+    .eq("status", "success")
+    .limit(1)
+    .maybeSingle();
+
+  if (error) throw new Error(`usage_replay_check_failed: ${error.message}`);
+  return Boolean(data?.id);
+}
+
+async function countGenerateJobsToday({ db, userId }) {
+  if (!db || !userId) return null;
+  const startIso = getUtcDayStartIso();
+  const { count, error } = await db
+    .from("usage_events")
+    .select("id", { head: true, count: "exact" })
+    .eq("user_id", userId)
+    .eq("action", "generate")
+    .eq("status", "success")
+    .in("feature", DAILY_GENERATE_USAGE_FEATURES)
+    .gte("created_at", startIso);
+
+  if (error) throw new Error(`daily_jobs_count_failed: ${error.message}`);
+  return Number(count || 0);
+}
+
+async function countUploadedFilesToday({ db, userId }) {
+  if (!db || !userId) return null;
+  const startIso = getUtcDayStartIso();
+  const { data, error } = await db
+    .from("usage_events")
+    .select("meta")
+    .eq("user_id", userId)
+    .eq("action", "generate")
+    .eq("status", "success")
+    .in("feature", DAILY_GENERATE_USAGE_FEATURES)
+    .gte("created_at", startIso);
+
+  if (error) throw new Error(`daily_files_count_failed: ${error.message}`);
+  return (data || []).reduce((total, row) => {
+    const fileCount = toFiniteNumber(row?.meta?.file_count);
+    return total + (fileCount != null ? fileCount : 0);
+  }, 0);
+}
+
 function buildViolation({ status = 403, error, message, planCode, feature, details = null }) {
   return {
     ok: false,
@@ -107,6 +223,56 @@ export function normalizeRequestedOutputQuality(rawValue) {
   const normalized = String(rawValue || "").trim().toLowerCase();
   if (!normalized) return null;
   return OUTPUT_QUALITY_ALIASES.get(normalized) || null;
+}
+
+export function extractPlanUsageTelemetry({ body = {}, parsedInput = {} } = {}) {
+  const fileCount = extractFileCount(parsedInput, body);
+  const fileSizeMb =
+    extractFirstNumber(parsedInput, ["fileSizeMb", "file_size_mb", "maxFileSizeMb"]) ??
+    extractFirstNumber(body, ["fileSizeMb", "file_size_mb", "maxFileSizeMb"]);
+  const inputVideoMinutes =
+    extractFirstNumber(parsedInput, ["inputVideoMinutes", "input_video_minutes", "videoMinutes", "video_minutes"]) ??
+    extractFirstNumber(body, ["inputVideoMinutes", "input_video_minutes", "videoMinutes", "video_minutes"]);
+  const inputAudioMinutes =
+    extractFirstNumber(parsedInput, ["inputAudioMinutes", "input_audio_minutes", "audioMinutes", "audio_minutes"]) ??
+    extractFirstNumber(body, ["inputAudioMinutes", "input_audio_minutes", "audioMinutes", "audio_minutes"]);
+
+  const requestedOutputQualityRaw =
+    parsedInput?.outputQuality ??
+    body?.outputQuality ??
+    body?.output_quality ??
+    body?.quality_output ??
+    body?.qualityOutput ??
+    body?.resolution ??
+    body?.output_resolution ??
+    body?.outputResolution ??
+    null;
+  const outputQuality = requestedOutputQualityRaw != null ? normalizeRequestedOutputQuality(requestedOutputQualityRaw) : null;
+  const requestedStorageMode = normalizeStorageMode(
+    body?.storageMode ??
+      body?.storage_mode ??
+      body?.uploadTransport ??
+      body?.upload_transport ??
+      body?.exportTarget ??
+      body?.export_target
+  );
+  const retentionMode = normalizeRetentionMode(
+    body?.retentionMode ?? body?.retention_mode ?? body?.storageRetention ?? body?.storage_retention ?? body?.retention
+  );
+  const heavyStorageFlowRequested =
+    extractBooleanFlag(body, ["heavyJob", "heavy_job", "advancedWorkflow", "advanced_workflow", "premiumFlow", "premium_flow"]) ||
+    retentionMode === "long_term";
+
+  const telemetry = {};
+  if (fileCount != null) telemetry.file_count = fileCount;
+  if (fileSizeMb != null) telemetry.file_size_mb = fileSizeMb;
+  if (inputVideoMinutes != null) telemetry.input_video_minutes = inputVideoMinutes;
+  if (inputAudioMinutes != null) telemetry.input_audio_minutes = inputAudioMinutes;
+  if (outputQuality) telemetry.output_quality = outputQuality;
+  if (requestedStorageMode) telemetry.requested_storage_mode = requestedStorageMode;
+  if (retentionMode) telemetry.retention_mode = retentionMode;
+  if (heavyStorageFlowRequested) telemetry.heavy_storage_flow_requested = true;
+  return telemetry;
 }
 
 export function getPlanRuntimeMatrix(planCode) {
@@ -129,9 +295,19 @@ export function getPlanAvatarPreviewLimits(planCode) {
   };
 }
 
-export function validatePlanFeatureRequest({ planCode, feature, body = {}, parsedInput = {}, mode = "quality" }) {
+export async function validatePlanFeatureRequest({
+  planCode,
+  feature,
+  body = {},
+  parsedInput = {},
+  mode = "quality",
+  db = null,
+  userId = null,
+  idempotencyKey = null,
+}) {
   const planMatrix = getPlanRuntimeMatrix(planCode);
   const featureConfig = getPlanFeatureRuntimeConfig(planCode, feature);
+  const storagePolicy = getPlanStoragePolicySnapshot(planCode, { domain: "usage" });
   if (!planMatrix || !featureConfig) return { ok: true };
   if (featureConfig.enabled === false || featureConfig.availability === "unavailable") {
     return buildViolation({
@@ -156,6 +332,83 @@ export function validatePlanFeatureRequest({ planCode, feature, body = {}, parse
         manual_mode_level: runtimeRules.manual_mode_level || "none",
       },
     });
+  }
+
+  const usageTelemetry = extractPlanUsageTelemetry({ body, parsedInput });
+  const fileCount = toFiniteNumber(usageTelemetry.file_count);
+  const explicitFileSizeMb = toFiniteNumber(usageTelemetry.file_size_mb);
+  const inputVideoMinutes = toFiniteNumber(usageTelemetry.input_video_minutes);
+  const inputAudioMinutes = toFiniteNumber(usageTelemetry.input_audio_minutes);
+  const requestAlreadyRecorded = await hasSuccessfulUsageRecorded({
+    db,
+    userId,
+    feature,
+    idempotencyKey,
+  });
+
+  if (!requestAlreadyRecorded) {
+    const jobsPerDay = toFiniteNumber(planMatrix?.usage_limits?.jobs_per_day);
+    if (jobsPerDay != null && db && userId) {
+      try {
+        const jobsUsedToday = await countGenerateJobsToday({ db, userId });
+        if (jobsUsedToday != null && jobsUsedToday >= jobsPerDay) {
+          return buildViolation({
+            status: 403,
+            error: "jobs_per_day_limit_reached",
+            message: "A quantidade diaria de jobs excede o limite deste plano.",
+            planCode,
+            feature,
+            details: {
+              used_today: jobsUsedToday,
+              max_jobs_per_day: jobsPerDay,
+            },
+          });
+        }
+      } catch (error) {
+        return buildViolation({
+          status: 503,
+          error: "plan_policy_temporarily_unavailable",
+          message: "Nao foi possivel validar a politica de uso deste plano agora.",
+          planCode,
+          feature,
+          details: {
+            reason: error?.message || "daily_jobs_count_failed",
+          },
+        });
+      }
+    }
+
+    const filesPerDay = toFiniteNumber(planMatrix?.upload_limits?.files_per_day);
+    if (fileCount != null && filesPerDay != null && db && userId) {
+      try {
+        const filesUsedToday = await countUploadedFilesToday({ db, userId });
+        if (filesUsedToday != null && filesUsedToday + fileCount > filesPerDay) {
+          return buildViolation({
+            status: 403,
+            error: "files_per_day_limit_reached",
+            message: "A quantidade diaria de arquivos excede o limite deste plano.",
+            planCode,
+            feature,
+            details: {
+              used_today: filesUsedToday,
+              requested_files: fileCount,
+              max_files_per_day: filesPerDay,
+            },
+          });
+        }
+      } catch (error) {
+        return buildViolation({
+          status: 503,
+          error: "plan_policy_temporarily_unavailable",
+          message: "Nao foi possivel validar a politica de upload deste plano agora.",
+          planCode,
+          feature,
+          details: {
+            reason: error?.message || "daily_files_count_failed",
+          },
+        });
+      }
+    }
   }
 
   const requestedOutputQualityRaw =
@@ -238,7 +491,6 @@ export function validatePlanFeatureRequest({ planCode, feature, body = {}, parse
   }
 
   const uploadLimits = planMatrix.upload_limits || {};
-  const fileCount = extractFileCount(parsedInput, body);
   if (fileCount != null && uploadLimits.files_per_job != null && fileCount > Number(uploadLimits.files_per_job)) {
     return buildViolation({
       status: 403,
@@ -253,9 +505,6 @@ export function validatePlanFeatureRequest({ planCode, feature, body = {}, parse
     });
   }
 
-  const explicitFileSizeMb =
-    extractFirstNumber(parsedInput, ["fileSizeMb", "file_size_mb", "maxFileSizeMb"]) ??
-    extractFirstNumber(body, ["fileSizeMb", "file_size_mb", "maxFileSizeMb"]);
   if (
     explicitFileSizeMb != null &&
     uploadLimits.max_file_size_mb != null &&
@@ -267,6 +516,26 @@ export function validatePlanFeatureRequest({ planCode, feature, body = {}, parse
       explicitFileSizeMb <= directUploadMax &&
       planMatrix.storage_policy?.direct_upload_required_when_large === true
     ) {
+      if (
+        storagePolicy?.runtime?.direct_upload_available !== true &&
+        storagePolicy?.runtime?.connected_storage_available !== true
+      ) {
+        return buildViolation({
+          status: 503,
+          error: "large_file_flow_not_available",
+          message:
+            "Este tamanho de arquivo exige um fluxo de storage direto ou conectado que ainda nao esta disponivel neste ambiente.",
+          planCode,
+          feature,
+          details: {
+            requested_file_size_mb: explicitFileSizeMb,
+            max_inline_file_size_mb: Number(uploadLimits.max_file_size_mb),
+            direct_upload_max_file_size_mb: directUploadMax,
+            storage_policy: storagePolicy,
+          },
+        });
+      }
+
       return buildViolation({
         status: 403,
         error: "direct_upload_required_for_plan",
@@ -277,6 +546,7 @@ export function validatePlanFeatureRequest({ planCode, feature, body = {}, parse
           requested_file_size_mb: explicitFileSizeMb,
           max_inline_file_size_mb: Number(uploadLimits.max_file_size_mb),
           direct_upload_max_file_size_mb: directUploadMax,
+          storage_policy: storagePolicy,
         },
       });
     }
@@ -290,14 +560,81 @@ export function validatePlanFeatureRequest({ planCode, feature, body = {}, parse
       details: {
         requested_file_size_mb: explicitFileSizeMb,
         max_file_size_mb: Number(uploadLimits.max_file_size_mb),
+        storage_policy: storagePolicy,
       },
     });
   }
 
+  if (
+    usageTelemetry.heavy_storage_flow_requested === true &&
+    planMatrix.storage_policy?.connected_storage_required_when_heavy === true
+  ) {
+    if (storagePolicy?.runtime?.connected_storage_available !== true) {
+      return buildViolation({
+        status: 503,
+        error: "connected_storage_not_available",
+        message:
+          "Esta operacao pesada exige storage conectado ou dedicado, mas esse fluxo ainda nao esta disponivel neste ambiente.",
+        planCode,
+        feature,
+        details: {
+          requested_storage_mode: usageTelemetry.requested_storage_mode || null,
+          storage_policy: storagePolicy,
+        },
+      });
+    }
+
+    if (usageTelemetry.requested_storage_mode && usageTelemetry.requested_storage_mode !== "connected_storage") {
+      return buildViolation({
+        status: 403,
+        error: "connected_storage_required_for_plan",
+        message: "Esta operacao exige storage conectado ou dedicado neste plano.",
+        planCode,
+        feature,
+        details: {
+          requested_storage_mode: usageTelemetry.requested_storage_mode,
+          storage_policy: storagePolicy,
+        },
+      });
+    }
+  }
+
+  if (
+    usageTelemetry.retention_mode === "long_term" &&
+    planMatrix.storage_policy?.connected_storage_required_for_long_retention === true
+  ) {
+    if (storagePolicy?.runtime?.connected_storage_available !== true) {
+      return buildViolation({
+        status: 503,
+        error: "connected_storage_not_available",
+        message:
+          "Retencao longa exige storage conectado ou dedicado, mas esse fluxo ainda nao esta disponivel neste ambiente.",
+        planCode,
+        feature,
+        details: {
+          retention_mode: usageTelemetry.retention_mode,
+          storage_policy: storagePolicy,
+        },
+      });
+    }
+
+    if (usageTelemetry.requested_storage_mode && usageTelemetry.requested_storage_mode !== "connected_storage") {
+      return buildViolation({
+        status: 403,
+        error: "connected_storage_required_for_plan",
+        message: "Retencao longa exige storage conectado ou dedicado neste plano.",
+        planCode,
+        feature,
+        details: {
+          requested_storage_mode: usageTelemetry.requested_storage_mode,
+          retention_mode: usageTelemetry.retention_mode,
+          storage_policy: storagePolicy,
+        },
+      });
+    }
+  }
+
   const inputMediaLimits = planMatrix.input_media_limits || {};
-  const inputVideoMinutes =
-    extractFirstNumber(parsedInput, ["inputVideoMinutes", "input_video_minutes", "videoMinutes", "video_minutes"]) ??
-    extractFirstNumber(body, ["inputVideoMinutes", "input_video_minutes", "videoMinutes", "video_minutes"]);
   if (
     inputVideoMinutes != null &&
     inputMediaLimits.max_input_video_minutes != null &&
@@ -316,9 +653,6 @@ export function validatePlanFeatureRequest({ planCode, feature, body = {}, parse
     });
   }
 
-  const inputAudioMinutes =
-    extractFirstNumber(parsedInput, ["inputAudioMinutes", "input_audio_minutes", "audioMinutes", "audio_minutes"]) ??
-    extractFirstNumber(body, ["inputAudioMinutes", "input_audio_minutes", "audioMinutes", "audio_minutes"]);
   if (
     inputAudioMinutes != null &&
     inputMediaLimits.max_input_audio_minutes != null &&

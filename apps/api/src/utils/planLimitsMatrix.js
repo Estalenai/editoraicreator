@@ -66,6 +66,7 @@ const BASE_STORAGE_POLICY = {
   direct_upload_required_when_large: true,
   connected_storage_required_when_heavy: true,
   connected_storage_required_for_long_retention: true,
+  recommended_storage_mode: "platform_temporary",
 };
 
 const PLAN_LIMITS_MATRIX = {
@@ -151,6 +152,7 @@ const PLAN_LIMITS_MATRIX = {
       ...BASE_STORAGE_POLICY,
       direct_upload_required_when_large: true,
       connected_storage_required_when_heavy: true,
+      recommended_storage_mode: "platform_temporary",
     },
     runtime_rules: {
       mock_only_features: ["video", "voice", "music", "slides"],
@@ -268,6 +270,7 @@ const PLAN_LIMITS_MATRIX = {
       ...BASE_STORAGE_POLICY,
       direct_upload_required_when_large: true,
       connected_storage_required_when_heavy: true,
+      recommended_storage_mode: "platform_temporary",
     },
     runtime_rules: {
       mock_only_features: [],
@@ -391,6 +394,7 @@ const PLAN_LIMITS_MATRIX = {
       ...BASE_STORAGE_POLICY,
       direct_upload_required_when_large: true,
       connected_storage_required_when_heavy: true,
+      recommended_storage_mode: "hybrid",
     },
     runtime_rules: {
       mock_only_features: [],
@@ -515,6 +519,7 @@ const PLAN_LIMITS_MATRIX = {
       ...BASE_STORAGE_POLICY,
       direct_upload_required_when_large: true,
       connected_storage_required_when_heavy: true,
+      recommended_storage_mode: "hybrid",
     },
     runtime_rules: {
       mock_only_features: [],
@@ -639,6 +644,7 @@ const PLAN_LIMITS_MATRIX = {
       ...BASE_STORAGE_POLICY,
       direct_upload_required_when_large: true,
       connected_storage_required_when_heavy: true,
+      recommended_storage_mode: "connected_or_dedicated",
     },
     runtime_rules: {
       mock_only_features: [],
@@ -763,6 +769,7 @@ const PLAN_LIMITS_MATRIX = {
       ...BASE_STORAGE_POLICY,
       direct_upload_required_when_large: true,
       connected_storage_required_when_heavy: true,
+      recommended_storage_mode: "connected_or_dedicated",
     },
     runtime_rules: {
       mock_only_features: [],

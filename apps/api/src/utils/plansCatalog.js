@@ -1,6 +1,7 @@
 import { getPlanCatalog } from "./stripePlans.js";
 import { t } from "./i18n.js";
 import { getPlanLimitMatrix, getPlanLimitMatrixEntries, normalizePlanMatrixCode } from "./planLimitsMatrix.js";
+import { getPlanStoragePolicySnapshot } from "./storageRuntimePolicy.js";
 
 const CURRENCY = "BRL";
 const PERIOD_MONTH = "month";
@@ -373,6 +374,7 @@ function buildAvailabilitySnapshot(planMatrix, stripePlan) {
 }
 
 function buildLimitsSnapshot(planMatrix) {
+  const storagePolicy = getPlanStoragePolicySnapshot(planMatrix?.code);
   return {
     usage: planMatrix?.usage_limits || {},
     upload: planMatrix?.upload_limits || {},
@@ -380,7 +382,7 @@ function buildLimitsSnapshot(planMatrix) {
     input_media: planMatrix?.input_media_limits || {},
     workflow: planMatrix?.workflow_limits || {},
     context: planMatrix?.context_limits || {},
-    storage: planMatrix?.storage_policy || {},
+    storage: storagePolicy,
     avatar_preview: {
       enabled: Boolean(planMatrix?.providers?.avatar_preview?.enabled),
       sessions_per_day: Number(planMatrix?.usage_limits?.avatar_preview_sessions_per_day || 0),
