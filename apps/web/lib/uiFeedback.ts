@@ -35,7 +35,7 @@ export function toUserFacingError(input: unknown, fallback = "Não foi possível
   }
 
   if (normalized.includes("insufficient_balance")) {
-    return "Saldo insuficiente para esta ação. Ajuste o escopo ou compre créditos para continuar.";
+    return "Saldo insuficiente para esta ação. Ajuste o escopo ou compre Creator Coins para continuar.";
   }
 
   if (normalized.includes("invalid_body")) {
@@ -74,7 +74,7 @@ export function toUserFacingError(input: unknown, fallback = "Não foi possível
   }
 
   if (normalized.includes("coins_debit_failed")) {
-    return "Não foi possível debitar os créditos desta ação agora. Tente novamente em instantes.";
+    return "Não foi possível debitar as Creator Coins desta ação agora. Tente novamente em instantes.";
   }
 
   if (normalized.includes("supabase_admin_unavailable_for_financial_rpc")) {

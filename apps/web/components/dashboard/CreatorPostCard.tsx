@@ -807,9 +807,9 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
           Estimativa de consumo: ~{creditsEstimate.common} Comum • {creditsEstimate.pro} Pro • {creditsEstimate.ultra} Ultra
         </div>
         <div className="helper-note-subtle">
-          Estimativa prévia. O consumo real aparece em Créditos {'>'} Histórico.
+          Estimativa prévia. O consumo real aparece em Creator Coins {'>'} Histórico.
         </div>
-        {!hasCredits && <div className="inline-alert inline-alert-error">Saldo insuficiente para gerar. Compre créditos avulsos para continuar.</div>}
+        {!hasCredits && <div className="inline-alert inline-alert-error">Saldo insuficiente para gerar. Compre Creator Coins avulsas para continuar.</div>}
       </div>
 
       <div className="creator-planner-field-grid creator-post-journey-grid">

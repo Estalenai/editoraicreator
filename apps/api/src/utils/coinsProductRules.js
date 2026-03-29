@@ -8,9 +8,12 @@ const PLAN_KIND = {
   ENTERPRISE: "ENTERPRISE",
 };
 
+export const CREATOR_COINS_PUBLIC_NAME = "Creator Coins";
+export const CREATOR_COINS_SHORT_NAME = "Coins";
+
 const SALE_PRICE_CENTS_BY_COIN = {
   common: 15,
-  pro: 45,
+  pro: 30,
   ultra: 150,
 };
 const SUPPORTED_COIN_TYPES = new Set(["common", "pro", "ultra"]);
@@ -31,6 +34,33 @@ export function getPurchaseFeePercent(planCode) {
 export function getSaleUnitPriceCents(coinType) {
   const normalized = String(coinType || "").trim().toLowerCase();
   return SALE_PRICE_CENTS_BY_COIN[normalized] ?? null;
+}
+
+export function getCoinUnitPricingSnapshot({ currency = "BRL" } = {}) {
+  return {
+    currency: String(currency || "BRL").trim().toUpperCase() || "BRL",
+    public_name: CREATOR_COINS_PUBLIC_NAME,
+    short_name: CREATOR_COINS_SHORT_NAME,
+    unit_price_cents: { ...SALE_PRICE_CENTS_BY_COIN },
+    unit_price_brl: {
+      common: centsToBrl(SALE_PRICE_CENTS_BY_COIN.common),
+      pro: centsToBrl(SALE_PRICE_CENTS_BY_COIN.pro),
+      ultra: centsToBrl(SALE_PRICE_CENTS_BY_COIN.ultra),
+    },
+  };
+}
+
+export function getCreditBreakdownValueCents(breakdown = {}) {
+  return ["common", "pro", "ultra"].reduce((sum, coinType) => {
+    const quantity = Number(breakdown?.[coinType] ?? 0);
+    const unitPrice = getSaleUnitPriceCents(coinType);
+    if (!Number.isFinite(quantity) || quantity <= 0 || !Number.isFinite(unitPrice)) return sum;
+    return sum + Math.max(0, Math.trunc(quantity)) * Number(unitPrice);
+  }, 0);
+}
+
+export function getCreditBreakdownValueBrl(breakdown = {}) {
+  return centsToBrl(getCreditBreakdownValueCents(breakdown));
 }
 
 export function canPurchaseCoin(planCode, coinType) {

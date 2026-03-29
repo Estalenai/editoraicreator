@@ -46,11 +46,11 @@ begin
         'currency','brl',
         'free_surcharge_percent',15,
         'packs', jsonb_build_array(
-          jsonb_build_object('sku','COMMON_1000','coin_type','common','coins',1000,'base_unit_amount_cents',1990,'min_tier',0),
-          jsonb_build_object('sku','COMMON_5000','coin_type','common','coins',5000,'base_unit_amount_cents',7990,'min_tier',0),
-          jsonb_build_object('sku','PRO_1000','coin_type','pro','coins',1000,'base_unit_amount_cents',4990,'min_tier',0),
-          jsonb_build_object('sku','PRO_5000','coin_type','pro','coins',5000,'base_unit_amount_cents',17990,'min_tier',0),
-          jsonb_build_object('sku','ULTRA_1000','coin_type','ultra','coins',1000,'base_unit_amount_cents',9990,'min_tier',2)
+          jsonb_build_object('sku','COMMON_1000','coin_type','common','coins',1000,'base_unit_amount_cents',15000,'min_tier',0),
+          jsonb_build_object('sku','COMMON_5000','coin_type','common','coins',5000,'base_unit_amount_cents',75000,'min_tier',0),
+          jsonb_build_object('sku','PRO_1000','coin_type','pro','coins',1000,'base_unit_amount_cents',30000,'min_tier',0),
+          jsonb_build_object('sku','PRO_5000','coin_type','pro','coins',5000,'base_unit_amount_cents',150000,'min_tier',0),
+          jsonb_build_object('sku','ULTRA_1000','coin_type','ultra','coins',1000,'base_unit_amount_cents',150000,'min_tier',2)
         )
       )
     )

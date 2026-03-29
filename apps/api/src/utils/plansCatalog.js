@@ -2,6 +2,12 @@ import { getPlanCatalog } from "./stripePlans.js";
 import { t } from "./i18n.js";
 import { getPlanLimitMatrix, getPlanLimitMatrixEntries, normalizePlanMatrixCode } from "./planLimitsMatrix.js";
 import { getPlanStoragePolicySnapshot } from "./storageRuntimePolicy.js";
+import {
+  CREATOR_COINS_PUBLIC_NAME,
+  CREATOR_COINS_SHORT_NAME,
+  getCoinUnitPricingSnapshot,
+  getCreditBreakdownValueBrl,
+} from "./coinsProductRules.js";
 
 const CURRENCY = "BRL";
 const PERIOD_MONTH = "month";
@@ -501,6 +507,15 @@ function buildPlanEntry(def, lang) {
   const limits = buildLimitsSnapshot(planMatrix);
   const publicStatus = buildPublicStatusSnapshot(planMatrix);
   const publicNotes = buildPublicPlanNotes(planMatrix);
+  const coinPricing = getCoinUnitPricingSnapshot({ currency: CURRENCY });
+  const creditsValueBreakdownBrl = planMatrix?.credits_included
+    ? {
+        common: Number((Number(planMatrix.credits_included.common || 0) * Number(coinPricing.unit_price_brl.common || 0)).toFixed(2)),
+        pro: Number((Number(planMatrix.credits_included.pro || 0) * Number(coinPricing.unit_price_brl.pro || 0)).toFixed(2)),
+        ultra: Number((Number(planMatrix.credits_included.ultra || 0) * Number(coinPricing.unit_price_brl.ultra || 0)).toFixed(2)),
+      }
+    : null;
+  const creditsValueBrl = planMatrix?.credits_included ? getCreditBreakdownValueBrl(planMatrix.credits_included) : null;
 
   return {
     code,
@@ -524,6 +539,16 @@ function buildPlanEntry(def, lang) {
     limits_summary: Array.isArray(copy?.limits) ? [...copy.limits] : [],
     status_note: copy?.statusNote || null,
     credits: planMatrix?.credits_included ? { ...planMatrix.credits_included } : null,
+    credits_public_name: CREATOR_COINS_PUBLIC_NAME,
+    credits_short_name: CREATOR_COINS_SHORT_NAME,
+    credits_total:
+      planMatrix?.credits_included == null
+        ? null
+        : Number(planMatrix.credits_included.common || 0) +
+          Number(planMatrix.credits_included.pro || 0) +
+          Number(planMatrix.credits_included.ultra || 0),
+    credits_value_breakdown_brl: creditsValueBreakdownBrl,
+    credits_value_brl: creditsValueBrl,
     features,
     quality_tier: planMatrix?.quality_tier || null,
     quality_outputs: Array.isArray(planMatrix?.quality_outputs) ? [...planMatrix.quality_outputs] : [],
@@ -558,6 +583,9 @@ export function getPlansCatalog(lang = "pt-BR") {
     ok: true,
     lang: locale,
     currency: CURRENCY,
+    coins_public_name: CREATOR_COINS_PUBLIC_NAME,
+    coins_short_name: CREATOR_COINS_SHORT_NAME,
+    coin_pricing: getCoinUnitPricingSnapshot({ currency: CURRENCY }),
     plans: PLAN_DEFS.map((def) => buildPlanEntry(def, locale)),
   };
 }

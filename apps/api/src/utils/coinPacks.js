@@ -10,7 +10,7 @@ import supabaseAdmin from "../config/supabaseAdmin.js";
  *   "currency": "brl",
  *   "free_surcharge_percent": 15,
  *   "packs": [
- *     {"sku":"COMMON_1000","coin_type":"common","coins":1000,"base_unit_amount_cents":1990},
+ *     {"sku":"COMMON_1000","coin_type":"common","coins":1000,"base_unit_amount_cents":15000},
  *     ...
  *   ]
  * }

@@ -8,6 +8,7 @@ import { CreditsPackagesCard } from "../../components/dashboard/CreditsPackagesC
 import { PremiumSelect } from "../../components/ui/PremiumSelect";
 import { api } from "../../lib/api";
 import { coinTypeLabel } from "../../lib/coinTypeLabel";
+import { CREATOR_COINS_PUBLIC_NAME, formatCreatorCoinsWalletSummary } from "../../lib/creatorCoins";
 import { normalizePlanCode } from "../../lib/planLabel";
 import { toUserFacingError } from "../../lib/uiFeedback";
 
@@ -106,7 +107,7 @@ function txReasonLabel(tx: CoinTransaction): string {
   if (feature) return feature;
   const reason = String(tx.reason || "").trim();
   if (reason) return reason;
-  return "Movimentação de créditos";
+  return `Movimentação de ${CREATOR_COINS_PUBLIC_NAME}`;
 }
 
 function waitForCheckoutSync(ms: number) {
@@ -215,7 +216,7 @@ export default function CreditsPage() {
   const [handledCheckoutState, setHandledCheckoutState] = useState("");
 
   const walletSummary = useMemo(
-    () => `${wallet?.common ?? 0} Comum • ${wallet?.pro ?? 0} Pro • ${wallet?.ultra ?? 0} Ultra`,
+    () => formatCreatorCoinsWalletSummary(wallet),
     [wallet]
   );
   const totalWalletAmount = useMemo(
@@ -290,7 +291,7 @@ export default function CreditsPage() {
       return items as CoinTransaction[];
     } catch (e: any) {
       setTransactions([]);
-      setTxError(e?.message || "Falha ao carregar histórico de créditos.");
+      setTxError(e?.message || `Falha ao carregar histórico de ${CREATOR_COINS_PUBLIC_NAME}.`);
       return null;
     } finally {
       setTxLoading(false);
@@ -340,7 +341,7 @@ export default function CreditsPage() {
       tone: "info",
       message: checkoutQuoteId
         ? "Pagamento confirmado na Stripe. Validando o pacote comprado, o saldo e o histórico diretamente nesta conta..."
-        : "Pagamento confirmado na Stripe. Validando saldo e histórico de créditos nesta página...",
+        : `Pagamento confirmado na Stripe. Validando saldo e histórico de ${CREATOR_COINS_PUBLIC_NAME} nesta página...`,
     });
 
     (async () => {
@@ -451,7 +452,7 @@ export default function CreditsPage() {
     setConversionResult(null);
 
     if (!conversionEnabled) {
-      setConversionError("Seu plano atual não permite conversão de créditos.");
+      setConversionError(`Seu plano atual não permite conversão de ${CREATOR_COINS_PUBLIC_NAME}.`);
       return;
     }
     if (conversionFrom === conversionTo) {
@@ -482,7 +483,7 @@ export default function CreditsPage() {
       } else if (message.includes("subscription_inactive")) {
         setConversionError("Assinatura inativa. Ative um plano para usar conversão.");
       } else if (message.includes("plan_not_allowed_for_conversion")) {
-        setConversionError("Seu plano atual ainda não permite conversão de créditos.");
+        setConversionError(`Seu plano atual ainda não permite conversão de ${CREATOR_COINS_PUBLIC_NAME}.`);
       } else if (message.includes("coins_convert_with_fee_unavailable")) {
         setConversionError("Conversão indisponível no momento. Tente novamente em instantes.");
       } else if (message.includes("unsupported_conversion_pair")) {
@@ -513,9 +514,9 @@ export default function CreditsPage() {
             <div className="hero-copy">
               <div className="hero-title-stack">
                 <p className="section-kicker">Transparência de consumo</p>
-                <h1 className="heading-reset">Créditos</h1>
+                <h1 className="heading-reset">{CREATOR_COINS_PUBLIC_NAME}</h1>
                 <p className="section-header-copy hero-copy-compact">
-                  Créditos é a camada operacional do beta pago/controlado: saldo, compra avulsa, conversão e histórico ficam claros sem competir com o núcleo criativo do produto.
+                  {CREATOR_COINS_PUBLIC_NAME} é a camada operacional do beta pago/controlado: saldo, compra avulsa, conversão e histórico ficam claros sem competir com o núcleo criativo do produto.
                 </p>
               </div>
               <div className="hero-meta-row hero-meta-row-compact credits-hero-meta">
@@ -532,7 +533,7 @@ export default function CreditsPage() {
                 </button>
               </div>
             </div>
-            <div className="credits-hero-signals" aria-label="Pontos-chave da operação de créditos">
+            <div className="credits-hero-signals" aria-label={`Pontos-chave da operação de ${CREATOR_COINS_PUBLIC_NAME}`}>
                 <div className="credits-hero-signal">
                   <strong>Saldo por tipo</strong>
                   <span>Comum, Pro e Ultra seguem visíveis sem abrir painéis paralelos.</span>
@@ -563,7 +564,7 @@ export default function CreditsPage() {
         </section>
 
         <div className="credits-page-layout">
-          <section className="credits-main-region" aria-label="Operação principal de créditos">
+            <section className="credits-main-region" aria-label={`Operação principal de ${CREATOR_COINS_PUBLIC_NAME}`}>
             <section className="credits-main-section credits-summary-region">
               <div className="section-header-ea credits-region-heading">
                 <h3 className="heading-reset">Saldo, compra e conversão na mesma trilha</h3>
@@ -571,7 +572,7 @@ export default function CreditsPage() {
               </div>
               <div className="credits-summary-grid">
                 <div className="credits-summary-card credits-summary-card-primary">
-                  <p className="executive-eyebrow">Saldo por tipo</p>
+                  <p className="executive-eyebrow">Saldo de {CREATOR_COINS_PUBLIC_NAME}</p>
                   <p className="executive-value metric-value-compact">{walletSummaryDisplay}</p>
                   <div className="credits-balance-list">
                     {CREDIT_GUIDE.map((item) => (
@@ -583,7 +584,7 @@ export default function CreditsPage() {
                   </div>
                 </div>
                 <div className="credits-summary-card credits-summary-card-action">
-                  <p className="executive-eyebrow">Conversão no plano atual</p>
+                  <p className="executive-eyebrow">Conversão de {CREATOR_COINS_PUBLIC_NAME}</p>
                   <p className="executive-value">{conversionFeeDisplay}</p>
                   <p className="executive-detail">
                     {loading
@@ -592,7 +593,7 @@ export default function CreditsPage() {
                         ? conversionFeePercent === 0
                           ? "Taxa zero na conversão entre tipos: todo o crédito líquido permanece com você."
                           : "A taxa é aplicada sobre a origem. Planos maiores preservam mais crédito líquido."
-                        : "Seu plano atual ainda não habilita conversão entre tipos de crédito."}
+                        : `Seu plano atual ainda não habilita conversão entre tipos de ${CREATOR_COINS_PUBLIC_NAME}.`}
                   </p>
                 </div>
                 <div className="credits-summary-card">
@@ -626,8 +627,8 @@ export default function CreditsPage() {
       <section className="credits-section-card credits-main-section credits-conversion-region">
         <div className="section-head credits-region-head">
           <div className="section-header-ea">
-            <h3 className="heading-reset">Conversão de créditos</h3>
-            <p className="helper-text-ea">Veja débito, taxa, crédito recebido e saldo estimado antes de confirmar.</p>
+            <h3 className="heading-reset">Conversão de {CREATOR_COINS_PUBLIC_NAME}</h3>
+              <p className="helper-text-ea">{`Veja débito, taxa, ${CREATOR_COINS_PUBLIC_NAME} recebidas e saldo estimado antes de confirmar.`}</p>
           </div>
           <span className={`premium-badge ${conversionEnabled ? "premium-badge-phase" : "premium-badge-warning"}`}>
             {conversionEnabled ? `Taxa atual: ${conversionFeePercent}%` : "Indisponível no plano atual"}
@@ -645,7 +646,7 @@ export default function CreditsPage() {
           <div className="state-ea state-ea-warning state-ea-spaced">
             <p className="state-ea-title">Conversão indisponível neste plano</p>
             <div className="state-ea-text">
-              Para converter créditos entre níveis, ative um plano com conversão habilitada.
+              {`Para converter ${CREATOR_COINS_PUBLIC_NAME} entre níveis, ative um plano com conversão habilitada.`}
             </div>
             <div className="state-ea-actions">
               <Link href="/plans" className="btn-link-ea btn-secondary btn-sm">
@@ -757,11 +758,11 @@ export default function CreditsPage() {
                 disabled={conversionLoading || insufficientForEstimate || !isPairSupported}
                 className="btn-ea btn-primary btn-sm"
               >
-                {conversionLoading ? "Convertendo..." : "Converter créditos"}
+                {conversionLoading ? "Convertendo..." : `Converter ${CREATOR_COINS_PUBLIC_NAME}`}
               </button>
               {!isPairSupported ? (
                 <div className="inline-alert inline-alert-warning">
-                  Este par de conversão não está disponível no momento.
+                  Este par de conversão de {CREATOR_COINS_PUBLIC_NAME} não está disponível no momento.
                 </div>
               ) : null}
               {insufficientForEstimate ? (
@@ -793,7 +794,7 @@ export default function CreditsPage() {
 
         </section>
 
-        <aside className="credits-support-rail" aria-label="Apoio contextual de créditos">
+        <aside className="credits-support-rail" aria-label={`Apoio contextual de ${CREATOR_COINS_PUBLIC_NAME}`}>
           {checkoutNotice ? (
             <div className={`state-ea state-ea-spaced credits-support-state ${checkoutNotice.tone === "success" ? "state-ea-success" : checkoutNotice.tone === "warning" ? "state-ea-warning" : ""}`}>
               <p className="state-ea-title">
@@ -824,7 +825,7 @@ export default function CreditsPage() {
 
           <section className="credits-support-section credits-context-section">
             <div className="section-header-ea">
-              <h3 className="heading-reset">Segurança e controle</h3>
+            <h3 className="heading-reset">Segurança e controle</h3>
               <p className="helper-text-ea">Apoio contextual para checkout e persistência, sem disputar a operação central.</p>
             </div>
             <div className="credits-context-list">
@@ -861,7 +862,7 @@ export default function CreditsPage() {
 
           {error ? (
             <div className="state-ea state-ea-error credits-support-state">
-              <p className="state-ea-title">Não foi possível carregar saldo, histórico e regras de crédito</p>
+              <p className="state-ea-title">{`Não foi possível carregar saldo, histórico e regras de ${CREATOR_COINS_PUBLIC_NAME}`}</p>
               <div className="state-ea-text">{toUserFacingError(error, "Atualize os dados e tente novamente.")}</div>
               <div className="state-ea-actions">
                 <button
@@ -882,7 +883,7 @@ export default function CreditsPage() {
       <section id="credits-history" className="credits-section-card credits-history-region">
         <div className="section-head credits-region-head">
           <div className="section-header-ea">
-            <h3 className="heading-reset">Histórico recente de créditos</h3>
+            <h3 className="heading-reset">Histórico recente de {CREATOR_COINS_PUBLIC_NAME}</h3>
             <p className="helper-text-ea">Fonte de verdade para consumo real, compras aprovadas e conversões processadas.</p>
           </div>
           <button onClick={loadTransactions} disabled={txLoading} className="btn-ea btn-ghost btn-sm">
@@ -910,9 +911,9 @@ export default function CreditsPage() {
           </div>
         ) : transactions.length === 0 ? (
           <div className="state-ea state-ea-spaced">
-            <p className="state-ea-title">Sem movimentações recentes de créditos</p>
+            <p className="state-ea-title">Sem movimentações recentes de {CREATOR_COINS_PUBLIC_NAME}</p>
             <div className="state-ea-text">
-              Gere conteúdo em Creators para registrar consumo ou compre créditos avulsos para inaugurar o histórico.
+              {`Gere conteúdo em Creators para registrar consumo ou compre ${CREATOR_COINS_PUBLIC_NAME} avulsas para inaugurar o histórico.`}
             </div>
             <div className="state-ea-actions">
               <Link href="/creators" className="btn-link-ea btn-primary btn-sm">

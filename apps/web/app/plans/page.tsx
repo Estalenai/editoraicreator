@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { api, apiFetch } from "../../lib/api";
+import { CREATOR_COINS_PUBLIC_NAME } from "../../lib/creatorCoins";
 import { normalizePlanCode, resolvePlanLabel } from "../../lib/planLabel";
 import { useDashboardBootstrap } from "../../hooks/useDashboardBootstrap";
 import { BetaAccessBlockedView } from "../../components/waitlist/BetaAccessBlockedView";
@@ -18,6 +19,10 @@ type CatalogPlan = {
   highlight?: string | null;
   badge_label?: string | { "pt-BR"?: string; "en-US"?: string } | null;
   credits?: { common?: number; pro?: number; ultra?: number } | null;
+  credits_public_name?: string | null;
+  credits_short_name?: string | null;
+  credits_total?: number | null;
+  credits_value_brl?: number | null;
   features?: Array<{ key?: string; label?: string; enabled?: boolean }> | null;
   addons?: { convert?: { enabled?: boolean; fee_percent?: number | null; pairs?: string[] } } | null;
   price?: { amount_brl?: number | null; period?: string };
@@ -74,6 +79,12 @@ function formatCreditsIncluded(credits?: CatalogPlan["credits"]): string[] {
 function totalCreditsIncluded(credits?: CatalogPlan["credits"]): number {
   if (!credits) return 0;
   return Number(credits.common || 0) + Number(credits.pro || 0) + Number(credits.ultra || 0);
+}
+
+function formatBrl(value: number | null | undefined): string {
+  const safeValue = Number(value);
+  if (!Number.isFinite(safeValue) || safeValue <= 0) return "—";
+  return safeValue.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
 
 function isEnterpriseConversionPlan(code: string): boolean {
@@ -268,27 +279,29 @@ function PlansPageContent() {
     [currentCatalogPlan]
   );
   const currentPlanCreditsTotal = useMemo(
-    () => totalCreditsIncluded(currentCatalogPlan?.credits || undefined),
+    () => Number(currentCatalogPlan?.credits_total ?? totalCreditsIncluded(currentCatalogPlan?.credits || undefined)),
     [currentCatalogPlan]
   );
+  const currentPlanCreditsPublicName = String(currentCatalogPlan?.credits_public_name || CREATOR_COINS_PUBLIC_NAME).trim() || CREATOR_COINS_PUBLIC_NAME;
+  const currentPlanCreditsValueBrl = Number(currentCatalogPlan?.credits_value_brl ?? NaN);
   const planLabelDisplay = loading
     ? "Plano em sincronização"
     : currentPlanIsContract
       ? "Enterprise por contrato"
       : resolvePlanLabel(planCodeRaw || planLabel || "EDITOR_FREE");
   const currentPlanCreditsValue = loading
-    ? "Créditos do plano em sincronização"
+    ? `${CREATOR_COINS_PUBLIC_NAME} do plano em sincronização`
     : currentPlanIsContract
       ? "Sob contrato"
     : currentPlanCreditsTotal > 0
-      ? `${currentPlanCreditsTotal} créditos totais`
+      ? `${currentPlanCreditsTotal} ${currentPlanCreditsPublicName}`
       : "Consulte o catálogo";
   const currentPlanCreditsDetail = loading
     ? "A composição, os limites e a disponibilidade aparecem assim que o catálogo for confirmado."
     : currentPlanIsContract
-      ? "Créditos, composição e volume do Enterprise são definidos por contrato e não aparecem no catálogo público."
+      ? `${currentPlanCreditsPublicName}, composição e volume do Enterprise são definidos por contrato e não aparecem no catálogo público.`
     : currentPlanCredits.length > 0
-      ? currentPlanCredits.join(" • ")
+      ? `${currentPlanCredits.join(" • ")}${Number.isFinite(currentPlanCreditsValueBrl) && currentPlanCreditsValueBrl > 0 ? ` • Equivalência avulsa: ${formatBrl(currentPlanCreditsValueBrl)}` : ""}`
       : "Detalhamento completo no catálogo abaixo.";
   const currentPlanFeeValue = loading
     ? "..."
@@ -307,7 +320,7 @@ function PlansPageContent() {
         ? "Quanto menor a taxa, mais crédito líquido você mantém ao converter entre Comum, Pro e Ultra."
         : "Conversão entre tipos indisponível neste plano.";
   const currentPlanAudience = loading
-    ? "Sincronizando benefícios, créditos incluídos e disponibilidade do plano."
+    ? `Sincronizando benefícios, ${CREATOR_COINS_PUBLIC_NAME} incluídas e disponibilidade do plano.`
     : currentPlanCopy.audience;
 
   useEffect(() => {
@@ -336,7 +349,7 @@ function PlansPageContent() {
 
     setCheckoutNotice({
       tone: "info",
-      message: "Pagamento confirmado na Stripe. Validando plano, créditos incluídos e disponibilidade nesta página...",
+      message: `Pagamento confirmado na Stripe. Validando plano, ${CREATOR_COINS_PUBLIC_NAME} incluídas e disponibilidade nesta página...`,
     });
 
     (async () => {
@@ -366,7 +379,7 @@ function PlansPageContent() {
       if (synced) {
         setCheckoutNotice({
           tone: "success",
-          message: "Pagamento confirmado. Plano, créditos incluídos e disponibilidade já foram atualizados.",
+          message: `Pagamento confirmado. Plano, ${CREATOR_COINS_PUBLIC_NAME} incluídas e disponibilidade já foram atualizados.`,
         });
       } else {
         setCheckoutNotice({
@@ -472,7 +485,7 @@ function PlansPageContent() {
               <p className="section-kicker">Assinatura e disponibilidade</p>
               <h1 className="heading-reset">Planos</h1>
               <p className="section-header-copy hero-copy-compact">
-                Compare entrada, operação recorrente e escala criativa pela lógica real do produto: créditos incluídos, continuidade de projeto, intensidade de uso e ativação clara quando o fluxo ainda não é self-serve.
+                Compare entrada, operação recorrente e escala criativa pela lógica real do produto: Creator Coins incluídas, continuidade de projeto, intensidade de uso e ativação clara quando o fluxo ainda não é self-serve.
               </p>
             </div>
             <div className="hero-meta-row hero-meta-row-compact plans-hero-meta">
@@ -500,7 +513,7 @@ function PlansPageContent() {
               </div>
               <div className="plans-hero-signal">
                 <strong>Contexto antes da decisão</strong>
-                <span>Preço, créditos, conversão e disponibilidade aparecem junto com o tipo de operação que o plano suporta.</span>
+                <span>Preço, Creator Coins, conversão e disponibilidade aparecem junto com o tipo de operação que o plano suporta.</span>
               </div>
             </div>
           </div>
@@ -546,8 +559,8 @@ function PlansPageContent() {
           </p>
           <div className="state-ea-text">
             {currentPlanIsContract
-              ? "Sua conta está em Enterprise por contrato. Esse plano não aparece como card comparável, não expõe créditos públicos e não participa do fluxo aberto desta página."
-              : `Seu plano atual (${resolvePlanLabel(planCodeRaw || planLabel || "EDITOR_FREE")}) não aparece como card nesta visão. Use o resumo acima para consultar créditos, taxa e disponibilidade.`}
+              ? `Sua conta está em Enterprise por contrato. Esse plano não aparece como card comparável, não expõe ${CREATOR_COINS_PUBLIC_NAME} públicas e não participa do fluxo aberto desta página.`
+              : `Seu plano atual (${resolvePlanLabel(planCodeRaw || planLabel || "EDITOR_FREE")}) não aparece como card nesta visão. Use o resumo acima para consultar ${CREATOR_COINS_PUBLIC_NAME}, taxa e disponibilidade.`}
           </div>
         </div>
       ) : null}
@@ -559,7 +572,7 @@ function PlansPageContent() {
           <p className="plans-summary-detail">{currentPlanAudience}</p>
         </div>
         <div className="plans-summary-stat">
-          <p className="plans-summary-label">Créditos incluídos</p>
+          <p className="plans-summary-label">{CREATOR_COINS_PUBLIC_NAME} incluídas</p>
           <p className="plans-summary-primary">{currentPlanCreditsValue}</p>
           <p className="plans-summary-detail">{currentPlanCreditsDetail}</p>
         </div>
@@ -589,7 +602,7 @@ function PlansPageContent() {
         <div className="section-head">
           <div className="section-header-ea">
             <h3 className="heading-reset">Catálogo de planos</h3>
-            <p className="helper-text-ea">Uma progressão curta entre primeira entrega, operação recorrente, escala criativa e ativação assistida.</p>
+            <p className="helper-text-ea">Uma progressão curta entre primeira entrega, operação recorrente, escala criativa e ativação assistida, com equivalência interna de Creator Coins já recalculada.</p>
           </div>
           <span className="premium-badge premium-badge-phase plans-catalog-badge">Escolha com contexto</span>
         </div>
@@ -709,8 +722,13 @@ function PlansPageContent() {
                   </div>
                   {creditsIncluded.length > 0 ? (
                     <div className="plan-card-credits">
-                      <div className="plan-card-credit-line"><strong>Créditos:</strong> {creditsIncluded.join(" • ")}</div>
-                      <div className="plan-card-total">Total agregado: {creditsTotal} créditos</div>
+                      <div className="plan-card-credit-line"><strong>{item.credits_public_name || CREATOR_COINS_PUBLIC_NAME}:</strong> {creditsIncluded.join(" • ")}</div>
+                      <div className="plan-card-total">
+                        Total agregado: {creditsTotal} {item.credits_public_name || CREATOR_COINS_PUBLIC_NAME}
+                        {Number.isFinite(Number(item.credits_value_brl ?? NaN)) && Number(item.credits_value_brl ?? 0) > 0
+                          ? ` • Equivalência avulsa: ${formatBrl(Number(item.credits_value_brl))}`
+                          : ""}
+                      </div>
                     </div>
                   ) : null}
                   <div className="plan-card-bullets">

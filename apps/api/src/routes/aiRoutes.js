@@ -28,7 +28,7 @@ import {
 } from "../utils/planRuntimeGuards.js";
 import { metricIncrement, metricTiming, recordUsageMetric } from "../utils/metrics.js";
 import { extractRoutingInput, normalizeRoutingMode } from "../utils/aiRoutingInput.js";
-import { validateNoCodeRequest } from "../utils/noCodeRegistry.js";
+import { resolveNoCodeChargeProfile, validateNoCodeRequest } from "../utils/noCodeRegistry.js";
 import {
   factCheck as runFactCheck,
   generateText as runGenerateText,
@@ -4038,11 +4038,18 @@ router.post(
         return res.status(status).json(payload);
       }
 
+      const noCodeChargeProfile = noCodeExperience.enabled
+        ? resolveNoCodeChargeProfile({
+            planCode: req.plan?.code || "FREE",
+            provider: noCodeExperience.provider,
+          })
+        : null;
+      const baseTextCharge = noCodeChargeProfile?.coins || (
+        requestedMaxTokens > MAX_TOKENS_BY_TIER.common ? { pro: 1 } : { common: 1 }
+      );
+
       coinsCharge = {
-        ...(await resolveFeatureCoins(
-          "text_generate",
-          requestedMaxTokens > MAX_TOKENS_BY_TIER.common ? { pro: 1 } : { common: 1 }
-        )),
+        ...(await resolveFeatureCoins("text_generate", baseTextCharge)),
         feature: "text_generate",
       };
 
@@ -4115,10 +4122,12 @@ router.post(
           model: responsePayload.model,
           replay: false,
           tokens_used: tokensUsed,
-          credit_type: coinsCharge.pro > 0 ? "pro" : "common",
+          credit_type: coinsCharge.ultra > 0 ? "ultra" : coinsCharge.pro > 0 ? "pro" : "common",
           max_tokens: requestedMaxTokens,
           language,
           experience_key: noCodeExperience.enabled ? "creator_no_code" : null,
+          no_code_provider: noCodeExperience.provider || null,
+          no_code_advanced_execution: noCodeChargeProfile?.advanced_execution === true,
         },
       });
 
@@ -4225,9 +4234,11 @@ router.post(
           model: "error",
           replay: false,
           error: e?.message || "provider_failed",
+          credit_type: coinsCharge.ultra > 0 ? "ultra" : coinsCharge.pro > 0 ? "pro" : "common",
           max_tokens: requestedMaxTokens,
           language,
           experience_key: noCodeExperience.enabled ? "creator_no_code" : null,
+          no_code_provider: noCodeExperience.provider || null,
         },
       });
 

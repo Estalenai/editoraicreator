@@ -75,12 +75,12 @@ const I18N = {
       avatarStart: "Iniciar sessão de avatar preview",
       avatarMessage: "Enviar mensagem para sessão de avatar",
       avatarEnd: "Encerrar sessão de avatar",
-      coinsConvert: "Converter créditos (common/pro/ultra, origem != destino)",
+      coinsConvert: "Converter Creator Coins (common/pro/ultra, origem != destino)",
       purchaseQuote: "Cotação de compra avulsa",
       purchaseCreate: "Criar intent de compra avulsa",
       purchaseConfirm: "Confirmar intent de compra avulsa (mock)",
-      packageQuote: "Cotação de pacote de créditos avulsos com mix",
-      packageCheckoutCreate: "Criar checkout Stripe para pacote de créditos avulsos",
+      packageQuote: "Cotação de pacote de Creator Coins avulsas com mix",
+      packageCheckoutCreate: "Criar checkout Stripe para pacote de Creator Coins avulsas",
       enterpriseQuote: "Cotação de compra Enterprise",
       enterpriseCheckoutCreate: "Criar checkout Enterprise",
       enterpriseOrders: "Listar pedidos Enterprise do usuário",
@@ -447,7 +447,7 @@ export function getOpenApiSpec(lang = "pt-BR", { serverUrl = "/api" } = {}) {
       "/coins/balance": {
         get: {
           tags: ["Coins"],
-          summary: normalizeLang(lang) === "en-US" ? "Get credits balance" : "Consultar saldo de créditos",
+          summary: normalizeLang(lang) === "en-US" ? "Get Creator Coins balance" : "Consultar saldo de Creator Coins",
           security: [{ BearerAuth: [] }],
           responses: {
             200: {
@@ -459,7 +459,7 @@ export function getOpenApiSpec(lang = "pt-BR", { serverUrl = "/api" } = {}) {
                     wallet: {
                       user_id: "00000000-0000-0000-0000-000000000000",
                       common: 120,
-                      pro: 45,
+                      pro: 30,
                       ultra: 10,
                     },
                   },
@@ -617,7 +617,7 @@ export function getOpenApiSpec(lang = "pt-BR", { serverUrl = "/api" } = {}) {
                     breakdown: {
                       per_type: {
                         common: { qty: 50000, unit_price_cents: 15, subtotal_cents: 750000 },
-                        pro: { qty: 0, unit_price_cents: 45, subtotal_cents: 0 },
+                        pro: { qty: 0, unit_price_cents: 30, subtotal_cents: 0 },
                         ultra: { qty: 0, unit_price_cents: 150, subtotal_cents: 0 },
                       },
                       subtotal_cents: 750000,

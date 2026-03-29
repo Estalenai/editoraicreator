@@ -103,6 +103,8 @@ function buildProviderRuntimeSnapshot(providerKey, { noCodeConfig, providerOrder
     allowed_by_plan: allowedByPlan,
     automatic_candidate: allowedByPlan,
     manual_selectable: allowedByPlan && registryEntry.status === NO_CODE_PROVIDER_STATUS.REAL,
+    advanced_only: true,
+    credit_type: String(noCodeConfig?.advanced_credit_type || "ultra").trim().toLowerCase() || "ultra",
     status: registryEntry.status,
     sort_order: position >= 0 ? position : providerOrder.length,
   };
@@ -114,12 +116,12 @@ export function getNoCodeProviderRegistry() {
 
 export function isNoCodeFeatureEnabled(planCode) {
   const { noCodeConfig } = resolvePlanNoCodeConfig(planCode);
-  return noCodeConfig?.enabled === true;
+  return noCodeConfig?.base_experience_enabled === true || noCodeConfig?.enabled === true;
 }
 
 export function validateNoCodeRequest({ planCode, mode = "automatic", provider = null } = {}) {
   const { normalizedPlan, noCodeConfig, runtimeMatrix } = resolvePlanNoCodeConfig(planCode);
-  if (noCodeConfig?.enabled !== true) {
+  if (noCodeConfig?.base_experience_enabled !== true && noCodeConfig?.enabled !== true) {
     return {
       ok: false,
       status: 403,
@@ -150,12 +152,25 @@ export function validateNoCodeRequest({ planCode, mode = "automatic", provider =
 
   const requestedProvider = normalizeNoCodeProvider(provider);
   if (requestedProvider) {
+    if (noCodeConfig?.advanced_execution_enabled !== true) {
+      return {
+        ok: false,
+        status: 403,
+        error: "no_code_provider_not_allowed_for_plan",
+        message: "O provider solicitado nao esta liberado para a camada avancada do Creator No Code neste plano.",
+        plan: normalizedPlan,
+        details: {
+          provider: requestedProvider,
+          advanced_execution_status: noCodeConfig?.advanced_execution_status || "disabled",
+        },
+      };
+    }
     const providerSnapshot = buildProviderRuntimeSnapshot(requestedProvider, {
       noCodeConfig,
       providerOrder: Array.isArray(noCodeConfig?.provider_order)
         ? noCodeConfig.provider_order.map(normalizeNoCodeProvider).filter(Boolean)
         : [],
-      planEnabled: true,
+      planEnabled: noCodeConfig?.advanced_execution_enabled === true,
     });
     if (!providerSnapshot || !providerSnapshot.allowed_by_plan) {
       return {
@@ -189,9 +204,10 @@ export function validateNoCodeRequest({ planCode, mode = "automatic", provider =
 
 export function buildNoCodeRuntimeSnapshot(planCode) {
   const { normalizedPlan, planMatrix, runtimeMatrix, noCodeConfig } = resolvePlanNoCodeConfig(planCode);
-  const providerOrder = Array.isArray(noCodeConfig?.provider_order)
-    ? noCodeConfig.provider_order.map(normalizeNoCodeProvider).filter(Boolean)
-    : [];
+  const providerOrder =
+    noCodeConfig?.advanced_execution_enabled === true && Array.isArray(noCodeConfig?.provider_order)
+      ? noCodeConfig.provider_order.map(normalizeNoCodeProvider).filter(Boolean)
+      : [];
   const providers = providerOrder
     .map((providerKey) =>
       buildProviderRuntimeSnapshot(providerKey, {
@@ -227,10 +243,18 @@ export function buildNoCodeRuntimeSnapshot(planCode) {
     plan_code: normalizedPlan,
     plan_availability: String(planMatrix?.availability || "hidden_beta"),
     feature_key: "creator_no_code",
-    feature_enabled: noCodeConfig?.enabled === true,
+    feature_enabled: noCodeConfig?.base_experience_enabled === true || noCodeConfig?.enabled === true,
     feature_status: String(noCodeConfig?.feature_status || "disabled"),
+    base_experience_enabled: noCodeConfig?.base_experience_enabled === true || noCodeConfig?.enabled === true,
     base_experience_status: String(noCodeConfig?.base_experience_status || "disabled"),
+    base_credit_type: String(noCodeConfig?.base_credit_type || "common").trim().toLowerCase() || "common",
     integration_status: String(noCodeConfig?.integration_status || "prepared"),
+    advanced_execution_enabled: noCodeConfig?.advanced_execution_enabled === true,
+    advanced_execution_status: String(noCodeConfig?.advanced_execution_status || "disabled"),
+    advanced_credit_type:
+      noCodeConfig?.advanced_credit_type == null
+        ? null
+        : String(noCodeConfig.advanced_credit_type).trim().toLowerCase() || null,
     current_runtime_feature: String(noCodeConfig?.current_runtime_feature || "").trim() || null,
     inherits_from: Array.isArray(noCodeConfig?.inherits_from)
       ? noCodeConfig.inherits_from.map((item) => String(item || "").trim()).filter(Boolean)
@@ -288,4 +312,32 @@ export function buildNoCodeRuntimeSnapshot(planCode) {
       ? noCodeConfig.notes.map((item) => String(item || "").trim()).filter(Boolean)
       : [],
   });
+}
+
+export function resolveNoCodeChargeProfile({ planCode, provider = null } = {}) {
+  const { normalizedPlan, noCodeConfig } = resolvePlanNoCodeConfig(planCode);
+  const requestedProvider = normalizeNoCodeProvider(provider);
+  const advancedProviderOrder = Array.isArray(noCodeConfig?.provider_order)
+    ? noCodeConfig.provider_order.map(normalizeNoCodeProvider).filter(Boolean)
+    : [];
+  const advancedRequested =
+    requestedProvider &&
+    noCodeConfig?.advanced_execution_enabled === true &&
+    advancedProviderOrder.includes(requestedProvider);
+
+  const creditType = advancedRequested
+    ? String(noCodeConfig?.advanced_credit_type || "ultra").trim().toLowerCase() || "ultra"
+    : String(noCodeConfig?.base_credit_type || "common").trim().toLowerCase() || "common";
+
+  return {
+    plan_code: normalizedPlan,
+    advanced_execution: Boolean(advancedRequested),
+    credit_type: creditType,
+    coins:
+      creditType === "ultra"
+        ? { common: 0, pro: 0, ultra: 1 }
+        : creditType === "pro"
+          ? { common: 0, pro: 1, ultra: 0 }
+          : { common: 1, pro: 0, ultra: 0 },
+  };
 }

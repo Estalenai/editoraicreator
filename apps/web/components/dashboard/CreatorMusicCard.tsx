@@ -135,7 +135,7 @@ export function CreatorMusicCard({ planCode, walletCommon, onRefetch }: Props) {
   const validationMessage = !hasTheme && interactionStarted
     ? "Preencha o tema para habilitar a geração."
     : walletCommon < estimatedCommon
-      ? `Saldo insuficiente para esta geração. Necessário: ~${estimatedCommon} Comum. Compre créditos avulsos para continuar.`
+      ? `Saldo insuficiente para esta geração. Necessário: ~${estimatedCommon} Comum. Compre Creator Coins avulsas para continuar.`
       : null;
 
   const plannerSteps = useMemo(

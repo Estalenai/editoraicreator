@@ -13,6 +13,7 @@ import { CreatorClipsCard } from "../../components/dashboard/CreatorClipsCard";
 import { CreatorLiveCutsCard } from "../../components/dashboard/CreatorLiveCutsCard";
 import { CreatorNoCodeCard } from "../../components/dashboard/CreatorNoCodeCard";
 import { coinTypeLabel } from "../../lib/coinTypeLabel";
+import { CREATOR_COINS_PUBLIC_NAME, formatCreatorCoinsWalletSummary } from "../../lib/creatorCoins";
 import { toUserFacingError } from "../../lib/uiFeedback";
 
 type CreatorTab =
@@ -212,7 +213,7 @@ function CreatorsPageContent() {
   const hasWorkspaceSnapshot = Boolean(planLabel || wallet || projects.length > 0);
   const initialLoading = loading && !hasWorkspaceSnapshot;
   const walletSummary = useMemo(
-    () => `${wallet?.common ?? 0} Comum • ${wallet?.pro ?? 0} Pro • ${wallet?.ultra ?? 0} Ultra`,
+    () => formatCreatorCoinsWalletSummary(wallet),
     [wallet]
   );
   const walletByType = useMemo(
@@ -315,7 +316,7 @@ function CreatorsPageContent() {
               <div className="creators-hero-metric-card">
                 <span className="hero-kpi-label">Saldo para operar</span>
                 <strong className="hero-kpi-value">{walletSummaryDisplay}</strong>
-                <span className="hero-kpi-text">{loading ? "Saldo, plano e regras de uso estão sendo sincronizados." : "Estimativa antes da geração. Consumo real em Créditos."}</span>
+                <span className="hero-kpi-text">{loading ? "Saldo, plano e regras de uso estão sendo sincronizados." : `Estimativa antes da geração. Consumo real em ${CREATOR_COINS_PUBLIC_NAME}.`}</span>
               </div>
               <div className="creators-hero-metric-card">
                 <span className="hero-kpi-label">Próximo passo</span>
@@ -567,7 +568,7 @@ function CreatorsPageContent() {
 
             <div className="creators-side-note">
               <strong>Contexto rápido</strong>
-              <span>Revise fluxo, créditos e próximo passo sem sair do workspace.</span>
+              <span>Revise fluxo, Creator Coins e próximo passo sem sair do workspace.</span>
               <Link href="/how-it-works" className="btn-link-ea btn-ghost btn-sm">
                 Abrir guia rápido
               </Link>

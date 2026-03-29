@@ -232,7 +232,7 @@ export async function ensureCreditsOrAutoConvert({
       error: "insufficient_credits",
       required: { tier, amount },
       wallet: { common: wallet.common, pro: wallet.pro, ultra: wallet.ultra },
-      suggestion: "Ative auto-convert ou compre créditos antes de continuar.",
+      suggestion: "Ative auto-convert ou compre Creator Coins antes de continuar.",
     });
   }
 
@@ -274,7 +274,7 @@ export async function ensureCreditsOrAutoConvert({
       error: "insufficient_credits",
       required: { tier, amount },
       wallet: { common: wallet.common, pro: wallet.pro, ultra: wallet.ultra },
-      suggestion: "Ative auto-convert ou compre créditos antes de continuar.",
+      suggestion: "Ative auto-convert ou compre Creator Coins antes de continuar.",
     });
   }
 
@@ -304,7 +304,7 @@ export async function ensureCreditsOrAutoConvert({
       error: "insufficient_credits",
       required: { tier, amount },
       wallet: { common: refreshed.common, pro: refreshed.pro, ultra: refreshed.ultra },
-      suggestion: "Saldo insuficiente após auto-convert. Tente novamente ou compre créditos.",
+      suggestion: "Saldo insuficiente após auto-convert. Tente novamente ou compre Creator Coins.",
     });
   }
 

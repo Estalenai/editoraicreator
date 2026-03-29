@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { coinTypeLabel } from "../../lib/coinTypeLabel";
+import { CREATOR_COINS_PUBLIC_NAME, formatCreatorCoinsWalletSummary } from "../../lib/creatorCoins";
 
 type Props = {
   email: string;
@@ -19,7 +20,7 @@ function onboardingStorageKey(email: string): string {
 function walletSummary(wallet: any | null, loading = false): string {
   if (loading) return "Saldo em atualização";
   if (!wallet) return "Sem saldo sincronizado";
-  return `${wallet.common ?? 0} Comum • ${wallet.pro ?? 0} Pro • ${wallet.ultra ?? 0} Ultra`;
+  return formatCreatorCoinsWalletSummary(wallet);
 }
 
 const OBJECTIVE_PATHS = [
@@ -155,7 +156,7 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
 
       <div className="onboarding-credit-panel dashboard-onboarding-credit">
         <div className="section-stack">
-          <strong>Créditos no fluxo atual</strong>
+          <strong>{CREATOR_COINS_PUBLIC_NAME} no fluxo atual</strong>
           <div className="helper-text-ea">
             Saldo atual: {summary}. A estimativa aparece antes da ação e o débito final permanece rastreável no histórico.
           </div>
@@ -172,7 +173,7 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
           Iniciar fluxo gerar → salvar
         </Link>
         <Link href="/credits" onClick={dismiss} className="btn-link-ea btn-secondary">
-          Entender créditos
+          Entender {CREATOR_COINS_PUBLIC_NAME}
         </Link>
       </div>
     </section>

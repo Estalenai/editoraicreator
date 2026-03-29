@@ -9,6 +9,8 @@ export type NoCodeRuntimeProvider = {
   allowed_by_plan: boolean;
   automatic_candidate: boolean;
   manual_selectable: boolean;
+  advanced_only: boolean;
+  credit_type: "common" | "pro" | "ultra" | null;
   runtime_delivery_status: string;
   public_readiness: string;
   capabilities: {
@@ -30,8 +32,13 @@ export type NoCodeRuntimeSnapshot = {
   feature_key: "creator_no_code";
   feature_enabled: boolean;
   feature_status: string;
+  base_experience_enabled: boolean;
   base_experience_status: string;
+  base_credit_type: "common" | "pro" | "ultra";
   integration_status: string;
+  advanced_execution_enabled: boolean;
+  advanced_execution_status: string;
+  advanced_credit_type: "common" | "pro" | "ultra" | null;
   current_runtime_feature: string | null;
   inherits_from: string[];
   execution: {
@@ -70,8 +77,13 @@ export function sanitizeNoCodeRuntimeForProject(snapshot: NoCodeRuntimeSnapshot 
     plan_code: snapshot.plan_code,
     plan_availability: snapshot.plan_availability,
     feature_status: snapshot.feature_status,
+    base_experience_enabled: snapshot.base_experience_enabled,
     base_experience_status: snapshot.base_experience_status,
+    base_credit_type: snapshot.base_credit_type,
     integration_status: snapshot.integration_status,
+    advanced_execution_enabled: snapshot.advanced_execution_enabled,
+    advanced_execution_status: snapshot.advanced_execution_status,
+    advanced_credit_type: snapshot.advanced_credit_type,
     current_runtime_feature: snapshot.current_runtime_feature,
     inherits_from: [...snapshot.inherits_from],
     execution: {
@@ -103,6 +115,8 @@ export function sanitizeNoCodeRuntimeForProject(snapshot: NoCodeRuntimeSnapshot 
       vendor: provider.vendor,
       status: provider.status,
       allowed_by_plan: provider.allowed_by_plan,
+      advanced_only: provider.advanced_only,
+      credit_type: provider.credit_type,
       runtime_delivery_status: provider.runtime_delivery_status,
       capabilities: { ...provider.capabilities },
     })),

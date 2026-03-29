@@ -217,8 +217,13 @@ export function CreatorNoCodeCard({ planCode, walletCommon, onRefetch }: Props) 
   }, []);
 
   const isAllowed = useMemo(
-    () => (typeof noCodeRuntime?.feature_enabled === "boolean" ? noCodeRuntime.feature_enabled : isCreatorNoCodeAllowed(planCode)),
-    [noCodeRuntime?.feature_enabled, planCode]
+    () =>
+      (typeof noCodeRuntime?.base_experience_enabled === "boolean"
+        ? noCodeRuntime.base_experience_enabled
+        : typeof noCodeRuntime?.feature_enabled === "boolean"
+          ? noCodeRuntime.feature_enabled
+          : isCreatorNoCodeAllowed(planCode)),
+    [noCodeRuntime?.base_experience_enabled, noCodeRuntime?.feature_enabled, planCode]
   );
   const estimatedCommon = 1;
   const hasCredits = walletCommon >= estimatedCommon;
@@ -246,6 +251,13 @@ export function CreatorNoCodeCard({ planCode, walletCommon, onRefetch }: Props) 
         storageMode: "platform_temporary",
       }),
     [execution.capabilities]
+  );
+  const advancedProvidersLabel = useMemo(
+    () =>
+      Array.isArray(noCodeRuntime?.providers) && noCodeRuntime.providers.length > 0
+        ? noCodeRuntime.providers.map((provider) => provider.label).join(" • ")
+        : "Codex • Claude Code",
+    [noCodeRuntime?.providers]
   );
 
   async function copyText(value: string, label: string) {
@@ -424,9 +436,9 @@ export function CreatorNoCodeCard({ planCode, walletCommon, onRefetch }: Props) 
           </p>
         </div>
         <div className="state-ea state-ea-warning creator-empty-state">
-          <p className="state-ea-title">Disponível a partir do Creator Pro</p>
+          <p className="state-ea-title">Camada avançada disponível a partir do Creator Pro</p>
           <div className="state-ea-text">
-            A Fase 1 libera a estruturação inicial do produto com contexto salvo e próximos passos claros.
+            A experiência base do blueprint pode seguir disponível, mas Codex e Claude Code avançados continuam restritos a Creator Pro+.
           </div>
         </div>
       </div>
@@ -578,6 +590,11 @@ export function CreatorNoCodeCard({ planCode, walletCommon, onRefetch }: Props) 
           </div>
           <div className="helper-note-subtle">
             Revise o prompt quando quiser mais controle do blueprint antes de consumir créditos na geração final.
+          </div>
+          <div className="helper-note-subtle">
+            {noCodeRuntime?.advanced_execution_enabled
+              ? `Camada avançada preparada para ${advancedProvidersLabel} com classificação Ultra. Continua restrita a Creator Pro+ e não aplica patch real sem ativação futura.`
+              : "Este plano fica com a camada base de blueprint. Codex e Claude Code avançados seguem restritos a Creator Pro+."}
           </div>
         </div>
 

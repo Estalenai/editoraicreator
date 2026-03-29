@@ -4,6 +4,11 @@ import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { api } from "../../lib/api";
 import { coinTypeLabel } from "../../lib/coinTypeLabel";
+import {
+  CREATOR_COINS_PUBLIC_NAME,
+  CREATOR_COINS_SHORT_NAME,
+  formatCreatorCoinsWalletSummary,
+} from "../../lib/creatorCoins";
 import { toUserFacingError } from "../../lib/uiFeedback";
 
 type PackageBreakdown = {
@@ -57,7 +62,7 @@ const PACKAGE_COIN_INFO: Record<PackageCoinKey, { title: string; description: st
 };
 
 const PACKAGE_OPTION_COPY: Record<number, { title: string; note: string }> = {
-  300: { title: "Pacote inicial", note: "Ideal para testar fluxos e ajustar sua composição de créditos." },
+  300: { title: "Pacote inicial", note: "Ideal para testar fluxos e ajustar sua composição de Creator Coins." },
   1200: { title: "Pacote produtividade", note: "Bom equilíbrio para rotina semanal intensa." },
   3000: { title: "Pacote escala", note: "Melhor para equipes e produção em volume." },
 };
@@ -224,7 +229,7 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
   const canOpenCheckout = canRequestQuote && quoteMatchesSelection;
 
   const walletSummary = useMemo(
-    () => (loading ? "Saldo em sincronização" : `${wallet?.common ?? 0} Comum • ${wallet?.pro ?? 0} Pro • ${wallet?.ultra ?? 0} Ultra`),
+    () => (loading ? "Saldo em sincronização" : formatCreatorCoinsWalletSummary(wallet)),
     [wallet, loading]
   );
   const walletUpdatedAt = useMemo(() => (loading ? "—" : formatDateTime(wallet?.updated_at)), [wallet, loading]);
@@ -352,7 +357,7 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
       setPackageQuote(quote);
       return quote;
     } catch (e: any) {
-      const message = toUserFacingError(e?.message, "Falha ao gerar cotação de créditos avulsos.");
+      const message = toUserFacingError(e?.message, `Falha ao gerar cotação de ${CREATOR_COINS_PUBLIC_NAME} avulsas.`);
       setPackageError(message);
       throw e;
     } finally {
@@ -391,7 +396,7 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
       });
       window.location.href = checkoutUrl;
     } catch (e: any) {
-      const message = toUserFacingError(e?.message, "Falha ao criar checkout de créditos avulsos.");
+      const message = toUserFacingError(e?.message, `Falha ao criar checkout de ${CREATOR_COINS_PUBLIC_NAME} avulsas.`);
       setPackageError(message);
     } finally {
       setPackageCheckoutLoading(false);
@@ -417,13 +422,13 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
                 <header className="section-head credits-modal-header">
                   <div className="hero-title-stack section-stack-tight">
                     <p className="section-kicker">Compra segura</p>
-                    <h3 className="heading-reset" id="credits-modal-title">Créditos avulsos</h3>
+                    <h3 className="heading-reset" id="credits-modal-title">{CREATOR_COINS_PUBLIC_NAME} avulsas</h3>
                     <p className="section-header-copy credits-modal-copy">
-                      Configure o total, feche o mix e revise a cotação antes de abrir o checkout seguro da Stripe.
+                      Configure o total de {CREATOR_COINS_PUBLIC_NAME}, feche o mix e revise a cotação antes de abrir o checkout seguro da Stripe.
                     </p>
                   </div>
                   <div className="hero-actions-row credits-modal-header-actions">
-                    <span className="premium-badge premium-badge-phase">{activePackageTotal} créditos selecionados</span>
+                    <span className="premium-badge premium-badge-phase">{activePackageTotal} {CREATOR_COINS_SHORT_NAME} selecionadas</span>
                     <button type="button" onClick={() => setCoinsPanelOpen(false)} className="btn-ea btn-ghost btn-sm">
                       Fechar
                     </button>
@@ -434,7 +439,7 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
                   <div className="credits-modal-main">
                     <section className="purchase-modal-section">
                       <div className="meta-text-ea">Formato da compra</div>
-                      <div className="purchase-mode-toggle" role="tablist" aria-label="Formato da compra de créditos">
+                      <div className="purchase-mode-toggle" role="tablist" aria-label={`Formato da compra de ${CREATOR_COINS_PUBLIC_NAME}`}>
                         {(["packages", "custom"] as const).map((mode) => (
                           <button
                             key={mode}
@@ -468,7 +473,7 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
                               className="purchase-option-card"
                               data-active={selectedPackage === total}
                             >
-                              <div className="purchase-option-title">{total} créditos</div>
+                              <div className="purchase-option-title">{total} {CREATOR_COINS_SHORT_NAME}</div>
                               <div className="helper-text-ea purchase-option-copy">
                                 {PACKAGE_OPTION_COPY[total].title} · {PACKAGE_OPTION_COPY[total].note}
                               </div>
@@ -479,7 +484,7 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
                     ) : (
                       <section className="purchase-modal-section">
                         <div className="meta-text-ea">
-                          Total personalizado com mínimo de {PACKAGE_MIN_TOTAL} créditos e passos de {PACKAGE_STEP}.
+                          Total personalizado com mínimo de {PACKAGE_MIN_TOTAL} {CREATOR_COINS_SHORT_NAME} e passos de {PACKAGE_STEP}.
                         </div>
                         <label className="field-label-ea">
                           <span>Total da compra</span>
@@ -507,9 +512,9 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
                                   commitCustomTotal((event.currentTarget as HTMLInputElement).value);
                                 }}
                                 className="ea-amount-input"
-                                aria-label="Total personalizado de créditos"
+                                aria-label={`Total personalizado de ${CREATOR_COINS_PUBLIC_NAME}`}
                               />
-                              <span className="ea-amount-suffix">créditos</span>
+                              <span className="ea-amount-suffix">{CREATOR_COINS_SHORT_NAME}</span>
                             </div>
                             <button
                               type="button"
@@ -522,7 +527,7 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
                           </div>
                         </label>
                         <div className="helper-text-ea">
-                          Use mínimo de {PACKAGE_MIN_TOTAL} créditos e valores em múltiplos de {PACKAGE_STEP}.
+                          Use mínimo de {PACKAGE_MIN_TOTAL} {CREATOR_COINS_SHORT_NAME} e valores em múltiplos de {PACKAGE_STEP}.
                         </div>
                       </section>
                     )}
@@ -593,23 +598,23 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
                     <div className="premium-card-soft creator-context-zone purchase-summary-card">
                       <div className="purchase-summary-row">
                         <span>Total selecionado</span>
-                        <strong>{activePackageTotal} créditos</strong>
+                        <strong>{activePackageTotal} {CREATOR_COINS_SHORT_NAME}</strong>
                       </div>
                       <div className="purchase-summary-row">
                         <span>Soma atual da composição</span>
-                        <strong>{packageSum} créditos</strong>
+                        <strong>{packageSum} {CREATOR_COINS_SHORT_NAME}</strong>
                       </div>
                       {packageMixValid ? (
                         <div className="inline-alert inline-alert-success">Mix fechado corretamente. Pronto para cotação.</div>
                       ) : null}
                       {packageRemaining > 0 ? (
                         <div className="inline-alert inline-alert-warning">
-                          Faltam {packageRemaining} créditos para completar o total.
+                          Faltam {packageRemaining} {CREATOR_COINS_SHORT_NAME} para completar o total.
                         </div>
                       ) : null}
                       {packageRemaining < 0 ? (
                         <div className="inline-alert inline-alert-error">
-                          A composição excedeu em {packageExceededBy} créditos.
+                          A composição excedeu em {packageExceededBy} {CREATOR_COINS_SHORT_NAME}.
                         </div>
                       ) : null}
                       {!packageBreakdownStepValid ? (
@@ -626,7 +631,7 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
                       </div>
                       {!packageTotalValid ? (
                         <div className="inline-alert inline-alert-error">
-                          Total inválido. Use mínimo de {PACKAGE_MIN_TOTAL} e múltiplos de {PACKAGE_STEP}.
+                          Total inválido. Use mínimo de {PACKAGE_MIN_TOTAL} {CREATOR_COINS_SHORT_NAME} e múltiplos de {PACKAGE_STEP}.
                         </div>
                       ) : null}
                     </div>
@@ -729,7 +734,7 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
         <div className="credits-purchase-head">
           <div className="hero-title-stack credits-purchase-intro">
             <p className="section-kicker">Compra avulsa</p>
-            <h3 className="heading-reset">Créditos avulsos</h3>
+            <h3 className="heading-reset">{CREATOR_COINS_PUBLIC_NAME} avulsas</h3>
             <div className="meta-text-ea">Saldo atual: {walletSummary}</div>
           </div>
           {walletUpdatedAt !== "—" ? (
@@ -740,7 +745,7 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
           <p className="section-header-copy">
             {loading
               ? "Saldo e regras de compra estão sendo sincronizados antes da cotação."
-              : "Escolha um pacote pronto ou monte um total livre com a mistura de créditos que fizer sentido."}
+              : `Escolha um pacote pronto ou monte um total livre com a mistura de ${CREATOR_COINS_PUBLIC_NAME} que fizer sentido.`}
           </p>
         </div>
         <div className="trust-grid credits-purchase-notes">
@@ -786,7 +791,7 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
               disabled={loading}
               className="btn-ea btn-primary credits-purchase-cta"
             >
-              {loading ? "Sincronizando saldo..." : "Comprar créditos avulsos"}
+              {loading ? "Sincronizando saldo..." : `Comprar ${CREATOR_COINS_PUBLIC_NAME} avulsas`}
             </button>
           </div>
         </div>

@@ -1,6 +1,9 @@
 import { normalizePlanCode } from "./planLabel";
 
 const CREATOR_NO_CODE_ALLOWED_PLANS = new Set([
+  "FREE",
+  "EDITOR_FREE",
+  "EDITOR_PRO",
   "EDITOR_ULTRA",
   "ENTERPRISE",
 ]);

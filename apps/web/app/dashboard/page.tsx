@@ -7,6 +7,7 @@ import { BetaAccessBlockedView } from "../../components/waitlist/BetaAccessBlock
 import { ApprovedBetaOnboardingCard } from "../../components/dashboard/ApprovedBetaOnboardingCard";
 import { coinTypeLabel } from "../../lib/coinTypeLabel";
 import { api } from "../../lib/api";
+import { CREATOR_COINS_PUBLIC_NAME, formatCreatorCoinsWalletSummary } from "../../lib/creatorCoins";
 import { toUserFacingError } from "../../lib/uiFeedback";
 
 type UsageItem = { feature: string; used: number; limit: number };
@@ -49,9 +50,9 @@ const QUICK_LINKS: QuickLinkItem[] = [
     href: "/credits",
     group: "support",
     tag: "Financeiro",
-    title: "Créditos",
-    description: "Acompanhe saldo, conversão e compra avulsa como camada operacional do beta.",
-    cta: "Abrir créditos",
+    title: "Creator Coins",
+    description: "Acompanhe saldo, conversão e compra avulsa de Creator Coins como camada operacional do beta.",
+    cta: "Abrir Creator Coins",
   },
   {
     href: "/plans",
@@ -96,11 +97,6 @@ const CREDIT_GUIDE_ITEMS = [
     description: "Processamento premium para cenários pesados.",
   },
 ];
-
-function formatWalletSummary(wallet: any | null): string {
-  if (!wallet) return "—";
-  return `${wallet.common ?? 0} Comum • ${wallet.pro ?? 0} Pro • ${wallet.ultra ?? 0} Ultra`;
-}
 
 function usageProgress(item: UsageItem): number {
   if (!item.limit || item.limit <= 0) return 0;
@@ -162,7 +158,7 @@ export default function DashboardPage() {
   }, []);
 
   const recentProjects = useMemo(() => projects.slice(0, 6), [projects]);
-  const walletSummary = useMemo(() => formatWalletSummary(wallet), [wallet]);
+  const walletSummary = useMemo(() => formatCreatorCoinsWalletSummary(wallet), [wallet]);
   const coreQuickLinks = useMemo(
     () => QUICK_LINKS.filter((item) => item.group === "core"),
     []
@@ -248,7 +244,7 @@ export default function DashboardPage() {
             <div className="signal-strip dashboard-hero-signal-strip">
               <div className="signal-chip signal-chip-sober">
                 <strong>Saldo e uso visíveis</strong>
-                <span>Plano, créditos e atividade recente aparecem na mesma leitura.</span>
+                <span>Plano, Creator Coins e atividade recente aparecem na mesma leitura.</span>
               </div>
               <div className="signal-chip signal-chip-sober">
                 <strong>Próxima ação clara</strong>
@@ -358,7 +354,7 @@ export default function DashboardPage() {
         ) : (
           <>
             <div className="executive-card dashboard-summary-card dashboard-summary-card-primary layout-contract-item layout-contract-metric">
-              <p className="executive-eyebrow">Saldo de créditos</p>
+              <p className="executive-eyebrow">Saldo de {CREATOR_COINS_PUBLIC_NAME}</p>
               <p className="executive-value metric-value-compact">{walletSummary}</p>
               <div className="dashboard-balance-stack">
                 {walletBreakdown.map((item) => (
@@ -371,7 +367,7 @@ export default function DashboardPage() {
                 ))}
               </div>
               <Link href="/credits" className="card-cta-link">
-                Comprar créditos
+                Comprar {CREATOR_COINS_PUBLIC_NAME}
               </Link>
             </div>
 
@@ -387,7 +383,7 @@ export default function DashboardPage() {
             <div className="executive-card dashboard-summary-card dashboard-summary-card-secondary layout-contract-item layout-contract-metric">
               <p className="executive-eyebrow">Plano atual</p>
               <p className="executive-value">{planLabel ?? "—"}</p>
-              <p className="executive-detail">Revise assinatura, créditos incluídos, checkout e benefícios no catálogo.</p>
+              <p className="executive-detail">Revise assinatura, Creator Coins incluídas, checkout e benefícios no catálogo.</p>
               <Link href="/plans" className="card-cta-link">
                 Gerenciar planos
               </Link>
@@ -527,7 +523,7 @@ export default function DashboardPage() {
               ))}
             </div>
             <div className="helper-text-ea">
-              Os Creators mostram estimativas antes da geração. O consumo final fica registrado no histórico de créditos.
+              Os Creators mostram estimativas antes da geração. O consumo final fica registrado no histórico de {CREATOR_COINS_PUBLIC_NAME}.
             </div>
           </section>
 
@@ -574,7 +570,7 @@ export default function DashboardPage() {
               <div className="state-ea">
                 <p className="state-ea-title">Sem uso registrado neste mês</p>
                 <div className="state-ea-text">
-                  Assim que você gerar conteúdo em algum Creator, o consumo aparece aqui e no histórico de créditos.
+                  Assim que você gerar conteúdo em algum Creator, o consumo aparece aqui e no histórico de {CREATOR_COINS_PUBLIC_NAME}.
                 </div>
                 <div className="state-ea-actions">
                   <Link href="/creators" className="btn-link-ea btn-primary btn-sm">

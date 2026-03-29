@@ -660,9 +660,9 @@ export function CreatorScriptCard({ planCode, walletCommon, onRefetch }: Props) 
       <div className="creator-estimate-row">
         <div className="helper-note-inline">Estimativa de consumo: ~{estimatedCommon} Comum</div>
         <div className="helper-note-subtle">
-          Estimativa prévia. O consumo real aparece em Créditos {'>'} Histórico.
+          Estimativa prévia. O consumo real aparece em Creator Coins {'>'} Histórico.
         </div>
-        {!hasCredits && <div className="inline-alert inline-alert-error">Saldo insuficiente para gerar roteiro. Compre créditos avulsos para continuar.</div>}
+        {!hasCredits && <div className="inline-alert inline-alert-error">Saldo insuficiente para gerar roteiro. Compre Creator Coins avulsas para continuar.</div>}
       </div>
 
       <div className="creator-planner-field-grid creator-script-journey-grid">

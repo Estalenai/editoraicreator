@@ -9,7 +9,7 @@ const DEFAULT_ENTERPRISE_CONFIG = Object.freeze({
   qty_step: 1000,
   prices_cents: {
     common: 15,
-    pro: 45,
+    pro: 30,
     ultra: 150,
   },
 });

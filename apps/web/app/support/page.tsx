@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useDashboardBootstrap } from "../../hooks/useDashboardBootstrap";
 import { BetaAccessBlockedView } from "../../components/waitlist/BetaAccessBlockedView";
 import { SupportAssistantCard } from "../../components/dashboard/SupportAssistantCard";
+import { CREATOR_COINS_PUBLIC_NAME } from "../../lib/creatorCoins";
 import { toUserFacingError } from "../../lib/uiFeedback";
 
 const SUPPORT_PATHS = [
@@ -14,10 +15,10 @@ const SUPPORT_PATHS = [
     cta: "Revisar planos",
   },
   {
-    title: "Créditos e histórico",
-    description: "Consulte saldo, compra avulsa, conversão entre tipos e movimentações confirmadas.",
+    title: `${CREATOR_COINS_PUBLIC_NAME} e histórico`,
+    description: `Consulte saldo, compra avulsa, conversão entre tipos e movimentações confirmadas de ${CREATOR_COINS_PUBLIC_NAME}.`,
     href: "/credits",
-    cta: "Abrir créditos",
+    cta: `Abrir ${CREATOR_COINS_PUBLIC_NAME}`,
   },
   {
     title: "Projetos e publicação",
@@ -39,9 +40,9 @@ const SUPPORT_FAQ = [
       "Envie assunto claro, contexto do que estava fazendo, mensagem de erro, referência do job ou checkout e a tela afetada. Quanto mais objetivo o relato, mais rápido a análise.",
   },
   {
-    question: "Como funciona o suporte para planos, créditos e pagamentos?",
+    question: `Como funciona o suporte para planos, ${CREATOR_COINS_PUBLIC_NAME} e pagamentos?`,
     answer:
-      "Pagamentos self-serve passam pela Stripe. Quando houver divergência entre checkout, saldo, histórico ou plano, o suporte valida o retorno e orienta o próximo passo com base no estado real da conta.",
+      `Pagamentos self-serve passam pela Stripe. Quando houver divergência entre checkout, saldo de ${CREATOR_COINS_PUBLIC_NAME}, histórico ou plano, o suporte valida o retorno e orienta o próximo passo com base no estado real da conta.`,
   },
   {
     question: "GitHub e Vercel já têm suporte completo?",
@@ -84,7 +85,7 @@ export default function SupportPage() {
               <p className="section-kicker">Canal operacional</p>
               <h1 style={{ margin: "4px 0 0", letterSpacing: -0.35 }}>Suporte</h1>
               <p className="section-header-copy hero-copy-compact">
-                Uma área objetiva para sustentar o beta pago/controlado: tirar dúvidas, registrar problemas e entender o próximo passo em planos, créditos, publicação e integrações sem ruído.
+                {`Uma área objetiva para sustentar o beta pago/controlado: tirar dúvidas, registrar problemas e entender o próximo passo em planos, ${CREATOR_COINS_PUBLIC_NAME}, publicação e integrações sem ruído.`}
               </p>
             </div>
 
@@ -95,7 +96,7 @@ export default function SupportPage() {
               </div>
               <div className="support-hero-signal">
                 <strong>Contexto claro</strong>
-                <span>Planos, créditos, checkout e publicação aparecem como trilhas de ajuda separadas.</span>
+                <span>{`Planos, ${CREATOR_COINS_PUBLIC_NAME}, checkout e publicação aparecem como trilhas de ajuda separadas.`}</span>
               </div>
             </div>
           </div>
