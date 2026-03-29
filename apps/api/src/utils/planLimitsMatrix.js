@@ -352,8 +352,8 @@ const PLAN_LIMITS_MATRIX = {
     },
     upload_limits: {
       max_file_size_mb: 10240,
-      direct_upload_max_file_size_mb: 10240,
-      files_per_job: 10,
+      direct_upload_max_file_size_mb: 51200,
+      files_per_job: 50,
       files_per_day: null,
     },
     generation_limits: {
@@ -361,8 +361,8 @@ const PLAN_LIMITS_MATRIX = {
       max_generated_audio_seconds: null,
     },
     input_media_limits: {
-      max_input_video_minutes: 30,
-      max_input_audio_minutes: 15,
+      max_input_video_minutes: 90,
+      max_input_audio_minutes: 90,
     },
     usage_limits: {
       jobs_per_day: null,
@@ -383,7 +383,7 @@ const PLAN_LIMITS_MATRIX = {
       max_functions_per_job: null,
       can_combine_functions: true,
       pipeline_level: "moderate",
-      automation_level: "light_or_intermediate",
+      automation_level: "intermediate",
       presets_level: "advanced",
     },
     context_limits: {
@@ -408,7 +408,8 @@ const PLAN_LIMITS_MATRIX = {
       prepared_provider_flags: ["claude"],
     },
     honesty_notes: [
-      "Neste tier o credito passa a ser o limitador principal, mas hard caps tecnicos e anti-abuso ainda precisam de enforcement explicito em outras camadas.",
+      "Neste tier o credito passa a ser o limitador principal, mas hard caps tecnicos e anti-abuso continuam ativos em paralelo.",
+      "Editor Pro fica com baseline profissional de ate 50 GB por trabalho via direct/connected flow, 90 minutos de entrada e 50 arquivos por job.",
       "O degrau de modelos fica abaixo de Creator Pro; mapeamentos especificos de modelo ainda seguem aiModelPolicy ate a adocao completa desta matriz.",
       "Quality outputs em 2160p ja estao formalizados aqui como limite de plano, nao como promessa comercial isolada.",
     ],
@@ -477,8 +478,8 @@ const PLAN_LIMITS_MATRIX = {
     },
     upload_limits: {
       max_file_size_mb: 20480,
-      direct_upload_max_file_size_mb: 20480,
-      files_per_job: 20,
+      direct_upload_max_file_size_mb: 102400,
+      files_per_job: 100,
       files_per_day: null,
     },
     generation_limits: {
@@ -486,8 +487,8 @@ const PLAN_LIMITS_MATRIX = {
       max_generated_audio_seconds: null,
     },
     input_media_limits: {
-      max_input_video_minutes: 60,
-      max_input_audio_minutes: 30,
+      max_input_video_minutes: 180,
+      max_input_audio_minutes: 180,
     },
     usage_limits: {
       jobs_per_day: null,
@@ -534,8 +535,9 @@ const PLAN_LIMITS_MATRIX = {
     },
     honesty_notes: [
       "Creator Pro em diante libera a camada Pro de modelos na fonte de verdade do produto.",
+      "Creator Pro continua premium, mas nao ilimitado: o baseline tecnico sobe para 100 GB por trabalho, 180 minutos de entrada e 100 arquivos por job.",
       "Avatar Preview fica explicitamente liberado aqui, mas enforcement fino ainda depende das rotas de runtime continuarem consumindo estas regras.",
-      "Hard caps tecnicos adicionais para Pro+ ainda devem ser implementados nas camadas de execucao e anti-abuso.",
+      "Hard caps tecnicos altos para Pro+ continuam formais nesta matriz e nao devem ser removidos por copy ou UX.",
     ],
     stripe_env_keys: [
       "STRIPE_PRICE_EDITOR_ULTRA",
@@ -600,10 +602,13 @@ const PLAN_LIMITS_MATRIX = {
       storefront_visibility: true,
       minimum_purchase_credits_per_type: null,
     },
+    contract_policy: {
+      overrides_allowed: true,
+    },
     upload_limits: {
-      max_file_size_mb: null,
-      direct_upload_max_file_size_mb: null,
-      files_per_job: null,
+      max_file_size_mb: 51200,
+      direct_upload_max_file_size_mb: 204800,
+      files_per_job: 200,
       files_per_day: null,
     },
     generation_limits: {
@@ -611,8 +616,8 @@ const PLAN_LIMITS_MATRIX = {
       max_generated_audio_seconds: null,
     },
     input_media_limits: {
-      max_input_video_minutes: null,
-      max_input_audio_minutes: null,
+      max_input_video_minutes: 240,
+      max_input_audio_minutes: 240,
     },
     usage_limits: {
       jobs_per_day: null,
@@ -632,8 +637,8 @@ const PLAN_LIMITS_MATRIX = {
     workflow_limits: {
       max_functions_per_job: null,
       can_combine_functions: true,
-      pipeline_level: "contract_inherited",
-      automation_level: "contract_inherited",
+      pipeline_level: "complex",
+      automation_level: "advanced",
       presets_level: "contract_inherited",
     },
     context_limits: {
@@ -659,6 +664,7 @@ const PLAN_LIMITS_MATRIX = {
     },
     honesty_notes: [
       "Empresarial continua em ativacao assistida e ainda herda a base tecnica de Enterprise.",
+      "Mesmo assistido, ja recebe baseline interno alto: 200 GB por trabalho, 240 minutos de entrada e 200 arquivos por job.",
       "Nao deve ser tratado como camada tecnica 100% autonoma ate que enforcement, quotas e runtime dedicados sejam separados.",
       "Governanca, multiplos usuarios e coordenacao de equipe continuam fora desta matriz enquanto nao virarem regra implementada.",
     ],
@@ -725,10 +731,13 @@ const PLAN_LIMITS_MATRIX = {
         ultra: 50000,
       },
     },
+    contract_policy: {
+      overrides_allowed: true,
+    },
     upload_limits: {
-      max_file_size_mb: null,
-      direct_upload_max_file_size_mb: null,
-      files_per_job: null,
+      max_file_size_mb: 102400,
+      direct_upload_max_file_size_mb: 512000,
+      files_per_job: 500,
       files_per_day: null,
     },
     generation_limits: {
@@ -736,8 +745,8 @@ const PLAN_LIMITS_MATRIX = {
       max_generated_audio_seconds: null,
     },
     input_media_limits: {
-      max_input_video_minutes: null,
-      max_input_audio_minutes: null,
+      max_input_video_minutes: 360,
+      max_input_audio_minutes: 360,
     },
     usage_limits: {
       jobs_per_day: null,
@@ -757,8 +766,8 @@ const PLAN_LIMITS_MATRIX = {
     workflow_limits: {
       max_functions_per_job: null,
       can_combine_functions: true,
-      pipeline_level: "contract",
-      automation_level: "contract",
+      pipeline_level: "enterprise_or_advanced",
+      automation_level: "enterprise_or_advanced",
       presets_level: "contract",
     },
     context_limits: {
@@ -783,9 +792,10 @@ const PLAN_LIMITS_MATRIX = {
       prepared_provider_flags: ["claude"],
     },
     honesty_notes: [
-      "Enterprise permanece como camada contratual e rule layer mais alta.",
+      "Enterprise permanece como camada contratual e rule layer mais alta, mas nao deve ser tratado como ilimitado.",
+      "O baseline interno sobe para 500 GB por trabalho, 360 minutos de entrada e 500 arquivos por job antes de qualquer override contratual.",
       "O minimo de compra fica formalizado em 50.000 creditos por tipo.",
-      "Caps operacionais adicionais de contrato ainda dependem de implementacao nas camadas comercial, runtime e billing.",
+      "Overrides contratuais continuam permitidos internamente, sem virar promessa publica automatica.",
     ],
     stripe_env_keys: [],
   },
