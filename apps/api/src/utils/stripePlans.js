@@ -1,4 +1,6 @@
-const PLAN_CODES = ["EDITOR_FREE", "EDITOR_PRO", "EDITOR_ULTRA"];
+import { getPlanCreditsIncluded, getPlanSelfServeCodes, getPlanStripeEnvKeys } from "./planLimitsMatrix.js";
+
+const PLAN_CODES = getPlanSelfServeCodes();
 
 function readPriceId(value) {
   const v = String(value || "").trim();
@@ -18,39 +20,21 @@ function buildCatalog() {
     highlight: null,
     badge_label: { "pt-BR": null, "en-US": null },
   };
-  return {
-    // Backward-compatible env aliases: keep checkout working without forcing .env rewrites.
-    EDITOR_FREE: {
-      plan_code: "EDITOR_FREE",
-      price_id: readPriceIdFromEnvKeys([
-        "STRIPE_PRICE_EDITOR_FREE",
-        "STRIPE_PRICE_INICIANTE",
-        "STRIPE_PRICE_EDITOR_STARTER",
-        "STRIPE_PRICE_STARTER",
-        "STRIPE_PRICE_FREE",
-      ]),
-      ...defaultBadge,
-    },
-    EDITOR_PRO: {
-      plan_code: "EDITOR_PRO",
-      price_id: readPriceIdFromEnvKeys([
-        "STRIPE_PRICE_EDITOR_PRO",
-        "STRIPE_PRICE_PRO",
-        "STRIPE_PRICE_EDITORPRO",
-      ]),
-      highlight: "most_popular",
-      badge_label: { "pt-BR": "Mais popular", "en-US": "Most popular" },
-    },
-    EDITOR_ULTRA: {
-      plan_code: "EDITOR_ULTRA",
-      price_id: readPriceIdFromEnvKeys([
-        "STRIPE_PRICE_EDITOR_ULTRA",
-        "STRIPE_PRICE_ULTRA",
-        "STRIPE_PRICE_CREATOR_PRO",
-      ]),
-      ...defaultBadge,
-    },
-  };
+  return Object.fromEntries(
+    PLAN_CODES.map((planCode) => [
+      planCode,
+      {
+        plan_code: planCode,
+        price_id: readPriceIdFromEnvKeys(getPlanStripeEnvKeys(planCode)),
+        ...(planCode === "EDITOR_PRO"
+          ? {
+              highlight: "most_popular",
+              badge_label: { "pt-BR": "Mais popular", "en-US": "Most popular" },
+            }
+          : defaultBadge),
+      },
+    ])
+  );
 }
 
 function createError(code, message, extra = {}) {
@@ -106,44 +90,69 @@ export function assertValidPriceId(priceId) {
 }
 
 function buildGrantCatalog() {
-  return {
+  const envKeyMap = {
     EDITOR_FREE: {
       monthly: {
-        common: toNonNegativeInt(process.env.STRIPE_GRANT_EDITOR_FREE_MONTHLY_COMMON, 300),
-        pro: toNonNegativeInt(process.env.STRIPE_GRANT_EDITOR_FREE_MONTHLY_PRO, 120),
-        ultra: toNonNegativeInt(process.env.STRIPE_GRANT_EDITOR_FREE_MONTHLY_ULTRA, 0),
+        common: "STRIPE_GRANT_EDITOR_FREE_MONTHLY_COMMON",
+        pro: "STRIPE_GRANT_EDITOR_FREE_MONTHLY_PRO",
+        ultra: "STRIPE_GRANT_EDITOR_FREE_MONTHLY_ULTRA",
       },
       one_time: {
-        common: toNonNegativeInt(process.env.STRIPE_GRANT_EDITOR_FREE_ONE_TIME_COMMON, 300),
-        pro: toNonNegativeInt(process.env.STRIPE_GRANT_EDITOR_FREE_ONE_TIME_PRO, 120),
-        ultra: toNonNegativeInt(process.env.STRIPE_GRANT_EDITOR_FREE_ONE_TIME_ULTRA, 0),
+        common: "STRIPE_GRANT_EDITOR_FREE_ONE_TIME_COMMON",
+        pro: "STRIPE_GRANT_EDITOR_FREE_ONE_TIME_PRO",
+        ultra: "STRIPE_GRANT_EDITOR_FREE_ONE_TIME_ULTRA",
       },
     },
     EDITOR_PRO: {
       monthly: {
-        common: toNonNegativeInt(process.env.STRIPE_GRANT_EDITOR_PRO_MONTHLY_COMMON, 700),
-        pro: toNonNegativeInt(process.env.STRIPE_GRANT_EDITOR_PRO_MONTHLY_PRO, 350),
-        ultra: toNonNegativeInt(process.env.STRIPE_GRANT_EDITOR_PRO_MONTHLY_ULTRA, 150),
+        common: "STRIPE_GRANT_EDITOR_PRO_MONTHLY_COMMON",
+        pro: "STRIPE_GRANT_EDITOR_PRO_MONTHLY_PRO",
+        ultra: "STRIPE_GRANT_EDITOR_PRO_MONTHLY_ULTRA",
       },
       one_time: {
-        common: toNonNegativeInt(process.env.STRIPE_GRANT_EDITOR_PRO_ONE_TIME_COMMON, 700),
-        pro: toNonNegativeInt(process.env.STRIPE_GRANT_EDITOR_PRO_ONE_TIME_PRO, 350),
-        ultra: toNonNegativeInt(process.env.STRIPE_GRANT_EDITOR_PRO_ONE_TIME_ULTRA, 150),
+        common: "STRIPE_GRANT_EDITOR_PRO_ONE_TIME_COMMON",
+        pro: "STRIPE_GRANT_EDITOR_PRO_ONE_TIME_PRO",
+        ultra: "STRIPE_GRANT_EDITOR_PRO_ONE_TIME_ULTRA",
       },
     },
     EDITOR_ULTRA: {
       monthly: {
-        common: toNonNegativeInt(process.env.STRIPE_GRANT_EDITOR_ULTRA_MONTHLY_COMMON, 2000),
-        pro: toNonNegativeInt(process.env.STRIPE_GRANT_EDITOR_ULTRA_MONTHLY_PRO, 1200),
-        ultra: toNonNegativeInt(process.env.STRIPE_GRANT_EDITOR_ULTRA_MONTHLY_ULTRA, 600),
+        common: "STRIPE_GRANT_EDITOR_ULTRA_MONTHLY_COMMON",
+        pro: "STRIPE_GRANT_EDITOR_ULTRA_MONTHLY_PRO",
+        ultra: "STRIPE_GRANT_EDITOR_ULTRA_MONTHLY_ULTRA",
       },
       one_time: {
-        common: toNonNegativeInt(process.env.STRIPE_GRANT_EDITOR_ULTRA_ONE_TIME_COMMON, 2000),
-        pro: toNonNegativeInt(process.env.STRIPE_GRANT_EDITOR_ULTRA_ONE_TIME_PRO, 1200),
-        ultra: toNonNegativeInt(process.env.STRIPE_GRANT_EDITOR_ULTRA_ONE_TIME_ULTRA, 600),
+        common: "STRIPE_GRANT_EDITOR_ULTRA_ONE_TIME_COMMON",
+        pro: "STRIPE_GRANT_EDITOR_ULTRA_ONE_TIME_PRO",
+        ultra: "STRIPE_GRANT_EDITOR_ULTRA_ONE_TIME_ULTRA",
       },
     },
   };
+
+  return Object.fromEntries(
+    PLAN_CODES.map((planCode) => {
+      const credits = getPlanCreditsIncluded(planCode) || { common: 0, pro: 0, ultra: 0 };
+      const envKeys = envKeyMap[planCode] || { monthly: {}, one_time: {} };
+      const resolveGrant = (mode, coinType) =>
+        toNonNegativeInt(process.env[envKeys?.[mode]?.[coinType]], credits?.[coinType] ?? 0);
+
+      return [
+        planCode,
+        {
+          monthly: {
+            common: resolveGrant("monthly", "common"),
+            pro: resolveGrant("monthly", "pro"),
+            ultra: resolveGrant("monthly", "ultra"),
+          },
+          one_time: {
+            common: resolveGrant("one_time", "common"),
+            pro: resolveGrant("one_time", "pro"),
+            ultra: resolveGrant("one_time", "ultra"),
+          },
+        },
+      ];
+    })
+  );
 }
 
 export function getGrantForPlan(planCode, kind = "monthly") {

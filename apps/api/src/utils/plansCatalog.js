@@ -1,8 +1,6 @@
 import { getPlanCatalog } from "./stripePlans.js";
-import { canUseAvatarPreview, getConversionFeePercent, getPurchaseFeePercent, normalizeProductPlanCode } from "./coinsProductRules.js";
-import { getAllowedProvidersForFeature, getPlanModelPolicy } from "./aiModelPolicy.js";
 import { t } from "./i18n.js";
-import { getUsageLimits, normalizePlanCode as normalizeUsagePlanCode } from "./usageLimits.js";
+import { getPlanLimitMatrix, getPlanLimitMatrixEntries, normalizePlanMatrixCode } from "./planLimitsMatrix.js";
 
 const CURRENCY = "BRL";
 const PERIOD_MONTH = "month";
@@ -14,10 +12,6 @@ const CONVERT_PAIRS = [
   "ultra->common",
   "ultra->pro",
 ];
-const ALL_COIN_TYPES = ["common", "pro", "ultra"];
-const FREE_COIN_TYPES = ["common"];
-const EDITOR_FREE_COIN_TYPES = ["common", "pro"];
-
 const BASE_FEATURES = [
   { key: "ai_text", enabled: true },
   { key: "ai_image", enabled: true },
@@ -29,20 +23,14 @@ const BASE_FEATURES = [
   { key: "docs_manual", enabled: true },
 ];
 
-const FEATURE_POLICY_MAP = {
-  ai_text: "text_generate",
-  ai_image: "image_generate",
-  ai_video: "video_generate",
-  ai_music: "music_generate",
-  ai_voice: "voice_generate",
-  ai_slides: "slides_generate",
-};
-
-const TIER_RANK = {
-  basic: 1,
-  standard: 2,
-  intermediate: 3,
-  pro: 4,
+const FEATURE_MATRIX_KEY_MAP = {
+  ai_text: "text",
+  ai_image: "image",
+  ai_video: "video",
+  ai_music: "music",
+  ai_voice: "voice",
+  ai_slides: "slides",
+  avatar_preview: "avatar_preview",
 };
 
 const PLAN_COPY = {
@@ -240,71 +228,15 @@ const PLAN_COPY = {
   },
 };
 
-const PLAN_DEFS = [
-  {
-    code: "FREE",
-    nameKey: "plans.name.free",
-    priceAmountBrl: 0,
-    credits: { common: 30, pro: 0, ultra: 0 },
-    allowedCoinTypes: FREE_COIN_TYPES,
-    avatarSessionsPerDay: 0,
-    avatarSecondsPerSession: 0,
-    visible: false,
-    purchasable: false,
-  },
-  {
-    code: "EDITOR_FREE",
-    nameKey: "plans.name.editor_free",
-    priceAmountBrl: 19.9,
-    credits: { common: 300, pro: 120, ultra: 0 },
-    allowedCoinTypes: EDITOR_FREE_COIN_TYPES,
-    avatarSessionsPerDay: 0,
-    avatarSecondsPerSession: 0,
-  },
-  {
-    code: "EDITOR_PRO",
-    nameKey: "plans.name.editor_pro",
-    priceAmountBrl: 59.9,
-    credits: { common: 700, pro: 350, ultra: 150 },
-    allowedCoinTypes: ALL_COIN_TYPES,
-    avatarSessionsPerDay: 0,
-    avatarSecondsPerSession: 0,
-  },
-  {
-    code: "EDITOR_ULTRA",
-    nameKey: "plans.name.editor_ultra",
-    priceAmountBrl: 149.9,
-    credits: { common: 2000, pro: 1200, ultra: 600 },
-    allowedCoinTypes: ALL_COIN_TYPES,
-    avatarSessionsPerDay: 1,
-    avatarSecondsPerSession: 120,
-  },
-  {
-    code: "EMPRESARIAL",
-    nameKey: "plans.name.empresarial",
-    priceAmountBrl: 499.9,
-    credits: null,
-    allowedCoinTypes: ALL_COIN_TYPES,
-    avatarSessionsPerDay: 1,
-    avatarSecondsPerSession: 120,
-    conversionFeePercentOverride: 0,
-    comingSoon: true,
-    purchasable: false,
-  },
-  {
-    code: "ENTERPRISE",
-    nameKey: "plans.name.enterprise",
-    priceAmountBrl: null,
-    credits: null,
-    allowedCoinTypes: ALL_COIN_TYPES,
-    avatarSessionsPerDay: 1,
-    avatarSecondsPerSession: 120,
-    conversionFeePercentOverride: 0,
-    comingSoon: true,
-    purchasable: false,
-    visible: false,
-  },
-];
+const PLAN_DEFS = getPlanLimitMatrixEntries().map((plan) => ({
+  code: plan.code,
+  nameKey: plan.name_key,
+  priceAmountBrl: plan.price_amount_brl,
+  credits: plan.credits_included,
+  visible: plan.storefront_visibility !== false,
+  purchasable: plan.purchasable !== false,
+  comingSoon: plan.coming_soon === true,
+}));
 
 function normalizeLang(lang) {
   return String(lang || "").toLowerCase().startsWith("en") ? "en-US" : "pt-BR";
@@ -327,162 +259,9 @@ function getHighlightInfo(planCode) {
   return { highlight, badgeLabel };
 }
 
-function strongestTier(tiers = []) {
-  return [...tiers]
-    .filter((tier) => TIER_RANK[tier])
-    .sort((left, right) => (TIER_RANK[right] || 0) - (TIER_RANK[left] || 0))[0] || null;
-}
-
-function keyByFeature(features = []) {
-  return Object.fromEntries(features.map((feature) => [String(feature?.key || ""), feature]));
-}
-
-function resolveActivationMode(def) {
-  const code = String(def?.code || "").toUpperCase();
-  if (code === "FREE") return "hidden_beta";
-  if (code === "ENTERPRISE") return "contract";
-  if (def?.purchasable === false) return "assisted";
-  return "self_serve";
-}
-
-function buildRuntimeRules(planCode) {
-  const usageLimitsPlanCode = normalizeUsagePlanCode(planCode);
-  const purchaseRulesPlanCode = normalizeProductPlanCode(planCode);
-  const modelPolicy = getPlanModelPolicy(planCode);
-  const modelPolicyPlanCode = String(modelPolicy?.plan || "FREE").toUpperCase();
-  const runtimeSources = Array.from(
-    new Set([usageLimitsPlanCode, purchaseRulesPlanCode, modelPolicyPlanCode].filter(Boolean))
-  );
-  return {
-    usage_limits_plan_code: usageLimitsPlanCode,
-    purchase_rules_plan_code: purchaseRulesPlanCode,
-    model_policy_plan_code: modelPolicyPlanCode,
-    inherits_from: runtimeSources.filter((item) => item !== String(planCode || "").toUpperCase()),
-  };
-}
-
-function buildMonthlyUsageLimits(usageLimits, avatarEnabled, def) {
-  return {
-    creator_post_generate: usageLimits?.creator_post_generate?.monthly ?? null,
-    creator_music_generate: usageLimits?.creator_music_generate?.monthly ?? null,
-    text_generate: null,
-    image_generate: null,
-    video_generate: null,
-    voice_generate: null,
-    music_generate: null,
-    slides_generate: null,
-    avatar_preview_sessions_per_day: avatarEnabled ? Number(def?.avatarSessionsPerDay || 0) : 0,
-    avatar_preview_seconds_per_session: avatarEnabled ? Number(def?.avatarSecondsPerSession || 0) : 0,
-  };
-}
-
-function buildProvidersByFeature(features = []) {
-  const byKey = keyByFeature(features);
-  const pick = (featureKey) => {
-    const feature = byKey[featureKey];
-    return {
-      enabled: Boolean(feature?.enabled),
-      availability: feature?.availability || "unavailable",
-      providers: Array.isArray(feature?.providers) ? [...feature.providers] : [],
-      max_tier: feature?.max_tier || null,
-      mock_only: feature?.mock_only === true,
-      rule_source: feature?.rule_source || null,
-    };
-  };
-
-  return {
-    text: pick("ai_text"),
-    image: pick("ai_image"),
-    video: pick("ai_video"),
-    music: pick("ai_music"),
-    voice: pick("ai_voice"),
-    slides: pick("ai_slides"),
-    avatar_preview: pick("avatar_preview"),
-    docs_manual: pick("docs_manual"),
-  };
-}
-
-function buildCommerceSnapshot(def, stripePlan, allowedCoinTypes, purchaseFeePercent, conversionFeePercent) {
-  return {
-    price_visibility: Number.isFinite(def?.priceAmountBrl),
-    storefront_visibility: def?.visible !== false,
-    purchasable: def?.purchasable !== false,
-    checkout_supported: Boolean(stripePlan?.price_id) && def?.purchasable !== false,
-    price_id_configured: Boolean(stripePlan?.price_id),
-    allowed_coin_types_to_buy: [...allowedCoinTypes],
-    purchase_fee_percent: Number(purchaseFeePercent ?? 0),
-    conversion_enabled: conversionFeePercent != null,
-    conversion_fee_percent: conversionFeePercent != null ? Number(conversionFeePercent) : null,
-  };
-}
-
-function buildHonestyNotes({
-  def,
-  code,
-  features,
-  monthlyUsageLimits,
-  runtimeRules,
-  activationMode,
-}) {
-  const notes = [];
-
-  if (activationMode === "hidden_beta") {
-    notes.push("Plano oculto no beta: não entra no storefront aberto nem no checkout self-serve.");
-  }
-
-  if (activationMode === "assisted") {
-    notes.push("Plano assistido: a disponibilidade comercial depende de ativação acompanhada, não de checkout aberto.");
-  }
-
-  if (activationMode === "contract") {
-    notes.push("Plano contratual: escopo, volume e condições seguem fluxo comercial separado.");
-  }
-
-  if (runtimeRules?.inherits_from?.length) {
-    notes.push(`Regras técnicas herdadas nesta fase: ${runtimeRules.inherits_from.join(", ")}.`);
-  }
-
-  const mockOnlyFeatures = features
-    .filter((feature) => feature?.mock_only === true)
-    .map((feature) => String(feature?.key || "").replace(/^ai_/, ""));
-  if (mockOnlyFeatures.length > 0) {
-    notes.push(`Estas features não estão liberadas como runtime real neste tier: ${mockOnlyFeatures.join(", ")}.`);
-  }
-
-  const quotaFeatures = [
-    monthlyUsageLimits?.creator_post_generate,
-    monthlyUsageLimits?.creator_music_generate,
-  ].filter((value) => value != null);
-  if (quotaFeatures.length < 2) {
-    notes.push("Nem todas as features possuem quota mensal própria formalizada; parte da capacidade continua governada por créditos e policy de providers/modelos.");
-  } else {
-    notes.push("Somente creator_post_generate e creator_music_generate possuem quota mensal explícita; as demais features seguem por créditos e policy.");
-  }
-
-  if (String(code || "").toUpperCase() === "EMPRESARIAL") {
-    notes.push("Empresarial já existe comercialmente, mas ainda não possui camada técnica totalmente separada de Enterprise.");
-  }
-
-  return notes;
-}
-
-function buildFeatureEntry(planCode, feature, locale) {
+function buildFeatureEntry(planMatrix, feature, locale) {
   const featureKey = String(feature?.key || "");
   const label = t(locale, `plans.feature.${featureKey}`);
-
-  if (featureKey === "avatar_preview") {
-    const enabled = canUseAvatarPreview(planCode);
-    return {
-      key: featureKey,
-      label,
-      enabled,
-      availability: enabled ? "real" : "unavailable",
-      providers: [],
-      max_tier: null,
-      rule_source: normalizeProductPlanCode(planCode),
-      mock_only: false,
-    };
-  }
 
   if (featureKey === "docs_manual") {
     return {
@@ -491,78 +270,150 @@ function buildFeatureEntry(planCode, feature, locale) {
       enabled: true,
       availability: "real",
       providers: [],
+      prepared_providers: [],
       max_tier: null,
       rule_source: "CATALOG",
       mock_only: false,
     };
   }
 
-  const policyFeatureKey = FEATURE_POLICY_MAP[featureKey];
-  const modelPolicy = getPlanModelPolicy(planCode);
-  const featurePolicy = modelPolicy?.byFeature?.[policyFeatureKey] || null;
-  const mockOnly = Boolean(featurePolicy?.mock_only);
-  const providers = policyFeatureKey ? getAllowedProvidersForFeature(planCode, policyFeatureKey) : [];
-  const tiers = providers.flatMap((provider) => {
-    const providerTiers = featurePolicy?.providers?.[provider];
-    return Array.isArray(providerTiers) ? providerTiers : [];
-  });
-  const enabled = providers.length > 0 && !mockOnly;
-
+  const matrixKey = FEATURE_MATRIX_KEY_MAP[featureKey];
+  const featureRule = planMatrix?.providers?.[matrixKey] || {};
   return {
     key: featureKey,
     label,
-    enabled,
-    availability: enabled ? "real" : mockOnly ? "mock_only" : "unavailable",
-    providers,
-    max_tier: strongestTier(tiers),
-    rule_source: String(modelPolicy?.plan || planCode || "FREE").toUpperCase(),
-    mock_only: mockOnly,
+    enabled: Boolean(featureRule?.enabled),
+    availability: featureRule?.availability || "unavailable",
+    providers: Array.isArray(featureRule?.providers) ? [...featureRule.providers] : [],
+    prepared_providers: Array.isArray(featureRule?.prepared_providers) ? [...featureRule.prepared_providers] : [],
+    max_tier: featureRule?.model_tier_max || planMatrix?.model_tier_max || null,
+    rule_source: normalizePlanMatrixCode(planMatrix?.code),
+    mock_only: featureRule?.mock_only === true,
+  };
+}
+
+function buildProvidersByFeature(planMatrix) {
+  const createEntry = (featureKey) => {
+    const feature = planMatrix?.providers?.[featureKey] || {};
+    return {
+      enabled: Boolean(feature?.enabled),
+      availability: feature?.availability || "unavailable",
+      providers: Array.isArray(feature?.providers) ? [...feature.providers] : [],
+      prepared_providers: Array.isArray(feature?.prepared_providers) ? [...feature.prepared_providers] : [],
+      max_tier: feature?.model_tier_max || planMatrix?.model_tier_max || null,
+      mock_only: feature?.mock_only === true,
+      rule_source: normalizePlanMatrixCode(planMatrix?.code),
+    };
+  };
+
+  return {
+    text: createEntry("text"),
+    image: createEntry("image"),
+    video: createEntry("video"),
+    music: createEntry("music"),
+    voice: createEntry("voice"),
+    slides: createEntry("slides"),
+    avatar_preview: createEntry("avatar_preview"),
+    docs_manual: {
+      enabled: true,
+      availability: "real",
+      providers: [],
+      prepared_providers: [],
+      max_tier: null,
+      mock_only: false,
+      rule_source: "CATALOG",
+    },
+  };
+}
+
+function buildMonthlyUsageLimits(planMatrix) {
+  const usage = planMatrix?.usage_limits || {};
+  const monthlyByFeature = usage?.monthly_by_feature || {};
+  return {
+    creator_post_generate: monthlyByFeature?.creator_post_generate?.monthly ?? null,
+    creator_music_generate: monthlyByFeature?.creator_music_generate?.monthly ?? null,
+    text_generate: monthlyByFeature?.text_generate?.monthly ?? null,
+    image_generate: monthlyByFeature?.image_generate?.monthly ?? null,
+    video_generate: monthlyByFeature?.video_generate?.monthly ?? null,
+    voice_generate: monthlyByFeature?.voice_generate?.monthly ?? null,
+    music_generate: monthlyByFeature?.music_generate?.monthly ?? null,
+    slides_generate: monthlyByFeature?.slides_generate?.monthly ?? null,
+    avatar_preview_sessions_per_day: Number(usage?.avatar_preview_sessions_per_day || 0),
+    avatar_preview_seconds_per_session: Number(usage?.avatar_preview_seconds_per_session || 0),
+  };
+}
+
+function buildCommerceSnapshot(planMatrix, stripePlan) {
+  const commerce = planMatrix?.commerce || {};
+  return {
+    price_visibility: commerce?.price_visibility !== false,
+    storefront_visibility: planMatrix?.storefront_visibility !== false,
+    purchasable: planMatrix?.purchasable !== false,
+    checkout_supported: Boolean(stripePlan?.price_id) && planMatrix?.purchasable !== false,
+    price_id_configured: Boolean(stripePlan?.price_id),
+    allowed_coin_types_to_buy: Array.isArray(commerce?.allowed_coin_types) ? [...commerce.allowed_coin_types] : [],
+    purchase_fee_percent: Number(commerce?.purchase_fee_percent ?? 0),
+    conversion_enabled: commerce?.conversion_fee_percent != null,
+    conversion_fee_percent:
+      commerce?.conversion_fee_percent != null ? Number(commerce.conversion_fee_percent) : null,
+    minimum_purchase_credits_per_type: commerce?.minimum_purchase_credits_per_type || null,
+  };
+}
+
+function buildAvailabilitySnapshot(planMatrix, stripePlan) {
+  const mode = String(planMatrix?.availability || "hidden_beta");
+  return {
+    mode,
+    storefront_visible: planMatrix?.storefront_visibility !== false,
+    checkout_supported: Boolean(stripePlan?.price_id) && planMatrix?.purchasable !== false,
+    assisted: mode === "assisted",
+    contract_only: mode === "contract",
+    hidden_beta: mode === "hidden_beta",
+  };
+}
+
+function buildLimitsSnapshot(planMatrix) {
+  return {
+    usage: planMatrix?.usage_limits || {},
+    upload: planMatrix?.upload_limits || {},
+    generation: planMatrix?.generation_limits || {},
+    input_media: planMatrix?.input_media_limits || {},
+    workflow: planMatrix?.workflow_limits || {},
+    context: planMatrix?.context_limits || {},
+    storage: planMatrix?.storage_policy || {},
+    avatar_preview: {
+      enabled: Boolean(planMatrix?.providers?.avatar_preview?.enabled),
+      sessions_per_day: Number(planMatrix?.usage_limits?.avatar_preview_sessions_per_day || 0),
+      seconds_per_session: Number(planMatrix?.usage_limits?.avatar_preview_seconds_per_session || 0),
+    },
   };
 }
 
 function buildPlanEntry(def, lang) {
   const code = def.code;
   const locale = normalizeLang(lang);
-  const conversionFeePercent = def.conversionFeePercentOverride ?? getConversionFeePercent(code);
-  const purchaseFeePercent = def.purchaseFeePercentOverride ?? getPurchaseFeePercent(code);
   const { highlight, badgeLabel } = getHighlightInfo(code);
   const copy = getPlanCopyByCode(code, locale);
-  const runtimeRules = buildRuntimeRules(code);
-  const usageLimits = getUsageLimits(code);
+  const planMatrix = getPlanLimitMatrix(code);
   const stripePlan = getPlanCatalog()?.[String(code || "").toUpperCase()] || null;
-  const activationMode = resolveActivationMode(def);
-  const modelPolicy = getPlanModelPolicy(code);
 
-  const features = BASE_FEATURES.map((feature) => buildFeatureEntry(code, feature, locale));
-
-  const avatarEnabled = canUseAvatarPreview(code);
-  const qualityTier = strongestTier(modelPolicy?.tiers || []);
-  const monthlyUsageLimits = buildMonthlyUsageLimits(usageLimits, avatarEnabled, def);
-  const providersByFeature = buildProvidersByFeature(features);
-  const commerce = buildCommerceSnapshot(
-    def,
-    stripePlan,
-    def.allowedCoinTypes,
-    purchaseFeePercent,
-    conversionFeePercent
-  );
-  const honestyNotes = buildHonestyNotes({
-    def,
-    code,
-    features,
-    monthlyUsageLimits,
-    runtimeRules,
-    activationMode,
-  });
+  const features = BASE_FEATURES.map((feature) => buildFeatureEntry(planMatrix, feature, locale));
+  const monthlyUsageLimits = buildMonthlyUsageLimits(planMatrix);
+  const providersByFeature = buildProvidersByFeature(planMatrix);
+  const commerce = buildCommerceSnapshot(planMatrix, stripePlan);
+  const availability = buildAvailabilitySnapshot(planMatrix, stripePlan);
+  const limits = buildLimitsSnapshot(planMatrix);
 
   return {
     code,
     name: t(locale, def.nameKey),
-    visible: def.visible !== false,
-    coming_soon: def.comingSoon === true,
-    purchasable: def.purchasable !== false,
+    visible: planMatrix?.storefront_visibility !== false,
+    coming_soon: planMatrix?.coming_soon === true,
+    purchasable: planMatrix?.purchasable !== false,
     price: {
-      amount_brl: Number.isFinite(def.priceAmountBrl) ? Number(def.priceAmountBrl.toFixed(2)) : null,
+      amount_brl: Number.isFinite(planMatrix?.price_amount_brl)
+        ? Number(planMatrix.price_amount_brl.toFixed(2))
+        : null,
       period: PERIOD_MONTH,
     },
     highlight,
@@ -574,38 +425,29 @@ function buildPlanEntry(def, lang) {
     highlights: Array.isArray(copy?.highlights) ? [...copy.highlights] : [],
     limits_summary: Array.isArray(copy?.limits) ? [...copy.limits] : [],
     status_note: copy?.statusNote || null,
-    credits: def.credits ? { ...def.credits } : null,
+    credits: planMatrix?.credits_included ? { ...planMatrix.credits_included } : null,
     features,
-    quality_tier: qualityTier,
+    quality_tier: planMatrix?.quality_tier || null,
+    quality_outputs: Array.isArray(planMatrix?.quality_outputs) ? [...planMatrix.quality_outputs] : [],
+    model_tier_max: planMatrix?.model_tier_max || null,
     providers_by_feature: providersByFeature,
     monthly_usage_limits: monthlyUsageLimits,
     commerce,
-    availability: {
-      mode: activationMode,
-      storefront_visible: def.visible !== false,
-      checkout_supported: Boolean(stripePlan?.price_id) && def.purchasable !== false,
-      assisted: activationMode === "assisted",
-      contract_only: activationMode === "contract",
-    },
-    runtime_rules: runtimeRules,
-    honesty_notes: honestyNotes,
-    limits: {
-      usage: { ...usageLimits },
-      avatar_preview: {
-        enabled: avatarEnabled,
-        sessions_per_day: avatarEnabled ? def.avatarSessionsPerDay : 0,
-        seconds_per_session: avatarEnabled ? def.avatarSecondsPerSession : 0,
-      },
-    },
+    availability,
+    runtime_rules: planMatrix?.runtime_rules || {},
+    honesty_notes: Array.isArray(planMatrix?.honesty_notes) ? [...planMatrix.honesty_notes] : [],
+    limits,
     addons: {
       purchase: {
-        allowed_coin_types: [...def.allowedCoinTypes],
-        fee_percent: Number(purchaseFeePercent ?? 0),
+        allowed_coin_types: Array.isArray(planMatrix?.commerce?.allowed_coin_types)
+          ? [...planMatrix.commerce.allowed_coin_types]
+          : [],
+        fee_percent: Number(planMatrix?.commerce?.purchase_fee_percent ?? 0),
       },
       convert: {
-        enabled: conversionFeePercent != null,
-        pairs: conversionFeePercent != null ? [...CONVERT_PAIRS] : [],
-        fee_percent: Number(conversionFeePercent ?? 0),
+        enabled: planMatrix?.commerce?.conversion_fee_percent != null,
+        pairs: planMatrix?.commerce?.conversion_fee_percent != null ? [...CONVERT_PAIRS] : [],
+        fee_percent: Number(planMatrix?.commerce?.conversion_fee_percent ?? 0),
       },
     },
   };
