@@ -35,7 +35,7 @@ const I18N = {
   "pt-BR": {
     infoTitle: "Editor AI Creator API",
     infoDescription:
-      "Documentação pública da API (V1 Beta). Providers reais são controlados por flags de configuração por feature. Mult AI fica ativo por padrão no modo quality (recomendado), com modos economy e manual sujeitos à policy de plano. Em ambiente Beta/no_keys, quality/economy podem fazer fallback automático para mock quando provider real estiver indisponível. O endpoint /api/plans/catalog retorna os valores vigentes no Beta; preços e disponibilidade podem mudar em releases futuras. Endpoints /api/enterprise/* podem retornar 403 enquanto enterprise.enabled estiver desativado.",
+      "Documentação pública da API (V1 Beta). Providers reais são controlados por flags de configuração por feature. Mult AI fica ativo por padrão no modo quality (recomendado), com modos economy e manual sujeitos à policy de plano. Em ambiente Beta/no_keys, quality/economy podem fazer fallback automático para mock quando provider real estiver indisponível. DeepSeek e Claude permanecem preparados, não públicos como providers reais. Slides permanecem em camada exploratória/mock_only no beta atual. O endpoint /api/plans/catalog retorna os valores vigentes no Beta, incluindo status públicos por feature e notas técnicas de qualidade máxima por plano; preços e disponibilidade podem mudar em releases futuras. Endpoints /api/enterprise/* podem retornar 403 enquanto enterprise.enabled estiver desativado.",
     providerModeDescription:
       "A resposta inclui `provider` e pode retornar `mock` ou provider real conforme flags de rollout e disponibilidade de API key. Em Mult AI, `quality`/`economy` podem fazer downgrade por policy (fallback_reason=`policy_downgrade`) e fallback automático para mock quando o provider real estiver indisponível (fallback_reason=`provider_unavailable_fallback`), enquanto `manual` valida provider/model de forma estrita.",
     providerModeHeader: "Modo efetivo do provider para esta resposta (`mock`, `real` ou `n/a`).",
@@ -47,7 +47,7 @@ const I18N = {
       aiVideo: "Vídeo",
       aiMusic: "Música",
       aiVoice: "Voz",
-      aiSlides: "Slides",
+      aiSlides: "Slides exploratórios",
       aiAvatar: "Avatar Preview",
       coins: "Créditos e conversão",
       enterprise: "Enterprise",
@@ -70,8 +70,8 @@ const I18N = {
       musicStatus: "Consultar status de música",
       voiceGenerate: "Gerar voz",
       voiceStatus: "Consultar status de voz",
-      slidesGenerate: "Gerar slides",
-      slidesStatus: "Consultar status de slides",
+      slidesGenerate: "Gerar slides (exploratório)",
+      slidesStatus: "Consultar status de slides (exploratório)",
       avatarStart: "Iniciar sessão de avatar preview",
       avatarMessage: "Enviar mensagem para sessão de avatar",
       avatarEnd: "Encerrar sessão de avatar",
@@ -100,7 +100,7 @@ const I18N = {
   "en-US": {
     infoTitle: "Editor AI Creator API",
     infoDescription:
-      "Public API documentation (V1 Beta). Real providers are controlled by per-feature rollout flags. Mult AI is enabled by default in quality mode (recommended), with economy/manual options constrained by plan policy. In Beta/no_keys environments, quality/economy can automatically fall back to mock when real providers are unavailable. The /api/plans/catalog endpoint returns current Beta values; prices and availability may change in future releases. /api/enterprise/* endpoints may return 403 while enterprise.enabled is disabled.",
+      "Public API documentation (V1 Beta). Real providers are controlled by per-feature rollout flags. Mult AI is enabled by default in quality mode (recommended), with economy/manual options constrained by plan policy. In Beta/no_keys environments, quality/economy can automatically fall back to mock when real providers are unavailable. DeepSeek and Claude remain prepared, not public real providers. Slides remain exploratory/mock_only in the current beta. The /api/plans/catalog endpoint returns current Beta values, including public feature statuses and technical notes for max quality per plan; prices and availability may change in future releases. /api/enterprise/* endpoints may return 403 while enterprise.enabled is disabled.",
     providerModeDescription:
       "Response includes `provider` and may return `mock` or a real provider depending on rollout flags and API key availability. In Mult AI, `quality`/`economy` may auto-downgrade by plan policy (fallback_reason=`policy_downgrade`) and automatically fall back to mock when real providers are unavailable (fallback_reason=`provider_unavailable_fallback`), while `manual` strictly validates provider/model.",
     providerModeHeader: "Effective provider mode for this response (`mock`, `real`, or `n/a`).",
@@ -112,7 +112,7 @@ const I18N = {
       aiVideo: "Video",
       aiMusic: "Music",
       aiVoice: "Voice",
-      aiSlides: "Slides",
+      aiSlides: "Exploratory slides",
       aiAvatar: "Avatar Preview",
       coins: "Credits and conversion",
       enterprise: "Enterprise",
@@ -135,8 +135,8 @@ const I18N = {
       musicStatus: "Get music status",
       voiceGenerate: "Generate voice",
       voiceStatus: "Get voice status",
-      slidesGenerate: "Generate slides",
-      slidesStatus: "Get slides status",
+      slidesGenerate: "Generate slides (exploratory)",
+      slidesStatus: "Get slides status (exploratory)",
       avatarStart: "Start avatar preview session",
       avatarMessage: "Send message to avatar session",
       avatarEnd: "End avatar session",
@@ -1106,10 +1106,31 @@ export function getOpenApiSpec(lang = "pt-BR", { serverUrl = "/api" } = {}) {
                         badge_label: null,
                         credits: { common: 30, pro: 0, ultra: 0 },
                         features: [
-                          { key: "ai_text", label: normalizeLang(lang) === "en-US" ? "AI text" : "Texto com IA", enabled: true },
-                          { key: "avatar_preview", label: normalizeLang(lang) === "en-US" ? "Avatar preview" : "Avatar Preview", enabled: false },
+                          {
+                            key: "ai_text",
+                            label: normalizeLang(lang) === "en-US" ? "AI text" : "Texto com IA",
+                            enabled: true,
+                            runtime_delivery_status: "real",
+                            public_readiness: "publish_now",
+                          },
+                          {
+                            key: "ai_slides",
+                            label: normalizeLang(lang) === "en-US" ? "AI slides" : "Slides com IA",
+                            enabled: false,
+                            runtime_delivery_status: "mock_only",
+                            public_readiness: "do_not_promise",
+                          },
                         ],
                         limits: {
+                          quality: {
+                            outputs: ["720p", "1080p"],
+                            runtime_delivery_status: "limited",
+                            public_readiness: "publish_with_note",
+                            public_note:
+                              normalizeLang(lang) === "en-US"
+                                ? "Read max quality as a technical cap, not as a universal delivery guarantee."
+                                : "Leia a qualidade máxima como teto técnico, não como promessa universal de entrega.",
+                          },
                           avatar_preview: { enabled: false, sessions_per_day: 0, seconds_per_session: 0 },
                         },
                         addons: {
@@ -1148,7 +1169,7 @@ export function getOpenApiSpec(lang = "pt-BR", { serverUrl = "/api" } = {}) {
                         price: { amount_brl: 59.9, period: "month" },
                         highlight: "most_popular",
                         badge_label: normalizeLang(lang) === "en-US" ? "Most popular" : "Mais popular",
-                        credits: { common: 700, pro: 350, ultra: 150 },
+                        credits: { common: 500, pro: 250, ultra: 100 },
                         features: [
                           { key: "ai_text", label: normalizeLang(lang) === "en-US" ? "AI text" : "Texto com IA", enabled: true },
                           { key: "ai_image", label: normalizeLang(lang) === "en-US" ? "AI image" : "Imagem com IA", enabled: true },
@@ -1170,7 +1191,7 @@ export function getOpenApiSpec(lang = "pt-BR", { serverUrl = "/api" } = {}) {
                         price: { amount_brl: 149.9, period: "month" },
                         highlight: null,
                         badge_label: null,
-                        credits: { common: 2000, pro: 1200, ultra: 600 },
+                        credits: { common: 1000, pro: 600, ultra: 300 },
                         features: [
                           { key: "ai_text", label: normalizeLang(lang) === "en-US" ? "AI text" : "Texto com IA", enabled: true },
                           { key: "avatar_preview", label: normalizeLang(lang) === "en-US" ? "Avatar preview" : "Avatar Preview", enabled: true },
@@ -1243,6 +1264,19 @@ export function getOpenApiSpec(lang = "pt-BR", { serverUrl = "/api" } = {}) {
             key: { type: "string" },
             label: { type: "string" },
             enabled: { type: "boolean" },
+            availability: { type: "string" },
+            runtime_delivery_status: { type: "string" },
+            public_readiness: { type: "string" },
+            public_notes: { type: "array", items: { type: "string" } },
+          },
+        },
+        PlanCatalogQualityLimit: {
+          type: "object",
+          properties: {
+            outputs: { type: "array", items: { type: "string" } },
+            runtime_delivery_status: { type: "string" },
+            public_readiness: { type: "string" },
+            public_note: { type: ["string", "null"] },
           },
         },
         PlanCatalogAvatarPreviewLimit: {
@@ -1274,8 +1308,7 @@ export function getOpenApiSpec(lang = "pt-BR", { serverUrl = "/api" } = {}) {
               },
             },
             credits: {
-              type: "object",
-              required: ["common", "pro", "ultra"],
+              type: ["object", "null"],
               properties: {
                 common: { type: "integer", minimum: 0 },
                 pro: { type: "integer", minimum: 0 },
@@ -1290,8 +1323,33 @@ export function getOpenApiSpec(lang = "pt-BR", { serverUrl = "/api" } = {}) {
               type: "object",
               required: ["avatar_preview"],
               properties: {
+                quality: { $ref: "#/components/schemas/PlanCatalogQualityLimit" },
                 avatar_preview: { $ref: "#/components/schemas/PlanCatalogAvatarPreviewLimit" },
               },
+            },
+            quality_outputs: {
+              type: "array",
+              items: { type: "string" },
+            },
+            providers_by_feature: {
+              type: "object",
+              additionalProperties: true,
+            },
+            availability: {
+              type: "object",
+              additionalProperties: true,
+            },
+            public_status: {
+              type: "object",
+              additionalProperties: true,
+            },
+            runtime_rules: {
+              type: "object",
+              additionalProperties: true,
+            },
+            honesty_notes: {
+              type: "array",
+              items: { type: "string" },
             },
             addons: {
               type: "object",

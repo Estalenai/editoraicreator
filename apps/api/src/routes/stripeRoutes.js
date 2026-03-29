@@ -1568,6 +1568,7 @@ router.get("/plans", authMiddleware, async (req, res) => {
         monthly_usage_limits: plan?.monthly_usage_limits || null,
         commerce: plan?.commerce || null,
         availability: plan?.availability || null,
+        public_status: plan?.public_status || null,
         runtime_rules: plan?.runtime_rules || null,
         honesty_notes: plan?.honesty_notes || [],
         short_description: plan?.short_description || null,

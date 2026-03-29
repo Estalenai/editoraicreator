@@ -100,7 +100,7 @@ export function EditorShell({
                   <strong>{transparentMode ? "Passo a passo ativo" : "Detalhes sob demanda"}</strong>
                 </div>
                 <div className="editor-shell-status-item">
-                  <span>Modo professor</span>
+                  <span>Explicação guiada</span>
                   <strong>{professorMode ? "Explicação ligada" : "Opcional para apoio"}</strong>
                 </div>
                 <div className="editor-shell-status-item">
@@ -113,8 +113,8 @@ export function EditorShell({
                 </div>
               </div>
               <div className="hero-actions-row editor-shell-header-actions">
-                <Toggle label="Modo Professor" value={professorMode} onClick={onToggleProfessor} />
-                <Toggle label="Modo Transparente" value={transparentMode} onClick={onToggleTransparent} />
+                <Toggle label="Explicação guiada" value={professorMode} onClick={onToggleProfessor} />
+                <Toggle label="Passo a passo" value={transparentMode} onClick={onToggleTransparent} />
                 <a href="/dashboard" className="btn-link-ea btn-ghost btn-sm">Dashboard</a>
               </div>
             </div>
@@ -146,7 +146,7 @@ export function EditorShell({
             </div>
             <div className="trust-note editor-shell-trust-card layout-contract-note">
               <strong>IA com clareza</strong>
-              <span>Professor e Transparência ajudam a acompanhar o que a EditexAI fez em cada passo.</span>
+              <span>Explicação guiada e passo a passo ajudam a acompanhar o que a EditexAI fez em cada etapa.</span>
             </div>
             <div className="trust-note editor-shell-trust-card layout-contract-note">
               <strong>Saída controlada</strong>
@@ -162,8 +162,8 @@ export function EditorShell({
               <p className="helper-text-ea">Troque de área sem perder o contexto salvo nem a base de publicação.</p>
             </div>
             <div className="editor-shell-toolbar-meta">
-              <span className="premium-badge premium-badge-phase">{professorMode ? "Professor ativo" : "Professor opcional"}</span>
-              <span className="premium-badge premium-badge-warning">{transparentMode ? "Transparência ativa" : "Transparência opcional"}</span>
+              <span className="premium-badge premium-badge-phase">{professorMode ? "Explicação ativa" : "Explicação opcional"}</span>
+              <span className="premium-badge premium-badge-warning">{transparentMode ? "Passo a passo ativo" : "Passo a passo opcional"}</span>
             </div>
           </div>
           <div className="editor-shell-tab-row" role="tablist" aria-label="Áreas do editor">
@@ -193,7 +193,7 @@ export function EditorShell({
         <footer className="editor-shell-footer editor-shell-region layout-contract-region">
           {footer ?? (
             <p className="editor-shell-note">
-              Dica: ative o Modo Transparente para ver o passo a passo da EditexAI em tempo real.
+              Dica: ative o passo a passo para ver a execução da EditexAI com mais clareza.
             </p>
           )}
         </footer>

@@ -1540,7 +1540,7 @@ export default function EditorProjectPage() {
               <ul className="editor-shell-checklist">
                 <li>Texto: escreva, refine e consolide a base principal do projeto.</li>
                 <li>Biblioteca IA: valide afirmacoes e registre o resultado no contexto do projeto.</li>
-                <li>Modo Transparente: acompanhe o passo a passo quando houver execução de IA.</li>
+                <li>Passo a passo: acompanhe a execução quando houver uso de IA.</li>
               </ul>
             </section>
           </div>
@@ -1963,11 +1963,11 @@ export default function EditorProjectPage() {
               </div>
               <div className="editor-shell-status-grid editor-shell-status-grid-compact">
                 <div className="editor-shell-status-item">
-                  <span>Professor</span>
+                  <span>Explicação guiada</span>
                   <strong>{professorMode ? "Explicação ativa" : "Explicação opcional"}</strong>
                 </div>
                 <div className="editor-shell-status-item">
-                  <span>Transparência</span>
+                  <span>Passo a passo</span>
                   <strong>{transparentMode ? "Passos visíveis" : "Passos sob demanda"}</strong>
                 </div>
               </div>

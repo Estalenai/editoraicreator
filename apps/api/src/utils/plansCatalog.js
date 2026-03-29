@@ -165,65 +165,67 @@ const PLAN_COPY = {
   },
   EMPRESARIAL: {
     "pt-BR": {
-      shortDescription: "Para equipes criativas e operações internas que precisam de escala, coordenação e governança.",
+      shortDescription: "Para operações criativas em expansão que precisam de ativação assistida, baseline técnico mais alto e acompanhamento dedicado.",
       expandedDescription:
-        "Voltado para times que precisam centralizar criação, organização e continuidade em um fluxo mais robusto e acompanhado. No beta atual, esse plano continua em ativação assistida, pensado para operações que exigem mais coordenação, maior volume e acompanhamento mais próximo.",
+        "Camada assistida para operações que já precisam de mais volume, limites técnicos mais altos e uma ativação acompanhada no beta. Enquanto a camada própria evolui, o plano continua honesto sobre a base técnica herdada do runtime Enterprise.",
       stripeDescription:
-        "Camada assistida para equipes criativas e operações internas em expansão. Ativação acompanhada no beta atual.",
-      audience: "Equipes criativas e operações internas em fase de coordenação e escala.",
+        "Camada assistida para operações criativas em expansão. Ativação acompanhada no beta atual.",
+      audience: "Operações criativas em expansão que precisam de ativação assistida e baseline técnico mais alto.",
       highlights: [
-        "Estrutura melhor para uso compartilhado e coordenação entre pessoas.",
-        "Mais aderente a operações que precisam de governança e escala.",
-        "Mantido como ativação assistida no beta, sem checkout automático.",
+        "Ativação assistida no beta, sem checkout automático.",
+        "Baseline técnico mais alto para fluxos premium e arquivos maiores.",
+        "Mantém leitura honesta de disponibilidade enquanto a camada própria evolui.",
       ],
-      limits: ["Ativação assistida", "Operação de equipe", "Escala com coordenação"],
+      limits: ["Ativação assistida", "Baseline técnico elevado", "Fora do checkout aberto"],
       statusNote: "Empresarial continua em ativação assistida no beta atual. Enquanto a camada própria evolui, as regras técnicas seguem a base Enterprise.",
     },
     "en-US": {
-      shortDescription: "For creative teams and internal operations that need scale, coordination, and governance.",
+      shortDescription:
+        "For growing creative operations that need assisted activation, a higher technical baseline, and closer follow-up.",
       expandedDescription:
-        "Built for teams that need to centralize creation, organization, and continuity in a more robust and guided flow. In the current beta, this tier remains assisted activation for operations that need stronger coordination, higher volume, and closer follow-up.",
+        "Assisted layer for operations that already need more volume, higher technical limits, and guided activation during beta. While its own layer evolves, the plan stays honest about following the Enterprise runtime base.",
       stripeDescription:
-        "Assisted layer for expanding creative teams and internal operations. Guided activation in the current beta.",
-      audience: "Creative teams and internal operations growing into coordinated scale.",
+        "Assisted layer for growing creative operations. Guided activation in the current beta.",
+      audience: "Growing creative operations that need assisted activation and a higher technical baseline.",
       highlights: [
-        "Better structure for shared use and coordination across people.",
-        "Better fit for operations that need governance and scale.",
-        "Kept as assisted activation in beta, without automatic checkout.",
+        "Assisted activation in beta, without open checkout.",
+        "Higher technical baseline for premium flows and larger files.",
+        "Keeps availability honest while its own layer is still evolving.",
       ],
-      limits: ["Assisted activation", "Team operation", "Coordinated scale"],
+      limits: ["Assisted activation", "Higher technical baseline", "Outside open checkout"],
       statusNote: "Business remains assisted activation in the current beta. Until its own tier is fully defined, technical rules follow the Enterprise layer.",
     },
   },
   ENTERPRISE: {
     "pt-BR": {
-      shortDescription: "Para operações de grande escala com estrutura personalizada, governança e contratação dedicada.",
+      shortDescription: "Para operações de grande escala que precisam de baseline técnico alto, contratação dedicada e condições definidas por contrato.",
       expandedDescription:
-        "Rascunho honesto para a camada Enterprise fora do catálogo self-serve: escopo, volume, governança e condições definidos por contrato, com implantação assistida.",
+        "Camada contratual para operações que ultrapassam o catálogo self-serve. Escopo, volume e overrides seguem a trilha comercial, sem virar promessa automática no catálogo público.",
       stripeDescription:
         "Camada Enterprise por contrato. Não entra no checkout self-serve do beta atual.",
-      audience: "Equipes maiores e operações corporativas com requisitos próprios de escala e governança.",
+      audience: "Operações de maior escala com contratação dedicada e condições definidas comercialmente.",
       highlights: [
         "Contratação e implantação assistidas, fora do fluxo aberto.",
-        "Escopo, volume e governança definidos de forma personalizada.",
+        "Baseline técnico alto com possibilidade de override por contrato.",
         "Indicado quando a operação ultrapassa o catálogo beta padrão.",
       ],
-      limits: ["Contrato sob medida", "Implantação assistida corporativa"],
+      limits: ["Contrato sob medida", "Baseline técnico alto", "Fora do catálogo self-serve"],
       statusNote: "Enterprise deve continuar fora do catálogo self-serve durante o beta atual.",
     },
     "en-US": {
-      shortDescription: "For large-scale operations that need custom structure, governance, and dedicated contracting.",
+      shortDescription:
+        "For large-scale operations that need a higher technical baseline, dedicated contracting, and contract-defined conditions.",
       expandedDescription:
-        "Honest draft for the Enterprise layer outside the self-serve catalog: scope, volume, governance, and terms are defined by contract with assisted rollout.",
+        "Contract layer for operations that outgrow the self-serve catalog. Scope, volume, and overrides follow the commercial process without turning into automatic public promises.",
       stripeDescription:
         "Enterprise layer by contract. Not part of the current beta self-serve checkout.",
-      audience: "Larger teams and corporate operations with custom scale and governance requirements.",
+      audience: "Larger-scale operations with dedicated contracting and commercially defined conditions.",
       highlights: [
         "Assisted contracting and rollout outside the open flow.",
-        "Scope, volume, and governance defined in a custom commercial process.",
+        "High technical baseline with contract-level override room.",
         "Designed for operations that outgrow the standard beta catalog.",
       ],
-      limits: ["Custom contract", "Assisted enterprise rollout"],
+      limits: ["Custom contract", "High technical baseline", "Outside self-serve catalog"],
       statusNote: "Enterprise should remain outside the self-serve catalog during the current beta.",
     },
   },
@@ -248,6 +250,74 @@ export function getPlanCopyByCode(planCode, lang = "pt-BR") {
   const key = String(planCode || "").trim().toUpperCase();
   const entry = PLAN_COPY[key] || PLAN_COPY.FREE;
   return entry?.[locale] || entry?.["pt-BR"] || null;
+}
+
+function uniqueTextItems(items) {
+  const seen = new Set();
+  return (Array.isArray(items) ? items : []).filter((item) => {
+    const text = String(item || "").trim();
+    const normalized = text.toLowerCase();
+    if (!text || seen.has(normalized)) return false;
+    seen.add(normalized);
+    return true;
+  });
+}
+
+function buildPublicPlanNotes(planMatrix) {
+  const blockedPatterns = [
+    /override/i,
+    /governan/i,
+    /multi[_\s-]?user/i,
+    /multiplos usuarios/i,
+    /coordena/i,
+    /team coordination/i,
+    /uso comercial/i,
+    /commercial use/i,
+  ];
+  const candidateNotes = [
+    ...(Array.isArray(planMatrix?.internal_status?.public_notes) ? planMatrix.internal_status.public_notes : []),
+    ...(Array.isArray(planMatrix?.capability_statuses?.high_resolution_outputs?.public_notes)
+      ? planMatrix.capability_statuses.high_resolution_outputs.public_notes
+      : []),
+    ...(Array.isArray(planMatrix?.honesty_notes) ? planMatrix.honesty_notes : []),
+  ];
+  return uniqueTextItems(candidateNotes).filter(
+    (note) => !blockedPatterns.some((pattern) => pattern.test(String(note || "")))
+  );
+}
+
+function buildFeaturePublicStatus(featureRule) {
+  return {
+    runtime_delivery_status:
+      featureRule?.runtime_delivery_status || featureRule?.feature_status || featureRule?.availability || "unavailable",
+    public_readiness: featureRule?.public_readiness || "internal_only",
+    public_notes: uniqueTextItems(featureRule?.public_notes),
+  };
+}
+
+function buildPublicRuntimeRulesSnapshot(planMatrix) {
+  const runtimeRules = planMatrix?.runtime_rules || {};
+  return {
+    automatic_mode_default: runtimeRules?.automatic_mode_default === true,
+    primary_mode_label: runtimeRules?.primary_mode_label || "automatic_recommended",
+    quality_default: runtimeRules?.quality_default !== false,
+    economy_mode_available: runtimeRules?.economy_mode_available !== false,
+    manual_mode_allowed: runtimeRules?.manual_mode_allowed === true,
+    manual_mode_level: runtimeRules?.manual_mode_level || null,
+    mock_only_features: Array.isArray(runtimeRules?.mock_only_features) ? [...runtimeRules.mock_only_features] : [],
+  };
+}
+
+function buildPublicStatusSnapshot(planMatrix) {
+  const internalStatus = planMatrix?.internal_status || {};
+  return {
+    runtime_delivery_status: internalStatus?.runtime_delivery_status || "unavailable",
+    public_readiness: internalStatus?.public_readiness || "internal_only",
+    commercial_readiness: internalStatus?.commercial_readiness || "internal_only",
+    inherits_from_other_runtime_layer: internalStatus?.inherits_from_other_runtime_layer === true,
+    inherits_from: Array.isArray(internalStatus?.inherits_from) ? [...internalStatus.inherits_from] : [],
+    public_notes: uniqueTextItems(internalStatus?.public_notes),
+  };
 }
 
 function getHighlightInfo(planCode) {
@@ -275,6 +345,9 @@ function buildFeatureEntry(planMatrix, feature, locale) {
       max_tier: null,
       rule_source: "CATALOG",
       mock_only: false,
+      runtime_delivery_status: "real",
+      public_readiness: "publish_now",
+      public_notes: [],
     };
   }
 
@@ -290,6 +363,7 @@ function buildFeatureEntry(planMatrix, feature, locale) {
     max_tier: featureRule?.model_tier_max || planMatrix?.model_tier_max || null,
     rule_source: normalizePlanMatrixCode(planMatrix?.code),
     mock_only: featureRule?.mock_only === true,
+    ...buildFeaturePublicStatus(featureRule),
   };
 }
 
@@ -301,9 +375,11 @@ function buildProvidersByFeature(planMatrix) {
       availability: feature?.availability || "unavailable",
       providers: Array.isArray(feature?.providers) ? [...feature.providers] : [],
       prepared_providers: Array.isArray(feature?.prepared_providers) ? [...feature.prepared_providers] : [],
+      provider_status: feature?.provider_status || {},
       max_tier: feature?.model_tier_max || planMatrix?.model_tier_max || null,
       mock_only: feature?.mock_only === true,
       rule_source: normalizePlanMatrixCode(planMatrix?.code),
+      ...buildFeaturePublicStatus(feature),
     };
   };
 
@@ -320,9 +396,13 @@ function buildProvidersByFeature(planMatrix) {
       availability: "real",
       providers: [],
       prepared_providers: [],
+      provider_status: {},
       max_tier: null,
       mock_only: false,
       rule_source: "CATALOG",
+      runtime_delivery_status: "real",
+      public_readiness: "publish_now",
+      public_notes: [],
     },
   };
 }
@@ -363,6 +443,7 @@ function buildCommerceSnapshot(planMatrix, stripePlan) {
 
 function buildAvailabilitySnapshot(planMatrix, stripePlan) {
   const mode = String(planMatrix?.availability || "hidden_beta");
+  const publicStatus = buildPublicStatusSnapshot(planMatrix);
   return {
     mode,
     storefront_visible: planMatrix?.storefront_visibility !== false,
@@ -370,11 +451,18 @@ function buildAvailabilitySnapshot(planMatrix, stripePlan) {
     assisted: mode === "assisted",
     contract_only: mode === "contract",
     hidden_beta: mode === "hidden_beta",
+    runtime_delivery_status: publicStatus.runtime_delivery_status,
+    public_readiness: publicStatus.public_readiness,
+    commercial_readiness: publicStatus.commercial_readiness,
+    inherits_from_other_runtime_layer: publicStatus.inherits_from_other_runtime_layer,
+    inherits_from: publicStatus.inherits_from,
+    public_notes: publicStatus.public_notes,
   };
 }
 
 function buildLimitsSnapshot(planMatrix) {
   const storagePolicy = getPlanStoragePolicySnapshot(planMatrix?.code);
+  const qualityStatus = planMatrix?.capability_statuses?.high_resolution_outputs || {};
   return {
     usage: planMatrix?.usage_limits || {},
     upload: planMatrix?.upload_limits || {},
@@ -383,6 +471,12 @@ function buildLimitsSnapshot(planMatrix) {
     workflow: planMatrix?.workflow_limits || {},
     context: planMatrix?.context_limits || {},
     storage: storagePolicy,
+    quality: {
+      outputs: Array.isArray(planMatrix?.quality_outputs) ? [...planMatrix.quality_outputs] : [],
+      runtime_delivery_status: qualityStatus?.runtime_delivery_status || "unavailable",
+      public_readiness: qualityStatus?.public_readiness || "internal_only",
+      public_note: uniqueTextItems(qualityStatus?.public_notes)[0] || null,
+    },
     avatar_preview: {
       enabled: Boolean(planMatrix?.providers?.avatar_preview?.enabled),
       sessions_per_day: Number(planMatrix?.usage_limits?.avatar_preview_sessions_per_day || 0),
@@ -405,6 +499,8 @@ function buildPlanEntry(def, lang) {
   const commerce = buildCommerceSnapshot(planMatrix, stripePlan);
   const availability = buildAvailabilitySnapshot(planMatrix, stripePlan);
   const limits = buildLimitsSnapshot(planMatrix);
+  const publicStatus = buildPublicStatusSnapshot(planMatrix);
+  const publicNotes = buildPublicPlanNotes(planMatrix);
 
   return {
     code,
@@ -436,8 +532,9 @@ function buildPlanEntry(def, lang) {
     monthly_usage_limits: monthlyUsageLimits,
     commerce,
     availability,
-    runtime_rules: planMatrix?.runtime_rules || {},
-    honesty_notes: Array.isArray(planMatrix?.honesty_notes) ? [...planMatrix.honesty_notes] : [],
+    public_status: publicStatus,
+    runtime_rules: buildPublicRuntimeRulesSnapshot(planMatrix),
+    honesty_notes: publicNotes,
     limits,
     addons: {
       purchase: {
