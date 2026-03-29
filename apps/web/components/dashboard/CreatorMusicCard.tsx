@@ -7,6 +7,7 @@ import { apiFetch } from "../../lib/api";
 import { createIdempotencyKey } from "../../lib/idempotencyKey";
 import { usePromptPreferences } from "../../hooks/usePromptPreferences";
 import { useAiExecutionMode } from "../../hooks/useAiExecutionMode";
+import { buildExecutionTechnicalPayload } from "../../lib/aiExecution";
 import { PremiumSelect } from "../ui/PremiumSelect";
 import { CreatorPlannerPanel } from "./CreatorPlannerPanel";
 import { AiExecutionModeFields } from "./AiExecutionModeFields";
@@ -179,6 +180,19 @@ export function CreatorMusicCard({ planCode, walletCommon, onRefetch }: Props) {
       }),
     [result?.audio_url, result?.preview_url, result?.provider, result?.status]
   );
+  const executionTechnicalPayload = useMemo(
+    () =>
+      buildExecutionTechnicalPayload({
+        feature: "music",
+        capabilities: execution.capabilities,
+        functionsCount: 1,
+        filesCount: 0,
+        inputAudioMinutes: 0,
+        requestedPipelineLevel: "simple",
+        storageMode: "platform_temporary",
+      }),
+    [execution.capabilities]
+  );
 
   useEffect(() => {
     setStatusAutoRefreshCount(0);
@@ -280,6 +294,7 @@ export function CreatorMusicCard({ planCode, walletCommon, onRefetch }: Props) {
           duration,
           language,
           prompt: promptToUse,
+          ...executionTechnicalPayload,
           routing: execution.routing,
         }),
       });

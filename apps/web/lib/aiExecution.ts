@@ -58,6 +58,19 @@ export type ExecutionCapabilities = {
   modeOptions: SelectOption[];
 };
 
+type TechnicalPayloadInput = {
+  feature: AiExecutionFeature;
+  capabilities: ExecutionCapabilities;
+  qualityProfile?: "low" | "medium" | "high" | null;
+  filesCount?: number | null;
+  fileSizeMb?: number | null;
+  inputVideoMinutes?: number | null;
+  inputAudioMinutes?: number | null;
+  functionsCount?: number | null;
+  requestedPipelineLevel?: string | null;
+  storageMode?: string | null;
+};
+
 const TIER_ORDER = ["basic", "standard", "intermediate", "pro"] as const;
 
 const TIER_LABELS: Record<string, string> = {
@@ -126,7 +139,7 @@ function buildFallbackCatalogPlan(planCode: string | null | undefined): CatalogP
         economy_mode_available: true,
       },
       providers_by_feature: {
-        text: buildFeatureEntry({ enabled: true, availability: "real", providers: ["openai", "gemini", "deepseek"], maxTier: "pro" }),
+        text: buildFeatureEntry({ enabled: true, availability: "real", providers: ["openai", "gemini"], maxTier: "pro" }),
         video: buildFeatureEntry({ enabled: true, availability: "real", providers: ["runway"], maxTier: "pro" }),
         music: buildFeatureEntry({ enabled: true, availability: "real", providers: ["suno"], maxTier: "pro" }),
       },
@@ -145,7 +158,7 @@ function buildFallbackCatalogPlan(planCode: string | null | undefined): CatalogP
         economy_mode_available: true,
       },
       providers_by_feature: {
-        text: buildFeatureEntry({ enabled: true, availability: "real", providers: ["openai", "gemini", "deepseek"], maxTier: "pro" }),
+        text: buildFeatureEntry({ enabled: true, availability: "real", providers: ["openai", "gemini"], maxTier: "pro" }),
         video: buildFeatureEntry({ enabled: true, availability: "real", providers: ["runway"], maxTier: "pro" }),
         music: buildFeatureEntry({ enabled: true, availability: "real", providers: ["suno"], maxTier: "pro" }),
       },
@@ -164,7 +177,7 @@ function buildFallbackCatalogPlan(planCode: string | null | undefined): CatalogP
         economy_mode_available: true,
       },
       providers_by_feature: {
-        text: buildFeatureEntry({ enabled: true, availability: "real", providers: ["openai", "gemini", "deepseek"], maxTier: "intermediate" }),
+        text: buildFeatureEntry({ enabled: true, availability: "real", providers: ["openai", "gemini"], maxTier: "intermediate" }),
         video: buildFeatureEntry({ enabled: true, availability: "real", providers: ["runway"], maxTier: "intermediate" }),
         music: buildFeatureEntry({ enabled: true, availability: "real", providers: ["suno"], maxTier: "intermediate" }),
       },
@@ -183,7 +196,7 @@ function buildFallbackCatalogPlan(planCode: string | null | undefined): CatalogP
         economy_mode_available: true,
       },
       providers_by_feature: {
-        text: buildFeatureEntry({ enabled: true, availability: "real", providers: ["openai", "gemini", "deepseek"], maxTier: "standard" }),
+        text: buildFeatureEntry({ enabled: true, availability: "real", providers: ["openai", "gemini"], maxTier: "standard" }),
         video: buildFeatureEntry({ enabled: true, availability: "limited", providers: ["runway"], maxTier: "standard" }),
         music: buildFeatureEntry({ enabled: true, availability: "limited", providers: ["suno"], maxTier: "standard" }),
       },
@@ -321,4 +334,58 @@ export function buildExecutionRoutingPayload({
   return {
     mode: mode === "automatic_economy" ? "economy" : "quality",
   };
+}
+
+function clampNonNegativeNumber(value: number | null | undefined): number | null {
+  if (typeof value !== "number" || !Number.isFinite(value)) return null;
+  return Math.max(0, value);
+}
+
+export function resolveOutputQualityForProfile(
+  qualityOutputs: string[] | null | undefined,
+  qualityProfile: "low" | "medium" | "high" | null | undefined
+): string | null {
+  const outputs = Array.isArray(qualityOutputs) ? qualityOutputs.filter(Boolean) : [];
+  if (outputs.length === 0) return null;
+  if (qualityProfile === "low") return outputs[0] || null;
+  if (qualityProfile === "medium") return outputs[Math.min(1, outputs.length - 1)] || outputs[0] || null;
+  if (qualityProfile === "high") return outputs[outputs.length - 1] || null;
+  return null;
+}
+
+export function buildExecutionTechnicalPayload({
+  feature,
+  capabilities,
+  qualityProfile = null,
+  filesCount = 0,
+  fileSizeMb = null,
+  inputVideoMinutes = null,
+  inputAudioMinutes = null,
+  functionsCount = 1,
+  requestedPipelineLevel = "simple",
+  storageMode = "platform_temporary",
+}: TechnicalPayloadInput) {
+  const payload: Record<string, number | string> = {};
+  const normalizedFilesCount = clampNonNegativeNumber(filesCount);
+  const normalizedFunctionsCount = clampNonNegativeNumber(functionsCount);
+  const normalizedFileSizeMb = clampNonNegativeNumber(fileSizeMb);
+  const normalizedInputVideoMinutes = clampNonNegativeNumber(inputVideoMinutes);
+  const normalizedInputAudioMinutes = clampNonNegativeNumber(inputAudioMinutes);
+  const resolvedOutputQuality =
+    feature === "video" ? resolveOutputQualityForProfile(capabilities.qualityOutputs, qualityProfile) : null;
+
+  if (normalizedFilesCount != null) payload.files_count = normalizedFilesCount;
+  if (normalizedFunctionsCount != null) payload.functions_count = normalizedFunctionsCount;
+  if (normalizedFileSizeMb != null) payload.file_size_mb = normalizedFileSizeMb;
+  if (normalizedInputVideoMinutes != null) payload.input_video_minutes = normalizedInputVideoMinutes;
+  if (normalizedInputAudioMinutes != null) payload.input_audio_minutes = normalizedInputAudioMinutes;
+  if (requestedPipelineLevel) payload.requested_pipeline_level = requestedPipelineLevel;
+  if (storageMode) payload.storage_mode = storageMode;
+  if (qualityProfile) payload.quality_profile = qualityProfile;
+  if (resolvedOutputQuality) {
+    payload.output_quality = resolvedOutputQuality;
+    payload.resolution = resolvedOutputQuality;
+  }
+
+  return payload;
 }

@@ -13,6 +13,7 @@ import { logger } from "../utils/logger.js";
 import { selectProviderAndModel } from "../utils/aiRouter.js";
 import { buildAiContractErrorPayload, getAiContractErrorStatus } from "../utils/aiContract.js";
 import { extractRoutingInput } from "../utils/aiRoutingInput.js";
+import { validatePlanFeatureRequest } from "../utils/planRuntimeGuards.js";
 
 const router = express.Router();
 
@@ -659,6 +660,40 @@ router.post("/generate", generateLimiter, async (req, res) => {
     });
 
     const routingInput = extractRoutingInput(req.body || {});
+    const textPlanGuard = await validatePlanFeatureRequest({
+      planCode,
+      feature: "text_generate",
+      body: req.body || {},
+      parsedInput: {
+        functionCount: 1,
+        requestedPipelineLevel: String(req.body?.requested_pipeline_level || req.body?.requestedPipelineLevel || "simple"),
+      },
+      mode: routingInput.mode,
+      db,
+      userId,
+      idempotencyKey,
+    });
+    if (textPlanGuard?.ok === false) {
+      await trackUsage({
+        db,
+        userId,
+        feature: FEATURE_NAME,
+        action: "generate",
+        idempotencyKey,
+        requestHash,
+        costs: { common: 0, pro: 0, ultra: 0 },
+        meta: { error: textPlanGuard.error || "plan_limit_violation", details: textPlanGuard.details || null },
+        status: "error",
+      });
+      return res.status(Number(textPlanGuard.status || 403)).json({
+        error: textPlanGuard.error || "plan_limit_violation",
+        message: textPlanGuard.message || "A requisicao excede o limite deste plano.",
+        plan: textPlanGuard.plan || planCode,
+        feature: textPlanGuard.feature || "text_generate",
+        details: textPlanGuard.details || null,
+      });
+    }
+
     const routing = selectProviderAndModel({
       feature: "text_generate",
       plan: planCode,

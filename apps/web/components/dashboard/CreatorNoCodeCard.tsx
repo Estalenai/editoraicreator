@@ -8,6 +8,7 @@ import { createIdempotencyKey } from "../../lib/idempotencyKey";
 import { runAutoPromptFlow } from "../../lib/autoPromptFlow";
 import { usePromptPreferences } from "../../hooks/usePromptPreferences";
 import { useAiExecutionMode } from "../../hooks/useAiExecutionMode";
+import { buildExecutionTechnicalPayload } from "../../lib/aiExecution";
 import { isCreatorNoCodeAllowed } from "../../lib/planGates";
 import { PremiumSelect } from "../ui/PremiumSelect";
 import { AiExecutionModeFields } from "./AiExecutionModeFields";
@@ -209,6 +210,18 @@ export function CreatorNoCodeCard({ planCode, walletCommon, onRefetch }: Props) 
     () => TARGET_PLATFORM_OPTIONS.map((item) => ({ value: item, label: item })),
     []
   );
+  const executionTechnicalPayload = useMemo(
+    () =>
+      buildExecutionTechnicalPayload({
+        feature: "text",
+        capabilities: execution.capabilities,
+        functionsCount: 1,
+        filesCount: 0,
+        requestedPipelineLevel: "simple",
+        storageMode: "platform_temporary",
+      }),
+    [execution.capabilities]
+  );
 
   async function copyText(value: string, label: string) {
     setCopyMsg(null);
@@ -257,6 +270,7 @@ export function CreatorNoCodeCard({ planCode, walletCommon, onRefetch }: Props) 
         body: JSON.stringify({
           prompt: finalPrompt,
           language,
+          ...executionTechnicalPayload,
           routing: execution.routing,
         }),
       });

@@ -23,6 +23,7 @@ import { selectProviderAndModel } from "../utils/aiRouter.js";
 import {
   extractPlanUsageTelemetry,
   getPlanAvatarPreviewLimits,
+  normalizeRequestedOutputQuality,
   validatePlanFeatureRequest,
 } from "../utils/planRuntimeGuards.js";
 import { metricIncrement, metricTiming, recordUsageMetric } from "../utils/metrics.js";
@@ -1037,7 +1038,19 @@ function parseImageGenerateInput(body) {
   if (quality === "high" && count > 3) return { error: true };
   if (quality !== "high" && count > 1) return { error: true };
 
-  return { prompt, style, aspectRatio, quality, count };
+  return {
+    prompt,
+    style,
+    aspectRatio,
+    quality,
+    qualityProfile: quality,
+    outputQuality: normalizeRequestedOutputQuality(
+      body?.output_quality ?? body?.outputQuality ?? body?.resolution ?? body?.output_resolution ?? body?.outputResolution
+    ),
+    functionCount: 1,
+    requestedPipelineLevel: String(body?.requested_pipeline_level || body?.requestedPipelineLevel || "simple"),
+    count,
+  };
 }
 
 function parseImageVariationInput(body) {
@@ -1075,7 +1088,19 @@ function parseVideoGenerateInput(body) {
     }
   }
 
-  return { prompt, imageUrl, durationSec, aspectRatio, quality };
+  return {
+    prompt,
+    imageUrl,
+    durationSec,
+    aspectRatio,
+    quality,
+    qualityProfile: quality,
+    outputQuality: normalizeRequestedOutputQuality(
+      body?.output_quality ?? body?.outputQuality ?? body?.resolution ?? body?.output_resolution ?? body?.outputResolution
+    ),
+    functionCount: 1,
+    requestedPipelineLevel: String(body?.requested_pipeline_level || body?.requestedPipelineLevel || "simple"),
+  };
 }
 
 function parseVideoStatusInput(body) {
@@ -1097,7 +1122,16 @@ function parseMusicGenerateInput(body) {
   if (!Number.isFinite(durationSec) || durationSec < 10 || durationSec > 180) return { error: true };
   if (!validQuality) return { error: true };
 
-  return { prompt, lyrics, style, durationSec, quality };
+  return {
+    prompt,
+    lyrics,
+    style,
+    durationSec,
+    quality,
+    qualityProfile: quality,
+    functionCount: 1,
+    requestedPipelineLevel: String(body?.requested_pipeline_level || body?.requestedPipelineLevel || "simple"),
+  };
 }
 
 function parseMusicStatusInput(body) {
@@ -1124,7 +1158,19 @@ function parseVoiceGenerateInput(body) {
   if (!Number.isFinite(style) || style < 0 || style > 1) return { error: true };
   if (!validFormat || !validQuality) return { error: true };
 
-  return { text, language, voiceId, stability, similarityBoost, style, format, quality };
+  return {
+    text,
+    language,
+    voiceId,
+    stability,
+    similarityBoost,
+    style,
+    format,
+    quality,
+    qualityProfile: quality,
+    functionCount: 1,
+    requestedPipelineLevel: String(body?.requested_pipeline_level || body?.requestedPipelineLevel || "simple"),
+  };
 }
 
 function parseVoiceStatusInput(body) {
@@ -1152,7 +1198,20 @@ function parseSlidesGenerateInput(body) {
 
   if (!title || !Number.isInteger(slideCount) || slideCount <= 0 || slideCount > 30 || !validQuality) return { error: true };
 
-  return { title, outline, theme, language, slideCount, quality };
+  return {
+    title,
+    outline,
+    theme,
+    language,
+    slideCount,
+    quality,
+    qualityProfile: quality,
+    outputQuality: normalizeRequestedOutputQuality(
+      body?.output_quality ?? body?.outputQuality ?? body?.resolution ?? body?.output_resolution ?? body?.outputResolution
+    ),
+    functionCount: 1,
+    requestedPipelineLevel: String(body?.requested_pipeline_level || body?.requestedPipelineLevel || "simple"),
+  };
 }
 
 function parseSlidesStatusInput(body) {

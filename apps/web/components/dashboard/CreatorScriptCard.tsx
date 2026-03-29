@@ -9,6 +9,7 @@ import { createIdempotencyKey } from "../../lib/idempotencyKey";
 import { runAutoPromptFlow } from "../../lib/autoPromptFlow";
 import { usePromptPreferences } from "../../hooks/usePromptPreferences";
 import { useAiExecutionMode } from "../../hooks/useAiExecutionMode";
+import { buildExecutionTechnicalPayload } from "../../lib/aiExecution";
 import { PremiumSelect } from "../ui/PremiumSelect";
 import { CreatorPlannerPanel } from "./CreatorPlannerPanel";
 import { AiExecutionModeFields } from "./AiExecutionModeFields";
@@ -234,6 +235,18 @@ export function CreatorScriptCard({ planCode, walletCommon, onRefetch }: Props) 
     ],
     [theme, objective, duration, execution.modeLabel, promptEnabled, autoApply, estimatedCommon]
   );
+  const executionTechnicalPayload = useMemo(
+    () =>
+      buildExecutionTechnicalPayload({
+        feature: "text",
+        capabilities: execution.capabilities,
+        functionsCount: 1,
+        filesCount: 0,
+        requestedPipelineLevel: "simple",
+        storageMode: "platform_temporary",
+      }),
+    [execution.capabilities]
+  );
 
   function openPlanner() {
     if (!theme.trim() || !objective.trim() || loadingPrompt || loadingApply || !hasCredits) return;
@@ -310,6 +323,7 @@ export function CreatorScriptCard({ planCode, walletCommon, onRefetch }: Props) 
         body: JSON.stringify({
           prompt: finalPrompt,
           language,
+          ...executionTechnicalPayload,
           routing: execution.routing,
         }),
       });

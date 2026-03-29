@@ -149,6 +149,14 @@ export function toUserFacingError(input: unknown, fallback = "Não foi possível
     return "A duração do áudio de entrada excede o limite técnico do seu plano.";
   }
 
+  if (normalized.includes("pipeline_level_not_allowed_for_plan")) {
+    return "Este fluxo pede um nível de pipeline acima do que o seu plano libera nesta etapa.";
+  }
+
+  if (normalized.includes("automation_level_not_allowed_for_plan")) {
+    return "Este nível de automação não está liberado para o seu plano atual.";
+  }
+
   if (normalized.includes("provider_unavailable")) {
     return "O provedor real nao respondeu com seguranca. A execucao foi bloqueada em vez de cair em mock.";
   }

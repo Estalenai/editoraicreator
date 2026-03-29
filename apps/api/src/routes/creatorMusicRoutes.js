@@ -13,6 +13,7 @@ import { runMusicGenerate } from "../aiProviders/index.js";
 import { debitThenExecuteOrRefund } from "../utils/debitThenExecuteOrRefund.js";
 import { selectProviderAndModel } from "../utils/aiRouter.js";
 import { extractRoutingInput } from "../utils/aiRoutingInput.js";
+import { validatePlanFeatureRequest } from "../utils/planRuntimeGuards.js";
 
 const router = express.Router();
 router.use(authMiddleware);
@@ -461,6 +462,43 @@ router.post("/generate", generateLimiter, async (req, res) => {
       action: "generate",
     });
 
+    const routingInput = extractRoutingInput(req.body || {});
+    const musicPlanGuard = await validatePlanFeatureRequest({
+      planCode,
+      feature: "music_generate",
+      body: req.body || {},
+      parsedInput: {
+        durationSec: body.duration,
+        qualityProfile: complexity,
+        functionCount: 1,
+        requestedPipelineLevel: String(req.body?.requested_pipeline_level || req.body?.requestedPipelineLevel || "simple"),
+      },
+      mode: routingInput.mode,
+      db,
+      userId,
+      idempotencyKey,
+    });
+    if (musicPlanGuard?.ok === false) {
+      await trackUsage({
+        db,
+        userId,
+        feature: FEATURE_NAME,
+        action: "generate",
+        idempotencyKey,
+        requestHash,
+        costs: { common: 0, pro: 0, ultra: 0 },
+        meta: { error: musicPlanGuard.error || "plan_limit_violation", details: musicPlanGuard.details || null },
+        status: "error",
+      });
+      return res.status(Number(musicPlanGuard.status || 403)).json({
+        error: musicPlanGuard.error || "plan_limit_violation",
+        message: musicPlanGuard.message || "A requisicao excede o limite deste plano.",
+        plan: musicPlanGuard.plan || planCode,
+        feature: musicPlanGuard.feature || "music_generate",
+        details: musicPlanGuard.details || null,
+      });
+    }
+
     const beforeWallet = await getWallet(db, userId);
     if (beforeWallet.common < commonCost) {
       await trackUsage({
@@ -487,7 +525,6 @@ router.post("/generate", generateLimiter, async (req, res) => {
       });
     }
 
-    const routingInput = extractRoutingInput(req.body || {});
     const routing = selectProviderAndModel({
       feature: "music_generate",
       plan: planCode,

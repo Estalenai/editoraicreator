@@ -33,7 +33,44 @@ const OUTPUT_QUALITY_ALIASES = new Map([
   ["uhd", "2160p"],
 ]);
 
-const DAILY_GENERATE_BASE_FEATURES = ["image_generate", "video_generate", "music_generate", "voice_generate", "slides_generate"];
+const QUALITY_PROFILE_ALIASES = new Map([
+  ["low", "low"],
+  ["economy", "low"],
+  ["medium", "medium"],
+  ["balanced", "medium"],
+  ["quality", "high"],
+  ["high", "high"],
+  ["max", "high"],
+]);
+
+const PIPELINE_LEVEL_ORDER = {
+  none: 0,
+  simple: 1,
+  moderate: 2,
+  complex: 3,
+  enterprise_or_advanced: 4,
+};
+
+const AUTOMATION_LEVEL_ORDER = {
+  none: 0,
+  limited: 1,
+  light: 1,
+  simple: 1,
+  light_or_intermediate: 2,
+  intermediate: 2,
+  advanced: 3,
+  enterprise_or_advanced: 4,
+};
+
+const DAILY_GENERATE_BASE_FEATURES = [
+  "image_generate",
+  "video_generate",
+  "music_generate",
+  "voice_generate",
+  "slides_generate",
+  "creator_post_generate",
+  "creator_music_generate",
+];
 const DAILY_GENERATE_USAGE_FEATURES = Array.from(
   new Set(
     DAILY_GENERATE_BASE_FEATURES.flatMap((feature) => {
@@ -62,10 +99,18 @@ function extractFirstNumber(source, keys) {
   return null;
 }
 
+function extractFirstString(source, keys) {
+  for (const key of keys) {
+    const value = source?.[key];
+    if (typeof value === "string" && value.trim()) return value.trim();
+  }
+  return null;
+}
+
 function extractFileCount(parsedInput, body) {
   const explicit =
-    extractFirstNumber(parsedInput, ["fileCount", "file_count"]) ??
-    extractFirstNumber(body, ["fileCount", "file_count"]);
+    extractFirstNumber(parsedInput, ["fileCount", "file_count", "filesCount", "files_count"]) ??
+    extractFirstNumber(body, ["fileCount", "file_count", "filesCount", "files_count"]);
   if (explicit != null) return explicit;
 
   const collections = [
@@ -84,8 +129,8 @@ function extractFileCount(parsedInput, body) {
 
 function extractFunctionCount(parsedInput, body) {
   const explicit =
-    extractFirstNumber(parsedInput, ["functionCount", "function_count"]) ??
-    extractFirstNumber(body, ["functionCount", "function_count"]);
+    extractFirstNumber(parsedInput, ["functionCount", "function_count", "functionsCount", "functions_count"]) ??
+    extractFirstNumber(body, ["functionCount", "function_count", "functionsCount", "functions_count"]);
   if (explicit != null) return explicit;
 
   const collections = [
@@ -131,6 +176,37 @@ function normalizeRetentionMode(rawValue) {
     return "temporary";
   }
   return normalized;
+}
+
+function normalizeRequestedQualityProfile(rawValue) {
+  const normalized = String(rawValue || "").trim().toLowerCase();
+  if (!normalized) return null;
+  return QUALITY_PROFILE_ALIASES.get(normalized) || null;
+}
+
+function normalizePipelineLevel(rawValue) {
+  const normalized = String(rawValue || "").trim().toLowerCase();
+  if (!normalized) return null;
+  if (normalized === "advanced") return "complex";
+  if (normalized === "enterprise") return "enterprise_or_advanced";
+  return Object.prototype.hasOwnProperty.call(PIPELINE_LEVEL_ORDER, normalized) ? normalized : null;
+}
+
+function normalizeAutomationLevel(rawValue) {
+  const normalized = String(rawValue || "").trim().toLowerCase();
+  if (!normalized) return null;
+  if (normalized === "automatic") return "limited";
+  if (normalized === "manual") return "none";
+  return Object.prototype.hasOwnProperty.call(AUTOMATION_LEVEL_ORDER, normalized) ? normalized : null;
+}
+
+function resolveOutputQualityFromProfile(qualityProfile, allowedOutputs = []) {
+  const outputs = Array.isArray(allowedOutputs) ? allowedOutputs.filter(Boolean) : [];
+  if (outputs.length === 0) return null;
+  if (qualityProfile === "low") return outputs[0] || null;
+  if (qualityProfile === "medium") return outputs[Math.min(1, outputs.length - 1)] || outputs[0] || null;
+  if (qualityProfile === "high") return outputs[outputs.length - 1] || null;
+  return null;
 }
 
 function extractBooleanFlag(source, keys) {
@@ -228,8 +304,8 @@ export function normalizeRequestedOutputQuality(rawValue) {
 export function extractPlanUsageTelemetry({ body = {}, parsedInput = {} } = {}) {
   const fileCount = extractFileCount(parsedInput, body);
   const fileSizeMb =
-    extractFirstNumber(parsedInput, ["fileSizeMb", "file_size_mb", "maxFileSizeMb"]) ??
-    extractFirstNumber(body, ["fileSizeMb", "file_size_mb", "maxFileSizeMb"]);
+    extractFirstNumber(parsedInput, ["fileSizeMb", "file_size_mb", "maxFileSizeMb", "max_file_size_mb"]) ??
+    extractFirstNumber(body, ["fileSizeMb", "file_size_mb", "maxFileSizeMb", "max_file_size_mb"]);
   const inputVideoMinutes =
     extractFirstNumber(parsedInput, ["inputVideoMinutes", "input_video_minutes", "videoMinutes", "video_minutes"]) ??
     extractFirstNumber(body, ["inputVideoMinutes", "input_video_minutes", "videoMinutes", "video_minutes"]);
@@ -239,6 +315,7 @@ export function extractPlanUsageTelemetry({ body = {}, parsedInput = {} } = {}) 
 
   const requestedOutputQualityRaw =
     parsedInput?.outputQuality ??
+    parsedInput?.output_quality ??
     body?.outputQuality ??
     body?.output_quality ??
     body?.quality_output ??
@@ -248,8 +325,26 @@ export function extractPlanUsageTelemetry({ body = {}, parsedInput = {} } = {}) 
     body?.outputResolution ??
     null;
   const outputQuality = requestedOutputQualityRaw != null ? normalizeRequestedOutputQuality(requestedOutputQualityRaw) : null;
+  const qualityProfileRaw =
+    parsedInput?.qualityProfile ??
+    parsedInput?.quality_profile ??
+    body?.qualityProfile ??
+    body?.quality_profile ??
+    body?.quality ??
+    null;
+  const qualityProfile = qualityProfileRaw != null ? normalizeRequestedQualityProfile(qualityProfileRaw) : null;
+  const requestedPipelineLevel = normalizePipelineLevel(
+    extractFirstString(parsedInput, ["requestedPipelineLevel", "requested_pipeline_level"]) ??
+      extractFirstString(body, ["requestedPipelineLevel", "requested_pipeline_level", "pipelineLevel", "pipeline_level"])
+  );
+  const requestedAutomationLevel = normalizeAutomationLevel(
+    extractFirstString(parsedInput, ["requestedAutomationLevel", "requested_automation_level"]) ??
+      extractFirstString(body, ["requestedAutomationLevel", "requested_automation_level", "automationLevel", "automation_level"])
+  );
   const requestedStorageMode = normalizeStorageMode(
-    body?.storageMode ??
+    parsedInput?.storageMode ??
+      parsedInput?.storage_mode ??
+      body?.storageMode ??
       body?.storage_mode ??
       body?.uploadTransport ??
       body?.upload_transport ??
@@ -269,6 +364,9 @@ export function extractPlanUsageTelemetry({ body = {}, parsedInput = {} } = {}) 
   if (inputVideoMinutes != null) telemetry.input_video_minutes = inputVideoMinutes;
   if (inputAudioMinutes != null) telemetry.input_audio_minutes = inputAudioMinutes;
   if (outputQuality) telemetry.output_quality = outputQuality;
+  if (qualityProfile) telemetry.quality_profile = qualityProfile;
+  if (requestedPipelineLevel) telemetry.requested_pipeline_level = requestedPipelineLevel;
+  if (requestedAutomationLevel) telemetry.requested_automation_level = requestedAutomationLevel;
   if (requestedStorageMode) telemetry.requested_storage_mode = requestedStorageMode;
   if (retentionMode) telemetry.retention_mode = retentionMode;
   if (heavyStorageFlowRequested) telemetry.heavy_storage_flow_requested = true;
@@ -413,6 +511,7 @@ export async function validatePlanFeatureRequest({
 
   const requestedOutputQualityRaw =
     parsedInput?.outputQuality ??
+    parsedInput?.output_quality ??
     body?.outputQuality ??
     body?.output_quality ??
     body?.quality_output ??
@@ -421,9 +520,25 @@ export async function validatePlanFeatureRequest({
     body?.output_resolution ??
     body?.outputResolution ??
     null;
+  const qualityProfile =
+    usageTelemetry.quality_profile ||
+    normalizeRequestedQualityProfile(
+      parsedInput?.qualityProfile ??
+        parsedInput?.quality_profile ??
+        body?.qualityProfile ??
+        body?.quality_profile ??
+        body?.quality
+    );
+  const allowedOutputs = Array.isArray(planMatrix.quality_outputs) ? [...planMatrix.quality_outputs] : [];
+  const featureKey = normalizeFeatureKey(feature);
+  const requestedOutputQuality =
+    requestedOutputQualityRaw != null && String(requestedOutputQualityRaw).trim()
+      ? normalizeRequestedOutputQuality(requestedOutputQualityRaw)
+      : ["image_generate", "video_generate", "slides_generate"].includes(featureKey)
+        ? resolveOutputQualityFromProfile(qualityProfile, allowedOutputs)
+        : null;
 
-  if (requestedOutputQualityRaw != null && String(requestedOutputQualityRaw).trim()) {
-    const requestedOutputQuality = normalizeRequestedOutputQuality(requestedOutputQualityRaw);
+  if ((requestedOutputQualityRaw != null && String(requestedOutputQualityRaw).trim()) || requestedOutputQuality) {
     if (!requestedOutputQuality) {
       return buildViolation({
         status: 400,
@@ -434,7 +549,6 @@ export async function validatePlanFeatureRequest({
       });
     }
 
-    const allowedOutputs = Array.isArray(planMatrix.quality_outputs) ? [...planMatrix.quality_outputs] : [];
     if (!allowedOutputs.includes(requestedOutputQuality)) {
       return buildViolation({
         status: 403,
@@ -444,6 +558,7 @@ export async function validatePlanFeatureRequest({
         feature,
         details: {
           requested_output_quality: requestedOutputQuality,
+          requested_quality_profile: qualityProfile || null,
           allowed_quality_outputs: allowedOutputs,
         },
       });
@@ -672,6 +787,62 @@ export async function validatePlanFeatureRequest({
   }
 
   const workflowLimits = planMatrix.workflow_limits || {};
+  const requestedPipelineLevel = normalizePipelineLevel(
+    usageTelemetry.requested_pipeline_level ??
+      parsedInput?.requestedPipelineLevel ??
+      parsedInput?.requested_pipeline_level ??
+      body?.requestedPipelineLevel ??
+      body?.requested_pipeline_level ??
+      body?.pipelineLevel ??
+      body?.pipeline_level
+  );
+  const allowedPipelineLevel = normalizePipelineLevel(workflowLimits.pipeline_level);
+  if (
+    requestedPipelineLevel &&
+    allowedPipelineLevel &&
+    (PIPELINE_LEVEL_ORDER[requestedPipelineLevel] || 0) > (PIPELINE_LEVEL_ORDER[allowedPipelineLevel] || 0)
+  ) {
+    return buildViolation({
+      status: 403,
+      error: "pipeline_level_not_allowed_for_plan",
+      message: "O nivel de pipeline solicitado nao esta liberado para este plano.",
+      planCode,
+      feature,
+      details: {
+        requested_pipeline_level: requestedPipelineLevel,
+        allowed_pipeline_level: allowedPipelineLevel,
+      },
+    });
+  }
+
+  const requestedAutomationLevel = normalizeAutomationLevel(
+    usageTelemetry.requested_automation_level ??
+      parsedInput?.requestedAutomationLevel ??
+      parsedInput?.requested_automation_level ??
+      body?.requestedAutomationLevel ??
+      body?.requested_automation_level ??
+      body?.automationLevel ??
+      body?.automation_level
+  );
+  const allowedAutomationLevel = normalizeAutomationLevel(workflowLimits.automation_level);
+  if (
+    requestedAutomationLevel &&
+    allowedAutomationLevel &&
+    (AUTOMATION_LEVEL_ORDER[requestedAutomationLevel] || 0) > (AUTOMATION_LEVEL_ORDER[allowedAutomationLevel] || 0)
+  ) {
+    return buildViolation({
+      status: 403,
+      error: "automation_level_not_allowed_for_plan",
+      message: "O nivel de automacao solicitado nao esta liberado para este plano.",
+      planCode,
+      feature,
+      details: {
+        requested_automation_level: requestedAutomationLevel,
+        allowed_automation_level: allowedAutomationLevel,
+      },
+    });
+  }
+
   const functionCount = extractFunctionCount(parsedInput, body);
   if (functionCount != null) {
     if (workflowLimits.can_combine_functions === false && functionCount > 1) {

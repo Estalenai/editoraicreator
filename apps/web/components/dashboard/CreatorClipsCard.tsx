@@ -9,6 +9,7 @@ import { createIdempotencyKey } from "../../lib/idempotencyKey";
 import { runAutoPromptFlow } from "../../lib/autoPromptFlow";
 import { usePromptPreferences } from "../../hooks/usePromptPreferences";
 import { useAiExecutionMode } from "../../hooks/useAiExecutionMode";
+import { buildExecutionTechnicalPayload } from "../../lib/aiExecution";
 import { PremiumSelect } from "../ui/PremiumSelect";
 import { CreatorPlannerPanel } from "./CreatorPlannerPanel";
 import { AiExecutionModeFields } from "./AiExecutionModeFields";
@@ -279,6 +280,21 @@ export function CreatorClipsCard({ planCode, walletCommon, onRefetch }: Props) {
     ],
     [clipUrl, hasSavedProject, jobStatusUi.label, needsProjectSync]
   );
+  const executionTechnicalPayload = useMemo(
+    () =>
+      buildExecutionTechnicalPayload({
+        feature: "video",
+        capabilities: execution.capabilities,
+        qualityProfile: quality,
+        functionsCount: 1,
+        filesCount: 0,
+        inputVideoMinutes: 0,
+        inputAudioMinutes: 0,
+        requestedPipelineLevel: "simple",
+        storageMode: "platform_temporary",
+      }),
+    [execution.capabilities, quality]
+  );
   const primaryEditorCtaLabel = useMemo(() => {
     if (!savedProjectId) {
       return clipUrl ? "Salvar e abrir no Editor" : "Salvar job e abrir no Editor";
@@ -360,6 +376,7 @@ export function CreatorClipsCard({ planCode, walletCommon, onRefetch }: Props) {
           durationSec: toSafeDuration(durationSec),
           aspectRatio,
           quality,
+          ...executionTechnicalPayload,
           routing: execution.routing,
         }),
       });

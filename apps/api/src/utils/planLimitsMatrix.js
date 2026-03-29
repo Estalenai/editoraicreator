@@ -186,8 +186,8 @@ const PLAN_LIMITS_MATRIX = {
     providers: {
       text: featureRule({
         availability: "real",
-        providers: ["openai", "gemini", "deepseek"],
-        preparedProviders: ["claude"],
+        providers: ["openai", "gemini"],
+        preparedProviders: ["deepseek", "claude"],
         modelTierMax: "standard",
       }),
       image: featureRule({
@@ -211,9 +211,10 @@ const PLAN_LIMITS_MATRIX = {
         modelTierMax: "standard",
       }),
       slides: featureRule({
-        availability: "limited",
-        providers: ["openai", "gemini"],
+        availability: "mock_only",
+        preparedProviders: ["openai", "gemini"],
         modelTierMax: "standard",
+        mockOnly: true,
       }),
       avatar_preview: featureRule({ availability: "unavailable", enabled: false }),
     },
@@ -273,7 +274,7 @@ const PLAN_LIMITS_MATRIX = {
       recommended_storage_mode: "platform_temporary",
     },
     runtime_rules: {
-      mock_only_features: [],
+      mock_only_features: ["slides"],
       inherits_from: [],
       manual_mode_allowed: true,
       manual_mode_level: "limited",
@@ -281,11 +282,12 @@ const PLAN_LIMITS_MATRIX = {
       primary_mode_label: "automatic_recommended",
       quality_default: true,
       economy_mode_available: true,
-      prepared_provider_flags: ["claude"],
+      prepared_provider_flags: ["deepseek", "claude"],
     },
     honesty_notes: [
       "Upload padrao por trabalho fica em 1 GB; ate 2 GB depende de direct upload para storage.",
-      "Claude fica apenas preparado por feature flag e continua desligado nesta etapa.",
+      "DeepSeek e Claude continuam apenas preparados por feature flag nesta etapa; OpenAI, Gemini e ElevenLabs seguem como providers reais do plano.",
+      "Slides continuam em camada exploratoria/mock ate existir um provedor real conectado ao runtime.",
       "Os limites de combinacao simples, upload e quality outputs estao formalizados aqui, mas outras camadas ainda precisam consumir esta matriz para enforcement completo.",
     ],
     stripe_env_keys: [
@@ -310,8 +312,8 @@ const PLAN_LIMITS_MATRIX = {
     providers: {
       text: featureRule({
         availability: "real",
-        providers: ["openai", "gemini", "deepseek"],
-        preparedProviders: ["claude"],
+        providers: ["openai", "gemini"],
+        preparedProviders: ["deepseek", "claude"],
         modelTierMax: "intermediate",
       }),
       image: featureRule({
@@ -335,13 +337,14 @@ const PLAN_LIMITS_MATRIX = {
         modelTierMax: "intermediate",
       }),
       slides: featureRule({
-        availability: "real",
-        providers: ["openai", "gemini"],
+        availability: "mock_only",
+        preparedProviders: ["openai", "gemini"],
         modelTierMax: "intermediate",
+        mockOnly: true,
       }),
       avatar_preview: featureRule({ availability: "unavailable", enabled: false }),
     },
-    credits_included: { common: 700, pro: 350, ultra: 150 },
+    credits_included: { common: 500, pro: 250, ultra: 100 },
     commerce: {
       allowed_coin_types: ["common", "pro", "ultra"],
       conversion_fee_percent: 4,
@@ -397,7 +400,7 @@ const PLAN_LIMITS_MATRIX = {
       recommended_storage_mode: "hybrid",
     },
     runtime_rules: {
-      mock_only_features: [],
+      mock_only_features: ["slides"],
       inherits_from: [],
       manual_mode_allowed: true,
       manual_mode_level: "full",
@@ -405,12 +408,13 @@ const PLAN_LIMITS_MATRIX = {
       primary_mode_label: "automatic_recommended",
       quality_default: true,
       economy_mode_available: true,
-      prepared_provider_flags: ["claude"],
+      prepared_provider_flags: ["deepseek", "claude"],
     },
     honesty_notes: [
       "Neste tier o credito passa a ser o limitador principal, mas hard caps tecnicos e anti-abuso continuam ativos em paralelo.",
       "Editor Pro fica com baseline profissional de ate 50 GB por trabalho via direct/connected flow, 90 minutos de entrada e 50 arquivos por job.",
-      "O degrau de modelos fica abaixo de Creator Pro; mapeamentos especificos de modelo ainda seguem aiModelPolicy ate a adocao completa desta matriz.",
+      "O degrau de modelos fica abaixo de Creator Pro; DeepSeek e Claude permanecem preparados, nao liberados como rota real nesta etapa.",
+      "Slides continuam em camada exploratoria/mock ate existir um provedor real conectado ao runtime.",
       "Quality outputs em 2160p ja estao formalizados aqui como limite de plano, nao como promessa comercial isolada.",
     ],
     stripe_env_keys: [
@@ -433,8 +437,8 @@ const PLAN_LIMITS_MATRIX = {
     providers: {
       text: featureRule({
         availability: "real",
-        providers: ["openai", "gemini", "deepseek"],
-        preparedProviders: ["claude"],
+        providers: ["openai", "gemini"],
+        preparedProviders: ["deepseek", "claude"],
         modelTierMax: "pro",
       }),
       image: featureRule({
@@ -458,16 +462,17 @@ const PLAN_LIMITS_MATRIX = {
         modelTierMax: "pro",
       }),
       slides: featureRule({
-        availability: "real",
-        providers: ["openai", "gemini"],
+        availability: "mock_only",
+        preparedProviders: ["openai", "gemini"],
         modelTierMax: "pro",
+        mockOnly: true,
       }),
       avatar_preview: featureRule({
         availability: "real",
         enabled: true,
       }),
     },
-    credits_included: { common: 2000, pro: 1200, ultra: 600 },
+    credits_included: { common: 1000, pro: 600, ultra: 300 },
     commerce: {
       allowed_coin_types: ["common", "pro", "ultra"],
       conversion_fee_percent: 2,
@@ -523,7 +528,7 @@ const PLAN_LIMITS_MATRIX = {
       recommended_storage_mode: "hybrid",
     },
     runtime_rules: {
-      mock_only_features: [],
+      mock_only_features: ["slides"],
       inherits_from: [],
       manual_mode_allowed: true,
       manual_mode_level: "full",
@@ -531,12 +536,13 @@ const PLAN_LIMITS_MATRIX = {
       primary_mode_label: "automatic_recommended",
       quality_default: true,
       economy_mode_available: true,
-      prepared_provider_flags: ["claude"],
+      prepared_provider_flags: ["deepseek", "claude"],
     },
     honesty_notes: [
       "Creator Pro em diante libera a camada Pro de modelos na fonte de verdade do produto.",
       "Creator Pro continua premium, mas nao ilimitado: o baseline tecnico sobe para 100 GB por trabalho, 180 minutos de entrada e 100 arquivos por job.",
       "Avatar Preview fica explicitamente liberado aqui, mas enforcement fino ainda depende das rotas de runtime continuarem consumindo estas regras.",
+      "DeepSeek e Claude permanecem preparados, nao liberados como rota real nesta etapa. Slides continuam em camada exploratoria/mock ate existir um provedor real conectado ao runtime.",
       "Hard caps tecnicos altos para Pro+ continuam formais nesta matriz e nao devem ser removidos por copy ou UX.",
     ],
     stripe_env_keys: [
@@ -559,8 +565,8 @@ const PLAN_LIMITS_MATRIX = {
     providers: {
       text: featureRule({
         availability: "real",
-        providers: ["openai", "gemini", "deepseek"],
-        preparedProviders: ["claude"],
+        providers: ["openai", "gemini"],
+        preparedProviders: ["deepseek", "claude"],
         modelTierMax: "pro",
       }),
       image: featureRule({
@@ -584,9 +590,10 @@ const PLAN_LIMITS_MATRIX = {
         modelTierMax: "pro",
       }),
       slides: featureRule({
-        availability: "real",
-        providers: ["openai", "gemini"],
+        availability: "mock_only",
+        preparedProviders: ["openai", "gemini"],
         modelTierMax: "pro",
+        mockOnly: true,
       }),
       avatar_preview: featureRule({
         availability: "real",
@@ -652,7 +659,7 @@ const PLAN_LIMITS_MATRIX = {
       recommended_storage_mode: "connected_or_dedicated",
     },
     runtime_rules: {
-      mock_only_features: [],
+      mock_only_features: ["slides"],
       inherits_from: ["ENTERPRISE"],
       manual_mode_allowed: true,
       manual_mode_level: "full",
@@ -660,12 +667,13 @@ const PLAN_LIMITS_MATRIX = {
       primary_mode_label: "automatic_recommended",
       quality_default: true,
       economy_mode_available: true,
-      prepared_provider_flags: ["claude"],
+      prepared_provider_flags: ["deepseek", "claude"],
     },
     honesty_notes: [
       "Empresarial continua em ativacao assistida e ainda herda a base tecnica de Enterprise.",
       "Mesmo assistido, ja recebe baseline interno alto: 200 GB por trabalho, 240 minutos de entrada e 200 arquivos por job.",
       "Nao deve ser tratado como camada tecnica 100% autonoma ate que enforcement, quotas e runtime dedicados sejam separados.",
+      "DeepSeek e Claude permanecem preparados, nao liberados como rota real nesta etapa. Slides continuam em camada exploratoria/mock ate existir um provedor real conectado ao runtime.",
       "Governanca, multiplos usuarios e coordenacao de equipe continuam fora desta matriz enquanto nao virarem regra implementada.",
     ],
     stripe_env_keys: [],
@@ -684,8 +692,8 @@ const PLAN_LIMITS_MATRIX = {
     providers: {
       text: featureRule({
         availability: "real",
-        providers: ["openai", "gemini", "deepseek"],
-        preparedProviders: ["claude"],
+        providers: ["openai", "gemini"],
+        preparedProviders: ["deepseek", "claude"],
         modelTierMax: "pro",
       }),
       image: featureRule({
@@ -709,9 +717,10 @@ const PLAN_LIMITS_MATRIX = {
         modelTierMax: "pro",
       }),
       slides: featureRule({
-        availability: "real",
-        providers: ["openai", "gemini"],
+        availability: "mock_only",
+        preparedProviders: ["openai", "gemini"],
         modelTierMax: "pro",
+        mockOnly: true,
       }),
       avatar_preview: featureRule({
         availability: "real",
@@ -781,7 +790,7 @@ const PLAN_LIMITS_MATRIX = {
       recommended_storage_mode: "connected_or_dedicated",
     },
     runtime_rules: {
-      mock_only_features: [],
+      mock_only_features: ["slides"],
       inherits_from: [],
       manual_mode_allowed: true,
       manual_mode_level: "full",
@@ -789,12 +798,13 @@ const PLAN_LIMITS_MATRIX = {
       primary_mode_label: "automatic_recommended",
       quality_default: true,
       economy_mode_available: true,
-      prepared_provider_flags: ["claude"],
+      prepared_provider_flags: ["deepseek", "claude"],
     },
     honesty_notes: [
       "Enterprise permanece como camada contratual e rule layer mais alta, mas nao deve ser tratado como ilimitado.",
       "O baseline interno sobe para 500 GB por trabalho, 360 minutos de entrada e 500 arquivos por job antes de qualquer override contratual.",
       "O minimo de compra fica formalizado em 50.000 creditos por tipo.",
+      "DeepSeek e Claude permanecem preparados, nao liberados como rota real nesta etapa. Slides continuam em camada exploratoria/mock ate existir um provedor real conectado ao runtime.",
       "Overrides contratuais continuam permitidos internamente, sem virar promessa publica automatica.",
     ],
     stripe_env_keys: [],
