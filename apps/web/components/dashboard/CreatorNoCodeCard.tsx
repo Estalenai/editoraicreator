@@ -7,8 +7,10 @@ import { supabase } from "../../lib/supabaseClient";
 import { createIdempotencyKey } from "../../lib/idempotencyKey";
 import { runAutoPromptFlow } from "../../lib/autoPromptFlow";
 import { usePromptPreferences } from "../../hooks/usePromptPreferences";
+import { useAiExecutionMode } from "../../hooks/useAiExecutionMode";
 import { isCreatorNoCodeAllowed } from "../../lib/planGates";
 import { PremiumSelect } from "../ui/PremiumSelect";
+import { AiExecutionModeFields } from "./AiExecutionModeFields";
 import { toUserFacingError } from "../../lib/uiFeedback";
 
 type NoCodeStructuredResult = {
@@ -158,7 +160,22 @@ export function CreatorNoCodeCard({ planCode, walletCommon, onRefetch }: Props) 
   const [observations, setObservations] = useState("");
   const [language, setLanguage] = useState("pt-BR");
 
-  const { promptEnabled, autoApply, updatePromptEnabled, updateAutoApply } = usePromptPreferences();
+  const {
+    promptEnabled,
+    autoApply,
+    executionModePreference,
+    executionModeSaving,
+    executionModeError,
+    updatePromptEnabled,
+    updateAutoApply,
+    updateExecutionModePreference,
+  } = usePromptPreferences();
+  const execution = useAiExecutionMode({
+    planCode,
+    feature: "text",
+    automaticPreference: executionModePreference,
+    onAutomaticPreferenceChange: updateExecutionModePreference,
+  });
 
   const [loadingPrompt, setLoadingPrompt] = useState(false);
   const [loadingApply, setLoadingApply] = useState(false);
@@ -240,6 +257,7 @@ export function CreatorNoCodeCard({ planCode, walletCommon, onRefetch }: Props) 
         body: JSON.stringify({
           prompt: finalPrompt,
           language,
+          routing: execution.routing,
         }),
       });
 
@@ -480,6 +498,21 @@ export function CreatorNoCodeCard({ planCode, walletCommon, onRefetch }: Props) 
           <p className="creator-zone-copy">
             A Fase 1 foca em clareza estrutural: visão, stack, módulos, telas e roadmap antes do fluxo de execução no editor.
           </p>
+          <AiExecutionModeFields
+            capabilities={execution.capabilities}
+            mode={execution.mode}
+            onModeChange={execution.handleModeChange}
+            modeDetail={execution.modeDetail}
+            availabilityNote={execution.availabilityNote}
+            qualityOutputsLabel={execution.qualityOutputsLabel}
+            manualProvider={execution.manualProvider}
+            onManualProviderChange={execution.setManualProvider}
+            manualTier={execution.manualTier}
+            onManualTierChange={execution.setManualTier}
+            manualSelectionLabel={execution.manualSelectionLabel}
+            persistingPreference={executionModeSaving}
+            preferenceError={executionModeError}
+          />
           <div className="creator-section-label">Prompt Automático</div>
           <div className="creator-toggle-stack">
             <label className="toggle-row" data-active={promptEnabled}>

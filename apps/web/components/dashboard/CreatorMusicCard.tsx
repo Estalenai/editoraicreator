@@ -5,8 +5,11 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
 import { apiFetch } from "../../lib/api";
 import { createIdempotencyKey } from "../../lib/idempotencyKey";
+import { usePromptPreferences } from "../../hooks/usePromptPreferences";
+import { useAiExecutionMode } from "../../hooks/useAiExecutionMode";
 import { PremiumSelect } from "../ui/PremiumSelect";
 import { CreatorPlannerPanel } from "./CreatorPlannerPanel";
+import { AiExecutionModeFields } from "./AiExecutionModeFields";
 import {
   describeAsyncJobStatus,
   extractApiErrorMessage,
@@ -33,6 +36,7 @@ type CreatorMusicResult = {
 };
 
 type Props = {
+  planCode: string | null;
   walletCommon: number;
   onRefetch: () => Promise<void>;
 };
@@ -83,12 +87,24 @@ async function getAccessToken() {
   return data.session?.access_token || null;
 }
 
-export function CreatorMusicCard({ walletCommon, onRefetch }: Props) {
+export function CreatorMusicCard({ planCode, walletCommon, onRefetch }: Props) {
   const [theme, setTheme] = useState("");
   const [mood, setMood] = useState("energetico");
   const [bpm, setBpm] = useState<number>(140);
   const [duration, setDuration] = useState<number>(30);
   const [language, setLanguage] = useState("pt-BR");
+  const {
+    executionModePreference,
+    executionModeSaving,
+    executionModeError,
+    updateExecutionModePreference,
+  } = usePromptPreferences();
+  const execution = useAiExecutionMode({
+    planCode,
+    feature: "music",
+    automaticPreference: executionModePreference,
+    onAutomaticPreferenceChange: updateExecutionModePreference,
+  });
 
   const [generatedPrompt, setGeneratedPrompt] = useState("");
   const [result, setResult] = useState<CreatorMusicResult | null>(null);
@@ -145,11 +161,12 @@ export function CreatorMusicCard({ walletCommon, onRefetch }: Props) {
   const plannerParameters = useMemo(
     () => [
       { label: "Tema", value: normalizedTheme || "A definir" },
+      { label: "Execução IA", value: execution.modeLabel },
       { label: "Prompt", value: generatedPrompt.trim() ? "Prompt revisado" : "Direção direta do briefing" },
       { label: "Estimativa", value: `${estimatedCommon} Comum` },
       { label: "Entrega", value: result?.job_id ? "Job com acompanhamento" : "Geração imediata" },
     ],
-    [normalizedTheme, generatedPrompt, estimatedCommon, result]
+    [normalizedTheme, execution.modeLabel, generatedPrompt, estimatedCommon, result]
   );
 
   const jobStatusUi = useMemo(
@@ -263,6 +280,7 @@ export function CreatorMusicCard({ walletCommon, onRefetch }: Props) {
           duration,
           language,
           prompt: promptToUse,
+          routing: execution.routing,
         }),
       });
 
@@ -435,7 +453,7 @@ export function CreatorMusicCard({ walletCommon, onRefetch }: Props) {
   }
 
   return (
-    <div className="creator-workspace-card creator-workspace-card-modular">
+    <div className="premium-card creator-workspace-card creator-workspace-card-modular">
       <div className="creator-workspace-header">
         <div className="hero-title-stack section-stack-tight">
           <p className="section-kicker">Briefing sonoro</p>
@@ -507,6 +525,21 @@ export function CreatorMusicCard({ walletCommon, onRefetch }: Props) {
           <p className="creator-zone-copy">
             O fluxo está em beta, mas já permite revisar o prompt, gerar a faixa e continuar o trabalho com contexto salvo.
           </p>
+          <AiExecutionModeFields
+            capabilities={execution.capabilities}
+            mode={execution.mode}
+            onModeChange={execution.handleModeChange}
+            modeDetail={execution.modeDetail}
+            availabilityNote={execution.availabilityNote}
+            qualityOutputsLabel={execution.qualityOutputsLabel}
+            manualProvider={execution.manualProvider}
+            onManualProviderChange={execution.setManualProvider}
+            manualTier={execution.manualTier}
+            onManualTierChange={execution.setManualTier}
+            manualSelectionLabel={execution.manualSelectionLabel}
+            persistingPreference={executionModeSaving}
+            preferenceError={executionModeError}
+          />
           <div className="creator-section-label">Beta operacional</div>
           <div className="helper-note-inline">Disponível no beta com melhorias contínuas de qualidade e experiência.</div>
         </div>
@@ -589,7 +622,7 @@ export function CreatorMusicCard({ walletCommon, onRefetch }: Props) {
         ) : null}
 
         {loadingGenerate ? (
-          <div className="creator-loading-panel layout-contract-note">
+          <div className="premium-card-soft creator-loading-panel">
             <div className="helper-note-inline">Gerando a faixa com o briefing atual...</div>
             <div className="premium-skeleton premium-skeleton-line" style={{ width: "38%" }} />
             <div className="premium-skeleton premium-skeleton-line" style={{ width: "82%" }} />

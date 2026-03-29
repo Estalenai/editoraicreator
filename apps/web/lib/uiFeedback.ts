@@ -89,6 +89,42 @@ export function toUserFacingError(input: unknown, fallback = "Não foi possível
     return "Este fluxo ainda nao esta liberado como caminho principal no beta pago/controlado.";
   }
 
+  if (normalized.includes("manual_mode_not_allowed_for_plan") || normalized.includes("manual_mode_not_allowed")) {
+    return "A seleção manual não está liberada para o seu plano atual. Use Automático (Recomendado) ou Econômico.";
+  }
+
+  if (normalized.includes("model_not_allowed")) {
+    return "O modelo escolhido não está liberado para o seu plano atual. Ajuste a seleção manual ou volte para o modo automático.";
+  }
+
+  if (normalized.includes("feature_not_available_for_plan")) {
+    return "Esta capacidade ainda não está liberada para o plano atual.";
+  }
+
+  if (normalized.includes("output_quality_not_allowed_for_plan")) {
+    return "A qualidade de saída solicitada excede o que o seu plano libera nesta trilha.";
+  }
+
+  if (normalized.includes("file_size_not_allowed_for_plan")) {
+    return "O arquivo enviado excede o tamanho permitido para o seu plano.";
+  }
+
+  if (normalized.includes("direct_upload_required_for_plan")) {
+    return "Este arquivo pede direct upload ou storage conectado no plano atual.";
+  }
+
+  if (normalized.includes("files_per_job_limit_reached")) {
+    return "A quantidade de arquivos deste job excede o que o seu plano permite.";
+  }
+
+  if (normalized.includes("input_video_not_allowed_for_plan")) {
+    return "A duração do vídeo de entrada excede o limite técnico do seu plano.";
+  }
+
+  if (normalized.includes("input_audio_not_allowed_for_plan")) {
+    return "A duração do áudio de entrada excede o limite técnico do seu plano.";
+  }
+
   if (normalized.includes("provider_unavailable")) {
     return "O provedor real nao respondeu com seguranca. A execucao foi bloqueada em vez de cair em mock.";
   }

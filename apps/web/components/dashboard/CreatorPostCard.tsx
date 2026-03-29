@@ -8,8 +8,10 @@ import { api, apiFetch } from "../../lib/api";
 import { createIdempotencyKey } from "../../lib/idempotencyKey";
 import { runAutoPromptFlow } from "../../lib/autoPromptFlow";
 import { usePromptPreferences } from "../../hooks/usePromptPreferences";
+import { useAiExecutionMode } from "../../hooks/useAiExecutionMode";
 import { PremiumSelect } from "../ui/PremiumSelect";
 import { CreatorPlannerPanel } from "./CreatorPlannerPanel";
+import { AiExecutionModeFields } from "./AiExecutionModeFields";
 import { extractApiErrorMessage, toUserFacingError, toUserFacingGenerationSuccess } from "../../lib/uiFeedback";
 import { createCreatorPostProjectData } from "../../lib/projectModel";
 
@@ -29,6 +31,7 @@ type CreatorPostApiResult = Partial<CreatorPostResult> & {
 };
 
 type Props = {
+  planCode: string | null;
   walletCommon: number;
   onRefetch: () => Promise<void>;
 };
@@ -164,7 +167,7 @@ async function getAccessToken() {
   return data.session?.access_token || null;
 }
 
-export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
+export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
   const router = useRouter();
   const [platform, setPlatform] = useState("Instagram");
   const [contentType, setContentType] = useState("Post");
@@ -173,7 +176,22 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
   const [objective, setObjective] = useState("Engajamento");
   const [language, setLanguage] = useState("pt-BR");
 
-  const { promptEnabled, autoApply, updatePromptEnabled, updateAutoApply } = usePromptPreferences();
+  const {
+    promptEnabled,
+    autoApply,
+    executionModePreference,
+    executionModeSaving,
+    executionModeError,
+    updatePromptEnabled,
+    updateAutoApply,
+    updateExecutionModePreference,
+  } = usePromptPreferences();
+  const execution = useAiExecutionMode({
+    planCode,
+    feature: "text",
+    automaticPreference: executionModePreference,
+    onAutomaticPreferenceChange: updateExecutionModePreference,
+  });
 
   const [loadingPrompt, setLoadingPrompt] = useState(false);
   const [loadingApply, setLoadingApply] = useState(false);
@@ -245,11 +263,12 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
     () => [
       { label: "Tema", value: theme.trim() || "A definir" },
       { label: "Objetivo", value: objective },
+      { label: "Execução IA", value: execution.modeLabel },
       { label: "Prompt automático", value: promptEnabled ? "Ligado" : "Direto" },
       { label: "Aplicação", value: promptEnabled ? (autoApply ? "Automática" : "Manual") : "Briefing direto" },
       { label: "Estimativa", value: `${creditsEstimate.common} Comum • ${creditsEstimate.pro} Pro • ${creditsEstimate.ultra} Ultra` },
     ],
-    [theme, objective, promptEnabled, autoApply, creditsEstimate]
+    [theme, objective, execution.modeLabel, promptEnabled, autoApply, creditsEstimate]
   );
 
   function openPlanner() {
@@ -349,6 +368,7 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
           language,
           theme,
           prompt: finalPrompt,
+          routing: execution.routing,
         }),
       });
 
@@ -430,6 +450,7 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
           objective,
           language,
           theme,
+          routing: execution.routing,
         }),
       });
 
@@ -629,7 +650,7 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
 
   return (
     <div
-      className="creator-workspace-card creator-workspace-card-modular"
+      className="premium-card creator-workspace-card creator-workspace-card-modular"
     >
       <div className="creator-workspace-header">
         <div className="hero-title-stack section-stack-tight">
@@ -719,6 +740,21 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
       <div className="creator-context-zone">
         <p className="creator-zone-title">Estimativa e contexto</p>
         <p className="creator-zone-copy">Revise o consumo previsto e escolha entre autoaplicar o prompt ou revisar manualmente.</p>
+        <AiExecutionModeFields
+          capabilities={execution.capabilities}
+          mode={execution.mode}
+          onModeChange={execution.handleModeChange}
+          modeDetail={execution.modeDetail}
+          availabilityNote={execution.availabilityNote}
+          qualityOutputsLabel={execution.qualityOutputsLabel}
+          manualProvider={execution.manualProvider}
+          onManualProviderChange={execution.setManualProvider}
+          manualTier={execution.manualTier}
+          onManualTierChange={execution.setManualTier}
+          manualSelectionLabel={execution.manualSelectionLabel}
+          persistingPreference={executionModeSaving}
+          preferenceError={executionModeError}
+        />
         <div className="creator-section-label">Prompt Automático</div>
 
         <div className="creator-toggle-stack">
@@ -840,7 +876,7 @@ export function CreatorPostCard({ walletCommon, onRefetch }: Props) {
       ) : null}
 
       {loadingApply && (
-        <div className="creator-loading-panel layout-contract-note">
+        <div className="premium-card-soft creator-loading-panel">
           <div className="helper-note-inline">EditexAI está estruturando o conteúdo...</div>
           <div className="premium-skeleton premium-skeleton-line" style={{ width: "42%" }} />
           <div className="premium-skeleton premium-skeleton-line" style={{ width: "86%" }} />

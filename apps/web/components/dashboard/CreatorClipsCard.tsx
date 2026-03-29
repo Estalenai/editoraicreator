@@ -8,8 +8,10 @@ import { supabase } from "../../lib/supabaseClient";
 import { createIdempotencyKey } from "../../lib/idempotencyKey";
 import { runAutoPromptFlow } from "../../lib/autoPromptFlow";
 import { usePromptPreferences } from "../../hooks/usePromptPreferences";
+import { useAiExecutionMode } from "../../hooks/useAiExecutionMode";
 import { PremiumSelect } from "../ui/PremiumSelect";
 import { CreatorPlannerPanel } from "./CreatorPlannerPanel";
+import { AiExecutionModeFields } from "./AiExecutionModeFields";
 import {
   describeAsyncJobStatus,
   extractApiErrorMessage,
@@ -39,6 +41,7 @@ type ClipResult = {
 };
 
 type Props = {
+  planCode: string | null;
   walletCommon: number;
   onRefetch: () => Promise<void>;
 };
@@ -113,7 +116,7 @@ function pickClipUrl(result: ClipResult | null): string {
   );
 }
 
-export function CreatorClipsCard({ walletCommon, onRefetch }: Props) {
+export function CreatorClipsCard({ planCode, walletCommon, onRefetch }: Props) {
   const router = useRouter();
   const [clipIdea, setClipIdea] = useState("");
   const [visualStyle, setVisualStyle] = useState("Cinemático");
@@ -126,7 +129,22 @@ export function CreatorClipsCard({ walletCommon, onRefetch }: Props) {
   const [language, setLanguage] = useState("pt-BR");
   const [notes, setNotes] = useState("");
 
-  const { promptEnabled, autoApply, updatePromptEnabled, updateAutoApply } = usePromptPreferences();
+  const {
+    promptEnabled,
+    autoApply,
+    executionModePreference,
+    executionModeSaving,
+    executionModeError,
+    updatePromptEnabled,
+    updateAutoApply,
+    updateExecutionModePreference,
+  } = usePromptPreferences();
+  const execution = useAiExecutionMode({
+    planCode,
+    feature: "video",
+    automaticPreference: executionModePreference,
+    onAutomaticPreferenceChange: updateExecutionModePreference,
+  });
 
   const [loadingPrompt, setLoadingPrompt] = useState(false);
   const [loadingApply, setLoadingApply] = useState(false);
@@ -201,7 +219,7 @@ export function CreatorClipsCard({ walletCommon, onRefetch }: Props) {
       { label: "Tom", value: tone },
       { label: "Plataforma", value: platform },
       { label: "Formato", value: aspectRatio },
-      { label: "Qualidade", value: quality.toUpperCase() },
+      { label: "Acabamento", value: quality.toUpperCase() },
       { label: "Idioma", value: language },
     ],
     [aspectRatio, language, platform, quality, tone, visualStyle]
@@ -211,11 +229,12 @@ export function CreatorClipsCard({ walletCommon, onRefetch }: Props) {
       { label: "Ideia", value: clipIdea.trim() || "A definir" },
       { label: "Objetivo", value: objective.trim() || "A definir" },
       { label: "Duração", value: `${toSafeDuration(durationSec)}s` },
+      { label: "Execução IA", value: execution.modeLabel },
       { label: "Prompt automático", value: promptEnabled ? "Ligado" : "Direto" },
       { label: "Aplicação", value: promptEnabled ? (autoApply ? "Automática" : "Manual") : "Briefing direto" },
       { label: "Estimativa", value: estimatedCommon > 0 ? `${estimatedCommon} Comum` : "Custo final após o job" },
     ],
-    [autoApply, clipIdea, durationSec, estimatedCommon, objective, promptEnabled]
+    [autoApply, clipIdea, durationSec, estimatedCommon, execution.modeLabel, objective, promptEnabled]
   );
   const clipUrl = useMemo(() => pickClipUrl(clipResult), [clipResult]);
   const resultSourceNote = useMemo(() => {
@@ -341,6 +360,7 @@ export function CreatorClipsCard({ walletCommon, onRefetch }: Props) {
           durationSec: toSafeDuration(durationSec),
           aspectRatio,
           quality,
+          routing: execution.routing,
         }),
       });
 
@@ -559,7 +579,7 @@ export function CreatorClipsCard({ walletCommon, onRefetch }: Props) {
   }
 
   return (
-    <div className="creator-workspace-card creator-workspace-card-modular">
+    <div className="premium-card creator-workspace-card creator-workspace-card-modular">
       <div className="creator-workspace-header">
         <div className="hero-title-stack section-stack-tight">
           <p className="section-kicker">Briefing visual</p>
@@ -573,7 +593,7 @@ export function CreatorClipsCard({ walletCommon, onRefetch }: Props) {
       <div className="creator-workspace-zones">
       <div className="creator-form-zone" id="creator-clips-config">
         <p className="creator-zone-title">Como deseja gerar</p>
-        <p className="creator-zone-copy">Defina ideia, estilo, canal e qualidade antes de iniciar o job.</p>
+        <p className="creator-zone-copy">Defina ideia, estilo, canal e acabamento visual antes de iniciar o job.</p>
         <div className="form-grid-2 creator-field-grid">
         <label className="field-label-ea">
           <span>Tema/ideia do clipe</span>
@@ -648,12 +668,12 @@ export function CreatorClipsCard({ walletCommon, onRefetch }: Props) {
         </label>
 
         <label className="field-label-ea">
-          <span>Qualidade</span>
+          <span>Acabamento visual</span>
           <PremiumSelect
             value={quality}
             onChange={(next) => setQuality(next as ClipQuality)}
             options={qualitySelectOptions}
-            ariaLabel="Qualidade do clipe"
+            ariaLabel="Acabamento visual do clipe"
           />
         </label>
 
@@ -686,6 +706,21 @@ export function CreatorClipsCard({ walletCommon, onRefetch }: Props) {
       <div className="creator-context-zone">
         <p className="creator-zone-title">Prompt e previsibilidade</p>
         <p className="creator-zone-copy">Revise o prompt antes da geração ou deixe a IA aplicar automaticamente.</p>
+        <AiExecutionModeFields
+          capabilities={execution.capabilities}
+          mode={execution.mode}
+          onModeChange={execution.handleModeChange}
+          modeDetail={execution.modeDetail}
+          availabilityNote={execution.availabilityNote}
+          qualityOutputsLabel={execution.qualityOutputsLabel}
+          manualProvider={execution.manualProvider}
+          onManualProviderChange={execution.setManualProvider}
+          manualTier={execution.manualTier}
+          onManualTierChange={execution.setManualTier}
+          manualSelectionLabel={execution.manualSelectionLabel}
+          persistingPreference={executionModeSaving}
+          preferenceError={executionModeError}
+        />
         <div className="creator-section-label">Prompt Automático</div>
         <div className="creator-toggle-stack">
         <label className="toggle-row" data-active={promptEnabled}>
@@ -798,7 +833,7 @@ export function CreatorClipsCard({ walletCommon, onRefetch }: Props) {
       ) : null}
 
       {isBusy ? (
-        <div className="creator-loading-panel layout-contract-note">
+        <div className="premium-card-soft creator-loading-panel">
           <div className="helper-note-inline">Processando o job visual e preparando o retorno do provedor com status legível...</div>
           <div className="premium-skeleton premium-skeleton-line" style={{ width: "36%" }} />
           <div className="premium-skeleton premium-skeleton-line" style={{ width: "82%" }} />

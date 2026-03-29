@@ -8,9 +8,11 @@ import { getUserPlanCode } from "../utils/planResolver.js";
 import { assertWithinQuota, QuotaExceededError } from "../utils/quotaEnforcer.js";
 import { generateLimiter, promptLimiter } from "../middlewares/rateLimit.js";
 import { logger } from "../utils/logger.js";
-import { buildAiContractErrorPayload } from "../utils/aiContract.js";
+import { buildAiContractErrorPayload, getAiContractErrorStatus } from "../utils/aiContract.js";
 import { runMusicGenerate } from "../aiProviders/index.js";
 import { debitThenExecuteOrRefund } from "../utils/debitThenExecuteOrRefund.js";
+import { selectProviderAndModel } from "../utils/aiRouter.js";
+import { extractRoutingInput } from "../utils/aiRoutingInput.js";
 
 const router = express.Router();
 router.use(authMiddleware);
@@ -485,12 +487,32 @@ router.post("/generate", generateLimiter, async (req, res) => {
       });
     }
 
-    const routing = {
-      mode: "quality",
-      selected_provider: "suno",
-      selected_model: null,
-      fallback_used: false,
-    };
+    const routingInput = extractRoutingInput(req.body || {});
+    const routing = selectProviderAndModel({
+      feature: "music_generate",
+      plan: planCode,
+      mode: routingInput.mode,
+      requested: routingInput.requested,
+      signals: { risk: "low" },
+    });
+    if (routing?.rejected === true) {
+      const payload = buildAiContractErrorPayload(routing.error, {
+        detail: routing.fallback_reason || routing.error,
+        routing,
+      });
+      await trackUsage({
+        db,
+        userId,
+        feature: FEATURE_NAME,
+        action: "generate",
+        idempotencyKey,
+        requestHash,
+        costs: { common: 0, pro: 0, ultra: 0 },
+        meta: { error: routing.error || "provider_contract_blocked" },
+        status: "error",
+      });
+      return res.status(getAiContractErrorStatus(routing.error, 503)).json(payload);
+    }
 
     let providerResult = null;
     try {
@@ -612,6 +634,7 @@ router.post("/generate", generateLimiter, async (req, res) => {
         lyrics: typeof body.lyrics === "string" ? body.lyrics : undefined,
       },
       used_prompt: usedPrompt,
+      routing,
       cost: {
         common: commonCost,
         breakdown: costData.breakdown,
@@ -635,6 +658,9 @@ router.post("/generate", generateLimiter, async (req, res) => {
         duration: body.duration,
         bpm: body.bpm,
         complexity,
+        routing_mode: routing.mode || "quality",
+        routing_provider: routing.selected_provider || null,
+        routing_model: routing.selected_model || null,
         tags_count: Array.isArray(body.tags) ? body.tags.length : 0,
       },
       status: "success",

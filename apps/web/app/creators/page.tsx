@@ -631,11 +631,11 @@ function CreatorsPageContent() {
                   </Link>
                 </div>
               </div>
-              {activeTab === "post" ? <CreatorPostCard walletCommon={walletCommon} onRefetch={refresh} /> : null}
-              {activeTab === "music" ? <CreatorMusicCard walletCommon={walletCommon} onRefetch={refresh} /> : null}
-              {activeTab === "scripts" ? <CreatorScriptCard walletCommon={walletCommon} onRefetch={refresh} /> : null}
-              {activeTab === "ads" ? <CreatorAdsCard walletCommon={walletCommon} onRefetch={refresh} /> : null}
-              {activeTab === "clips" ? <CreatorClipsCard walletCommon={walletCommon} onRefetch={refresh} /> : null}
+              {activeTab === "post" ? <CreatorPostCard planCode={planCodeRaw} walletCommon={walletCommon} onRefetch={refresh} /> : null}
+              {activeTab === "music" ? <CreatorMusicCard planCode={planCodeRaw} walletCommon={walletCommon} onRefetch={refresh} /> : null}
+              {activeTab === "scripts" ? <CreatorScriptCard planCode={planCodeRaw} walletCommon={walletCommon} onRefetch={refresh} /> : null}
+              {activeTab === "ads" ? <CreatorAdsCard planCode={planCodeRaw} walletCommon={walletCommon} onRefetch={refresh} /> : null}
+              {activeTab === "clips" ? <CreatorClipsCard planCode={planCodeRaw} walletCommon={walletCommon} onRefetch={refresh} /> : null}
               {activeTab === "live-cuts" ? <CreatorLiveCutsCard /> : null}
               {activeTab === "no-code" ? (
                 <CreatorNoCodeCard

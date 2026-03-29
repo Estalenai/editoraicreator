@@ -8,13 +8,17 @@ type PromptPrefsPayload = {
   prefs?: {
     prompt_auto_enabled?: unknown;
     prompt_auto_apply?: unknown;
+    ai_execution_mode_preference?: unknown;
   };
 };
 
 const DEFAULT_PROMPT_PREFS = {
   prompt_auto_enabled: true,
   prompt_auto_apply: false,
+  ai_execution_mode_preference: "automatic_quality" as const,
 };
+
+type AutomaticExecutionPreference = typeof DEFAULT_PROMPT_PREFS.ai_execution_mode_preference | "automatic_economy";
 
 function normalizeBool(value: unknown, fallback: boolean): boolean {
   if (typeof value === "boolean") return value;
@@ -27,6 +31,18 @@ function normalizeBool(value: unknown, fallback: boolean): boolean {
   return fallback;
 }
 
+function normalizeExecutionModePreference(
+  value: unknown,
+  fallback: AutomaticExecutionPreference
+): AutomaticExecutionPreference {
+  const normalized = String(value || "")
+    .trim()
+    .toLowerCase();
+  if (normalized === "automatic_economy") return "automatic_economy";
+  if (normalized === "automatic_quality") return "automatic_quality";
+  return fallback;
+}
+
 async function getAccessToken(): Promise<string | null> {
   const { data } = await supabase.auth.getSession();
   return data.session?.access_token || null;
@@ -35,6 +51,11 @@ async function getAccessToken(): Promise<string | null> {
 export function usePromptPreferences() {
   const [promptEnabled, setPromptEnabled] = useState(DEFAULT_PROMPT_PREFS.prompt_auto_enabled);
   const [autoApply, setAutoApply] = useState(DEFAULT_PROMPT_PREFS.prompt_auto_apply);
+  const [executionModePreference, setExecutionModePreference] = useState<AutomaticExecutionPreference>(
+    DEFAULT_PROMPT_PREFS.ai_execution_mode_preference
+  );
+  const [executionModeSaving, setExecutionModeSaving] = useState(false);
+  const [executionModeError, setExecutionModeError] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -61,9 +82,14 @@ export function usePromptPreferences() {
           prefs.prompt_auto_apply,
           DEFAULT_PROMPT_PREFS.prompt_auto_apply
         );
+        const nextExecutionModePreference = normalizeExecutionModePreference(
+          prefs.ai_execution_mode_preference,
+          DEFAULT_PROMPT_PREFS.ai_execution_mode_preference
+        );
 
         setPromptEnabled(nextPromptEnabled);
         setAutoApply(nextPromptEnabled ? nextAutoApply : false);
+        setExecutionModePreference(nextExecutionModePreference);
       } catch {
         // best effort
       }
@@ -75,12 +101,12 @@ export function usePromptPreferences() {
     };
   }, []);
 
-  async function persistPrefs(patch: Record<string, boolean>): Promise<void> {
+  async function persistPrefs(patch: Record<string, boolean | string>): Promise<boolean> {
     const token = await getAccessToken();
-    if (!token) return;
+    if (!token) return false;
 
     try {
-      await apiFetch("/api/preferences", {
+      const res = await apiFetch("/api/preferences", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -88,13 +114,14 @@ export function usePromptPreferences() {
         },
         body: JSON.stringify(patch),
       });
+      return res.ok;
     } catch {
-      // best effort
+      return false;
     }
   }
 
   async function updatePromptEnabled(nextValue: boolean): Promise<void> {
-    setPromptEnabled(nextValue);
+      setPromptEnabled(nextValue);
     if (!nextValue) {
       setAutoApply(false);
       await persistPrefs({ prompt_auto_enabled: false, prompt_auto_apply: false });
@@ -109,10 +136,25 @@ export function usePromptPreferences() {
     await persistPrefs({ prompt_auto_apply: nextValue });
   }
 
+  async function updateExecutionModePreference(nextValue: AutomaticExecutionPreference): Promise<void> {
+    setExecutionModePreference(nextValue);
+    setExecutionModeSaving(true);
+    setExecutionModeError(null);
+    const ok = await persistPrefs({ ai_execution_mode_preference: nextValue });
+    if (!ok) {
+      setExecutionModeError("execution_preference_save_failed");
+    }
+    setExecutionModeSaving(false);
+  }
+
   return {
     promptEnabled,
     autoApply,
+    executionModePreference,
+    executionModeSaving,
+    executionModeError,
     updatePromptEnabled,
     updateAutoApply,
+    updateExecutionModePreference,
   };
 }

@@ -12,6 +12,7 @@ import { generateLimiter, promptLimiter } from "../middlewares/rateLimit.js";
 import { logger } from "../utils/logger.js";
 import { selectProviderAndModel } from "../utils/aiRouter.js";
 import { buildAiContractErrorPayload, getAiContractErrorStatus } from "../utils/aiContract.js";
+import { extractRoutingInput } from "../utils/aiRoutingInput.js";
 
 const router = express.Router();
 
@@ -657,11 +658,12 @@ router.post("/generate", generateLimiter, async (req, res) => {
       action: "generate",
     });
 
+    const routingInput = extractRoutingInput(req.body || {});
     const routing = selectProviderAndModel({
       feature: "text_generate",
       plan: planCode,
-      mode: "quality",
-      requested: {},
+      mode: routingInput.mode,
+      requested: routingInput.requested,
       signals: { risk: "low" },
     });
     if (routing?.rejected === true) {
@@ -814,6 +816,7 @@ router.post("/generate", generateLimiter, async (req, res) => {
       result,
       provider,
       model,
+      routing,
       used_prompt: usedPrompt,
       cost: { common: commonCost, breakdown: costData.breakdown },
       debit: { common: commonCost },
@@ -839,6 +842,9 @@ router.post("/generate", generateLimiter, async (req, res) => {
         variants: body.variants,
         hashtags: Boolean(body.hashtags),
         cta: Boolean(body.cta),
+        routing_mode: routing.mode || "quality",
+        routing_provider: routing.selected_provider || null,
+        routing_model: routing.selected_model || null,
         breakdown: costData.breakdown,
       },
       status: "success",

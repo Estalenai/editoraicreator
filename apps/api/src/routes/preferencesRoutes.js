@@ -12,6 +12,7 @@ const DEFAULT_PREFS = {
   prompt_auto_enabled: true,
   prompt_auto_apply: false,
   prompt_auto_dont_ask_again: false,
+  ai_execution_mode_preference: "automatic_quality",
   language: "pt-BR",
 };
 
@@ -52,6 +53,7 @@ router.patch("/", async (req, res) => {
       prompt_auto_enabled: z.boolean().optional(),
       prompt_auto_apply: z.boolean().optional(),
       prompt_auto_dont_ask_again: z.boolean().optional(),
+      ai_execution_mode_preference: z.enum(["automatic_quality", "automatic_economy"]).optional(),
       language: z.string().min(2).max(10).optional(),
     });
 

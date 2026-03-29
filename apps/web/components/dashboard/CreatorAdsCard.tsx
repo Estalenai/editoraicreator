@@ -7,8 +7,10 @@ import { supabase } from "../../lib/supabaseClient";
 import { createIdempotencyKey } from "../../lib/idempotencyKey";
 import { runAutoPromptFlow } from "../../lib/autoPromptFlow";
 import { usePromptPreferences } from "../../hooks/usePromptPreferences";
+import { useAiExecutionMode } from "../../hooks/useAiExecutionMode";
 import { PremiumSelect } from "../ui/PremiumSelect";
 import { CreatorPlannerPanel } from "./CreatorPlannerPanel";
+import { AiExecutionModeFields } from "./AiExecutionModeFields";
 import { extractApiErrorMessage, toUserFacingError, toUserFacingGenerationSuccess } from "../../lib/uiFeedback";
 
 type AdsStructuredResult = {
@@ -20,6 +22,7 @@ type AdsStructuredResult = {
 };
 
 type Props = {
+  planCode: string | null;
   walletCommon: number;
   onRefetch: () => Promise<void>;
 };
@@ -115,7 +118,7 @@ function getAdCopyValue(structured: AdsStructuredResult | null, fallbackText: st
   return fallbackText;
 }
 
-export function CreatorAdsCard({ walletCommon, onRefetch }: Props) {
+export function CreatorAdsCard({ planCode, walletCommon, onRefetch }: Props) {
   const [productService, setProductService] = useState("");
   const [objective, setObjective] = useState("Conversão");
   const [audience, setAudience] = useState("");
@@ -126,7 +129,22 @@ export function CreatorAdsCard({ walletCommon, onRefetch }: Props) {
   const [language, setLanguage] = useState("pt-BR");
   const [notes, setNotes] = useState("");
 
-  const { promptEnabled, autoApply, updatePromptEnabled, updateAutoApply } = usePromptPreferences();
+  const {
+    promptEnabled,
+    autoApply,
+    executionModePreference,
+    executionModeSaving,
+    executionModeError,
+    updatePromptEnabled,
+    updateAutoApply,
+    updateExecutionModePreference,
+  } = usePromptPreferences();
+  const execution = useAiExecutionMode({
+    planCode,
+    feature: "text",
+    automaticPreference: executionModePreference,
+    onAutomaticPreferenceChange: updateExecutionModePreference,
+  });
 
   const [loadingPrompt, setLoadingPrompt] = useState(false);
   const [loadingApply, setLoadingApply] = useState(false);
@@ -186,11 +204,12 @@ export function CreatorAdsCard({ walletCommon, onRefetch }: Props) {
       { label: "Objetivo", value: objective.trim() || "A definir" },
       { label: "Oferta / CTA", value: offerCta.trim() || "A definir" },
       { label: "Diferencial", value: differential.trim() || "A definir" },
+      { label: "Execução IA", value: execution.modeLabel },
       { label: "Prompt automático", value: promptEnabled ? "Ligado" : "Direto" },
       { label: "Aplicação", value: promptEnabled ? (autoApply ? "Automática" : "Manual") : "Briefing direto" },
       { label: "Estimativa", value: `${estimatedCommon} Comum` },
     ],
-    [productService, objective, offerCta, differential, promptEnabled, autoApply, estimatedCommon]
+    [productService, objective, offerCta, differential, execution.modeLabel, promptEnabled, autoApply, estimatedCommon]
   );
 
   function openPlanner() {
@@ -269,6 +288,7 @@ export function CreatorAdsCard({ walletCommon, onRefetch }: Props) {
         body: JSON.stringify({
           prompt: finalPrompt,
           language,
+          routing: execution.routing,
         }),
       });
 
@@ -391,7 +411,7 @@ export function CreatorAdsCard({ walletCommon, onRefetch }: Props) {
 
   return (
     <div
-      className="creator-workspace-card creator-workspace-card-modular"
+      className="premium-card creator-workspace-card creator-workspace-card-modular"
     >
       <div className="creator-workspace-header">
         <div className="hero-title-stack section-stack-tight">
@@ -507,6 +527,21 @@ export function CreatorAdsCard({ walletCommon, onRefetch }: Props) {
       <div className="creator-context-zone">
         <p className="creator-zone-title">Estimativa e contexto</p>
         <p className="creator-zone-copy">Use o prompt automático para acelerar variações de anúncio ou revisar manualmente antes de gerar.</p>
+        <AiExecutionModeFields
+          capabilities={execution.capabilities}
+          mode={execution.mode}
+          onModeChange={execution.handleModeChange}
+          modeDetail={execution.modeDetail}
+          availabilityNote={execution.availabilityNote}
+          qualityOutputsLabel={execution.qualityOutputsLabel}
+          manualProvider={execution.manualProvider}
+          onManualProviderChange={execution.setManualProvider}
+          manualTier={execution.manualTier}
+          onManualTierChange={execution.setManualTier}
+          manualSelectionLabel={execution.manualSelectionLabel}
+          persistingPreference={executionModeSaving}
+          preferenceError={executionModeError}
+        />
         <div className="creator-section-label">Prompt Automático</div>
         <div className="creator-toggle-stack">
           <label className="toggle-row" data-active={promptEnabled}>
@@ -599,7 +634,7 @@ export function CreatorAdsCard({ walletCommon, onRefetch }: Props) {
       ) : null}
 
       {loadingApply && (
-        <div className="creator-loading-panel layout-contract-note">
+        <div className="premium-card-soft creator-loading-panel">
           <div className="helper-note-inline">EditexAI está refinando a peça de anúncio...</div>
           <div className="premium-skeleton premium-skeleton-line" style={{ width: "41%" }} />
           <div className="premium-skeleton premium-skeleton-line" style={{ width: "82%" }} />
