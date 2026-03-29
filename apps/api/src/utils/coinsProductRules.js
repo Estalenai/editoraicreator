@@ -42,7 +42,15 @@ export function canPurchaseCoin(planCode, coinType) {
 
 export function canUseAvatarPreview(planCode) {
   const normalized = normalizeProductPlanCode(planCode);
-  return Boolean(getPlanLimitMatrix(normalized, { domain: "commerce" }).providers?.avatar_preview?.enabled);
+  return Boolean(getPlanLimitMatrix(normalized, { domain: "usage" }).providers?.avatar_preview?.enabled);
+}
+
+export function getMinimumPurchaseCreditsPerType(planCode, coinType = null) {
+  const minimums = getPlanCommerceConfig(planCode, { domain: "commerce" }).minimum_purchase_credits_per_type || null;
+  if (!minimums || typeof minimums !== "object") return coinType == null ? null : 0;
+  if (coinType == null) return minimums;
+  const normalizedCoin = String(coinType || "").trim().toLowerCase();
+  return Number(minimums?.[normalizedCoin] || 0);
 }
 
 export function isSupportedConversionPair(from, to) {

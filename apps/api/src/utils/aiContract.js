@@ -21,6 +21,11 @@ const CONTRACT_ERROR_META = {
     message: "O modelo solicitado nao esta liberado para este plano.",
     hint: "Escolha um modelo compativel ou remova a selecao manual.",
   },
+  manual_mode_not_allowed: {
+    status: 403,
+    message: "A selecao manual nao esta liberada para este plano.",
+    hint: "Use Automatico (Recomendado) ou Economico, quando disponivel.",
+  },
 };
 
 export function isExplicitMockProvider(provider) {

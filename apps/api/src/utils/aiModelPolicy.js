@@ -1,3 +1,5 @@
+import { getPlanLimitMatrix, normalizePlanMatrixCode } from "./planLimitsMatrix.js";
+
 const FALLBACK_PLAN = "FREE";
 const TIER_LEVEL = { basic: 1, standard: 2, intermediate: 3, pro: 4 };
 const TIER_BY_MODEL_HINT = {
@@ -6,448 +8,84 @@ const TIER_BY_MODEL_HINT = {
   intermediate: "intermediate",
   pro: "pro",
 };
+const TIER_SEQUENCE = ["basic", "standard", "intermediate", "pro"];
+const FEATURE_KEYS = [
+  "text_generate",
+  "fact_check",
+  "image_generate",
+  "image_variation",
+  "video_generate",
+  "music_generate",
+  "voice_generate",
+  "slides_generate",
+];
 
-const TIER_SET = {
-  FREE: ["basic"],
-  EDITOR_FREE: ["basic", "standard"],
-  EDITOR_PRO: ["basic", "standard", "intermediate"],
-  EDITOR_ULTRA: ["basic", "standard", "intermediate", "pro"],
-  ENTERPRISE: ["basic", "standard", "intermediate", "pro"],
+const FEATURE_TO_MATRIX_KEY = {
+  text_generate: "text",
+  fact_check: "text",
+  image_generate: "image",
+  image_variation: "image",
+  video_generate: "video",
+  music_generate: "music",
+  voice_generate: "voice",
+  slides_generate: "slides",
 };
 
-const OPENAI_MODEL_BY_TIER = {
-  basic: "gpt-5-nano",
-  standard: "gpt-5-mini",
-  intermediate: "gpt-5.2",
-  pro: "gpt-5.2-pro",
+const IMPLEMENTED_PROVIDERS_BY_FEATURE = {
+  text_generate: new Set(["openai", "gemini"]),
+  fact_check: new Set(["openai"]),
+  image_generate: new Set(["openai", "gemini"]),
+  image_variation: new Set(["openai", "gemini"]),
+  video_generate: new Set(["runway"]),
+  music_generate: new Set(["suno"]),
+  voice_generate: new Set(["elevenlabs"]),
+  slides_generate: new Set([]),
 };
 
-const GEMINI_MODEL_BY_TIER = {
-  basic: "gemini-2.5-flash-lite",
-  standard: "gemini-2.5-flash",
-  intermediate: "gemini-3-flash-preview",
-  pro: "gemini-3.1-pro-preview",
+const MODEL_BY_PROVIDER_BY_TIER = {
+  openai: {
+    basic: "gpt-5-nano",
+    standard: "gpt-5-mini",
+    intermediate: "gpt-5.2",
+    pro: "gpt-5.2-pro",
+  },
+  gemini: {
+    basic: "gemini-2.5-flash-lite",
+    standard: "gemini-2.5-flash",
+    intermediate: "gemini-3-flash-preview",
+    pro: "gemini-3.1-pro-preview",
+  },
+  deepseek: {
+    standard: "deepseek-chat",
+    intermediate: "deepseek-chat",
+    pro: "deepseek-reasoner",
+  },
+  runway: {
+    standard: "gen4.5",
+    intermediate: "gen4_aleph",
+    pro: "veo3.1",
+  },
+  suno: {
+    standard: "V4",
+    intermediate: "V4_5PLUS",
+    pro: "V5",
+  },
+  elevenlabs: {
+    standard: "eleven_turbo_v2",
+    intermediate: "eleven_multilingual_v2",
+    pro: "eleven_turbo_v2_5",
+  },
 };
 
-const DEEPSEEK_MODEL_BY_TIER = {
-  standard: "deepseek-chat",
-  intermediate: "deepseek-chat",
-  pro: "deepseek-reasoner",
-};
+const POLICY_CACHE = new Map();
 
-const RUNWAY_VIDEO_MODEL_BY_TIER = {
-  standard: "gen4.5",
-  intermediate: "gen4_aleph",
-  pro: "veo3.1",
-};
-
-const SUNO_MODEL_BY_TIER = {
-  standard: "V4",
-  intermediate: "V4_5PLUS",
-  pro: "V5",
-};
-
-const ELEVENLABS_MODEL_BY_TIER = {
-  standard: "eleven_turbo_v2",
-  intermediate: "eleven_multilingual_v2",
-  pro: "eleven_turbo_v2_5",
-};
-
-function pickModelByTier(modelByTier, tiers) {
-  const next = {};
-  for (const tier of tiers) {
-    if (modelByTier?.[tier]) next[tier] = modelByTier[tier];
-  }
-  return next;
+function cloneValue(value) {
+  if (typeof globalThis.structuredClone === "function") return globalThis.structuredClone(value);
+  return JSON.parse(JSON.stringify(value));
 }
-
-function createFeaturePolicy({
-  providers,
-  modelByTier = {},
-  mockOnly = false,
-}) {
-  return {
-    ...(mockOnly ? { mock_only: true } : {}),
-    providers: providers || {},
-    model_by_tier: modelByTier || {},
-  };
-}
-
-const PLAN_POLICIES = {
-  FREE: {
-    tiers: [...TIER_SET.FREE],
-    byFeature: {
-      text_generate: createFeaturePolicy({
-        providers: { openai: [...TIER_SET.FREE], gemini: [...TIER_SET.FREE] },
-        modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.FREE),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.FREE),
-        },
-      }),
-      fact_check: createFeaturePolicy({
-        providers: { openai: [...TIER_SET.FREE], gemini: [...TIER_SET.FREE] },
-        modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.FREE),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.FREE),
-        },
-      }),
-      image_generate: createFeaturePolicy({
-        providers: { openai: [...TIER_SET.FREE], gemini: [...TIER_SET.FREE] },
-        modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.FREE),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.FREE),
-        },
-      }),
-      image_variation: createFeaturePolicy({
-        providers: { openai: [...TIER_SET.FREE], gemini: [...TIER_SET.FREE] },
-        modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.FREE),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.FREE),
-        },
-      }),
-      video_generate: createFeaturePolicy({ mockOnly: true }),
-      music_generate: createFeaturePolicy({ mockOnly: true }),
-      voice_generate: createFeaturePolicy({ mockOnly: true }),
-      slides_generate: createFeaturePolicy({ mockOnly: true }),
-    },
-  },
-  EDITOR_FREE: {
-    tiers: [...TIER_SET.EDITOR_FREE],
-    byFeature: {
-      text_generate: createFeaturePolicy({
-        providers: {
-          openai: [...TIER_SET.EDITOR_FREE],
-          gemini: [...TIER_SET.EDITOR_FREE],
-          deepseek: ["standard"],
-        },
-        modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.EDITOR_FREE),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.EDITOR_FREE),
-          deepseek: pickModelByTier(DEEPSEEK_MODEL_BY_TIER, ["standard"]),
-        },
-      }),
-      fact_check: createFeaturePolicy({
-        providers: {
-          openai: [...TIER_SET.EDITOR_FREE],
-          gemini: [...TIER_SET.EDITOR_FREE],
-          deepseek: ["standard"],
-        },
-        modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.EDITOR_FREE),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.EDITOR_FREE),
-          deepseek: pickModelByTier(DEEPSEEK_MODEL_BY_TIER, ["standard"]),
-        },
-      }),
-      image_generate: createFeaturePolicy({
-        providers: { openai: [...TIER_SET.EDITOR_FREE], gemini: [...TIER_SET.EDITOR_FREE] },
-        modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.EDITOR_FREE),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.EDITOR_FREE),
-        },
-      }),
-      image_variation: createFeaturePolicy({
-        providers: { openai: [...TIER_SET.EDITOR_FREE], gemini: [...TIER_SET.EDITOR_FREE] },
-        modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.EDITOR_FREE),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.EDITOR_FREE),
-        },
-      }),
-      video_generate: createFeaturePolicy({
-        providers: { runway: ["standard"] },
-        modelByTier: { runway: pickModelByTier(RUNWAY_VIDEO_MODEL_BY_TIER, ["standard"]) },
-      }),
-      music_generate: createFeaturePolicy({
-        providers: { suno: ["standard"] },
-        modelByTier: { suno: pickModelByTier(SUNO_MODEL_BY_TIER, ["standard"]) },
-      }),
-      voice_generate: createFeaturePolicy({
-        providers: { elevenlabs: ["standard"] },
-        modelByTier: { elevenlabs: pickModelByTier(ELEVENLABS_MODEL_BY_TIER, ["standard"]) },
-      }),
-      slides_generate: createFeaturePolicy({
-        providers: { openai: ["standard"], gemini: ["standard"] },
-        modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, ["standard"]),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, ["standard"]),
-        },
-      }),
-    },
-  },
-  EDITOR_PRO: {
-    tiers: [...TIER_SET.EDITOR_PRO],
-    byFeature: {
-      text_generate: createFeaturePolicy({
-        providers: {
-          openai: [...TIER_SET.EDITOR_PRO],
-          gemini: [...TIER_SET.EDITOR_PRO],
-          deepseek: ["standard", "intermediate"],
-        },
-        modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.EDITOR_PRO),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.EDITOR_PRO),
-          deepseek: pickModelByTier(DEEPSEEK_MODEL_BY_TIER, ["standard", "intermediate"]),
-        },
-      }),
-      fact_check: createFeaturePolicy({
-        providers: {
-          openai: [...TIER_SET.EDITOR_PRO],
-          gemini: [...TIER_SET.EDITOR_PRO],
-          deepseek: ["standard", "intermediate"],
-        },
-        modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.EDITOR_PRO),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.EDITOR_PRO),
-          deepseek: pickModelByTier(DEEPSEEK_MODEL_BY_TIER, ["standard", "intermediate"]),
-        },
-      }),
-      image_generate: createFeaturePolicy({
-        providers: { openai: [...TIER_SET.EDITOR_PRO], gemini: [...TIER_SET.EDITOR_PRO] },
-        modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.EDITOR_PRO),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.EDITOR_PRO),
-        },
-      }),
-      image_variation: createFeaturePolicy({
-        providers: { openai: [...TIER_SET.EDITOR_PRO], gemini: [...TIER_SET.EDITOR_PRO] },
-        modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.EDITOR_PRO),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.EDITOR_PRO),
-        },
-      }),
-      video_generate: createFeaturePolicy({
-        providers: { runway: ["standard", "intermediate"] },
-        modelByTier: { runway: pickModelByTier(RUNWAY_VIDEO_MODEL_BY_TIER, ["standard", "intermediate"]) },
-      }),
-      music_generate: createFeaturePolicy({
-        providers: { suno: ["standard", "intermediate"] },
-        modelByTier: { suno: pickModelByTier(SUNO_MODEL_BY_TIER, ["standard", "intermediate"]) },
-      }),
-      voice_generate: createFeaturePolicy({
-        providers: { elevenlabs: ["standard", "intermediate"] },
-        modelByTier: { elevenlabs: pickModelByTier(ELEVENLABS_MODEL_BY_TIER, ["standard", "intermediate"]) },
-      }),
-      slides_generate: createFeaturePolicy({
-        providers: { openai: ["standard", "intermediate"], gemini: ["standard", "intermediate"] },
-        modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, ["standard", "intermediate"]),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, ["standard", "intermediate"]),
-        },
-      }),
-    },
-  },
-  EDITOR_ULTRA: {
-    tiers: [...TIER_SET.EDITOR_ULTRA],
-    byFeature: {
-      text_generate: createFeaturePolicy({
-        providers: {
-          openai: [...TIER_SET.EDITOR_ULTRA],
-          gemini: [...TIER_SET.EDITOR_ULTRA],
-          deepseek: ["standard", "intermediate", "pro"],
-        },
-        modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.EDITOR_ULTRA),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.EDITOR_ULTRA),
-          deepseek: pickModelByTier(DEEPSEEK_MODEL_BY_TIER, ["standard", "intermediate", "pro"]),
-        },
-      }),
-      fact_check: createFeaturePolicy({
-        providers: {
-          openai: [...TIER_SET.EDITOR_ULTRA],
-          gemini: [...TIER_SET.EDITOR_ULTRA],
-          deepseek: ["standard", "intermediate", "pro"],
-        },
-        modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.EDITOR_ULTRA),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.EDITOR_ULTRA),
-          deepseek: pickModelByTier(DEEPSEEK_MODEL_BY_TIER, ["standard", "intermediate", "pro"]),
-        },
-      }),
-      image_generate: createFeaturePolicy({
-        providers: { openai: [...TIER_SET.EDITOR_ULTRA], gemini: [...TIER_SET.EDITOR_ULTRA] },
-        modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.EDITOR_ULTRA),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.EDITOR_ULTRA),
-        },
-      }),
-      image_variation: createFeaturePolicy({
-        providers: { openai: [...TIER_SET.EDITOR_ULTRA], gemini: [...TIER_SET.EDITOR_ULTRA] },
-        modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.EDITOR_ULTRA),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.EDITOR_ULTRA),
-        },
-      }),
-      video_generate: createFeaturePolicy({
-        providers: { runway: ["standard", "intermediate", "pro"] },
-        modelByTier: { runway: pickModelByTier(RUNWAY_VIDEO_MODEL_BY_TIER, ["standard", "intermediate", "pro"]) },
-      }),
-      music_generate: createFeaturePolicy({
-        providers: { suno: ["standard", "intermediate", "pro"] },
-        modelByTier: { suno: pickModelByTier(SUNO_MODEL_BY_TIER, ["standard", "intermediate", "pro"]) },
-      }),
-      voice_generate: createFeaturePolicy({
-        providers: { elevenlabs: ["standard", "intermediate", "pro"] },
-        modelByTier: { elevenlabs: pickModelByTier(ELEVENLABS_MODEL_BY_TIER, ["standard", "intermediate", "pro"]) },
-      }),
-      slides_generate: createFeaturePolicy({
-        providers: { openai: ["standard", "intermediate", "pro"], gemini: ["standard", "intermediate", "pro"] },
-        modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, ["standard", "intermediate", "pro"]),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, ["standard", "intermediate", "pro"]),
-        },
-      }),
-    },
-  },
-  ENTERPRISE: {
-    tiers: [...TIER_SET.ENTERPRISE],
-    byFeature: {
-      text_generate: createFeaturePolicy({
-        providers: {
-          openai: [...TIER_SET.ENTERPRISE],
-          gemini: [...TIER_SET.ENTERPRISE],
-          deepseek: ["standard", "intermediate", "pro"],
-        },
-        modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.ENTERPRISE),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.ENTERPRISE),
-          deepseek: pickModelByTier(DEEPSEEK_MODEL_BY_TIER, ["standard", "intermediate", "pro"]),
-        },
-      }),
-      fact_check: createFeaturePolicy({
-        providers: {
-          openai: [...TIER_SET.ENTERPRISE],
-          gemini: [...TIER_SET.ENTERPRISE],
-          deepseek: ["standard", "intermediate", "pro"],
-        },
-        modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.ENTERPRISE),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.ENTERPRISE),
-          deepseek: pickModelByTier(DEEPSEEK_MODEL_BY_TIER, ["standard", "intermediate", "pro"]),
-        },
-      }),
-      image_generate: createFeaturePolicy({
-        providers: { openai: [...TIER_SET.ENTERPRISE], gemini: [...TIER_SET.ENTERPRISE] },
-        modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.ENTERPRISE),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.ENTERPRISE),
-        },
-      }),
-      image_variation: createFeaturePolicy({
-        providers: { openai: [...TIER_SET.ENTERPRISE], gemini: [...TIER_SET.ENTERPRISE] },
-        modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.ENTERPRISE),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.ENTERPRISE),
-        },
-      }),
-      video_generate: createFeaturePolicy({
-        providers: { runway: ["standard", "intermediate", "pro"] },
-        modelByTier: { runway: pickModelByTier(RUNWAY_VIDEO_MODEL_BY_TIER, ["standard", "intermediate", "pro"]) },
-      }),
-      music_generate: createFeaturePolicy({
-        providers: { suno: ["standard", "intermediate", "pro"] },
-        modelByTier: { suno: pickModelByTier(SUNO_MODEL_BY_TIER, ["standard", "intermediate", "pro"]) },
-      }),
-      voice_generate: createFeaturePolicy({
-        providers: { elevenlabs: ["standard", "intermediate", "pro"] },
-        modelByTier: { elevenlabs: pickModelByTier(ELEVENLABS_MODEL_BY_TIER, ["standard", "intermediate", "pro"]) },
-      }),
-      slides_generate: createFeaturePolicy({
-        providers: { openai: ["standard", "intermediate", "pro"], gemini: ["standard", "intermediate", "pro"] },
-        modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, ["standard", "intermediate", "pro"]),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, ["standard", "intermediate", "pro"]),
-        },
-      }),
-    },
-  },
-  ENTERPRISE: {
-    tiers: [...TIER_SET.ENTERPRISE],
-    byFeature: {
-      text_generate: createFeaturePolicy({
-        providers: {
-          openai: [...TIER_SET.ENTERPRISE],
-          gemini: [...TIER_SET.ENTERPRISE],
-          deepseek: ["standard", "intermediate", "pro"],
-        },
-        modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.ENTERPRISE),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.ENTERPRISE),
-          deepseek: pickModelByTier(DEEPSEEK_MODEL_BY_TIER, ["standard", "intermediate", "pro"]),
-        },
-      }),
-      fact_check: createFeaturePolicy({
-        providers: {
-          openai: [...TIER_SET.ENTERPRISE],
-          gemini: [...TIER_SET.ENTERPRISE],
-          deepseek: ["standard", "intermediate", "pro"],
-        },
-        modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.ENTERPRISE),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.ENTERPRISE),
-          deepseek: pickModelByTier(DEEPSEEK_MODEL_BY_TIER, ["standard", "intermediate", "pro"]),
-        },
-      }),
-      image_generate: createFeaturePolicy({
-        providers: { openai: [...TIER_SET.ENTERPRISE], gemini: [...TIER_SET.ENTERPRISE] },
-        modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.ENTERPRISE),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.ENTERPRISE),
-        },
-      }),
-      image_variation: createFeaturePolicy({
-        providers: { openai: [...TIER_SET.ENTERPRISE], gemini: [...TIER_SET.ENTERPRISE] },
-        modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, TIER_SET.ENTERPRISE),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, TIER_SET.ENTERPRISE),
-        },
-      }),
-      video_generate: createFeaturePolicy({
-        providers: { runway: ["standard", "intermediate", "pro"] },
-        modelByTier: { runway: pickModelByTier(RUNWAY_VIDEO_MODEL_BY_TIER, ["standard", "intermediate", "pro"]) },
-      }),
-      music_generate: createFeaturePolicy({
-        providers: { suno: ["standard", "intermediate", "pro"] },
-        modelByTier: { suno: pickModelByTier(SUNO_MODEL_BY_TIER, ["standard", "intermediate", "pro"]) },
-      }),
-      voice_generate: createFeaturePolicy({
-        providers: { elevenlabs: ["standard", "intermediate", "pro"] },
-        modelByTier: { elevenlabs: pickModelByTier(ELEVENLABS_MODEL_BY_TIER, ["standard", "intermediate", "pro"]) },
-      }),
-      slides_generate: createFeaturePolicy({
-        providers: { openai: ["standard", "intermediate", "pro"], gemini: ["standard", "intermediate", "pro"] },
-        modelByTier: {
-          openai: pickModelByTier(OPENAI_MODEL_BY_TIER, ["standard", "intermediate", "pro"]),
-          gemini: pickModelByTier(GEMINI_MODEL_BY_TIER, ["standard", "intermediate", "pro"]),
-        },
-      }),
-    },
-  },
-};
-
-const PLAN_ALIASES = new Map([
-  ["FREE", "FREE"],
-  ["EDITOR_FREE", "EDITOR_FREE"],
-  ["INICIANTE", "EDITOR_FREE"],
-  ["STARTER", "EDITOR_FREE"],
-  ["EDITOR_STARTER", "EDITOR_FREE"],
-  ["EDITOR_PRO", "EDITOR_PRO"],
-  ["PRO", "EDITOR_PRO"],
-  ["EDITOR_ULTRA", "EDITOR_ULTRA"],
-  ["CREATOR_PRO", "EDITOR_ULTRA"],
-  ["CRIADOR_PRO", "EDITOR_ULTRA"],
-  ["ULTRA", "EDITOR_ULTRA"],
-  ["EMPRESARIAL", "ENTERPRISE"],
-  ["ENTERPRISE", "ENTERPRISE"],
-  ["ENTERPRISE_ULTRA", "ENTERPRISE"],
-]);
 
 function normalizePlanCode(planCode) {
-  const code = String(planCode || FALLBACK_PLAN)
-    .trim()
-    .toUpperCase()
-    .replace(/\s+/g, "_")
-    .replace(/-/g, "_");
-  const normalized = PLAN_ALIASES.get(code) || code;
-  return PLAN_POLICIES[normalized] ? normalized : FALLBACK_PLAN;
+  return normalizePlanMatrixCode(planCode, "usage") || FALLBACK_PLAN;
 }
 
 function normalizeFeatureKey(feature) {
@@ -489,8 +127,80 @@ function extractRequestedTier({ model, tier }) {
   return inferTierFromModel(model);
 }
 
+function tiersUpTo(maxTier) {
+  const normalizedMaxTier = normalizeTierStrict(maxTier) || "basic";
+  const maxLevel = TIER_LEVEL[normalizedMaxTier] || TIER_LEVEL.basic;
+  return TIER_SEQUENCE.filter((tier) => (TIER_LEVEL[tier] || 0) <= maxLevel);
+}
+
+function createFeaturePolicy({ providers = {}, modelByTier = {}, mockOnly = false } = {}) {
+  return {
+    ...(mockOnly ? { mock_only: true } : {}),
+    providers: providers || {},
+    model_by_tier: modelByTier || {},
+  };
+}
+
+function getPlanMatrix(planCode) {
+  return getPlanLimitMatrix(planCode, { domain: "usage" });
+}
+
+function buildFeaturePolicy(planCode, feature) {
+  const planMatrix = getPlanMatrix(planCode);
+  const featureKey = normalizeFeatureKey(feature);
+  const matrixKey = FEATURE_TO_MATRIX_KEY[featureKey];
+  const featureRule = matrixKey ? planMatrix?.providers?.[matrixKey] : null;
+  if (!featureRule) return null;
+  if (featureRule.mock_only === true || featureRule.availability === "mock_only") {
+    return createFeaturePolicy({ mockOnly: true });
+  }
+
+  const implementedProviders = IMPLEMENTED_PROVIDERS_BY_FEATURE[featureKey] || new Set();
+  const allowedProviders = [...new Set((featureRule.providers || []).map(normalizeProvider))]
+    .filter((provider) => provider && implementedProviders.has(provider));
+  if (allowedProviders.length === 0) {
+    return createFeaturePolicy();
+  }
+
+  const maxTier = normalizeTierStrict(featureRule.model_tier_max || planMatrix?.model_tier_max || planMatrix?.quality_tier) || "basic";
+  const providers = {};
+  const modelByTier = {};
+
+  for (const provider of allowedProviders) {
+    const allowedTiers = tiersUpTo(maxTier).filter((tier) => MODEL_BY_PROVIDER_BY_TIER?.[provider]?.[tier]);
+    if (allowedTiers.length === 0) continue;
+    providers[provider] = allowedTiers;
+    modelByTier[provider] = Object.fromEntries(
+      allowedTiers.map((tier) => [tier, MODEL_BY_PROVIDER_BY_TIER[provider][tier]])
+    );
+  }
+
+  return createFeaturePolicy({ providers, modelByTier });
+}
+
+function buildPlanPolicy(planCode) {
+  const normalizedPlan = normalizePlanCode(planCode);
+  const planMatrix = getPlanMatrix(normalizedPlan);
+  const byFeature = {};
+
+  for (const feature of FEATURE_KEYS) {
+    const featurePolicy = buildFeaturePolicy(normalizedPlan, feature);
+    if (featurePolicy) byFeature[feature] = featurePolicy;
+  }
+
+  return {
+    plan: normalizedPlan,
+    tiers: tiersUpTo(planMatrix?.model_tier_max || planMatrix?.quality_tier || "basic"),
+    byFeature,
+  };
+}
+
 function policyFor(planCode) {
-  return PLAN_POLICIES[normalizePlanCode(planCode)] || PLAN_POLICIES[FALLBACK_PLAN];
+  const normalizedPlan = normalizePlanCode(planCode);
+  if (!POLICY_CACHE.has(normalizedPlan)) {
+    POLICY_CACHE.set(normalizedPlan, buildPlanPolicy(normalizedPlan));
+  }
+  return POLICY_CACHE.get(normalizedPlan) || buildPlanPolicy(FALLBACK_PLAN);
 }
 
 function getFeaturePolicy(planCode, feature) {
@@ -519,13 +229,7 @@ function getAllowedModelsForProvider(featurePolicy, provider) {
 }
 
 export function getPlanModelPolicy(planCode) {
-  const code = normalizePlanCode(planCode);
-  const policy = policyFor(code);
-  return {
-    plan: code,
-    tiers: [...(policy.tiers || ["basic"])],
-    byFeature: policy.byFeature || {},
-  };
+  return cloneValue(policyFor(planCode));
 }
 
 export function isModelAllowed({ plan, feature, provider, model, tier }) {

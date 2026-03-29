@@ -14,6 +14,7 @@ import {
   canPurchaseCoin,
   centsToBrl,
   getConversionFeePercent,
+  getMinimumPurchaseCreditsPerType,
   getPurchaseFeePercent,
   getSaleUnitPriceCents,
   normalizeProductPlanCode,
@@ -514,7 +515,8 @@ function validatePackageInput({ lang, packageTotal, breakdown, planCode }) {
   }
 
   for (const coinType of ["common", "pro", "ultra"]) {
-    if (Number(safeBreakdown[coinType] || 0) <= 0) continue;
+    const amount = Number(safeBreakdown[coinType] || 0);
+    if (amount <= 0) continue;
     if (!canPurchaseCoin(planCode, coinType)) {
       return {
         ok: false,
@@ -524,6 +526,20 @@ function validatePackageInput({ lang, packageTotal, breakdown, planCode }) {
           message: t(lang, "feature_not_available_for_plan"),
           plan: planCode,
           coin_type: coinType,
+        },
+      };
+    }
+    const minimumPurchase = Number(getMinimumPurchaseCreditsPerType(planCode, coinType) || 0);
+    if (minimumPurchase > 0 && amount < minimumPurchase) {
+      return {
+        ok: false,
+        status: 403,
+        payload: {
+          error: "coin_purchase_minimum_not_met",
+          message: t(lang, "feature_not_available_for_plan"),
+          plan: planCode,
+          coin_type: coinType,
+          minimum_purchase_credits: minimumPurchase,
         },
       };
     }
@@ -1435,6 +1451,7 @@ router.post("/purchase/quote", generateLimiter, async (req, res) => {
 
     const { coin_type, amount } = parsed.data;
     const planInfo = await loadPlanInfo(req.user.id);
+    const minimumPurchase = Number(getMinimumPurchaseCreditsPerType(planInfo.planCode, coin_type) || 0);
     if (!canPurchaseCoin(planInfo.planCode, coin_type)) {
       const lang = resolveLang(req);
       return res.status(403).json({
@@ -1442,6 +1459,15 @@ router.post("/purchase/quote", generateLimiter, async (req, res) => {
         message: t(lang, "feature_not_available_for_plan"),
         plan: planInfo.planCode,
         coin_type,
+      });
+    }
+    if (minimumPurchase > 0 && amount < minimumPurchase) {
+      return res.status(403).json({
+        error: "coin_purchase_minimum_not_met",
+        message: t(resolveLang(req), "feature_not_available_for_plan"),
+        plan: planInfo.planCode,
+        coin_type,
+        minimum_purchase_credits: minimumPurchase,
       });
     }
 
@@ -1506,6 +1532,7 @@ router.post("/purchase/create", generateLimiter, async (req, res) => {
 
     const { coin_type, amount, metadata } = parsed.data;
     const planInfo = await loadPlanInfo(req.user.id);
+    const minimumPurchase = Number(getMinimumPurchaseCreditsPerType(planInfo.planCode, coin_type) || 0);
     if (!canPurchaseCoin(planInfo.planCode, coin_type)) {
       const lang = resolveLang(req);
       return res.status(403).json({
@@ -1513,6 +1540,15 @@ router.post("/purchase/create", generateLimiter, async (req, res) => {
         message: t(lang, "feature_not_available_for_plan"),
         plan: planInfo.planCode,
         coin_type,
+      });
+    }
+    if (minimumPurchase > 0 && amount < minimumPurchase) {
+      return res.status(403).json({
+        error: "coin_purchase_minimum_not_met",
+        message: t(resolveLang(req), "feature_not_available_for_plan"),
+        plan: planInfo.planCode,
+        coin_type,
+        minimum_purchase_credits: minimumPurchase,
       });
     }
 

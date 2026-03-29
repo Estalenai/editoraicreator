@@ -20,6 +20,7 @@ import { resolveLang, t } from "../utils/i18n.js";
 import { buildAiContractErrorPayload, getAiContractErrorCode, getAiContractErrorStatus } from "../utils/aiContract.js";
 import { applyHeavyFeatureAbuseGuards, recordRiskOutcome } from "../utils/abuseMitigation.js";
 import { selectProviderAndModel } from "../utils/aiRouter.js";
+import { getPlanAvatarPreviewLimits, validatePlanFeatureRequest } from "../utils/planRuntimeGuards.js";
 import { metricIncrement, metricTiming, recordUsageMetric } from "../utils/metrics.js";
 import {
   factCheck as runFactCheck,
@@ -43,8 +44,6 @@ const AI_PER_MINUTE_LIMIT = 30;
 const aiQuotaWindowMs = 60_000;
 const aiQuotaMap = new Map();
 const AVATAR_IDS = new Set(["ava_01", "ava_02", "ava_03"]);
-const AVATAR_SESSION_SECONDS_LIMIT = 120;
-const AVATAR_DAILY_SESSIONS_LIMIT = 1;
 const AI_ROUTE_COST_SCORE = {
   text_generate: 1,
   fact_check: 1.2,
@@ -388,6 +387,26 @@ function rejectDisallowedManualRouting(req, res) {
       routing: routingPayload,
     })
   );
+}
+
+function getAvatarPlanLimits(planCode) {
+  const limits = getPlanAvatarPreviewLimits(planCode);
+  return {
+    enabled: Boolean(limits?.enabled),
+    sessionsPerDay: Number(limits?.sessions_per_day || 0),
+    secondsPerSession: Number(limits?.seconds_per_session || 0),
+  };
+}
+
+function rejectPlanFeatureViolation(req, res, violation) {
+  if (!violation || violation.ok !== false) return false;
+  return res.status(Number(violation.status || 403)).json({
+    error: violation.error || "plan_limit_violation",
+    message: violation.message || "A requisicao excede o limite deste plano.",
+    plan: violation.plan || req.plan?.code || "FREE",
+    feature: violation.feature || null,
+    details: violation.details || null,
+  });
 }
 
 function resolveProviderKeyForGuards(defaultProviderKey, req) {
@@ -1260,11 +1279,12 @@ router.post(
     if (!idem) return;
     const idempotencyKey = idem.key;
     const requestHash = idem.requestHash;
+    const avatarLimits = getAvatarPlanLimits(req.plan?.code);
 
     const idemDb = getIdempotencyDb(req);
     if (!ensureIdempotencyStorageConfigured(req, res, idemDb)) return;
 
-    if (!canUseAvatarPreview(req.plan?.code)) {
+    if (!canUseAvatarPreview(req.plan?.code) || !avatarLimits.enabled) {
       return res.status(403).json({
         error: "avatar_preview_not_available_for_plan",
         plan: req.plan?.code || "FREE",
@@ -1311,10 +1331,10 @@ router.post(
       }
 
       const sessionsToday = await countAvatarSessionsToday(db, req.user.id);
-      if (sessionsToday >= AVATAR_DAILY_SESSIONS_LIMIT) {
+      if (avatarLimits.sessionsPerDay > 0 && sessionsToday >= avatarLimits.sessionsPerDay) {
         return res.status(429).json({
           error: "avatar_daily_limit_reached",
-          limit: AVATAR_DAILY_SESSIONS_LIMIT,
+          limit: avatarLimits.sessionsPerDay,
         });
       }
 
@@ -1339,7 +1359,7 @@ router.post(
               user_id: req.user.id,
               avatar_id: parsed.avatarId,
               voice_enabled: parsed.voiceEnabled,
-              seconds_limit: AVATAR_SESSION_SECONDS_LIMIT,
+              seconds_limit: avatarLimits.secondsPerSession,
               seconds_used: 0,
               status: "active",
               idempotency_key_start: idempotencyKey,
@@ -1367,11 +1387,11 @@ router.post(
           avatar_id: session.avatar_id || parsed.avatarId,
           voice_enabled: Boolean(session.voice_enabled),
           status: session.status || "active",
-          seconds_limit: Number(session.seconds_limit || AVATAR_SESSION_SECONDS_LIMIT),
+          seconds_limit: Number(session.seconds_limit || avatarLimits.secondsPerSession),
           seconds_used: Number(session.seconds_used || 0),
           remaining_seconds: Math.max(
             0,
-            Number(session.seconds_limit || AVATAR_SESSION_SECONDS_LIMIT) - Number(session.seconds_used || 0)
+            Number(session.seconds_limit || avatarLimits.secondsPerSession) - Number(session.seconds_used || 0)
           ),
           started_at: session.started_at || new Date().toISOString(),
           last_state_json: session.last_state_json || {},
@@ -1406,7 +1426,7 @@ router.post(
           replay: false,
           avatar_id: parsed.avatarId,
           voice_enabled: parsed.voiceEnabled,
-          session_seconds_limit: AVATAR_SESSION_SECONDS_LIMIT,
+          session_seconds_limit: avatarLimits.secondsPerSession,
           provider: "mock",
           model: "avatar-preview-v1",
         },
@@ -1487,10 +1507,11 @@ router.post(
     if (!idem) return;
     const idempotencyKey = idem.key;
     const requestHash = idem.requestHash;
+    const avatarLimits = getAvatarPlanLimits(req.plan?.code);
 
     const idemDb = getIdempotencyDb(req);
     if (!ensureIdempotencyStorageConfigured(req, res, idemDb)) return;
-    if (!canUseAvatarPreview(req.plan?.code)) {
+    if (!canUseAvatarPreview(req.plan?.code) || !avatarLimits.enabled) {
       return res.status(403).json({
         error: "avatar_preview_not_available_for_plan",
         plan: req.plan?.code || "FREE",
@@ -1538,7 +1559,7 @@ router.post(
       if (!session) return res.status(404).json({ error: "avatar_session_not_found" });
 
       const currentUsed = Number(session.seconds_used || 0);
-      const secondsLimit = Number(session.seconds_limit || AVATAR_SESSION_SECONDS_LIMIT);
+      const secondsLimit = Number(session.seconds_limit || avatarLimits.secondsPerSession);
       const nextUsed = Math.min(secondsLimit, currentUsed + parsed.secondsIncrement);
       const limitReached = nextUsed >= secondsLimit;
       const nextStatus = limitReached ? "expired" : "active";
@@ -1566,11 +1587,11 @@ router.post(
           avatar_id: updatedRow.avatar_id,
           voice_enabled: Boolean(updatedRow.voice_enabled),
           status: updatedRow.status,
-          seconds_limit: Number(updatedRow.seconds_limit || AVATAR_SESSION_SECONDS_LIMIT),
+          seconds_limit: Number(updatedRow.seconds_limit || avatarLimits.secondsPerSession),
           seconds_used: Number(updatedRow.seconds_used || 0),
           remaining_seconds: Math.max(
             0,
-            Number(updatedRow.seconds_limit || AVATAR_SESSION_SECONDS_LIMIT) - Number(updatedRow.seconds_used || 0)
+            Number(updatedRow.seconds_limit || avatarLimits.secondsPerSession) - Number(updatedRow.seconds_used || 0)
           ),
           started_at: updatedRow.started_at,
           last_state_json: updatedRow.last_state_json || {},
@@ -1648,10 +1669,11 @@ router.post(
     if (!idem) return;
     const idempotencyKey = idem.key;
     const requestHash = idem.requestHash;
+    const avatarLimits = getAvatarPlanLimits(req.plan?.code);
 
     const idemDb = getIdempotencyDb(req);
     if (!ensureIdempotencyStorageConfigured(req, res, idemDb)) return;
-    if (!canUseAvatarPreview(req.plan?.code)) {
+    if (!canUseAvatarPreview(req.plan?.code) || !avatarLimits.enabled) {
       return res.status(403).json({
         error: "avatar_preview_not_available_for_plan",
         plan: req.plan?.code || "FREE",
@@ -1724,7 +1746,7 @@ router.post(
           avatar_id: updatedRow.avatar_id,
           status: updatedRow.status,
           voice_enabled: Boolean(updatedRow.voice_enabled),
-          seconds_limit: Number(updatedRow.seconds_limit || AVATAR_SESSION_SECONDS_LIMIT),
+          seconds_limit: Number(updatedRow.seconds_limit || avatarLimits.secondsPerSession),
           seconds_used: Number(updatedRow.seconds_used || 0),
           started_at: updatedRow.started_at,
           ended_at: updatedRow.ended_at,
@@ -1792,6 +1814,14 @@ router.post(
     if (rejectDisallowedManualRouting(req, res)) return;
     const parsed = parseImageGenerateInput(req.body || {});
     if (parsed.error) return res.status(400).json({ error: "invalid_image_request" });
+    const imagePlanGuard = validatePlanFeatureRequest({
+      planCode: req.plan?.code,
+      feature: "image_generate",
+      body: req.body || {},
+      parsedInput: parsed,
+      mode: req.aiRouting?.mode,
+    });
+    if (rejectPlanFeatureViolation(req, res, imagePlanGuard)) return;
 
     const endpoint = "ai_image_generate";
     const idem = getCanonicalIdempotencyContext(req, res, endpoint);
@@ -2253,6 +2283,14 @@ router.post(
     if (rejectDisallowedManualRouting(req, res)) return;
     const parsed = parseVideoGenerateInput(req.body || {});
     if (parsed.error) return res.status(400).json({ error: "invalid_video_request" });
+    const videoPlanGuard = validatePlanFeatureRequest({
+      planCode: req.plan?.code,
+      feature: "video_generate",
+      body: req.body || {},
+      parsedInput: parsed,
+      mode: req.aiRouting?.mode,
+    });
+    if (rejectPlanFeatureViolation(req, res, videoPlanGuard)) return;
     const routingCtx = getHeavyRouteRoutingContext(req);
 
     const endpoint = "ai_video_generate";
@@ -2648,6 +2686,14 @@ router.post(
     if (rejectDisallowedManualRouting(req, res)) return;
     const parsed = parseMusicGenerateInput(req.body || {});
     if (parsed.error) return res.status(400).json({ error: "invalid_music_request" });
+    const musicPlanGuard = validatePlanFeatureRequest({
+      planCode: req.plan?.code,
+      feature: "music_generate",
+      body: req.body || {},
+      parsedInput: parsed,
+      mode: req.aiRouting?.mode,
+    });
+    if (rejectPlanFeatureViolation(req, res, musicPlanGuard)) return;
     const routingCtx = getHeavyRouteRoutingContext(req);
 
     const endpoint = "ai_music_generate";
@@ -3037,6 +3083,14 @@ router.post(
     if (rejectDisallowedManualRouting(req, res)) return;
     const parsed = parseVoiceGenerateInput(req.body || {});
     if (parsed.error) return res.status(400).json({ error: "invalid_voice_request" });
+    const voicePlanGuard = validatePlanFeatureRequest({
+      planCode: req.plan?.code,
+      feature: "voice_generate",
+      body: req.body || {},
+      parsedInput: parsed,
+      mode: req.aiRouting?.mode,
+    });
+    if (rejectPlanFeatureViolation(req, res, voicePlanGuard)) return;
     const routingCtx = getHeavyRouteRoutingContext(req);
 
     const endpoint = "ai_voice_generate";
@@ -3430,6 +3484,14 @@ router.post(
     if (rejectDisallowedManualRouting(req, res)) return;
     const parsed = parseSlidesGenerateInput(req.body || {});
     if (parsed.error) return res.status(400).json({ error: "invalid_slides_request" });
+    const slidesPlanGuard = validatePlanFeatureRequest({
+      planCode: req.plan?.code,
+      feature: "slides_generate",
+      body: req.body || {},
+      parsedInput: parsed,
+      mode: req.aiRouting?.mode,
+    });
+    if (rejectPlanFeatureViolation(req, res, slidesPlanGuard)) return;
     const routingCtx = getHeavyRouteRoutingContext(req);
 
     const endpoint = "ai_slides_generate";

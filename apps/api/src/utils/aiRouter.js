@@ -6,6 +6,7 @@ import {
   isModelAllowed,
 } from "./aiModelPolicy.js";
 import { isAIMockForced } from "./aiFlags.js";
+import { getPlanRuntimeMatrix } from "./planRuntimeGuards.js";
 
 const FEATURE_PROVIDER_ORDER = {
   text_generate: {
@@ -40,17 +41,6 @@ const FEATURE_PROVIDER_ORDER = {
     quality: [],
     economy: [],
   },
-};
-
-const FEATURE_SUPPORTED_PROVIDERS = {
-  text_generate: new Set(["openai", "gemini"]),
-  fact_check: new Set(["openai"]),
-  image_generate: new Set(["openai", "gemini"]),
-  image_variation: new Set(["openai", "gemini"]),
-  video_generate: new Set(["runway"]),
-  music_generate: new Set(["suno"]),
-  voice_generate: new Set(["elevenlabs"]),
-  slides_generate: new Set([]),
 };
 
 const MODEL_ALIAS = {
@@ -138,9 +128,14 @@ function tierRank(tier) {
   return 1;
 }
 
-function filterSupportedProviders(feature, providers) {
-  const supported = FEATURE_SUPPORTED_PROVIDERS[feature] || new Set();
-  return (providers || []).filter((provider) => supported.has(String(provider || "").trim().toLowerCase()));
+function filterSupportedProviders(providers) {
+  const deduped = new Set();
+  return (providers || []).filter((provider) => {
+    const normalized = String(provider || "").trim().toLowerCase();
+    if (!normalized || deduped.has(normalized)) return false;
+    deduped.add(normalized);
+    return true;
+  });
 }
 
 function buildRejectedSelection({
@@ -168,7 +163,19 @@ export function selectProviderAndModel({ feature, plan, mode, requested, signals
   const featureKey = normalizeFeature(feature);
   const routingMode = normalizeMode(mode);
   const requestedSpec = normalizeRequested(requested);
-  const allowedProviders = filterSupportedProviders(featureKey, getAllowedProvidersForFeature(plan, featureKey));
+  const runtimePlan = getPlanRuntimeMatrix(plan);
+  const runtimeRules = runtimePlan?.runtime_rules || {};
+
+  if (routingMode === "manual" && runtimeRules.manual_mode_allowed !== true) {
+    return buildRejectedSelection({
+      mode: routingMode,
+      requested: requestedSpec,
+      error: "manual_mode_not_allowed",
+      fallbackReason: "manual_mode_not_allowed",
+    });
+  }
+
+  const allowedProviders = filterSupportedProviders(getAllowedProvidersForFeature(plan, featureKey));
   const riskLevel = String(signals?.risk || "low").toLowerCase();
 
   if (routingMode === "manual" && requestedSpec.provider === "mock") {
