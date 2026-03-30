@@ -708,8 +708,8 @@ const PLAN_LIMITS_MATRIX = {
       "Os limites de combinacao simples, upload e quality outputs estao formalizados aqui, mas outras camadas ainda precisam consumir esta matriz para enforcement completo.",
     ],
     stripe_env_keys: [
-      "STRIPE_PRICE_EDITOR_FREE",
       "STRIPE_PRICE_INICIANTE",
+      "STRIPE_PRICE_EDITOR_FREE",
       "STRIPE_PRICE_EDITOR_STARTER",
       "STRIPE_PRICE_STARTER",
       "STRIPE_PRICE_FREE",
@@ -995,9 +995,9 @@ const PLAN_LIMITS_MATRIX = {
       "Hard caps tecnicos altos para Pro+ continuam formais nesta matriz e nao devem ser removidos por copy ou UX.",
     ],
     stripe_env_keys: [
+      "STRIPE_PRICE_CREATOR_PRO",
       "STRIPE_PRICE_EDITOR_ULTRA",
       "STRIPE_PRICE_ULTRA",
-      "STRIPE_PRICE_CREATOR_PRO",
     ],
   },
   EMPRESARIAL: {
