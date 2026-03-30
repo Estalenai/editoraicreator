@@ -7,10 +7,30 @@ const DEV_DEFAULT_API_URL = "http://127.0.0.1:3000";
 const DEV_FALLBACK_API_URL = "http://127.0.0.1:3100";
 const PROD_PROXY_API_PREFIX = "/api-proxy";
 const IS_DEV = process.env.NODE_ENV !== "production";
-const PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || process.env.NEXT_PUBLIC_API_URL || "";
+const RAW_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || process.env.NEXT_PUBLIC_API_URL || "";
 
 function trimTrailingSlash(url: string) {
   return url.replace(/\/+$/, "");
+}
+
+function resolveDevApiBaseUrl(rawUrl: string) {
+  const value = String(rawUrl || "").trim();
+  if (!value) return DEV_DEFAULT_API_URL;
+
+  try {
+    const parsed = new URL(value);
+    if (parsed.hostname === "localhost") {
+      parsed.hostname = "127.0.0.1";
+      return trimTrailingSlash(parsed.toString());
+    }
+    if (parsed.hostname === "127.0.0.1") {
+      return trimTrailingSlash(parsed.toString());
+    }
+  } catch {
+    // Ignore malformed dev overrides and fall back to the local API default.
+  }
+
+  return DEV_DEFAULT_API_URL;
 }
 
 function buildUrl(path: string, baseUrl: string) {
@@ -18,6 +38,8 @@ function buildUrl(path: string, baseUrl: string) {
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
   return `${baseUrl}${normalizedPath}`;
 }
+
+const PUBLIC_API_URL = IS_DEV ? resolveDevApiBaseUrl(RAW_PUBLIC_API_URL) : trimTrailingSlash(RAW_PUBLIC_API_URL);
 
 export const API_URL = trimTrailingSlash(PUBLIC_API_URL || (IS_DEV ? DEV_DEFAULT_API_URL : PROD_PROXY_API_PREFIX));
 
