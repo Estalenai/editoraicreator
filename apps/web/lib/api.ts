@@ -226,7 +226,13 @@ export const api = {
   },
 
   async createCheckoutSession(body: {
-    plan_code: "EDITOR_FREE" | "EDITOR_PRO" | "EDITOR_ULTRA";
+    plan_code:
+      | "INICIANTE"
+      | "EDITOR_PRO"
+      | "CREATOR_PRO"
+      | "EMPRESARIAL"
+      | "EDITOR_FREE"
+      | "EDITOR_ULTRA";
     mode?: "subscription" | "payment";
     success_url: string;
     cancel_url: string;

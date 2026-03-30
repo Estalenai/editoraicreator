@@ -1,6 +1,19 @@
 import { getPlanCreditsIncluded, getPlanSelfServeCodes, getPlanStripeEnvKeys } from "./planLimitsMatrix.js";
 
 const PLAN_CODES = getPlanSelfServeCodes();
+const CHECKOUT_PLAN_CODE_ALIASES = Object.freeze({
+  EDITOR_FREE: "EDITOR_FREE",
+  INICIANTE: "EDITOR_FREE",
+  STARTER: "EDITOR_FREE",
+  EDITOR_STARTER: "EDITOR_FREE",
+  EDITOR_PRO: "EDITOR_PRO",
+  EDITOR_ULTRA: "EDITOR_ULTRA",
+  CREATOR_PRO: "EDITOR_ULTRA",
+  CRIADOR_PRO: "EDITOR_ULTRA",
+  ULTRA: "EDITOR_ULTRA",
+  EMPRESARIAL: "EMPRESARIAL",
+  BUSINESS: "EMPRESARIAL",
+});
 
 function readPriceId(value) {
   const v = String(value || "").trim();
@@ -54,9 +67,20 @@ export function getPlanCatalog() {
   return buildCatalog();
 }
 
+export function normalizeCheckoutPlanCode(planCode) {
+  const key = String(planCode || "").trim().toUpperCase();
+  if (!key) return null;
+  return CHECKOUT_PLAN_CODE_ALIASES[key] || null;
+}
+
+export function isSelfServePlanCode(planCode) {
+  const key = String(planCode || "").trim().toUpperCase();
+  return PLAN_CODES.includes(key);
+}
+
 export function getPriceIdByPlanCode(planCode) {
   const catalog = buildCatalog();
-  const key = String(planCode || "").toUpperCase();
+  const key = normalizeCheckoutPlanCode(planCode) || String(planCode || "").trim().toUpperCase();
   const entry = catalog[key];
   return entry?.price_id || null;
 }
@@ -70,8 +94,8 @@ export function getPlanCodeByPriceId(priceId) {
 }
 
 export function assertValidPlanCode(planCode) {
-  const key = String(planCode || "").toUpperCase();
-  if (!PLAN_CODES.includes(key)) {
+  const key = normalizeCheckoutPlanCode(planCode);
+  if (!key || !PLAN_CODES.includes(key)) {
     throw createError("invalid_plan_code", "Invalid plan_code", { plan_code: planCode || null });
   }
   return key;

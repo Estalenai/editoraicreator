@@ -15,6 +15,8 @@ import {
   getPlanCatalog,
   getPlanCodeByPriceId,
   getPriceIdByPlanCode,
+  isSelfServePlanCode,
+  normalizeCheckoutPlanCode,
 } from "../utils/stripePlans.js";
 import { getPlansCatalog } from "../utils/plansCatalog.js";
 import { logger } from "../utils/logger.js";
@@ -1609,7 +1611,14 @@ router.post("/checkout/session", express.json({ limit: "1mb" }), authMiddleware,
   let planCode;
   try {
     if (body.plan_code) {
-      planCode = assertValidPlanCode(body.plan_code);
+      const normalizedPlanCode = normalizeCheckoutPlanCode(body.plan_code);
+      if (!normalizedPlanCode) {
+        return res.status(400).json({ error: "invalid_plan_code" });
+      }
+      if (!isSelfServePlanCode(normalizedPlanCode)) {
+        return res.status(400).json({ error: "plan_unavailable", plan_code: normalizedPlanCode });
+      }
+      planCode = normalizedPlanCode;
     } else if (body.price_id) {
       planCode = getPlanCodeByPriceId(body.price_id);
       if (!planCode) {

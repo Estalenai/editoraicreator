@@ -175,10 +175,10 @@ function clearCheckoutSearchParams(keys: string[]) {
   window.history.replaceState(window.history.state, "", nextUrl);
 }
 
-const CHECKOUT_PLAN_BY_CATALOG_CODE: Record<string, "EDITOR_FREE" | "EDITOR_PRO" | "EDITOR_ULTRA"> = {
-  EDITOR_FREE: "EDITOR_FREE",
+const CHECKOUT_PLAN_BY_CATALOG_CODE: Record<string, "INICIANTE" | "EDITOR_PRO" | "CREATOR_PRO"> = {
+  EDITOR_FREE: "INICIANTE",
   EDITOR_PRO: "EDITOR_PRO",
-  EDITOR_ULTRA: "EDITOR_ULTRA",
+  EDITOR_ULTRA: "CREATOR_PRO",
 };
 
 export default function PlansPage() {

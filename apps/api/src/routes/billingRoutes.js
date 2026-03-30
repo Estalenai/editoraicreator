@@ -4,9 +4,10 @@ import { authMiddleware } from "../middlewares/authMiddleware.js";
 import { logger } from "../utils/logger.js";
 import { stripe, getOrCreateStripeCustomer } from "../utils/stripe.js";
 import {
-  assertValidPlanCode,
   getPlanCodeByPriceId,
   getPriceIdByPlanCode,
+  isSelfServePlanCode,
+  normalizeCheckoutPlanCode,
 } from "../utils/stripePlans.js";
 import supabaseAdmin, { isSupabaseAdminEnabled } from "../config/supabaseAdmin.js";
 
@@ -40,7 +41,14 @@ function getDb() {
 
 function resolvePlanCode({ plan_code, price_id }) {
   if (plan_code) {
-    return { planCode: assertValidPlanCode(plan_code) };
+    const normalizedPlanCode = normalizeCheckoutPlanCode(plan_code);
+    if (!normalizedPlanCode) {
+      return { error: "invalid_plan_code" };
+    }
+    if (!isSelfServePlanCode(normalizedPlanCode)) {
+      return { error: "plan_unavailable", planCode: normalizedPlanCode };
+    }
+    return { planCode: normalizedPlanCode };
   }
 
   if (price_id) {
@@ -78,6 +86,7 @@ async function handleLegacyCheckout(req, res) {
     if (resolved.error) {
       return res.status(400).json({
         error: resolved.error,
+        ...(resolved.planCode ? { plan_code: resolved.planCode } : {}),
         ...buildDeprecatedWarning(),
       });
     }
