@@ -1544,7 +1544,10 @@ router.get("/plans", authMiddleware, async (req, res) => {
     })
     .map((plan) => {
       const code = String(plan?.code || "").toUpperCase();
+      const publicPlanCode = String(plan?.plan_code || code).toUpperCase();
       const stripePlan = stripeCatalogByCode.get(code) || null;
+      const availabilityMode = String(plan?.availability?.mode || "").toLowerCase();
+      const enabled = availabilityMode === "self_serve" && plan?.purchasable !== false;
       const badgeLabel =
         plan?.badge_label && typeof plan.badge_label === "object"
           ? plan.badge_label
@@ -1553,10 +1556,10 @@ router.get("/plans", authMiddleware, async (req, res) => {
             : { "pt-BR": null, "en-US": null };
 
       return {
-        plan_code: code,
-        name: plan?.name || code,
+        plan_code: publicPlanCode,
+        name: plan?.name || publicPlanCode,
         price_id: stripePlan?.price_id || null,
-        enabled: Boolean(stripePlan?.price_id) && plan?.purchasable !== false,
+        enabled,
         visible: plan?.visible !== false,
         highlight: plan?.highlight || stripePlan?.highlight || null,
         badge_label: badgeLabel,

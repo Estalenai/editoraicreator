@@ -251,6 +251,18 @@ function normalizeLang(lang) {
   return String(lang || "").toLowerCase().startsWith("en") ? "en-US" : "pt-BR";
 }
 
+function getPublicPlanCode(planCode) {
+  const normalized = normalizePlanMatrixCode(planCode);
+  switch (normalized) {
+    case "EDITOR_FREE":
+      return "INICIANTE";
+    case "EDITOR_ULTRA":
+      return "CREATOR_PRO";
+    default:
+      return normalized;
+  }
+}
+
 export function getPlanCopyByCode(planCode, lang = "pt-BR") {
   const locale = normalizeLang(lang);
   const key = String(planCode || "").trim().toUpperCase();
@@ -493,6 +505,7 @@ function buildLimitsSnapshot(planMatrix) {
 
 function buildPlanEntry(def, lang) {
   const code = def.code;
+  const publicPlanCode = getPublicPlanCode(code);
   const locale = normalizeLang(lang);
   const { highlight, badgeLabel } = getHighlightInfo(code);
   const copy = getPlanCopyByCode(code, locale);
@@ -519,6 +532,7 @@ function buildPlanEntry(def, lang) {
 
   return {
     code,
+    plan_code: publicPlanCode,
     name: t(locale, def.nameKey),
     visible: planMatrix?.storefront_visibility !== false,
     coming_soon: planMatrix?.coming_soon === true,
