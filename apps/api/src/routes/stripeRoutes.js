@@ -658,7 +658,7 @@ function chooseRelevantSubscription(subscriptions) {
     .sort((a, b) => priorities[a.status] - priorities[b.status])[0] || null;
 }
 
-async function grantCoinsForPlan({ userId, planCode, kind, eventId }) {
+async function grantCoinsForPlan({ userId, planCode, kind, eventId, sourceEventId = null }) {
   const grants = getGrantForPlan(planCode, kind);
   if (!grants.common && !grants.pro && !grants.ultra) {
     return { status: "skipped_zero_grant" };
@@ -672,7 +672,7 @@ async function grantCoinsForPlan({ userId, planCode, kind, eventId }) {
     p_common: Number(grants.common || 0),
     p_pro: Number(grants.pro || 0),
     p_ultra: Number(grants.ultra || 0),
-    p_source_event_id: eventId,
+    p_source_event_id: sourceEventId || eventId,
     p_meta: {
       provider: "stripe",
       kind,
@@ -713,6 +713,66 @@ async function grantCoinsForPlan({ userId, planCode, kind, eventId }) {
     result: data,
     rpcStatus,
     grantRpcPath,
+  };
+}
+
+function extractInvoicePeriodBounds(invoice) {
+  const lines = Array.isArray(invoice?.lines?.data) ? invoice.lines.data : [];
+  const preferredLine =
+    lines.find((line) => String(line?.type || "").toLowerCase() === "subscription") ||
+    lines.find((line) => Number.isFinite(Number(line?.period?.end))) ||
+    lines[0] ||
+    null;
+
+  const startValue =
+    preferredLine?.period?.start ??
+    invoice?.period_start ??
+    null;
+  const endValue =
+    preferredLine?.period?.end ??
+    invoice?.period_end ??
+    null;
+
+  return {
+    start:
+      Number.isFinite(Number(startValue)) && startValue
+        ? new Date(Number(startValue) * 1000).toISOString()
+        : null,
+    end:
+      Number.isFinite(Number(endValue)) && endValue
+        ? new Date(Number(endValue) * 1000).toISOString()
+        : null,
+  };
+}
+
+function buildSubscriptionCycleGrantKey({ subscriptionId, planCode, periodStart = null, periodEnd = null }) {
+  const safeSubscriptionId = typeof subscriptionId === "string" ? subscriptionId.trim() : "";
+  const safePlanCode = typeof planCode === "string" ? planCode.trim().toUpperCase() : "";
+  if (!safeSubscriptionId || !safePlanCode) return null;
+  const stablePeriod = String(periodEnd || periodStart || "unknown_period").trim();
+  return `stripe_subscription_cycle:${safeSubscriptionId}:${safePlanCode}:${stablePeriod}`;
+}
+
+async function readWalletSnapshotForUser(userId) {
+  const db = getDb();
+  if (!db) throw new Error("supabase_admin_disabled");
+
+  const { data, error } = await db
+    .from("creator_coins_wallet")
+    .select("user_id, common, pro, ultra, updated_at")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(`wallet_snapshot_failed: ${error.message}`);
+  }
+
+  return {
+    user_id: data?.user_id || userId,
+    common: Number(data?.common ?? 0),
+    pro: Number(data?.pro ?? 0),
+    ultra: Number(data?.ultra ?? 0),
+    updated_at: data?.updated_at || null,
   };
 }
 
@@ -1834,6 +1894,10 @@ router.post("/subscription/refresh", authMiddleware, async (req, res) => {
     const priceId = extractSubscriptionPriceId(chosen);
     const mappedPlan = getPlanCodeByPriceId(priceId) || "FREE";
     const normalizedStatus = String(chosen.status || "canceled");
+    const currentPeriodStart =
+      chosen.current_period_start ? new Date(chosen.current_period_start * 1000).toISOString() : null;
+    const currentPeriodEnd =
+      chosen.current_period_end ? new Date(chosen.current_period_end * 1000).toISOString() : null;
 
     await upsertSubscription({
       userId,
@@ -1841,10 +1905,31 @@ router.post("/subscription/refresh", authMiddleware, async (req, res) => {
       status: normalizedStatus,
       stripeSubscriptionId: chosen.id || null,
       stripeCustomerId: customerId,
-      currentPeriodStart: chosen.current_period_start ? new Date(chosen.current_period_start * 1000).toISOString() : null,
-      currentPeriodEnd: chosen.current_period_end ? new Date(chosen.current_period_end * 1000).toISOString() : null,
+      currentPeriodStart,
+      currentPeriodEnd,
       cancelAtPeriodEnd: Boolean(chosen.cancel_at_period_end),
     });
+
+    let grant = { status: "skipped_not_due" };
+    if (mappedPlan !== "FREE" && ["active", "trialing", "past_due"].includes(normalizedStatus)) {
+      const subscriptionGrantKey = buildSubscriptionCycleGrantKey({
+        subscriptionId: chosen.id || null,
+        planCode: mappedPlan,
+        periodStart: currentPeriodStart,
+        periodEnd: currentPeriodEnd,
+      });
+      if (subscriptionGrantKey) {
+        grant = await grantCoinsForPlan({
+          userId,
+          planCode: mappedPlan,
+          kind: "monthly",
+          eventId: `subscription_refresh:${chosen.id || "unknown"}`,
+          sourceEventId: subscriptionGrantKey,
+        });
+      }
+    }
+
+    const wallet = await readWalletSnapshotForUser(userId);
 
     trackBillingEvent({
       event: "checkout.subscription.refresh",
@@ -1853,6 +1938,7 @@ router.post("/subscription/refresh", authMiddleware, async (req, res) => {
       additional: {
         source: "stripe.subscription_refresh",
         status: "success",
+        grant_status: grant?.status || null,
       },
     });
 
@@ -1863,10 +1949,12 @@ router.post("/subscription/refresh", authMiddleware, async (req, res) => {
         status: normalizedStatus,
         stripe_subscription_id: chosen.id || null,
         stripe_customer_id: customerId,
-        current_period_start: chosen.current_period_start ? new Date(chosen.current_period_start * 1000).toISOString() : null,
-        current_period_end: chosen.current_period_end ? new Date(chosen.current_period_end * 1000).toISOString() : null,
+        current_period_start: currentPeriodStart,
+        current_period_end: currentPeriodEnd,
         cancel_at_period_end: Boolean(chosen.cancel_at_period_end),
       },
+      grant,
+      wallet,
     });
   } catch (error) {
     logger.error("stripe_subscription_refresh_failed", {
@@ -2363,21 +2451,29 @@ router.post("/webhook", express.raw({ type: "application/json" }), async (req, r
         return res.status(200).json({ ok: true });
       }
 
+      const invoicePeriod = extractInvoicePeriodBounds(eventObject);
       await upsertSubscription({
         userId,
         planCode: planCode || "FREE",
         status: "active",
         stripeSubscriptionId: subscriptionId,
         stripeCustomerId: customerId,
-        currentPeriodStart: periodStart,
-        currentPeriodEnd: periodEnd,
+        currentPeriodStart: invoicePeriod.start || periodStart,
+        currentPeriodEnd: invoicePeriod.end || periodEnd,
       });
       if (planCode) {
+        const subscriptionGrantKey = buildSubscriptionCycleGrantKey({
+          subscriptionId,
+          planCode,
+          periodStart: invoicePeriod.start || periodStart,
+          periodEnd: invoicePeriod.end || periodEnd,
+        });
         const grantResult = await grantCoinsForPlan({
           userId,
           planCode,
           kind: "monthly",
           eventId,
+          sourceEventId: subscriptionGrantKey || eventId,
         });
         logger.info("stripe_plan_grant", {
           eventIdPrefix: idPrefix(eventId),

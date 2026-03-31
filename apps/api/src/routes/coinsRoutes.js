@@ -267,6 +267,218 @@ function buildCreditPayload(coinType, amount) {
   return { common, pro, ultra };
 }
 
+function isUuid(value) {
+  return typeof value === "string" && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+}
+
+function isMissingCoinsCreditV1Error(error) {
+  const msg = String(error?.message || "").toLowerCase();
+  return (
+    msg.includes("coins_credit_v1") &&
+    (msg.includes("could not find the function") ||
+      (msg.includes("function") && msg.includes("does not exist")) ||
+      msg.includes("schema cache"))
+  );
+}
+
+function isAmbiguousCoinsCreditV1Error(error) {
+  const code = String(error?.code || "").toUpperCase();
+  const msg = String(error?.message || "").toLowerCase();
+  return (
+    code === "PGRST203" &&
+    msg.includes("coins_credit_v1") &&
+    msg.includes("could not choose the best candidate function")
+  );
+}
+
+function isMissingCoinPackageGrantV1Error(error) {
+  const code = String(error?.code || "").toUpperCase();
+  const msg = String(error?.message || "").toLowerCase();
+  if (code === "PGRST202" && msg.includes("coin_package_grant_v1")) return true;
+  return (
+    msg.includes("coin_package_grant_v1") &&
+    (msg.includes("could not find the function") ||
+      (msg.includes("function") && msg.includes("does not exist")) ||
+      msg.includes("schema cache"))
+  );
+}
+
+function isCoinsCreditV1FallbackCandidateError(error) {
+  if (isMissingCoinsCreditV1Error(error) || isAmbiguousCoinsCreditV1Error(error)) return true;
+  const msg = String(error?.message || "").toLowerCase();
+  return (
+    msg.includes("relation") && msg.includes("does not exist") && msg.includes("coins_transactions")
+  );
+}
+
+function normalizeGrantBreakdown(input = {}) {
+  return {
+    common: Math.max(0, Math.trunc(Number(input.common || 0))),
+    pro: Math.max(0, Math.trunc(Number(input.pro || 0))),
+    ultra: Math.max(0, Math.trunc(Number(input.ultra || 0))),
+  };
+}
+
+async function grantCoinsCreditV1OrFallback({
+  db,
+  userId,
+  breakdown,
+  feature,
+  sourceEventId,
+  meta = {},
+  reason = "stripe_grant",
+  refKind = "stripe_event",
+  refId = null,
+}) {
+  const normalized = normalizeGrantBreakdown(breakdown);
+  if (!normalized.common && !normalized.pro && !normalized.ultra) {
+    return {
+      status: "skipped_zero_grant",
+      delta: normalized,
+      grantCallPath: "none",
+    };
+  }
+
+  const v1 = await db.rpc("coins_credit_v1", {
+    p_user_id: userId,
+    p_common: normalized.common,
+    p_pro: normalized.pro,
+    p_ultra: normalized.ultra,
+    p_feature: feature,
+    p_source_event_id: sourceEventId,
+    p_meta: meta,
+  });
+
+  if (!v1.error) {
+    return {
+      status: String(v1.data?.status || "ok"),
+      delta: v1.data?.delta || normalized,
+      grantCallPath: "rpc:coins_credit_v1",
+    };
+  }
+
+  if (!isCoinsCreditV1FallbackCandidateError(v1.error)) {
+    throw new Error(`coins_credit_v1_failed: ${v1.error.message}`);
+  }
+
+  const fallbackItems = [
+    { coinType: "common", amount: normalized.common },
+    { coinType: "pro", amount: normalized.pro },
+    { coinType: "ultra", amount: normalized.ultra },
+  ].filter((item) => item.amount > 0);
+
+  let fallbackHadOk = false;
+  let fallbackHadNoop = false;
+  for (const item of fallbackItems) {
+    const legacyGrant = await db.rpc("coins_credit", {
+      p_user_id: userId,
+      p_coin_type: item.coinType,
+      p_amount: item.amount,
+      p_reason: reason,
+      p_feature: feature,
+      p_ref_kind: refKind,
+      p_ref_id: refId || sourceEventId,
+      p_idempotency_key: `${sourceEventId}:${item.coinType}`,
+      p_meta: meta,
+    });
+
+    if (legacyGrant.error) {
+      throw new Error(`coins_credit_fallback_failed: ${legacyGrant.error.message}`);
+    }
+
+    const legacyStatus = String(legacyGrant.data?.status || "ok").toLowerCase();
+    if (legacyStatus === "noop") fallbackHadNoop = true;
+    else fallbackHadOk = true;
+  }
+
+  return {
+    status: fallbackHadOk ? "ok" : (fallbackHadNoop ? "replay" : "noop"),
+    delta: normalized,
+    grantCallPath: "rpc:coins_credit (fallback)",
+  };
+}
+
+async function grantCoinPackageV1OrFallback({ db, userId, breakdown, sourceEventId, meta = {} }) {
+  const normalized = normalizeGrantBreakdown(breakdown);
+  if (!normalized.common && !normalized.pro && !normalized.ultra) {
+    return {
+      status: "skipped_zero_grant",
+      delta: normalized,
+      grantCallPath: "none",
+    };
+  }
+
+  const variants = [
+    {
+      grantCallPath: "rpc:coin_package_grant_v1",
+      payload: {
+        p_user_id: userId,
+        p_common: normalized.common,
+        p_pro: normalized.pro,
+        p_ultra: normalized.ultra,
+        p_source_event_id: sourceEventId,
+        p_meta: meta,
+      },
+    },
+    {
+      grantCallPath: "rpc:coin_package_grant_v1(feature)",
+      payload: {
+        p_user_id: userId,
+        p_common: normalized.common,
+        p_pro: normalized.pro,
+        p_ultra: normalized.ultra,
+        p_source_event_id: sourceEventId,
+        p_feature: "coins_package_checkout",
+        p_meta: meta,
+      },
+    },
+    {
+      grantCallPath: "rpc:coin_package_grant_v1(source_type)",
+      payload: {
+        p_user_id: userId,
+        p_common: normalized.common,
+        p_pro: normalized.pro,
+        p_ultra: normalized.ultra,
+        p_source_event_id: sourceEventId,
+        p_source_type: "stripe_event",
+        p_meta: meta,
+      },
+    },
+  ];
+
+  let lastError = null;
+  for (const variant of variants) {
+    const result = await db.rpc("coin_package_grant_v1", variant.payload);
+    if (!result.error) {
+      return {
+        status: String(result.data?.status || "ok"),
+        delta: result.data?.delta || normalized,
+        grantCallPath: variant.grantCallPath,
+      };
+    }
+    lastError = result.error;
+    if (!isMissingCoinPackageGrantV1Error(result.error)) {
+      throw new Error(`coin_package_grant_v1_failed: ${result.error.message}`);
+    }
+  }
+
+  if (lastError && !isMissingCoinPackageGrantV1Error(lastError)) {
+    throw new Error(`coin_package_grant_v1_failed: ${lastError.message}`);
+  }
+
+  return grantCoinsCreditV1OrFallback({
+    db,
+    userId,
+    breakdown: normalized,
+    feature: "coins_package_checkout",
+    sourceEventId,
+    meta,
+    reason: "stripe_grant",
+    refKind: "stripe_event",
+    refId: sourceEventId,
+  });
+}
+
 function normalizeAbsoluteBaseUrl(value) {
   const raw = String(value || "").trim();
   if (!raw) return null;
@@ -972,6 +1184,128 @@ async function markPackageQuoteUsed({ quoteId, userId, checkoutSessionId, paymen
   }
 }
 
+async function markPackageQuoteFulfilled({
+  quoteId,
+  userId,
+  checkoutSessionId = null,
+  paymentIntentId = null,
+  usedAt = new Date().toISOString(),
+}) {
+  const safeSessionId = toStringOrNull(checkoutSessionId);
+  const safePaymentIntentId = toStringOrNull(paymentIntentId);
+  const patch = {
+    used_at: usedAt,
+  };
+  if (safeSessionId) patch.checkout_session_id = safeSessionId;
+  if (safePaymentIntentId) patch.payment_intent_id = safePaymentIntentId;
+
+  if (!isPackageQuoteDbOnCooldown() && isSupabaseAdminEnabled() && supabaseAdmin) {
+    const { error } = await coinPackageQuotesTable()
+      .update(patch)
+      .eq("quote_id", quoteId)
+      .eq("user_id", userId);
+    if (error) {
+      if (isMissingCoinPackageQuotesTableError(error)) {
+        markCoinPackageQuotesFallback(error, "coin_package_quotes_table_missing");
+      } else {
+        markCoinPackageQuotesFallback(error, "coin_package_quotes_mark_fulfilled_failed");
+        logger.warn("coins_package_quote_db_mark_fulfilled_failed", {
+          userId,
+          quoteIdPrefix: idemPrefix(quoteId),
+          sessionIdPrefix: idemPrefix(safeSessionId),
+          message: error.message,
+        });
+      }
+    } else {
+      clearPackageQuoteDbCooldown();
+    }
+  }
+
+  const memoryRecord = packageQuoteStore.get(String(quoteId));
+  if (memoryRecord && memoryRecord.userId === userId) {
+    memoryRecord.used_at = usedAt;
+    if (safeSessionId) memoryRecord.checkout_session_id = safeSessionId;
+    if (safePaymentIntentId) memoryRecord.payment_intent_id = safePaymentIntentId;
+    packageQuoteStore.set(String(quoteId), memoryRecord);
+  }
+}
+
+async function reconcilePackageCheckoutFromStripe({ quoteRecord, userId }) {
+  if (!stripe || !quoteRecord?.checkout_session_id || !isSupabaseAdminEnabled() || !supabaseAdmin) {
+    return { ok: false, status: "skipped_unavailable" };
+  }
+  if (quoteRecord?.used_at) {
+    return { ok: true, status: "already_fulfilled" };
+  }
+
+  const quote = quoteRecord?.quote || null;
+  const session = await stripe.checkout.sessions.retrieve(String(quoteRecord.checkout_session_id));
+  const paymentStatus = String(session?.payment_status || "").toLowerCase();
+  if (paymentStatus !== "paid") {
+    return { ok: false, status: "payment_not_paid" };
+  }
+
+  const sessionUserId =
+    (isUuid(session?.client_reference_id) ? session.client_reference_id : null) ||
+    (isUuid(session?.metadata?.user_id) ? session.metadata.user_id : null);
+  if (sessionUserId && sessionUserId !== userId) {
+    throw new Error("package_checkout_user_mismatch");
+  }
+
+  const expectedTotal = Number(
+    quote?.pricing?.total_amount ??
+    quote?.pricing?.total_cents ??
+    quote?.package_total ??
+    0
+  );
+  const actualTotal = Number(session?.amount_total ?? 0);
+  if (expectedTotal > 0 && actualTotal > 0 && expectedTotal !== actualTotal) {
+    throw new Error("package_checkout_total_mismatch");
+  }
+
+  const breakdown = normalizePackageBreakdown(quote?.breakdown);
+  const dedupeKey =
+    (quoteRecord?.checkout_session_id ? `coin_package_mix:${String(quoteRecord.checkout_session_id)}` : null) ||
+    (quoteRecord?.payment_intent_id ? `coin_package_mix:${String(quoteRecord.payment_intent_id)}` : null) ||
+    `coin_package_mix:${String(quote?.quote_id || "unknown_quote")}`;
+
+  const grant = await grantCoinPackageV1OrFallback({
+    db: supabaseAdmin,
+    userId,
+    breakdown,
+    sourceEventId: dedupeKey,
+    meta: {
+      provider: "stripe",
+      kind: "package_mix",
+      source: normalizeQuoteStore(quoteRecord?.source),
+      stripe_checkout_session_id: quoteRecord?.checkout_session_id || null,
+      stripe_payment_intent_id:
+        (typeof session?.payment_intent === "string" ? session.payment_intent : null) ||
+        quoteRecord?.payment_intent_id ||
+        null,
+      quote_id: quote?.quote_id || null,
+      pricing: quote?.pricing || null,
+      package_total: quote?.package_total || null,
+    },
+  });
+
+  await markPackageQuoteFulfilled({
+    quoteId: quote?.quote_id,
+    userId,
+    checkoutSessionId: quoteRecord?.checkout_session_id || null,
+    paymentIntentId:
+      (typeof session?.payment_intent === "string" ? session.payment_intent : null) ||
+      quoteRecord?.payment_intent_id ||
+      null,
+  });
+
+  return {
+    ok: true,
+    status: String(grant?.status || "ok"),
+    grant,
+  };
+}
+
 /**
  * GET /api/coins/balance
  */
@@ -1032,13 +1366,26 @@ router.get("/packages/status", async (req, res) => {
       return res.status(400).json({ error: "quote_id_required" });
     }
 
-    const quoteRecord = await readPackageQuote({
+    let quoteRecord = await readPackageQuote({
       quoteId,
       userId: req.user.id,
     });
 
     if (!quoteRecord) {
       return res.status(404).json({ error: "package_quote_not_found" });
+    }
+
+    let reconciliation = null;
+    if (!quoteRecord.used_at && quoteRecord.checkout_session_id) {
+      reconciliation = await reconcilePackageCheckoutFromStripe({
+        quoteRecord,
+        userId: req.user.id,
+      });
+      quoteRecord =
+        (await readPackageQuote({
+          quoteId,
+          userId: req.user.id,
+        })) || quoteRecord;
     }
 
     const wallet = await getWalletSnapshotAuthed(req.access_token, req.user.id);
@@ -1058,6 +1405,7 @@ router.get("/packages/status", async (req, res) => {
         source: normalizeQuoteStore(quoteRecord.source),
       },
       wallet,
+      reconciliation,
     });
   } catch (error) {
     logger.error("coins_package_status_failed", {
@@ -1700,33 +2048,39 @@ router.post("/purchase/confirm", generateLimiter, async (req, res) => {
     const credit = buildCreditPayload(intent.coin_type, Number(intent.amount));
     const sourceEventId = `purchase_intent:${intent.id}`;
 
-    const { data: creditData, error: creditError } = await supabaseAdmin.rpc("coins_credit_v1", {
-      p_user_id: req.user.id,
-      p_common: credit.common,
-      p_pro: credit.pro,
-      p_ultra: credit.ultra,
-      p_feature: "coins_purchase_confirm",
-      p_source_event_id: sourceEventId,
-      p_meta: {
-        intent_id: intent.id,
-        coin_type: intent.coin_type,
-        amount: intent.amount,
-        total_cents: intent.total_cents,
-      },
-    });
-
-    if (creditError) {
+    let grantResult;
+    try {
+      grantResult = await grantCoinsCreditV1OrFallback({
+        db: supabaseAdmin,
+        userId: req.user.id,
+        breakdown: credit,
+        feature: "coins_purchase_confirm",
+        sourceEventId,
+        meta: {
+          intent_id: intent.id,
+          coin_type: intent.coin_type,
+          amount: intent.amount,
+          total_cents: intent.total_cents,
+        },
+        reason: "manual_purchase_confirm",
+        refKind: "purchase_intent",
+        refId: intent.id,
+      });
+    } catch (creditError) {
       await supabaseAdmin
         .from("credit_purchase_intents")
         .update({
           status: "failed",
-          error: creditError.message,
+          error: creditError?.message || String(creditError),
           idempotency_key_confirm: idempotencyKey,
           updated_at: new Date().toISOString(),
         })
         .eq("id", intent.id);
 
-      return res.status(400).json({ error: "purchase_credit_failed", details: creditError.message });
+      return res.status(400).json({
+        error: "purchase_credit_failed",
+        details: creditError?.message || String(creditError),
+      });
     }
 
     await supabaseAdmin
@@ -1750,8 +2104,9 @@ router.post("/purchase/confirm", generateLimiter, async (req, res) => {
         confirmed_at: new Date().toISOString(),
       },
       grant: {
-        status: creditData?.status || "ok",
-        delta: creditData?.delta || credit,
+        status: grantResult?.status || "ok",
+        delta: grantResult?.delta || credit,
+        grant_call_path: grantResult?.grantCallPath || null,
       },
       balance: wallet,
     };

@@ -355,15 +355,17 @@ function PlansPageContent() {
     (async () => {
       let synced = false;
       let lastSyncError: any = null;
+      let lastGrantStatus: string | null = null;
 
-      for (const delayMs of [0, 1200, 2400]) {
+      for (const delayMs of [0, 1200, 2400, 4200, 6400]) {
         if (cancelled) return;
         if (delayMs > 0) {
           await waitForCheckoutSync(delayMs);
         }
 
         try {
-          await api.refreshStripeSubscription();
+          const syncPayload = await api.refreshStripeSubscription();
+          lastGrantStatus = String(syncPayload?.grant?.status || "").trim() || null;
           await refresh();
           await loadCatalog();
           synced = true;
@@ -379,7 +381,10 @@ function PlansPageContent() {
       if (synced) {
         setCheckoutNotice({
           tone: "success",
-          message: `Pagamento confirmado. Plano, ${CREATOR_COINS_PUBLIC_NAME} incluídas e disponibilidade já foram atualizados.`,
+          message:
+            lastGrantStatus === "granted" || lastGrantStatus === "ok"
+              ? `Pagamento confirmado. Plano, ${CREATOR_COINS_PUBLIC_NAME} incluídas e disponibilidade já foram atualizados.`
+              : `Pagamento confirmado. Plano e disponibilidade já foram atualizados; o grant de ${CREATOR_COINS_PUBLIC_NAME} foi reconciliado sem duplicidade.`,
         });
       } else {
         setCheckoutNotice({
