@@ -185,7 +185,7 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
   const [packageError, setPackageError] = useState<string | null>(null);
   const [mixPreset, setMixPreset] = useState<MixPreset>("equal");
   const quoteRequestSequenceRef = useRef(0);
-  const autoQuoteTimeoutRef = useRef<ReturnType<typeof window.setTimeout> | null>(null);
+  const autoQuoteTimeoutRef = useRef<ReturnType<typeof globalThis.setTimeout> | null>(null);
 
   const liveCustomPackageTotal = useMemo(() => {
     const parsed = Number(customPackageTotalInput);
@@ -270,7 +270,7 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
   function invalidatePackageQuoteState(clearError = true) {
     quoteRequestSequenceRef.current += 1;
     if (autoQuoteTimeoutRef.current) {
-      window.clearTimeout(autoQuoteTimeoutRef.current);
+      globalThis.clearTimeout(autoQuoteTimeoutRef.current);
       autoQuoteTimeoutRef.current = null;
     }
     setPackageLoading(false);
@@ -403,7 +403,7 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
   useEffect(() => {
     if (!coinsPanelOpen) {
       if (autoQuoteTimeoutRef.current) {
-        window.clearTimeout(autoQuoteTimeoutRef.current);
+        globalThis.clearTimeout(autoQuoteTimeoutRef.current);
         autoQuoteTimeoutRef.current = null;
       }
       setPackageLoading(false);
@@ -412,7 +412,7 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
 
     if (!hasLiveQuoteTarget) {
       if (autoQuoteTimeoutRef.current) {
-        window.clearTimeout(autoQuoteTimeoutRef.current);
+        globalThis.clearTimeout(autoQuoteTimeoutRef.current);
         autoQuoteTimeoutRef.current = null;
       }
       setPackageLoading(false);
@@ -421,7 +421,7 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
 
     if (quoteMatchesSelection) {
       if (autoQuoteTimeoutRef.current) {
-        window.clearTimeout(autoQuoteTimeoutRef.current);
+        globalThis.clearTimeout(autoQuoteTimeoutRef.current);
         autoQuoteTimeoutRef.current = null;
       }
       setPackageLoading(false);
@@ -429,11 +429,11 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
     }
 
     if (autoQuoteTimeoutRef.current) {
-      window.clearTimeout(autoQuoteTimeoutRef.current);
+      globalThis.clearTimeout(autoQuoteTimeoutRef.current);
       autoQuoteTimeoutRef.current = null;
     }
 
-    autoQuoteTimeoutRef.current = window.setTimeout(() => {
+    autoQuoteTimeoutRef.current = globalThis.setTimeout(() => {
       autoQuoteTimeoutRef.current = null;
       requestCoinsPackageQuote({
         packageTotal: activePackageTotal,
@@ -444,7 +444,7 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
 
     return () => {
       if (autoQuoteTimeoutRef.current) {
-        window.clearTimeout(autoQuoteTimeoutRef.current);
+        globalThis.clearTimeout(autoQuoteTimeoutRef.current);
         autoQuoteTimeoutRef.current = null;
       }
     };
@@ -453,9 +453,7 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
     hasLiveQuoteTarget,
     quoteMatchesSelection,
     activePackageTotal,
-    packageBreakdown.common,
-    packageBreakdown.pro,
-    packageBreakdown.ultra,
+    packageBreakdown,
     requestCoinsPackageQuote,
   ]);
 
@@ -469,7 +467,7 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
     setPackageError(null);
     try {
       const activeTotal = coinsPackageMode === "custom" ? commitCustomTotal() : selectedPackage;
-      const quote =
+      const resolvedQuote =
         packageQuote && packageQuote.package_total === activeTotal && sameBreakdown(packageQuote.breakdown, packageBreakdown)
           ? packageQuote
           : await requestCoinsPackageQuote({
@@ -477,6 +475,12 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
               breakdown: packageBreakdown,
               trigger: "checkout",
             });
+
+      if (!resolvedQuote?.quote_id) {
+        throw new Error("quote_unavailable");
+      }
+
+      const quote = resolvedQuote;
 
       const baseUrl = window.location.origin;
       const response = await api.createCoinsPackageCheckout({
