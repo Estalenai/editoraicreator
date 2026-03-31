@@ -10,7 +10,7 @@ function LoginPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const formRef = useRef<HTMLFormElement | null>(null);
-  const initialMode = searchParams.get("mode") === "signup" ? "signup" : "login";
+  const initialMode = searchParams?.get("mode") === "signup" ? "signup" : "login";
 
   const [mode, setMode] = useState<"login" | "signup">(initialMode);
   const [email, setEmail] = useState("");
