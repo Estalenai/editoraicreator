@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { api } from "../../lib/api";
 import { coinTypeLabel } from "../../lib/coinTypeLabel";
@@ -184,8 +184,15 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
   const [packageCheckoutLoading, setPackageCheckoutLoading] = useState(false);
   const [packageError, setPackageError] = useState<string | null>(null);
   const [mixPreset, setMixPreset] = useState<MixPreset>("equal");
+  const quoteRequestSequenceRef = useRef(0);
+  const autoQuoteTimeoutRef = useRef<ReturnType<typeof window.setTimeout> | null>(null);
 
-  const activePackageTotal = coinsPackageMode === "custom" ? customPackageTotal : selectedPackage;
+  const liveCustomPackageTotal = useMemo(() => {
+    const parsed = Number(customPackageTotalInput);
+    if (!Number.isFinite(parsed)) return 0;
+    return Math.max(0, Math.trunc(parsed));
+  }, [customPackageTotalInput]);
+  const activePackageTotal = coinsPackageMode === "custom" ? liveCustomPackageTotal : selectedPackage;
   const customTotalInputNumeric = Number(customPackageTotalInput);
   const customTotalInputValid =
     customPackageTotalInput !== "" &&
@@ -227,6 +234,7 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
     sameBreakdown(packageQuote?.breakdown, packageBreakdown);
   const canRequestQuote = !loading && !packageLoading && !packageCheckoutLoading && packageMixValid;
   const canOpenCheckout = canRequestQuote && quoteMatchesSelection;
+  const hasLiveQuoteTarget = packageMixValid && activePackageTotal > 0;
 
   const walletSummary = useMemo(
     () => (loading ? "Saldo em sincronização" : formatCreatorCoinsWalletSummary(wallet)),
@@ -259,20 +267,31 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
     };
   }, [coinsPanelOpen]);
 
+  function invalidatePackageQuoteState(clearError = true) {
+    quoteRequestSequenceRef.current += 1;
+    if (autoQuoteTimeoutRef.current) {
+      window.clearTimeout(autoQuoteTimeoutRef.current);
+      autoQuoteTimeoutRef.current = null;
+    }
+    setPackageLoading(false);
+    setPackageQuote(null);
+    if (clearError) {
+      setPackageError(null);
+    }
+  }
+
   function updatePackageBreakdown(field: keyof PackageBreakdown, rawValue: string) {
     const normalizedValue = normalizeMixInput(rawValue);
     setPackageBreakdown((prev) => ({ ...prev, [field]: normalizedValue }));
     setMixPreset("manual");
-    setPackageQuote(null);
-    setPackageError(null);
+    invalidatePackageQuoteState();
   }
 
   function resetPackageToDefault(total: number) {
     setSelectedPackage(total);
     setPackageBreakdown(defaultMixForPackage(total));
     setMixPreset("equal");
-    setPackageQuote(null);
-    setPackageError(null);
+    invalidatePackageQuoteState();
   }
 
   function updateCustomTotal(rawValue: string) {
@@ -283,8 +302,7 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
       if (coinsPackageMode === "custom" && mixPreset === "equal") {
         setPackageBreakdown(defaultMixForPackage(PACKAGE_MIN_TOTAL));
       }
-      setPackageQuote(null);
-      setPackageError(null);
+      invalidatePackageQuoteState();
       return;
     }
     const parsed = clampCustomTotal(Number(normalizedInput));
@@ -294,8 +312,7 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
     if (coinsPackageMode === "custom" && mixPreset === "equal") {
       setPackageBreakdown(defaultMixForPackage(effective));
     }
-    setPackageQuote(null);
-    setPackageError(null);
+    invalidatePackageQuoteState();
   }
 
   function commitCustomTotal(rawValue = customPackageTotalInput): number {
@@ -308,8 +325,7 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
     if (coinsPackageMode === "custom" && mixPreset === "equal") {
       setPackageBreakdown(defaultMixForPackage(committed));
     }
-    setPackageQuote(null);
-    setPackageError(null);
+    invalidatePackageQuoteState();
     return committed;
   }
 
@@ -321,8 +337,7 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
     }
     setPackageBreakdown(buildMixPreset(activeTotal, preset));
     setMixPreset(preset);
-    setPackageQuote(null);
-    setPackageError(null);
+    invalidatePackageQuoteState();
   }
 
   function switchCoinsPackageMode(mode: CoinsPackageMode) {
@@ -337,33 +352,112 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
     }
 
     setCoinsPackageMode(mode);
-    setPackageQuote(null);
-    setPackageError(null);
+    invalidatePackageQuoteState();
   }
 
-  async function requestCoinsPackageQuote() {
-    setPackageLoading(true);
-    setPackageError(null);
-    try {
-      const activeTotal = coinsPackageMode === "custom" ? commitCustomTotal() : selectedPackage;
-      const payload = await api.quoteCoinsPackage({
-        package_total: activeTotal,
-        breakdown: packageBreakdown,
-      });
-      const quote = payload?.quote as CoinsPackageQuote | undefined;
-      if (!quote?.quote_id) {
-        throw new Error("quote_invalid_response");
+  const requestCoinsPackageQuote = useCallback(
+    async (options?: {
+      packageTotal?: number;
+      breakdown?: PackageBreakdown;
+      trigger?: "manual" | "auto" | "checkout";
+    }) => {
+      const trigger = options?.trigger || "manual";
+      const requestedPackageTotal = Number(options?.packageTotal ?? activePackageTotal);
+      const requestedBreakdown = options?.breakdown || packageBreakdown;
+      const requestId = ++quoteRequestSequenceRef.current;
+
+      setPackageLoading(true);
+      if (trigger !== "auto") {
+        setPackageError(null);
       }
-      setPackageQuote(quote);
-      return quote;
-    } catch (e: any) {
-      const message = toUserFacingError(e?.message, `Falha ao gerar cotação de ${CREATOR_COINS_PUBLIC_NAME} avulsas.`);
-      setPackageError(message);
-      throw e;
-    } finally {
+      try {
+        const payload = await api.quoteCoinsPackage({
+          package_total: requestedPackageTotal,
+          breakdown: requestedBreakdown,
+        });
+        const quote = payload?.quote as CoinsPackageQuote | undefined;
+        if (!quote?.quote_id) {
+          throw new Error("quote_invalid_response");
+        }
+        if (requestId !== quoteRequestSequenceRef.current) {
+          return null;
+        }
+        setPackageQuote(quote);
+        return quote;
+      } catch (e: any) {
+        if (requestId !== quoteRequestSequenceRef.current) {
+          return null;
+        }
+        const message = toUserFacingError(e?.message, `Falha ao gerar cotação de ${CREATOR_COINS_PUBLIC_NAME} avulsas.`);
+        setPackageError(message);
+        throw e;
+      } finally {
+        if (requestId === quoteRequestSequenceRef.current) {
+          setPackageLoading(false);
+        }
+      }
+    },
+    [activePackageTotal, packageBreakdown]
+  );
+
+  useEffect(() => {
+    if (!coinsPanelOpen) {
+      if (autoQuoteTimeoutRef.current) {
+        window.clearTimeout(autoQuoteTimeoutRef.current);
+        autoQuoteTimeoutRef.current = null;
+      }
       setPackageLoading(false);
+      return;
     }
-  }
+
+    if (!hasLiveQuoteTarget) {
+      if (autoQuoteTimeoutRef.current) {
+        window.clearTimeout(autoQuoteTimeoutRef.current);
+        autoQuoteTimeoutRef.current = null;
+      }
+      setPackageLoading(false);
+      return;
+    }
+
+    if (quoteMatchesSelection) {
+      if (autoQuoteTimeoutRef.current) {
+        window.clearTimeout(autoQuoteTimeoutRef.current);
+        autoQuoteTimeoutRef.current = null;
+      }
+      setPackageLoading(false);
+      return;
+    }
+
+    if (autoQuoteTimeoutRef.current) {
+      window.clearTimeout(autoQuoteTimeoutRef.current);
+      autoQuoteTimeoutRef.current = null;
+    }
+
+    autoQuoteTimeoutRef.current = window.setTimeout(() => {
+      autoQuoteTimeoutRef.current = null;
+      requestCoinsPackageQuote({
+        packageTotal: activePackageTotal,
+        breakdown: packageBreakdown,
+        trigger: "auto",
+      }).catch(() => null);
+    }, 350);
+
+    return () => {
+      if (autoQuoteTimeoutRef.current) {
+        window.clearTimeout(autoQuoteTimeoutRef.current);
+        autoQuoteTimeoutRef.current = null;
+      }
+    };
+  }, [
+    coinsPanelOpen,
+    hasLiveQuoteTarget,
+    quoteMatchesSelection,
+    activePackageTotal,
+    packageBreakdown.common,
+    packageBreakdown.pro,
+    packageBreakdown.ultra,
+    requestCoinsPackageQuote,
+  ]);
 
   async function onBuyCoinsPackage() {
     if (loading) {
@@ -378,7 +472,11 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
       const quote =
         packageQuote && packageQuote.package_total === activeTotal && sameBreakdown(packageQuote.breakdown, packageBreakdown)
           ? packageQuote
-          : await requestCoinsPackageQuote();
+          : await requestCoinsPackageQuote({
+              packageTotal: activeTotal,
+              breakdown: packageBreakdown,
+              trigger: "checkout",
+            });
 
       const baseUrl = window.location.origin;
       const response = await api.createCoinsPackageCheckout({
@@ -605,7 +703,7 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
                         <strong>{packageSum} {CREATOR_COINS_SHORT_NAME}</strong>
                       </div>
                       {packageMixValid ? (
-                        <div className="inline-alert inline-alert-success">Mix fechado corretamente. Pronto para cotação.</div>
+                        <div className="inline-alert inline-alert-success">Mix fechado corretamente. A cotação é atualizada automaticamente.</div>
                       ) : null}
                       {packageRemaining > 0 ? (
                         <div className="inline-alert inline-alert-warning">
@@ -673,7 +771,7 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
                       <div className="premium-card-soft quote-summary-card quote-summary-card-placeholder">
                         <strong>Cotação pendente</strong>
                         <span className="helper-text-ea">
-                          Feche o total e o mix. Depois atualize a cotação para revisar subtotal, taxa e total final.
+                          Feche o total e o mix. O resumo calcula automaticamente subtotal, taxa e total final assim que a composição ficar válida.
                         </span>
                       </div>
                     )}
@@ -692,20 +790,28 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
                     {packageCheckoutLoading
                       ? "Abrindo checkout seguro na Stripe..."
                       : packageLoading
-                        ? "Atualizando cotação..."
+                        ? "Calculando cotação..."
                         : quoteMatchesSelection
                           ? "Cotação pronta. Revise subtotal, taxa e total antes de seguir para o pagamento."
-                          : "Escolha total e composição. Depois gere a cotação para revisar subtotal, taxa e total antes do pagamento."}
+                          : hasLiveQuoteTarget
+                            ? "A cotação é atualizada automaticamente conforme você altera total e composição."
+                            : "Escolha total e composição para liberar a cotação automática antes do pagamento."}
                   </div>
 
                   <div className="hero-actions-row purchase-modal-footer-actions">
                     <button
                       type="button"
-                      onClick={requestCoinsPackageQuote}
+                      onClick={() =>
+                        requestCoinsPackageQuote({
+                          packageTotal: activePackageTotal,
+                          breakdown: packageBreakdown,
+                          trigger: "manual",
+                        })
+                      }
                       disabled={!canRequestQuote}
                       className="btn-ea btn-secondary"
                     >
-                      {packageLoading ? "Atualizando cotação..." : "Atualizar cotação"}
+                      {packageLoading ? "Calculando..." : packageError ? "Tentar cotação novamente" : "Atualizar cotação"}
                     </button>
                     <button
                       type="button"
