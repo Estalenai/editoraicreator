@@ -6,6 +6,7 @@ import { useDashboardBootstrap } from "../../hooks/useDashboardBootstrap";
 import { useSectionFocus } from "../../hooks/useSectionFocus";
 import { BetaAccessBlockedView } from "../../components/waitlist/BetaAccessBlockedView";
 import { GitHubWorkspaceCard } from "../../components/projects/GitHubWorkspaceCard";
+import { PublishConfidenceState } from "../../components/projects/PublishConfidenceState";
 import { VercelPublishCard } from "../../components/projects/VercelPublishCard";
 import { OperationalState } from "../../components/ui/OperationalState";
 import { ensureCanonicalProjectData, getCanonicalProjectSummary } from "../../lib/projectModel";
@@ -294,6 +295,7 @@ export default function ProjectsPage() {
           Veja os três estados de saída sem abrir o handoff completo enquanto a prioridade ainda é seguir no editor.
         </div>
         <div className="focus-shell-body">
+        <PublishConfidenceState projects={normalizedProjects} />
         <div className="proof-value-grid projects-publish-grid">
           <div className="proof-value-card layout-contract-item">
             <div className="proof-value-block">

@@ -16890,6 +16890,22 @@ body {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.projects-page .projects-publish-status-layer {
+  margin-bottom: 6px;
+}
+
+.projects-page .projects-publish-status-layer .state-ea {
+  border-color: rgba(191, 239, 255, 0.074);
+  background:
+    radial-gradient(320px 120px at 100% 0%, rgba(88, 242, 255, 0.06), transparent 76%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.024), rgba(255, 255, 255, 0.01)),
+    var(--ea-page-subtle-surface);
+}
+
+.projects-page .projects-publish-status-layer .operational-state-actions {
+  gap: 10px 12px;
+}
+
 .projects-page .proof-value-card,
 .projects-page .projects-publish-grid > .proof-value-card:first-child {
   min-height: 160px;
