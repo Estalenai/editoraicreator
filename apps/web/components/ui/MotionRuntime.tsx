@@ -10,7 +10,7 @@ const REVEAL_DELAY_CAP_MS = 96;
 const REVEAL_IMMEDIATE_VIEWPORT_RATIO = 1.02;
 
 export function MotionRuntime() {
-  const pathname = usePathname();
+  const pathname = usePathname() || "";
 
   useEffect(() => {
     if (typeof document === "undefined") return;

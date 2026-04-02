@@ -2,7 +2,7 @@ import NextError from "next/error";
 import type { NextPageContext } from "next";
 
 type ErrorPageProps = {
-  statusCode?: number;
+  statusCode: number;
 };
 
 export default function ErrorPage({ statusCode }: ErrorPageProps) {

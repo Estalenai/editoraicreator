@@ -756,9 +756,9 @@ function buildDeliverableStages({
 }
 
 export default function EditorProjectPage() {
-  const params = useParams();
+  const params = useParams() ?? {};
   const searchParams = useSearchParams();
-  const id = String((params as any).id);
+  const id = String((params as any)?.id ?? "");
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -840,8 +840,8 @@ export default function EditorProjectPage() {
   const isCreatorPostFlow = creatorSnapshot?.source === "Creator Post";
   const isCreatorScriptsFlow = creatorSnapshot?.source === "Creator Scripts";
   const isCreatorClipsFlow = creatorSnapshot?.source === "Creator Clips";
-  const handoffSourceParam = searchParams.get("source");
-  const handoffStageParam = searchParams.get("handoff");
+  const handoffSourceParam = searchParams?.get("source") ?? null;
+  const handoffStageParam = searchParams?.get("handoff") ?? null;
   const outputAssets = useMemo(
     () => buildProjectAssets({ project, creatorSnapshot, text, factResult, reviewStatus }),
     [creatorSnapshot, factResult, project, reviewStatus, text]
@@ -2082,5 +2082,4 @@ export default function EditorProjectPage() {
     </div>
   );
 }
-
 

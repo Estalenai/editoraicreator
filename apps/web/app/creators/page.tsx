@@ -24,6 +24,7 @@ type CreatorTab =
   | "clips"
   | "live-cuts"
   | "no-code";
+type CreatorsFocusSection = "showcase" | "catalog" | "workspace";
 
 type CreatorGroupId = "hero" | "secondary" | "labs";
 
@@ -185,9 +186,10 @@ export default function CreatorsPage() {
 function CreatorsPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const pathname = usePathname();
+  const pathname = usePathname() || "";
   const workspaceRef = useRef<HTMLElement | null>(null);
   const [activeTab, setActiveTab] = useState<CreatorTab>("post");
+  const [activeSection, setActiveSection] = useState<CreatorsFocusSection>("workspace");
 
   const {
     loading,
@@ -206,7 +208,7 @@ function CreatorsPageContent() {
   } = useDashboardBootstrap({ loadDashboard: true });
 
   useEffect(() => {
-    setActiveTab(parseTab(searchParams.get("tab")));
+    setActiveTab(parseTab(searchParams?.get("tab") ?? null));
   }, [searchParams]);
 
   const walletCommon = Number(wallet?.common ?? 0);
@@ -268,9 +270,10 @@ function CreatorsPageContent() {
 
   function activateTab(nextTab: CreatorTab, options?: { scrollToWorkspace?: boolean }) {
     setActiveTab(nextTab);
-    const params = new URLSearchParams(searchParams.toString());
+    setActiveSection("workspace");
+    const params = new URLSearchParams(searchParams?.toString() ?? "");
     params.set("tab", nextTab);
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    router.replace(`${pathname ?? "/creators"}?${params.toString()}`, { scroll: false });
 
     if (options?.scrollToWorkspace) {
       requestAnimationFrame(() => {
@@ -412,8 +415,8 @@ function CreatorsPageContent() {
         </div>
       </section>
 
-      <section className="creators-hero-core-section creators-flow-section surface-flow-region creators-flow-section-middle layout-contract-region" data-reveal data-reveal-delay="90">
-        <div className="proof-value-header creators-hero-core-header">
+      <section className="creators-hero-core-section creators-flow-section surface-flow-region creators-flow-section-middle layout-contract-region focus-shell-section" data-focus-active={activeSection === "showcase"} data-reveal data-reveal-delay="90">
+        <div className="proof-value-header creators-hero-core-header focus-shell-head">
           <div className="section-stack-tight">
             <p className="section-kicker">Creators hero</p>
             <h2 className="heading-reset">Os 3 creators que precisam carregar a plataforma</h2>
@@ -425,8 +428,19 @@ function CreatorsPageContent() {
             <span className="premium-badge premium-badge-phase">Núcleo principal</span>
             <span className="helper-text-ea">O restante do catálogo continua disponível, mas sai do centro da promessa.</span>
           </div>
+          <button
+            type="button"
+            onClick={() => setActiveSection("showcase")}
+            className={`btn-ea ${activeSection === "showcase" ? "btn-secondary" : "btn-ghost"} btn-sm focus-shell-toggle`}
+            aria-pressed={activeSection === "showcase"}
+          >
+            {activeSection === "showcase" ? "Em foco" : "Trazer para foco"}
+          </button>
         </div>
-
+        <div className="focus-shell-preview">
+          O trio hero continua visível como leitura estratégica, mas sem disputar o workspace ativo quando você estiver produzindo.
+        </div>
+        <div className="focus-shell-body">
         <div className="creators-hero-core-grid">
           {heroCoreCards.map((tab, index) => (
             <article
@@ -469,10 +483,11 @@ function CreatorsPageContent() {
             </article>
           ))}
         </div>
+        </div>
       </section>
 
-      <section className="creators-secondary-section creators-flow-section surface-flow-region creators-flow-section-middle layout-contract-region" data-reveal data-reveal-delay="120">
-        <div className="proof-value-header creators-secondary-header">
+      <section className="creators-secondary-section creators-flow-section surface-flow-region creators-flow-section-middle layout-contract-region focus-shell-section" data-focus-active={activeSection === "catalog"} data-reveal data-reveal-delay="120">
+        <div className="proof-value-header creators-secondary-header focus-shell-head">
           <div className="section-stack-tight">
             <p className="section-kicker">Apoio e labs</p>
             <h2 className="heading-reset">O restante do catálogo continua útil, mas com papel mais claro</h2>
@@ -480,8 +495,19 @@ function CreatorsPageContent() {
               <strong>Apoio estratégico</strong> complementa campanhas e produção. <strong>Labs e preview</strong> seguem disponíveis para exploração, sem disputar o centro da promessa agora.
             </p>
           </div>
+          <button
+            type="button"
+            onClick={() => setActiveSection("catalog")}
+            className={`btn-ea ${activeSection === "catalog" ? "btn-secondary" : "btn-ghost"} btn-sm focus-shell-toggle`}
+            aria-pressed={activeSection === "catalog"}
+          >
+            {activeSection === "catalog" ? "Em foco" : "Trazer para foco"}
+          </button>
         </div>
-
+        <div className="focus-shell-preview">
+          Apoio estratégico e labs continuam acessíveis, mas entram recolhidos quando o foco principal está no creator ativo.
+        </div>
+        <div className="focus-shell-body">
         <div className="creators-secondary-grid">
           {secondaryCatalog.map((tab, index) => (
             <article key={tab.id} className="creators-secondary-card layout-contract-item" data-priority={tab.group} data-reveal data-reveal-delay={String(70 + index * 45)}>
@@ -504,9 +530,28 @@ function CreatorsPageContent() {
             </article>
           ))}
         </div>
+        </div>
       </section>
 
-      <section ref={workspaceRef} className="creator-workspace-grid creators-flow-section surface-flow-region creators-flow-section-end layout-contract-region">
+      <section ref={workspaceRef} className="creator-workspace-shell creators-flow-section surface-flow-region creators-flow-section-end layout-contract-region focus-shell-section" data-focus-active={activeSection === "workspace"}>
+        <div className="focus-shell-head">
+          <div className="section-header-ea">
+            <h2 className="heading-reset">Workspace ativo</h2>
+            <p className="helper-text-ea">Uma ferramenta principal por vez, com briefing, estimativa e continuidade no mesmo eixo operacional.</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setActiveSection("workspace")}
+            className={`btn-ea ${activeSection === "workspace" ? "btn-secondary" : "btn-ghost"} btn-sm focus-shell-toggle`}
+            aria-pressed={activeSection === "workspace"}
+          >
+            {activeSection === "workspace" ? "Em foco" : "Trazer para foco"}
+          </button>
+        </div>
+        <div className="focus-shell-preview">
+          O workspace concentra o creator ativo, o saldo e o próximo passo sem manter showcase e catálogo com o mesmo peso visual.
+        </div>
+        <div className="focus-shell-body creator-workspace-grid">
         <aside className="creator-workspace-side creators-sidebar creators-sidebar-soft layout-contract-rail" data-reveal data-reveal-delay="140">
           <div className="creators-side-note creators-side-note-primary">
             <strong>Comece pelos creators hero</strong>
@@ -647,6 +692,7 @@ function CreatorsPageContent() {
               ) : null}
             </>
           )}
+        </div>
         </div>
       </section>
     </div>

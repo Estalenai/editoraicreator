@@ -330,7 +330,7 @@ function PlansPageContent() {
   }, [loading, betaBlocked, loadCatalog]);
 
   useEffect(() => {
-    const checkoutState = String(searchParams.get("checkout") || "").toLowerCase();
+    const checkoutState = String(searchParams?.get("checkout") || "").toLowerCase();
     if (checkoutState !== "success" && checkoutState !== "canceled") return;
     if (handledCheckoutState === checkoutState) return;
 

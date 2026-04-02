@@ -20,6 +20,9 @@ type SupportRequestItem = {
 
 type Props = {
   onRefetch?: () => Promise<void>;
+  focused?: boolean;
+  onFocus?: () => void;
+  preview?: string;
 };
 
 const CATEGORY_OPTIONS: Array<{ value: SupportCategory; label: string; hint: string }> = [
@@ -54,7 +57,12 @@ function formatSubject(value: string): string {
   return normalized.charAt(0).toUpperCase() + normalized.slice(1);
 }
 
-export function SupportAssistantCard({ onRefetch }: Props) {
+export function SupportAssistantCard({
+  onRefetch,
+  focused = true,
+  onFocus,
+  preview = "Abra o assistant quando quiser concentrar triagem, histórico e contexto do pedido na mesma área.",
+}: Props) {
   const [category, setCategory] = useState<SupportCategory>("duvida");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
@@ -121,8 +129,12 @@ export function SupportAssistantCard({ onRefetch }: Props) {
   }
 
   return (
-    <section id="support-assistant" className="support-assistant-card support-assistant-open">
-      <div className="section-head support-assistant-head">
+    <section
+      id="support-assistant"
+      className="support-assistant-card support-assistant-open focus-shell-section"
+      data-focus-active={focused}
+    >
+      <div className="section-head support-assistant-head focus-shell-head">
         <div className="section-header-ea">
           <p className="section-kicker">Atendimento interno</p>
           <h3 className="heading-reset">Support Assistant</h3>
@@ -130,9 +142,24 @@ export function SupportAssistantCard({ onRefetch }: Props) {
             Use este canal para dúvidas, problemas técnicos e questões financeiras. A fila fica registrada no produto para acompanhamento contínuo.
           </p>
         </div>
-        <span className="premium-badge premium-badge-phase">Fila acompanhada pela equipe</span>
+        <div className="hero-actions-row">
+          <span className="premium-badge premium-badge-phase">Fila acompanhada pela equipe</span>
+          {onFocus ? (
+            <button
+              type="button"
+              onClick={onFocus}
+              className={`btn-ea ${focused ? "btn-secondary" : "btn-ghost"} btn-sm focus-shell-toggle`}
+              aria-pressed={focused}
+            >
+              {focused ? "Em foco" : "Trazer para foco"}
+            </button>
+          ) : null}
+        </div>
       </div>
+      <div className="focus-shell-preview">{preview}</div>
 
+      {focused ? (
+        <div className="focus-shell-body">
       <div className="support-assistant-grid">
         <div className="support-assistant-form">
           <div className="form-grid-2">
@@ -291,8 +318,10 @@ export function SupportAssistantCard({ onRefetch }: Props) {
               ) : null}
             </article>
           ))}
+          </div>
+        )}
         </div>
-      )}
+      ) : null}
     </section>
   );
 }

@@ -177,7 +177,7 @@ export function CreatorLiveCutsCard() {
   }
 
   return (
-    <div className="creator-workspace-card creator-workspace-card-modular">
+    <div className="premium-card creator-workspace-card creator-workspace-card-modular">
       <div className="creator-workspace-header">
         <div className="hero-title-stack section-stack-tight">
           <p className="section-kicker">Configuração da sessão</p>
@@ -342,7 +342,7 @@ export function CreatorLiveCutsCard() {
           <p className="creator-result-copy">Use este painel para acompanhar rascunhos, ativações e encerramentos da Fase 1.</p>
         </div>
         {loadingList ? (
-          <div className="creator-loading-panel layout-contract-note">
+          <div className="premium-card-soft creator-loading-panel">
             <div className="helper-note-inline">Carregando sessões...</div>
             <div className="premium-skeleton premium-skeleton-line" style={{ width: "36%" }} />
             <div className="premium-skeleton premium-skeleton-line" style={{ width: "82%" }} />

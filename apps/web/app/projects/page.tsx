@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useDashboardBootstrap } from "../../hooks/useDashboardBootstrap";
 import { BetaAccessBlockedView } from "../../components/waitlist/BetaAccessBlockedView";
 import { GitHubWorkspaceCard } from "../../components/projects/GitHubWorkspaceCard";
@@ -11,6 +11,8 @@ import { ensureCanonicalProjectData, getCanonicalProjectSummary } from "../../li
 function getProjectId(project: any) {
   return String(project?.id || project?.project_id || "").trim();
 }
+
+type ProjectsFocusSection = "list" | "publish" | "handoff";
 
 export default function ProjectsPage() {
   const {
@@ -49,6 +51,7 @@ export default function ProjectsPage() {
       }),
     [projects]
   );
+  const [activeSection, setActiveSection] = useState<ProjectsFocusSection>("list");
 
   const planLabelDisplay = loading ? "Sincronizando plano" : planLabel ?? "—";
   const projectCountLabel = loading
@@ -148,15 +151,27 @@ export default function ProjectsPage() {
         </div>
       ) : null}
 
-      <section className="projects-list-section projects-list-open projects-flow-section projects-flow-section-start">
-        <div className="section-head">
+      <section className="projects-list-section projects-list-open projects-flow-section projects-flow-section-start focus-shell-section" data-focus-active={activeSection === "list"}>
+        <div className="section-head focus-shell-head">
           <div className="section-header-ea">
             <h2 className="heading-reset">Abrir no editor</h2>
             <p className="helper-text-ea">
               Retome um projeto existente ou crie um novo para seguir no núcleo principal do beta: creators hero, editor, checkpoint e saída.
             </p>
           </div>
+          <button
+            type="button"
+            onClick={() => setActiveSection("list")}
+            className={`btn-ea ${activeSection === "list" ? "btn-secondary" : "btn-ghost"} btn-sm focus-shell-toggle`}
+            aria-pressed={activeSection === "list"}
+          >
+            {activeSection === "list" ? "Em foco" : "Trazer para foco"}
+          </button>
         </div>
+        <div className="focus-shell-preview">
+          Abra um projeto salvo ou inicie um novo sem deixar as camadas de saída competirem na mesma leitura.
+        </div>
+        <div className="focus-shell-body">
 
         {loading ? (
           <div className="state-ea-spaced projects-loading-stack">
@@ -201,9 +216,11 @@ export default function ProjectsPage() {
             ))}
           </div>
         )}
+        </div>
       </section>
 
-      <section className="projects-publish-section projects-publish-open projects-flow-section projects-flow-section-middle">
+      <section className="projects-publish-section projects-publish-open projects-flow-section projects-flow-section-middle focus-shell-section" data-focus-active={activeSection === "publish"}>
+        <div className="focus-shell-head">
         <div className="section-header-ea">
           <p className="section-kicker">Pipeline de saída</p>
           <h2 className="heading-reset">Draft, exported e published sem ambiguidade</h2>
@@ -211,6 +228,19 @@ export default function ProjectsPage() {
             O beta pago/controlado separa três estados e mantém trilha de saída: o que ainda está em rascunho no projeto, o que já saiu como handoff exportado e o que já foi publicado manualmente fora da plataforma.
           </p>
         </div>
+        <button
+          type="button"
+          onClick={() => setActiveSection("publish")}
+          className={`btn-ea ${activeSection === "publish" ? "btn-secondary" : "btn-ghost"} btn-sm focus-shell-toggle`}
+          aria-pressed={activeSection === "publish"}
+        >
+          {activeSection === "publish" ? "Em foco" : "Trazer para foco"}
+        </button>
+        </div>
+        <div className="focus-shell-preview">
+          Veja os três estados de saída sem abrir o handoff completo enquanto a prioridade ainda é seguir no editor.
+        </div>
+        <div className="focus-shell-body">
         <div className="proof-value-grid projects-publish-grid">
           <div className="proof-value-card layout-contract-item">
             <div className="proof-value-block">
@@ -234,23 +264,39 @@ export default function ProjectsPage() {
             </div>
           </div>
         </div>
+        </div>
       </section>
 
-      <section className="projects-handoff-section projects-handoff-open projects-flow-section projects-flow-section-end">
-        <div className="section-head">
+      <section className="projects-handoff-section projects-handoff-open projects-flow-section projects-flow-section-end focus-shell-section" data-focus-active={activeSection === "handoff"}>
+        <div className="section-head focus-shell-head">
           <div className="section-header-ea">
             <h2 className="heading-reset">Handoff beta e publicação manual</h2>
             <p className="helper-text-ea">
               GitHub e Vercel continuam disponíveis para saída manual, mas entram apenas como continuação do fluxo principal de projetos.
             </p>
           </div>
-          <Link href="/support" className="btn-link-ea btn-ghost btn-sm">
-            Entender limites do beta
-          </Link>
+          <div className="hero-actions-row">
+            <Link href="/support" className="btn-link-ea btn-ghost btn-sm">
+              Entender limites do beta
+            </Link>
+            <button
+              type="button"
+              onClick={() => setActiveSection("handoff")}
+              className={`btn-ea ${activeSection === "handoff" ? "btn-secondary" : "btn-ghost"} btn-sm focus-shell-toggle`}
+              aria-pressed={activeSection === "handoff"}
+            >
+              {activeSection === "handoff" ? "Em foco" : "Trazer para foco"}
+            </button>
+          </div>
         </div>
+        <div className="focus-shell-preview">
+          GitHub e Vercel seguem disponíveis como camada de saída manual, sem tomar a frente da lista de projetos.
+        </div>
+        <div className="focus-shell-body">
         <div className="projects-handoff-stack">
           <GitHubWorkspaceCard projects={normalizedProjects.map((project) => ({ id: project.id, title: project.title, kind: project.kind, data: project.data }))} />
           <VercelPublishCard projects={normalizedProjects.map((project) => ({ id: project.id, title: project.title, kind: project.kind, data: project.data }))} />
+        </div>
         </div>
       </section>
     </div>

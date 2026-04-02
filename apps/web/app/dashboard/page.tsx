@@ -471,9 +471,11 @@ export default function DashboardPage() {
           </section>
 
           <section className="dashboard-section-card dashboard-pane-section" data-reveal data-reveal-delay="180">
-            <div className="section-header-ea">
-              <h3 className="heading-reset">Núcleo do beta pago/controlado</h3>
-              <p className="helper-text-ea">Atalhos para o que precisa carregar valor, retenção e continuidade real no uso recorrente.</p>
+            <div className="section-head">
+              <div className="section-header-ea">
+                <h3 className="heading-reset">Núcleo do beta pago/controlado</h3>
+                <p className="helper-text-ea">Atalhos para o que precisa carregar valor, retenção e continuidade real no uso recorrente.</p>
+              </div>
             </div>
             <div className="dashboard-quick-links-stack">
               <div className="section-stack-tight">
@@ -528,9 +530,11 @@ export default function DashboardPage() {
           </section>
 
           <section className="dashboard-section-card dashboard-pane-section dashboard-pane-section-quiet" data-reveal data-reveal-delay="195">
-            <div className="section-header-ea">
-              <h3 className="heading-reset">Camadas operacionais</h3>
-              <p className="helper-text-ea">Financeiro, suporte e leitura do beta seguem acessíveis como apoio ao núcleo criativo e editorial.</p>
+            <div className="section-head">
+              <div className="section-header-ea">
+                <h3 className="heading-reset">Camadas operacionais</h3>
+                <p className="helper-text-ea">Financeiro, suporte e leitura do beta seguem acessíveis como apoio ao núcleo criativo e editorial.</p>
+              </div>
             </div>
             <div className="dashboard-support-links-list">
               {supportQuickLinks.map((item, index) => (
@@ -553,9 +557,11 @@ export default function DashboardPage() {
           </section>
 
           <section className="dashboard-section-card dashboard-pane-section dashboard-pane-section-quiet" data-reveal data-reveal-delay="210">
-            <div className="section-header-ea">
-              <h3 className="heading-reset">Uso por feature</h3>
-              <p className="helper-text-ea">Consumo por módulo para ajustar ritmo, plano e próxima ação.</p>
+            <div className="section-head">
+              <div className="section-header-ea">
+                <h3 className="heading-reset">Uso por feature</h3>
+                <p className="helper-text-ea">Consumo por módulo para ajustar ritmo, plano e próxima ação.</p>
+              </div>
             </div>
             {loading || usageLoading ? (
               <div className="dashboard-section-body dashboard-usage-list">

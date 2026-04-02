@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { useDashboardBootstrap } from "../../hooks/useDashboardBootstrap";
 import { BetaAccessBlockedView } from "../../components/waitlist/BetaAccessBlockedView";
 import { SupportAssistantCard } from "../../components/dashboard/SupportAssistantCard";
@@ -27,6 +28,8 @@ const SUPPORT_PATHS = [
     cta: "Ver projetos",
   },
 ];
+
+type SupportFocusSection = "guide" | "faq" | "assistant";
 
 const SUPPORT_FAQ = [
   {
@@ -65,6 +68,21 @@ export default function SupportPage() {
     betaBlocked,
     onLogout,
   } = useDashboardBootstrap({ loadDashboard: false });
+  const [activeSection, setActiveSection] = useState<SupportFocusSection>("assistant");
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const syncFocusFromHash = () => {
+      if (String(window.location.hash || "").toLowerCase() === "#support-assistant") {
+        setActiveSection("assistant");
+      }
+    };
+
+    syncFocusFromHash();
+    window.addEventListener("hashchange", syncFocusFromHash);
+    return () => window.removeEventListener("hashchange", syncFocusFromHash);
+  }, []);
 
   if (betaBlocked) {
     return (
@@ -117,9 +135,18 @@ export default function SupportPage() {
               </span>
             </div>
             <div className="hero-actions-row support-hero-actions">
-              <a href="#support-assistant" className="btn-link-ea btn-primary">
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveSection("assistant");
+                  requestAnimationFrame(() => {
+                    document.getElementById("support-assistant")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                  });
+                }}
+                className="btn-link-ea btn-primary"
+              >
                 Abrir assistant
-              </a>
+              </button>
               <Link href="/how-it-works" className="btn-link-ea btn-ghost">
                 Como funciona
               </Link>
@@ -142,13 +169,25 @@ export default function SupportPage() {
         </div>
       </section>
 
-      <section className="support-guide-section">
-        <div className="section-head">
+      <section className="support-guide-section focus-shell-section" data-focus-active={activeSection === "guide"}>
+        <div className="section-head focus-shell-head">
           <div className="section-header-ea">
             <h2 className="heading-reset">Caminhos rápidos de ajuda</h2>
             <p className="helper-text-ea">Escolha a trilha mais próxima do seu caso antes de abrir uma solicitação.</p>
           </div>
+          <button
+            type="button"
+            onClick={() => setActiveSection("guide")}
+            className={`btn-ea ${activeSection === "guide" ? "btn-secondary" : "btn-ghost"} btn-sm focus-shell-toggle`}
+            aria-pressed={activeSection === "guide"}
+          >
+            {activeSection === "guide" ? "Em foco" : "Trazer para foco"}
+          </button>
         </div>
+        <div className="focus-shell-preview">
+          Veja as trilhas mais comuns sem abrir o FAQ e o atendimento interno ao mesmo tempo.
+        </div>
+        <div className="focus-shell-body">
         <div className="support-guide-grid">
           {SUPPORT_PATHS.map((item) => (
             <Link key={item.title} href={item.href} className="support-guide-card">
@@ -159,6 +198,7 @@ export default function SupportPage() {
               <span className="dashboard-quick-link-cta">{item.cta}</span>
             </Link>
           ))}
+        </div>
         </div>
       </section>
 
@@ -182,13 +222,25 @@ export default function SupportPage() {
         </div>
       ) : null}
 
-      <section className="support-faq-section">
-        <div className="section-head">
+      <section className="support-faq-section focus-shell-section" data-focus-active={activeSection === "faq"}>
+        <div className="section-head focus-shell-head">
           <div className="section-header-ea">
             <h2 className="heading-reset">Perguntas frequentes</h2>
             <p className="helper-text-ea">Respostas rápidas para dúvidas de operação, cobrança e continuidade do beta.</p>
           </div>
+          <button
+            type="button"
+            onClick={() => setActiveSection("faq")}
+            className={`btn-ea ${activeSection === "faq" ? "btn-secondary" : "btn-ghost"} btn-sm focus-shell-toggle`}
+            aria-pressed={activeSection === "faq"}
+          >
+            {activeSection === "faq" ? "Em foco" : "Trazer para foco"}
+          </button>
         </div>
+        <div className="focus-shell-preview">
+          Consulte respostas rápidas sem manter a área de triagem e os atalhos abertos ao mesmo tempo.
+        </div>
+        <div className="focus-shell-body">
         <div className="support-faq-grid">
           {SUPPORT_FAQ.map((item) => (
             <article key={item.question} className="support-faq-item">
@@ -197,9 +249,13 @@ export default function SupportPage() {
             </article>
           ))}
         </div>
+        </div>
       </section>
 
-      <SupportAssistantCard />
+      <SupportAssistantCard
+        focused={activeSection === "assistant"}
+        onFocus={() => setActiveSection("assistant")}
+      />
     </div>
   );
 }
