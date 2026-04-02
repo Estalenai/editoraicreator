@@ -6,6 +6,7 @@ import { api } from "../../../lib/api";
 import { EditorShell, EditorTab } from "../../../components/editor/EditorShell";
 import { GitHubWorkspaceCard } from "../../../components/projects/GitHubWorkspaceCard";
 import { VercelPublishCard } from "../../../components/projects/VercelPublishCard";
+import { OperationalState } from "../../../components/ui/OperationalState";
 import { toUserFacingError, toUserFacingGenerationSuccess } from "../../../lib/uiFeedback";
 import { ensureCanonicalProjectData, parseLegacyProjectPayload, syncProjectDataFromEditor } from "../../../lib/projectModel";
 
@@ -1315,39 +1316,69 @@ export default function EditorProjectPage() {
   }
 
   return (
-    <div className="page-shell editor-project-page">
+      <div className="page-shell editor-project-page">
       {err && (
-        <div className="state-ea state-ea-error">
-          <p className="state-ea-title">Não foi possível carregar o editor</p>
-          <div className="state-ea-text">{err}</div>
-        </div>
+        <OperationalState
+          kind="error"
+          title="Não foi possível carregar o editor"
+          description={err}
+          meta={[
+            { label: "Projeto", value: title || "Editor atual" },
+            { label: "Impacto", value: "Sem continuidade, checkpoints e saída" },
+          ]}
+        />
       )}
 
       {aiBusy ? (
-        <div className="state-ea">
-          <p className="state-ea-title">{aiBusy === "text" ? "Gerando texto com IA" : "Executando verificação editorial"}</p>
-          <div className="state-ea-text">A IA está processando sua solicitação. Aguarde alguns instantes antes de tentar outra ação.</div>
-        </div>
+        <OperationalState
+          kind="loading"
+          title={aiBusy === "text" ? "Gerando texto com IA" : "Executando verificação editorial"}
+          description="A IA está processando sua solicitação. Aguarde alguns instantes antes de tentar outra ação."
+          emphasis={aiBusy === "text" ? "Geração" : "Verificação"}
+          meta={[
+            { label: "Projeto", value: title || "Editor atual" },
+            { label: "Saída atual", value: outputStageMeta.label },
+            { label: "Revisão", value: reviewStatusMeta.label },
+          ]}
+        />
       ) : null}
 
       {aiFeedback ? (
-        <div className={`state-ea ${aiFeedback.tone === "warning" ? "state-ea-warning" : "state-ea-success"}`}>
-          <p className="state-ea-title">{aiFeedback.tone === "warning" ? "Resposta da IA em modo beta" : "Atualização da IA concluída"}</p>
-          <div className="state-ea-text">{aiFeedback.text}</div>
-        </div>
+        <OperationalState
+          kind={aiFeedback.tone === "warning" ? "retry" : "success"}
+          title={aiFeedback.tone === "warning" ? "Resposta da IA em modo beta" : "Atualização da IA concluída"}
+          description={aiFeedback.text}
+          meta={[
+            { label: "Projeto", value: title || "Editor atual" },
+            { label: "Histórico IA", value: `${aiSteps.length} passo(s)` },
+          ]}
+        />
       ) : null}
 
       {saveFeedback ? (
-        <div className="state-ea state-ea-success">
-          <p className="state-ea-title">Projeto sincronizado</p>
-          <div className="state-ea-text">{saveFeedback}</div>
-        </div>
+        <OperationalState
+          kind="saved"
+          title="Projeto sincronizado"
+          description={saveFeedback}
+          emphasis={outputStageMeta.label}
+          meta={[
+            { label: "Checkpoints", value: checkpoints.length },
+            { label: "Versões", value: versions.length },
+            { label: "Saída pronta", value: `${outputMetrics.ready}` },
+          ]}
+          footer="O estado principal do projeto já foi atualizado no editor e na trilha de continuidade."
+        />
       ) : null}
       {handoffNotice ? (
-        <div className="state-ea state-ea-success">
-          <p className="state-ea-title">{handoffNoticeTitle}</p>
-          <div className="state-ea-text">{handoffNotice}</div>
-        </div>
+        <OperationalState
+          kind="syncing"
+          title={handoffNoticeTitle}
+          description={handoffNotice}
+          meta={[
+            { label: "Origem", value: handoffSourceParam || "editor" },
+            { label: "Destino", value: outputStageMeta.label },
+          ]}
+        />
       ) : null}
 
       <EditorShell

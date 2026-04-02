@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PremiumSelect } from "../ui/PremiumSelect";
+import { OperationalState } from "../ui/OperationalState";
 import { api } from "../../lib/api";
 import {
   appendVercelProjectEvent,
@@ -157,7 +158,7 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
   const [previewUrl, setPreviewUrl] = useState("");
   const [productionUrl, setProductionUrl] = useState("");
   const [notice, setNotice] = useState<string | null>(null);
-  const [noticeTone, setNoticeTone] = useState<"info" | "success">("info");
+  const [noticeTone, setNoticeTone] = useState<"info" | "success" | "error">("info");
   const hydrationKeyRef = useRef("");
 
   useEffect(() => {
@@ -339,13 +340,13 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
 
         await persistProjectData(nextData);
         if (!cancelled) {
-          setNoticeTone("info");
+          setNoticeTone("success");
           setNotice("Base local da Vercel migrada para o projeto. O vínculo e o histórico agora deixam de depender só deste navegador.");
         }
       } catch (migrationError: any) {
         if (!cancelled) {
           hydrationKeyRef.current = "";
-          setNoticeTone("info");
+          setNoticeTone("error");
           setNotice(`Falha ao migrar a base local da Vercel: ${migrationError?.message || "erro desconhecido"}`);
         }
       }
@@ -472,7 +473,7 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
       },
     });
     await persistProjectData(nextData);
-    setNoticeTone("info");
+    setNoticeTone("success");
     setNotice("Base local da Vercel removida deste projeto. O histórico continua salvo no projeto para manter a trilha operacional.");
   }
 
@@ -565,6 +566,31 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
       }
     );
   }, [selectedProject, selectedProjectData, vercelProjectName, teamSlug, framework, rootDirectory, deployStatus, previewUrl, productionUrl, currentBinding?.lastManifestExportedAt, currentBinding?.history]);
+  const vercelNoticeState = useMemo(() => {
+    if (!notice) return null;
+    if (noticeTone === "error") {
+      return {
+        kind: "failed-publish" as const,
+        title: "Status da publicação exige revisão",
+        footer: "Revise a base Vercel e a trilha do projeto antes de continuar o handoff.",
+      };
+    }
+    if (noticeTone === "success") {
+      return {
+        kind: deployStatus === "published" ? ("published" as const) : ("success" as const),
+        title: deployStatus === "published" ? "Publicação registrada" : "Base beta atualizada",
+        footer:
+          deployStatus === "published"
+            ? "A publicação foi registrada como concluída e a trilha operacional do projeto foi atualizada."
+            : "O projeto agora mantém a base da Vercel como source of truth para o próximo handoff.",
+      };
+    }
+    return {
+      kind: currentBinding?.lastManifestExportedAt ? ("syncing" as const) : ("loading" as const),
+      title: currentBinding?.lastManifestExportedAt ? "Handoff Vercel em andamento" : "Base Vercel em preparação",
+      footer: "O beta continua manual, mas a plataforma já está registrando o estado desta etapa de forma visível.",
+    };
+  }, [currentBinding?.lastManifestExportedAt, deployStatus, notice, noticeTone]);
 
   if (!selectedProject) {
     return (
@@ -579,10 +605,18 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
           </div>
           <span className="premium-badge premium-badge-soon">Aguardando projeto</span>
         </div>
-        <div className="vercel-publish-empty">
-          <strong>Nenhum projeto elegível para publicação ainda.</strong>
-          <span>Crie ou salve um projeto primeiro. Depois disso, você já consegue salvar a base de publicação beta e exportar o handoff para a Vercel.</span>
-        </div>
+        <OperationalState
+          kind="empty"
+          compact={compact}
+          title="Nenhum projeto elegível para publicação ainda"
+          description="Crie ou salve um projeto primeiro. Depois disso, você já consegue salvar a base de publicação beta e exportar o handoff para a Vercel."
+          badge="Vercel beta"
+          emphasis="Aguardando projeto"
+          meta={[
+            { label: "Fluxo", value: "Criar → editar → publicar" },
+            { label: "Estado", value: "Sem projeto selecionado" },
+          ]}
+        />
         <div className="vercel-publish-actions">
           <Link href="/editor/new" className="btn-link-ea btn-primary btn-sm">
             Criar projeto
@@ -763,11 +797,22 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
         </div>
       ) : null}
 
-      {notice ? (
-        <div className={`state-ea ${noticeTone === "success" ? "state-ea-success" : ""}`}>
-          <p className="state-ea-title">{noticeTone === "success" ? "Base beta atualizada" : "Status da integração"}</p>
-          <div className="state-ea-text">{notice}</div>
-        </div>
+      {vercelNoticeState ? (
+        <OperationalState
+          compact={compact}
+          kind={vercelNoticeState.kind}
+          title={vercelNoticeState.title}
+          description={notice}
+          badge="Vercel beta"
+          emphasis={selectedProject.title}
+          meta={[
+            { label: "Projeto", value: selectedProject.title },
+            { label: "Handoff", value: outputStage.label },
+            { label: "Deploy", value: vercelDeployStatusLabel(deployStatus) },
+            { label: "Último handoff", value: formatDateLabel(currentBinding?.lastManifestExportedAt || null) },
+          ]}
+          footer={vercelNoticeState.footer}
+        />
       ) : null}
 
       <div className="vercel-publish-history">
@@ -792,9 +837,18 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
               <p>{event.note}</p>
             </div>
           )) : (
-            <div className="vercel-publish-note">
-              Ainda sem histórico de saída neste projeto. Salve a base, exporte o handoff ou registre a publicação manual para criar uma trilha operacional mais clara.
-            </div>
+            <OperationalState
+              compact
+              kind="empty"
+              title="Ainda sem histórico de saída neste projeto"
+              description="Salve a base, exporte o handoff ou registre a publicação manual para criar uma trilha operacional mais clara."
+              badge="Histórico"
+              emphasis={selectedProject.title}
+              meta={[
+                { label: "Handoff", value: outputStage.label },
+                { label: "Deploy", value: vercelDeployStatusLabel(deployStatus) },
+              ]}
+            />
           )}
         </div>
       </div>

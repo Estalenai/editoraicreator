@@ -9,6 +9,7 @@ import {
   CREATOR_COINS_SHORT_NAME,
   formatCreatorCoinsWalletSummary,
 } from "../../lib/creatorCoins";
+import { OperationalState } from "../ui/OperationalState";
 import { toUserFacingError } from "../../lib/uiFeedback";
 
 type PackageBreakdown = {
@@ -783,10 +784,33 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
                 </div>
 
                 {packageError ? (
-                  <div className="state-ea state-ea-error state-ea-spaced">
-                    <p className="state-ea-title">Não foi possível preparar a compra</p>
-                    <div className="state-ea-text">{packageError}</div>
-                  </div>
+                  <OperationalState
+                    kind="error"
+                    title="Não foi possível preparar a compra"
+                    description={packageError}
+                    meta={[
+                      { label: "Cotação", value: packageQuote?.quote_id || "Não disponível" },
+                      { label: "Total", value: `${activePackageTotal} ${CREATOR_COINS_SHORT_NAME}` },
+                    ]}
+                    compact
+                  />
+                ) : null}
+
+                {packageCheckoutLoading || packageLoading ? (
+                  <OperationalState
+                    kind={packageCheckoutLoading ? "payment-processing" : "loading"}
+                    title={packageCheckoutLoading ? "Abrindo checkout seguro" : "Atualizando cotação"}
+                    description={
+                      packageCheckoutLoading
+                        ? `A Stripe está recebendo a cotação e preparando o pagamento seguro de ${CREATOR_COINS_PUBLIC_NAME}.`
+                        : "Subtotal, taxa e total final estão sendo recalculados com base no mix atual."
+                    }
+                    meta={[
+                      { label: "Total", value: `${activePackageTotal} ${CREATOR_COINS_SHORT_NAME}` },
+                      { label: "Cotação", value: packageQuote?.quote_id || "Em preparação" },
+                    ]}
+                    compact
+                  />
                 ) : null}
 
                 <footer className="purchase-modal-footer">

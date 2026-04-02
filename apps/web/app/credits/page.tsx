@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDashboardBootstrap } from "../../hooks/useDashboardBootstrap";
 import { BetaAccessBlockedView } from "../../components/waitlist/BetaAccessBlockedView";
 import { CreditsPackagesCard } from "../../components/dashboard/CreditsPackagesCard";
+import { OperationalState } from "../../components/ui/OperationalState";
 import { PremiumSelect } from "../../components/ui/PremiumSelect";
 import { api } from "../../lib/api";
 import { coinTypeLabel } from "../../lib/coinTypeLabel";
@@ -640,24 +641,33 @@ export default function CreditsPage() {
               </div>
 
               {loading ? (
-                <div className="state-ea state-ea-spaced">
-                  <p className="state-ea-title">Carregando saldo, regras de conversão e histórico</p>
-                  <div className="state-ea-text">
-                    A conversão fica disponível assim que plano, carteira e histórico forem sincronizados.
-                  </div>
-                </div>
+                <OperationalState
+                  kind="loading"
+                  title={`Carregando saldo, regras e histórico de ${CREATOR_COINS_PUBLIC_NAME}`}
+                  description="A conversão fica disponível assim que plano, carteira e histórico forem sincronizados."
+                  meta={[
+                    { label: "Saldo", value: "Sincronizando" },
+                    { label: "Conversão", value: "Regras do plano" },
+                    { label: "Histórico", value: "Conciliando" },
+                  ]}
+                  compact
+                />
               ) : !conversionEnabled ? (
-                <div className="state-ea state-ea-warning state-ea-spaced">
-                  <p className="state-ea-title">Conversão indisponível neste plano</p>
-                  <div className="state-ea-text">
-                    {`Para converter ${CREATOR_COINS_PUBLIC_NAME} entre níveis, ative um plano com conversão habilitada.`}
-                  </div>
-                  <div className="state-ea-actions">
+                <OperationalState
+                  kind="retry"
+                  title="Conversão indisponível neste plano"
+                  description={`Para converter ${CREATOR_COINS_PUBLIC_NAME} entre níveis, ative um plano com conversão habilitada.`}
+                  meta={[
+                    { label: "Estado", value: "Conversão bloqueada" },
+                    { label: "Próximo passo", value: "Ativar plano compatível" },
+                  ]}
+                  actions={
                     <Link href="/plans" className="btn-link-ea btn-secondary btn-sm">
                       Ver planos com conversão
                     </Link>
-                  </div>
-                </div>
+                  }
+                  compact
+                />
               ) : (
                 <>
                   <div className="trust-grid credits-conversion-notes">
@@ -779,51 +789,81 @@ export default function CreditsPage() {
               )}
 
               {conversionError ? (
-                <div className="state-ea state-ea-error state-ea-spaced">
-                  <p className="state-ea-title">Não foi possível concluir a conversão</p>
-                  <div className="state-ea-text">{conversionError}</div>
-                </div>
+                <OperationalState
+                  kind="error"
+                  title="Não foi possível concluir a conversão"
+                  description={conversionError}
+                  meta={[
+                    { label: "Origem", value: coinTypeLabel(conversionFrom) },
+                    { label: "Destino", value: coinTypeLabel(conversionTo) },
+                    { label: "Quantidade", value: conversionAmountSafe },
+                  ]}
+                  compact
+                />
               ) : null}
 
               {conversionResult?.ok ? (
-                <div className="state-ea state-ea-success state-ea-spaced">
-                  <p className="state-ea-title">Conversão concluída com sucesso</p>
-                  <div className="state-ea-text">
-                    {coinTypeLabel(conversionResult.conversion?.from || conversionFrom)}: -{conversionResult.conversion?.debited_amount ?? estimatedDebitedAmount} •{" "}
-                    {coinTypeLabel(conversionResult.conversion?.to || conversionTo)}: +{conversionResult.conversion?.converted_amount ?? estimatedTargetAmount}
-                  </div>
-                </div>
+                <OperationalState
+                  kind="success"
+                  title="Conversão concluída com sucesso"
+                  description={`${coinTypeLabel(conversionResult.conversion?.from || conversionFrom)}: -${conversionResult.conversion?.debited_amount ?? estimatedDebitedAmount} • ${coinTypeLabel(conversionResult.conversion?.to || conversionTo)}: +${conversionResult.conversion?.converted_amount ?? estimatedTargetAmount}`}
+                  meta={[
+                    { label: "Taxa", value: conversionResult.conversion?.fee_amount ?? estimatedFeeAmount },
+                    {
+                      label: "Plano",
+                      value: conversionResult.conversion?.plan || planLabel || "Plano atual",
+                    },
+                  ]}
+                  footer="O histórico recente confirma a conversão processada e o novo saldo conciliado."
+                  compact
+                />
               ) : null}
             </section>
           </section>
 
         <aside className="credits-support-rail" aria-label={`Apoio contextual de ${CREATOR_COINS_PUBLIC_NAME}`}>
           {checkoutNotice ? (
-            <div className={`state-ea state-ea-spaced credits-support-state ${checkoutNotice.tone === "success" ? "state-ea-success" : checkoutNotice.tone === "warning" ? "state-ea-warning" : ""}`}>
-              <p className="state-ea-title">
-                {checkoutNotice.tone === "success"
+            <OperationalState
+              kind={
+                checkoutNotice.tone === "success"
+                  ? "reconciliation"
+                  : checkoutNotice.tone === "warning"
+                    ? "retry"
+                    : "payment-processing"
+              }
+              title={
+                checkoutNotice.tone === "success"
                   ? "Compra confirmada na Stripe"
                   : checkoutNotice.tone === "warning"
                     ? "Atenção no retorno do checkout"
-                    : "Sincronizando retorno do checkout"}
-              </p>
-              <div className="state-ea-text">{checkoutNotice.message}</div>
-              <div className="state-ea-actions">
-                <button
-                  onClick={async () => {
-                    await refresh();
-                    await loadTransactions();
-                  }}
-                  disabled={loading || txLoading}
-                  className="btn-ea btn-secondary btn-sm"
-                >
-                  {loading || txLoading ? "Atualizando..." : "Atualizar saldo e histórico"}
-                </button>
-                <Link href="#credits-history" className="btn-link-ea btn-ghost btn-sm">
-                  Ver histórico
-                </Link>
-              </div>
-            </div>
+                    : "Sincronizando retorno do checkout"
+              }
+              description={checkoutNotice.message}
+              meta={[
+                { label: "Pagamento", value: checkoutNotice.tone === "success" ? "Confirmado" : "Em validação" },
+                { label: "Saldo", value: loading ? "Atualizando" : "Pronto para revalidar" },
+                { label: "Histórico", value: txLoading ? "Sincronizando" : "Disponível" },
+              ]}
+              actions={
+                <>
+                  <button
+                    onClick={async () => {
+                      await refresh();
+                      await loadTransactions();
+                    }}
+                    disabled={loading || txLoading}
+                    className="btn-ea btn-secondary btn-sm"
+                  >
+                    {loading || txLoading ? "Atualizando..." : "Atualizar saldo e histórico"}
+                  </button>
+                  <Link href="#credits-history" className="btn-link-ea btn-ghost btn-sm">
+                    Ver histórico
+                  </Link>
+                </>
+              }
+              className="credits-support-state"
+              compact
+            />
           ) : null}
 
           <section className="credits-support-section credits-context-section">
@@ -864,10 +904,16 @@ export default function CreditsPage() {
           </section>
 
           {error ? (
-            <div className="state-ea state-ea-error credits-support-state">
-              <p className="state-ea-title">{`Não foi possível carregar saldo, histórico e regras de ${CREATOR_COINS_PUBLIC_NAME}`}</p>
-              <div className="state-ea-text">{toUserFacingError(error, "Atualize os dados e tente novamente.")}</div>
-              <div className="state-ea-actions">
+            <OperationalState
+              kind="error"
+              title={`Não foi possível carregar saldo, histórico e regras de ${CREATOR_COINS_PUBLIC_NAME}`}
+              description={toUserFacingError(error, "Atualize os dados e tente novamente.")}
+              meta={[
+                { label: "Saldo", value: "Indisponível" },
+                { label: "Histórico", value: "Indisponível" },
+                { label: "Impacto", value: "Sem leitura confiável do financeiro" },
+              ]}
+              actions={
                 <button
                   onClick={async () => {
                     await refresh();
@@ -877,8 +923,10 @@ export default function CreditsPage() {
                 >
                   Atualizar agora
                 </button>
-              </div>
-            </div>
+              }
+              className="credits-support-state"
+              compact
+            />
           ) : null}
         </aside>
       </div>
@@ -898,15 +946,20 @@ export default function CreditsPage() {
         <div>
 
         {txError ? (
-          <div className="state-ea state-ea-error state-ea-spaced">
-            <p className="state-ea-title">Histórico indisponível no momento</p>
-            <div className="state-ea-text">{toUserFacingError(txError, "Tente atualizar o histórico novamente.")}</div>
-            <div className="state-ea-actions">
+          <OperationalState
+            kind="error"
+            title="Histórico indisponível no momento"
+            description={toUserFacingError(txError, "Tente atualizar o histórico novamente.")}
+            meta={[
+              { label: "Ledger", value: "Sem resposta" },
+              { label: "Ação", value: "Nova tentativa necessária" },
+            ]}
+            actions={
               <button onClick={loadTransactions} disabled={txLoading} className="btn-ea btn-secondary btn-sm">
                 Tentar novamente
               </button>
-            </div>
-          </div>
+            }
+          />
         ) : null}
 
         {txLoading ? (
@@ -916,20 +969,25 @@ export default function CreditsPage() {
             ))}
           </div>
         ) : transactions.length === 0 ? (
-          <div className="state-ea state-ea-spaced">
-            <p className="state-ea-title">Sem movimentações recentes de {CREATOR_COINS_PUBLIC_NAME}</p>
-            <div className="state-ea-text">
-              {`Gere conteúdo em Creators para registrar consumo ou compre ${CREATOR_COINS_PUBLIC_NAME} avulsas para inaugurar o histórico.`}
-            </div>
-            <div className="state-ea-actions">
-              <Link href="/creators" className="btn-link-ea btn-primary btn-sm">
-                Ir para Creators
-              </Link>
-              <Link href="#credits-packages" className="btn-link-ea btn-ghost btn-sm">
-                Ver pacotes
-              </Link>
-            </div>
-          </div>
+          <OperationalState
+            kind="empty"
+            title={`Sem movimentações recentes de ${CREATOR_COINS_PUBLIC_NAME}`}
+            description={`Gere conteúdo em Creators para registrar consumo ou compre ${CREATOR_COINS_PUBLIC_NAME} avulsas para inaugurar o histórico.`}
+            meta={[
+              { label: "Ledger", value: "Ainda sem eventos" },
+              { label: "Próximo marco", value: "Consumo, compra ou conversão" },
+            ]}
+            actions={
+              <>
+                <Link href="/creators" className="btn-link-ea btn-primary btn-sm">
+                  Ir para Creators
+                </Link>
+                <Link href="#credits-packages" className="btn-link-ea btn-ghost btn-sm">
+                  Ver pacotes
+                </Link>
+              </>
+            }
+          />
         ) : (
           <div className="credits-history-list">
             {transactions.map((tx) => {

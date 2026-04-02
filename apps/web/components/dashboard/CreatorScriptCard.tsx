@@ -11,6 +11,7 @@ import { usePromptPreferences } from "../../hooks/usePromptPreferences";
 import { useAiExecutionMode } from "../../hooks/useAiExecutionMode";
 import { buildExecutionTechnicalPayload } from "../../lib/aiExecution";
 import { PremiumSelect } from "../ui/PremiumSelect";
+import { OperationalState } from "../ui/OperationalState";
 import { CreatorPlannerPanel } from "./CreatorPlannerPanel";
 import { AiExecutionModeFields } from "./AiExecutionModeFields";
 import { extractApiErrorMessage, toUserFacingError, toUserFacingGenerationSuccess } from "../../lib/uiFeedback";
@@ -702,19 +703,43 @@ export function CreatorScriptCard({ planCode, walletCommon, onRefetch }: Props) 
         {(error || success || copyMsg || saveMsg) ? (
           <div className="creator-feedback-stack">
             {error ? (
-              <div className="state-ea state-ea-error">
-                <p className="state-ea-title">Falha ao gerar roteiro</p>
-                <div className="state-ea-text">{toUserFacingError(error, "Revise o briefing e tente novamente.")}</div>
-              </div>
+              <OperationalState
+                kind="error"
+                title="Falha ao gerar roteiro"
+                description={toUserFacingError(error, "Revise o briefing e tente novamente.")}
+                meta={[
+                  { label: "Formato", value: format },
+                  { label: "Objetivo", value: objective || "Não definido" },
+                ]}
+                compact
+              />
             ) : null}
             {success ? (
-              <div className={`state-ea ${resultProvider === "mock" || resultReplay ? "state-ea-warning" : "state-ea-success"}`}>
-                <p className="state-ea-title">Geração concluída</p>
-                <div className="state-ea-text">{success}</div>
-              </div>
+              <OperationalState
+                kind="success"
+                title={resultProvider === "mock" || resultReplay ? "Roteiro concluído em modo beta" : "Roteiro concluído"}
+                description={success}
+                meta={[
+                  { label: "Estrutura", value: scriptBeatCount },
+                  { label: "Palavras", value: finalScriptWords },
+                  { label: "Provedor", value: resultProvider || "Editor AI Creator" },
+                ]}
+                compact
+              />
             ) : null}
             {copyMsg ? <div className="creator-feedback-note">{copyMsg}</div> : null}
-            {saveMsg ? <div className="creator-feedback-note">{saveMsg}</div> : null}
+            {saveMsg ? (
+              <OperationalState
+                kind={needsProjectSync ? "unsaved" : "saved"}
+                title={needsProjectSync ? "Projeto precisa de nova sincronização" : "Projeto sincronizado"}
+                description={saveMsg}
+                meta={[
+                  { label: "Projeto", value: savedProjectId ? "Vinculado" : "Ainda não criado" },
+                  { label: "Próximo passo", value: needsProjectSync ? "Atualizar e abrir no editor" : "Pronto para revisão editorial" },
+                ]}
+                compact
+              />
+            ) : null}
           </div>
         ) : null}
       </div>
@@ -837,24 +862,30 @@ export function CreatorScriptCard({ planCode, walletCommon, onRefetch }: Props) 
       )}
 
       {!(resultStructured || resultText) && !isBusy && !plannerOpen ? (
-        <div className="state-ea creator-empty-state">
-          <p className="state-ea-title">Nenhum roteiro gerado ainda</p>
-          <div className="state-ea-text">
-            Defina tema e objetivo, revise o planner e gere o roteiro. Depois, salve no projeto para continuar a revisão no editor.
-          </div>
-          <div className="state-ea-actions">
-            <button
-              className="btn-ea btn-primary btn-sm"
-              onClick={openPlanner}
-              disabled={isBusy || !theme.trim() || !objective.trim() || !hasCredits}
-            >
-              Revisar plano e gerar
-            </button>
-            <Link href="/projects" className="btn-link-ea btn-ghost btn-sm">
-              Ver projetos
-            </Link>
-          </div>
-        </div>
+        <OperationalState
+          kind="empty"
+          title="Nenhum roteiro gerado ainda"
+          description="Defina tema e objetivo, revise o planner e gere o roteiro. Depois, salve no projeto para continuar a revisão no editor."
+          meta={[
+            { label: "Fluxo", value: "Gerar → salvar → revisão" },
+            { label: "Saldo", value: hasCredits ? "Disponível" : "Insuficiente", tone: hasCredits ? "success" : "warning" },
+          ]}
+          actions={
+            <>
+              <button
+                className="btn-ea btn-primary btn-sm"
+                onClick={openPlanner}
+                disabled={isBusy || !theme.trim() || !objective.trim() || !hasCredits}
+              >
+                Revisar plano e gerar
+              </button>
+              <Link href="/projects" className="btn-link-ea btn-ghost btn-sm">
+                Ver projetos
+              </Link>
+            </>
+          }
+          className="creator-empty-state"
+        />
       ) : null}
 
       {(resultStructured || resultText) && (
@@ -945,9 +976,19 @@ export function CreatorScriptCard({ planCode, walletCommon, onRefetch }: Props) 
               Fluxo recomendado: revisar estrutura → salvar no projeto → abrir no editor → marcar pronto para revisão → salvar checkpoint → registrar exported.
             </div>
             {hasSavedProject && !needsProjectSync ? (
-              <div className="creator-feedback-note creator-feedback-note-muted">
-                Projeto sincronizado. O editor vai receber o roteiro, o CTA e a estrutura preservados para revisão editorial.
-              </div>
+              <OperationalState
+                kind="saved"
+                title="Projeto sincronizado"
+                description="O editor vai receber o roteiro, o CTA e a estrutura preservados para revisão editorial."
+                compact
+              />
+            ) : needsProjectSync ? (
+              <OperationalState
+                kind="unsaved"
+                title="Alterações pendentes de sincronização"
+                description="Uma nova versão do roteiro foi gerada depois do último salvamento. Atualize o projeto antes de seguir."
+                compact
+              />
             ) : null}
             <div className="postgen-actions">
               <button

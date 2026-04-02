@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PremiumSelect } from "../ui/PremiumSelect";
+import { OperationalState } from "../ui/OperationalState";
 import { api } from "../../lib/api";
 import { supabase } from "../../lib/supabaseClient";
 import { toUserFacingError } from "../../lib/uiFeedback";
@@ -388,6 +389,49 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
     () => (variant === "compact" ? recentGitHubActivity.slice(0, 3) : recentGitHubActivity),
     [recentGitHubActivity, variant]
   );
+  const githubBusyState = useMemo(() => {
+    if (!busyAction) return null;
+    const projectLabel = selectedProject?.title || "Projeto atual";
+    const handoffLabel = repoLabel || "Base do repositório ainda não definida";
+
+    if (busyAction === "connect") {
+      return {
+        kind: "syncing" as const,
+        title: "Conectando identidade GitHub",
+        description: "Preparando a continuidade da conta para o handoff do projeto.",
+      };
+    }
+
+    if (busyAction === "save") {
+      return {
+        kind: "syncing" as const,
+        title: "Salvando base GitHub",
+        description: "Persistindo owner, branch e destino para o fluxo de continuidade.",
+      };
+    }
+
+    if (busyAction === "clear") {
+      return {
+        kind: "retry" as const,
+        title: "Removendo base GitHub",
+        description: "Limpando a referência atual para evitar handoff errado no próximo passo.",
+      };
+    }
+
+    if (busyAction === "version") {
+      return {
+        kind: "saved" as const,
+        title: "Registrando versão local",
+        description: "Criando um checkpoint confiável antes do próximo handoff.",
+      };
+    }
+
+    return {
+      kind: "published" as const,
+      title: "Exportando snapshot GitHub",
+      description: "Preparando o pacote beta para continuidade fora da plataforma.",
+    };
+  }, [busyAction, repoLabel, selectedProject]);
 
   function updateDraft(field: keyof WorkspaceDraft, value: string) {
     setDraft((current) => ({ ...current, [field]: value }));
@@ -795,18 +839,51 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
           </div>
         </div>
 
+        {githubBusyState ? (
+          <OperationalState
+            compact
+            kind={githubBusyState.kind}
+            title={githubBusyState.title}
+            description={githubBusyState.description}
+            badge="GitHub beta"
+            emphasis={selectedProject?.title || "Sem projeto selecionado"}
+            meta={[
+              { label: "Projeto", value: selectedProject?.title || "Abra um projeto" },
+              { label: "Base", value: repoLabel || "Pendente" },
+              { label: "Handoff", value: githubDeliveryStage.label },
+            ]}
+          />
+        ) : null}
+
         {error ? (
-          <div className="state-ea state-ea-error">
-            <p className="state-ea-title">GitHub indisponível agora</p>
-            <div className="state-ea-text">{error}</div>
-          </div>
+          <OperationalState
+            compact
+            kind="error"
+            title="GitHub indisponível agora"
+            description={error}
+            badge="GitHub beta"
+            emphasis={selectedProject?.title || "Sem projeto selecionado"}
+            meta={[
+              { label: "Projeto", value: selectedProject?.title || "Abra um projeto" },
+              { label: "Base", value: repoLabel || "Pendente" },
+            ]}
+          />
         ) : null}
 
         {success ? (
-          <div className="state-ea state-ea-success">
-            <p className="state-ea-title">GitHub beta atualizado</p>
-            <div className="state-ea-text">{success}</div>
-          </div>
+          <OperationalState
+            compact
+            kind={busyAction === "export" ? "published" : "success"}
+            title="GitHub beta atualizado"
+            description={success}
+            badge="GitHub beta"
+            emphasis={selectedProject?.title || "Sem projeto selecionado"}
+            meta={[
+              { label: "Projeto", value: selectedProject?.title || "Abra um projeto" },
+              { label: "Última versão", value: formatDateLabel(lastVersionSavedAt) },
+              { label: "Último snapshot", value: formatDateLabel(lastExportedAt) },
+            ]}
+          />
         ) : null}
 
         <div className="github-workspace-cta-row">
@@ -878,18 +955,52 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
         </div>
       ) : null}
 
+      {githubBusyState ? (
+        <OperationalState
+          kind={githubBusyState.kind}
+          title={githubBusyState.title}
+          description={githubBusyState.description}
+          badge="GitHub beta"
+          emphasis={selectedProject?.title || "Sem projeto selecionado"}
+          meta={[
+            { label: "Projeto", value: selectedProject?.title || "Abra um projeto" },
+            { label: "Base", value: repoLabel || "Pendente" },
+            { label: "Handoff", value: githubDeliveryStage.label },
+          ]}
+          footer="A plataforma está registrando esta etapa para manter a continuidade do handoff legível."
+        />
+      ) : null}
+
       {error ? (
-        <div className="state-ea state-ea-error">
-          <p className="state-ea-title">Não foi possível preparar o GitHub agora</p>
-          <div className="state-ea-text">{error}</div>
-        </div>
+        <OperationalState
+          kind="error"
+          title="Não foi possível preparar o GitHub agora"
+          description={error}
+          badge="GitHub beta"
+          emphasis={selectedProject?.title || "Sem projeto selecionado"}
+          meta={[
+            { label: "Projeto", value: selectedProject?.title || "Abra um projeto" },
+            { label: "Base", value: repoLabel || "Pendente" },
+            { label: "Handoff", value: githubDeliveryStage.label },
+          ]}
+        />
       ) : null}
 
       {success ? (
-        <div className="state-ea state-ea-success">
-          <p className="state-ea-title">GitHub beta atualizado</p>
-          <div className="state-ea-text">{success}</div>
-        </div>
+        <OperationalState
+          kind="success"
+          title="GitHub beta atualizado"
+          description={success}
+          badge="GitHub beta"
+          emphasis={selectedProject?.title || "Sem projeto selecionado"}
+          meta={[
+            { label: "Projeto", value: selectedProject?.title || "Abra um projeto" },
+            { label: "Última versão", value: formatDateLabel(lastVersionSavedAt) },
+            { label: "Último snapshot", value: formatDateLabel(lastExportedAt) },
+            { label: "Handoff", value: githubDeliveryStage.label },
+          ]}
+          footer="O estado principal do GitHub agora fica persistido no projeto; o cache local permanece só como conveniência."
+        />
       ) : null}
 
       <div className="github-workspace-grid">

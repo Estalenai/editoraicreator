@@ -11,6 +11,7 @@ import { usePromptPreferences } from "../../hooks/usePromptPreferences";
 import { useAiExecutionMode } from "../../hooks/useAiExecutionMode";
 import { buildExecutionTechnicalPayload } from "../../lib/aiExecution";
 import { PremiumSelect } from "../ui/PremiumSelect";
+import { OperationalState } from "../ui/OperationalState";
 import { CreatorPlannerPanel } from "./CreatorPlannerPanel";
 import { AiExecutionModeFields } from "./AiExecutionModeFields";
 import {
@@ -810,19 +811,43 @@ export function CreatorClipsCard({ planCode, walletCommon, onRefetch }: Props) {
         {(error || success || copyMsg || saveMsg) ? (
           <div className="creator-feedback-stack">
             {error ? (
-          <div className="state-ea state-ea-error">
-            <p className="state-ea-title">Falha no processamento do clipe</p>
-            <div className="state-ea-text">{toUserFacingError(error, "Tente novamente ou atualize o status do job.")}</div>
-          </div>
+          <OperationalState
+            kind="error"
+            title="Falha no processamento do clipe"
+            description={toUserFacingError(error, "Tente novamente ou atualize o status do job.")}
+            meta={[
+              { label: "Formato", value: aspectRatio },
+              { label: "Objetivo", value: objective || "Não definido" },
+            ]}
+            compact
+          />
             ) : null}
         {success ? (
-          <div className={`state-ea ${clipResult?.provider === "mock" || clipResult?.provider === "replay" || clipResult?.replay ? "state-ea-warning" : "state-ea-success"}`}>
-            <p className="state-ea-title">Atualização da geração</p>
-            <div className="state-ea-text">{success}</div>
-          </div>
+          <OperationalState
+            kind="success"
+            title={clipResult?.provider === "mock" || clipResult?.provider === "replay" || clipResult?.replay ? "Atualização do job em modo beta" : "Atualização da geração"}
+            description={success}
+            meta={[
+              { label: "Job", value: clipResult?.jobId || "Ainda sem ID" },
+              { label: "Status", value: jobStatusUi.label },
+              { label: "Provedor", value: clipResult?.provider || "Editor AI Creator" },
+            ]}
+            compact
+          />
         ) : null}
         {copyMsg ? <div className="creator-feedback-note">{copyMsg}</div> : null}
-        {saveMsg ? <div className="creator-feedback-note">{saveMsg}</div> : null}
+        {saveMsg ? (
+          <OperationalState
+            kind={needsProjectSync ? "unsaved" : "saved"}
+            title={needsProjectSync ? "Projeto precisa de nova sincronização" : "Projeto sincronizado"}
+            description={saveMsg}
+            meta={[
+              { label: "Projeto", value: savedProjectId ? "Vinculado" : "Ainda não criado" },
+              { label: "Status do job", value: jobStatusUi.label },
+            ]}
+            compact
+          />
+        ) : null}
           </div>
         ) : null}
       </div>
@@ -859,24 +884,30 @@ export function CreatorClipsCard({ planCode, walletCommon, onRefetch }: Props) {
       ) : null}
 
       {!clipResult && !isBusy && !plannerOpen ? (
-        <div className="state-ea creator-empty-state">
-          <p className="state-ea-title">Nenhum clipe gerado ainda</p>
-          <div className="state-ea-text">
-            Preencha ideia e objetivo, revise o planner e inicie o job. Depois acompanhe o status e leve o ativo para o editor com continuidade clara.
-          </div>
-          <div className="state-ea-actions">
-            <button
-              className="btn-ea btn-primary btn-sm"
-              onClick={openPlanner}
-              disabled={isBusy || !clipIdea.trim() || !objective.trim() || !hasCredits}
-            >
-              Revisar plano e gerar
-            </button>
-            <Link href="/projects" className="btn-link-ea btn-ghost btn-sm">
-              Ver projetos
-            </Link>
-          </div>
-        </div>
+        <OperationalState
+          kind="empty"
+          title="Nenhum clipe gerado ainda"
+          description="Preencha ideia e objetivo, revise o planner e inicie o job. Depois acompanhe o status e leve o ativo para o editor com continuidade clara."
+          meta={[
+            { label: "Fluxo", value: "Gerar job → acompanhar → salvar" },
+            { label: "Saldo", value: hasCredits ? "Disponível" : "Insuficiente", tone: hasCredits ? "success" : "warning" },
+          ]}
+          actions={
+            <>
+              <button
+                className="btn-ea btn-primary btn-sm"
+                onClick={openPlanner}
+                disabled={isBusy || !clipIdea.trim() || !objective.trim() || !hasCredits}
+              >
+                Revisar plano e gerar
+              </button>
+              <Link href="/projects" className="btn-link-ea btn-ghost btn-sm">
+                Ver projetos
+              </Link>
+            </>
+          }
+          className="creator-empty-state"
+        />
       ) : null}
 
       {inlinePromptOpen && promptEnabled && !autoApply && (
@@ -977,13 +1008,17 @@ export function CreatorClipsCard({ planCode, walletCommon, onRefetch }: Props) {
           </div>
 
           {(jobStatusUi.isPending || jobStatusUi.tone === "error") ? (
-            <div className={`state-ea ${jobStatusUi.tone === "error" ? "state-ea-error" : "state-ea-warning"}`}>
-              <p className="state-ea-title">{jobStatusUi.label}</p>
-              <div className="state-ea-text">
-                {jobStatusUi.detail}
-                {jobStatusUi.isPending && statusAutoRefreshCount > 0 ? ` Atualização automática ${statusAutoRefreshCount}/3 em andamento.` : ""}
-              </div>
-            </div>
+            <OperationalState
+              kind={jobStatusUi.tone === "error" ? "error" : "syncing"}
+              title={jobStatusUi.label}
+              description={`${jobStatusUi.detail}${jobStatusUi.isPending && statusAutoRefreshCount > 0 ? ` Atualização automática ${statusAutoRefreshCount}/3 em andamento.` : ""}`}
+              meta={[
+                { label: "Job ID", value: clipResult.jobId || "Não disponível" },
+                { label: "Provedor", value: clipResult.provider || "Não definido" },
+                { label: "Resultado", value: clipUrl ? "URL pronta" : "Aguardando ativo final" },
+              ]}
+              compact
+            />
           ) : null}
 
           <div className="creator-planner-field-grid creator-clips-result-summary-grid">
@@ -1037,9 +1072,19 @@ export function CreatorClipsCard({ planCode, walletCommon, onRefetch }: Props) {
                 : "Fluxo recomendado: acompanhar o job → salvar no projeto → abrir no editor → manter o estado do ativo sincronizado até o link final."}
             </div>
             {hasSavedProject && !needsProjectSync ? (
-              <div className="creator-feedback-note creator-feedback-note-muted">
-                Projeto sincronizado. O editor vai receber o job, o link do clipe e o estado de saída preservados para revisão visual.
-              </div>
+              <OperationalState
+                kind="saved"
+                title="Projeto sincronizado"
+                description="O editor vai receber o job, o link do clipe e o estado de saída preservados para revisão visual."
+                compact
+              />
+            ) : needsProjectSync ? (
+              <OperationalState
+                kind="unsaved"
+                title="Job atualizado depois do último salvamento"
+                description="O estado do clipe mudou. Atualize o projeto antes de abrir ou publicar para preservar a trilha real."
+                compact
+              />
             ) : null}
             <div className="postgen-actions">
               <button

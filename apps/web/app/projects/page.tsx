@@ -7,6 +7,7 @@ import { useSectionFocus } from "../../hooks/useSectionFocus";
 import { BetaAccessBlockedView } from "../../components/waitlist/BetaAccessBlockedView";
 import { GitHubWorkspaceCard } from "../../components/projects/GitHubWorkspaceCard";
 import { VercelPublishCard } from "../../components/projects/VercelPublishCard";
+import { OperationalState } from "../../components/ui/OperationalState";
 import { ensureCanonicalProjectData, getCanonicalProjectSummary } from "../../lib/projectModel";
 
 function getProjectId(project: any) {
@@ -146,15 +147,20 @@ export default function ProjectsPage() {
       </section>
 
       {error ? (
-        <div className="state-ea state-ea-error">
-          <p className="state-ea-title">Não foi possível carregar os projetos</p>
-          <div className="state-ea-text">{error}</div>
-          <div className="state-ea-actions">
+        <OperationalState
+          kind="error"
+          title="Não foi possível carregar os projetos"
+          description={error}
+          meta={[
+            { label: "Escopo", value: "Lista, pipeline e handoff" },
+            { label: "Impacto", value: "Sem leitura confiável da continuidade" },
+          ]}
+          actions={
             <button onClick={refresh} className="btn-ea btn-secondary btn-sm">
               Atualizar
             </button>
-          </div>
-        </div>
+          }
+        />
       ) : null}
 
       <section
@@ -195,26 +201,37 @@ export default function ProjectsPage() {
         <div className="focus-shell-body">
 
         {loading ? (
-          <div className="state-ea-spaced projects-loading-stack">
-            {Array.from({ length: 3 }).map((_, index) => (
-              <div key={index} className="premium-skeleton premium-skeleton-card" />
-            ))}
-          </div>
+          <OperationalState
+            kind="loading"
+            title="Carregando projetos e continuidade"
+            description="A lista, os estados draft/exported/published e as camadas de handoff estão sendo sincronizados."
+            meta={[
+              { label: "Lista", value: "Projetos salvos" },
+              { label: "Saída", value: "Pipeline draft/exported/published" },
+              { label: "Sync", value: "GitHub e Vercel em apoio" },
+            ]}
+            footer="A visualização só entra completa depois que a camada de continuidade responde com segurança."
+          />
         ) : normalizedProjects.length === 0 ? (
-          <div className="state-ea state-ea-spaced">
-            <p className="state-ea-title">Nenhum projeto salvo ainda</p>
-            <div className="state-ea-text">
-              Comece em Creators ou abra um novo projeto direto no editor para criar sua primeira base.
-            </div>
-            <div className="state-ea-actions">
-              <Link href="/editor/new" className="btn-link-ea btn-primary btn-sm">
-                Criar projeto
-              </Link>
-              <Link href="/creators" className="btn-link-ea btn-ghost btn-sm">
-                Ir para Creators
-              </Link>
-            </div>
-          </div>
+          <OperationalState
+            kind="empty"
+            title="Nenhum projeto salvo ainda"
+            description="Comece em Creators ou abra um novo projeto direto no editor para criar sua primeira base com trilha real de continuidade."
+            meta={[
+              { label: "Primeiro marco", value: "Salvar projeto" },
+              { label: "Depois disso", value: "Checkpoint, exported e published" },
+            ]}
+            actions={
+              <>
+                <Link href="/editor/new" className="btn-link-ea btn-primary btn-sm">
+                  Criar projeto
+                </Link>
+                <Link href="/creators" className="btn-link-ea btn-ghost btn-sm">
+                  Ir para Creators
+                </Link>
+              </>
+            }
+          />
         ) : (
           <div className="dashboard-section-body projects-list-stack">
             {normalizedProjects.map((project, index) => (
