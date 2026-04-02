@@ -21,7 +21,7 @@ const STEPS = [
   },
   {
     title: "4. Exporte com clareza",
-    description: "Exporte ou registre a publicação com estado claro.",
+    description: "Registre a saída e acompanhe a publicação sem ambiguidade.",
     href: "/projects#vercel-publish",
     cta: "Preparar publicação",
   },
@@ -42,9 +42,9 @@ const RESULT_EXAMPLES = [
   },
   {
     title: "De peça pronta para saída rastreada",
-    input: "Organizar um post, roteiro ou clipe com estado claro de draft, exported e published.",
+    input: "Organizar um post, roteiro ou clipe com estado claro de rascunho, saída registrada e publicação confirmada.",
     output: "Projeto salvo, checkpoints no editor e trilha de saída registrada.",
-    nextStep: "Exportar ou registrar a publicação manual.",
+    nextStep: "Registrar a saída e concluir a publicação no canal correto.",
   },
 ];
 

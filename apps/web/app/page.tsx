@@ -68,7 +68,7 @@ export default function HomePage() {
                 </div>
                 <h1 className="beta-entry-title">Acesso ao núcleo do Editor AI Creator</h1>
                 <p className="beta-entry-copy">
-                  <strong>Creator Post</strong>, <strong>Creator Scripts</strong>, <strong>Creator Clips</strong>, editor e projetos no mesmo fluxo para gerar, salvar, editar e exportar com saída rastreada.
+                  <strong>Creator Post</strong>, <strong>Creator Scripts</strong>, <strong>Creator Clips</strong>, editor e projetos no mesmo fluxo para gerar, salvar, editar e registrar a saída com rastreio real.
                 </p>
               </div>
 
@@ -82,7 +82,7 @@ export default function HomePage() {
             <div className="beta-entry-command-surface" aria-label="Fluxo principal do beta pago/controlado">
               <div className="beta-entry-command-head">
                 <span className="beta-entry-command-kicker">Fluxo principal</span>
-                <span className="beta-entry-command-status">Criar → editar → exportar</span>
+                <span className="beta-entry-command-status">Criar → editar → registrar saída</span>
               </div>
 
               <div className="beta-entry-command-prompt">
@@ -106,7 +106,7 @@ export default function HomePage() {
                 </div>
                 <div className="beta-entry-command-proof-item">
                   <span>Saída clara</span>
-                  <strong>Draft, exported e published claros</strong>
+                  <strong>Rascunho, saída registrada e publicação confirmada</strong>
                 </div>
               </div>
             </div>

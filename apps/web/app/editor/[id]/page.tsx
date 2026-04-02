@@ -123,7 +123,7 @@ const EDITOR_TAB_LABEL: Record<EditorTab, string> = {
 
 const REVIEW_STATUS_META: Record<ReviewStatus, { label: string; detail: string; badge: "phase" | "warning" | "soon" }> = {
   draft: {
-    label: "Draft ativo",
+    label: "Rascunho ativo",
     detail: "O entregável ainda está em construção e deve continuar no editor até consolidar uma base séria.",
     badge: "soon",
   },
@@ -146,18 +146,18 @@ const REVIEW_STATUS_META: Record<ReviewStatus, { label: string; detail: string; 
 
 const OUTPUT_STAGE_META: Record<OutputStage, { label: string; detail: string; badge: "phase" | "warning" | "soon" }> = {
   draft: {
-    label: "Draft",
+    label: "Rascunho",
     detail: "O trabalho ainda está concentrado no editor e não saiu da plataforma como entregável final.",
     badge: "soon",
   },
   exported: {
-    label: "Exported",
+    label: "Saída registrada",
     detail: "A saída já foi registrada como exportada ou enviada para handoff fora da plataforma.",
     badge: "warning",
   },
   published: {
-    label: "Published",
-    detail: "A publicação já foi registrada manualmente como concluída no fluxo atual do beta.",
+    label: "Publicação manual registrada",
+    detail: "A publicação foi confirmada manualmente e registrada no fluxo atual do produto.",
     badge: "phase",
   },
 };
@@ -722,7 +722,7 @@ function buildDeliverableStages({
                 ? "O roteiro já entrou em revisão. Aprove quando o checkpoint editorial final estiver claro."
                 : "O projeto já entrou em revisão. Aprove quando o checkpoint final estiver claro."
             : isClipFlow
-              ? "Leve o clipe para revisão antes de registrar published ou tratar o ativo como final."
+                ? "Leve o clipe para revisão antes de registrar a publicação manual ou tratar o ativo como final."
               : isScriptFlow
                 ? "Leve o roteiro para revisão antes de aprovar a saída final."
                 : "Marque o projeto como pronto para revisão antes de aprovar a saída.",
@@ -743,13 +743,13 @@ function buildDeliverableStages({
         outputStage === "published"
           ? "A saída já foi registrada como publicada. O histórico abaixo mantém quando isso aconteceu e por qual canal."
           : outputStage === "exported"
-            ? "A saída já foi registrada como exported. Agora você pode concluir a publicação manual ou manter o projeto em handoff."
+            ? "A saída já foi registrada. Agora você pode concluir a publicação manual ou manter o projeto em handoff."
             : isClipFlow
               ? primaryOutputReady
-                ? "O clipe já tem link final. Salve um checkpoint, registre exported quando a saída realmente sair e published quando a publicação manual estiver confirmada."
-                : "Aguarde o link final do clipe antes de registrar exported. Enquanto isso, mantenha o job e o projeto sincronizados."
+              ? "O clipe já tem link final. Salve um checkpoint, registre a saída quando ela realmente sair e registre a publicação manual quando ela estiver confirmada."
+              : "Aguarde o link final do clipe antes de registrar a saída. Enquanto isso, mantenha o job e o projeto sincronizados."
             : exportTarget === "device"
-              ? "Saída padrão atual: exported no dispositivo ao concluir o entregável. Published segue como etapa manual fora da plataforma."
+          ? "Saída padrão atual: registre a saída no dispositivo ao concluir o entregável. A publicação continua como etapa manual fora da plataforma."
               : "Fluxo preparado para storage conectado quando essa etapa estiver disponível.",
       status: outputStage === "published" ? "done" : outputStage === "exported" ? "done" : isClipFlow ? (primaryOutputReady && hasSavedVersion ? "active" : "pending") : isApproved && hasSavedVersion ? "active" : "pending",
     },
@@ -893,7 +893,7 @@ export default function EditorProjectPage() {
   const handoffNotice = useMemo(() => {
     if (handoffSourceParam === "creator_post") {
       return handoffStageParam === "saved"
-        ? "A base do Creator Post chegou ao editor com legenda, CTA e hashtags preservados. Agora refine a peça, salve a primeira versão e registre exported quando a saída realmente sair."
+                    ? "A base do Creator Post chegou ao editor com legenda, CTA e hashtags preservados. Agora refine a peça, salve a primeira versão e registre a saída quando ela realmente sair."
         : "Este projeto entrou no editor a partir do Creator Post. Use a área central para consolidar a peça antes da saída final.";
     }
     if (handoffSourceParam === "creator_scripts") {
@@ -903,7 +903,7 @@ export default function EditorProjectPage() {
     }
     if (handoffSourceParam === "creator_clips") {
       return handoffStageParam === "saved"
-        ? "A base do Creator Clips chegou ao editor com briefing, status do job e ativo visual preservados. Agora valide o clipe, salve um checkpoint e registre exported quando a saída realmente sair."
+                    ? "A base do Creator Clips chegou ao editor com briefing, status do job e ativo visual preservados. Agora valide o clipe, salve um checkpoint e registre a saída quando ela realmente sair."
         : "Este projeto entrou no editor a partir do Creator Clips. Use a revisão visual e o estado do ativo como centro do fluxo final.";
     }
     return null;
@@ -951,7 +951,7 @@ export default function EditorProjectPage() {
   );
   const exportBlockReason = useMemo(() => {
     if (isCreatorClipsFlow && !hasClipOutputReady) {
-      return "Aguarde o link final do clipe antes de registrar exported. Enquanto isso, mantenha o job sincronizado no projeto.";
+                return "Aguarde o link final do clipe antes de registrar a saída. Enquanto isso, mantenha o job sincronizado no projeto.";
     }
     if (!hasPrimaryOutputBody) {
       return isCreatorScriptsFlow
@@ -959,10 +959,10 @@ export default function EditorProjectPage() {
         : "Consolide o entregável principal no editor antes de registrar a saída.";
     }
     if (!versions.length) {
-      return "Salve ao menos uma versão ou checkpoint do projeto. Isso evita marcar exported sem uma base real de continuidade.";
+              return "Salve ao menos uma versão ou checkpoint do projeto. Isso evita marcar a saída sem uma base real de continuidade.";
     }
     if (isCreatorScriptsFlow && !isScriptReviewReady) {
-      return "Leve o roteiro para revisão e marque ao menos 'pronto para revisão' antes de registrar exported.";
+              return "Leve o roteiro para revisão e marque ao menos 'pronto para revisão' antes de registrar a saída.";
     }
     return null;
   }, [hasClipOutputReady, hasPrimaryOutputBody, isCreatorClipsFlow, isCreatorScriptsFlow, isScriptReviewReady, versions.length]);
@@ -1067,11 +1067,11 @@ export default function EditorProjectPage() {
       return;
     }
     if (stage === "exported" && isCreatorScriptsFlow && !isScriptReviewReady) {
-      setErr("Leve o roteiro para revisão e marque ao menos 'pronto para revisão' antes de registrar exported.");
+                setErr("Leve o roteiro para revisão e marque ao menos 'pronto para revisão' antes de registrar a saída.");
       return;
     }
     if (stage === "published" && outputStage === "draft") {
-      setErr("Registre exported antes de marcar a publicação manual deste projeto.");
+                setErr("Registre a saída antes de marcar a publicação manual deste projeto.");
       return;
     }
     if (stage === "published" && isCreatorClipsFlow && reviewStatus !== "approved") {
@@ -1109,19 +1109,19 @@ export default function EditorProjectPage() {
         next,
         stage === "published"
           ? isCreatorPostFlow
-            ? "Publicação manual do post registrada. O projeto agora mostra a saída como published com histórico claro."
+                    ? "Publicação manual do post registrada. O projeto agora mostra a saída como publicação manual registrada, com histórico claro."
             : isCreatorClipsFlow
-              ? "Publicação manual do clipe registrada. O projeto agora mostra a saída como published com histórico claro."
+                    ? "Publicação manual do clipe registrada. O projeto agora mostra a saída como publicação manual registrada, com histórico claro."
             : isCreatorScriptsFlow
-              ? "Publicação manual do roteiro registrada. O projeto agora mostra a saída como published com histórico claro."
-            : "Publicação manual registrada. O projeto agora mostra a saída como published com histórico claro."
+                    ? "Publicação manual do roteiro registrada. O projeto agora mostra a saída como publicação manual registrada, com histórico claro."
+                  : "Publicação manual registrada. O projeto agora mostra a saída como publicação manual registrada, com histórico claro."
           : isCreatorPostFlow
-            ? "Exportação do post registrada. O projeto agora mostra a saída como exported com histórico claro."
+                    ? "Exportação do post registrada. O projeto agora mostra a saída como saída registrada, com histórico claro."
             : isCreatorClipsFlow
-              ? "Exportação do clipe registrada. O projeto agora mostra a saída como exported com histórico claro."
+                    ? "Exportação do clipe registrada. O projeto agora mostra a saída como saída registrada, com histórico claro."
             : isCreatorScriptsFlow
-              ? "Exportação do roteiro registrada. O projeto agora mostra a saída como exported com histórico claro."
-            : "Exportação registrada. O projeto agora mostra a saída como exported com histórico claro."
+                    ? "Exportação do roteiro registrada. O projeto agora mostra a saída como saída registrada, com histórico claro."
+                  : "Exportação registrada. O projeto agora mostra a saída como saída registrada, com histórico claro."
       );
     } catch (e: any) {
       setErr(typeof e === "string" ? e : (e?.message || e?.error?.message || "Falha ao registrar a saída do projeto"));
@@ -1661,12 +1661,12 @@ export default function EditorProjectPage() {
               {isCreatorScriptsFlow ? (
                 <div className="editor-project-origin-note editor-project-origin-note-inline">
                   <strong>Revisão editorial do roteiro</strong>
-                  <span>Use revisão, aprovação e checkpoint como marcos centrais do fluxo. O roteiro só deve seguir para exported depois de uma leitura editorial clara.</span>
+                    <span>Use revisão, aprovação e checkpoint como marcos centrais do fluxo. O roteiro só deve seguir para saída registrada depois de uma leitura editorial clara.</span>
                 </div>
               ) : isCreatorClipsFlow ? (
                 <div className="editor-project-origin-note editor-project-origin-note-inline">
                   <strong>Revisão visual do clipe</strong>
-                  <span>Use revisão, aprovação e checkpoint como marcos centrais do fluxo. O clipe só deve seguir para published depois de o ativo final estar validado.</span>
+                    <span>Use revisão, aprovação e checkpoint como marcos centrais do fluxo. O clipe só deve seguir para publicação manual depois de o ativo final estar validado.</span>
                 </div>
               ) : null}
             </section>
@@ -1726,8 +1726,8 @@ export default function EditorProjectPage() {
                         <strong>{clipOutputAsset?.url ? "Link do clipe disponível" : "Aguardando link final"}</strong>
                       </div>
                       <div className="creator-planner-field">
-                        <span>Published</span>
-                        <strong>{outputStage === "published" ? "Já registrado" : "Registro manual depois da aprovação"}</strong>
+                        <span>Publicação manual</span>
+                        <strong>{outputStage === "published" ? "Já registrada" : "Registro manual depois da aprovação"}</strong>
                       </div>
                     </div>
                   </div>
@@ -2038,7 +2038,7 @@ export default function EditorProjectPage() {
                 <p className="section-kicker">Projeto atual</p>
                 <strong className="editor-shell-footer-title">{title}</strong>
                 <p className="editor-shell-note">
-                  O fluxo agora fecha aqui com rastreio explícito: draft enquanto o trabalho ainda vive no editor, exported quando a saída realmente sai da plataforma e published quando a publicação manual for confirmada.
+                  O fluxo agora fecha aqui com rastreio explícito: rascunho enquanto o trabalho ainda vive no editor, saída registrada quando o material realmente sai da plataforma e publicação manual quando a confirmação externa já aconteceu.
                 </p>
               </div>
               <div className="editor-shell-cta-group">
@@ -2060,7 +2060,7 @@ export default function EditorProjectPage() {
                   }
                   disabled={saving || !canRegisterExport}
                 >
-                  Registrar exported
+                  Registrar saída
                 </button>
                 <button
                   className="btn-ea btn-ghost btn-sm"
@@ -2074,7 +2074,7 @@ export default function EditorProjectPage() {
                   }
                   disabled={saving || !canRegisterPublish || outputStage === "published"}
                 >
-                  Registrar published
+                  Registrar publicação manual
                 </button>
                 <button className="btn-ea btn-ghost btn-sm" onClick={() => setAiSteps([])}>
                   Limpar log
@@ -2089,7 +2089,7 @@ export default function EditorProjectPage() {
             ) : null}
             {publishBlockReason ? (
               <div className="editor-project-origin-note editor-project-origin-note-inline">
-                <strong>Antes de registrar published</strong>
+                <strong>Antes de registrar a publicação manual</strong>
                 <span>{publishBlockReason}</span>
               </div>
             ) : null}

@@ -688,7 +688,7 @@ function buildSourceFromPayload(payload: any, meta: ProjectMeta): ProjectSourceM
         { label: "Midia sugerida", value: mediaSuggestion },
         { label: "Variacoes", value: variations.length ? `${variations.length} prontas para iteracao` : "" },
       ].filter((item) => item.value),
-      nextAction: "Refine a legenda principal, salve a primeira versao do post e registre exported quando a peca realmente sair da plataforma.",
+        nextAction: "Refine a legenda principal, salve a primeira versao do post e registre a saida quando a peca realmente sair da plataforma.",
     };
   }
 
@@ -793,8 +793,8 @@ function buildSourceFromPayload(payload: any, meta: ProjectMeta): ProjectSourceM
         { label: "Publicacao", value: clipUrl ? "Pronto para revisao visual" : "Acompanhar job antes da saida" },
       ].filter((item) => item.value),
       nextAction: clipUrl
-        ? "Abra o clipe no editor, valide o ativo visual, salve um checkpoint e registre exported quando a saida realmente sair da plataforma."
-        : "Leve o job para o editor, acompanhe o status do clipe e so registre exported quando o link final estiver disponivel.",
+          ? "Abra o clipe no editor, valide o ativo visual, salve um checkpoint e registre a saida quando ela realmente sair da plataforma."
+          : "Leve o job para o editor, acompanhe o status do clipe e so registre a saida quando o link final estiver disponivel.",
     };
   }
 
@@ -1072,7 +1072,7 @@ function buildDeliverableFromData(
     (delivery.stage === "draft"
       ? "Continue no editor, salve uma versao e registre a saida so quando o trabalho estiver consolidado."
       : delivery.stage === "exported"
-        ? "Finalize a etapa externa ou publicacao manual antes de registrar o projeto como published."
+          ? "Finalize a etapa externa ou a publicacao manual antes de marcar o projeto como publicado."
         : "A publicacao ja foi registrada. Use o historico para acompanhar a saida.");
 
   return {
@@ -1625,7 +1625,7 @@ export function createCreatorScriptsProjectData(input: CreatorScriptsInput): Can
         primaryOutputId: output.primary?.id || null,
         latestVersionId: null,
         latestCheckpointId: null,
-        nextAction: source.nextAction || "Abra a revisao editorial, salve um checkpoint e registre exported so depois da leitura final.",
+        nextAction: source.nextAction || "Abra a revisao editorial, salve um checkpoint e registre a saida so depois da leitura final.",
       },
     }
   );
@@ -1663,7 +1663,7 @@ export function createCreatorClipsProjectData(input: CreatorClipsInput): Canonic
         primaryOutputId: output.primary?.id || null,
         latestVersionId: null,
         latestCheckpointId: null,
-        nextAction: source.nextAction || "Acompanhe o job, revise o ativo no editor e registre exported so quando o link final estiver pronto.",
+        nextAction: source.nextAction || "Acompanhe o job, revise o ativo no editor e registre a saida so quando o link final estiver pronto.",
       },
     }
   );
@@ -1690,16 +1690,22 @@ export function syncProjectDataFromEditor(rawData: any, input: SyncEditorStateIn
 }
 
 export function outputStageLabel(stage: OutputStage): string {
-  if (stage === "exported") return "Exported";
-  if (stage === "published") return "Published";
-  return "Draft";
+  if (stage === "exported") return "Saída registrada";
+  if (stage === "published") return "Publicado";
+  return "Rascunho";
 }
 
 export function reviewStatusLabel(status: ReviewStatus): string {
   if (status === "review_ready") return "Pronto para revisao";
   if (status === "approved") return "Aprovado";
   if (status === "rework") return "Ajustes pendentes";
-  return "Draft";
+  return "Em edicao";
+}
+
+export function continuityStatusLabel(stage: OutputStage, status: ReviewStatus): string {
+  if (stage === "published") return "Publicado";
+  if (stage === "exported") return "Saída registrada";
+  return reviewStatusLabel(status);
 }
 
 export function getCanonicalProjectSummary(rawData: any, meta: ProjectMeta = {}) {
@@ -1712,5 +1718,6 @@ export function getCanonicalProjectSummary(rawData: any, meta: ProjectMeta = {})
     integrations: data.integrations,
     outputStageLabel: outputStageLabel(data.delivery.stage),
     reviewStatusLabel: reviewStatusLabel(data.deliverable.reviewStatus),
+    continuityStatusLabel: continuityStatusLabel(data.delivery.stage, data.deliverable.reviewStatus),
   };
 }

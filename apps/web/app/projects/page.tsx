@@ -70,7 +70,7 @@ export default function ProjectsPage() {
   const leadProjectMeta = loading
     ? "A lista completa entra logo abaixo, assim que a base terminar de sincronizar."
     : leadProject
-      ? `${leadProject.kind} • ${leadProject.summary.outputStageLabel} • ${leadProject.summary.reviewStatusLabel}${
+      ? `${leadProject.kind} • ${leadProject.summary.continuityStatusLabel}${
           leadProject.updatedAt
             ? ` • atualizado em ${new Date(leadProject.updatedAt).toLocaleDateString("pt-BR")}`
             : ""
@@ -90,7 +90,7 @@ export default function ProjectsPage() {
               <p className="section-kicker">Continuidade</p>
               <h1 style={{ margin: 0, letterSpacing: -0.3 }}>Projetos</h1>
               <p className="section-header-copy hero-copy-compact">
-                Abra um draft salvo, continue no editor e acompanhe a saída com clareza.
+                Abra um rascunho salvo, continue no editor e acompanhe a saída com clareza.
               </p>
             </div>
             <div className="hero-meta-row">
@@ -126,12 +126,12 @@ export default function ProjectsPage() {
           <div className="projects-hero-panel projects-hero-panel-quiet">
             <div className="projects-hero-panel-list">
               <div className="projects-hero-note">
-                <strong>Abra e continue</strong>
-                <span>Retome um draft salvo diretamente na lista logo abaixo.</span>
+                    <strong>Abra e continue</strong>
+                    <span>Retome um rascunho salvo diretamente na lista logo abaixo.</span>
               </div>
                 <div className="projects-hero-note">
                   <strong>Saída e handoff em apoio</strong>
-                  <span>Draft, exported e published ficam claros, com GitHub e Vercel rastreados pelo backend.</span>
+                  <span>Rascunho, saída registrada e publicado ficam claros, com GitHub e Vercel centralizados no backend.</span>
                 </div>
             </div>
 
@@ -205,10 +205,10 @@ export default function ProjectsPage() {
           <OperationalState
             kind="loading"
             title="Carregando projetos e continuidade"
-            description="Lista, estados draft/exported/published e handoff em sincronização."
+            description="Lista, estados de saída e handoff em sincronização."
             meta={[
               { label: "Lista", value: "Projetos salvos" },
-              { label: "Saída", value: "Pipeline draft/exported/published" },
+              { label: "Saída", value: "Rascunho, saída registrada e publicado" },
               { label: "Sync", value: "GitHub server-owned e Vercel em apoio" },
             ]}
             footer="A visualização só entra completa depois que a camada de continuidade responde com segurança."
@@ -220,7 +220,7 @@ export default function ProjectsPage() {
             description="Comece em Creators ou abra um novo projeto direto no editor."
             meta={[
               { label: "Primeiro marco", value: "Salvar projeto" },
-              { label: "Depois disso", value: "Checkpoint, exported e published" },
+              { label: "Depois disso", value: "Checkpoint, saída registrada e publicado" },
             ]}
             actions={
               <>
@@ -244,7 +244,7 @@ export default function ProjectsPage() {
                 <div className="dashboard-project-link-main">
                   <span className="dashboard-project-link-title">{project.title}</span>
                   <span className="dashboard-project-link-meta">
-                    {project.kind} • {project.summary.outputStageLabel} • {project.summary.reviewStatusLabel}
+                    {project.kind} • {project.summary.continuityStatusLabel}
                     {project.updatedAt
                       ? ` • atualizado em ${new Date(project.updatedAt).toLocaleDateString("pt-BR")}`
                       : ""}
@@ -277,9 +277,9 @@ export default function ProjectsPage() {
         >
         <div className="section-header-ea">
           <p className="section-kicker">Pipeline de saída</p>
-          <h2 className="heading-reset">Draft, exported e published sem ambiguidade</h2>
+          <h2 className="heading-reset">Rascunho, saída registrada e publicado sem ambiguidade</h2>
           <p className="helper-text-ea">
-            Três estados claros: o que ainda está em rascunho, o que já saiu com sync real e o que já foi publicado.
+            Três estados claros: o que ainda está em edição, o que já teve saída registrada e o que já foi publicado com retorno externo.
           </p>
         </div>
         <button
@@ -299,22 +299,22 @@ export default function ProjectsPage() {
         <div className="proof-value-grid projects-publish-grid">
           <div className="proof-value-card layout-contract-item">
             <div className="proof-value-block">
-              <span className="proof-value-chip">Draft</span>
+              <span className="proof-value-chip">Rascunho</span>
               <strong>No editor e em Projetos</strong>
               <p>Projeto salvo e entregável em refinamento.</p>
             </div>
           </div>
           <div className="proof-value-card layout-contract-item">
               <div className="proof-value-block">
-                <span className="proof-value-chip">Exported</span>
+                <span className="proof-value-chip">Saída registrada</span>
                 <strong>Saída registrada</strong>
                 <p>Commit GitHub ou deployment Vercel já foram registrados como próxima etapa do projeto.</p>
               </div>
           </div>
           <div className="proof-value-card layout-contract-item">
               <div className="proof-value-block">
-                <span className="proof-value-chip">Published</span>
-                <strong>Publicado com retorno verificável</strong>
+                <span className="proof-value-chip">Publicado</span>
+                <strong>Publicado com retorno do provider</strong>
                 <p>Produção confirmada pelo provider e persistida no projeto com horário, ambiente e URL.</p>
               </div>
           </div>
@@ -342,7 +342,7 @@ export default function ProjectsPage() {
             <div className="section-header-ea">
               <h2 className="heading-reset">GitHub e Vercel integrados no backend</h2>
               <p className="helper-text-ea">
-                GitHub já opera com workspace, sync e PR pelo backend. Vercel agora valida workspace, dispara deploy e reconcilia status pelo backend.
+                GitHub e Vercel já centralizam workspace e estados no backend. Sync, PR e deploy dependem de credenciais reais e retorno do provider.
               </p>
             </div>
           <div className="hero-actions-row">
@@ -360,7 +360,7 @@ export default function ProjectsPage() {
           </div>
         </div>
         <div className="focus-shell-preview">
-          GitHub já registra sync real; Vercel agora registra workspace, deployment e retorno real do provedor.
+          GitHub e Vercel já registram estado real no backend quando a credencial e o provider respondem com sucesso.
         </div>
         <div className="focus-shell-body">
         <div className="projects-handoff-stack">
