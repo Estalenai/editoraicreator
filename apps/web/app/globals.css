@@ -13385,179 +13385,6 @@ body {
   }
 }
 
-/* Dashboard mobile hardening */
-@media (max-width: 768px) {
-  .motion-runtime .dashboard-page [data-reveal],
-  .motion-runtime .dashboard-page [data-reveal].is-visible {
-    opacity: 1 !important;
-    transform: none !important;
-    filter: none !important;
-    transition: none !important;
-    will-change: auto !important;
-  }
-
-  .app-shell-frame:has(.dashboard-page) .dashboard-page::before {
-    opacity: 0.26;
-    filter: blur(42px);
-  }
-
-  .app-shell-frame:has(.dashboard-page) .dashboard-workspace-shell::before {
-    inset: 6px -10px -18px -10px;
-    opacity: 0.54;
-  }
-
-  .app-shell-frame:has(.dashboard-page) .dashboard-workspace-shell::after {
-    inset: auto 2% -12% 2%;
-    height: 140px;
-    opacity: 0.18;
-    filter: blur(26px);
-  }
-
-  .dashboard-page-canvas .dashboard-hero-support-head,
-  .dashboard-pane-section .section-head,
-  .dashboard-page .dashboard-onboarding-card .onboarding-card-head,
-  .dashboard-page .dashboard-onboarding-card .onboarding-action-row,
-  .dashboard-page .dashboard-onboarding-card .hero-meta-row,
-  .dashboard-usage-band .section-head {
-    display: grid;
-    gap: 12px;
-    align-items: start;
-  }
-
-  .dashboard-page-canvas .dashboard-hero-actions {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 10px;
-    width: 100%;
-  }
-
-  .dashboard-page-canvas .dashboard-hero-actions > .btn-ea,
-  .dashboard-page-canvas .dashboard-hero-actions > .btn-link-ea,
-  .dashboard-pane-section .section-head > .btn-link-ea,
-  .dashboard-pane-section .section-head > .btn-ea,
-  .dashboard-page .dashboard-onboarding-card .onboarding-action-row > *,
-  .dashboard-usage-band .section-head > .btn-link-ea,
-  .dashboard-usage-band .section-head > .btn-ea {
-    width: 100%;
-    min-width: 0;
-  }
-
-  .dashboard-page-canvas .dashboard-balance-chip,
-  .dashboard-projects-list .dashboard-project-link,
-  .dashboard-usage-list .dashboard-progress-card {
-    min-height: 0;
-  }
-
-  .dashboard-page-canvas .dashboard-balance-chip {
-    display: grid;
-    gap: 4px;
-    justify-items: start;
-    align-items: start;
-  }
-
-  .dashboard-projects-list .dashboard-project-link {
-    display: grid;
-    gap: 10px;
-    align-items: start;
-  }
-
-  .dashboard-project-link-main,
-  .dashboard-project-link-title,
-  .dashboard-project-link-meta,
-  .dashboard-quick-link-copy,
-  .dashboard-progress-row > *,
-  .dashboard-context-list .trust-note span,
-  .dashboard-context-list .trust-note strong {
-    min-width: 0;
-    overflow-wrap: anywhere;
-    word-break: break-word;
-  }
-
-  .dashboard-project-link-cta {
-    padding-left: 0;
-    white-space: normal;
-    justify-self: start;
-  }
-
-  .dashboard-progress-row {
-    display: grid;
-    gap: 6px;
-    justify-content: stretch;
-  }
-
-  .dashboard-quick-link-footer {
-    display: grid;
-    justify-content: start;
-    gap: 6px;
-  }
-
-  .dashboard-usage-list-band {
-    grid-template-columns: minmax(0, 1fr) !important;
-  }
-}
-
-@media (max-width: 560px) {
-  .dashboard-page-canvas {
-    gap: 14px;
-  }
-
-  .dashboard-page-canvas > * + * {
-    padding-top: 14px;
-  }
-
-  .dashboard-page-canvas .dashboard-hero {
-    gap: 14px;
-  }
-
-  .dashboard-page-canvas .dashboard-summary-grid,
-  .dashboard-core-links-grid,
-  .dashboard-support-links-list,
-  .dashboard-context-list,
-  .dashboard-page .dashboard-onboarding-card .onboarding-trust-grid,
-  .dashboard-page .dashboard-onboarding-card .onboarding-objective-grid {
-    grid-template-columns: minmax(0, 1fr) !important;
-    gap: 10px;
-  }
-
-  .dashboard-page-canvas .dashboard-summary-card,
-  .dashboard-pane-section,
-  .dashboard-page .dashboard-onboarding-card,
-  .dashboard-usage-band {
-    padding: 16px !important;
-    border-radius: 20px;
-  }
-
-  .dashboard-page-canvas .dashboard-hero-signal-strip .signal-chip,
-  .dashboard-page-canvas .dashboard-hero-support-note,
-  .dashboard-page-canvas .hero-kpi-grid.hero-kpi-grid-compact .hero-kpi,
-  .dashboard-page-canvas .dashboard-balance-chip,
-  .dashboard-projects-list .dashboard-project-link,
-  .dashboard-support-links-list .dashboard-quick-link,
-  .dashboard-core-links-grid .dashboard-quick-link,
-  .dashboard-context-list .trust-note,
-  .dashboard-usage-list .dashboard-progress-card,
-  .dashboard-page .dashboard-onboarding-step,
-  .dashboard-page .dashboard-onboarding-path,
-  .dashboard-page .dashboard-onboarding-credit {
-    padding: 14px 14px 13px !important;
-    border-radius: 18px;
-  }
-
-  .dashboard-core-links-grid .dashboard-quick-link {
-    min-height: 0;
-  }
-
-  .dashboard-page .dashboard-onboarding-card {
-    gap: 16px;
-  }
-
-  .dashboard-page .dashboard-onboarding-card .onboarding-card-head,
-  .dashboard-page .dashboard-onboarding-card .onboarding-action-row,
-  .dashboard-page .dashboard-onboarding-card .hero-meta-row {
-    gap: 10px;
-  }
-}
-
 /* How-it-works continuous narrative */
 .how-it-works-page-canvas {
   display: grid;
@@ -16570,6 +16397,196 @@ body {
 
   .app-shell-frame:has(.dashboard-page) .dashboard-support-links-list .dashboard-quick-link {
     min-height: 118px;
+  }
+}
+
+/* Dashboard mobile hardening */
+@media (max-width: 1180px) {
+  .app-shell-frame:has(.dashboard-page) .dashboard-workspace-grid,
+  .app-shell-frame:has(.dashboard-page) .dashboard-workspace-main,
+  .app-shell-frame:has(.dashboard-page) .dashboard-workspace-rail {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-main-card-projects,
+  .app-shell-frame:has(.dashboard-page) .dashboard-main-card-core,
+  .app-shell-frame:has(.dashboard-page) .dashboard-workspace-main > .dashboard-onboarding-card {
+    grid-column: auto;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-workspace-rail {
+    padding-left: 0;
+    border-left: 0;
+  }
+}
+
+@media (max-width: 900px) {
+  .app-shell-frame:has(.dashboard-page) .dashboard-page-canvas .dashboard-summary-grid,
+  .app-shell-frame:has(.dashboard-page) .dashboard-core-links-grid,
+  .app-shell-frame:has(.dashboard-page) .dashboard-support-links-list,
+  .app-shell-frame:has(.dashboard-page) .dashboard-context-list,
+  .app-shell-frame:has(.dashboard-page) .dashboard-page .dashboard-onboarding-card .onboarding-trust-grid,
+  .app-shell-frame:has(.dashboard-page) .dashboard-page .dashboard-onboarding-card .onboarding-objective-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .motion-runtime .dashboard-page [data-reveal],
+  .motion-runtime .dashboard-page [data-reveal].is-visible {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
+    will-change: auto !important;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-page::before {
+    opacity: 0.26;
+    filter: blur(42px);
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-workspace-shell::before {
+    inset: 6px -10px -18px -10px;
+    opacity: 0.54;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-workspace-shell::after {
+    inset: auto 2% -12% 2%;
+    height: 140px;
+    opacity: 0.18;
+    filter: blur(26px);
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-usage-list-band {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-page-canvas .dashboard-hero-support-head,
+  .app-shell-frame:has(.dashboard-page) .dashboard-pane-section .section-head,
+  .app-shell-frame:has(.dashboard-page) .dashboard-page .dashboard-onboarding-card .onboarding-card-head,
+  .app-shell-frame:has(.dashboard-page) .dashboard-page .dashboard-onboarding-card .onboarding-action-row,
+  .app-shell-frame:has(.dashboard-page) .dashboard-page .dashboard-onboarding-card .hero-meta-row,
+  .app-shell-frame:has(.dashboard-page) .dashboard-usage-band .section-head {
+    display: grid;
+    gap: 12px;
+    align-items: start;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-page-canvas .dashboard-hero-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+    width: 100%;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-page-canvas .dashboard-hero-actions > .btn-ea,
+  .app-shell-frame:has(.dashboard-page) .dashboard-page-canvas .dashboard-hero-actions > .btn-link-ea,
+  .app-shell-frame:has(.dashboard-page) .dashboard-pane-section .section-head > .btn-link-ea,
+  .app-shell-frame:has(.dashboard-page) .dashboard-pane-section .section-head > .btn-ea,
+  .app-shell-frame:has(.dashboard-page) .dashboard-page .dashboard-onboarding-card .onboarding-action-row > *,
+  .app-shell-frame:has(.dashboard-page) .dashboard-usage-band .section-head > .btn-link-ea,
+  .app-shell-frame:has(.dashboard-page) .dashboard-usage-band .section-head > .btn-ea {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-page-canvas .dashboard-balance-chip,
+  .app-shell-frame:has(.dashboard-page) .dashboard-projects-list .dashboard-project-link,
+  .app-shell-frame:has(.dashboard-page) .dashboard-usage-list .dashboard-progress-card,
+  .app-shell-frame:has(.dashboard-page) .dashboard-core-links-grid .dashboard-quick-link {
+    min-height: 0;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-page-canvas .dashboard-balance-chip {
+    display: grid;
+    gap: 4px;
+    justify-items: start;
+    align-items: start;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-projects-list .dashboard-project-link {
+    display: grid;
+    gap: 10px;
+    align-items: start;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-project-link-main,
+  .app-shell-frame:has(.dashboard-page) .dashboard-project-link-title,
+  .app-shell-frame:has(.dashboard-page) .dashboard-project-link-meta,
+  .app-shell-frame:has(.dashboard-page) .dashboard-quick-link-copy,
+  .app-shell-frame:has(.dashboard-page) .dashboard-progress-row > *,
+  .app-shell-frame:has(.dashboard-page) .dashboard-context-list .trust-note span,
+  .app-shell-frame:has(.dashboard-page) .dashboard-context-list .trust-note strong {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-project-link-cta {
+    padding-left: 0;
+    white-space: normal;
+    justify-self: start;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-progress-row {
+    display: grid;
+    gap: 6px;
+    justify-content: stretch;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-quick-link-footer {
+    display: grid;
+    justify-content: start;
+    gap: 6px;
+  }
+}
+
+@media (max-width: 560px) {
+  .app-shell-frame:has(.dashboard-page) .dashboard-page-canvas {
+    gap: 14px;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-page-canvas > * + * {
+    padding-top: 14px;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-page-canvas .dashboard-hero {
+    gap: 14px;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-page-canvas .dashboard-summary-card,
+  .app-shell-frame:has(.dashboard-page) .dashboard-pane-section,
+  .app-shell-frame:has(.dashboard-page) .dashboard-page .dashboard-onboarding-card,
+  .app-shell-frame:has(.dashboard-page) .dashboard-usage-band {
+    padding: 16px !important;
+    border-radius: 20px;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-page-canvas .dashboard-hero-signal-strip .signal-chip,
+  .app-shell-frame:has(.dashboard-page) .dashboard-page-canvas .dashboard-hero-support-note,
+  .app-shell-frame:has(.dashboard-page) .dashboard-page-canvas .hero-kpi-grid.hero-kpi-grid-compact .hero-kpi,
+  .app-shell-frame:has(.dashboard-page) .dashboard-page-canvas .dashboard-balance-chip,
+  .app-shell-frame:has(.dashboard-page) .dashboard-projects-list .dashboard-project-link,
+  .app-shell-frame:has(.dashboard-page) .dashboard-support-links-list .dashboard-quick-link,
+  .app-shell-frame:has(.dashboard-page) .dashboard-core-links-grid .dashboard-quick-link,
+  .app-shell-frame:has(.dashboard-page) .dashboard-context-list .trust-note,
+  .app-shell-frame:has(.dashboard-page) .dashboard-usage-list .dashboard-progress-card,
+  .app-shell-frame:has(.dashboard-page) .dashboard-page .dashboard-onboarding-step,
+  .app-shell-frame:has(.dashboard-page) .dashboard-page .dashboard-onboarding-path,
+  .app-shell-frame:has(.dashboard-page) .dashboard-page .dashboard-onboarding-credit {
+    padding: 14px 14px 13px !important;
+    border-radius: 18px;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-page .dashboard-onboarding-card {
+    gap: 16px;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-page .dashboard-onboarding-card .onboarding-card-head,
+  .app-shell-frame:has(.dashboard-page) .dashboard-page .dashboard-onboarding-card .onboarding-action-row,
+  .app-shell-frame:has(.dashboard-page) .dashboard-page .dashboard-onboarding-card .hero-meta-row {
+    gap: 10px;
   }
 }
 
