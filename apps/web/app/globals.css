@@ -16607,16 +16607,16 @@ body {
 
 .projects-page::before {
   height: clamp(240px, 26vw, 340px);
-  opacity: 0.34;
+  opacity: 0.28;
   filter: blur(58px);
   background:
-    radial-gradient(520px 240px at 12% 8%, rgba(88, 242, 255, 0.16), transparent 72%),
-    radial-gradient(560px 260px at 42% 18%, rgba(96, 132, 255, 0.12), transparent 76%),
+    radial-gradient(520px 240px at 12% 8%, rgba(88, 242, 255, 0.13), transparent 72%),
+    radial-gradient(560px 260px at 42% 18%, rgba(96, 132, 255, 0.1), transparent 76%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent 72%);
 }
 
 .projects-page::after {
-  opacity: 0.62;
+  opacity: 0.5;
 }
 
 .projects-page .projects-hero-open,
@@ -16625,54 +16625,18 @@ body {
 .projects-page .projects-handoff-section {
   position: relative;
   isolation: isolate;
-  overflow: clip;
-  padding: clamp(22px, 2.5vw, 32px) !important;
-  border: 1px solid rgba(191, 239, 255, 0.075) !important;
-  border-radius: clamp(24px, 2.6vw, 32px);
-  background:
-    radial-gradient(420px 180px at 0% 0%, rgba(88, 242, 255, 0.078), transparent 72%),
-    radial-gradient(380px 180px at 100% 100%, rgba(95, 118, 255, 0.075), transparent 78%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.022), rgba(255, 255, 255, 0.007)),
-    rgba(8, 22, 54, 0.32) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.034),
-    0 18px 42px rgba(2, 6, 23, 0.12) !important;
+  overflow: visible;
+  padding: clamp(18px, 2.2vw, 24px) !important;
+  border: 0 !important;
+  border-radius: 0;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
 .projects-page .projects-hero-open::before,
 .projects-page .projects-hero-open::after,
 .projects-page .projects-flow-section::before {
-  display: block;
-  content: "";
-  position: absolute;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.projects-page .projects-hero-open::before {
-  inset: -10% 38% auto -8%;
-  height: clamp(180px, 22vw, 280px);
-  background:
-    radial-gradient(60% 100% at 0% 0%, rgba(88, 242, 255, 0.12), transparent 70%),
-    radial-gradient(46% 94% at 42% 18%, rgba(95, 118, 255, 0.11), transparent 78%);
-  filter: blur(26px);
-  opacity: 0.82;
-}
-
-.projects-page .projects-hero-open::after {
-  inset: auto -10% -14% 42%;
-  height: clamp(140px, 18vw, 220px);
-  background: radial-gradient(46% 100% at 50% 0%, rgba(88, 242, 255, 0.08), transparent 74%);
-  filter: blur(34px);
-  opacity: 0.56;
-}
-
-.projects-page .projects-flow-section::before {
-  inset: 0;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent 18%, transparent 82%, rgba(255, 255, 255, 0.01)),
-    radial-gradient(240px 140px at 100% 0%, rgba(88, 242, 255, 0.04), transparent 76%);
-  opacity: 0.6;
+  display: none;
 }
 
 .projects-page .projects-hero-open > *,
@@ -16684,42 +16648,36 @@ body {
 }
 
 .projects-page .projects-hero-split {
-  grid-template-columns: minmax(0, 1.18fr) minmax(280px, 0.74fr);
-  gap: clamp(22px, 2.4vw, 30px);
+  grid-template-columns: minmax(0, 1fr) minmax(244px, 0.64fr);
+  gap: clamp(18px, 2.1vw, 26px);
 }
 
 .projects-page .projects-hero-bridge-stack {
-  max-width: min(760px, 100%);
-  gap: 10px;
-  padding-top: 8px;
+  max-width: min(720px, 100%);
+  gap: 8px;
+  padding-top: 6px;
 }
 
 .projects-page .projects-hero-bridge {
-  padding: 18px 18px 18px 18px;
-  border: 1px solid rgba(191, 239, 255, 0.08);
+  padding: 16px 18px;
+  border: 1px solid rgba(191, 239, 255, 0.06);
   border-radius: 20px;
-  border-left: 1px solid rgba(191, 239, 255, 0.08);
-  border-top: 1px solid rgba(191, 239, 255, 0.08);
   background:
-    radial-gradient(220px 90px at 100% 0%, rgba(88, 242, 255, 0.06), transparent 74%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.024), rgba(255, 255, 255, 0.008));
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.028),
-    0 10px 24px rgba(2, 6, 23, 0.08);
+    radial-gradient(220px 90px at 100% 0%, rgba(88, 242, 255, 0.05), transparent 74%),
+    var(--ea-page-subtle-surface);
+  box-shadow: none;
 }
 
 .projects-page .projects-hero-panel-quiet {
-  gap: 12px;
-  padding: clamp(16px, 1.8vw, 22px);
-  border: 1px solid rgba(191, 239, 255, 0.07);
-  border-left: 1px solid rgba(191, 239, 255, 0.07);
-  border-radius: 24px;
-  background:
-    radial-gradient(220px 104px at 100% 0%, rgba(88, 242, 255, 0.048), transparent 74%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.006)) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.024),
-    0 10px 24px rgba(2, 6, 23, 0.06) !important;
+  display: grid;
+  gap: 10px;
+  align-content: start;
+  width: min(100%, 308px);
+  padding: 18px;
+  border: 1px solid rgba(191, 239, 255, 0.06);
+  border-radius: 22px;
+  background: var(--ea-page-subtle-surface) !important;
+  box-shadow: none !important;
 }
 
 .projects-page .projects-hero-panel-list {
@@ -16728,41 +16686,32 @@ body {
 
 .projects-page .projects-hero-note {
   gap: 6px;
-  padding: 12px 14px;
-  border: 1px solid rgba(191, 239, 255, 0.07) !important;
-  border-left: 1px solid rgba(191, 239, 255, 0.07) !important;
-  border-radius: 16px;
-  background:
-    radial-gradient(180px 80px at 100% 0%, rgba(88, 242, 255, 0.04), transparent 74%),
-    rgba(255, 255, 255, 0.012) !important;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.018) !important;
+  padding: 10px 0 0;
+  border: 0 !important;
+  border-top: 1px solid var(--ea-unified-divider) !important;
+  border-radius: 0;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
 .projects-page .focus-shell-section[data-focus-active="true"] {
-  border-color: rgba(191, 239, 255, 0.1) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.038),
-    0 20px 44px rgba(2, 6, 23, 0.14) !important;
+  opacity: 1;
 }
 
 .projects-page .focus-shell-section[data-focus-active="false"] {
-  opacity: 0.9;
-  background:
-    radial-gradient(320px 140px at 100% 0%, rgba(88, 242, 255, 0.046), transparent 76%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.004)),
-    rgba(8, 22, 54, 0.26) !important;
+  opacity: 1;
 }
 
 .projects-page .focus-shell-section[data-focus-active="false"] .focus-shell-preview {
   margin-top: 12px;
   padding-top: 12px;
-  border-top: 1px solid rgba(191, 239, 255, 0.075);
+  border-top: 1px solid var(--ea-unified-divider);
 }
 
 .projects-page .projects-list-stack,
 .projects-page .projects-handoff-stack,
 .projects-page .projects-publish-grid {
-  gap: clamp(14px, 1.8vw, 18px);
+  gap: clamp(12px, 1.7vw, 16px);
 }
 
 .projects-page .projects-list-stack > * + *,
@@ -16770,26 +16719,21 @@ body {
 .projects-page .github-workspace-card > * + *,
 .projects-page .vercel-publish-card > * + * {
   margin-top: 0;
-  padding-top: 0;
-  border-top: 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--ea-unified-divider);
 }
 
 .projects-page .dashboard-project-link {
-  min-height: 104px;
-  padding: 18px 20px !important;
-  border: 1px solid rgba(191, 239, 255, 0.07) !important;
-  border-radius: 20px;
-  background:
-    radial-gradient(200px 84px at 100% 0%, rgba(88, 242, 255, 0.052), transparent 74%),
-    radial-gradient(220px 100px at 0% 100%, rgba(95, 118, 255, 0.05), transparent 80%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.006)) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.022),
-    0 10px 24px rgba(2, 6, 23, 0.07) !important;
+  min-height: 96px;
+  padding: 16px 18px !important;
+  border: 1px solid rgba(191, 239, 255, 0.06) !important;
+  border-radius: 18px;
+  background: var(--ea-page-subtle-surface) !important;
+  box-shadow: none !important;
 }
 
 .projects-page .dashboard-project-link:hover {
-  transform: translateY(-1px);
+  transform: none;
   filter: brightness(1.02);
 }
 
@@ -16814,16 +16758,11 @@ body {
 .projects-page .proof-value-card,
 .projects-page .projects-publish-grid > .proof-value-card:first-child {
   min-height: 160px;
-  padding: 18px 18px 18px 18px !important;
-  border: 1px solid rgba(191, 239, 255, 0.07) !important;
-  border-left: 1px solid rgba(191, 239, 255, 0.07) !important;
-  border-radius: 20px;
-  background:
-    radial-gradient(200px 88px at 100% 0%, rgba(88, 242, 255, 0.052), transparent 74%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.006)) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.022),
-    0 10px 24px rgba(2, 6, 23, 0.07) !important;
+  padding: 16px 18px !important;
+  border: 1px solid rgba(191, 239, 255, 0.06) !important;
+  border-radius: 18px;
+  background: var(--ea-page-subtle-surface) !important;
+  box-shadow: none !important;
 }
 
 .projects-page .proof-value-block {
@@ -16832,18 +16771,13 @@ body {
 
 .projects-page .github-workspace-card,
 .projects-page .vercel-publish-card {
-  gap: clamp(14px, 1.8vw, 18px);
-  padding: clamp(20px, 2.2vw, 26px);
-  border: 1px solid rgba(191, 239, 255, 0.075) !important;
-  border-radius: 26px;
-  background:
-    radial-gradient(260px 108px at 100% 0%, rgba(88, 242, 255, 0.058), transparent 74%),
-    radial-gradient(320px 132px at 0% 100%, rgba(95, 118, 255, 0.05), transparent 80%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.022), rgba(255, 255, 255, 0.008)) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.026),
-    0 14px 32px rgba(2, 6, 23, 0.085) !important;
-  overflow: clip;
+  gap: 14px;
+  padding: 0;
+  border: 0 !important;
+  border-radius: 0;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible;
 }
 
 .projects-page .github-workspace-grid,
@@ -16857,13 +16791,10 @@ body {
 .projects-page .vercel-publish-grid > *,
 .projects-page .vercel-publish-links > * {
   padding: 18px !important;
-  border: 1px solid rgba(191, 239, 255, 0.07) !important;
-  border-left: 1px solid rgba(191, 239, 255, 0.07) !important;
+  border: 1px solid rgba(191, 239, 255, 0.06) !important;
   border-radius: 18px;
-  background:
-    radial-gradient(180px 76px at 100% 0%, rgba(88, 242, 255, 0.04), transparent 74%),
-    rgba(255, 255, 255, 0.012) !important;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.018) !important;
+  background: var(--ea-page-subtle-surface) !important;
+  box-shadow: none !important;
 }
 
 .projects-page .github-workspace-status-item,
@@ -16875,13 +16806,10 @@ body {
 .projects-page .vercel-publish-note,
 .projects-page .vercel-publish-history-item {
   padding: 12px 14px !important;
-  border: 1px solid rgba(191, 239, 255, 0.07) !important;
-  border-left: 1px solid rgba(191, 239, 255, 0.07) !important;
+  border: 1px solid rgba(191, 239, 255, 0.06) !important;
   border-radius: 16px;
-  background:
-    radial-gradient(160px 68px at 100% 0%, rgba(88, 242, 255, 0.034), transparent 74%),
-    rgba(255, 255, 255, 0.01) !important;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.016) !important;
+  background: rgba(255, 255, 255, 0.018) !important;
+  box-shadow: none !important;
 }
 
 .projects-page .github-workspace-status-list,
@@ -16905,7 +16833,7 @@ body {
   }
 
   .projects-page .projects-hero-split {
-    grid-template-columns: minmax(0, 1fr) minmax(264px, 0.7fr);
+    grid-template-columns: minmax(0, 1fr) minmax(252px, 0.62fr);
   }
 
   .projects-page .projects-publish-grid {
@@ -16919,7 +16847,6 @@ body {
   .projects-page .projects-publish-section,
   .projects-page .projects-handoff-section {
     padding: 20px !important;
-    border-radius: 24px;
   }
 }
 
@@ -16929,9 +16856,7 @@ body {
   }
 
   .projects-page .projects-hero-panel-quiet {
-    padding: 18px;
-    border-left: 0;
-    border-top: 1px solid rgba(191, 239, 255, 0.075);
+    width: 100%;
   }
 
   .projects-page .projects-hero-panel-list {
@@ -16958,7 +16883,6 @@ body {
   .projects-page .projects-publish-section,
   .projects-page .projects-handoff-section {
     padding: 18px !important;
-    border-radius: 22px;
   }
 
   .projects-page .dashboard-project-link,
