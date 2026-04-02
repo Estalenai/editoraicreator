@@ -556,59 +556,61 @@ export default function DashboardPage() {
               ))}
             </div>
           </section>
-
-          <section className="dashboard-section-card dashboard-pane-section dashboard-pane-section-quiet dashboard-pane-section-rail" data-reveal data-reveal-delay="210">
-            <div className="section-head">
-              <div className="section-header-ea">
-                <h3 className="heading-reset">Uso por feature</h3>
-                <p className="helper-text-ea">Consumo por módulo para ajustar ritmo, plano e próxima ação.</p>
-              </div>
-            </div>
-            {loading || usageLoading ? (
-              <div className="dashboard-section-body dashboard-usage-list">
-                {Array.from({ length: 3 }).map((_, index) => (
-                  <div key={`usage-skeleton-${index}`} className="dashboard-progress-card layout-contract-item">
-                    <div className="premium-skeleton premium-skeleton-line" style={{ width: "45%" }} />
-                    <div className="premium-skeleton premium-skeleton-line" style={{ width: "75%", marginTop: 9 }} />
-                  </div>
-                ))}
-              </div>
-            ) : usageItems.length === 0 ? (
-              <div className="state-ea">
-                <p className="state-ea-title">Sem uso registrado neste mês</p>
-                <div className="state-ea-text">
-                  Assim que você gerar conteúdo em algum Creator, o consumo aparece aqui e no histórico de {CREATOR_COINS_PUBLIC_NAME}.
-                </div>
-                <div className="state-ea-actions">
-                  <Link href="/creators" className="btn-link-ea btn-primary btn-sm">
-                    Gerar agora
-                  </Link>
-                  <Link href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
-                    Ver histórico
-                  </Link>
-                </div>
-              </div>
-            ) : (
-              <div className="dashboard-section-body dashboard-usage-list">
-                {usageItems.map((item) => {
-                  const progress = usageProgress(item);
-                  return (
-                    <div key={item.feature} className="dashboard-progress-card layout-contract-item">
-                      <div className="dashboard-progress-row">
-                        <span>{item.feature}</span>
-                        <strong>{item.used}/{item.limit}</strong>
-                      </div>
-                      <div className="dashboard-progress-track">
-                        <div className="dashboard-progress-bar" style={{ width: `${progress}%` }} />
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </section>
         </aside>
       </div>
+      <section className="dashboard-section-card dashboard-pane-section dashboard-pane-section-quiet dashboard-usage-band" data-reveal data-reveal-delay="210">
+        <div className="section-head">
+          <div className="section-header-ea">
+            <h3 className="heading-reset">Uso por feature</h3>
+            <p className="helper-text-ea">Consumo por módulo para ajustar ritmo, plano e próxima ação.</p>
+          </div>
+          <Link href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
+            Ver histórico
+          </Link>
+        </div>
+        {loading || usageLoading ? (
+          <div className="dashboard-section-body dashboard-usage-list dashboard-usage-list-band">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <div key={`usage-skeleton-${index}`} className="dashboard-progress-card layout-contract-item">
+                <div className="premium-skeleton premium-skeleton-line" style={{ width: "45%" }} />
+                <div className="premium-skeleton premium-skeleton-line" style={{ width: "75%", marginTop: 9 }} />
+              </div>
+            ))}
+          </div>
+        ) : usageItems.length === 0 ? (
+          <div className="state-ea">
+            <p className="state-ea-title">Sem uso registrado neste mês</p>
+            <div className="state-ea-text">
+              Assim que você gerar conteúdo em algum Creator, o consumo aparece aqui e no histórico de {CREATOR_COINS_PUBLIC_NAME}.
+            </div>
+            <div className="state-ea-actions">
+              <Link href="/creators" className="btn-link-ea btn-primary btn-sm">
+                Gerar agora
+              </Link>
+              <Link href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
+                Ver histórico
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <div className="dashboard-section-body dashboard-usage-list dashboard-usage-list-band">
+            {usageItems.map((item) => {
+              const progress = usageProgress(item);
+              return (
+                <div key={item.feature} className="dashboard-progress-card layout-contract-item">
+                  <div className="dashboard-progress-row">
+                    <span>{item.feature}</span>
+                    <strong>{item.used}/{item.limit}</strong>
+                  </div>
+                  <div className="dashboard-progress-track">
+                    <div className="dashboard-progress-bar" style={{ width: `${progress}%` }} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </section>
       </section>
       </div>
     </div>

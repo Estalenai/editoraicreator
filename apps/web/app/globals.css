@@ -15322,18 +15322,54 @@ body {
 }
 
 .app-shell-frame:has(.dashboard-page) .dashboard-workspace-grid {
-  grid-template-columns: minmax(0, 1.72fr) minmax(clamp(14rem, 18vw, 16.5rem), 0.72fr);
-  gap: clamp(16px, 2vw, 22px);
+  grid-template-columns: minmax(0, 1.56fr) minmax(clamp(18rem, 23vw, 21rem), 0.94fr);
+  gap: clamp(18px, 2.1vw, 24px);
 }
 
 .app-shell-frame:has(.dashboard-page) .dashboard-main-card-projects {
-  grid-column: span 8;
+  grid-column: auto;
 }
 
 .app-shell-frame:has(.dashboard-page) .dashboard-main-card-core {
-  grid-column: span 4;
+  grid-column: auto;
 }
 
 .app-shell-frame:has(.dashboard-page) .dashboard-page .dashboard-onboarding-card::after {
   opacity: 0.18;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-workspace-main {
+  grid-template-columns: minmax(0, 1.28fr) minmax(22rem, 1fr);
+  gap: clamp(16px, 2vw, 22px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-pane-section {
+  padding: clamp(20px, 2.3vw, 26px) !important;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-support-links-list {
+  gap: 10px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-usage-band {
+  margin-top: clamp(4px, 0.8vw, 10px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-usage-band .section-head {
+  margin-bottom: 18px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-usage-list-band {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-usage-list-band .dashboard-progress-card {
+  min-height: 96px;
+}
+
+@media (max-width: 1360px) {
+  .app-shell-frame:has(.dashboard-page) .dashboard-workspace-main {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
