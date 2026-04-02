@@ -22,6 +22,8 @@ export type VercelProjectSummary = {
   data?: any;
 };
 
+export type VercelEnvironment = "preview" | "production";
+
 export type VercelProjectBinding = {
   projectId: string;
   projectTitle: string;
@@ -44,7 +46,41 @@ export type VercelWorkspaceState = {
   projectBindings: Record<string, VercelProjectBinding>;
 };
 
+export type VercelBindingIssue = {
+  field: "projectName" | "teamSlug" | "rootDirectory" | "previewUrl" | "productionUrl" | "deployStatus";
+  level: "error" | "warning";
+  message: string;
+};
+
+export type VercelBindingAssessment = {
+  projectName: string;
+  teamSlug: string;
+  framework: VercelFramework;
+  rootDirectory: string;
+  deployStatus: VercelDeployStatus;
+  previewUrl: string;
+  productionUrl: string;
+  preferredEnvironment: VercelEnvironment;
+  issues: VercelBindingIssue[];
+  ready: boolean;
+  hasErrors: boolean;
+  hasWarnings: boolean;
+};
+
+export type VercelManualWorkflowPlan = {
+  dashboardUrl: string;
+  preferredEnvironment: VercelEnvironment;
+  manifestStatus: "manual_beta";
+  deployConfirmationStatus: "manual_beta";
+  previewUrl: string | null;
+  productionUrl: string | null;
+  deployChecklist: string[];
+  nextStep: string;
+};
+
 const STORAGE_KEY = "ea:vercel:workspace:v1";
+const PROJECT_NAME_PATTERN = /^[a-z0-9-]+$/;
+const TEAM_SLUG_PATTERN = /^[a-z0-9._-]+$/i;
 
 function emptyWorkspace(): VercelWorkspaceState {
   return {
@@ -179,6 +215,189 @@ export function recommendedRootDirectory(framework: VercelFramework): string {
   return "export";
 }
 
+export function normalizeVercelProjectName(value: string): string {
+  return String(value || "")
+    .trim()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9-]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .replace(/-{2,}/g, "-")
+    .slice(0, 100);
+}
+
+export function normalizeVercelTeamSlug(value: string): string {
+  return String(value || "")
+    .trim()
+    .replace(/^@+/, "")
+    .replace(/\s+/g, "-");
+}
+
+export function normalizeVercelRootDirectory(value: string, framework: VercelFramework): string {
+  const trimmed = String(value || "")
+    .trim()
+    .replace(/\\/g, "/")
+    .replace(/^\/+|\/+$/g, "")
+    .replace(/\/{2,}/g, "/");
+  return trimmed || recommendedRootDirectory(framework);
+}
+
+export function normalizeVercelUrl(value: string): string {
+  const trimmed = String(value || "").trim();
+  if (!trimmed) return "";
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  return `https://${trimmed}`;
+}
+
+export function vercelEnvironmentLabel(environment: VercelEnvironment): string {
+  return environment === "production" ? "Produção" : "Preview";
+}
+
+export function assessVercelBindingDraft(input: {
+  projectName: string;
+  teamSlug: string;
+  framework: VercelFramework;
+  rootDirectory: string;
+  deployStatus: VercelDeployStatus;
+  previewUrl: string;
+  productionUrl: string;
+}): VercelBindingAssessment {
+  const projectName = normalizeVercelProjectName(input.projectName);
+  const teamSlug = normalizeVercelTeamSlug(input.teamSlug);
+  const framework = input.framework === "vite" ? "vite" : input.framework === "static" ? "static" : "nextjs";
+  const rootDirectory = normalizeVercelRootDirectory(input.rootDirectory, framework);
+  const deployStatus =
+    input.deployStatus === "ready" ? "ready" : input.deployStatus === "published" ? "published" : "draft";
+  const previewUrl = normalizeVercelUrl(input.previewUrl);
+  const productionUrl = normalizeVercelUrl(input.productionUrl);
+  const preferredEnvironment: VercelEnvironment = deployStatus === "published" ? "production" : "preview";
+  const issues: VercelBindingIssue[] = [];
+
+  if (!projectName) {
+    issues.push({
+      field: "projectName",
+      level: "error",
+      message: "Defina o nome do projeto na Vercel antes de salvar a base de deploy.",
+    });
+  } else if (!PROJECT_NAME_PATTERN.test(projectName)) {
+    issues.push({
+      field: "projectName",
+      level: "error",
+      message: "O nome do projeto na Vercel precisa usar apenas letras minúsculas, números e hífens.",
+    });
+  }
+
+  if (teamSlug && !TEAM_SLUG_PATTERN.test(teamSlug)) {
+    issues.push({
+      field: "teamSlug",
+      level: "warning",
+      message: "O workspace/time contém caracteres incomuns. Revise para evitar erro ao continuar o handoff fora da plataforma.",
+    });
+  }
+
+  for (const [field, value, label] of [
+    ["previewUrl", previewUrl, "preview URL"],
+    ["productionUrl", productionUrl, "production URL"],
+  ] as const) {
+    if (!value) continue;
+    try {
+      const parsed = new URL(value);
+      if (!/^https?:$/i.test(parsed.protocol)) {
+        issues.push({
+          field,
+          level: "error",
+          message: `A ${label} precisa usar http ou https.`,
+        });
+      }
+    } catch {
+      issues.push({
+        field,
+        level: "error",
+        message: `A ${label} informada não é válida.`,
+      });
+    }
+  }
+
+  if (deployStatus === "published" && !productionUrl) {
+    issues.push({
+      field: "productionUrl",
+      level: "error",
+      message: "Informe a production URL antes de registrar a publicação manual como concluída.",
+    });
+  }
+
+  if (deployStatus === "ready" && !previewUrl && !productionUrl) {
+    issues.push({
+      field: "deployStatus",
+      level: "warning",
+      message: "Você marcou o deploy como pronto, mas ainda não registrou preview ou production URL para acompanhar o retorno.",
+    });
+  }
+
+  if (previewUrl && productionUrl && previewUrl === productionUrl) {
+    issues.push({
+      field: "productionUrl",
+      level: "warning",
+      message: "Preview e production URL estão idênticas. Revise se o ambiente realmente mudou antes de registrar a publicação.",
+    });
+  }
+
+  return {
+    projectName,
+    teamSlug,
+    framework,
+    rootDirectory,
+    deployStatus,
+    previewUrl,
+    productionUrl,
+    preferredEnvironment,
+    issues,
+    ready: issues.every((item) => item.level !== "error"),
+    hasErrors: issues.some((item) => item.level === "error"),
+    hasWarnings: issues.some((item) => item.level === "warning"),
+  };
+}
+
+export function buildVercelManualWorkflowPlan(
+  project: VercelProjectSummary | null | undefined,
+  binding: Pick<VercelProjectBinding, "vercelProjectName" | "teamSlug" | "deployStatus" | "previewUrl" | "productionUrl"> | null | undefined
+): VercelManualWorkflowPlan {
+  const preferredEnvironment: VercelEnvironment =
+    binding?.deployStatus === "published" ? "production" : "preview";
+  const previewUrl = binding?.previewUrl ? normalizeVercelUrl(binding.previewUrl) : null;
+  const productionUrl = binding?.productionUrl ? normalizeVercelUrl(binding.productionUrl) : null;
+  const projectLabel = String(project?.title || "projeto").trim() || "projeto";
+  const targetProject = binding?.vercelProjectName || "o projeto configurado";
+
+  return {
+    dashboardUrl: "https://vercel.com/dashboard",
+    preferredEnvironment,
+    manifestStatus: "manual_beta",
+    deployConfirmationStatus: "manual_beta",
+    previewUrl,
+    productionUrl,
+    deployChecklist: [
+      `Salvar a base do deploy com projeto Vercel, framework e root directory de ${projectLabel}.`,
+      "Exportar o handoff .json para carregar o contexto fora da plataforma.",
+      preferredEnvironment === "production"
+        ? `Conferir o deploy de produção de ${targetProject} manualmente na Vercel.`
+        : `Conferir o deploy de preview de ${targetProject} manualmente na Vercel.`,
+      previewUrl
+        ? `Validar o preview registrado em ${previewUrl}.`
+        : "Registrar a preview URL assim que o deploy de preview existir.",
+      productionUrl
+        ? `Confirmar a produção registrada em ${productionUrl}.`
+        : "Registrar a production URL quando a publicação realmente acontecer.",
+    ],
+    nextStep: binding
+      ? preferredEnvironment === "production"
+        ? `Abra o painel da Vercel, confirme a produção de ${targetProject} e só então mantenha o status como publicado no produto.`
+        : `Abra o painel da Vercel, confirme o deploy de preview de ${targetProject} e registre a URL para manter a trilha do produto confiável.`
+      : "Salve a base Vercel do projeto antes de exportar o handoff ou registrar qualquer publicação manual.",
+  };
+}
+
 export function vercelFrameworkLabel(framework: VercelFramework): string {
   if (framework === "nextjs") return "Next.js";
   if (framework === "vite") return "Vite";
@@ -243,6 +462,8 @@ export function buildVercelDeployManifest(
     projectTitle: project.title,
   });
 
+  const manualWorkflow = buildVercelManualWorkflowPlan(project, binding);
+
   return {
     kind: "editor-ai-creator.vercel-beta",
     version: 1,
@@ -270,6 +491,7 @@ export function buildVercelDeployManifest(
       history: normalizeHistory(binding.history),
     },
     publishMode: "beta_manual_handoff",
+    manualWorkflow,
     notes: [
       "Fluxo beta inicial: draft local, exported via manifest e published apenas como confirmação manual.",
       "Domínio customizado, multiambiente e sincronização automática entram na próxima fase.",

@@ -6,10 +6,14 @@ import { PremiumSelect } from "../ui/PremiumSelect";
 import { OperationalState } from "../ui/OperationalState";
 import { api } from "../../lib/api";
 import {
+  assessVercelBindingDraft,
   appendVercelProjectEvent,
+  buildVercelManualWorkflowPlan,
   buildVercelDeployManifest,
   downloadVercelDeployManifest,
   getVercelProjectBinding,
+  normalizeVercelRootDirectory,
+  normalizeVercelUrl,
   readVercelWorkspace,
   recommendedRootDirectory,
   recommendVercelFramework,
@@ -18,8 +22,10 @@ import {
   saveVercelWorkspace,
   upsertVercelProjectBinding,
   vercelDeployStatusLabel,
+  vercelEnvironmentLabel,
   vercelFrameworkLabel,
   type VercelDeployStatus,
+  type VercelEnvironment,
   type VercelFramework,
   type VercelProjectBinding,
   type VercelProjectEvent,
@@ -76,13 +82,6 @@ function buildDefaultProjectName(project: VercelProjectSummary | null): string {
     .replace(/[^a-z0-9]+/gi, "-")
     .replace(/^-+|-+$/g, "")
     .slice(0, 48);
-}
-
-function normalizeUrl(value: string): string {
-  const trimmed = String(value || "").trim();
-  if (!trimmed) return "";
-  if (/^https?:\/\//i.test(trimmed)) return trimmed;
-  return `https://${trimmed}`;
 }
 
 function vercelAppUrl(connected: boolean): string {
@@ -159,6 +158,7 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
   const [productionUrl, setProductionUrl] = useState("");
   const [notice, setNotice] = useState<string | null>(null);
   const [noticeTone, setNoticeTone] = useState<"info" | "success" | "error">("info");
+  const [busyAction, setBusyAction] = useState<"save" | "export" | "disconnect" | null>(null);
   const hydrationKeyRef = useRef("");
 
   useEffect(() => {
@@ -257,6 +257,77 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
   const compact = variant === "compact";
   const connected = Boolean(currentBinding);
   const outputStage = resolveVercelOutputStage(currentBinding);
+  const deployAssessment = useMemo(
+    () =>
+      assessVercelBindingDraft({
+        projectName: vercelProjectName || buildDefaultProjectName(selectedProject),
+        teamSlug,
+        framework,
+        rootDirectory,
+        deployStatus,
+        previewUrl,
+        productionUrl,
+      }),
+    [deployStatus, framework, previewUrl, productionUrl, rootDirectory, selectedProject, teamSlug, vercelProjectName]
+  );
+  const savedBindingSignature = useMemo(
+    () =>
+      currentBinding
+        ? [
+            currentBinding.vercelProjectName,
+            currentBinding.teamSlug,
+            currentBinding.framework,
+            currentBinding.rootDirectory,
+            currentBinding.deployStatus,
+            currentBinding.previewUrl,
+            currentBinding.productionUrl,
+          ].join("|")
+        : "",
+    [currentBinding]
+  );
+  const draftBindingSignature = useMemo(
+    () =>
+      deployAssessment.ready
+        ? [
+            deployAssessment.projectName,
+            deployAssessment.teamSlug,
+            deployAssessment.framework,
+            deployAssessment.rootDirectory,
+            deployAssessment.deployStatus,
+            deployAssessment.previewUrl,
+            deployAssessment.productionUrl,
+          ].join("|")
+        : "",
+    [deployAssessment]
+  );
+  const hasFormInput = useMemo(
+    () =>
+      Boolean(
+        vercelProjectName.trim() ||
+          teamSlug.trim() ||
+          rootDirectory.trim() ||
+          previewUrl.trim() ||
+          productionUrl.trim()
+      ),
+    [previewUrl, productionUrl, rootDirectory, teamSlug, vercelProjectName]
+  );
+  const hasUnsavedDraft = Boolean(hasFormInput && draftBindingSignature && draftBindingSignature !== savedBindingSignature);
+  const manualWorkflowPlan = useMemo(
+    () =>
+      buildVercelManualWorkflowPlan(
+        selectedProject,
+        selectedProject
+          ? {
+              vercelProjectName: deployAssessment.projectName,
+              teamSlug: deployAssessment.teamSlug,
+              deployStatus: deployAssessment.deployStatus,
+              previewUrl: deployAssessment.previewUrl,
+              productionUrl: deployAssessment.productionUrl,
+            }
+          : null
+      ),
+    [deployAssessment, selectedProject]
+  );
   const projectSummary = useMemo(
     () =>
       selectedProject
@@ -273,6 +344,188 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
     [compact, outputHistory]
   );
   const lastPublishedAt = selectedProjectCanonical?.delivery.lastPublishedAt || currentBinding?.history?.find((item) => item.stage === "published")?.ts || null;
+  const targetEnvironment: VercelEnvironment = deployAssessment.preferredEnvironment;
+
+  const vercelBusyState = useMemo(() => {
+    if (!busyAction) return null;
+    if (busyAction === "save") {
+      return {
+        kind: "syncing" as const,
+        title: "Salvando base Vercel",
+        description: "Persistindo projeto, ambiente e URLs para manter o deploy beta legível e auditável.",
+      };
+    }
+    if (busyAction === "export") {
+      return {
+        kind: "syncing" as const,
+        title: "Exportando handoff Vercel",
+        description: "Preparando o manifest beta com ambiente, URLs e próximo passo manual de publicação.",
+      };
+    }
+    return {
+      kind: "retry" as const,
+      title: "Atualizando vínculo Vercel",
+      description: "Removendo a base local do deploy sem apagar a trilha histórica do projeto.",
+    };
+  }, [busyAction]);
+
+  const vercelTrustState = useMemo(() => {
+    const commonMeta = [
+      { label: "Projeto", value: selectedProject?.title || "Abra um projeto" },
+      { label: "Ambiente alvo", value: vercelEnvironmentLabel(targetEnvironment) },
+      { label: "Deploy", value: vercelDeployStatusLabel(deployAssessment.deployStatus) },
+      { label: "Handoff", value: outputStage.label },
+      { label: "Último handoff", value: formatDateLabel(currentBinding?.lastManifestExportedAt || null) },
+      { label: "Última publicação", value: formatDateLabel(lastPublishedAt) },
+    ];
+
+    if (notice && noticeTone === "error") {
+      return {
+        kind: "failed-publish" as const,
+        title: "Fluxo Vercel exige revisão",
+        description: notice,
+        meta: commonMeta,
+        details: [
+          manualWorkflowPlan.nextStep,
+        ],
+        footer: "Revise a base, o ambiente e a trilha do projeto antes de repetir o handoff.",
+      };
+    }
+
+    if (!connected) {
+      return {
+        kind: "empty" as const,
+        title: "Base Vercel ainda não preparada",
+        description: "Salve o vínculo com projeto, framework, root directory e ambiente antes de exportar qualquer handoff de publicação.",
+        meta: commonMeta,
+        details: [
+          `Ambiente preferencial nesta etapa: ${vercelEnvironmentLabel(targetEnvironment)}.`,
+          "O deploy continua manual no beta, mas a plataforma já consegue guardar base, URLs e trilha de saída.",
+        ],
+        footer: manualWorkflowPlan.nextStep,
+      };
+    }
+
+    if (deployAssessment.deployStatus === "published") {
+      return {
+        kind: "published" as const,
+        title: "Publicação manual registrada",
+        description: "O produto agora mostra claramente que a publicação foi confirmada manualmente, com ambiente de produção e URL rastreados na trilha operacional.",
+        meta: commonMeta,
+        details: [
+          deployAssessment.productionUrl
+            ? `Production URL registrada: ${deployAssessment.productionUrl}.`
+            : "Production URL ainda não registrada.",
+          `Confirmação continua manual no beta. A plataforma não está fingindo deploy automático.`,
+        ],
+        footer: manualWorkflowPlan.nextStep,
+      };
+    }
+
+    if (currentBinding?.lastManifestExportedAt) {
+      return {
+        kind: "syncing" as const,
+        title: "Deploy aguardando confirmação manual",
+        description: "O manifest já saiu da plataforma. Agora o estado confiável depende da conferência do deploy na Vercel e do retorno visível para preview ou produção.",
+        meta: commonMeta,
+        details: manualWorkflowPlan.deployChecklist,
+        footer: manualWorkflowPlan.nextStep,
+      };
+    }
+
+    if (hasUnsavedDraft) {
+      return {
+        kind: "unsaved" as const,
+        title: "Base Vercel pronta para atualizar",
+        description: "A configuração atual já está consistente, mas ainda não foi persistida no projeto como source of truth do deploy beta.",
+        meta: commonMeta,
+        details: [
+          `Projeto Vercel: ${deployAssessment.projectName}.`,
+          `Root directory: ${deployAssessment.rootDirectory}.`,
+          ...(deployAssessment.hasWarnings
+            ? deployAssessment.issues.filter((item) => item.level === "warning").map((item) => item.message)
+            : []),
+        ],
+        footer: "Salve a base antes de exportar o handoff ou registrar qualquer publicação manual.",
+      };
+    }
+
+    return {
+      kind: "saved" as const,
+      title: "Base Vercel salva e pronta para handoff",
+      description: "O vínculo do projeto com a Vercel está persistido. O próximo passo confiável é exportar o manifest e confirmar o deploy manual no ambiente correto.",
+      meta: commonMeta,
+      details: manualWorkflowPlan.deployChecklist,
+      footer: manualWorkflowPlan.nextStep,
+    };
+  }, [
+    connected,
+    currentBinding?.lastManifestExportedAt,
+    deployAssessment.deployStatus,
+    deployAssessment.hasWarnings,
+    deployAssessment.issues,
+    deployAssessment.projectName,
+    deployAssessment.productionUrl,
+    deployAssessment.rootDirectory,
+    hasUnsavedDraft,
+    lastPublishedAt,
+    manualWorkflowPlan.deployChecklist,
+    manualWorkflowPlan.nextStep,
+    notice,
+    noticeTone,
+    outputStage.label,
+    selectedProject?.title,
+    targetEnvironment,
+  ]);
+
+  const vercelDraftState = useMemo(() => {
+    if (!hasFormInput && !connected) {
+      return {
+        kind: "empty" as const,
+        title: "Defina o projeto Vercel e o ambiente do handoff",
+        description: "O formulário aceita o nome do projeto, time opcional, framework, root directory e URLs para que o deploy fique legível antes de sair da plataforma.",
+        details: [
+          "Exemplo de projeto: meu-site-beta",
+          "Use preview URL quando o deploy existir e production URL apenas quando a publicação acontecer.",
+        ],
+      };
+    }
+
+    if (!hasFormInput) return null;
+
+    if (deployAssessment.hasErrors) {
+      return {
+        kind: "error" as const,
+        title: "Base Vercel com erro de configuração",
+        description: "Corrija os campos abaixo antes de salvar a base ou registrar publicação.",
+        details: deployAssessment.issues.filter((item) => item.level === "error").map((item) => item.message),
+      };
+    }
+
+    if (hasUnsavedDraft) {
+      return {
+        kind: "unsaved" as const,
+        title: "Configuração Vercel pronta para salvar",
+        description: "A base do deploy está consistente e pode ser persistida no projeto sem depender de memória operacional do usuário.",
+        details: [
+          `Ambiente preferencial: ${vercelEnvironmentLabel(targetEnvironment)}.`,
+          ...(deployAssessment.hasWarnings
+            ? deployAssessment.issues.filter((item) => item.level === "warning").map((item) => item.message)
+            : []),
+        ],
+      };
+    }
+
+    return {
+      kind: "saved" as const,
+      title: "Configuração Vercel já persistida",
+      description: "Projeto, ambiente e URLs já estão salvos no produto. A partir daqui, o foco passa para o handoff e a confirmação do deploy.",
+      details: [
+        `Projeto Vercel salvo: ${deployAssessment.projectName}.`,
+        `Ambiente preferencial: ${vercelEnvironmentLabel(targetEnvironment)}.`,
+      ],
+    };
+  }, [connected, deployAssessment, hasFormInput, hasUnsavedDraft, targetEnvironment]);
 
   function persistWorkspace(nextWorkspace: VercelWorkspaceState) {
     saveVercelWorkspace(nextWorkspace);
@@ -365,13 +618,13 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
       projectId: selectedProject.id,
       projectTitle: selectedProject.title,
       projectKind: selectedProject.kind,
-      vercelProjectName: vercelProjectName || buildDefaultProjectName(selectedProject),
-      teamSlug: teamSlug.trim(),
-      framework,
-      rootDirectory: rootDirectory.trim() || recommendedRootDirectory(framework),
-      deployStatus,
-      previewUrl: normalizeUrl(previewUrl),
-      productionUrl: normalizeUrl(productionUrl),
+      vercelProjectName: deployAssessment.projectName || buildDefaultProjectName(selectedProject),
+      teamSlug: deployAssessment.teamSlug,
+      framework: deployAssessment.framework,
+      rootDirectory: deployAssessment.rootDirectory || normalizeVercelRootDirectory(rootDirectory, framework),
+      deployStatus: deployAssessment.deployStatus,
+      previewUrl: deployAssessment.previewUrl,
+      productionUrl: deployAssessment.productionUrl,
       lastManifestExportedAt: currentBinding?.lastManifestExportedAt,
       history: currentBinding?.history || [],
       updatedAt: new Date().toISOString(),
@@ -381,104 +634,144 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
 
   async function onSave() {
     if (!selectedProject) return;
+    if (!deployAssessment.ready) {
+      const messages = deployAssessment.issues
+        .filter((item) => item.level === "error")
+        .map((item) => item.message);
+      setNoticeTone("error");
+      setNotice(messages.join(" "));
+      return;
+    }
     const currentCanonical = selectedProjectCanonical || ensureCanonicalProjectData(selectedProjectData, {
       projectKind: selectedProject.kind,
       projectTitle: selectedProject.title,
     });
+    if (deployAssessment.deployStatus === "published" && !currentBinding?.lastManifestExportedAt && !currentCanonical.delivery.lastExportedAt) {
+      setNoticeTone("error");
+      setNotice("Exporte o handoff Vercel antes de registrar a publicação manual. Assim a trilha do deploy não pula da base direto para produção.");
+      return;
+    }
+    setBusyAction("save");
     const nextHistory = appendVercelProjectEvent(currentBinding, {
       type:
-        deployStatus === "published"
+        deployAssessment.deployStatus === "published"
           ? "published_manual"
           : connected
             ? "status_updated"
             : "base_saved",
       stage:
-        deployStatus === "published"
+        deployAssessment.deployStatus === "published"
           ? "published"
           : currentBinding?.lastManifestExportedAt
             ? "exported"
             : "draft",
       title:
-        deployStatus === "published"
+        deployAssessment.deployStatus === "published"
           ? "Publicação manual registrada"
           : connected
             ? "Base Vercel atualizada"
             : "Base Vercel salva",
       note:
-        deployStatus === "published"
-          ? `Status informado como publicado${normalizeUrl(productionUrl) ? ` em ${normalizeUrl(productionUrl)}` : ""}.`
-          : `Projeto ${vercelProjectName || buildDefaultProjectName(selectedProject)} com framework ${vercelFrameworkLabel(framework)} e root ${rootDirectory.trim() || recommendedRootDirectory(framework)}.`,
+        deployAssessment.deployStatus === "published"
+          ? `Status informado como publicado${deployAssessment.productionUrl ? ` em ${deployAssessment.productionUrl}` : ""}.`
+          : `Projeto ${deployAssessment.projectName || buildDefaultProjectName(selectedProject)} com framework ${vercelFrameworkLabel(deployAssessment.framework)} e root ${deployAssessment.rootDirectory}.`,
     });
-    const nextBinding = buildBinding({ history: nextHistory });
-    const nextWorkspace = upsertVercelProjectBinding(nextBinding);
-    persistWorkspace(nextWorkspace);
+    try {
+      setNotice(null);
+      const nextBinding = buildBinding({ history: nextHistory });
+      const nextWorkspace = upsertVercelProjectBinding(nextBinding);
+      persistWorkspace(nextWorkspace);
 
-    let nextData = mergeCanonicalProjectData(selectedProjectData, {
-      integrations: {
-        vercel: {
-          binding: toCanonicalVercelBinding(nextBinding),
-          lastManifestExportedAt: nextBinding.lastManifestExportedAt || null,
-          history: nextHistory,
-        },
-      },
-    });
-
-    if (deployStatus === "published") {
-      const publishedAt = new Date().toISOString();
-      nextData = mergeCanonicalProjectData(nextData, {
-        delivery: {
-          stage: "published",
-          exportTarget: "connected_storage",
-          connectedStorage: "vercel",
-          lastExportedAt: currentCanonical.delivery.lastExportedAt,
-          lastPublishedAt: publishedAt,
-          history: [
-            {
-              id: currentBinding?.history?.[0]?.id || `${selectedProject.id}-published-${publishedAt}`,
-              ts: publishedAt,
-              stage: "published" as const,
-              channel: "vercel" as const,
-              title: "Publicação manual registrada",
-              note: normalizeUrl(productionUrl)
-                ? `Publicação manual confirmada em ${normalizeUrl(productionUrl)}.`
-                : "Publicação manual confirmada para este projeto na Vercel.",
-            },
-            ...currentCanonical.delivery.history,
-          ].slice(0, 12),
-        },
-        deliverable: {
-          nextAction: "Publicação manual registrada. Use o histórico para acompanhar novos handoffs ou atualizações na Vercel.",
+      let nextData = mergeCanonicalProjectData(selectedProjectData, {
+        integrations: {
+          vercel: {
+            binding: toCanonicalVercelBinding(nextBinding),
+            lastManifestExportedAt: nextBinding.lastManifestExportedAt || null,
+            history: nextHistory,
+          },
         },
       });
-    }
 
-    await persistProjectData(nextData);
-    setNoticeTone("success");
-    setNotice(
-      deployStatus === "published"
-        ? "Publicação manual registrada no projeto e na base local da Vercel. O estado canônico agora fica persistido no próprio projeto."
-        : "Base Vercel salva no projeto e espelhada neste navegador. O handoff manual continua honesto e o estado principal agora fica persistido no projeto."
-    );
+      if (deployAssessment.deployStatus === "published") {
+        const publishedAt = new Date().toISOString();
+        nextData = mergeCanonicalProjectData(nextData, {
+          delivery: {
+            stage: "published",
+            exportTarget: "connected_storage",
+            connectedStorage: "vercel",
+            lastExportedAt: currentCanonical.delivery.lastExportedAt,
+            lastPublishedAt: publishedAt,
+            history: [
+              {
+                id: currentBinding?.history?.[0]?.id || `${selectedProject.id}-published-${publishedAt}`,
+                ts: publishedAt,
+                stage: "published" as const,
+                channel: "vercel" as const,
+                title: "Publicação manual registrada",
+                note: deployAssessment.productionUrl
+                  ? `Publicação manual confirmada em ${deployAssessment.productionUrl}.`
+                  : "Publicação manual confirmada para este projeto na Vercel.",
+              },
+              ...currentCanonical.delivery.history,
+            ].slice(0, 12),
+          },
+          deliverable: {
+            nextAction: "Publicação manual registrada. Use o histórico para acompanhar novos handoffs ou atualizações na Vercel.",
+          },
+        });
+      }
+
+      await persistProjectData(nextData);
+      setNoticeTone("success");
+      setNotice(
+        deployAssessment.deployStatus === "published"
+          ? `Publicação manual registrada com ambiente de produção${deployAssessment.productionUrl ? ` em ${deployAssessment.productionUrl}` : ""}. O estado canônico agora fica persistido no próprio projeto.`
+          : `Base Vercel salva para ${deployAssessment.projectName} em ${vercelEnvironmentLabel(targetEnvironment)}. O próximo passo confiável é exportar o handoff e confirmar o deploy manual.`
+      );
+    } catch (saveError: any) {
+      setNoticeTone("error");
+      setNotice(saveError?.message || "Não foi possível salvar a base Vercel agora.");
+    } finally {
+      setBusyAction(null);
+    }
   }
 
   async function onDisconnect() {
     if (!selectedProject) return;
-    const nextWorkspace = removeVercelProjectBinding(selectedProject.id);
-    persistWorkspace(nextWorkspace);
-    const nextData = mergeCanonicalProjectData(selectedProjectData, {
-      integrations: {
-        vercel: {
-          binding: null,
+    setBusyAction("disconnect");
+    try {
+      setNotice(null);
+      const nextWorkspace = removeVercelProjectBinding(selectedProject.id);
+      persistWorkspace(nextWorkspace);
+      const nextData = mergeCanonicalProjectData(selectedProjectData, {
+        integrations: {
+          vercel: {
+            binding: null,
+          },
         },
-      },
-    });
-    await persistProjectData(nextData);
-    setNoticeTone("success");
-    setNotice("Base local da Vercel removida deste projeto. O histórico continua salvo no projeto para manter a trilha operacional.");
+      });
+      await persistProjectData(nextData);
+      setNoticeTone("success");
+      setNotice("Base local da Vercel removida deste projeto. O histórico continua salvo no projeto para manter a trilha operacional.");
+    } catch (disconnectError: any) {
+      setNoticeTone("error");
+      setNotice(disconnectError?.message || "Não foi possível remover a base Vercel agora.");
+    } finally {
+      setBusyAction(null);
+    }
   }
 
   async function onExportManifest() {
     if (!selectedProject) return;
+    if (!deployAssessment.ready) {
+      const messages = deployAssessment.issues
+        .filter((item) => item.level === "error")
+        .map((item) => item.message);
+      setNoticeTone("error");
+      setNotice(messages.join(" "));
+      return;
+    }
+    setBusyAction("export");
     const exportedAt = new Date().toISOString();
     const currentCanonical = selectedProjectCanonical || ensureCanonicalProjectData(selectedProjectData, {
       projectKind: selectedProject.kind,
@@ -490,56 +783,66 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
       title: "Manifest exportado",
       note: "Handoff beta gerado para deploy manual na Vercel.",
     });
-    const nextBinding = buildBinding({
-      lastManifestExportedAt: exportedAt,
-      history: nextHistory,
-    });
+    try {
+      setNotice(null);
+      const nextBinding = buildBinding({
+        lastManifestExportedAt: exportedAt,
+        history: nextHistory,
+      });
 
-    downloadVercelDeployManifest(
-      {
-        ...selectedProject,
-        data: selectedProjectData,
-      },
-      nextBinding
-    );
-
-    const nextWorkspace = upsertVercelProjectBinding(nextBinding);
-    persistWorkspace(nextWorkspace);
-
-    const nextData = mergeCanonicalProjectData(selectedProjectData, {
-      delivery: {
-        stage: currentCanonical.delivery.stage === "published" ? "published" : "exported",
-        exportTarget: "connected_storage",
-        connectedStorage: "vercel",
-        lastExportedAt: exportedAt,
-        lastPublishedAt: currentCanonical.delivery.lastPublishedAt,
-        history: [
-          {
-            id: `${selectedProject.id}-vercel-export-${exportedAt}`,
-            ts: exportedAt,
-            stage: "exported" as const,
-            channel: "vercel" as const,
-            title: "Manifest Vercel exportado",
-            note: "Handoff beta exportado para deploy manual na Vercel.",
-          },
-          ...currentCanonical.delivery.history,
-        ].slice(0, 12),
-      },
-      integrations: {
-        vercel: {
-          binding: toCanonicalVercelBinding(nextBinding),
-          lastManifestExportedAt: exportedAt,
-          history: nextHistory,
+      downloadVercelDeployManifest(
+        {
+          ...selectedProject,
+          data: selectedProjectData,
         },
-      },
-      deliverable: {
-        nextAction: "Manifest Vercel exportado. Continue o deploy manual fora da plataforma e registre a publicação quando ela realmente acontecer.",
-      },
-    });
+        nextBinding
+      );
 
-    await persistProjectData(nextData);
-    setNoticeTone("success");
-    setNotice("Manifest exportado. O projeto agora guarda o handoff Vercel como source of truth, com base local apenas como conveniência beta.");
+      const nextWorkspace = upsertVercelProjectBinding(nextBinding);
+      persistWorkspace(nextWorkspace);
+
+      const nextData = mergeCanonicalProjectData(selectedProjectData, {
+        delivery: {
+          stage: currentCanonical.delivery.stage === "published" ? "published" : "exported",
+          exportTarget: "connected_storage",
+          connectedStorage: "vercel",
+          lastExportedAt: exportedAt,
+          lastPublishedAt: currentCanonical.delivery.lastPublishedAt,
+          history: [
+            {
+              id: `${selectedProject.id}-vercel-export-${exportedAt}`,
+              ts: exportedAt,
+              stage: "exported" as const,
+              channel: "vercel" as const,
+              title: "Manifest Vercel exportado",
+              note: `Handoff beta exportado para deploy manual na Vercel (${vercelEnvironmentLabel(targetEnvironment)}).`,
+            },
+            ...currentCanonical.delivery.history,
+          ].slice(0, 12),
+        },
+        integrations: {
+          vercel: {
+            binding: toCanonicalVercelBinding(nextBinding),
+            lastManifestExportedAt: exportedAt,
+            history: nextHistory,
+          },
+        },
+        deliverable: {
+          nextAction: "Manifest Vercel exportado. Continue o deploy manual fora da plataforma e registre a publicação quando ela realmente acontecer.",
+        },
+      });
+
+      await persistProjectData(nextData);
+      setNoticeTone("success");
+      setNotice(
+        `Manifest exportado para ${vercelEnvironmentLabel(targetEnvironment)}. O projeto agora guarda o handoff Vercel com ambiente, URLs e próximo passo manual como source of truth.`
+      );
+    } catch (exportError: any) {
+      setNoticeTone("error");
+      setNotice(exportError?.message || "Não foi possível exportar o handoff Vercel agora.");
+    } finally {
+      setBusyAction(null);
+    }
   }
 
   const deployManifest = useMemo(() => {
@@ -556,16 +859,16 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
         vercelProjectName: vercelProjectName || buildDefaultProjectName(selectedProject),
         teamSlug: teamSlug.trim(),
         framework,
-        rootDirectory: rootDirectory.trim() || recommendedRootDirectory(framework),
-        deployStatus,
-        previewUrl: normalizeUrl(previewUrl),
-        productionUrl: normalizeUrl(productionUrl),
+        rootDirectory: deployAssessment.rootDirectory,
+        deployStatus: deployAssessment.deployStatus,
+        previewUrl: deployAssessment.previewUrl,
+        productionUrl: deployAssessment.productionUrl,
         lastManifestExportedAt: currentBinding?.lastManifestExportedAt,
         history: currentBinding?.history || [],
         updatedAt: new Date().toISOString(),
       }
     );
-  }, [selectedProject, selectedProjectData, vercelProjectName, teamSlug, framework, rootDirectory, deployStatus, previewUrl, productionUrl, currentBinding?.lastManifestExportedAt, currentBinding?.history]);
+  }, [selectedProject, selectedProjectData, vercelProjectName, teamSlug, framework, deployAssessment.rootDirectory, deployAssessment.deployStatus, deployAssessment.previewUrl, deployAssessment.productionUrl, currentBinding?.lastManifestExportedAt, currentBinding?.history]);
   const vercelNoticeState = useMemo(() => {
     if (!notice) return null;
     if (noticeTone === "error") {
@@ -667,6 +970,10 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
           <strong>{selectedProject.title}</strong>
         </div>
         <div className="vercel-publish-status-item">
+          <span>Ambiente alvo</span>
+          <strong>{vercelEnvironmentLabel(targetEnvironment)}</strong>
+        </div>
+        <div className="vercel-publish-status-item">
           <span>Framework sugerido</span>
           <strong>{vercelFrameworkLabel(framework)}</strong>
         </div>
@@ -687,6 +994,10 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
           <strong>{outputStage.detail}</strong>
         </div>
         <div className="vercel-publish-status-item">
+          <span>Projeto Vercel</span>
+          <strong>{deployAssessment.projectName || "Pendente"}</strong>
+        </div>
+        <div className="vercel-publish-status-item">
           <span>Último handoff</span>
           <strong>{formatDateLabel(currentBinding?.lastManifestExportedAt || null)}</strong>
         </div>
@@ -695,6 +1006,57 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
           <strong>{formatDateLabel(lastPublishedAt)}</strong>
         </div>
       </div>
+
+      {vercelBusyState ? (
+        <OperationalState
+          compact={compact}
+          kind={vercelBusyState.kind}
+          title={vercelBusyState.title}
+          description={vercelBusyState.description}
+          badge="Vercel status"
+          emphasis={selectedProject.title}
+          meta={[
+            { label: "Projeto", value: selectedProject.title },
+            { label: "Ambiente", value: vercelEnvironmentLabel(targetEnvironment) },
+            { label: "Deploy", value: vercelDeployStatusLabel(deployAssessment.deployStatus) },
+            { label: "Handoff", value: outputStage.label },
+          ]}
+        />
+      ) : null}
+
+      <OperationalState
+        compact={compact}
+        kind={vercelTrustState.kind}
+        title={vercelTrustState.title}
+        description={vercelTrustState.description}
+        badge="Vercel status"
+        emphasis={selectedProject.title}
+        meta={vercelTrustState.meta}
+        details={vercelTrustState.details}
+        footer={vercelTrustState.footer}
+        actions={
+          <div className="vercel-publish-actions">
+            <a
+              href={manualWorkflowPlan.dashboardUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="btn-link-ea btn-secondary btn-sm"
+            >
+              Abrir painel da Vercel
+            </a>
+            {deployAssessment.previewUrl ? (
+              <a href={deployAssessment.previewUrl} target="_blank" rel="noreferrer" className="btn-link-ea btn-ghost btn-sm">
+                Abrir preview
+              </a>
+            ) : null}
+            {deployAssessment.productionUrl ? (
+              <a href={deployAssessment.productionUrl} target="_blank" rel="noreferrer" className="btn-link-ea btn-ghost btn-sm">
+                Abrir produção
+              </a>
+            ) : null}
+          </div>
+        }
+      />
 
       <div className="vercel-publish-grid">
         <div className="vercel-publish-form">
@@ -774,13 +1136,31 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
         </div>
       </div>
 
+      {vercelDraftState ? (
+        <OperationalState
+          compact
+          kind={vercelDraftState.kind}
+          title={vercelDraftState.title}
+          description={vercelDraftState.description}
+          badge="Workspace"
+          emphasis={selectedProject.title}
+          meta={[
+            { label: "Projeto Vercel", value: deployAssessment.projectName || "Pendente" },
+            { label: "Time", value: deployAssessment.teamSlug || "Pessoal / default" },
+            { label: "Root", value: deployAssessment.rootDirectory },
+            { label: "Ambiente", value: vercelEnvironmentLabel(targetEnvironment) },
+          ]}
+          details={vercelDraftState.details}
+        />
+      ) : null}
+
       {(previewUrl || productionUrl) ? (
         <div className="vercel-publish-links">
           {previewUrl ? (
             <div className="vercel-publish-link-card">
               <span>Preview URL</span>
-              <strong>{normalizeUrl(previewUrl)}</strong>
-              <a href={normalizeUrl(previewUrl)} target="_blank" rel="noreferrer" className="text-link-ea">
+              <strong>{normalizeVercelUrl(previewUrl)}</strong>
+              <a href={normalizeVercelUrl(previewUrl)} target="_blank" rel="noreferrer" className="text-link-ea">
                 Abrir preview
               </a>
             </div>
@@ -788,8 +1168,8 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
           {productionUrl ? (
             <div className="vercel-publish-link-card">
               <span>Production URL</span>
-              <strong>{normalizeUrl(productionUrl)}</strong>
-              <a href={normalizeUrl(productionUrl)} target="_blank" rel="noreferrer" className="text-link-ea">
+              <strong>{normalizeVercelUrl(productionUrl)}</strong>
+              <a href={normalizeVercelUrl(productionUrl)} target="_blank" rel="noreferrer" className="text-link-ea">
                 Abrir produção
               </a>
             </div>
@@ -854,11 +1234,11 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
       </div>
 
       <div className="vercel-publish-actions">
-        <button type="button" onClick={onSave} className="btn-ea btn-primary btn-sm">
-          {connected ? "Atualizar base local" : "Salvar base Vercel"}
+        <button type="button" onClick={onSave} disabled={busyAction !== null} className="btn-ea btn-primary btn-sm">
+          {busyAction === "save" ? "Salvando base..." : connected ? "Atualizar base local" : "Salvar base Vercel"}
         </button>
-        <button type="button" onClick={onExportManifest} className="btn-ea btn-secondary btn-sm">
-          Exportar handoff .json
+        <button type="button" onClick={onExportManifest} disabled={busyAction !== null} className="btn-ea btn-secondary btn-sm">
+          {busyAction === "export" ? "Exportando handoff..." : "Exportar handoff .json"}
         </button>
         <a
           href={vercelAppUrl(connected)}
@@ -869,8 +1249,8 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
           {connected ? "Abrir painel da Vercel" : "Abrir Vercel"}
         </a>
         {connected ? (
-          <button type="button" onClick={onDisconnect} className="btn-ea btn-ghost btn-sm">
-            Remover base local
+          <button type="button" onClick={onDisconnect} disabled={busyAction !== null} className="btn-ea btn-ghost btn-sm">
+            {busyAction === "disconnect" ? "Removendo..." : "Remover base local"}
           </button>
         ) : null}
       </div>
