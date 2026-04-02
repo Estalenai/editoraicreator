@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, type KeyboardEvent } from "react";
 import { useDashboardBootstrap } from "../../hooks/useDashboardBootstrap";
+import { useSectionFocus } from "../../hooks/useSectionFocus";
 import { BetaAccessBlockedView } from "../../components/waitlist/BetaAccessBlockedView";
 import { SupportAssistantCard } from "../../components/dashboard/SupportAssistantCard";
 import { CREATOR_COINS_PUBLIC_NAME } from "../../lib/creatorCoins";
@@ -30,6 +31,12 @@ const SUPPORT_PATHS = [
 ];
 
 type SupportFocusSection = "guide" | "faq" | "assistant";
+
+const SUPPORT_SECTION_HASH: Record<SupportFocusSection, string> = {
+  guide: "#support-guide",
+  faq: "#support-faq",
+  assistant: "#support-assistant",
+};
 
 const SUPPORT_FAQ = [
   {
@@ -68,21 +75,56 @@ export default function SupportPage() {
     betaBlocked,
     onLogout,
   } = useDashboardBootstrap({ loadDashboard: false });
-  const [activeSection, setActiveSection] = useState<SupportFocusSection>("assistant");
+  const { activeSection, registerSection, focusSection } =
+    useSectionFocus<SupportFocusSection>("assistant");
+
+  function updateSupportHash(section: SupportFocusSection) {
+    if (typeof window === "undefined") return;
+    const url = new URL(window.location.href);
+    url.hash = SUPPORT_SECTION_HASH[section];
+    window.history.replaceState(null, "", url.toString());
+  }
+
+  function activateSection(
+    section: SupportFocusSection,
+    options?: { scroll?: "auto" | "always" | "never" }
+  ) {
+    focusSection(section, { scroll: options?.scroll ?? "auto" });
+    updateSupportHash(section);
+  }
+
+  function onSectionTrigger(
+    event: KeyboardEvent,
+    section: SupportFocusSection,
+    scroll: "auto" | "always" | "never" = "auto"
+  ) {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    activateSection(section, { scroll });
+  }
 
   useEffect(() => {
     if (typeof window === "undefined") return;
 
     const syncFocusFromHash = () => {
-      if (String(window.location.hash || "").toLowerCase() === "#support-assistant") {
-        setActiveSection("assistant");
+      const hash = String(window.location.hash || "").toLowerCase();
+      if (hash === "#support-guide") {
+        focusSection("guide", { scroll: "never" });
+        return;
+      }
+      if (hash === "#support-faq") {
+        focusSection("faq", { scroll: "never" });
+        return;
+      }
+      if (hash === "#support-assistant") {
+        focusSection("assistant", { scroll: "never" });
       }
     };
 
     syncFocusFromHash();
     window.addEventListener("hashchange", syncFocusFromHash);
     return () => window.removeEventListener("hashchange", syncFocusFromHash);
-  }, []);
+  }, [focusSection]);
 
   if (betaBlocked) {
     return (
@@ -138,10 +180,7 @@ export default function SupportPage() {
               <button
                 type="button"
                 onClick={() => {
-                  setActiveSection("assistant");
-                  requestAnimationFrame(() => {
-                    document.getElementById("support-assistant")?.scrollIntoView({ behavior: "smooth", block: "start" });
-                  });
+                  activateSection("assistant", { scroll: "always" });
                 }}
                 className="btn-link-ea btn-primary"
               >
@@ -169,15 +208,26 @@ export default function SupportPage() {
         </div>
       </section>
 
-      <section className="support-guide-section focus-shell-section" data-focus-active={activeSection === "guide"}>
-        <div className="section-head focus-shell-head">
+      <section
+        ref={registerSection("guide")}
+        className="support-guide-section focus-shell-section"
+        data-focus-active={activeSection === "guide"}
+      >
+        <div
+          className="section-head focus-shell-head"
+          data-focus-clickable={activeSection !== "guide"}
+          role={activeSection !== "guide" ? "button" : undefined}
+          tabIndex={activeSection !== "guide" ? 0 : -1}
+          onClick={activeSection !== "guide" ? () => activateSection("guide") : undefined}
+          onKeyDown={activeSection !== "guide" ? (event) => onSectionTrigger(event, "guide") : undefined}
+        >
           <div className="section-header-ea">
             <h2 className="heading-reset">Caminhos rápidos de ajuda</h2>
             <p className="helper-text-ea">Escolha a trilha mais próxima do seu caso antes de abrir uma solicitação.</p>
           </div>
           <button
             type="button"
-            onClick={() => setActiveSection("guide")}
+            onClick={() => activateSection("guide")}
             className={`btn-ea ${activeSection === "guide" ? "btn-secondary" : "btn-ghost"} btn-sm focus-shell-toggle`}
             aria-pressed={activeSection === "guide"}
           >
@@ -222,15 +272,26 @@ export default function SupportPage() {
         </div>
       ) : null}
 
-      <section className="support-faq-section focus-shell-section" data-focus-active={activeSection === "faq"}>
-        <div className="section-head focus-shell-head">
+      <section
+        ref={registerSection("faq")}
+        className="support-faq-section focus-shell-section"
+        data-focus-active={activeSection === "faq"}
+      >
+        <div
+          className="section-head focus-shell-head"
+          data-focus-clickable={activeSection !== "faq"}
+          role={activeSection !== "faq" ? "button" : undefined}
+          tabIndex={activeSection !== "faq" ? 0 : -1}
+          onClick={activeSection !== "faq" ? () => activateSection("faq") : undefined}
+          onKeyDown={activeSection !== "faq" ? (event) => onSectionTrigger(event, "faq") : undefined}
+        >
           <div className="section-header-ea">
             <h2 className="heading-reset">Perguntas frequentes</h2>
             <p className="helper-text-ea">Respostas rápidas para dúvidas de operação, cobrança e continuidade do beta.</p>
           </div>
           <button
             type="button"
-            onClick={() => setActiveSection("faq")}
+            onClick={() => activateSection("faq")}
             className={`btn-ea ${activeSection === "faq" ? "btn-secondary" : "btn-ghost"} btn-sm focus-shell-toggle`}
             aria-pressed={activeSection === "faq"}
           >
@@ -254,7 +315,8 @@ export default function SupportPage() {
 
       <SupportAssistantCard
         focused={activeSection === "assistant"}
-        onFocus={() => setActiveSection("assistant")}
+        onFocus={() => activateSection("assistant")}
+        sectionRef={registerSection("assistant")}
       />
     </div>
   );

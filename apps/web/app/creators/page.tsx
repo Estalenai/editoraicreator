@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, type KeyboardEvent, useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDashboardBootstrap } from "../../hooks/useDashboardBootstrap";
+import { useSectionFocus } from "../../hooks/useSectionFocus";
 import { BetaAccessBlockedView } from "../../components/waitlist/BetaAccessBlockedView";
 import { CreatorPostCard } from "../../components/dashboard/CreatorPostCard";
 import { CreatorMusicCard } from "../../components/dashboard/CreatorMusicCard";
@@ -175,6 +176,10 @@ function creatorStageTone(group: CreatorGroupId): "phase" | "warning" | "soon" {
   return "soon";
 }
 
+function isFocusActivationKey(event: KeyboardEvent) {
+  return event.key === "Enter" || event.key === " ";
+}
+
 export default function CreatorsPage() {
   return (
     <Suspense fallback={<div className="page-shell"><div className="layout-contract-card" style={{ padding: 16 }}>Carregando área de Creators...</div></div>}>
@@ -187,9 +192,9 @@ function CreatorsPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname() || "";
-  const workspaceRef = useRef<HTMLElement | null>(null);
   const [activeTab, setActiveTab] = useState<CreatorTab>("post");
-  const [activeSection, setActiveSection] = useState<CreatorsFocusSection>("workspace");
+  const { activeSection, registerSection, focusSection } =
+    useSectionFocus<CreatorsFocusSection>("workspace");
 
   const {
     loading,
@@ -270,16 +275,12 @@ function CreatorsPageContent() {
 
   function activateTab(nextTab: CreatorTab, options?: { scrollToWorkspace?: boolean }) {
     setActiveTab(nextTab);
-    setActiveSection("workspace");
+    focusSection("workspace", {
+      scroll: options?.scrollToWorkspace ? "always" : "auto",
+    });
     const params = new URLSearchParams(searchParams?.toString() ?? "");
     params.set("tab", nextTab);
     router.replace(`${pathname ?? "/creators"}?${params.toString()}`, { scroll: false });
-
-    if (options?.scrollToWorkspace) {
-      requestAnimationFrame(() => {
-        workspaceRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-      });
-    }
   }
 
   if (betaBlocked) {
@@ -415,8 +416,25 @@ function CreatorsPageContent() {
         </div>
       </section>
 
-      <section className="creators-hero-core-section creators-flow-section surface-flow-region creators-flow-section-middle layout-contract-region focus-shell-section" data-focus-active={activeSection === "showcase"} data-reveal data-reveal-delay="90">
-        <div className="proof-value-header creators-hero-core-header focus-shell-head">
+      <section
+        ref={registerSection("showcase")}
+        className="creators-hero-core-section creators-flow-section surface-flow-region creators-flow-section-middle layout-contract-region focus-shell-section"
+        data-focus-active={activeSection === "showcase"}
+        data-reveal
+        data-reveal-delay="90"
+      >
+        <div
+          className="proof-value-header creators-hero-core-header focus-shell-head"
+          data-focus-clickable={activeSection !== "showcase"}
+          role={activeSection !== "showcase" ? "button" : undefined}
+          tabIndex={activeSection !== "showcase" ? 0 : -1}
+          onClick={activeSection !== "showcase" ? () => focusSection("showcase", { scroll: "auto" }) : undefined}
+          onKeyDown={activeSection !== "showcase" ? (event) => {
+            if (!isFocusActivationKey(event)) return;
+            event.preventDefault();
+            focusSection("showcase", { scroll: "auto" });
+          } : undefined}
+        >
           <div className="section-stack-tight">
             <p className="section-kicker">Creators hero</p>
             <h2 className="heading-reset">Os 3 creators que precisam carregar a plataforma</h2>
@@ -430,7 +448,7 @@ function CreatorsPageContent() {
           </div>
           <button
             type="button"
-            onClick={() => setActiveSection("showcase")}
+            onClick={() => focusSection("showcase", { scroll: "auto" })}
             className={`btn-ea ${activeSection === "showcase" ? "btn-secondary" : "btn-ghost"} btn-sm focus-shell-toggle`}
             aria-pressed={activeSection === "showcase"}
           >
@@ -486,8 +504,25 @@ function CreatorsPageContent() {
         </div>
       </section>
 
-      <section className="creators-secondary-section creators-flow-section surface-flow-region creators-flow-section-middle layout-contract-region focus-shell-section" data-focus-active={activeSection === "catalog"} data-reveal data-reveal-delay="120">
-        <div className="proof-value-header creators-secondary-header focus-shell-head">
+      <section
+        ref={registerSection("catalog")}
+        className="creators-secondary-section creators-flow-section surface-flow-region creators-flow-section-middle layout-contract-region focus-shell-section"
+        data-focus-active={activeSection === "catalog"}
+        data-reveal
+        data-reveal-delay="120"
+      >
+        <div
+          className="proof-value-header creators-secondary-header focus-shell-head"
+          data-focus-clickable={activeSection !== "catalog"}
+          role={activeSection !== "catalog" ? "button" : undefined}
+          tabIndex={activeSection !== "catalog" ? 0 : -1}
+          onClick={activeSection !== "catalog" ? () => focusSection("catalog", { scroll: "auto" }) : undefined}
+          onKeyDown={activeSection !== "catalog" ? (event) => {
+            if (!isFocusActivationKey(event)) return;
+            event.preventDefault();
+            focusSection("catalog", { scroll: "auto" });
+          } : undefined}
+        >
           <div className="section-stack-tight">
             <p className="section-kicker">Apoio e labs</p>
             <h2 className="heading-reset">O restante do catálogo continua útil, mas com papel mais claro</h2>
@@ -497,7 +532,7 @@ function CreatorsPageContent() {
           </div>
           <button
             type="button"
-            onClick={() => setActiveSection("catalog")}
+            onClick={() => focusSection("catalog", { scroll: "auto" })}
             className={`btn-ea ${activeSection === "catalog" ? "btn-secondary" : "btn-ghost"} btn-sm focus-shell-toggle`}
             aria-pressed={activeSection === "catalog"}
           >
@@ -533,15 +568,30 @@ function CreatorsPageContent() {
         </div>
       </section>
 
-      <section ref={workspaceRef} className="creator-workspace-shell creators-flow-section surface-flow-region creators-flow-section-end layout-contract-region focus-shell-section" data-focus-active={activeSection === "workspace"}>
-        <div className="focus-shell-head">
+      <section
+        ref={registerSection("workspace")}
+        className="creator-workspace-shell creators-flow-section surface-flow-region creators-flow-section-end layout-contract-region focus-shell-section"
+        data-focus-active={activeSection === "workspace"}
+      >
+        <div
+          className="focus-shell-head"
+          data-focus-clickable={activeSection !== "workspace"}
+          role={activeSection !== "workspace" ? "button" : undefined}
+          tabIndex={activeSection !== "workspace" ? 0 : -1}
+          onClick={activeSection !== "workspace" ? () => focusSection("workspace", { scroll: "auto" }) : undefined}
+          onKeyDown={activeSection !== "workspace" ? (event) => {
+            if (!isFocusActivationKey(event)) return;
+            event.preventDefault();
+            focusSection("workspace", { scroll: "auto" });
+          } : undefined}
+        >
           <div className="section-header-ea">
             <h2 className="heading-reset">Workspace ativo</h2>
             <p className="helper-text-ea">Uma ferramenta principal por vez, com briefing, estimativa e continuidade no mesmo eixo operacional.</p>
           </div>
           <button
             type="button"
-            onClick={() => setActiveSection("workspace")}
+            onClick={() => focusSection("workspace", { scroll: "auto" })}
             className={`btn-ea ${activeSection === "workspace" ? "btn-secondary" : "btn-ghost"} btn-sm focus-shell-toggle`}
             aria-pressed={activeSection === "workspace"}
           >

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type KeyboardEvent, type Ref } from "react";
 import { api } from "../../lib/api";
 import { PremiumSelect } from "../ui/PremiumSelect";
 import { toUserFacingError } from "../../lib/uiFeedback";
@@ -23,6 +23,7 @@ type Props = {
   focused?: boolean;
   onFocus?: () => void;
   preview?: string;
+  sectionRef?: Ref<HTMLElement>;
 };
 
 const CATEGORY_OPTIONS: Array<{ value: SupportCategory; label: string; hint: string }> = [
@@ -62,6 +63,7 @@ export function SupportAssistantCard({
   focused = true,
   onFocus,
   preview = "Abra o assistant quando quiser concentrar triagem, histórico e contexto do pedido na mesma área.",
+  sectionRef,
 }: Props) {
   const [category, setCategory] = useState<SupportCategory>("duvida");
   const [subject, setSubject] = useState("");
@@ -128,13 +130,27 @@ export function SupportAssistantCard({
     }
   }
 
+  function onFocusTrigger(event: KeyboardEvent) {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    onFocus?.();
+  }
+
   return (
     <section
       id="support-assistant"
+      ref={sectionRef}
       className="support-assistant-card support-assistant-open focus-shell-section"
       data-focus-active={focused}
     >
-      <div className="section-head support-assistant-head focus-shell-head">
+      <div
+        className="section-head support-assistant-head focus-shell-head"
+        data-focus-clickable={!focused}
+        role={!focused ? "button" : undefined}
+        tabIndex={!focused ? 0 : -1}
+        onClick={!focused ? onFocus : undefined}
+        onKeyDown={!focused ? onFocusTrigger : undefined}
+      >
         <div className="section-header-ea">
           <p className="section-kicker">Atendimento interno</p>
           <h3 className="heading-reset">Support Assistant</h3>

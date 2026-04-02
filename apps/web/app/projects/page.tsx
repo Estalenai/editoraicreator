@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useMemo, type KeyboardEvent } from "react";
 import { useDashboardBootstrap } from "../../hooks/useDashboardBootstrap";
+import { useSectionFocus } from "../../hooks/useSectionFocus";
 import { BetaAccessBlockedView } from "../../components/waitlist/BetaAccessBlockedView";
 import { GitHubWorkspaceCard } from "../../components/projects/GitHubWorkspaceCard";
 import { VercelPublishCard } from "../../components/projects/VercelPublishCard";
@@ -13,6 +14,10 @@ function getProjectId(project: any) {
 }
 
 type ProjectsFocusSection = "list" | "publish" | "handoff";
+
+function isFocusActivationKey(event: KeyboardEvent) {
+  return event.key === "Enter" || event.key === " ";
+}
 
 export default function ProjectsPage() {
   const {
@@ -51,7 +56,8 @@ export default function ProjectsPage() {
       }),
     [projects]
   );
-  const [activeSection, setActiveSection] = useState<ProjectsFocusSection>("list");
+  const { activeSection, registerSection, focusSection } =
+    useSectionFocus<ProjectsFocusSection>("list");
 
   const planLabelDisplay = loading ? "Sincronizando plano" : planLabel ?? "—";
   const projectCountLabel = loading
@@ -151,8 +157,23 @@ export default function ProjectsPage() {
         </div>
       ) : null}
 
-      <section className="projects-list-section projects-list-open projects-flow-section projects-flow-section-start focus-shell-section" data-focus-active={activeSection === "list"}>
-        <div className="section-head focus-shell-head">
+      <section
+        ref={registerSection("list")}
+        className="projects-list-section projects-list-open projects-flow-section projects-flow-section-start focus-shell-section"
+        data-focus-active={activeSection === "list"}
+      >
+        <div
+          className="section-head focus-shell-head"
+          data-focus-clickable={activeSection !== "list"}
+          role={activeSection !== "list" ? "button" : undefined}
+          tabIndex={activeSection !== "list" ? 0 : -1}
+          onClick={activeSection !== "list" ? () => focusSection("list", { scroll: "auto" }) : undefined}
+          onKeyDown={activeSection !== "list" ? (event) => {
+            if (!isFocusActivationKey(event)) return;
+            event.preventDefault();
+            focusSection("list", { scroll: "auto" });
+          } : undefined}
+        >
           <div className="section-header-ea">
             <h2 className="heading-reset">Abrir no editor</h2>
             <p className="helper-text-ea">
@@ -161,7 +182,7 @@ export default function ProjectsPage() {
           </div>
           <button
             type="button"
-            onClick={() => setActiveSection("list")}
+            onClick={() => focusSection("list", { scroll: "auto" })}
             className={`btn-ea ${activeSection === "list" ? "btn-secondary" : "btn-ghost"} btn-sm focus-shell-toggle`}
             aria-pressed={activeSection === "list"}
           >
@@ -219,8 +240,23 @@ export default function ProjectsPage() {
         </div>
       </section>
 
-      <section className="projects-publish-section projects-publish-open projects-flow-section projects-flow-section-middle focus-shell-section" data-focus-active={activeSection === "publish"}>
-        <div className="focus-shell-head">
+      <section
+        ref={registerSection("publish")}
+        className="projects-publish-section projects-publish-open projects-flow-section projects-flow-section-middle focus-shell-section"
+        data-focus-active={activeSection === "publish"}
+      >
+        <div
+          className="focus-shell-head"
+          data-focus-clickable={activeSection !== "publish"}
+          role={activeSection !== "publish" ? "button" : undefined}
+          tabIndex={activeSection !== "publish" ? 0 : -1}
+          onClick={activeSection !== "publish" ? () => focusSection("publish", { scroll: "auto" }) : undefined}
+          onKeyDown={activeSection !== "publish" ? (event) => {
+            if (!isFocusActivationKey(event)) return;
+            event.preventDefault();
+            focusSection("publish", { scroll: "auto" });
+          } : undefined}
+        >
         <div className="section-header-ea">
           <p className="section-kicker">Pipeline de saída</p>
           <h2 className="heading-reset">Draft, exported e published sem ambiguidade</h2>
@@ -230,7 +266,7 @@ export default function ProjectsPage() {
         </div>
         <button
           type="button"
-          onClick={() => setActiveSection("publish")}
+          onClick={() => focusSection("publish", { scroll: "auto" })}
           className={`btn-ea ${activeSection === "publish" ? "btn-secondary" : "btn-ghost"} btn-sm focus-shell-toggle`}
           aria-pressed={activeSection === "publish"}
         >
@@ -267,8 +303,23 @@ export default function ProjectsPage() {
         </div>
       </section>
 
-      <section className="projects-handoff-section projects-handoff-open projects-flow-section projects-flow-section-end focus-shell-section" data-focus-active={activeSection === "handoff"}>
-        <div className="section-head focus-shell-head">
+      <section
+        ref={registerSection("handoff")}
+        className="projects-handoff-section projects-handoff-open projects-flow-section projects-flow-section-end focus-shell-section"
+        data-focus-active={activeSection === "handoff"}
+      >
+        <div
+          className="section-head focus-shell-head"
+          data-focus-clickable={activeSection !== "handoff"}
+          role={activeSection !== "handoff" ? "button" : undefined}
+          tabIndex={activeSection !== "handoff" ? 0 : -1}
+          onClick={activeSection !== "handoff" ? () => focusSection("handoff", { scroll: "auto" }) : undefined}
+          onKeyDown={activeSection !== "handoff" ? (event) => {
+            if (!isFocusActivationKey(event)) return;
+            event.preventDefault();
+            focusSection("handoff", { scroll: "auto" });
+          } : undefined}
+        >
           <div className="section-header-ea">
             <h2 className="heading-reset">Handoff beta e publicação manual</h2>
             <p className="helper-text-ea">
@@ -281,7 +332,7 @@ export default function ProjectsPage() {
             </Link>
             <button
               type="button"
-              onClick={() => setActiveSection("handoff")}
+              onClick={() => focusSection("handoff", { scroll: "auto" })}
               className={`btn-ea ${activeSection === "handoff" ? "btn-secondary" : "btn-ghost"} btn-sm focus-shell-toggle`}
               aria-pressed={activeSection === "handoff"}
             >
