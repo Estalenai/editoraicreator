@@ -178,6 +178,37 @@ export type ProjectVercelBinding = {
   lastDeployRequestedAt?: string | null;
   lastDeployReadyAt?: string | null;
   lastDeployError?: string | null;
+  publishMachine?: ProjectVercelPublishMachine | null;
+};
+
+export type ProjectVercelPublishMachineState =
+  | "idle"
+  | "workspace_verified"
+  | "deployment_requested"
+  | "deployment_running"
+  | "deployment_ready"
+  | "published"
+  | "deployment_failed";
+
+export type ProjectVercelPublishMachine = {
+  version: string;
+  state: ProjectVercelPublishMachineState;
+  sourceOfTruth: "backend" | "provider";
+  reconcileMode: string;
+  externalState: string | null;
+  confirmed: boolean;
+  terminal: boolean;
+  retryable: boolean;
+  lastSource: string | null;
+  lastEventType: string | null;
+  lastTransitionAt: string | null;
+  lastCheckedAt: string | null;
+  lastWebhookAt: string | null;
+  lastPollAt: string | null;
+  lastSuccessAt: string | null;
+  lastFailureAt: string | null;
+  nextCheckAt: string | null;
+  note: string | null;
 };
 
 export type ProjectVercelEvent = {
@@ -1209,6 +1240,40 @@ function normalizeVercelHistory(value: any): ProjectVercelEvent[] {
     .slice(0, 12);
 }
 
+function normalizeExistingVercelPublishMachine(value: any): ProjectVercelPublishMachine | null {
+  if (!value || typeof value !== "object") return null;
+  const state =
+    value.state === "workspace_verified" ||
+    value.state === "deployment_requested" ||
+    value.state === "deployment_running" ||
+    value.state === "deployment_ready" ||
+    value.state === "published" ||
+    value.state === "deployment_failed"
+      ? value.state
+      : "idle";
+
+  return {
+    version: asText(value.version) || "vercel.publish-machine.v1",
+    state,
+    sourceOfTruth: value.sourceOfTruth === "provider" ? "provider" : "backend",
+    reconcileMode: asText(value.reconcileMode) || "webhook+poll",
+    externalState: asText(value.externalState) || null,
+    confirmed: Boolean(value.confirmed),
+    terminal: Boolean(value.terminal),
+    retryable: Boolean(value.retryable),
+    lastSource: asText(value.lastSource) || null,
+    lastEventType: asText(value.lastEventType) || null,
+    lastTransitionAt: asText(value.lastTransitionAt) || null,
+    lastCheckedAt: asText(value.lastCheckedAt) || null,
+    lastWebhookAt: asText(value.lastWebhookAt) || null,
+    lastPollAt: asText(value.lastPollAt) || null,
+    lastSuccessAt: asText(value.lastSuccessAt) || null,
+    lastFailureAt: asText(value.lastFailureAt) || null,
+    nextCheckAt: asText(value.nextCheckAt) || null,
+    note: asText(value.note) || null,
+  };
+}
+
 function normalizeExistingVercelBinding(value: any): ProjectVercelBinding | null {
   if (!value || typeof value !== "object") return null;
   const projectName = asText(value.projectName || value.vercelProjectName);
@@ -1247,6 +1312,7 @@ function normalizeExistingVercelBinding(value: any): ProjectVercelBinding | null
     lastDeployRequestedAt: asText(value.lastDeployRequestedAt) || null,
     lastDeployReadyAt: asText(value.lastDeployReadyAt) || null,
     lastDeployError: asText(value.lastDeployError) || null,
+    publishMachine: normalizeExistingVercelPublishMachine(value.publishMachine),
   };
 }
 

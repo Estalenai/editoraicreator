@@ -32,6 +32,7 @@ import socialRoutes from "./src/routes/socialRoutes.js";
 import stripeRoutes from "./src/routes/stripeRoutes.js";
 import githubRoutes from "./src/routes/githubRoutes.js";
 import vercelRoutes from "./src/routes/vercelRoutes.js";
+import vercelWebhookRoutes from "./src/routes/vercelWebhookRoutes.js";
 import docsRoutes from "./src/routes/docsRoutes.js";
 import plansCatalogRoutes from "./src/routes/plansCatalogRoutes.js";
 import enterpriseRoutes from "./src/routes/enterpriseRoutes.js";
@@ -90,6 +91,7 @@ app.use(globalLimiter);
 
 // Stripe webhook uses raw body and must be mounted before global JSON parser.
 app.use("/api/stripe", stripeRoutes);
+app.use("/api/vercel/webhooks", vercelWebhookRoutes);
 
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: false }));

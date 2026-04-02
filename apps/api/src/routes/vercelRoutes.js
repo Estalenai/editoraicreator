@@ -15,11 +15,13 @@ import {
   listVercelTeams,
 } from "../utils/vercelClient.js";
 import { decryptVercelToken, encryptVercelToken } from "../utils/vercelCrypto.js";
+import { nowIso, resolveVercelPublishMachine } from "../utils/vercelPublishMachine.js";
 
 const router = express.Router();
 router.use(authMiddleware);
 
 const CONNECTION_PREFIX = "vercel_connection:";
+const DEPLOYMENT_PREFIX = "vercel_deployment:";
 const HISTORY_LIMIT = 16;
 
 const ConnectionBodySchema = z.object({
@@ -44,10 +46,6 @@ function badRequest(res, message, details) {
 
 function notFound(res, message = "Registro não encontrado") {
   return res.status(404).json({ error: message });
-}
-
-function nowIso() {
-  return new Date().toISOString();
 }
 
 function localId() {
@@ -247,6 +245,27 @@ async function clearConnectionRecord(userId) {
   }
 }
 
+function deploymentKey(deploymentId) {
+  return `${DEPLOYMENT_PREFIX}${String(deploymentId || "").trim()}`;
+}
+
+async function saveDeploymentRecord(deploymentId, value) {
+  if (!deploymentId || !isSupabaseAdminEnabled() || !supabaseAdmin) return;
+  const { error } = await supabaseAdmin
+    .from("configs")
+    .upsert(
+      {
+        key: deploymentKey(deploymentId),
+        value,
+      },
+      { onConflict: "key" }
+    );
+
+  if (error) {
+    throw new Error(error.message || "vercel_deployment_record_write_failed");
+  }
+}
+
 async function readProjectForUser(req, projectId) {
   const supabase = createAuthedSupabaseClient(req.access_token);
   const { data, error } = await supabase
@@ -326,6 +345,7 @@ function buildBinding({
 }) {
   const external = latestExternalState(projectInfo.latestDeployments);
   const latest = external.latest;
+  const observedAt = nowIso();
 
   return {
     ...(previousBinding || {}),
@@ -341,9 +361,9 @@ function buildBinding({
     previewUrl: external.previewUrl || "",
     productionUrl: external.productionUrl || "",
     projectUrl: buildProjectUrl(team?.slug || "", projectInfo.name),
-    connectedAt: previousBinding?.connectedAt || nowIso(),
-    updatedAt: nowIso(),
-    lastVerifiedAt: nowIso(),
+    connectedAt: previousBinding?.connectedAt || observedAt,
+    updatedAt: observedAt,
+    lastVerifiedAt: observedAt,
     verificationStatus: "verified",
     tokenConfigured: true,
     linkedRepoId: projectInfo.link?.repoId ? String(projectInfo.link.repoId) : null,
@@ -357,6 +377,18 @@ function buildBinding({
     lastDeployRequestedAt: latest?.createdAt || null,
     lastDeployReadyAt: latest?.readyAt || null,
     lastDeployError: latest?.readyState === "ERROR" ? latest?.errorMessage || "vercel_deployment_failed" : null,
+    publishMachine: resolveVercelPublishMachine({
+      previousMachine: previousBinding?.publishMachine || null,
+      hasWorkspace: true,
+      deploymentId: latest?.id || null,
+      deploymentState: latest?.readyState || null,
+      deploymentTarget: latest?.target || target,
+      deploymentUrl: latest?.url || null,
+      errorMessage: latest?.readyState === "ERROR" ? latest?.errorMessage || "vercel_deployment_failed" : null,
+      source: "workspace_save",
+      eventType: "workspace_saved",
+      observedAt,
+    }),
   };
 }
 
@@ -523,6 +555,17 @@ router.post("/projects/:id/workspace", async (req, res) => {
     };
 
     const item = await persistProjectData(req, project.id, nextData);
+    if (nextBinding.lastDeploymentId) {
+      await saveDeploymentRecord(nextBinding.lastDeploymentId, {
+        projectId: project.id,
+        userId: req.user.id,
+        provider: "vercel",
+        teamId: nextBinding.teamId || null,
+        projectName: nextBinding.projectName,
+        target: nextBinding.lastDeploymentTarget || nextBinding.target,
+        updatedAt: nowIso(),
+      });
+    }
     recordProductEvent({
       event: "vercel.workspace.saved",
       userId: req.user.id,
@@ -626,6 +669,7 @@ router.post("/projects/:id/deploy", async (req, res) => {
       ref: deployRef,
       sha: asText(githubBinding?.lastCommitSha) || asText(githubBinding?.lastResolvedCommitSha) || null,
     });
+    const observedAt = nowIso();
 
     const nextBinding = {
       ...binding,
@@ -643,25 +687,37 @@ router.post("/projects/:id/deploy", async (req, res) => {
         deployment?.target === "production" && deployment?.readyState === "READY"
           ? deployment?.url || binding.productionUrl
           : binding.productionUrl,
-      updatedAt: nowIso(),
+      updatedAt: observedAt,
       lastDeploymentId: deployment?.id || null,
       lastDeploymentUrl: deployment?.url || null,
       lastDeploymentInspectorUrl: deployment?.inspectorUrl || null,
       lastDeploymentState: deployment?.readyState || "UNKNOWN",
       lastDeploymentTarget: deployment?.target || binding.target,
       lastDeploymentRef: deployRef,
-      lastDeployRequestedAt: deployment?.createdAt || nowIso(),
-      lastDeployReadyAt: deployment?.readyState === "READY" ? deployment?.readyAt || nowIso() : null,
+      lastDeployRequestedAt: deployment?.createdAt || observedAt,
+      lastDeployReadyAt: deployment?.readyState === "READY" ? deployment?.readyAt || observedAt : null,
       lastDeployError: deployment?.readyState === "ERROR" ? deployment?.errorMessage || "vercel_deployment_failed" : null,
       linkedRepoId: String(repoId),
       linkedRepoType: vercelProject.link?.type || "github",
-      lastVerifiedAt: nowIso(),
+      lastVerifiedAt: observedAt,
       verificationStatus: "verified",
       tokenConfigured: true,
+      publishMachine: resolveVercelPublishMachine({
+        previousMachine: binding.publishMachine || null,
+        hasWorkspace: true,
+        deploymentId: deployment?.id || null,
+        deploymentState: deployment?.readyState || null,
+        deploymentTarget: deployment?.target || binding.target,
+        deploymentUrl: deployment?.url || null,
+        errorMessage: deployment?.readyState === "ERROR" ? deployment?.errorMessage || "vercel_deployment_failed" : null,
+        source: "deployment_request",
+        eventType: "deployment_requested",
+        observedAt,
+      }),
     };
 
     nextData.integrations.vercel.binding = nextBinding;
-    nextData.integrations.vercel.lastDeploymentCheckedAt = nowIso();
+    nextData.integrations.vercel.lastDeploymentCheckedAt = observedAt;
     pushHistory(nextData, {
       type: deployment?.readyState === "READY" ? "deployment_ready" : "deployment_requested",
       stage: deployment?.readyState === "READY" && deployment?.target === "production" ? "published" : "exported",
@@ -688,6 +744,18 @@ router.post("/projects/:id/deploy", async (req, res) => {
     };
 
     const item = await persistProjectData(req, project.id, nextData);
+    if (nextBinding.lastDeploymentId) {
+      await saveDeploymentRecord(nextBinding.lastDeploymentId, {
+        projectId: project.id,
+        userId: req.user.id,
+        provider: "vercel",
+        teamId: nextBinding.teamId || null,
+        projectName: nextBinding.projectName,
+        target: nextBinding.lastDeploymentTarget || nextBinding.target,
+        ref: nextBinding.lastDeploymentRef || null,
+        updatedAt: observedAt,
+      });
+    }
     recordProductEvent({
       event: "vercel.deploy.requested",
       userId: req.user.id,
@@ -728,6 +796,7 @@ router.post("/projects/:id/reconcile", async (req, res) => {
       deploymentId: binding.lastDeploymentId,
       teamId: binding.teamId || null,
     });
+    const observedAt = nowIso();
 
     const nextBinding = {
       ...binding,
@@ -751,23 +820,35 @@ router.post("/projects/:id/reconcile", async (req, res) => {
         deployment?.target === "production" && deployment?.readyState === "READY"
           ? deployment?.url || binding.productionUrl
           : binding.productionUrl,
-      updatedAt: nowIso(),
+      updatedAt: observedAt,
       lastDeploymentUrl: deployment?.url || binding.lastDeploymentUrl || null,
       lastDeploymentInspectorUrl: deployment?.inspectorUrl || binding.lastDeploymentInspectorUrl || null,
       lastDeploymentState: deployment?.readyState || binding.lastDeploymentState || "UNKNOWN",
       lastDeploymentTarget: deployment?.target || binding.lastDeploymentTarget || binding.target,
       lastDeployReadyAt:
         deployment?.readyState === "READY"
-          ? deployment?.readyAt || nowIso()
+          ? deployment?.readyAt || observedAt
           : binding.lastDeployReadyAt || null,
       lastDeployError: deployment?.readyState === "ERROR" ? deployment?.errorMessage || "vercel_deployment_failed" : null,
-      lastVerifiedAt: nowIso(),
+      lastVerifiedAt: observedAt,
       verificationStatus: "verified",
       tokenConfigured: true,
+      publishMachine: resolveVercelPublishMachine({
+        previousMachine: binding.publishMachine || null,
+        hasWorkspace: true,
+        deploymentId: binding.lastDeploymentId,
+        deploymentState: deployment?.readyState || binding.lastDeploymentState || null,
+        deploymentTarget: deployment?.target || binding.lastDeploymentTarget || binding.target,
+        deploymentUrl: deployment?.url || binding.lastDeploymentUrl || null,
+        errorMessage: deployment?.readyState === "ERROR" ? deployment?.errorMessage || "vercel_deployment_failed" : null,
+        source: "provider_poll",
+        eventType: "deployment_reconciled",
+        observedAt,
+      }),
     };
 
     nextData.integrations.vercel.binding = nextBinding;
-    nextData.integrations.vercel.lastDeploymentCheckedAt = nowIso();
+    nextData.integrations.vercel.lastDeploymentCheckedAt = observedAt;
 
     const isFailure = nextBinding.lastDeploymentState === "ERROR" || nextBinding.lastDeploymentState === "CANCELED";
     const isReady = nextBinding.lastDeploymentState === "READY";
@@ -802,6 +883,18 @@ router.post("/projects/:id/reconcile", async (req, res) => {
     };
 
     const item = await persistProjectData(req, project.id, nextData);
+    if (nextBinding.lastDeploymentId) {
+      await saveDeploymentRecord(nextBinding.lastDeploymentId, {
+        projectId: project.id,
+        userId: req.user.id,
+        provider: "vercel",
+        teamId: nextBinding.teamId || null,
+        projectName: nextBinding.projectName,
+        target: nextBinding.lastDeploymentTarget || nextBinding.target,
+        ref: nextBinding.lastDeploymentRef || null,
+        updatedAt: observedAt,
+      });
+    }
     recordProductEvent({
       event: "vercel.deploy.reconciled",
       userId: req.user.id,
