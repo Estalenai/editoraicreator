@@ -13810,10 +13810,11 @@ body {
 .how-it-works-example,
 .how-it-works-note-open,
 .how-it-works-note-open-trust {
-  border: 1px solid var(--ea-unified-divider);
+  border: 1px solid rgba(191, 239, 255, 0.05);
   border-radius: 20px;
   background:
-    radial-gradient(180px 76px at 100% 0%, rgba(88, 242, 255, 0.034), transparent 74%),
+    radial-gradient(180px 76px at 100% 0%, rgba(88, 242, 255, 0.03), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.006)),
     var(--ea-page-subtle-surface);
   box-shadow: none;
   transform: none;
@@ -13822,6 +13823,12 @@ body {
 .how-it-works-context-item {
   gap: 10px;
   padding: 16px 18px;
+  border-left: 2px solid rgba(88, 242, 255, 0.11);
+  border-radius: 16px;
+  background:
+    linear-gradient(90deg, rgba(88, 242, 255, 0.018), transparent 18%),
+    radial-gradient(180px 76px at 100% 0%, rgba(88, 242, 255, 0.026), transparent 74%),
+    var(--ea-page-subtle-surface);
 }
 
 .how-it-works-context-item:first-child {
@@ -13835,6 +13842,13 @@ body {
 .how-it-works-step-open {
   gap: 16px;
   padding: 18px 20px;
+  border-left: 2px solid rgba(88, 242, 255, 0.12);
+  border-radius: 18px;
+  background:
+    linear-gradient(90deg, rgba(88, 242, 255, 0.02), transparent 18%),
+    radial-gradient(180px 76px at 100% 0%, rgba(88, 242, 255, 0.028), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.006)),
+    var(--ea-page-subtle-surface);
 }
 
 .how-it-works-step-open:nth-child(-n + 2) {
@@ -13848,6 +13862,13 @@ body {
 .how-it-works-example {
   gap: 16px;
   padding: 18px 20px;
+  border-left: 2px solid rgba(88, 242, 255, 0.11);
+  border-radius: 18px;
+  background:
+    linear-gradient(90deg, rgba(88, 242, 255, 0.018), transparent 18%),
+    radial-gradient(180px 76px at 100% 0%, rgba(88, 242, 255, 0.026), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.006)),
+    var(--ea-page-subtle-surface);
 }
 
 .how-it-works-example:first-child {
@@ -13865,11 +13886,25 @@ body {
 .how-it-works-note-open {
   gap: 10px;
   padding: 18px 20px;
+  border-left: 2px solid rgba(88, 242, 255, 0.11);
+  border-radius: 16px;
+  background:
+    linear-gradient(90deg, rgba(88, 242, 255, 0.018), transparent 18%),
+    radial-gradient(180px 76px at 100% 0%, rgba(88, 242, 255, 0.024), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.006)),
+    var(--ea-page-subtle-surface);
 }
 
 .how-it-works-note-open-trust {
   padding-top: 18px;
   padding-left: 20px;
+  border-left: 2px solid rgba(88, 242, 255, 0.11);
+  border-radius: 16px;
+  background:
+    linear-gradient(90deg, rgba(88, 242, 255, 0.018), transparent 18%),
+    radial-gradient(180px 76px at 100% 0%, rgba(88, 242, 255, 0.024), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.006)),
+    var(--ea-page-subtle-surface);
 }
 
 .how-it-works-step-open .btn-link-ea {
@@ -13929,6 +13964,14 @@ body {
   .how-it-works-note-open-trust {
     padding: 14px;
     border-radius: 18px;
+  }
+
+  .how-it-works-context-item,
+  .how-it-works-step-open,
+  .how-it-works-example,
+  .how-it-works-note-open,
+  .how-it-works-note-open-trust {
+    border-left-width: 1px;
   }
 
   .how-it-works-context-item:first-child,
