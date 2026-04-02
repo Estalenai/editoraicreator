@@ -14348,10 +14348,11 @@ body {
 
 .admin-hero-toolbar {
   padding: 14px 16px;
-  border: 1px solid var(--ea-unified-divider);
+  border: 1px solid rgba(191, 239, 255, 0.052);
   border-radius: 20px;
   background:
-    radial-gradient(180px 76px at 100% 0%, rgba(88, 242, 255, 0.034), transparent 74%),
+    radial-gradient(180px 76px at 100% 0%, rgba(88, 242, 255, 0.03), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.006)),
     var(--ea-page-subtle-surface);
   box-shadow: none;
 }
@@ -14378,10 +14379,11 @@ body {
   position: relative;
   min-width: 0;
   min-height: 0;
-  border: 1px solid var(--ea-unified-divider) !important;
+  border: 1px solid rgba(191, 239, 255, 0.05) !important;
   border-radius: 22px !important;
   background:
-    radial-gradient(180px 76px at 100% 0%, rgba(88, 242, 255, 0.034), transparent 74%),
+    radial-gradient(180px 76px at 100% 0%, rgba(88, 242, 255, 0.028), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.006)),
     var(--ea-page-subtle-surface) !important;
   box-shadow: none !important;
   transform: none !important;
@@ -14390,6 +14392,13 @@ body {
 .admin-overview-item {
   gap: 10px;
   padding: 16px 18px;
+  border-left: 2px solid rgba(88, 242, 255, 0.12) !important;
+  border-radius: 16px !important;
+  background:
+    linear-gradient(90deg, rgba(88, 242, 255, 0.018), transparent 18%),
+    radial-gradient(180px 76px at 100% 0%, rgba(88, 242, 255, 0.026), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.006)),
+    var(--ea-page-subtle-surface) !important;
 }
 
 .admin-overview-item:first-child {
@@ -14415,10 +14424,24 @@ body {
 .admin-page .admin-record-item,
 .admin-page .admin-timeline-item {
   padding: 16px 18px !important;
+  border-left: 2px solid rgba(88, 242, 255, 0.12) !important;
+  border-radius: 18px !important;
+  background:
+    linear-gradient(90deg, rgba(88, 242, 255, 0.018), transparent 18%),
+    radial-gradient(180px 76px at 100% 0%, rgba(88, 242, 255, 0.026), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.006)),
+    var(--ea-page-subtle-surface) !important;
 }
 
 .admin-page .admin-inline-notice {
   padding: 12px 14px !important;
+  border-left: 2px solid rgba(88, 242, 255, 0.11) !important;
+  border-radius: 16px !important;
+  background:
+    linear-gradient(90deg, rgba(88, 242, 255, 0.018), transparent 18%),
+    radial-gradient(180px 76px at 100% 0%, rgba(88, 242, 255, 0.024), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.006)),
+    var(--ea-page-subtle-surface) !important;
 }
 
 .admin-page .admin-subpanel::before,
@@ -14439,9 +14462,11 @@ body {
 
 .admin-inline-stats span {
   padding: 8px 12px;
-  border: 1px solid var(--ea-unified-divider);
+  border: 1px solid rgba(191, 239, 255, 0.05);
   border-radius: 999px;
-  background: var(--ea-page-subtle-surface);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.016), rgba(255, 255, 255, 0.005)),
+    var(--ea-page-subtle-surface);
 }
 
 .admin-inline-stats span + span::before {
@@ -14451,22 +14476,26 @@ body {
 .admin-search-results,
 .admin-timeline-list,
 .admin-record-list {
-  gap: 12px;
+  gap: 10px;
   margin-top: 4px;
 }
 
 .admin-search-results > :first-child,
 .admin-timeline-list > :first-child,
 .admin-record-list > :first-child {
-  padding-top: 16px;
+  padding-top: 14px;
 }
 
 .admin-record-note {
   margin-top: 10px;
   padding: 10px 12px;
-  border: 1px solid var(--ea-unified-divider);
+  border: 1px solid rgba(191, 239, 255, 0.048);
+  border-left: 2px solid rgba(88, 242, 255, 0.1);
   border-radius: 14px;
-  background: var(--ea-page-subtle-surface);
+  background:
+    linear-gradient(90deg, rgba(88, 242, 255, 0.016), transparent 18%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.016), rgba(255, 255, 255, 0.005)),
+    var(--ea-page-subtle-surface);
 }
 
 .admin-modal-card {
@@ -14508,6 +14537,16 @@ body {
   .admin-page .admin-timeline-item {
     padding: 14px !important;
     border-radius: 18px !important;
+  }
+
+  .admin-overview-item,
+  .admin-page .admin-subpanel,
+  .admin-page .admin-search-result,
+  .admin-page .admin-record-item,
+  .admin-page .admin-timeline-item,
+  .admin-page .admin-inline-notice,
+  .admin-record-note {
+    border-left-width: 1px !important;
   }
 
   .admin-overview-item:first-child {
