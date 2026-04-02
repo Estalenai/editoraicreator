@@ -15368,7 +15368,7 @@ body {
   min-height: 96px;
 }
 
-@media (max-width: 1360px) {
+@media (max-width: 1520px) {
   .app-shell-frame:has(.dashboard-page) .dashboard-workspace-main {
     grid-template-columns: minmax(0, 1fr);
   }
