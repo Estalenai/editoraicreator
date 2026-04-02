@@ -225,6 +225,61 @@ export const api = {
     });
   },
 
+  async getGitHubConnection() {
+    return authJson("/api/github/connection");
+  },
+
+  async saveGitHubConnection(body: { personalAccessToken: string }) {
+    return authJson("/api/github/connection", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+  },
+
+  async removeGitHubConnection() {
+    return authJson("/api/github/connection", {
+      method: "DELETE",
+    });
+  },
+
+  async saveGitHubWorkspace(
+    id: string,
+    body: { owner: string; repo: string; branch: string; rootPath: string; target: "app" | "site" }
+  ) {
+    return authJson(`/api/github/projects/${encodeURIComponent(id)}/workspace`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+  },
+
+  async clearGitHubWorkspace(id: string) {
+    return authJson(`/api/github/projects/${encodeURIComponent(id)}/workspace`, {
+      method: "DELETE",
+    });
+  },
+
+  async createGitHubCheckpoint(id: string) {
+    return authJson(`/api/github/projects/${encodeURIComponent(id)}/checkpoints`, {
+      method: "POST",
+    });
+  },
+
+  async syncGitHubProject(id: string) {
+    return authJson(`/api/github/projects/${encodeURIComponent(id)}/sync`, {
+      method: "POST",
+    });
+  },
+
+  async createGitHubPullRequest(id: string, body?: { title?: string; body?: string; baseBranch?: string }) {
+    return authJson(`/api/github/projects/${encodeURIComponent(id)}/pull-request`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body || {}),
+    });
+  },
+
   async aiTextGenerate(body: { prompt: string }) {
     return authJson("/api/ai/text-generate", {
       method: "POST",

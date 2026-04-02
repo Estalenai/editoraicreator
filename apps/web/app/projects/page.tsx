@@ -131,7 +131,7 @@ export default function ProjectsPage() {
               </div>
               <div className="projects-hero-note">
                 <strong>Saída e handoff em apoio</strong>
-                <span>Draft, exported e published ficam claros, com GitHub e Vercel em apoio.</span>
+                <span>Draft, exported e published ficam claros, com GitHub sincronizado e Vercel em apoio.</span>
               </div>
             </div>
 
@@ -209,7 +209,7 @@ export default function ProjectsPage() {
             meta={[
               { label: "Lista", value: "Projetos salvos" },
               { label: "Saída", value: "Pipeline draft/exported/published" },
-              { label: "Sync", value: "GitHub e Vercel em apoio" },
+              { label: "Sync", value: "GitHub server-owned e Vercel em apoio" },
             ]}
             footer="A visualização só entra completa depois que a camada de continuidade responde com segurança."
           />
@@ -279,7 +279,7 @@ export default function ProjectsPage() {
           <p className="section-kicker">Pipeline de saída</p>
           <h2 className="heading-reset">Draft, exported e published sem ambiguidade</h2>
           <p className="helper-text-ea">
-            Três estados claros: o que ainda está em rascunho, o que já saiu como handoff e o que já foi publicado manualmente.
+            Três estados claros: o que ainda está em rascunho, o que já saiu com sync real e o que já foi publicado.
           </p>
         </div>
         <button
@@ -307,8 +307,8 @@ export default function ProjectsPage() {
           <div className="proof-value-card layout-contract-item">
             <div className="proof-value-block">
               <span className="proof-value-chip">Exported</span>
-              <strong>Handoff beta gerado</strong>
-              <p>Snapshot GitHub ou manifest Vercel já saíram da plataforma.</p>
+              <strong>Saída registrada</strong>
+              <p>Commit GitHub ou handoff Vercel já foram registrados como próxima etapa do projeto.</p>
             </div>
           </div>
           <div className="proof-value-card layout-contract-item">
@@ -340,9 +340,9 @@ export default function ProjectsPage() {
           } : undefined}
         >
           <div className="section-header-ea">
-            <h2 className="heading-reset">Handoff beta e publicação manual</h2>
+            <h2 className="heading-reset">GitHub integrado e Vercel em handoff</h2>
             <p className="helper-text-ea">
-              GitHub e Vercel continuam disponíveis para saída manual, como continuação do fluxo principal.
+              GitHub já opera com workspace, sync e PR pelo backend. Vercel continua como camada manual nesta fase.
             </p>
           </div>
           <div className="hero-actions-row">
@@ -360,7 +360,7 @@ export default function ProjectsPage() {
           </div>
         </div>
         <div className="focus-shell-preview">
-          GitHub e Vercel seguem disponíveis como camada de saída manual.
+          GitHub já registra sync real; Vercel segue disponível como handoff manual.
         </div>
         <div className="focus-shell-body">
         <div className="projects-handoff-stack">

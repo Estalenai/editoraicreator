@@ -105,6 +105,19 @@ export type ProjectGitHubBinding = {
   connectedAt: string | null;
   updatedAt: string | null;
   accountLabel?: string | null;
+  repositoryUrl?: string | null;
+  defaultBranch?: string | null;
+  lastVerifiedAt?: string | null;
+  verificationStatus?: string | null;
+  tokenConfigured?: boolean;
+  lastResolvedCommitSha?: string | null;
+  lastSyncStatus?: string | null;
+  lastSyncedAt?: string | null;
+  lastCommitSha?: string | null;
+  lastCommitUrl?: string | null;
+  lastPullRequestNumber?: number | null;
+  lastPullRequestUrl?: string | null;
+  lastPullRequestState?: string | null;
 };
 
 export type ProjectGitHubVersionRecord = {
@@ -112,6 +125,8 @@ export type ProjectGitHubVersionRecord = {
   savedAt: string;
   handoffTarget: ProjectGitHubBindingTarget;
   repoLabel: string | null;
+  branch?: string | null;
+  commitMessage?: string | null;
 };
 
 export type ProjectGitHubExportRecord = {
@@ -119,6 +134,13 @@ export type ProjectGitHubExportRecord = {
   exportedAt: string;
   handoffTarget: ProjectGitHubBindingTarget;
   repoLabel: string | null;
+  branch?: string | null;
+  path?: string | null;
+  commitSha?: string | null;
+  commitUrl?: string | null;
+  status?: string | null;
+  pullRequestNumber?: number | null;
+  pullRequestUrl?: string | null;
 };
 
 export type ProjectGitHubIntegration = {
@@ -277,6 +299,15 @@ function localId() {
 
 function asText(value: unknown): string {
   return typeof value === "string" ? value.trim() : "";
+}
+
+function asOptionalNumber(value: unknown): number | null {
+  if (typeof value === "number" && Number.isFinite(value)) return value;
+  if (typeof value === "string" && value.trim()) {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+  return null;
 }
 
 function normalizeStringList(value: unknown): string[] {
@@ -1054,6 +1085,8 @@ function normalizeGitHubVersionRecords(value: any): ProjectGitHubVersionRecord[]
       savedAt: asText(item.savedAt) || new Date().toISOString(),
       handoffTarget: normalizeGitHubBindingTarget(item.handoffTarget),
       repoLabel: asText(item.repoLabel) || null,
+      branch: asText(item.branch) || null,
+      commitMessage: asText(item.commitMessage) || null,
     }))
     .slice(0, 16);
 }
@@ -1067,6 +1100,13 @@ function normalizeGitHubExportRecords(value: any): ProjectGitHubExportRecord[] {
       exportedAt: asText(item.exportedAt) || new Date().toISOString(),
       handoffTarget: normalizeGitHubBindingTarget(item.handoffTarget),
       repoLabel: asText(item.repoLabel) || null,
+      branch: asText(item.branch) || null,
+      path: asText(item.path) || null,
+      commitSha: asText(item.commitSha) || null,
+      commitUrl: asText(item.commitUrl) || null,
+      status: asText(item.status) || null,
+      pullRequestNumber: asOptionalNumber(item.pullRequestNumber),
+      pullRequestUrl: asText(item.pullRequestUrl) || null,
     }))
     .slice(0, 16);
 }
@@ -1086,6 +1126,19 @@ function normalizeExistingGitHubBinding(value: any): ProjectGitHubBinding | null
     connectedAt: asText(value.connectedAt) || null,
     updatedAt: asText(value.updatedAt) || null,
     accountLabel: asText(value.accountLabel) || null,
+    repositoryUrl: asText(value.repositoryUrl) || null,
+    defaultBranch: asText(value.defaultBranch) || null,
+    lastVerifiedAt: asText(value.lastVerifiedAt) || null,
+    verificationStatus: asText(value.verificationStatus) || null,
+    tokenConfigured: Boolean(value.tokenConfigured),
+    lastResolvedCommitSha: asText(value.lastResolvedCommitSha) || null,
+    lastSyncStatus: asText(value.lastSyncStatus) || null,
+    lastSyncedAt: asText(value.lastSyncedAt) || null,
+    lastCommitSha: asText(value.lastCommitSha) || null,
+    lastCommitUrl: asText(value.lastCommitUrl) || null,
+    lastPullRequestNumber: asOptionalNumber(value.lastPullRequestNumber),
+    lastPullRequestUrl: asText(value.lastPullRequestUrl) || null,
+    lastPullRequestState: asText(value.lastPullRequestState) || null,
   };
 }
 
