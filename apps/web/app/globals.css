@@ -17071,10 +17071,11 @@ body {
 .support-page .support-hero-focus {
   gap: 14px;
   padding: clamp(18px, 2vw, 22px);
-  border: 1px solid var(--ea-unified-divider);
+  border: 1px solid rgba(191, 239, 255, 0.055);
   border-radius: 22px;
   background:
-    radial-gradient(220px 104px at 100% 0%, rgba(88, 242, 255, 0.042), transparent 74%),
+    radial-gradient(220px 104px at 100% 0%, rgba(88, 242, 255, 0.038), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.007)),
     var(--ea-page-subtle-surface) !important;
   box-shadow: none !important;
 }
@@ -17103,13 +17104,27 @@ body {
 .support-page .support-faq-item,
 .support-page .support-history-item {
   padding: 14px 16px !important;
-  border: 1px solid var(--ea-unified-divider) !important;
+  border: 1px solid rgba(191, 239, 255, 0.052) !important;
   border-radius: 18px;
   background:
-    radial-gradient(180px 80px at 100% 0%, rgba(88, 242, 255, 0.036), transparent 74%),
+    radial-gradient(180px 80px at 100% 0%, rgba(88, 242, 255, 0.032), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.006)),
     var(--ea-page-subtle-surface) !important;
   box-shadow: none !important;
   transform: none !important;
+}
+
+.support-page .support-context-item,
+.support-page .support-category-hint,
+.support-page .support-guidelines-card,
+.support-page .support-history-note,
+.support-page .support-trust-note {
+  border-left: 2px solid rgba(88, 242, 255, 0.12) !important;
+  border-radius: 16px;
+  background:
+    linear-gradient(90deg, rgba(88, 242, 255, 0.02), transparent 18%),
+    radial-gradient(180px 80px at 100% 0%, rgba(88, 242, 255, 0.028), transparent 74%),
+    var(--ea-page-subtle-surface) !important;
 }
 
 .support-page .support-guide-section,
@@ -17171,6 +17186,16 @@ body {
   padding: 16px 18px !important;
 }
 
+.support-page .support-faq-item,
+.support-page .support-history-item {
+  border-left: 2px solid rgba(88, 242, 255, 0.12) !important;
+  border-radius: 16px;
+  background:
+    linear-gradient(90deg, rgba(88, 242, 255, 0.02), transparent 18%),
+    radial-gradient(180px 80px at 100% 0%, rgba(88, 242, 255, 0.028), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.006)) !important;
+}
+
 .support-page .support-assistant-grid {
   gap: clamp(16px, 2vw, 22px);
 }
@@ -17180,13 +17205,21 @@ body {
   gap: 16px;
 }
 
+.support-page .support-assistant-form {
+  padding-right: 2px;
+}
+
+.support-page .support-assistant-side {
+  padding-left: 2px;
+}
+
 .support-page .support-history-list {
-  gap: 12px;
+  gap: 10px;
 }
 
 .support-page .support-history-item,
 .support-page .support-history-list > .support-history-item:first-child {
-  gap: 10px;
+  gap: 8px;
   padding: 16px 18px !important;
 }
 
@@ -17219,6 +17252,12 @@ body {
   .support-page .support-faq-grid > .support-faq-item:first-child {
     min-height: 0;
   }
+
+  .support-page .support-assistant-form,
+  .support-page .support-assistant-side {
+    padding-left: 0;
+    padding-right: 0;
+  }
 }
 
 @media (max-width: 768px) {
@@ -17240,5 +17279,15 @@ body {
   .support-page .support-history-note,
   .support-page .support-trust-note {
     padding: 14px !important;
+  }
+
+  .support-page .support-context-item,
+  .support-page .support-category-hint,
+  .support-page .support-guidelines-card,
+  .support-page .support-history-note,
+  .support-page .support-trust-note,
+  .support-page .support-faq-item,
+  .support-page .support-history-item {
+    border-left-width: 1px !important;
   }
 }
