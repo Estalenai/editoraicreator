@@ -13,10 +13,14 @@ import {
   normalizeVercelRootDirectory,
   recommendVercelFramework,
   recommendedRootDirectory,
+  resolveVercelPublishMachine,
   resolveVercelOutputStage,
   vercelDeploymentStateLabel,
   vercelDeployStatusLabel,
   vercelEnvironmentLabel,
+  vercelPublishMachineLabel,
+  vercelPublishMachineMetaTone,
+  vercelPublishMachineOperationalKind,
   type VercelConnectionSummary,
   type VercelEnvironment,
   type VercelFramework,
@@ -149,14 +153,6 @@ function extractUpdatedProjectData(response: any, fallback: any): any {
   return item?.data ?? fallback;
 }
 
-function deploymentTone(state: string | null | undefined): OperationalStateKind {
-  const normalized = String(state || "").toUpperCase();
-  if (normalized === "READY") return "published";
-  if (normalized === "ERROR" || normalized === "CANCELED") return "failed-publish";
-  if (normalized === "BUILDING" || normalized === "INITIALIZING" || normalized === "QUEUED") return "syncing";
-  return "saved";
-}
-
 export function VercelPublishCard({ variant = "full", project = null, projects = [], onProjectDataChange }: Props) {
   const availableProjects = useMemo(() => {
     const single = normalizeProject(project);
@@ -243,6 +239,7 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
 
   const vercelIntegration = selectedProjectCanonical?.integrations.vercel || null;
   const workspace = (vercelIntegration?.binding as VercelWorkspace | null) || null;
+  const publishMachine = useMemo(() => resolveVercelPublishMachine(workspace), [workspace]);
   const history = (vercelIntegration?.history || []) as VercelProjectEvent[];
   const latestHistory = history[0] || null;
   const githubBinding = selectedProjectCanonical?.integrations.github?.binding || null;
@@ -423,19 +420,12 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
       meta.push({ label: "Deployment", value: workspace.lastDeploymentId });
       meta.push({
         label: "Estado",
-        value: vercelDeploymentStateLabel(workspace.lastDeploymentState),
-        tone:
-          workspace.lastDeploymentState === "READY"
-            ? "success"
-            : workspace.lastDeploymentState === "ERROR" || workspace.lastDeploymentState === "CANCELED"
-              ? "danger"
-              : workspace.lastDeploymentState
-                ? "warning"
-                : "default",
+        value: vercelPublishMachineLabel(publishMachine),
+        tone: vercelPublishMachineMetaTone(publishMachine),
       });
     } else {
       meta.push({ label: "Deployment", value: "Ainda não solicitado" });
-      meta.push({ label: "Estado", value: "Sem deploy" });
+      meta.push({ label: "Estado", value: vercelPublishMachineLabel(publishMachine), tone: vercelPublishMachineMetaTone(publishMachine) });
     }
 
     if (!selectedProject) {
@@ -485,21 +475,21 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
       };
     }
 
-    if (workspace.lastDeploymentState === "ERROR" || workspace.lastDeploymentState === "CANCELED") {
+    if (publishMachine.state === "deployment_failed") {
       return {
         kind: "failed-publish" as const,
         title: "Último deployment falhou",
         description: "O estado veio da Vercel e já está persistido no projeto. A falha agora é verificável, não um texto solto no frontend.",
         meta,
         details: [
-          workspace.lastDeployError || "A Vercel devolveu falha ou cancelamento para o último deployment.",
+          publishMachine.note || workspace.lastDeployError || "A Vercel devolveu falha ou cancelamento para o último deployment.",
           workspace.lastDeploymentInspectorUrl ? `Inspector: ${workspace.lastDeploymentInspectorUrl}` : "Abra o deployment e revise o erro no provedor.",
         ],
         footer: "Corrija a origem do projeto e solicite um novo deploy só depois de resolver a causa real.",
       };
     }
 
-    if (workspace.lastDeploymentState === "READY" && workspace.lastDeploymentTarget === "production") {
+    if (publishMachine.state === "published") {
       return {
         kind: "published" as const,
         title: "Produção confirmada pela Vercel",
@@ -507,13 +497,17 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
         meta,
         details: [
           workspace.lastDeploymentUrl ? `URL publicada: ${workspace.lastDeploymentUrl}` : "URL de produção ainda não registrada.",
-          workspace.lastDeployReadyAt ? `Confirmado em ${formatDateLabel(workspace.lastDeployReadyAt)}.` : "Deployment pronto e persistido no projeto.",
+          publishMachine.lastSuccessAt
+            ? `Confirmado em ${formatDateLabel(publishMachine.lastSuccessAt)}.`
+            : workspace.lastDeployReadyAt
+              ? `Confirmado em ${formatDateLabel(workspace.lastDeployReadyAt)}.`
+              : "Deployment pronto e persistido no projeto.",
         ],
         footer: "Se houver nova iteração, abra o editor, sincronize a fonte e gere um novo deploy real.",
       };
     }
 
-    if (workspace.lastDeploymentState === "READY") {
+    if (publishMachine.state === "deployment_ready") {
       return {
         kind: "success" as const,
         title: "Preview confirmado pela Vercel",
@@ -530,11 +524,11 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
       };
     }
 
-    if (workspace.lastDeploymentId) {
+    if (publishMachine.state === "deployment_requested" || publishMachine.state === "deployment_running") {
       return {
         kind: "syncing" as const,
         title: "Deployment solicitado e aguardando retorno",
-        description: "O deploy já saiu do produto e agora depende apenas da resposta da Vercel para virar READY ou ERROR.",
+        description: publishMachine.note || "O deploy já saiu do produto e agora depende apenas da resposta da Vercel para virar READY ou ERROR.",
         meta,
         details: [
           `Ambiente alvo: ${vercelEnvironmentLabel(workspace.lastDeploymentTarget || workspace.target)}.`,
@@ -547,7 +541,7 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
     return {
       kind: "saved" as const,
       title: "Workspace verificado e pronto para deploy",
-      description: "Projeto, ambiente e root directory já foram validados no backend. O próximo passo real é disparar o primeiro deployment.",
+      description: publishMachine.note || "Projeto, ambiente e root directory já foram validados no backend. O próximo passo real é disparar o primeiro deployment.",
       meta,
       details: [
         workspace.projectUrl ? `Projeto Vercel: ${workspace.projectUrl}` : "Projeto validado no backend.",
@@ -555,7 +549,7 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
       ],
       footer: "Solicite o deployment só quando a fonte do projeto estiver pronta para a Vercel.",
     };
-  }, [assessment.target, connection.connected, connection.name, connection.username, selectedProject, suggestedBranch, workspace]);
+  }, [assessment.target, connection.connected, connection.name, connection.username, publishMachine, selectedProject, suggestedBranch, workspace]);
 
   const workspaceState = useMemo(() => {
     if (!assessment.ready) {
@@ -644,7 +638,7 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
           </span>
           <span className="premium-badge premium-badge-warning">{formatVercelProjectLabel(workspace)}</span>
           <span className="premium-badge premium-badge-soon">
-            {workspace?.lastDeploymentState ? vercelDeploymentStateLabel(workspace.lastDeploymentState) : "Sem deploy"}
+            {vercelPublishMachineLabel(publishMachine)}
           </span>
         </div>
       </div>
@@ -690,7 +684,7 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
 
       {success ? (
         <OperationalState
-          kind={deploymentTone(workspace?.lastDeploymentState)}
+          kind={vercelPublishMachineOperationalKind(publishMachine)}
           title="Fluxo Vercel atualizado"
           description={success}
           badge="Vercel"
@@ -905,8 +899,8 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
             </div>
             <div className="vercel-publish-status-item">
               <span>Estado</span>
-              <strong>{vercelDeploymentStateLabel(workspace?.lastDeploymentState)}</strong>
-              <small>{workspace?.lastDeployError || outputStage.detail}</small>
+              <strong>{vercelPublishMachineLabel(publishMachine)}</strong>
+              <small>{publishMachine.note || workspace?.lastDeployError || outputStage.detail}</small>
             </div>
             <div className="vercel-publish-status-item">
               <span>Status canônico</span>
@@ -989,7 +983,7 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
               emphasis={selectedProject.title}
               meta={[
                 { label: "Workspace", value: formatVercelProjectLabel(workspace) },
-                { label: "Deploy", value: vercelDeploymentStateLabel(workspace?.lastDeploymentState) },
+                { label: "Deploy", value: vercelPublishMachineLabel(publishMachine) },
               ]}
             />
           )}

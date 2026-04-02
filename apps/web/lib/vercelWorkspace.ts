@@ -1,5 +1,7 @@
 "use client";
 
+import type { ProjectVercelPublishMachine, ProjectVercelPublishMachineState } from "./projectModel";
+
 export type VercelFramework = "nextjs" | "vite" | "static";
 export type VercelDeployStatus = "draft" | "ready" | "published";
 export type VercelEnvironment = "preview" | "production";
@@ -107,6 +109,13 @@ export type VercelWorkspaceAssessment = {
   hasWarnings: boolean;
 };
 
+export type VercelPublishMachineMetaTone = "default" | "warning" | "success" | "danger";
+export type VercelPublishMachineOperationalKind = "saved" | "syncing" | "success" | "published" | "failed-publish";
+
+type VercelWorkspaceLike = Partial<VercelWorkspace> & {
+  publishMachine?: ProjectVercelPublishMachine | null;
+};
+
 const PROJECT_NAME_PATTERN = /^[a-z0-9-]+$/;
 const TEAM_SLUG_PATTERN = /^[a-z0-9._-]+$/i;
 
@@ -170,11 +179,256 @@ function normalizeVercelDeploymentState(value: string | null | undefined): Verce
   return "UNKNOWN";
 }
 
-export function deriveVercelDeployStatus(binding: Partial<VercelWorkspace> | null | undefined): VercelDeployStatus {
+function normalizeVercelPublishMachineState(value: unknown): ProjectVercelPublishMachineState {
+  const normalized = String(value || "").trim().toLowerCase();
+  if (normalized === "workspace_verified") return "workspace_verified";
+  if (normalized === "deployment_requested") return "deployment_requested";
+  if (normalized === "deployment_running") return "deployment_running";
+  if (normalized === "deployment_ready") return "deployment_ready";
+  if (normalized === "published") return "published";
+  if (normalized === "deployment_failed") return "deployment_failed";
+  return "idle";
+}
+
+function buildFallbackPublishMachine(binding: VercelWorkspaceLike | null | undefined): ProjectVercelPublishMachine {
   const state = normalizeVercelDeploymentState(binding?.lastDeploymentState || null);
-  const target = normalizeVercelEnvironment(String(binding?.lastDeploymentTarget || ""));
-  if ((state === "READY" && target === "production") || asText(binding?.productionUrl)) return "published";
-  if (state !== "UNKNOWN" || asText(binding?.previewUrl)) return "ready";
+  const target = normalizeVercelEnvironment(String(binding?.lastDeploymentTarget || binding?.target || ""));
+  const hasWorkspace = Boolean(asText(binding?.projectName));
+  const nowRef =
+    binding?.lastDeployReadyAt ||
+    binding?.lastDeployRequestedAt ||
+    binding?.updatedAt ||
+    binding?.connectedAt ||
+    binding?.lastVerifiedAt ||
+    null;
+
+  if (!hasWorkspace) {
+    return {
+      version: "editor-ai-creator.vercel-publish.v1",
+      state: "idle",
+      sourceOfTruth: "backend",
+      reconcileMode: "provider_polling",
+      externalState: null,
+      confirmed: false,
+      terminal: false,
+      retryable: false,
+      lastSource: "backend",
+      lastEventType: null,
+      lastTransitionAt: null,
+      lastCheckedAt: null,
+      lastWebhookAt: null,
+      lastPollAt: null,
+      lastSuccessAt: null,
+      lastFailureAt: null,
+      nextCheckAt: null,
+      note: "Workspace Vercel ainda não salvo no backend.",
+    };
+  }
+
+  if ((state === "READY" && target === "production") || asText(binding?.productionUrl)) {
+    return {
+      version: "editor-ai-creator.vercel-publish.v1",
+      state: "published",
+      sourceOfTruth: "provider",
+      reconcileMode: "provider_webhook",
+      externalState: state === "UNKNOWN" ? "READY" : state,
+      confirmed: true,
+      terminal: true,
+      retryable: false,
+      lastSource: "provider",
+      lastEventType: "deployment.ready",
+      lastTransitionAt: binding?.lastDeployReadyAt || nowRef,
+      lastCheckedAt: binding?.lastDeployReadyAt || nowRef,
+      lastWebhookAt: null,
+      lastPollAt: null,
+      lastSuccessAt: binding?.lastDeployReadyAt || nowRef,
+      lastFailureAt: null,
+      nextCheckAt: null,
+      note: "Deploy de produção confirmado pela Vercel e persistido no projeto.",
+    };
+  }
+
+  if (state === "READY") {
+    return {
+      version: "editor-ai-creator.vercel-publish.v1",
+      state: "deployment_ready",
+      sourceOfTruth: "provider",
+      reconcileMode: "provider_webhook",
+      externalState: "READY",
+      confirmed: true,
+      terminal: false,
+      retryable: false,
+      lastSource: "provider",
+      lastEventType: "deployment.ready",
+      lastTransitionAt: binding?.lastDeployReadyAt || nowRef,
+      lastCheckedAt: binding?.lastDeployReadyAt || nowRef,
+      lastWebhookAt: null,
+      lastPollAt: null,
+      lastSuccessAt: binding?.lastDeployReadyAt || nowRef,
+      lastFailureAt: null,
+      nextCheckAt: null,
+      note: "Preview pronto e confirmado pela Vercel. Falta promover ou seguir para produção.",
+    };
+  }
+
+  if (state === "ERROR" || state === "CANCELED") {
+    return {
+      version: "editor-ai-creator.vercel-publish.v1",
+      state: "deployment_failed",
+      sourceOfTruth: "provider",
+      reconcileMode: "provider_webhook",
+      externalState: state,
+      confirmed: true,
+      terminal: true,
+      retryable: true,
+      lastSource: "provider",
+      lastEventType: "deployment.failed",
+      lastTransitionAt: nowRef,
+      lastCheckedAt: nowRef,
+      lastWebhookAt: null,
+      lastPollAt: null,
+      lastSuccessAt: null,
+      lastFailureAt: nowRef,
+      nextCheckAt: null,
+      note: asText(binding?.lastDeployError) || "A Vercel devolveu falha para o último deploy. O projeto precisa de nova tentativa ou correção.",
+    };
+  }
+
+  if (state === "BUILDING" || state === "INITIALIZING" || state === "QUEUED") {
+    return {
+      version: "editor-ai-creator.vercel-publish.v1",
+      state: "deployment_running",
+      sourceOfTruth: "provider",
+      reconcileMode: "provider_polling",
+      externalState: state,
+      confirmed: true,
+      terminal: false,
+      retryable: false,
+      lastSource: "provider",
+      lastEventType: "deployment.running",
+      lastTransitionAt: binding?.lastDeployRequestedAt || nowRef,
+      lastCheckedAt: nowRef,
+      lastWebhookAt: null,
+      lastPollAt: null,
+      lastSuccessAt: null,
+      lastFailureAt: null,
+      nextCheckAt: null,
+      note: "Deployment em andamento e aguardando retorno final do provedor.",
+    };
+  }
+
+  if (binding?.lastDeploymentId) {
+    return {
+      version: "editor-ai-creator.vercel-publish.v1",
+      state: "deployment_requested",
+      sourceOfTruth: "backend",
+      reconcileMode: "provider_polling",
+      externalState: state === "UNKNOWN" ? null : state,
+      confirmed: false,
+      terminal: false,
+      retryable: false,
+      lastSource: "backend",
+      lastEventType: "deployment.requested",
+      lastTransitionAt: binding?.lastDeployRequestedAt || nowRef,
+      lastCheckedAt: nowRef,
+      lastWebhookAt: null,
+      lastPollAt: null,
+      lastSuccessAt: null,
+      lastFailureAt: null,
+      nextCheckAt: null,
+      note: "Deployment solicitado e aguardando retorno do provedor.",
+    };
+  }
+
+  return {
+    version: "editor-ai-creator.vercel-publish.v1",
+    state: "workspace_verified",
+    sourceOfTruth: "backend",
+    reconcileMode: "provider_polling",
+    externalState: null,
+    confirmed: false,
+    terminal: false,
+    retryable: false,
+    lastSource: "backend",
+    lastEventType: "workspace.verified",
+    lastTransitionAt: nowRef,
+    lastCheckedAt: nowRef,
+    lastWebhookAt: null,
+    lastPollAt: null,
+    lastSuccessAt: null,
+    lastFailureAt: null,
+    nextCheckAt: null,
+    note: "Workspace verificado e pronto para disparar o primeiro deploy real.",
+  };
+}
+
+export function resolveVercelPublishMachine(binding: VercelWorkspaceLike | null | undefined): ProjectVercelPublishMachine {
+  const fallback = buildFallbackPublishMachine(binding);
+  const machine = binding?.publishMachine;
+  if (!machine) return fallback;
+  return {
+    ...fallback,
+    ...machine,
+    state: normalizeVercelPublishMachineState(machine.state),
+    sourceOfTruth: machine.sourceOfTruth === "provider" ? "provider" : fallback.sourceOfTruth,
+    confirmed: typeof machine.confirmed === "boolean" ? machine.confirmed : fallback.confirmed,
+    terminal: typeof machine.terminal === "boolean" ? machine.terminal : fallback.terminal,
+    retryable: typeof machine.retryable === "boolean" ? machine.retryable : fallback.retryable,
+    externalState: asText(machine.externalState) || fallback.externalState,
+    lastSource: asText(machine.lastSource) || fallback.lastSource,
+    lastEventType: asText(machine.lastEventType) || fallback.lastEventType,
+    lastTransitionAt: asText(machine.lastTransitionAt) || fallback.lastTransitionAt,
+    lastCheckedAt: asText(machine.lastCheckedAt) || fallback.lastCheckedAt,
+    lastWebhookAt: asText(machine.lastWebhookAt) || fallback.lastWebhookAt,
+    lastPollAt: asText(machine.lastPollAt) || fallback.lastPollAt,
+    lastSuccessAt: asText(machine.lastSuccessAt) || fallback.lastSuccessAt,
+    lastFailureAt: asText(machine.lastFailureAt) || fallback.lastFailureAt,
+    nextCheckAt: asText(machine.nextCheckAt) || fallback.nextCheckAt,
+    note: asText(machine.note) || fallback.note,
+  };
+}
+
+export function vercelPublishMachineLabel(machine: ProjectVercelPublishMachine | null | undefined): string {
+  const state = normalizeVercelPublishMachineState(machine?.state);
+  if (state === "published") return "Publicado";
+  if (state === "deployment_ready") return "Preview pronto";
+  if (state === "deployment_running") return "Deploy em andamento";
+  if (state === "deployment_requested") return "Deploy solicitado";
+  if (state === "deployment_failed") return "Falhou";
+  if (state === "workspace_verified") return "Workspace verificado";
+  return "Sem trilha";
+}
+
+export function vercelPublishMachineMetaTone(machine: ProjectVercelPublishMachine | null | undefined): VercelPublishMachineMetaTone {
+  const state = normalizeVercelPublishMachineState(machine?.state);
+  if (state === "published" || state === "deployment_ready") return "success";
+  if (state === "deployment_failed") return "danger";
+  if (state === "deployment_requested" || state === "deployment_running") return "warning";
+  return "default";
+}
+
+export function vercelPublishMachineOperationalKind(
+  machine: ProjectVercelPublishMachine | null | undefined
+): VercelPublishMachineOperationalKind {
+  const state = normalizeVercelPublishMachineState(machine?.state);
+  if (state === "published") return "published";
+  if (state === "deployment_ready") return "success";
+  if (state === "deployment_requested" || state === "deployment_running") return "syncing";
+  if (state === "deployment_failed") return "failed-publish";
+  return "saved";
+}
+
+export function deriveVercelDeployStatus(binding: VercelWorkspaceLike | null | undefined): VercelDeployStatus {
+  const machine = resolveVercelPublishMachine(binding);
+  if (machine.state === "published") return "published";
+  if (
+    machine.state === "deployment_requested" ||
+    machine.state === "deployment_running" ||
+    machine.state === "deployment_ready" ||
+    machine.state === "deployment_failed"
+  ) {
+    return "ready";
+  }
   return "draft";
 }
 
@@ -270,51 +524,42 @@ export function vercelDeploymentStateLabel(state: string | null | undefined): st
   return "Sem deploy";
 }
 
-export function resolveVercelOutputStage(binding: Partial<VercelWorkspace> | null | undefined): {
+export function resolveVercelOutputStage(binding: VercelWorkspaceLike | null | undefined): {
   label: string;
   detail: string;
 } {
-  if (!binding?.projectName) {
-    return {
-      label: "Draft",
-      detail: "O workspace da Vercel ainda não foi salvo no backend.",
-    };
-  }
-
-  const state = normalizeVercelDeploymentState(binding.lastDeploymentState || null);
-  const target = binding.lastDeploymentTarget === "production" ? "production" : "preview";
-
-  if (state === "READY" && target === "production") {
+  const machine = resolveVercelPublishMachine(binding);
+  if (machine.state === "published") {
     return {
       label: "Published",
-      detail: "Deploy de produção confirmado pela Vercel e persistido no projeto.",
+      detail: machine.note || "Deploy de produção confirmado pela Vercel e persistido no projeto.",
     };
   }
 
-  if (state === "READY") {
+  if (machine.state === "deployment_ready") {
     return {
       label: "Exported",
-      detail: "Preview pronto e confirmado pela Vercel. Falta promover ou seguir para produção.",
+      detail: machine.note || "Preview pronto e confirmado pela Vercel. Falta promover ou seguir para produção.",
     };
   }
 
-  if (state === "ERROR" || state === "CANCELED") {
+  if (machine.state === "deployment_failed") {
     return {
       label: "Failed",
-      detail: "A Vercel devolveu falha para o último deploy. O projeto precisa de nova tentativa ou correção.",
+      detail: machine.note || "A Vercel devolveu falha para o último deploy. O projeto precisa de nova tentativa ou correção.",
     };
   }
 
-  if (binding.lastDeploymentId) {
+  if (machine.state === "deployment_requested" || machine.state === "deployment_running") {
     return {
       label: "Exported",
-      detail: "Deployment solicitado e aguardando retorno do provedor.",
+      detail: machine.note || "Deployment solicitado e aguardando retorno do provedor.",
     };
   }
 
   return {
     label: "Draft",
-    detail: "Workspace verificado e pronto para disparar o primeiro deploy real.",
+    detail: machine.note || "Workspace verificado e pronto para disparar o primeiro deploy real.",
   };
 }
 

@@ -5,9 +5,11 @@ import { useMemo, type ReactNode } from "react";
 import { ensureCanonicalProjectData } from "../../lib/projectModel";
 import {
   deriveVercelDeployStatus,
-  vercelDeploymentStateLabel,
+  resolveVercelPublishMachine,
   vercelDeployStatusLabel,
   vercelEnvironmentLabel,
+  vercelPublishMachineLabel,
+  vercelPublishMachineMetaTone,
 } from "../../lib/vercelWorkspace";
 import { OperationalState, type OperationalStateKind, type OperationalStateMetaItem } from "../ui/OperationalState";
 
@@ -60,26 +62,34 @@ function deriveFocusProject(projects: ProjectLike[]) {
     const delivery = canonical.delivery;
     const github = canonical.integrations.github;
     const vercel = canonical.integrations.vercel;
+    const publishMachine = resolveVercelPublishMachine(vercel.binding);
     const hasVercel =
       Boolean(vercel.binding?.projectName) ||
       Boolean(vercel.binding?.lastDeploymentId) ||
-      Boolean(vercel.binding?.lastDeploymentState);
+      publishMachine.state !== "idle";
     const hasGitHub = Boolean(github.binding || github.exports.length || github.versions.length);
     const rank =
-      delivery.stage === "published"
-        ? 400
-        : hasVercel && vercel.binding?.lastDeploymentId
-          ? 320
-          : hasGitHub && (github.exports.length || delivery.connectedStorage === "github")
-            ? 220
-            : delivery.stage === "exported"
-              ? 180
-              : hasVercel || hasGitHub
-                ? 120
-                : 0;
+      publishMachine.state === "published"
+        ? 420
+        : delivery.stage === "published"
+          ? 400
+          : publishMachine.state === "deployment_requested" ||
+              publishMachine.state === "deployment_running" ||
+              publishMachine.state === "deployment_ready" ||
+              publishMachine.state === "deployment_failed"
+            ? 320
+            : hasGitHub && (github.exports.length || delivery.connectedStorage === "github")
+              ? 220
+              : delivery.stage === "exported"
+                ? 180
+                : hasVercel || hasGitHub
+                  ? 120
+                  : 0;
     const ts =
       Date.parse(
-        delivery.lastPublishedAt ||
+        publishMachine.lastTransitionAt ||
+          publishMachine.lastCheckedAt ||
+          delivery.lastPublishedAt ||
           vercel.binding?.lastDeployReadyAt ||
           vercel.binding?.lastDeployRequestedAt ||
           delivery.lastExportedAt ||
@@ -132,47 +142,42 @@ export function PublishConfidenceState({ projects }: Props) {
     const github = canonical.integrations.github;
     const vercel = canonical.integrations.vercel;
     const vercelBinding = vercel.binding;
+    const publishMachine = resolveVercelPublishMachine(vercelBinding);
     const latestEvent = delivery.history[0] || null;
     const publishChannel = channelLabel(delivery.connectedStorage || latestEvent?.channel || null);
     const environment = vercelEnvironmentValue(vercelBinding);
-    const exportedAt = vercelBinding?.lastDeployRequestedAt || delivery.lastExportedAt;
-    const publishedAt = vercelBinding?.lastDeployReadyAt || delivery.lastPublishedAt;
+    const exportedAt =
+      publishMachine.lastTransitionAt || publishMachine.lastCheckedAt || vercelBinding?.lastDeployRequestedAt || delivery.lastExportedAt;
+    const publishedAt = publishMachine.lastSuccessAt || vercelBinding?.lastDeployReadyAt || delivery.lastPublishedAt;
     const projectHref = project.id ? `/editor/${project.id}` : "/editor/new";
     const handoffHref = vercelBinding?.projectName ? "#vercel-publish" : "#github-workspace";
-    const vercelState = vercelDeploymentStateLabel(vercelBinding?.lastDeploymentState);
     const syncLabel =
-      delivery.stage === "published"
-        ? "Confirmado pelo provider"
-        : vercelBinding?.lastDeploymentId
-          ? `Deployment ${vercelState}`
-          : github.binding
-            ? "Base salva"
-            : "Sem sincronização";
+      publishMachine.state !== "idle"
+        ? vercelPublishMachineLabel(publishMachine)
+        : github.binding
+          ? "Base salva"
+          : "Sem sincronização";
     const syncTone =
-      delivery.stage === "published"
-        ? ("success" as const)
-        : vercelBinding?.lastDeploymentState === "ERROR" || vercelBinding?.lastDeploymentState === "CANCELED"
-          ? ("danger" as const)
-          : vercelBinding?.lastDeploymentId
-            ? ("warning" as const)
-            : ("default" as const);
-
-    const hasPublishError =
-      vercelBinding?.lastDeploymentState === "ERROR" ||
-      vercelBinding?.lastDeploymentState === "CANCELED" ||
-      (delivery.stage === "published" && delivery.connectedStorage === "vercel" && !vercelBinding?.productionUrl);
+      publishMachine.state !== "idle"
+        ? vercelPublishMachineMetaTone(publishMachine)
+        : ("default" as const);
+    const hasPublishError = publishMachine.state === "deployment_failed";
+    const providerPublished = publishMachine.state === "published";
+    const providerReady = publishMachine.state === "deployment_ready";
+    const providerRunning =
+      publishMachine.state === "deployment_requested" || publishMachine.state === "deployment_running";
 
     let kind: OperationalStateKind = "saved";
     let title = "Base de publish pronta";
     let description =
-      "O projeto já tem base de saída registrada. Falta exportar, disparar deployment ou confirmar publicação para fechar a trilha visível.";
+      "O projeto já tem base de saída registrada. Falta exportar, disparar deployment ou sincronizar com o provider para fechar a trilha visível.";
     const meta: OperationalStateMetaItem[] = [
       { label: "Projeto", value: project.title },
       { label: "Canal", value: publishChannel },
       { label: "Ambiente", value: environment },
       {
-        label: delivery.stage === "published" ? "Publicado em" : "Último deploy",
-        value: formatDateLabel(delivery.stage === "published" ? publishedAt : exportedAt),
+        label: providerPublished ? "Publicado em" : "Último retorno",
+        value: formatDateLabel(providerPublished ? publishedAt : exportedAt),
       },
       {
         label: "Sincronia",
@@ -187,14 +192,7 @@ export function PublishConfidenceState({ projects }: Props) {
       meta.push({
         label: "Deploy",
         value: vercelDeployStatusLabel(deriveVercelDeployStatus(vercelBinding)),
-        tone:
-          vercelBinding.lastDeploymentState === "READY"
-            ? "success"
-            : vercelBinding.lastDeploymentState === "ERROR" || vercelBinding.lastDeploymentState === "CANCELED"
-              ? "danger"
-              : vercelBinding.lastDeploymentId
-                ? "warning"
-                : "default",
+        tone: vercelPublishMachineMetaTone(publishMachine),
       });
     } else if (github.binding) {
       meta.push({
@@ -203,18 +201,22 @@ export function PublishConfidenceState({ projects }: Props) {
       });
     }
 
+    if (publishMachine.note) {
+      details.push(publishMachine.note);
+    }
+
     if (hasPublishError) {
       kind = "failed-publish";
-      title = "Publicação precisa de revisão";
+      title = "Publicação falhou no provider";
       description =
-        "A trilha de publish existe, mas a Vercel devolveu falha ou faltam dados críticos para tratar a saída como concluída.";
-      details.push(vercelBinding?.lastDeployError || "A publicação foi marcada, mas a production URL ainda não está registrada.");
-      footer = "Abra o handoff correspondente, corrija o erro e só depois gere um novo deployment.";
-    } else if (delivery.stage === "published") {
+        "A trilha de publish existe, mas o retorno reconciliado do provider fechou em falha. O estado agora é verificável e persistido.";
+      details.push(vercelBinding?.lastDeployError || "A Vercel devolveu falha ou cancelamento para o último deployment.");
+      footer = "Abra o handoff correspondente, corrija a origem do problema e só depois gere um novo deployment.";
+    } else if (providerPublished) {
       kind = "published";
-      title = "Publicação visível e confirmada";
+      title = "Publicação confirmada externamente";
       description =
-        "A plataforma mostra o projeto publicado com horário, canal, ambiente e URL real sem depender de confirmação manual solta.";
+        "A publicação agora depende da confirmação reconciliada do provider. O produto mostra canal, ambiente, horário e URL real sem semântica frouxa.";
       if (vercelBinding?.productionUrl) {
         details.push(`URL publicada: ${vercelBinding.productionUrl}.`);
       }
@@ -223,29 +225,22 @@ export function PublishConfidenceState({ projects }: Props) {
       }
       footer =
         "Se houver nova iteração, volte ao editor, atualize a fonte e gere um novo deployment só quando a saída realmente precisar mudar.";
-    } else if (vercelBinding?.lastDeploymentId) {
-      kind =
-        vercelBinding.lastDeploymentState === "READY"
-          ? "success"
-          : "syncing";
-      title =
-        vercelBinding.lastDeploymentState === "READY"
-          ? "Deploy pronto aguardando próximo passo"
-          : "Deployment em andamento";
+    } else if (providerReady || providerRunning) {
+      kind = providerReady ? "success" : "syncing";
+      title = providerReady ? "Deploy pronto aguardando próximo passo" : "Deployment em andamento";
       description =
-        vercelBinding.lastDeploymentState === "READY"
-          ? "A Vercel já devolveu READY. Agora o produto mostra preview, ambiente e próximo passo sem ambiguidade."
-          : "O deployment já saiu do produto e a camada de publish mostra o estado real devolvido pela Vercel.";
-      if (vercelBinding.lastDeploymentUrl) {
+        providerReady
+          ? "O provider já devolveu READY. O produto mostra preview, ambiente e próximo passo sem ambiguidade."
+          : "O deployment já saiu do produto e a camada de publish mostra o estado reconciliado devolvido pelo provider.";
+      if (vercelBinding?.lastDeploymentUrl) {
         details.push(`Deployment: ${vercelBinding.lastDeploymentUrl}.`);
       }
       if (latestEvent?.note) {
         details.push(latestEvent.note);
       }
-      footer =
-        vercelBinding.lastDeploymentState === "READY"
-          ? "Promova ou trate como publicado só quando a saída final estiver correta."
-          : "Reconcile o deployment até a Vercel devolver READY ou ERROR.";
+      footer = providerReady
+        ? "Promova ou trate como publicado só quando a saída final estiver correta."
+        : "Reconcile o deployment até o provider devolver READY ou ERROR.";
     } else if (github.binding || vercelBinding) {
       kind = "saved";
       title = "Base de publish salva";

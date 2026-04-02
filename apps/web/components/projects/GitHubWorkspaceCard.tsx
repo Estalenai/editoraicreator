@@ -683,7 +683,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
             </div>
             <div className="github-workspace-status-item">
               <span className="github-workspace-status-label">Escopo</span>
-              <strong>Token seguro, sem localStorage</strong>
+              <strong>Token seguro, fora do navegador</strong>
               <small>O navegador não guarda a credencial GitHub. O backend usa configs + criptografia como fonte de verdade.</small>
             </div>
           </div>
