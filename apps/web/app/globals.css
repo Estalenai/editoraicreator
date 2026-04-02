@@ -15950,3 +15950,316 @@ body {
     flex: 1 1 100%;
   }
 }
+
+/* Support premium continuity pass */
+.app-shell-frame:has(.support-page) .app-shell-main::before {
+  background:
+    linear-gradient(180deg, rgba(4, 12, 31, 0.12), rgba(4, 12, 31, 0.05) 24%, rgba(4, 12, 31, 0.02) 46%, transparent 74%),
+    radial-gradient(700px 220px at 50% 0%, rgba(78, 236, 255, 0.07), transparent 74%),
+    radial-gradient(860px 260px at 50% 100%, rgba(88, 120, 255, 0.05), transparent 80%);
+}
+
+.app-shell-frame:has(.support-page) .app-shell-workspace::after {
+  inset: auto 8% -9% 8%;
+  height: clamp(220px, 26vw, 320px);
+  background:
+    radial-gradient(44% 100% at 50% 0%, rgba(88, 242, 255, 0.11), transparent 74%),
+    radial-gradient(34% 88% at 50% 16%, rgba(95, 118, 255, 0.1), transparent 82%);
+  filter: blur(42px);
+  opacity: 0.6;
+}
+
+.support-page {
+  gap: clamp(22px, 2.5vw, 34px);
+}
+
+.support-page::before {
+  height: clamp(236px, 26vw, 332px);
+  opacity: 0.34;
+  filter: blur(56px);
+  background:
+    radial-gradient(520px 240px at 12% 8%, rgba(88, 242, 255, 0.15), transparent 72%),
+    radial-gradient(560px 260px at 44% 18%, rgba(96, 132, 255, 0.11), transparent 76%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent 72%);
+}
+
+.support-page::after {
+  opacity: 0.58;
+}
+
+.support-page .support-hero-open,
+.support-page .support-guide-section,
+.support-page .support-faq-section,
+.support-page .support-assistant-card,
+.support-page .support-loading-card {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  padding: clamp(22px, 2.5vw, 32px) !important;
+  border: 1px solid rgba(191, 239, 255, 0.075) !important;
+  border-radius: clamp(24px, 2.6vw, 32px);
+  background:
+    radial-gradient(420px 180px at 0% 0%, rgba(88, 242, 255, 0.074), transparent 72%),
+    radial-gradient(380px 180px at 100% 100%, rgba(95, 118, 255, 0.072), transparent 78%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.022), rgba(255, 255, 255, 0.007)),
+    rgba(8, 22, 54, 0.31) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.032),
+    0 18px 42px rgba(2, 6, 23, 0.12) !important;
+}
+
+.support-page .support-hero-open::before,
+.support-page .support-hero-open::after {
+  display: block !important;
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.support-page .support-hero-open::before {
+  inset: -12% 34% auto -8%;
+  height: clamp(180px, 22vw, 280px);
+  background:
+    radial-gradient(60% 100% at 0% 0%, rgba(88, 242, 255, 0.12), transparent 70%),
+    radial-gradient(44% 94% at 42% 18%, rgba(95, 118, 255, 0.11), transparent 78%);
+  filter: blur(26px);
+  opacity: 0.82;
+}
+
+.support-page .support-hero-open::after {
+  inset: auto -10% -14% 42%;
+  height: clamp(136px, 18vw, 216px);
+  background: radial-gradient(46% 100% at 50% 0%, rgba(88, 242, 255, 0.07), transparent 74%);
+  filter: blur(34px);
+  opacity: 0.54;
+}
+
+.support-page .support-hero-open > *,
+.support-page .support-guide-section > *,
+.support-page .support-faq-section > *,
+.support-page .support-assistant-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.support-page .support-hero-open {
+  gap: clamp(18px, 2.2vw, 26px);
+  border-bottom: 1px solid rgba(191, 239, 255, 0.075) !important;
+}
+
+.support-page .support-hero-intro {
+  grid-template-columns: minmax(0, 1.06fr) minmax(300px, 0.82fr);
+  gap: clamp(22px, 2.4vw, 30px);
+}
+
+.support-page .support-hero-open .hero-copy {
+  gap: 18px;
+}
+
+.support-page .support-hero-focus {
+  gap: 14px;
+  padding: clamp(18px, 2vw, 24px);
+  border: 1px solid rgba(191, 239, 255, 0.075);
+  border-left: 1px solid rgba(191, 239, 255, 0.075);
+  border-radius: 24px;
+  background:
+    radial-gradient(220px 104px at 100% 0%, rgba(88, 242, 255, 0.048), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.006)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.022),
+    0 10px 24px rgba(2, 6, 23, 0.06) !important;
+}
+
+.support-page .support-hero-focus::before {
+  inset: -18px -6px auto -10px;
+  height: 182px;
+  opacity: 0.74;
+}
+
+.support-page .support-hero-signals,
+.support-page .support-context-strip {
+  gap: 14px 18px;
+}
+
+.support-page .support-context-strip {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.support-page .support-hero-signal,
+.support-page .support-context-item,
+.support-page .support-guide-card,
+.support-page .support-category-hint,
+.support-page .support-guidelines-card,
+.support-page .support-history-note,
+.support-page .support-trust-note {
+  padding: 14px 16px !important;
+  border: 1px solid rgba(191, 239, 255, 0.07) !important;
+  border-left: 1px solid rgba(191, 239, 255, 0.07) !important;
+  border-radius: 18px;
+  background:
+    radial-gradient(180px 80px at 100% 0%, rgba(88, 242, 255, 0.04), transparent 74%),
+    rgba(255, 255, 255, 0.012) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.016) !important;
+}
+
+.support-page .support-guide-section,
+.support-page .support-faq-section,
+.support-page .support-assistant-card {
+  gap: clamp(18px, 2.2vw, 24px);
+}
+
+.support-page .focus-shell-section[data-focus-active="true"] {
+  border-color: rgba(191, 239, 255, 0.1) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.038),
+    0 20px 44px rgba(2, 6, 23, 0.14) !important;
+}
+
+.support-page .focus-shell-section[data-focus-active="false"] {
+  opacity: 0.9;
+  background:
+    radial-gradient(320px 140px at 100% 0%, rgba(88, 242, 255, 0.046), transparent 76%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.004)),
+    rgba(8, 22, 54, 0.26) !important;
+}
+
+.support-page .focus-shell-section[data-focus-active="false"] .focus-shell-preview {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(191, 239, 255, 0.075);
+}
+
+.support-page .support-guide-section > * + *,
+.support-page .support-faq-section > * + *,
+.support-page .support-assistant-card > * + * {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.support-page .support-guide-grid {
+  gap: 16px 18px;
+}
+
+.support-page .support-guide-card {
+  min-height: 150px;
+  text-decoration: none;
+  color: inherit;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.018),
+    0 10px 24px rgba(2, 6, 23, 0.07) !important;
+}
+
+.support-page .support-guide-card-stack {
+  gap: 8px;
+}
+
+.support-page .support-guide-card:hover,
+.support-page .support-faq-item:hover {
+  transform: translateY(-1px) !important;
+  filter: brightness(1.02);
+}
+
+.support-page .support-faq-grid {
+  gap: 14px 18px;
+}
+
+.support-page .support-faq-item,
+.support-page .support-faq-grid > .support-faq-item:nth-child(-n + 2),
+.support-page .support-faq-grid > .support-faq-item:first-child {
+  min-height: 164px;
+  padding: 16px 18px !important;
+  border: 1px solid rgba(191, 239, 255, 0.07) !important;
+  border-top: 1px solid rgba(191, 239, 255, 0.07) !important;
+  border-radius: 18px;
+  background:
+    radial-gradient(180px 76px at 100% 0%, rgba(88, 242, 255, 0.04), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.006)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.018),
+    0 10px 24px rgba(2, 6, 23, 0.07) !important;
+}
+
+.support-page .support-assistant-grid {
+  gap: clamp(18px, 2.4vw, 28px);
+}
+
+.support-page .support-assistant-form,
+.support-page .support-assistant-side {
+  gap: 18px;
+}
+
+.support-page .support-history-list {
+  gap: 12px;
+}
+
+.support-page .support-history-item,
+.support-page .support-history-list > .support-history-item:first-child {
+  gap: 10px;
+  padding: 16px 18px !important;
+  border: 1px solid rgba(191, 239, 255, 0.07) !important;
+  border-top: 1px solid rgba(191, 239, 255, 0.07) !important;
+  border-radius: 18px;
+  background:
+    radial-gradient(180px 76px at 100% 0%, rgba(88, 242, 255, 0.04), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.006)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.018),
+    0 10px 24px rgba(2, 6, 23, 0.07) !important;
+}
+
+.support-page .support-history-head {
+  gap: 12px 16px;
+}
+
+@media (max-width: 1120px) {
+  .support-page .support-hero-intro {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .support-page .support-hero-focus {
+    padding: 18px;
+    border-top: 1px solid rgba(191, 239, 255, 0.075);
+  }
+}
+
+@media (max-width: 960px) {
+  .support-page .support-hero-intro,
+  .support-page .support-hero-signals,
+  .support-page .support-context-strip,
+  .support-page .support-guide-grid,
+  .support-page .support-faq-grid,
+  .support-page .support-assistant-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .support-page .support-faq-item,
+  .support-page .support-faq-grid > .support-faq-item:nth-child(-n + 2),
+  .support-page .support-faq-grid > .support-faq-item:first-child {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .support-page .support-hero-open,
+  .support-page .support-guide-section,
+  .support-page .support-faq-section,
+  .support-page .support-assistant-card,
+  .support-page .support-loading-card {
+    padding: 18px !important;
+    border-radius: 22px;
+  }
+
+  .support-page .support-guide-card,
+  .support-page .support-faq-item,
+  .support-page .support-history-item,
+  .support-page .support-hero-signal,
+  .support-page .support-context-item,
+  .support-page .support-category-hint,
+  .support-page .support-guidelines-card,
+  .support-page .support-history-note,
+  .support-page .support-trust-note {
+    padding: 14px !important;
+  }
+}
