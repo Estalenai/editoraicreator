@@ -280,6 +280,59 @@ export const api = {
     });
   },
 
+  async getVercelConnection() {
+    return authJson("/api/vercel/connection");
+  },
+
+  async saveVercelConnection(body: { personalAccessToken: string }) {
+    return authJson("/api/vercel/connection", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+  },
+
+  async removeVercelConnection() {
+    return authJson("/api/vercel/connection", {
+      method: "DELETE",
+    });
+  },
+
+  async saveVercelWorkspace(
+    id: string,
+    body: {
+      projectName: string;
+      teamSlug?: string;
+      framework: "nextjs" | "vite" | "static";
+      rootDirectory: string;
+      target: "preview" | "production";
+    }
+  ) {
+    return authJson(`/api/vercel/projects/${encodeURIComponent(id)}/workspace`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+  },
+
+  async clearVercelWorkspace(id: string) {
+    return authJson(`/api/vercel/projects/${encodeURIComponent(id)}/workspace`, {
+      method: "DELETE",
+    });
+  },
+
+  async createVercelDeployment(id: string) {
+    return authJson(`/api/vercel/projects/${encodeURIComponent(id)}/deploy`, {
+      method: "POST",
+    });
+  },
+
+  async reconcileVercelDeployment(id: string) {
+    return authJson(`/api/vercel/projects/${encodeURIComponent(id)}/reconcile`, {
+      method: "POST",
+    });
+  },
+
   async aiTextGenerate(body: { prompt: string }) {
     return authJson("/api/ai/text-generate", {
       method: "POST",

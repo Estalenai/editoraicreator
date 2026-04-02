@@ -150,20 +150,49 @@ export type ProjectGitHubIntegration = {
 };
 
 export type ProjectVercelBinding = {
+  provider?: "vercel";
+  projectId: string | null;
   projectName: string;
+  teamId?: string | null;
   teamSlug: string;
   framework: "nextjs" | "vite" | "static";
   rootDirectory: string;
+  target: "preview" | "production";
   deployStatus: "draft" | "ready" | "published";
   previewUrl: string;
   productionUrl: string;
+  projectUrl?: string | null;
+  connectedAt?: string | null;
   updatedAt: string | null;
+  lastVerifiedAt?: string | null;
+  verificationStatus?: string | null;
+  tokenConfigured?: boolean;
+  linkedRepoId?: string | null;
+  linkedRepoType?: string | null;
+  lastDeploymentId?: string | null;
+  lastDeploymentUrl?: string | null;
+  lastDeploymentInspectorUrl?: string | null;
+  lastDeploymentState?: string | null;
+  lastDeploymentTarget?: "preview" | "production" | null;
+  lastDeploymentRef?: string | null;
+  lastDeployRequestedAt?: string | null;
+  lastDeployReadyAt?: string | null;
+  lastDeployError?: string | null;
 };
 
 export type ProjectVercelEvent = {
   id: string;
   ts: string;
-  type: "base_saved" | "handoff_exported" | "published_manual" | "status_updated";
+  type:
+    | "base_saved"
+    | "handoff_exported"
+    | "published_manual"
+    | "status_updated"
+    | "workspace_saved"
+    | "deployment_requested"
+    | "deployment_ready"
+    | "deployment_failed"
+    | "deployment_reconciled";
   stage: OutputStage;
   title: string;
   note: string;
@@ -172,6 +201,7 @@ export type ProjectVercelEvent = {
 export type ProjectVercelIntegration = {
   binding: ProjectVercelBinding | null;
   lastManifestExportedAt: string | null;
+  lastDeploymentCheckedAt?: string | null;
   history: ProjectVercelEvent[];
 };
 
@@ -461,6 +491,10 @@ function normalizeVercelFramework(value: any): ProjectVercelBinding["framework"]
   if (value === "vite") return "vite";
   if (value === "static") return "static";
   return "nextjs";
+}
+
+function normalizeVercelTarget(value: any): ProjectVercelBinding["target"] {
+  return value === "production" ? "production" : "preview";
 }
 
 function normalizeVercelDeployStatus(value: any): ProjectVercelBinding["deployStatus"] {
@@ -1158,7 +1192,14 @@ function normalizeVercelHistory(value: any): ProjectVercelEvent[] {
       id: asText(item.id) || localId(),
       ts: asText(item.ts) || new Date().toISOString(),
       type:
-        item.type === "handoff_exported" || item.type === "published_manual" || item.type === "status_updated"
+        item.type === "handoff_exported" ||
+        item.type === "published_manual" ||
+        item.type === "status_updated" ||
+        item.type === "workspace_saved" ||
+        item.type === "deployment_requested" ||
+        item.type === "deployment_ready" ||
+        item.type === "deployment_failed" ||
+        item.type === "deployment_reconciled"
           ? item.type
           : "base_saved",
       stage: normalizeOutputStage(item.stage),
@@ -1173,14 +1214,39 @@ function normalizeExistingVercelBinding(value: any): ProjectVercelBinding | null
   const projectName = asText(value.projectName || value.vercelProjectName);
   if (!projectName) return null;
   return {
+    provider: "vercel",
+    projectId: asText(value.projectId) || null,
     projectName,
+    teamId: asText(value.teamId) || null,
     teamSlug: asText(value.teamSlug),
     framework: normalizeVercelFramework(value.framework),
     rootDirectory: asText(value.rootDirectory) || "",
+    target: normalizeVercelTarget(value.target),
     deployStatus: normalizeVercelDeployStatus(value.deployStatus),
     previewUrl: asText(value.previewUrl),
     productionUrl: asText(value.productionUrl),
+    projectUrl: asText(value.projectUrl) || null,
+    connectedAt: asText(value.connectedAt) || null,
     updatedAt: asText(value.updatedAt) || null,
+    lastVerifiedAt: asText(value.lastVerifiedAt) || null,
+    verificationStatus: asText(value.verificationStatus) || null,
+    tokenConfigured: Boolean(value.tokenConfigured),
+    linkedRepoId: asText(value.linkedRepoId) || null,
+    linkedRepoType: asText(value.linkedRepoType) || null,
+    lastDeploymentId: asText(value.lastDeploymentId) || null,
+    lastDeploymentUrl: asText(value.lastDeploymentUrl) || null,
+    lastDeploymentInspectorUrl: asText(value.lastDeploymentInspectorUrl) || null,
+    lastDeploymentState: asText(value.lastDeploymentState) || null,
+    lastDeploymentTarget:
+      value.lastDeploymentTarget === "production"
+        ? "production"
+        : value.lastDeploymentTarget === "preview"
+          ? "preview"
+          : null,
+    lastDeploymentRef: asText(value.lastDeploymentRef) || null,
+    lastDeployRequestedAt: asText(value.lastDeployRequestedAt) || null,
+    lastDeployReadyAt: asText(value.lastDeployReadyAt) || null,
+    lastDeployError: asText(value.lastDeployError) || null,
   };
 }
 
@@ -1188,6 +1254,7 @@ function normalizeExistingVercelIntegration(value: any): ProjectVercelIntegratio
   return {
     binding: normalizeExistingVercelBinding(value?.binding),
     lastManifestExportedAt: asText(value?.lastManifestExportedAt) || null,
+    lastDeploymentCheckedAt: asText(value?.lastDeploymentCheckedAt) || null,
     history: normalizeVercelHistory(value?.history),
   };
 }
@@ -1202,6 +1269,7 @@ function buildBaseProjectIntegrations(): ProjectIntegrationsModel {
     vercel: {
       binding: null,
       lastManifestExportedAt: null,
+      lastDeploymentCheckedAt: null,
       history: [],
     },
   };

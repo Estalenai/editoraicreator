@@ -129,10 +129,10 @@ export default function ProjectsPage() {
                 <strong>Abra e continue</strong>
                 <span>Retome um draft salvo diretamente na lista logo abaixo.</span>
               </div>
-              <div className="projects-hero-note">
-                <strong>Saída e handoff em apoio</strong>
-                <span>Draft, exported e published ficam claros, com GitHub sincronizado e Vercel em apoio.</span>
-              </div>
+                <div className="projects-hero-note">
+                  <strong>Saída e handoff em apoio</strong>
+                  <span>Draft, exported e published ficam claros, com GitHub e Vercel rastreados pelo backend.</span>
+                </div>
             </div>
 
             <div className="hero-actions-row projects-hero-actions">
@@ -305,18 +305,18 @@ export default function ProjectsPage() {
             </div>
           </div>
           <div className="proof-value-card layout-contract-item">
-            <div className="proof-value-block">
-              <span className="proof-value-chip">Exported</span>
-              <strong>Saída registrada</strong>
-              <p>Commit GitHub ou handoff Vercel já foram registrados como próxima etapa do projeto.</p>
-            </div>
+              <div className="proof-value-block">
+                <span className="proof-value-chip">Exported</span>
+                <strong>Saída registrada</strong>
+                <p>Commit GitHub ou deployment Vercel já foram registrados como próxima etapa do projeto.</p>
+              </div>
           </div>
           <div className="proof-value-card layout-contract-item">
-            <div className="proof-value-block">
-              <span className="proof-value-chip">Published</span>
-              <strong>Publicado com confirmação manual</strong>
-              <p>Publicação informada manualmente, sem fingir sincronização automática.</p>
-            </div>
+              <div className="proof-value-block">
+                <span className="proof-value-chip">Published</span>
+                <strong>Publicado com retorno verificável</strong>
+                <p>Produção confirmada pelo provider e persistida no projeto com horário, ambiente e URL.</p>
+              </div>
           </div>
         </div>
         </div>
@@ -339,12 +339,12 @@ export default function ProjectsPage() {
             focusSection("handoff", { scroll: "auto" });
           } : undefined}
         >
-          <div className="section-header-ea">
-            <h2 className="heading-reset">GitHub integrado e Vercel em handoff</h2>
-            <p className="helper-text-ea">
-              GitHub já opera com workspace, sync e PR pelo backend. Vercel continua como camada manual nesta fase.
-            </p>
-          </div>
+            <div className="section-header-ea">
+              <h2 className="heading-reset">GitHub e Vercel integrados no backend</h2>
+              <p className="helper-text-ea">
+                GitHub já opera com workspace, sync e PR pelo backend. Vercel agora valida workspace, dispara deploy e reconcilia status pelo backend.
+              </p>
+            </div>
           <div className="hero-actions-row">
             <Link href="/support" className="btn-link-ea btn-ghost btn-sm">
               Entender limites do beta
@@ -360,7 +360,7 @@ export default function ProjectsPage() {
           </div>
         </div>
         <div className="focus-shell-preview">
-          GitHub já registra sync real; Vercel segue disponível como handoff manual.
+          GitHub já registra sync real; Vercel agora registra workspace, deployment e retorno real do provedor.
         </div>
         <div className="focus-shell-body">
         <div className="projects-handoff-stack">
