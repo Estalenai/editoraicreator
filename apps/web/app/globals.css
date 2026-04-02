@@ -11209,6 +11209,10 @@ body {
 }
 
 @media (max-width: 1100px) {
+  .creators-page .creators-hero-shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .creators-page .creators-hero-panel-quiet {
     width: 100%;
     padding: 18px;
