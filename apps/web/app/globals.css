@@ -10949,6 +10949,328 @@ body {
   }
 }
 
+/* Creators premium continuity pass */
+.creators-page {
+  position: relative;
+}
+
+.creators-page::before,
+.creators-page::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(0);
+}
+
+.creators-page::before {
+  inset: 96px auto auto -8%;
+  width: clamp(280px, 34vw, 520px);
+  height: clamp(240px, 28vw, 420px);
+  background:
+    radial-gradient(circle at 18% 22%, rgba(120, 196, 255, 0.14), transparent 58%),
+    radial-gradient(circle at 68% 56%, rgba(88, 242, 255, 0.1), transparent 62%);
+  opacity: 0.88;
+}
+
+.creators-page::after {
+  inset: auto -8% 10% auto;
+  width: clamp(320px, 38vw, 560px);
+  height: clamp(260px, 30vw, 420px);
+  background:
+    radial-gradient(circle at 70% 36%, rgba(88, 242, 255, 0.08), transparent 60%),
+    radial-gradient(circle at 28% 68%, rgba(117, 176, 255, 0.09), transparent 64%);
+  opacity: 0.82;
+}
+
+.creators-page > * {
+  position: relative;
+  z-index: 1;
+}
+
+.creators-page .creators-hero-open,
+.creators-page .creators-proof-section,
+.creators-page .creators-hero-core-section,
+.creators-page .creators-secondary-section,
+.creators-page .creator-workspace-shell {
+  padding: clamp(20px, 2.3vw, 28px);
+  border: 1px solid rgba(191, 239, 255, 0.08) !important;
+  border-radius: 26px;
+  background:
+    radial-gradient(280px 118px at 100% 0%, rgba(88, 242, 255, 0.055), transparent 74%),
+    radial-gradient(240px 140px at 0% 100%, rgba(117, 176, 255, 0.05), transparent 78%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.024), rgba(255, 255, 255, 0.008)),
+    rgba(8, 22, 54, 0.3) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.026),
+    0 18px 38px rgba(2, 6, 23, 0.11) !important;
+}
+
+.creators-page .creator-workspace-shell {
+  background:
+    radial-gradient(360px 160px at 100% 0%, rgba(88, 242, 255, 0.06), transparent 72%),
+    radial-gradient(360px 180px at 0% 100%, rgba(117, 176, 255, 0.06), transparent 76%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.026), rgba(255, 255, 255, 0.008)),
+    rgba(7, 19, 48, 0.34) !important;
+}
+
+.creators-page .creator-workspace-shell::after {
+  content: "";
+  position: absolute;
+  inset: auto 8% -5% 8%;
+  height: 220px;
+  background: radial-gradient(circle at 50% 0%, rgba(88, 242, 255, 0.08), transparent 72%);
+  pointer-events: none;
+  opacity: 0.72;
+}
+
+.creators-page .focus-shell-section[data-focus-active="false"] {
+  opacity: 1;
+  background:
+    radial-gradient(260px 112px at 100% 0%, rgba(88, 242, 255, 0.04), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.006)),
+    rgba(8, 22, 54, 0.22) !important;
+}
+
+.creators-page .focus-shell-preview {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(191, 239, 255, 0.08);
+  color: rgba(220, 238, 255, 0.74);
+}
+
+.creators-page .creators-hero-shell {
+  grid-template-columns: minmax(0, 1.08fr) minmax(260px, 0.74fr);
+  gap: clamp(20px, 2.4vw, 30px);
+}
+
+.creators-page .creators-hero-metrics-compact {
+  gap: 14px;
+}
+
+.creators-page .creators-hero-metric-card {
+  gap: 6px;
+  padding: 14px 16px;
+  border: 1px solid rgba(191, 239, 255, 0.08);
+  border-radius: 18px;
+  background:
+    radial-gradient(180px 80px at 100% 0%, rgba(88, 242, 255, 0.04), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.006)) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.018) !important;
+}
+
+.creators-page .creators-hero-panel-quiet {
+  width: min(100%, 324px);
+  padding: 18px;
+  border: 1px solid rgba(191, 239, 255, 0.08);
+  border-radius: 22px;
+  background:
+    radial-gradient(220px 96px at 100% 0%, rgba(88, 242, 255, 0.04), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.006)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.018),
+    0 12px 26px rgba(2, 6, 23, 0.07) !important;
+}
+
+.creators-page .creators-hero-panel-stack {
+  gap: 10px;
+}
+
+.creators-page .creators-hero-panel-note {
+  gap: 5px;
+  padding: 10px 0 0;
+  border-top: 1px solid rgba(191, 239, 255, 0.075);
+}
+
+.creators-page .proof-value-card,
+.creators-page .creators-hero-core-card,
+.creators-page .creators-secondary-card,
+.creators-page .creator-tab-btn,
+.creators-page .creator-active-summary-card,
+.creators-page .creator-active-stage-note,
+.creators-page .creators-side-note,
+.creators-page .creator-session-card,
+.creators-page .creator-planner-objective,
+.creators-page .creator-planner-field,
+.creators-page .creator-output-card-list-item {
+  border: 1px solid rgba(191, 239, 255, 0.08) !important;
+  border-radius: 18px;
+  background:
+    radial-gradient(180px 76px at 100% 0%, rgba(88, 242, 255, 0.038), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.006)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.018),
+    0 10px 22px rgba(2, 6, 23, 0.06) !important;
+}
+
+.creators-page .creator-tab-btn[data-active="true"] {
+  border-color: rgba(88, 242, 255, 0.18) !important;
+  background:
+    radial-gradient(210px 84px at 100% 0%, rgba(88, 242, 255, 0.08), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.024), rgba(255, 255, 255, 0.008)) !important;
+}
+
+.creators-page .creator-workspace-grid {
+  padding: clamp(18px, 2vw, 24px);
+  border: 1px solid rgba(191, 239, 255, 0.075) !important;
+  border-radius: 24px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.006)),
+    rgba(8, 20, 50, 0.24) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.02),
+    0 14px 30px rgba(2, 6, 23, 0.08) !important;
+}
+
+.creators-page .creator-workspace-side,
+.creators-page .creator-workspace-main {
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+.creators-page .creators-sidebar,
+.creators-page .creator-workspace-main {
+  padding: clamp(18px, 2vw, 24px);
+  border: 1px solid rgba(191, 239, 255, 0.075) !important;
+  border-radius: 22px;
+  background:
+    radial-gradient(220px 92px at 100% 0%, rgba(88, 242, 255, 0.04), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.006)) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.018) !important;
+}
+
+.creators-page .creators-sidebar > * + *,
+.creators-page .creator-active-panel > * + * {
+  padding-top: 16px;
+  border-top: 1px solid rgba(191, 239, 255, 0.075);
+}
+
+.creators-page .creator-active-panel {
+  padding: 18px;
+  border: 1px solid rgba(191, 239, 255, 0.08) !important;
+  border-radius: 22px;
+  background:
+    radial-gradient(240px 98px at 100% 0%, rgba(88, 242, 255, 0.05), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.022), rgba(255, 255, 255, 0.008)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.02),
+    0 12px 26px rgba(2, 6, 23, 0.07) !important;
+}
+
+.creators-page .creator-workspace-card {
+  gap: clamp(18px, 2vw, 24px);
+  padding: clamp(18px, 2vw, 24px);
+  border: 1px solid rgba(191, 239, 255, 0.08) !important;
+  border-radius: 22px;
+  background:
+    radial-gradient(280px 110px at 100% 0%, rgba(88, 242, 255, 0.045), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.006)),
+    rgba(8, 20, 50, 0.22) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.02),
+    0 12px 28px rgba(2, 6, 23, 0.08) !important;
+}
+
+.creators-page .creator-workspace-card > * + * {
+  padding-top: 18px;
+  border-top: 1px solid rgba(191, 239, 255, 0.075);
+}
+
+.creators-page .creator-workspace-zones,
+.creators-page .creator-output-grid {
+  gap: 16px;
+}
+
+.creators-page .creator-form-zone,
+.creators-page .creator-context-zone,
+.creators-page .creator-inline-panel,
+.creators-page .creator-output-card,
+.creators-page .creator-next-step-panel,
+.creators-page .creator-estimate-row,
+.creators-page .creator-planner-panel,
+.creators-page .creator-loading-panel {
+  border: 1px solid rgba(191, 239, 255, 0.08) !important;
+  border-radius: 18px;
+  background:
+    radial-gradient(180px 76px at 100% 0%, rgba(88, 242, 255, 0.035), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.006)) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.018) !important;
+}
+
+.creators-page .creators-side-note {
+  padding: 14px 16px;
+}
+
+.creators-page .creators-hero-core-card[data-active="true"] {
+  border-color: rgba(88, 242, 255, 0.2) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.022),
+    0 14px 28px rgba(2, 6, 23, 0.08) !important;
+}
+
+@media (max-width: 1100px) {
+  .creators-page .creators-hero-panel-quiet {
+    width: 100%;
+    padding: 18px;
+    border-top: 1px solid rgba(191, 239, 255, 0.08);
+  }
+}
+
+@media (max-width: 768px) {
+  .creators-page .creators-hero-open,
+  .creators-page .creators-proof-section,
+  .creators-page .creators-hero-core-section,
+  .creators-page .creators-secondary-section,
+  .creators-page .creator-workspace-shell {
+    padding: 18px;
+    border-radius: 22px;
+  }
+
+  .creators-page .creators-hero-metrics-compact,
+  .creators-page .proof-value-grid-creators,
+  .creators-page .creators-hero-core-grid,
+  .creators-page .creators-secondary-grid,
+  .creators-page .creator-active-summary-grid,
+  .creators-page .creators-sidebar-group-list {
+    gap: 12px;
+  }
+
+  .creators-page .creators-hero-metric-card,
+  .creators-page .creators-sidebar,
+  .creators-page .creator-workspace-main,
+  .creators-page .creator-active-panel,
+  .creators-page .creator-workspace-card,
+  .creators-page .creator-form-zone,
+  .creators-page .creator-context-zone,
+  .creators-page .creator-inline-panel,
+  .creators-page .creator-output-card,
+  .creators-page .creator-next-step-panel,
+  .creators-page .creator-estimate-row,
+  .creators-page .creator-planner-panel,
+  .creators-page .creator-loading-panel,
+  .creators-page .creators-side-note {
+    padding: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .creators-page::before,
+  .creators-page::after {
+    opacity: 0.56;
+  }
+
+  .creators-page .creators-hero-metrics-compact > :last-child {
+    display: grid;
+    grid-column: 1 / -1;
+    padding: 14px;
+    border-top: 0;
+  }
+
+  .creators-page .creators-hero-panel-note {
+    padding-top: 8px;
+  }
+}
+
 .projects-page .projects-list-section,
 .projects-page .projects-publish-section,
 .projects-page .projects-handoff-section,
