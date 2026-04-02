@@ -12467,17 +12467,8 @@ body {
 .dashboard-workspace-shell {
   position: relative;
   isolation: isolate;
-  padding: clamp(20px, 2.5vw, 28px);
-  border: 1px solid rgba(191, 239, 255, 0.09);
-  border-radius: 30px;
-  background:
-    radial-gradient(520px 190px at 0% 0%, rgba(75, 232, 255, 0.08), transparent 70%),
-    radial-gradient(680px 260px at 50% 100%, rgba(88, 120, 255, 0.1), transparent 78%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.022), rgba(255, 255, 255, 0.008));
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.03),
-    0 18px 40px rgba(2, 6, 23, 0.14);
-  overflow: clip;
+  margin-top: clamp(2px, 0.4vw, 8px);
+  overflow: visible;
 }
 
 .dashboard-workspace-shell::before,
@@ -12488,20 +12479,23 @@ body {
 }
 
 .dashboard-workspace-shell::before {
-  inset: 0;
-  border-radius: inherit;
+  inset: 6px -16px -18px -16px;
+  border-radius: 34px;
   background:
-    linear-gradient(180deg, rgba(191, 239, 255, 0.035), transparent 18%, transparent 72%, rgba(88, 120, 255, 0.035));
-  opacity: 0.9;
+    radial-gradient(560px 210px at 18% 0%, rgba(75, 232, 255, 0.06), transparent 74%),
+    radial-gradient(760px 300px at 50% 100%, rgba(88, 120, 255, 0.09), transparent 80%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.012), rgba(255, 255, 255, 0.004));
+  opacity: 0.92;
+  filter: blur(1px);
 }
 
 .dashboard-workspace-shell::after {
-  inset: auto 8% -12% 8%;
-  height: clamp(180px, 26vw, 250px);
+  inset: auto 4% -16% 4%;
+  height: clamp(180px, 22vw, 240px);
   border-radius: 999px;
   background: radial-gradient(circle, rgba(88, 120, 255, 0.22), rgba(88, 120, 255, 0));
-  opacity: 0.36;
-  filter: blur(32px);
+  opacity: 0.26;
+  filter: blur(34px);
 }
 
 .dashboard-workspace-shell > * {
@@ -12511,8 +12505,8 @@ body {
 
 .dashboard-workspace-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.48fr) minmax(clamp(18rem, 27vw, 22rem), 1fr);
-  gap: clamp(18px, 2.4vw, 28px);
+  grid-template-columns: minmax(0, 1.62fr) minmax(clamp(16rem, 21vw, 18.5rem), 0.84fr);
+  gap: clamp(18px, 2.3vw, 26px);
   align-items: start;
 }
 
@@ -12546,36 +12540,26 @@ body {
 
 .dashboard-workspace-rail {
   position: relative;
-  padding-left: clamp(4px, 0.8vw, 10px);
+  padding-left: 0;
   border-left: 0;
 }
 
 .dashboard-workspace-rail::before {
-  content: "";
-  position: absolute;
-  inset: 4px auto 4px 0;
-  width: 1px;
-  background: linear-gradient(
-    180deg,
-    transparent,
-    rgba(191, 239, 255, 0.14) 12%,
-    rgba(88, 242, 255, 0.12) 52%,
-    rgba(191, 239, 255, 0.14) 88%,
-    transparent
-  );
-  opacity: 0.7;
+  display: none;
 }
 
 .dashboard-pane-section {
+  min-height: 0;
   padding: clamp(18px, 2.1vw, 24px) !important;
-  border: 1px solid rgba(191, 239, 255, 0.08) !important;
+  border: 1px solid rgba(191, 239, 255, 0.09) !important;
   border-radius: 24px;
   background:
-    radial-gradient(320px 120px at 100% 0%, rgba(88, 242, 255, 0.05), transparent 76%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.022), rgba(255, 255, 255, 0.008)) !important;
+    radial-gradient(340px 128px at 100% 0%, rgba(88, 242, 255, 0.058), transparent 76%),
+    radial-gradient(320px 150px at 0% 100%, rgba(88, 120, 255, 0.062), transparent 80%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.024), rgba(255, 255, 255, 0.01)) !important;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.028),
-    0 14px 34px rgba(2, 6, 23, 0.1) !important;
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 12px 30px rgba(2, 6, 23, 0.1) !important;
   overflow: clip;
 }
 
@@ -12591,8 +12575,8 @@ body {
 
 .dashboard-pane-section-quiet {
   background:
-    radial-gradient(240px 96px at 100% 0%, rgba(88, 242, 255, 0.05), transparent 76%),
-    radial-gradient(260px 120px at 0% 100%, rgba(88, 120, 255, 0.06), transparent 82%),
+    radial-gradient(240px 96px at 100% 0%, rgba(88, 242, 255, 0.046), transparent 76%),
+    radial-gradient(240px 112px at 0% 100%, rgba(88, 120, 255, 0.054), transparent 82%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.008)) !important;
 }
 
@@ -12690,11 +12674,19 @@ body {
 }
 
 .dashboard-support-links-list {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .dashboard-support-links-list .dashboard-quick-link {
-  min-height: 126px;
+  min-height: 0;
+  padding: 14px 15px 13px;
+}
+
+.dashboard-support-links-list .dashboard-quick-link-copy {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
 }
 
 .dashboard-context-list {
@@ -12944,8 +12936,7 @@ body {
   }
 
   .dashboard-workspace-shell {
-    padding: 16px;
-    border-radius: 24px;
+    margin-top: 0;
   }
 }
 
