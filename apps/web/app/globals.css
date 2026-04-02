@@ -15896,6 +15896,31 @@ body {
   }
 }
 
+@media (max-width: 1100px) {
+  .projects-page .projects-hero-split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .projects-page .projects-hero-panel-quiet {
+    padding: 18px;
+    border-left: 0;
+    border-top: 1px solid rgba(191, 239, 255, 0.075);
+  }
+
+  .projects-page .projects-hero-panel-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .projects-page .projects-hero-actions {
+    width: 100%;
+  }
+
+  .projects-page .projects-hero-actions > * {
+    flex: 1 1 220px;
+  }
+}
+
 @media (max-width: 768px) {
   .projects-page .projects-publish-grid {
     grid-template-columns: minmax(0, 1fr);
@@ -15915,5 +15940,13 @@ body {
   .projects-page .vercel-publish-grid > *,
   .projects-page .vercel-publish-links > * {
     padding: 16px !important;
+  }
+
+  .projects-page .projects-hero-panel-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .projects-page .projects-hero-actions > * {
+    flex: 1 1 100%;
   }
 }
