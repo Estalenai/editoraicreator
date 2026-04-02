@@ -11169,8 +11169,11 @@ body {
 
 .creators-page .creators-hero-metric-card,
 .creators-page .creators-hero-panel-quiet {
-  border: 1px solid rgba(191, 239, 255, 0.06) !important;
-  background: var(--ea-page-subtle-surface) !important;
+  border: 1px solid rgba(191, 239, 255, 0.052) !important;
+  background:
+    radial-gradient(220px 90px at 100% 0%, rgba(88, 242, 255, 0.038), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.006)),
+    var(--ea-page-subtle-surface) !important;
   box-shadow: none !important;
 }
 
@@ -11210,16 +11213,20 @@ body {
 .creators-page .creator-planner-objective,
 .creators-page .creator-planner-field,
 .creators-page .creator-output-card-list-item {
-  border: 1px solid rgba(191, 239, 255, 0.06) !important;
-  background: var(--ea-page-subtle-surface) !important;
+  border: 1px solid rgba(191, 239, 255, 0.055) !important;
+  background:
+    radial-gradient(220px 80px at 100% 0%, rgba(88, 242, 255, 0.03), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.005)),
+    var(--ea-page-subtle-surface) !important;
   box-shadow: none !important;
 }
 
 .creators-page .creator-tab-btn[data-active="true"],
 .creators-page .creators-hero-core-card[data-active="true"] {
-  border-color: rgba(88, 242, 255, 0.18) !important;
+  border-color: rgba(88, 242, 255, 0.14) !important;
   background:
-    radial-gradient(220px 90px at 100% 0%, rgba(88, 242, 255, 0.052), transparent 72%),
+    radial-gradient(220px 90px at 100% 0%, rgba(88, 242, 255, 0.068), transparent 72%),
+    linear-gradient(180deg, rgba(75, 232, 255, 0.04), rgba(255, 255, 255, 0.004)),
     var(--ea-page-subtle-surface) !important;
 }
 
@@ -11234,7 +11241,7 @@ body {
 
 .creators-page .creator-workspace-side {
   padding-right: clamp(18px, 2vw, 24px);
-  border-right: 1px solid var(--ea-unified-divider);
+  border-right: 1px solid rgba(191, 239, 255, 0.06);
 }
 
 .creators-page .creator-workspace-main {
@@ -11255,7 +11262,7 @@ body {
 .creators-page .creator-active-panel > * + *,
 .creators-page .creator-workspace-card > * + * {
   padding-top: 16px;
-  border-top: 1px solid var(--ea-unified-divider);
+  border-top: 1px solid rgba(191, 239, 255, 0.06);
 }
 
 .creators-page .creator-workspace-zones,
@@ -11271,18 +11278,23 @@ body {
 .creators-page .creator-estimate-row,
 .creators-page .creator-planner-panel,
 .creators-page .creator-loading-panel {
-  border: 1px solid rgba(191, 239, 255, 0.06) !important;
+  border: 1px solid rgba(191, 239, 255, 0.052) !important;
   border-radius: 18px;
-  background: var(--ea-page-subtle-surface) !important;
+  background:
+    radial-gradient(220px 90px at 100% 0%, rgba(88, 242, 255, 0.028), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.016), rgba(255, 255, 255, 0.004)),
+    var(--ea-page-subtle-surface) !important;
   box-shadow: none !important;
 }
 
 .creators-page .creators-side-note {
-  padding: 0 0 0 14px;
-  border: 0 !important;
-  border-left: 1px solid var(--ea-unified-divider) !important;
-  border-radius: 0;
-  background: transparent !important;
+  padding: 10px 12px 10px 14px;
+  border: 1px solid rgba(191, 239, 255, 0.05) !important;
+  border-left: 2px solid rgba(88, 242, 255, 0.14) !important;
+  border-radius: 16px;
+  background:
+    linear-gradient(90deg, rgba(88, 242, 255, 0.028), rgba(255, 255, 255, 0.004) 38%, transparent 100%),
+    rgba(255, 255, 255, 0.006) !important;
   box-shadow: none !important;
 }
 
