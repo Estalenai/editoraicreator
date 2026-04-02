@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDashboardBootstrap } from "../../hooks/useDashboardBootstrap";
 import { BetaAccessBlockedView } from "../../components/waitlist/BetaAccessBlockedView";
 import { ApprovedBetaOnboardingCard } from "../../components/dashboard/ApprovedBetaOnboardingCard";
+import { EditorRouteLink } from "../../components/ui/EditorRouteLink";
 import { coinTypeLabel } from "../../lib/coinTypeLabel";
 import { api } from "../../lib/api";
 import { CREATOR_COINS_PUBLIC_NAME, formatCreatorCoinsWalletSummary } from "../../lib/creatorCoins";
@@ -371,14 +372,31 @@ export default function DashboardPage() {
               </Link>
             </div>
 
-            <Link href={nextAction.href} className="executive-card dashboard-summary-card dashboard-summary-card-action dashboard-summary-card-link layout-contract-item layout-contract-metric">
-              <p className="executive-eyebrow">Próxima ação</p>
-              <p className="executive-value metric-value-compact">{nextActionTitleDisplay}</p>
-              <p className="executive-detail">{nextActionDescriptionDisplay}</p>
-              <span className="card-cta-link card-cta-link-inline">
-                {nextActionCtaDisplay}
-              </span>
-            </Link>
+            {nextAction.href.startsWith("/editor") ? (
+              <EditorRouteLink
+                href={nextAction.href}
+                className="executive-card dashboard-summary-card dashboard-summary-card-action dashboard-summary-card-link layout-contract-item layout-contract-metric"
+              >
+                <p className="executive-eyebrow">Próxima ação</p>
+                <p className="executive-value metric-value-compact">{nextActionTitleDisplay}</p>
+                <p className="executive-detail">{nextActionDescriptionDisplay}</p>
+                <span className="card-cta-link card-cta-link-inline">
+                  {nextActionCtaDisplay}
+                </span>
+              </EditorRouteLink>
+            ) : (
+              <Link
+                href={nextAction.href}
+                className="executive-card dashboard-summary-card dashboard-summary-card-action dashboard-summary-card-link layout-contract-item layout-contract-metric"
+              >
+                <p className="executive-eyebrow">Próxima ação</p>
+                <p className="executive-value metric-value-compact">{nextActionTitleDisplay}</p>
+                <p className="executive-detail">{nextActionDescriptionDisplay}</p>
+                <span className="card-cta-link card-cta-link-inline">
+                  {nextActionCtaDisplay}
+                </span>
+              </Link>
+            )}
 
             <div className="executive-card dashboard-summary-card dashboard-summary-card-secondary layout-contract-item layout-contract-metric">
               <p className="executive-eyebrow">Plano atual</p>
@@ -428,9 +446,9 @@ export default function DashboardPage() {
                   <Link href="/creators" className="btn-link-ea btn-primary btn-sm">
                     Ir para Creators
                   </Link>
-                  <Link href="/editor/new" className="btn-link-ea btn-ghost btn-sm">
+                  <EditorRouteLink href="/editor/new" className="btn-link-ea btn-ghost btn-sm">
                     Criar projeto manual
-                  </Link>
+                  </EditorRouteLink>
                 </div>
               </div>
             ) : (
@@ -447,7 +465,7 @@ export default function DashboardPage() {
                     </>
                   );
                   return projectId ? (
-                    <Link
+                    <EditorRouteLink
                       key={projectId || JSON.stringify(project)}
                       href={`/editor/${projectId}`}
                       className="dashboard-project-link layout-contract-item"
@@ -455,7 +473,7 @@ export default function DashboardPage() {
                       data-reveal-delay={String(70 + Math.min(index, 5) * 35)}
                     >
                       {content}
-                    </Link>
+                    </EditorRouteLink>
                   ) : (
                     <div
                       key={projectId || JSON.stringify(project)}
@@ -482,22 +500,39 @@ export default function DashboardPage() {
               <div className="section-stack-tight">
                 <p className="section-kicker">Centro da experiência</p>
                 <div className="dashboard-quick-links-grid dashboard-core-links-grid">
-                  {coreQuickLinks.map((item, index) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className="dashboard-quick-link layout-contract-item"
-                      data-reveal
-                      data-reveal-delay={String(70 + index * 40)}
-                    >
-                      <div className="dashboard-quick-link-kicker">{item.tag}</div>
-                      <div className="dashboard-project-link-title">{item.title}</div>
-                      <div className="dashboard-quick-link-copy helper-text-ea">{item.description}</div>
-                      <div className="dashboard-quick-link-footer">
-                        <span className="dashboard-quick-link-cta">{item.cta}</span>
-                      </div>
-                    </Link>
-                  ))}
+                  {coreQuickLinks.map((item, index) =>
+                    item.href.startsWith("/editor") ? (
+                      <EditorRouteLink
+                        key={item.href}
+                        href={item.href}
+                        className="dashboard-quick-link layout-contract-item"
+                        data-reveal
+                        data-reveal-delay={String(70 + index * 40)}
+                      >
+                        <div className="dashboard-quick-link-kicker">{item.tag}</div>
+                        <div className="dashboard-project-link-title">{item.title}</div>
+                        <div className="dashboard-quick-link-copy helper-text-ea">{item.description}</div>
+                        <div className="dashboard-quick-link-footer">
+                          <span className="dashboard-quick-link-cta">{item.cta}</span>
+                        </div>
+                      </EditorRouteLink>
+                    ) : (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className="dashboard-quick-link layout-contract-item"
+                        data-reveal
+                        data-reveal-delay={String(70 + index * 40)}
+                      >
+                        <div className="dashboard-quick-link-kicker">{item.tag}</div>
+                        <div className="dashboard-project-link-title">{item.title}</div>
+                        <div className="dashboard-quick-link-copy helper-text-ea">{item.description}</div>
+                        <div className="dashboard-quick-link-footer">
+                          <span className="dashboard-quick-link-cta">{item.cta}</span>
+                        </div>
+                      </Link>
+                    )
+                  )}
                 </div>
               </div>
             </div>

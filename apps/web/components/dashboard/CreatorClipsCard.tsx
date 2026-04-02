@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { api, apiFetch } from "../../lib/api";
 import { supabase } from "../../lib/supabaseClient";
 import { createIdempotencyKey } from "../../lib/idempotencyKey";
 import { runAutoPromptFlow } from "../../lib/autoPromptFlow";
+import { navigateToEditorRoute } from "../../lib/editorNavigation";
 import { usePromptPreferences } from "../../hooks/usePromptPreferences";
 import { useAiExecutionMode } from "../../hooks/useAiExecutionMode";
 import { buildExecutionTechnicalPayload } from "../../lib/aiExecution";
@@ -119,7 +119,6 @@ function pickClipUrl(result: ClipResult | null): string {
 }
 
 export function CreatorClipsCard({ planCode, walletCommon, onRefetch }: Props) {
-  const router = useRouter();
   const [clipIdea, setClipIdea] = useState("");
   const [visualStyle, setVisualStyle] = useState("Cinemático");
   const [tone, setTone] = useState("Energético");
@@ -587,7 +586,7 @@ export function CreatorClipsCard({ planCode, walletCommon, onRefetch }: Props) {
       );
       await onRefetch();
       if (openEditorAfterSave && projectId) {
-        router.push(`/editor/${projectId}?source=creator_clips&handoff=saved`);
+        navigateToEditorRoute(`/editor/${projectId}?source=creator_clips&handoff=saved`);
       }
     } catch (e: any) {
       setError(e?.message || "Falha ao salvar clipe em projeto.");
@@ -1103,7 +1102,7 @@ export function CreatorClipsCard({ planCode, walletCommon, onRefetch }: Props) {
                 className="btn-ea btn-primary btn-sm"
                 onClick={() => {
                   if (savedProjectId && !needsProjectSync) {
-                    router.push(`/editor/${savedProjectId}?source=creator_clips&handoff=saved`);
+                    navigateToEditorRoute(`/editor/${savedProjectId}?source=creator_clips&handoff=saved`);
                     return;
                   }
                   void persistProject(true);

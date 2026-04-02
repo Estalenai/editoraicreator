@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { PremiumSelect } from "../ui/PremiumSelect";
 import { OperationalState, type OperationalStateKind, type OperationalStateMetaItem } from "../ui/OperationalState";
+import { EditorRouteLink } from "../ui/EditorRouteLink";
 import { api } from "../../lib/api";
 import { ensureCanonicalProjectData } from "../../lib/projectModel";
 import {
@@ -654,9 +655,9 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
                 Ver PR
               </a>
             ) : null}
-            <Link href={selectedProject ? `/editor/${selectedProject.id}` : "/editor/new"} className="btn-link-ea btn-ghost btn-sm">
+            <EditorRouteLink href={selectedProject ? `/editor/${selectedProject.id}` : "/editor/new"} className="btn-link-ea btn-ghost btn-sm">
               {selectedProject ? "Abrir projeto" : "Abrir editor"}
-            </Link>
+            </EditorRouteLink>
           </div>
         }
       />

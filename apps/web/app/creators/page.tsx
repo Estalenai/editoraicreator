@@ -13,6 +13,7 @@ import { CreatorAdsCard } from "../../components/dashboard/CreatorAdsCard";
 import { CreatorClipsCard } from "../../components/dashboard/CreatorClipsCard";
 import { CreatorLiveCutsCard } from "../../components/dashboard/CreatorLiveCutsCard";
 import { CreatorNoCodeCard } from "../../components/dashboard/CreatorNoCodeCard";
+import { EditorRouteLink } from "../../components/ui/EditorRouteLink";
 import { coinTypeLabel } from "../../lib/coinTypeLabel";
 import { CREATOR_COINS_PUBLIC_NAME, formatCreatorCoinsWalletSummary } from "../../lib/creatorCoins";
 import { toUserFacingError } from "../../lib/uiFeedback";
@@ -722,9 +723,9 @@ function CreatorsPageContent() {
                   <Link href="/projects" className="btn-link-ea btn-ghost btn-sm">
                     Ver projetos
                   </Link>
-                  <Link href="/editor/new" className="btn-link-ea btn-secondary btn-sm">
+                  <EditorRouteLink href="/editor/new" className="btn-link-ea btn-secondary btn-sm">
                     Abrir editor novo
-                  </Link>
+                  </EditorRouteLink>
                 </div>
               </div>
               {activeTab === "post" ? <CreatorPostCard planCode={planCodeRaw} walletCommon={walletCommon} onRefetch={refresh} /> : null}

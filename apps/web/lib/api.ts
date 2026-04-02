@@ -6,6 +6,7 @@ import type { NoCodeRuntimeSnapshot } from "./noCodeRuntime";
 const DEV_DEFAULT_API_URL = "http://127.0.0.1:3000";
 const DEV_FALLBACK_API_URL = "http://127.0.0.1:3100";
 const PROD_PROXY_API_PREFIX = "/api-proxy";
+const API_REQUEST_TIMEOUT_MS = 12000;
 const IS_DEV = process.env.NODE_ENV !== "production";
 const RAW_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || process.env.NEXT_PUBLIC_API_URL || "";
 
@@ -39,6 +40,53 @@ function buildUrl(path: string, baseUrl: string) {
   return `${baseUrl}${normalizedPath}`;
 }
 
+function isAbortLikeError(error: unknown) {
+  return (
+    error instanceof DOMException
+      ? error.name === "AbortError" || error.name === "TimeoutError"
+      : typeof error === "object" &&
+        error !== null &&
+        "name" in error &&
+        (String((error as { name?: unknown }).name) === "AbortError" ||
+          String((error as { name?: unknown }).name) === "TimeoutError")
+  );
+}
+
+function createRequestSignal(existingSignal?: AbortSignal | null, timeoutMs = API_REQUEST_TIMEOUT_MS) {
+  const controller = new AbortController();
+  let timeoutId: ReturnType<typeof setTimeout> | null = null;
+  let releaseExistingAbort: (() => void) | null = null;
+
+  const abortFromExistingSignal = () => {
+    if (!controller.signal.aborted) {
+      controller.abort(existingSignal?.reason ?? new DOMException("Request aborted", "AbortError"));
+    }
+  };
+
+  if (existingSignal) {
+    if (existingSignal.aborted) {
+      abortFromExistingSignal();
+    } else {
+      existingSignal.addEventListener("abort", abortFromExistingSignal, { once: true });
+      releaseExistingAbort = () => existingSignal.removeEventListener("abort", abortFromExistingSignal);
+    }
+  }
+
+  timeoutId = setTimeout(() => {
+    if (!controller.signal.aborted) {
+      controller.abort(new DOMException("Request timed out", "TimeoutError"));
+    }
+  }, timeoutMs);
+
+  return {
+    signal: controller.signal,
+    cleanup() {
+      if (timeoutId) clearTimeout(timeoutId);
+      releaseExistingAbort?.();
+    },
+  };
+}
+
 const PUBLIC_API_URL = IS_DEV ? resolveDevApiBaseUrl(RAW_PUBLIC_API_URL) : trimTrailingSlash(RAW_PUBLIC_API_URL);
 
 export const API_URL = trimTrailingSlash(PUBLIC_API_URL || (IS_DEV ? DEV_DEFAULT_API_URL : PROD_PROXY_API_PREFIX));
@@ -47,10 +95,12 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
   const headers = new Headers(options.headers || {});
   if (!headers.has("Accept")) headers.set("Accept", "application/json");
   const method = String(options.method || "GET").toUpperCase();
+  const { signal, cleanup } = createRequestSignal(options.signal);
 
   const requestOptions: RequestInit = {
     ...options,
     headers,
+    signal,
   };
   if (!requestOptions.cache && (method === "GET" || method === "HEAD")) {
     requestOptions.cache = "no-store";
@@ -61,17 +111,34 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
   try {
     return await fetch(primaryUrl, requestOptions);
   } catch (error) {
+    if (isAbortLikeError(error)) {
+      throw new Error("A API demorou demais para responder.");
+    }
+
     const canRetryInDev = IS_DEV && API_URL === DEV_DEFAULT_API_URL;
     if (canRetryInDev) {
       const fallbackUrl = buildUrl(path, DEV_FALLBACK_API_URL);
+      const fallbackRequestOptions: RequestInit = {
+        ...requestOptions,
+        signal: undefined,
+      };
+      const fallbackSignalState = createRequestSignal(options.signal);
+      fallbackRequestOptions.signal = fallbackSignalState.signal;
       try {
-        return await fetch(fallbackUrl, requestOptions);
-      } catch {
+        return await fetch(fallbackUrl, fallbackRequestOptions);
+      } catch (fallbackError) {
+        if (isAbortLikeError(fallbackError)) {
+          throw new Error("A API demorou demais para responder.");
+        }
         throw new Error("Não foi possível conectar com a API (3000/3100).");
+      } finally {
+        fallbackSignalState.cleanup();
       }
     }
 
     throw new Error("Não foi possível conectar com a API.");
+  } finally {
+    cleanup();
   }
 }
 

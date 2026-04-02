@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { PremiumSelect } from "../ui/PremiumSelect";
 import { OperationalState, type OperationalStateKind, type OperationalStateMetaItem } from "../ui/OperationalState";
+import { EditorRouteLink } from "../ui/EditorRouteLink";
 import { api } from "../../lib/api";
 import { ensureCanonicalProjectData } from "../../lib/projectModel";
 import {
@@ -612,9 +613,9 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
           ]}
           actions={
             <div className="vercel-publish-actions">
-              <Link href="/editor/new" className="btn-link-ea btn-primary btn-sm">
+              <EditorRouteLink href="/editor/new" className="btn-link-ea btn-primary btn-sm">
                 Criar projeto
-              </Link>
+              </EditorRouteLink>
             </div>
           }
         />
@@ -719,9 +720,9 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
                 Abrir saída
               </a>
             ) : null}
-            <Link href={`/editor/${selectedProject.id}`} className="btn-link-ea btn-ghost btn-sm">
+            <EditorRouteLink href={`/editor/${selectedProject.id}`} className="btn-link-ea btn-ghost btn-sm">
               Abrir projeto
-            </Link>
+            </EditorRouteLink>
           </div>
         }
       />

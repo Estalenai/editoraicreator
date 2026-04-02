@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { EditorRouteLink } from "../../components/ui/EditorRouteLink";
 
 const STEPS = [
   {
@@ -96,9 +97,15 @@ export default function HowItWorksPage() {
                   <h3 className="heading-reset">{step.title.replace(/^\d+\.\s*/, "")}</h3>
                   <p className="helper-text-ea">{step.description}</p>
                 </div>
-                <Link href={step.href} className="btn-link-ea btn-secondary btn-sm">
-                  {step.cta}
-                </Link>
+                {step.href.startsWith("/editor") ? (
+                  <EditorRouteLink href={step.href} className="btn-link-ea btn-secondary btn-sm">
+                    {step.cta}
+                  </EditorRouteLink>
+                ) : (
+                  <Link href={step.href} className="btn-link-ea btn-secondary btn-sm">
+                    {step.cta}
+                  </Link>
+                )}
               </article>
             ))}
           </div>
@@ -141,9 +148,9 @@ export default function HowItWorksPage() {
             <strong>Entrada rápida</strong>
             <span>
               Se o formato do trabalho já estiver claro, vá direto para{" "}
-              <Link href="/editor/new" className="text-link-ea">
+              <EditorRouteLink href="/editor/new" className="text-link-ea">
                 /editor/new
-              </Link>{" "}
+              </EditorRouteLink>{" "}
               e comece por texto ou vídeo.
             </span>
           </div>

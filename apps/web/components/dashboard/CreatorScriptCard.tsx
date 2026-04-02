@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { api, apiFetch } from "../../lib/api";
 import { supabase } from "../../lib/supabaseClient";
 import { createIdempotencyKey } from "../../lib/idempotencyKey";
 import { runAutoPromptFlow } from "../../lib/autoPromptFlow";
+import { navigateToEditorRoute } from "../../lib/editorNavigation";
 import { usePromptPreferences } from "../../hooks/usePromptPreferences";
 import { useAiExecutionMode } from "../../hooks/useAiExecutionMode";
 import { buildExecutionTechnicalPayload } from "../../lib/aiExecution";
@@ -141,7 +141,6 @@ function getScriptCopyValue(structured: ScriptStructuredResult | null, fallbackT
 }
 
 export function CreatorScriptCard({ planCode, walletCommon, onRefetch }: Props) {
-  const router = useRouter();
   const [theme, setTheme] = useState("");
   const [format, setFormat] = useState("Vídeo curto (Reels/Shorts)");
   const [tone, setTone] = useState("Didático");
@@ -457,7 +456,7 @@ export function CreatorScriptCard({ planCode, walletCommon, onRefetch }: Props) 
       );
       await onRefetch();
       if (openEditorAfterSave && projectId) {
-        router.push(`/editor/${projectId}?source=creator_scripts&handoff=saved`);
+        navigateToEditorRoute(`/editor/${projectId}?source=creator_scripts&handoff=saved`);
       }
     } catch (e: any) {
       setError(e?.message || "Falha ao salvar roteiro em projeto.");
@@ -1001,7 +1000,7 @@ export function CreatorScriptCard({ planCode, walletCommon, onRefetch }: Props) 
                 className="btn-ea btn-primary btn-sm"
                 onClick={() => {
                   if (savedProjectId && !needsProjectSync) {
-                    router.push(`/editor/${savedProjectId}?source=creator_scripts&handoff=saved`);
+                    navigateToEditorRoute(`/editor/${savedProjectId}?source=creator_scripts&handoff=saved`);
                     return;
                   }
                   void persistProject(true);

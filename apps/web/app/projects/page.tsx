@@ -9,6 +9,7 @@ import { GitHubWorkspaceCard } from "../../components/projects/GitHubWorkspaceCa
 import { PublishConfidenceState } from "../../components/projects/PublishConfidenceState";
 import { VercelPublishCard } from "../../components/projects/VercelPublishCard";
 import { OperationalState } from "../../components/ui/OperationalState";
+import { EditorRouteLink } from "../../components/ui/EditorRouteLink";
 import { ensureCanonicalProjectData, getCanonicalProjectSummary } from "../../lib/projectModel";
 
 function getProjectId(project: any) {
@@ -110,7 +111,7 @@ export default function ProjectsPage() {
                   <span className="projects-hero-bridge-cta">Sincronizando</span>
                 </div>
               ) : (
-                <Link href={leadProjectHref} className="projects-hero-bridge">
+                <EditorRouteLink href={leadProjectHref} className="projects-hero-bridge">
                   <div className="projects-hero-bridge-main">
                     <strong>{leadProject ? leadProject.title : "Abrir um novo projeto"}</strong>
                     <span className="projects-hero-bridge-meta">{leadProjectMeta}</span>
@@ -118,7 +119,7 @@ export default function ProjectsPage() {
                   <span className="projects-hero-bridge-cta">
                     {leadProject ? "Continuar" : "Criar agora"}
                   </span>
-                </Link>
+                </EditorRouteLink>
               )}
             </div>
           </div>
@@ -136,9 +137,9 @@ export default function ProjectsPage() {
             </div>
 
             <div className="hero-actions-row projects-hero-actions">
-              <Link href="/editor/new" className="btn-link-ea btn-primary">
+              <EditorRouteLink href="/editor/new" className="btn-link-ea btn-primary">
                 Novo projeto
-              </Link>
+              </EditorRouteLink>
               <Link href="/dashboard" className="btn-link-ea btn-ghost">
                 Voltar ao dashboard
               </Link>
@@ -224,9 +225,9 @@ export default function ProjectsPage() {
             ]}
             actions={
               <>
-                <Link href="/editor/new" className="btn-link-ea btn-primary btn-sm">
+                <EditorRouteLink href="/editor/new" className="btn-link-ea btn-primary btn-sm">
                   Criar projeto
-                </Link>
+                </EditorRouteLink>
                 <Link href="/creators" className="btn-link-ea btn-ghost btn-sm">
                   Ir para Creators
                 </Link>
@@ -236,7 +237,7 @@ export default function ProjectsPage() {
         ) : (
           <div className="dashboard-section-body projects-list-stack">
             {normalizedProjects.map((project, index) => (
-              <Link
+              <EditorRouteLink
                 key={project.id || project.title}
                 href={project.id ? `/editor/${project.id}` : "/editor/new"}
                 className="dashboard-project-link layout-contract-item"
@@ -251,7 +252,7 @@ export default function ProjectsPage() {
                   </span>
                 </div>
                 <span className="dashboard-project-link-cta">{project.summary.deliverable.label}</span>
-              </Link>
+              </EditorRouteLink>
             ))}
           </div>
         )}

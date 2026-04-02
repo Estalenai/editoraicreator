@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import { EditorRouteLink } from "../ui/EditorRouteLink";
 import { api, apiFetch } from "../../lib/api";
 import { supabase } from "../../lib/supabaseClient";
 import { createIdempotencyKey } from "../../lib/idempotencyKey";
@@ -836,9 +837,9 @@ export function CreatorNoCodeCard({ planCode, walletCommon, onRefetch }: Props) 
                   Ver em Projetos
                 </Link>
                 {savedProjectId ? (
-                  <Link href={`/editor/${savedProjectId}`} className="btn-link-ea btn-primary btn-sm">
+                  <EditorRouteLink href={`/editor/${savedProjectId}`} className="btn-link-ea btn-primary btn-sm">
                     Continuar no Editor
-                  </Link>
+                  </EditorRouteLink>
                 ) : null}
               </div>
             </div>

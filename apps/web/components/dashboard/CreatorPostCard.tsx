@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
 import { api, apiFetch } from "../../lib/api";
 import { createIdempotencyKey } from "../../lib/idempotencyKey";
 import { runAutoPromptFlow } from "../../lib/autoPromptFlow";
+import { navigateToEditorRoute } from "../../lib/editorNavigation";
 import { usePromptPreferences } from "../../hooks/usePromptPreferences";
 import { useAiExecutionMode } from "../../hooks/useAiExecutionMode";
 import { buildExecutionTechnicalPayload } from "../../lib/aiExecution";
@@ -170,7 +170,6 @@ async function getAccessToken() {
 }
 
 export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
-  const router = useRouter();
   const [platform, setPlatform] = useState("Instagram");
   const [contentType, setContentType] = useState("Post");
   const [theme, setTheme] = useState("");
@@ -612,7 +611,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
       );
       await onRefetch();
       if (openEditorAfterSave && projectId) {
-        router.push(`/editor/${projectId}?source=creator_post&handoff=saved`);
+        navigateToEditorRoute(`/editor/${projectId}?source=creator_post&handoff=saved`);
       }
     } catch (e: any) {
       setError(extractApiErrorMessage(e, "Falha ao salvar projeto. Verifique os dados e tente novamente."));
@@ -1167,7 +1166,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
                 className="btn-ea btn-primary"
                 onClick={() => {
                   if (savedProjectId && !needsProjectSync) {
-                    router.push(`/editor/${savedProjectId}?source=creator_post&handoff=saved`);
+                    navigateToEditorRoute(`/editor/${savedProjectId}?source=creator_post&handoff=saved`);
                     return;
                   }
                   void persistProject(true);

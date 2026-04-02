@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, type ReactNode } from "react";
 import { ensureCanonicalProjectData } from "../../lib/projectModel";
+import { EditorRouteLink } from "../ui/EditorRouteLink";
 import {
   deriveVercelDeployStatus,
   resolveVercelPublishMachine,
@@ -126,9 +127,9 @@ export function PublishConfidenceState({ projects }: Props) {
         footer: "A camada de publish aparece aqui para reduzir ambiguidade antes, durante e depois da saída.",
         actions: (
           <>
-            <Link href="/editor/new" className="btn-link-ea btn-primary btn-sm">
+            <EditorRouteLink href="/editor/new" className="btn-link-ea btn-primary btn-sm">
               Criar projeto
-            </Link>
+            </EditorRouteLink>
             <Link href="/creators" className="btn-link-ea btn-ghost btn-sm">
               Ir para Creators
             </Link>
@@ -272,9 +273,9 @@ export function PublishConfidenceState({ projects }: Props) {
       footer,
       actions: (
         <>
-          <Link href={projectHref} className="btn-link-ea btn-secondary btn-sm">
+          <EditorRouteLink href={projectHref} className="btn-link-ea btn-secondary btn-sm">
             Abrir projeto
-          </Link>
+          </EditorRouteLink>
           <Link href={handoffHref} className="btn-link-ea btn-ghost btn-sm">
             Ver handoff
           </Link>
