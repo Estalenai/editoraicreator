@@ -40,12 +40,45 @@ export type GitHubProjectExport = {
   repoLabel: string | null;
 };
 
+export type GitHubWorkspaceIssue = {
+  field: "owner" | "repo" | "branch" | "rootPath";
+  level: "error" | "warning";
+  message: string;
+};
+
+export type GitHubWorkspaceAssessment = {
+  owner: string;
+  repo: string;
+  branch: string;
+  rootPath: string;
+  target: GitHubWorkspaceTarget;
+  repoLabel: string | null;
+  issues: GitHubWorkspaceIssue[];
+  ready: boolean;
+  hasErrors: boolean;
+  hasWarnings: boolean;
+};
+
+export type GitHubManualWorkflowPlan = {
+  repositoryUrl: string | null;
+  suggestedWorkingBranch: string | null;
+  commitTitle: string | null;
+  commitBody: string | null;
+  pullRequestTitle: string | null;
+  pullRequestBody: string | null;
+  pushStatus: "manual_beta";
+  pullRequestStatus: "manual_beta";
+  nextStep: string;
+};
+
 const STORAGE_VERSION = "v1";
 const WORKSPACE_PREFIX = `ea:github-workspace:${STORAGE_VERSION}`;
 const VERSION_PREFIX = `ea:github-versions:${STORAGE_VERSION}`;
 const EXPORT_PREFIX = `ea:github-exports:${STORAGE_VERSION}`;
 const VERSION_LIMIT = 16;
 const EXPORT_LIMIT = 16;
+const OWNER_PATTERN = /^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$/;
+const REPO_PATTERN = /^[A-Za-z0-9._-]+$/;
 
 function isBrowser() {
   return typeof window !== "undefined" && typeof window.localStorage !== "undefined";
@@ -72,6 +105,206 @@ export function normalizeRootPath(value: string): string {
   if (!trimmed) return "/";
   const prefixed = trimmed.startsWith("/") ? trimmed : `/${trimmed}`;
   return prefixed.replace(/\/+/g, "/").replace(/\/$/, "") || "/";
+}
+
+function normalizeGitHubOwner(value: string): string {
+  return String(value || "")
+    .trim()
+    .replace(/^@+/, "")
+    .replace(/\s+/g, "");
+}
+
+function normalizeGitHubRepoName(value: string): string {
+  return String(value || "")
+    .trim()
+    .replace(/\.git$/i, "")
+    .replace(/^\/+|\/+$/g, "");
+}
+
+function normalizeGitHubBranchName(value: string): string {
+  return String(value || "")
+    .trim()
+    .replace(/^refs\/heads\//i, "")
+    .replace(/\/+/g, "/");
+}
+
+function parseRepositoryInput(repoInput: string): { owner: string | null; repo: string } | null {
+  const trimmed = String(repoInput || "").trim();
+  if (!trimmed) return null;
+
+  const githubUrlMatch = trimmed.match(/^https?:\/\/github\.com\/([^/\s]+)\/([^/\s?#]+?)(?:\.git)?(?:[/?#].*)?$/i);
+  if (githubUrlMatch) {
+    return {
+      owner: normalizeGitHubOwner(githubUrlMatch[1]),
+      repo: normalizeGitHubRepoName(githubUrlMatch[2]),
+    };
+  }
+
+  const shorthand = normalizeGitHubRepoName(trimmed);
+  const parts = shorthand.split("/").filter(Boolean);
+  if (parts.length >= 2) {
+    return {
+      owner: normalizeGitHubOwner(parts[0]),
+      repo: normalizeGitHubRepoName(parts[1]),
+    };
+  }
+
+  return {
+    owner: null,
+    repo: shorthand,
+  };
+}
+
+function slugifyGitHubToken(value: string): string {
+  const normalized = String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .replace(/-{2,}/g, "-");
+  return normalized || "handoff";
+}
+
+function formatRepoUrl(workspace: Pick<GitHubWorkspace, "owner" | "repo"> | null | undefined): string | null {
+  if (!workspace?.owner || !workspace?.repo) return null;
+  return `https://github.com/${workspace.owner}/${workspace.repo}`;
+}
+
+export function buildGitHubWorkingBranch(project: GitHubProjectRef | null | undefined): string | null {
+  if (!project?.id && !project?.title) return null;
+  const projectToken = slugifyGitHubToken(project?.title || project?.id || "projeto");
+  return `ea/${projectToken}`.slice(0, 80);
+}
+
+export function assessGitHubWorkspaceDraft(
+  draft: Pick<GitHubWorkspace, "owner" | "repo" | "branch" | "rootPath" | "target">
+): GitHubWorkspaceAssessment {
+  const repoInput = parseRepositoryInput(draft.repo);
+  const owner = normalizeGitHubOwner(draft.owner || repoInput?.owner || "");
+  const repo = normalizeGitHubRepoName(repoInput?.repo || draft.repo || "");
+  const branch = normalizeGitHubBranchName(draft.branch || "main") || "main";
+  const rootPath = normalizeRootPath(draft.rootPath || "/");
+  const issues: GitHubWorkspaceIssue[] = [];
+
+  if (!owner) {
+    issues.push({
+      field: "owner",
+      level: "error",
+      message: "Defina o owner GitHub ou cole owner/repositório diretamente no campo de repositório.",
+    });
+  } else if (!OWNER_PATTERN.test(owner)) {
+    issues.push({
+      field: "owner",
+      level: "error",
+      message: "O owner GitHub precisa usar apenas letras, números ou hífen, sem espaços.",
+    });
+  }
+
+  if (!repo) {
+    issues.push({
+      field: "repo",
+      level: "error",
+      message: "Defina o nome do repositório ou cole a URL completa do GitHub.",
+    });
+  } else if (!REPO_PATTERN.test(repo)) {
+    issues.push({
+      field: "repo",
+      level: "error",
+      message: "O repositório GitHub precisa evitar espaços e barras. Use apenas letras, números, ponto, hífen ou underscore.",
+    });
+  }
+
+  if (!branch) {
+    issues.push({
+      field: "branch",
+      level: "error",
+      message: "Defina a branch base antes de salvar a base GitHub.",
+    });
+  } else if (
+    branch.startsWith("/") ||
+    branch.endsWith("/") ||
+    branch.startsWith(".") ||
+    branch.endsWith(".") ||
+    branch.includes("..") ||
+    branch.includes("//") ||
+    branch.includes("@{") ||
+    /[\s\\~^:?*\[]/.test(branch)
+  ) {
+    issues.push({
+      field: "branch",
+      level: "error",
+      message: "A branch contém um formato inválido para Git. Use algo como main, develop ou ea/meu-projeto.",
+    });
+  }
+
+  if (rootPath !== "/" && /\s/.test(rootPath)) {
+    issues.push({
+      field: "rootPath",
+      level: "warning",
+      message: "A raiz do projeto contém espaços. Isso costuma complicar handoffs e scripts fora da plataforma.",
+    });
+  }
+
+  return {
+    owner,
+    repo,
+    branch,
+    rootPath,
+    target: draft.target === "app" ? "app" : "site",
+    repoLabel: owner && repo ? `${owner}/${repo}` : null,
+    issues,
+    ready: issues.every((item) => item.level !== "error"),
+    hasErrors: issues.some((item) => item.level === "error"),
+    hasWarnings: issues.some((item) => item.level === "warning"),
+  };
+}
+
+export function buildGitHubManualWorkflowPlan(
+  project: GitHubProjectRef | null | undefined,
+  workspace: GitHubWorkspace | null | undefined
+): GitHubManualWorkflowPlan {
+  const repositoryUrl = formatRepoUrl(workspace);
+  const suggestedWorkingBranch = buildGitHubWorkingBranch(project);
+  const projectTitle = String(project?.title || "Projeto").trim() || "Projeto";
+  const projectKind = String(project?.kind || "projeto").trim() || "projeto";
+  const projectToken = slugifyGitHubToken(projectTitle);
+  const baseBranch = workspace?.branch || "main";
+  const targetLabel = workspace?.target === "app" ? "app" : "site";
+
+  return {
+    repositoryUrl,
+    suggestedWorkingBranch,
+    commitTitle: workspace ? `chore: handoff ${projectToken}` : null,
+    commitBody: workspace
+      ? [
+          `Projeto: ${projectTitle}`,
+          `Tipo: ${projectKind}`,
+          `Base: ${workspace.owner}/${workspace.repo}`,
+          `Branch base: ${baseBranch}`,
+          `Destino: ${targetLabel}`,
+          "Origem: snapshot beta exportado no Editor AI Creator",
+        ].join("\n")
+      : null,
+    pullRequestTitle: workspace ? `Handoff ${projectTitle}` : null,
+    pullRequestBody: workspace
+      ? [
+          `## Handoff ${projectTitle}`,
+          "",
+          `- Base do repositório: \`${workspace.owner}/${workspace.repo}\``,
+          `- Branch base: \`${baseBranch}\``,
+          `- Branch sugerida: \`${suggestedWorkingBranch || baseBranch}\``,
+          `- Destino: ${targetLabel}`,
+          "",
+          "Este fluxo ainda está em beta manual: faça push e PR fora da plataforma usando o snapshot exportado como source of truth.",
+        ].join("\n")
+      : null,
+    pushStatus: "manual_beta",
+    pullRequestStatus: "manual_beta",
+    nextStep: workspace
+      ? `Continue manualmente em ${workspace.owner}/${workspace.repo} usando a branch base ${baseBranch} e o snapshot exportado como referência confiável.`
+      : "Salve owner, repositório e branch para transformar o handoff GitHub em uma base confiável do projeto.",
+  };
 }
 
 export function readGitHubWorkspace(accountKey: string): GitHubWorkspace | null {
@@ -279,6 +512,7 @@ export function buildGitHubProjectBundle(project: GitHubProjectRef, workspace: G
     projectKind: project.kind,
     projectTitle: project.title,
   });
+  const manualWorkflow = buildGitHubManualWorkflowPlan(project, workspace);
 
   return {
     schema: "editor-ai-creator.github-beta.v1",
@@ -302,6 +536,7 @@ export function buildGitHubProjectBundle(project: GitHubProjectRef, workspace: G
           accountLabel: workspace.accountLabel || null,
         }
       : null,
+    manualWorkflow,
     project: {
       id: project.id,
       title: project.title,

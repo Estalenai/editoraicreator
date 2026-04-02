@@ -9,6 +9,9 @@ import { supabase } from "../../lib/supabaseClient";
 import { toUserFacingError } from "../../lib/uiFeedback";
 import { ensureCanonicalProjectData, getCanonicalProjectSummary, mergeCanonicalProjectData } from "../../lib/projectModel";
 import {
+  assessGitHubWorkspaceDraft,
+  buildGitHubManualWorkflowPlan,
+  buildGitHubWorkingBranch,
   clearGitHubWorkspace,
   downloadGitHubProjectBundle,
   formatGitHubRepoLabel,
@@ -258,6 +261,41 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
     [draft, identityLabel, inheritedConnectedAt, projectWorkspace]
   );
   const repoLabel = useMemo(() => formatGitHubRepoLabel(visibleWorkspace), [visibleWorkspace]);
+  const workspaceAssessment = useMemo(
+    () =>
+      assessGitHubWorkspaceDraft({
+        owner: draft.owner,
+        repo: draft.repo,
+        branch: draft.branch,
+        rootPath: draft.rootPath,
+        target: draft.target,
+      }),
+    [draft]
+  );
+  const hasDraftInput = useMemo(
+    () => Boolean(draft.owner.trim() || draft.repo.trim() || draft.branch.trim() || draft.rootPath.trim()),
+    [draft]
+  );
+  const savedWorkspaceSignature = useMemo(
+    () =>
+      visibleWorkspace
+        ? [visibleWorkspace.owner, visibleWorkspace.repo, visibleWorkspace.branch, visibleWorkspace.rootPath, visibleWorkspace.target].join("|")
+        : "",
+    [visibleWorkspace]
+  );
+  const draftWorkspaceSignature = useMemo(
+    () =>
+      workspaceAssessment.ready
+        ? [workspaceAssessment.owner, workspaceAssessment.repo, workspaceAssessment.branch, workspaceAssessment.rootPath, workspaceAssessment.target].join("|")
+        : "",
+    [workspaceAssessment]
+  );
+  const hasUnsavedWorkspaceDraft = Boolean(hasDraftInput && draftWorkspaceSignature && draftWorkspaceSignature !== savedWorkspaceSignature);
+  const suggestedWorkingBranch = useMemo(() => buildGitHubWorkingBranch(selectedProject), [selectedProject]);
+  const manualWorkflowPlan = useMemo(
+    () => buildGitHubManualWorkflowPlan(selectedProject, actionWorkspace || visibleWorkspace),
+    [actionWorkspace, selectedProject, visibleWorkspace]
+  );
   const canLinkIdentity = useMemo(() => typeof (supabase.auth as any)?.linkIdentity === "function", []);
 
   useEffect(() => {
@@ -348,6 +386,12 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
   const lastVersionSavedAt = effectiveProjectVersions[0]?.savedAt || null;
   const lastExportedAt = effectiveProjectExports[0]?.exportedAt || null;
   const githubDeliveryStage = useMemo(() => {
+    if (selectedProjectCanonical?.delivery.stage === "published" && (effectiveProjectExports.length > 0 || projectWorkspace)) {
+      return {
+        label: "Published",
+        detail: "O projeto ja teve a publicacao manual confirmada fora da plataforma. O GitHub continua como trilha de handoff e continuidade.",
+      };
+    }
     if (effectiveProjectExports.length > 0) {
       return {
         label: "Exported",
@@ -364,7 +408,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
       label: "Draft",
       detail: "Defina owner, repositório e branch antes de preparar a saída.",
     };
-  }, [effectiveProjectExports.length, projectWorkspace]);
+  }, [effectiveProjectExports.length, projectWorkspace, selectedProjectCanonical?.delivery.stage]);
   const recentGitHubActivity = useMemo(
     () =>
       [
@@ -427,11 +471,180 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
     }
 
     return {
-      kind: "published" as const,
+      kind: "syncing" as const,
       title: "Exportando snapshot GitHub",
-      description: "Preparando o pacote beta para continuidade fora da plataforma.",
+      description: "Preparando o pacote beta com branch, snapshot e próximos passos manuais para continuidade fora da plataforma.",
     };
   }, [busyAction, repoLabel, selectedProject]);
+
+  const githubTrustState = useMemo(() => {
+    const accountValue = connected
+      ? identityLabel || "Conta GitHub conectada"
+      : canLinkIdentity
+        ? "Opcional neste beta"
+        : "Indisponível neste ambiente";
+    const checkpointValue = lastVersionSavedAt ? formatDateLabel(lastVersionSavedAt) : "Nenhum checkpoint";
+    const snapshotValue = lastExportedAt ? formatDateLabel(lastExportedAt) : "Nenhum snapshot";
+    const commonMeta = [
+      { label: "Projeto", value: selectedProject?.title || "Abra um projeto" },
+      { label: "Conta", value: accountValue },
+      { label: "Workspace", value: repoLabel || "Pendente" },
+      { label: "Branch", value: visibleWorkspace?.branch || "Pendente" },
+      { label: "Checkpoint", value: checkpointValue },
+      { label: "Snapshot", value: snapshotValue },
+      {
+        label: "Push / PR",
+        value: visibleWorkspace ? "Manual no beta" : "Ainda nao disponivel",
+        hint: "A plataforma ainda nao faz push remoto nem abre PR automaticamente nesta fase.",
+        tone: "warning" as const,
+      },
+    ];
+
+    if (!selectedProject) {
+      return {
+        kind: "empty" as const,
+        title: "Abra um projeto para ativar o fluxo GitHub",
+        description: "O GitHub beta so vira parte confiavel do produto quando estiver preso a um projeto real, com base salva e checkpoint visivel.",
+        meta: commonMeta,
+        details: [
+          "Selecione um projeto para registrar branch, checkpoint e snapshot do handoff.",
+        ],
+        footer: "Sem projeto ativo, o GitHub fica apenas como preparacao de workspace e nao como trilha operacional confiavel.",
+      };
+    }
+
+    if (!visibleWorkspace) {
+      return {
+        kind: "empty" as const,
+        title: "Base GitHub ainda nao preparada",
+        description: "Defina owner, repositorio e branch para transformar o handoff em uma continuidade clara do projeto.",
+        meta: commonMeta,
+        details: [
+          suggestedWorkingBranch
+            ? `Branch sugerida para o trabalho manual: ${suggestedWorkingBranch}.`
+            : "Defina uma branch base antes do primeiro handoff.",
+          "Push e PR ainda continuam manuais nesta fase do beta.",
+        ],
+        footer: manualWorkflowPlan.nextStep,
+      };
+    }
+
+    if (lastExportedAt) {
+      return {
+        kind: "success" as const,
+        title: "Snapshot GitHub pronto para handoff",
+        description: "O projeto ja tem uma trilha confiavel de continuidade: base salva, checkpoint visivel e snapshot exportado para seguir fora da plataforma.",
+        meta: commonMeta,
+        details: [
+          manualWorkflowPlan.suggestedWorkingBranch
+            ? `Branch sugerida para o trabalho manual: ${manualWorkflowPlan.suggestedWorkingBranch}.`
+            : `Branch base salva no projeto: ${visibleWorkspace.branch}.`,
+          manualWorkflowPlan.commitTitle ? `Commit sugerido: ${manualWorkflowPlan.commitTitle}.` : "Commit manual ainda precisa ser definido fora da plataforma.",
+          manualWorkflowPlan.pullRequestTitle ? `PR sugerido: ${manualWorkflowPlan.pullRequestTitle}.` : "PR manual ainda precisa ser aberto fora da plataforma.",
+        ],
+        footer: `${manualWorkflowPlan.nextStep} O projeto continua guardando o estado principal do handoff.`,
+      };
+    }
+
+    if (lastVersionSavedAt) {
+      return {
+        kind: "saved" as const,
+        title: "Checkpoint GitHub registrado",
+        description: "A base do repositório ja esta salva e existe um checkpoint local confiavel. Falta exportar o snapshot para fechar o handoff beta.",
+        meta: commonMeta,
+        details: [
+          manualWorkflowPlan.suggestedWorkingBranch
+            ? `Branch sugerida para o trabalho manual: ${manualWorkflowPlan.suggestedWorkingBranch}.`
+            : `Branch base salva no projeto: ${visibleWorkspace.branch}.`,
+          "O proximo passo confiavel e exportar o snapshot .json antes de seguir para push ou PR manual.",
+        ],
+        footer: manualWorkflowPlan.nextStep,
+      };
+    }
+
+    return {
+      kind: "unsaved" as const,
+      title: "GitHub preparado, mas sem checkpoint ainda",
+      description: "O workspace ja foi salvo, mas ainda falta registrar uma versao local para que o fluxo tenha trilha auditavel antes do handoff.",
+      meta: commonMeta,
+      details: [
+        manualWorkflowPlan.suggestedWorkingBranch
+          ? `Branch sugerida para o trabalho manual: ${manualWorkflowPlan.suggestedWorkingBranch}.`
+          : `Branch base salva no projeto: ${visibleWorkspace.branch}.`,
+        "Salve uma versao local antes de exportar o snapshot para reduzir ambiguidade no handoff.",
+      ],
+      footer: manualWorkflowPlan.nextStep,
+    };
+  }, [
+    canLinkIdentity,
+    connected,
+    identityLabel,
+    lastExportedAt,
+    lastVersionSavedAt,
+    manualWorkflowPlan.commitTitle,
+    manualWorkflowPlan.nextStep,
+    manualWorkflowPlan.pullRequestTitle,
+    manualWorkflowPlan.suggestedWorkingBranch,
+    repoLabel,
+    selectedProject,
+    suggestedWorkingBranch,
+    visibleWorkspace,
+  ]);
+
+  const workspaceDraftState = useMemo(() => {
+    if (!hasDraftInput && !visibleWorkspace) {
+      return {
+        kind: "empty" as const,
+        title: "Cole owner/repositorio ou a URL completa do GitHub",
+        description: "A base do repositório aceita owner/repositorio, URL do GitHub e branch base. Isso reduz erros antes do primeiro handoff.",
+        details: [
+          "Exemplo: empresa/repo ou https://github.com/empresa/repo",
+        ],
+      };
+    }
+
+    if (!hasDraftInput) return null;
+
+    if (workspaceAssessment.hasErrors) {
+      return {
+        kind: "error" as const,
+        title: "Base GitHub com erro de configuracao",
+        description: "Corrija owner, repositorio ou branch antes de salvar o workspace.",
+        details: workspaceAssessment.issues.filter((item) => item.level === "error").map((item) => item.message),
+      };
+    }
+
+    if (hasUnsavedWorkspaceDraft) {
+      return {
+        kind: "unsaved" as const,
+        title: "Base GitHub pronta para salvar",
+        description: "A configuracao atual ja esta consistente e pode ser salva no projeto como source of truth do handoff beta.",
+        details: [
+          `Repositorio resolvido: ${workspaceAssessment.repoLabel || "Pendente"}.`,
+          `Branch base: ${workspaceAssessment.branch}.`,
+          `Raiz do projeto: ${workspaceAssessment.rootPath}.`,
+          ...(workspaceAssessment.hasWarnings
+            ? workspaceAssessment.issues.filter((item) => item.level === "warning").map((item) => item.message)
+            : []),
+        ],
+      };
+    }
+
+    if (visibleWorkspace) {
+      return {
+        kind: "saved" as const,
+        title: "Base GitHub ja persistida",
+        description: "Owner, repositorio, branch e destino ja estao salvos no projeto. A partir daqui, o foco passa para checkpoint e snapshot.",
+        details: [
+          `Repositorio salvo: ${repoLabel || "Pendente"}.`,
+          `Branch base atual: ${visibleWorkspace.branch}.`,
+          `Raiz do projeto: ${visibleWorkspace.rootPath}.`,
+        ],
+      };
+    }
+
+    return null;
+  }, [hasDraftInput, hasUnsavedWorkspaceDraft, repoLabel, visibleWorkspace, workspaceAssessment]);
 
   function updateDraft(field: keyof WorkspaceDraft, value: string) {
     setDraft((current) => ({ ...current, [field]: value }));
@@ -564,8 +777,11 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
       return;
     }
 
-    if (!draft.owner.trim() || !draft.repo.trim()) {
-      setError("Defina owner e repositório antes de salvar a base GitHub.");
+    if (!workspaceAssessment.ready) {
+      const messages = workspaceAssessment.issues
+        .filter((item) => item.level === "error")
+        .map((item) => item.message);
+      setError(messages.join(" "));
       return;
     }
 
@@ -577,11 +793,11 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
         : workspace?.connectedAt || null;
       const nextWorkspace: GitHubWorkspace = {
         provider: "github",
-        owner: draft.owner.trim(),
-        repo: draft.repo.trim(),
-        branch: draft.branch.trim() || "main",
-        rootPath: normalizeRootPath(draft.rootPath),
-        target: draft.target,
+        owner: workspaceAssessment.owner,
+        repo: workspaceAssessment.repo,
+        branch: workspaceAssessment.branch,
+        rootPath: workspaceAssessment.rootPath,
+        target: workspaceAssessment.target,
         connectedAt: existingConnectedAt || now,
         updatedAt: now,
         accountLabel: identityLabel,
@@ -602,9 +818,13 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
           },
         });
         await persistProjectData(nextData);
-        setSuccess("Base GitHub salva no projeto e espelhada neste navegador. A continuidade do handoff agora fica persistida no próprio projeto.");
+        setSuccess(
+          `Base GitHub salva no projeto com ${workspaceAssessment.owner}/${workspaceAssessment.repo} em ${workspaceAssessment.branch}. A continuidade do handoff agora fica persistida no proprio projeto.`
+        );
       } else {
-        setSuccess("Base GitHub salva neste navegador. O editor já pode registrar versões locais e exportar snapshots com owner/repositório definidos.");
+        setSuccess(
+          `Base GitHub salva neste navegador com ${workspaceAssessment.owner}/${workspaceAssessment.repo} em ${workspaceAssessment.branch}. O editor ja pode registrar versoes locais e exportar snapshots com owner, repositorio e branch definidos.`
+        );
       }
     } catch (saveError: any) {
       setError(
@@ -701,7 +921,9 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
       });
 
       await persistProjectData(nextData);
-      setSuccess("Versão GitHub registrada no projeto. A trilha principal de continuidade agora fica persistida no próprio projeto, com cache local como conveniência.");
+      setSuccess(
+        `Versao GitHub registrada no projeto. O checkpoint agora fica persistido com base em ${formatGitHubRepoLabel(workspaceForAction) || "uma base GitHub valida"}${manualWorkflowPlan.commitTitle ? ` e ja sugere o commit manual "${manualWorkflowPlan.commitTitle}".` : "."}`
+      );
     } catch (versionError: any) {
       setError(toUserFacingError(versionError?.message, "Não foi possível registrar a versão local agora."));
     } finally {
@@ -790,7 +1012,9 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
       });
 
       await persistProjectData(nextData);
-      setSuccess("Snapshot do projeto baixado. O projeto agora guarda o handoff GitHub como source of truth, com cache local apenas como conveniência beta.");
+      setSuccess(
+        `Snapshot do projeto baixado para ${formatGitHubRepoLabel(workspaceForAction) || "o repositório configurado"}. O handoff agora inclui branch base, checkpoint e proximo passo manual como source of truth do beta.`
+      );
     } catch (exportError: any) {
       setError(toUserFacingError(exportError?.message, "Não foi possível exportar o snapshot agora."));
     } finally {
@@ -873,7 +1097,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
         {success ? (
           <OperationalState
             compact
-            kind={busyAction === "export" ? "published" : "success"}
+            kind="success"
             title="GitHub beta atualizado"
             description={success}
             badge="GitHub beta"
@@ -885,6 +1109,18 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
             ]}
           />
         ) : null}
+
+        <OperationalState
+          compact
+          kind={githubTrustState.kind}
+          title={githubTrustState.title}
+          description={githubTrustState.description}
+          badge="GitHub status"
+          emphasis={selectedProject?.title || "Sem projeto selecionado"}
+          meta={githubTrustState.meta}
+          details={githubTrustState.details}
+          footer={githubTrustState.footer}
+        />
 
         <div className="github-workspace-cta-row">
           <Link href="/projects#github-workspace" className="btn-link-ea btn-secondary btn-sm">
@@ -1003,6 +1239,29 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
         />
       ) : null}
 
+      <OperationalState
+        kind={githubTrustState.kind}
+        title={githubTrustState.title}
+        description={githubTrustState.description}
+        badge="GitHub status"
+        emphasis={selectedProject?.title || "Sem projeto selecionado"}
+        meta={githubTrustState.meta}
+        details={githubTrustState.details}
+        footer={githubTrustState.footer}
+        actions={
+          <div className="github-workspace-cta-row">
+            {manualWorkflowPlan.repositoryUrl ? (
+              <a href={manualWorkflowPlan.repositoryUrl} target="_blank" rel="noreferrer" className="btn-link-ea btn-secondary btn-sm">
+                Abrir repositório
+              </a>
+            ) : null}
+            <Link href={selectedProject ? `/editor/${selectedProject.id}` : "/editor/new"} className="btn-link-ea btn-ghost btn-sm">
+              {selectedProject ? "Abrir projeto no editor" : "Abrir editor"}
+            </Link>
+          </div>
+        }
+      />
+
       <div className="github-workspace-grid">
         <article className="github-workspace-pane layout-contract-item">
           <div className="section-stack-tight">
@@ -1041,7 +1300,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
             <p className="section-kicker">2. Base do repositório</p>
             <h3 className="heading-reset">Owner, branch e destino</h3>
             <p className="helper-text-ea">
-              Salve uma base por projeto para importar a referência do repositório e usar o editor como ponto de continuidade do app ou site.
+              Salve uma base por projeto para importar a referência do repositório e usar o editor como ponto de continuidade do app ou site. Você pode colar owner/repositório ou a URL completa do GitHub.
             </p>
           </div>
 
@@ -1052,17 +1311,34 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
             </label>
             <label className="field-label-ea">
               <span>Repositório</span>
-              <input className="field-ea" value={draft.repo} onChange={(event) => updateDraft("repo", event.target.value)} placeholder="meu-app-ou-site" />
+              <input className="field-ea" value={draft.repo} onChange={(event) => updateDraft("repo", event.target.value)} placeholder="meu-app-ou-site ou owner/repositorio" />
             </label>
             <label className="field-label-ea">
               <span>Branch base</span>
-              <input className="field-ea" value={draft.branch} onChange={(event) => updateDraft("branch", event.target.value)} placeholder="main" />
+              <input className="field-ea" value={draft.branch} onChange={(event) => updateDraft("branch", event.target.value)} placeholder={suggestedWorkingBranch || "main"} />
             </label>
             <label className="field-label-ea">
               <span>Raiz do projeto</span>
               <input className="field-ea" value={draft.rootPath} onChange={(event) => updateDraft("rootPath", event.target.value)} placeholder="/apps/web" />
             </label>
           </div>
+
+          {workspaceDraftState ? (
+            <OperationalState
+              compact
+              kind={workspaceDraftState.kind}
+              title={workspaceDraftState.title}
+              description={workspaceDraftState.description}
+              badge="Workspace"
+              meta={[
+                { label: "Repositorio", value: workspaceAssessment.repoLabel || "Pendente" },
+                { label: "Branch", value: workspaceAssessment.branch || "main" },
+                { label: "Raiz", value: workspaceAssessment.rootPath },
+                { label: "Destino", value: targetLabel(workspaceAssessment.target) },
+              ]}
+              details={workspaceDraftState.details}
+            />
+          ) : null}
 
           <div className="github-workspace-target-row" role="radiogroup" aria-label="Destino do handoff GitHub">
             {(["site", "app"] as GitHubWorkspaceTarget[]).map((target) => (
@@ -1113,6 +1389,16 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
               <strong>{lastExportedAt ? formatDateLabel(lastExportedAt) : "Nenhum snapshot exportado"}</strong>
               <small>{projectWorkspace ? `Destino ${targetLabel(projectWorkspace.target)} em ${projectWorkspace.branch}${repoLabel ? ` • ${repoLabel}` : ""}.` : "Salve a base GitHub no projeto antes de exportar o snapshot e manter o vínculo com o repositório."}</small>
             </div>
+            <div className="github-workspace-status-item">
+              <span className="github-workspace-status-label">Próximo branch manual</span>
+              <strong>{manualWorkflowPlan.suggestedWorkingBranch || "Defina a base GitHub primeiro"}</strong>
+              <small>{visibleWorkspace ? `Push e PR seguem manuais nesta fase. A branch base salva no projeto é ${visibleWorkspace.branch}.` : "A branch sugerida aparece assim que owner, repositório e branch base ficarem consistentes."}</small>
+            </div>
+            <div className="github-workspace-status-item">
+              <span className="github-workspace-status-label">Commit / PR sugeridos</span>
+              <strong>{manualWorkflowPlan.commitTitle || "Salve a base para gerar a sugestão"}</strong>
+              <small>{manualWorkflowPlan.pullRequestTitle || "O título do PR manual aparece junto com o handoff quando a base GitHub estiver pronta."}</small>
+            </div>
           </div>
 
           <ol className="github-workspace-checklist">
@@ -1125,6 +1411,10 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
             <strong>Source of truth por projeto</strong>
             <span>Binding, versões e snapshots GitHub agora ficam persistidos no projeto. O navegador só espelha esse estado como conveniência beta.</span>
           </div>
+          <div className="github-workspace-inline-note">
+            <strong>Próximo passo manual</strong>
+            <span>{manualWorkflowPlan.nextStep}</span>
+          </div>
           <div className="github-workspace-cta-row">
             <button onClick={handleSaveVersion} disabled={!selectedProject || busyAction === "version"} className="btn-ea btn-secondary btn-sm">
               {busyAction === "version" ? "Salvando versão..." : "Salvar versão local"}
@@ -1132,6 +1422,11 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
             <button onClick={handleExportBundle} disabled={!selectedProject || busyAction === "export"} className="btn-ea btn-primary btn-sm">
               {busyAction === "export" ? "Preparando snapshot..." : "Exportar snapshot .json"}
             </button>
+            {manualWorkflowPlan.repositoryUrl ? (
+              <a href={manualWorkflowPlan.repositoryUrl} target="_blank" rel="noreferrer" className="btn-link-ea btn-ghost btn-sm">
+                Abrir repositório
+              </a>
+            ) : null}
           </div>
           <div className="github-workspace-activity-list">
             {visibleGitHubActivity.length ? visibleGitHubActivity.map((item) => (
