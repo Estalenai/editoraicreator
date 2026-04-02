@@ -15551,3 +15551,369 @@ body {
     min-height: 118px;
   }
 }
+
+/* Projects premium continuity pass */
+.app-shell-frame:has(.projects-page) .app-shell-main::before {
+  background:
+    linear-gradient(180deg, rgba(4, 12, 31, 0.12), rgba(4, 12, 31, 0.05) 22%, rgba(4, 12, 31, 0.02) 44%, transparent 74%),
+    radial-gradient(700px 220px at 50% 0%, rgba(78, 236, 255, 0.07), transparent 74%),
+    radial-gradient(840px 260px at 50% 100%, rgba(88, 120, 255, 0.05), transparent 80%);
+}
+
+.app-shell-frame:has(.projects-page) .app-shell-workspace::after {
+  inset: auto 8% -9% 8%;
+  height: clamp(220px, 26vw, 320px);
+  background:
+    radial-gradient(44% 100% at 50% 0%, rgba(88, 242, 255, 0.11), transparent 74%),
+    radial-gradient(34% 88% at 50% 18%, rgba(95, 118, 255, 0.1), transparent 82%);
+  filter: blur(42px);
+  opacity: 0.62;
+}
+
+.app-shell-frame:has(.projects-page) .app-shell-main {
+  max-width: min(1540px, calc(100vw - clamp(92px, 8vw, 156px)));
+}
+
+.projects-page {
+  gap: clamp(22px, 2.5vw, 34px);
+}
+
+.projects-page::before {
+  height: clamp(240px, 26vw, 340px);
+  opacity: 0.34;
+  filter: blur(58px);
+  background:
+    radial-gradient(520px 240px at 12% 8%, rgba(88, 242, 255, 0.16), transparent 72%),
+    radial-gradient(560px 260px at 42% 18%, rgba(96, 132, 255, 0.12), transparent 76%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent 72%);
+}
+
+.projects-page::after {
+  opacity: 0.62;
+}
+
+.projects-page .projects-hero-open,
+.projects-page .projects-list-section,
+.projects-page .projects-publish-section,
+.projects-page .projects-handoff-section {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  padding: clamp(22px, 2.5vw, 32px) !important;
+  border: 1px solid rgba(191, 239, 255, 0.075) !important;
+  border-radius: clamp(24px, 2.6vw, 32px);
+  background:
+    radial-gradient(420px 180px at 0% 0%, rgba(88, 242, 255, 0.078), transparent 72%),
+    radial-gradient(380px 180px at 100% 100%, rgba(95, 118, 255, 0.075), transparent 78%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.022), rgba(255, 255, 255, 0.007)),
+    rgba(8, 22, 54, 0.32) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.034),
+    0 18px 42px rgba(2, 6, 23, 0.12) !important;
+}
+
+.projects-page .projects-hero-open::before,
+.projects-page .projects-hero-open::after,
+.projects-page .projects-flow-section::before {
+  display: block;
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.projects-page .projects-hero-open::before {
+  inset: -10% 38% auto -8%;
+  height: clamp(180px, 22vw, 280px);
+  background:
+    radial-gradient(60% 100% at 0% 0%, rgba(88, 242, 255, 0.12), transparent 70%),
+    radial-gradient(46% 94% at 42% 18%, rgba(95, 118, 255, 0.11), transparent 78%);
+  filter: blur(26px);
+  opacity: 0.82;
+}
+
+.projects-page .projects-hero-open::after {
+  inset: auto -10% -14% 42%;
+  height: clamp(140px, 18vw, 220px);
+  background: radial-gradient(46% 100% at 50% 0%, rgba(88, 242, 255, 0.08), transparent 74%);
+  filter: blur(34px);
+  opacity: 0.56;
+}
+
+.projects-page .projects-flow-section::before {
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent 18%, transparent 82%, rgba(255, 255, 255, 0.01)),
+    radial-gradient(240px 140px at 100% 0%, rgba(88, 242, 255, 0.04), transparent 76%);
+  opacity: 0.6;
+}
+
+.projects-page .projects-hero-open > *,
+.projects-page .projects-list-section > *,
+.projects-page .projects-publish-section > *,
+.projects-page .projects-handoff-section > * {
+  position: relative;
+  z-index: 1;
+}
+
+.projects-page .projects-hero-split {
+  grid-template-columns: minmax(0, 1.18fr) minmax(280px, 0.74fr);
+  gap: clamp(22px, 2.4vw, 30px);
+}
+
+.projects-page .projects-hero-bridge-stack {
+  max-width: min(760px, 100%);
+  gap: 10px;
+  padding-top: 8px;
+}
+
+.projects-page .projects-hero-bridge {
+  padding: 18px 18px 18px 18px;
+  border: 1px solid rgba(191, 239, 255, 0.08);
+  border-radius: 20px;
+  border-left: 1px solid rgba(191, 239, 255, 0.08);
+  border-top: 1px solid rgba(191, 239, 255, 0.08);
+  background:
+    radial-gradient(220px 90px at 100% 0%, rgba(88, 242, 255, 0.06), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.024), rgba(255, 255, 255, 0.008));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.028),
+    0 10px 24px rgba(2, 6, 23, 0.08);
+}
+
+.projects-page .projects-hero-panel-quiet {
+  gap: 12px;
+  padding: clamp(16px, 1.8vw, 22px);
+  border: 1px solid rgba(191, 239, 255, 0.07);
+  border-left: 1px solid rgba(191, 239, 255, 0.07);
+  border-radius: 24px;
+  background:
+    radial-gradient(220px 104px at 100% 0%, rgba(88, 242, 255, 0.048), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.006)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.024),
+    0 10px 24px rgba(2, 6, 23, 0.06) !important;
+}
+
+.projects-page .projects-hero-panel-list {
+  gap: 10px;
+}
+
+.projects-page .projects-hero-note {
+  gap: 6px;
+  padding: 12px 14px;
+  border: 1px solid rgba(191, 239, 255, 0.07) !important;
+  border-left: 1px solid rgba(191, 239, 255, 0.07) !important;
+  border-radius: 16px;
+  background:
+    radial-gradient(180px 80px at 100% 0%, rgba(88, 242, 255, 0.04), transparent 74%),
+    rgba(255, 255, 255, 0.012) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.018) !important;
+}
+
+.projects-page .focus-shell-section[data-focus-active="true"] {
+  border-color: rgba(191, 239, 255, 0.1) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.038),
+    0 20px 44px rgba(2, 6, 23, 0.14) !important;
+}
+
+.projects-page .focus-shell-section[data-focus-active="false"] {
+  opacity: 0.9;
+  background:
+    radial-gradient(320px 140px at 100% 0%, rgba(88, 242, 255, 0.046), transparent 76%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.004)),
+    rgba(8, 22, 54, 0.26) !important;
+}
+
+.projects-page .focus-shell-section[data-focus-active="false"] .focus-shell-preview {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(191, 239, 255, 0.075);
+}
+
+.projects-page .projects-list-stack,
+.projects-page .projects-handoff-stack,
+.projects-page .projects-publish-grid {
+  gap: clamp(14px, 1.8vw, 18px);
+}
+
+.projects-page .projects-list-stack > * + *,
+.projects-page .projects-handoff-stack > * + *,
+.projects-page .github-workspace-card > * + *,
+.projects-page .vercel-publish-card > * + * {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.projects-page .dashboard-project-link {
+  min-height: 104px;
+  padding: 18px 20px !important;
+  border: 1px solid rgba(191, 239, 255, 0.07) !important;
+  border-radius: 20px;
+  background:
+    radial-gradient(200px 84px at 100% 0%, rgba(88, 242, 255, 0.052), transparent 74%),
+    radial-gradient(220px 100px at 0% 100%, rgba(95, 118, 255, 0.05), transparent 80%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.006)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.022),
+    0 10px 24px rgba(2, 6, 23, 0.07) !important;
+}
+
+.projects-page .dashboard-project-link:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.02);
+}
+
+.projects-page .dashboard-project-link-main {
+  gap: 6px;
+}
+
+.projects-page .dashboard-project-link-title {
+  font-size: clamp(1.02rem, 1.16vw, 1.12rem);
+}
+
+.projects-page .dashboard-project-link-cta {
+  align-self: center;
+  padding: 0 0 0 14px;
+  color: var(--ea-ink-blue);
+}
+
+.projects-page .projects-publish-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.projects-page .proof-value-card,
+.projects-page .projects-publish-grid > .proof-value-card:first-child {
+  min-height: 160px;
+  padding: 18px 18px 18px 18px !important;
+  border: 1px solid rgba(191, 239, 255, 0.07) !important;
+  border-left: 1px solid rgba(191, 239, 255, 0.07) !important;
+  border-radius: 20px;
+  background:
+    radial-gradient(200px 88px at 100% 0%, rgba(88, 242, 255, 0.052), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.006)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.022),
+    0 10px 24px rgba(2, 6, 23, 0.07) !important;
+}
+
+.projects-page .proof-value-block {
+  gap: 8px;
+}
+
+.projects-page .github-workspace-card,
+.projects-page .vercel-publish-card {
+  gap: clamp(14px, 1.8vw, 18px);
+  padding: clamp(20px, 2.2vw, 26px);
+  border: 1px solid rgba(191, 239, 255, 0.075) !important;
+  border-radius: 26px;
+  background:
+    radial-gradient(260px 108px at 100% 0%, rgba(88, 242, 255, 0.058), transparent 74%),
+    radial-gradient(320px 132px at 0% 100%, rgba(95, 118, 255, 0.05), transparent 80%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.022), rgba(255, 255, 255, 0.008)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.026),
+    0 14px 32px rgba(2, 6, 23, 0.085) !important;
+  overflow: clip;
+}
+
+.projects-page .github-workspace-grid,
+.projects-page .vercel-publish-grid,
+.projects-page .vercel-publish-status-grid,
+.projects-page .vercel-publish-links {
+  gap: 12px;
+}
+
+.projects-page .github-workspace-pane,
+.projects-page .vercel-publish-grid > *,
+.projects-page .vercel-publish-links > * {
+  padding: 18px !important;
+  border: 1px solid rgba(191, 239, 255, 0.07) !important;
+  border-left: 1px solid rgba(191, 239, 255, 0.07) !important;
+  border-radius: 18px;
+  background:
+    radial-gradient(180px 76px at 100% 0%, rgba(88, 242, 255, 0.04), transparent 74%),
+    rgba(255, 255, 255, 0.012) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.018) !important;
+}
+
+.projects-page .github-workspace-status-item,
+.projects-page .github-workspace-inline-note,
+.projects-page .github-workspace-activity-item,
+.projects-page .vercel-publish-status-item,
+.projects-page .vercel-publish-link-card,
+.projects-page .vercel-publish-empty,
+.projects-page .vercel-publish-note,
+.projects-page .vercel-publish-history-item {
+  padding: 12px 14px !important;
+  border: 1px solid rgba(191, 239, 255, 0.07) !important;
+  border-left: 1px solid rgba(191, 239, 255, 0.07) !important;
+  border-radius: 16px;
+  background:
+    radial-gradient(160px 68px at 100% 0%, rgba(88, 242, 255, 0.034), transparent 74%),
+    rgba(255, 255, 255, 0.01) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.016) !important;
+}
+
+.projects-page .github-workspace-status-list,
+.projects-page .github-workspace-activity-list,
+.projects-page .vercel-publish-history-list {
+  gap: 10px;
+}
+
+.projects-page .vercel-publish-history {
+  gap: 12px;
+}
+
+.projects-page .projects-handoff-section .section-head,
+.projects-page .projects-handoff-section .hero-actions-row {
+  gap: 12px 16px;
+}
+
+@media (max-width: 1360px) {
+  .app-shell-frame:has(.projects-page) .app-shell-main {
+    max-width: min(1480px, calc(100vw - clamp(78px, 7vw, 120px)));
+  }
+
+  .projects-page .projects-hero-split {
+    grid-template-columns: minmax(0, 1fr) minmax(264px, 0.7fr);
+  }
+
+  .projects-page .projects-publish-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 980px) {
+  .projects-page .projects-hero-open,
+  .projects-page .projects-list-section,
+  .projects-page .projects-publish-section,
+  .projects-page .projects-handoff-section {
+    padding: 20px !important;
+    border-radius: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .projects-page .projects-publish-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .projects-page .projects-hero-open,
+  .projects-page .projects-list-section,
+  .projects-page .projects-publish-section,
+  .projects-page .projects-handoff-section {
+    padding: 18px !important;
+    border-radius: 22px;
+  }
+
+  .projects-page .dashboard-project-link,
+  .projects-page .proof-value-card,
+  .projects-page .github-workspace-pane,
+  .projects-page .vercel-publish-grid > *,
+  .projects-page .vercel-publish-links > * {
+    padding: 16px !important;
+  }
+}
