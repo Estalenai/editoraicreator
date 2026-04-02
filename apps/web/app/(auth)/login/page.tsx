@@ -93,7 +93,7 @@ function LoginPageContent() {
       }
 
       setSuccess(
-        "Conta criada com sucesso. Agora faça login e aguarde a aprovação no beta fechado para acessar o dashboard."
+        "Conta criada. Faça login e acompanhe a aprovação do acesso."
       );
       setMode("login");
       setConfirmPassword("");
@@ -135,8 +135,8 @@ function LoginPageContent() {
               </h1>
               <p className="auth-entry-copy">
                 {mode === "signup"
-                  ? "Cadastre sua conta, entre na fila de aprovação e prepare seu acesso ao workspace."
-                  : "Use seu acesso aprovado para abrir um workspace seguro, pronto para gerar, editar e exportar."}
+                  ? "Cadastre sua conta e entre na fila de acesso."
+                  : "Use seu acesso aprovado para abrir o workspace."}
               </p>
             </div>
 
@@ -147,11 +147,11 @@ function LoginPageContent() {
             <div className="auth-entry-context-grid">
               <div className="auth-entry-context-item">
                 <strong>Conta protegida</strong>
-                <span>Somente contas aprovadas entram no workspace e seguem com sessão protegida.</span>
+                <span>Só contas aprovadas entram no workspace.</span>
               </div>
               <div className="auth-entry-context-item">
-                <strong>Entrada profissional</strong>
-                <span>Login curto, dados isolados de treino e continuidade segura para abrir o editor.</span>
+                <strong>Privacidade clara</strong>
+                <span>Dados da conta ficam isolados do treino.</span>
               </div>
             </div>
           </div>
@@ -164,8 +164,8 @@ function LoginPageContent() {
               </h2>
               <p className="meta-text-ea">
                 {mode === "signup"
-                  ? "Use um e-mail válido para entrar na fila de liberação."
-                  : "Entre com seu e-mail e senha para abrir o workspace."}
+                  ? "Use um e-mail válido para entrar na fila."
+                  : "Entre com e-mail e senha."}
               </p>
             </div>
 
@@ -243,14 +243,14 @@ function LoginPageContent() {
               <strong>{mode === "signup" ? "Aprovação manual no beta" : "Acesso liberado"}</strong>
               <span>
                 {mode === "signup"
-                  ? "Depois do cadastro, sua conta entra na fila de análise. Avisaremos quando o acesso estiver pronto."
-                  : "Se sua conta já foi aprovada, o login leva você direto para o dashboard."}
+                  ? "Depois do cadastro, sua conta entra em análise."
+                  : "Contas aprovadas entram direto no dashboard."}
               </span>
             </div>
 
             <div className="auth-entry-inline-note">
               <strong>Segurança e confidencialidade</strong>
-              <span>Dados da sua conta não são usados para treinar modelos. O processamento segue isolado e com prioridade para privacidade.</span>
+              <span>Os dados da conta não entram em treino.</span>
             </div>
 
             {error ? (

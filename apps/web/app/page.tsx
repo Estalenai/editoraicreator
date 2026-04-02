@@ -5,23 +5,23 @@ const HOME_PROOF_SAMPLES = [
   {
     label: "Post com CTA",
     creator: "Creator Post",
-    prompt: "Lançar uma aula gratuita de color grading para reels e stories.",
-    output: "Hook curto, legenda com prova social e CTA para lista de espera.",
-    nextStep: "Salvar em projeto e refinar no editor.",
+    prompt: "Lançar aula gratuita de color grading para reels e stories.",
+    output: "Hook curto, legenda com prova social e CTA.",
+    nextStep: "Salvar no projeto e refinar.",
   },
   {
     label: "Roteiro para vídeo",
     creator: "Creator Scripts",
     prompt: "Explicar em 30 segundos por que uma landing lenta perde conversão.",
-    output: "Estrutura em 3 blocos com abertura, argumento central e fechamento para gravação.",
-    nextStep: "Transformar em vídeo curto ou anúncio.",
+    output: "Abertura, argumento central e fechamento prontos para gravação.",
+    nextStep: "Virar vídeo curto ou anúncio.",
   },
   {
     label: "Publicação pronta",
     creator: "Creator Clips",
-    prompt: "Gerar um clipe curto com direção de cena e continuidade no projeto.",
-    output: "Briefing visual, job assíncrono e base pronta para editar e preparar exportação.",
-    nextStep: "Continuar no editor e preparar handoff de publicação.",
+    prompt: "Gerar um clipe curto com direção de cena e continuidade.",
+    output: "Briefing visual e base pronta para editar.",
+    nextStep: "Continuar no editor e preparar a saída.",
   },
 ];
 
@@ -43,15 +43,15 @@ const HOME_HERO_FLOW = [
 const HOME_HERO_TRUST = [
   {
     title: "Fluxo contínuo",
-    detail: "Gerar, salvar em projeto, editar e exportar sem trocar de ambiente.",
+    detail: "Gerar, salvar, editar e exportar no mesmo fluxo.",
   },
   {
     title: "Escopo decidido",
-    detail: "O beta pago/controlado foca no que já sustenta valor real hoje.",
+    detail: "O núcleo atual já sustenta uso real.",
   },
   {
     title: "Confidencialidade",
-    detail: "O contexto da conta permanece privado e não vira dado de treino.",
+    detail: "O contexto da conta fica isolado.",
   },
 ];
 
@@ -68,7 +68,7 @@ export default function HomePage() {
                 </div>
                 <h1 className="beta-entry-title">Acesso ao núcleo do Editor AI Creator</h1>
                 <p className="beta-entry-copy">
-                  O Editor AI Creator reúne hoje o que já sustenta valor real: <strong>Creator Post</strong>, <strong>Creator Scripts</strong>, <strong>Creator Clips</strong>, editor central, projetos e saída rastreada em um único fluxo para gerar, salvar, editar e exportar com clareza.
+                  <strong>Creator Post</strong>, <strong>Creator Scripts</strong>, <strong>Creator Clips</strong>, editor e projetos no mesmo fluxo para gerar, salvar, editar e exportar com saída rastreada.
                 </p>
               </div>
 
@@ -87,7 +87,7 @@ export default function HomePage() {
 
               <div className="beta-entry-command-prompt">
                 <span className="beta-entry-command-prompt-label">Briefing central</span>
-                <strong>Montar uma peça comercial com creator, projeto salvo e base pronta para editar até a saída final.</strong>
+                <strong>Montar uma peça comercial com creator, projeto salvo e base pronta para editar.</strong>
               </div>
 
               <div className="beta-entry-command-route" aria-label="Creators centrais do beta">
@@ -106,7 +106,7 @@ export default function HomePage() {
                 </div>
                 <div className="beta-entry-command-proof-item">
                   <span>Saída clara</span>
-                  <strong>Draft, exported e published rastreados</strong>
+                  <strong>Draft, exported e published claros</strong>
                 </div>
               </div>
             </div>
@@ -127,9 +127,9 @@ export default function HomePage() {
             <div className="premium-badge premium-badge-phase beta-entry-badge">
               Prova de valor
             </div>
-            <h2 className="heading-reset">O que a IA entrega no beta pago/controlado</h2>
+            <h2 className="heading-reset">O que o núcleo já entrega</h2>
             <p className="helper-text-ea">
-              Exemplos do tipo de saída que o núcleo atual já consegue organizar. Não são promessas vagas; são formatos reais para gerar, salvar em projeto, refinar no editor e fechar a saída com clareza.
+              Exemplos reais do fluxo atual: gerar, salvar no projeto, refinar no editor e fechar a saída com clareza.
             </p>
           </div>
           <Link href="/creators" className="btn-link-ea btn-secondary btn-sm">
@@ -164,12 +164,12 @@ export default function HomePage() {
           <ClosedBetaAccessCard
             compact
             title="Fila de espera"
-            description="Informe o e-mail de trabalho para entrar na fila de liberação do beta pago/controlado."
+            description="Use seu e-mail de trabalho para entrar na fila de acesso."
           />
         </div>
 
         <div className="helper-text-ea beta-entry-footnote" data-reveal data-reveal-delay="140">
-          Plataforma: Editor AI Creator • Assistente interno: EditexAI
+          Editor AI Creator • Assistente interno EditexAI
         </div>
       </div>
     </div>

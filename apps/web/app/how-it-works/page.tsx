@@ -3,29 +3,25 @@ import Link from "next/link";
 const STEPS = [
   {
     title: "1. Gere contexto em Creators",
-    description:
-      "Comece por Creator Post, Creator Scripts ou Creator Clips para estruturar briefing, resultado e continuidade no núcleo principal do beta.",
+    description: "Use Creator Post, Scripts ou Clips para montar a base.",
     href: "/creators",
     cta: "Abrir Creators",
   },
   {
     title: "2. Salve em projeto",
-    description:
-      "Projetos guardam o contexto aprovado para continuar no editor sem perder histórico nem organização.",
+    description: "O projeto guarda contexto, estado e próxima etapa.",
     href: "/projects",
     cta: "Ver projetos",
   },
   {
     title: "3. Continue no editor",
-    description:
-      "Abra um projeto existente ou entre em /editor/new para revisar, salvar versão, marcar checkpoint e consolidar o entregável principal.",
+    description: "No editor, revise, salve versões e consolide o entregável.",
     href: "/editor/new",
-    cta: "Abrir editor novo",
+    cta: "Abrir editor",
   },
   {
     title: "4. Exporte com clareza",
-    description:
-      "Registre exported e published com clareza no projeto. GitHub e Vercel continuam úteis como handoff beta, sem fingir automação completa.",
+    description: "Exporte ou registre a publicação com estado claro.",
     href: "/projects#vercel-publish",
     cta: "Preparar publicação",
   },
@@ -35,20 +31,20 @@ const RESULT_EXAMPLES = [
   {
     title: "De briefing para post publicado",
     input: "Promover uma aula ao vivo de fotografia mobile com CTA para lista de espera.",
-    output: "Legenda curta, gancho inicial, prova social e variações para testar distribuição.",
-    nextStep: "Salvar em projeto e ajustar no editor antes de exportar.",
+    output: "Legenda curta, gancho inicial, prova social e variações.",
+    nextStep: "Salvar no projeto e ajustar no editor.",
   },
   {
     title: "De ideia para roteiro de vídeo",
     input: "Explicar por que pages lentas derrubam conversão em até 45 segundos.",
-    output: "Abertura, desenvolvimento e fechamento com direção suficiente para gravação ou anúncio.",
-    nextStep: "Transformar em clipe, anúncio ou base de landing.",
+    output: "Abertura, desenvolvimento e fechamento prontos para gravação.",
+    nextStep: "Virar clipe, anúncio ou base de landing.",
   },
   {
     title: "De peça pronta para saída rastreada",
     input: "Organizar um post, roteiro ou clipe com estado claro de draft, exported e published.",
-    output: "Projeto salvo, checkpoints no editor e trilha de saída registrada sem confundir trabalho em andamento com publicação final.",
-    nextStep: "Exportar no dispositivo ou registrar publicação manual com clareza.",
+    output: "Projeto salvo, checkpoints no editor e trilha de saída registrada.",
+    nextStep: "Exportar ou registrar a publicação manual.",
   },
 ];
 
@@ -62,7 +58,7 @@ export default function HowItWorksPage() {
               <p className="section-kicker">Fluxo da plataforma</p>
               <h1 style={{ margin: 0, letterSpacing: -0.3 }}>Como funciona</h1>
               <p className="hero-copy-compact">
-                Uma visão curta do fluxo que o beta pago/controlado realmente sustenta hoje: creators hero, projeto, editor e saída rastreada em sequência clara.
+                O fluxo real do produto hoje: creators, projeto, editor e saída rastreada.
               </p>
             </div>
           </div>
@@ -70,15 +66,15 @@ export default function HowItWorksPage() {
           <div className="how-it-works-context-grid">
             <div className="how-it-works-context-item">
               <strong>Fluxo único</strong>
-              <span>Creators hero prepara contexto, Projetos guarda continuidade e o editor centraliza a execução.</span>
+              <span>Creators abrem, Projetos guardam, Editor fecha.</span>
             </div>
             <div className="how-it-works-context-item">
-              <strong>Camada comercial clara</strong>
-              <span>Plans e Credits sustentam o beta pago/controlado sem disputar o centro da proposta criativa.</span>
+              <strong>Camada comercial</strong>
+              <span>Plans e Credits sustentam o acesso sem disputar o núcleo criativo.</span>
             </div>
             <div className="how-it-works-context-item">
-              <strong>Privacidade aplicada</strong>
-              <span>Os dados do projeto não são usados para treinar modelos e o processamento segue isolado por conta.</span>
+              <strong>Privacidade</strong>
+              <span>Dados da conta ficam isolados e fora de treino.</span>
             </div>
           </div>
         </section>
@@ -88,7 +84,7 @@ export default function HowItWorksPage() {
             <p className="section-kicker">Sequência operacional</p>
             <h2 className="heading-reset">Do contexto à saída rastreada</h2>
             <p className="helper-text-ea">
-              Os passos abaixo continuam o mesmo sistema. A leitura precisa parecer progressão de trabalho, não uma grade de cards independentes.
+              Quatro etapas. Um fluxo.
             </p>
           </div>
 
@@ -113,7 +109,7 @@ export default function HowItWorksPage() {
             <p className="section-kicker">Exemplos concretos</p>
             <h2 className="heading-reset">Do briefing ao resultado</h2>
             <p className="helper-text-ea">
-              Cada fluxo abaixo mostra o tipo de entrega que o núcleo atual já consegue organizar com IA, projeto, checkpoints e continuidade no editor.
+              Três exemplos do que o núcleo atual já organiza com clareza.
             </p>
           </div>
 
@@ -148,13 +144,13 @@ export default function HowItWorksPage() {
               <Link href="/editor/new" className="text-link-ea">
                 /editor/new
               </Link>{" "}
-              e abra primeiro texto ou vídeo, que hoje concentram a melhor continuidade do beta pago/controlado.
+              e comece por texto ou vídeo.
             </span>
           </div>
 
           <div className="how-it-works-note-open how-it-works-note-open-trust">
-            <strong>Privacidade sem ruído jurídico</strong>
-            <span>O produto prioriza processamento isolado, confidencialidade operacional e não usa os dados da sua conta para treinar modelos.</span>
+            <strong>Privacidade clara</strong>
+            <span>Os dados da conta não entram em treino e o processamento segue isolado.</span>
           </div>
         </section>
       </div>

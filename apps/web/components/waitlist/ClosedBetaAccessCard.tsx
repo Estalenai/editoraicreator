@@ -24,16 +24,16 @@ function statusLabel(status: BetaAccessStatus | null): string {
 
 function statusMessage(status: BetaAccessStatus | null): string {
   if (status === "approved") return "Seu acesso foi liberado. Faça login para entrar na plataforma.";
-  if (status === "rejected") return "Sua solicitação não foi aprovada neste ciclo. Você pode reenviar para nova análise.";
-  if (status === "pending") return "Seu pedido está em análise. Atualize o status em instantes para acompanhar.";
-  return "Informe seu e-mail para entrar na fila de espera. Você será avisado quando o acesso for liberado.";
+  if (status === "rejected") return "Sua solicitação não foi aprovada neste ciclo. Você pode reenviar.";
+  if (status === "pending") return "Seu pedido está em análise.";
+  return "Informe seu e-mail para entrar na fila.";
 }
 
 export function ClosedBetaAccessCard({
   initialEmail = "",
   initialStatus = null,
   title = "Beta fechado",
-  description = "O Editor AI Creator está em beta fechado. Solicite acesso antecipado para entrar na fila de liberação.",
+  description = "Solicite acesso para entrar na fila de liberação.",
   compact = false,
 }: Props) {
   const [email, setEmail] = useState(initialEmail);
@@ -108,7 +108,7 @@ export function ClosedBetaAccessCard({
           />
         </label>
         <div className="helper-text-ea">
-          Usamos este e-mail para atualizar seu status e liberar acesso quando aprovado.
+          Usamos este e-mail para atualizar seu status.
         </div>
         <button
           type="submit"
@@ -127,7 +127,7 @@ export function ClosedBetaAccessCard({
       ) : null}
       {success ? (
         <div className="state-ea state-ea-success" style={{ marginTop: 10 }}>
-          <p className="state-ea-title">Atualização concluída</p>
+          <p className="state-ea-title">Fila atualizada</p>
           <div className="state-ea-text">{success}</div>
         </div>
       ) : null}
