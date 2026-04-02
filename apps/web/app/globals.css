@@ -15220,3 +15220,120 @@ body {
     opacity: 0.24;
   }
 }
+
+/* Dashboard de-boxing pass */
+.app-shell-frame:has(.dashboard-page) .app-shell-main::before {
+  background:
+    linear-gradient(180deg, rgba(4, 12, 31, 0.08), rgba(4, 12, 31, 0.03) 18%, transparent 56%),
+    radial-gradient(760px 220px at 50% 100%, rgba(88, 242, 255, 0.028), transparent 80%);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-page-canvas {
+  padding: 0;
+  border: 0 !important;
+  border-radius: 0;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-page-canvas > * + *::before {
+  opacity: 0.2;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-page-canvas .dashboard-hero-support,
+.app-shell-frame:has(.dashboard-page) .dashboard-page-canvas .dashboard-summary-surface {
+  padding: 0;
+  border: 0 !important;
+  border-radius: 0;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-page-canvas .dashboard-hero-support {
+  gap: 14px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-page-canvas .dashboard-hero-support-head {
+  padding-top: 12px;
+  border-top: 1px solid rgba(191, 239, 255, 0.08);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-page-canvas .dashboard-hero-support-grid {
+  gap: 10px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-page-canvas .dashboard-hero-support-note {
+  border-color: rgba(191, 239, 255, 0.055);
+  background:
+    radial-gradient(180px 72px at 100% 0%, rgba(88, 242, 255, 0.038), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.015), rgba(255, 255, 255, 0.004));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.018);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-page-canvas .dashboard-summary-grid {
+  gap: 14px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-page-canvas .dashboard-summary-card,
+.app-shell-frame:has(.dashboard-page) .dashboard-page .dashboard-onboarding-card,
+.app-shell-frame:has(.dashboard-page) .dashboard-pane-section,
+.app-shell-frame:has(.dashboard-page) .dashboard-projects-list .dashboard-project-link,
+.app-shell-frame:has(.dashboard-page) .dashboard-support-links-list .dashboard-quick-link,
+.app-shell-frame:has(.dashboard-page) .dashboard-usage-list .dashboard-progress-card,
+.app-shell-frame:has(.dashboard-page) .dashboard-core-links-grid .dashboard-quick-link,
+.app-shell-frame:has(.dashboard-page) .dashboard-context-list .trust-note,
+.app-shell-frame:has(.dashboard-page) .dashboard-page .dashboard-onboarding-step,
+.app-shell-frame:has(.dashboard-page) .dashboard-page .dashboard-onboarding-path,
+.app-shell-frame:has(.dashboard-page) .dashboard-page .dashboard-onboarding-credit {
+  border-color: rgba(191, 239, 255, 0.055) !important;
+  background:
+    radial-gradient(220px 88px at 100% 0%, rgba(88, 242, 255, 0.038), transparent 76%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.017), rgba(255, 255, 255, 0.004)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.018),
+    0 8px 20px rgba(2, 6, 23, 0.045) !important;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-pane-section-featured {
+  background:
+    radial-gradient(260px 104px at 100% 0%, rgba(88, 242, 255, 0.042), transparent 76%),
+    radial-gradient(240px 112px at 0% 100%, rgba(88, 120, 255, 0.048), transparent 82%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.005)) !important;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-pane-section-quiet {
+  background:
+    radial-gradient(220px 92px at 100% 0%, rgba(88, 242, 255, 0.03), transparent 78%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.015), rgba(255, 255, 255, 0.004)) !important;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-workspace-shell::before {
+  inset: 10px -20px -20px -20px;
+  background:
+    radial-gradient(580px 200px at 18% 0%, rgba(75, 232, 255, 0.04), transparent 76%),
+    radial-gradient(760px 260px at 50% 100%, rgba(88, 120, 255, 0.055), transparent 82%);
+  opacity: 0.58;
+  filter: blur(2px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-workspace-shell::after {
+  opacity: 0.16;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-workspace-grid {
+  grid-template-columns: minmax(0, 1.72fr) minmax(clamp(14rem, 18vw, 16.5rem), 0.72fr);
+  gap: clamp(16px, 2vw, 22px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-main-card-projects {
+  grid-column: span 8;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-main-card-core {
+  grid-column: span 4;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-page .dashboard-onboarding-card::after {
+  opacity: 0.18;
+}
