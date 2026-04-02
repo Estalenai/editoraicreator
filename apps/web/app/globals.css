@@ -16688,10 +16688,11 @@ body {
 
 .projects-page .projects-hero-bridge {
   padding: 16px 18px;
-  border: 1px solid rgba(191, 239, 255, 0.06);
+  border: 1px solid rgba(191, 239, 255, 0.052);
   border-radius: 20px;
   background:
-    radial-gradient(220px 90px at 100% 0%, rgba(88, 242, 255, 0.05), transparent 74%),
+    radial-gradient(220px 90px at 100% 0%, rgba(88, 242, 255, 0.058), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.008)),
     var(--ea-page-subtle-surface);
   box-shadow: none;
 }
@@ -16702,9 +16703,12 @@ body {
   align-content: start;
   width: min(100%, 308px);
   padding: 18px;
-  border: 1px solid rgba(191, 239, 255, 0.06);
+  border: 1px solid rgba(191, 239, 255, 0.052);
   border-radius: 22px;
-  background: var(--ea-page-subtle-surface) !important;
+  background:
+    radial-gradient(180px 84px at 100% 0%, rgba(88, 242, 255, 0.045), transparent 72%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.006)),
+    var(--ea-page-subtle-surface) !important;
   box-shadow: none !important;
 }
 
@@ -16754,9 +16758,12 @@ body {
 .projects-page .dashboard-project-link {
   min-height: 96px;
   padding: 16px 18px !important;
-  border: 1px solid rgba(191, 239, 255, 0.06) !important;
+  border: 1px solid rgba(191, 239, 255, 0.052) !important;
   border-radius: 18px;
-  background: var(--ea-page-subtle-surface) !important;
+  background:
+    radial-gradient(220px 88px at 100% 0%, rgba(88, 242, 255, 0.038), transparent 72%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.008)),
+    var(--ea-page-subtle-surface) !important;
   box-shadow: none !important;
 }
 
@@ -16787,9 +16794,12 @@ body {
 .projects-page .projects-publish-grid > .proof-value-card:first-child {
   min-height: 160px;
   padding: 16px 18px !important;
-  border: 1px solid rgba(191, 239, 255, 0.06) !important;
+  border: 1px solid rgba(191, 239, 255, 0.052) !important;
   border-radius: 18px;
-  background: var(--ea-page-subtle-surface) !important;
+  background:
+    radial-gradient(200px 84px at 100% 0%, rgba(88, 242, 255, 0.04), transparent 72%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.008)),
+    var(--ea-page-subtle-surface) !important;
   box-shadow: none !important;
 }
 
@@ -16819,9 +16829,12 @@ body {
 .projects-page .vercel-publish-grid > *,
 .projects-page .vercel-publish-links > * {
   padding: 18px !important;
-  border: 1px solid rgba(191, 239, 255, 0.06) !important;
+  border: 1px solid rgba(191, 239, 255, 0.052) !important;
   border-radius: 18px;
-  background: var(--ea-page-subtle-surface) !important;
+  background:
+    radial-gradient(220px 92px at 100% 0%, rgba(88, 242, 255, 0.036), transparent 72%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.007)),
+    var(--ea-page-subtle-surface) !important;
   box-shadow: none !important;
 }
 
@@ -16834,9 +16847,11 @@ body {
 .projects-page .vercel-publish-note,
 .projects-page .vercel-publish-history-item {
   padding: 12px 14px !important;
-  border: 1px solid rgba(191, 239, 255, 0.06) !important;
+  border: 1px solid rgba(191, 239, 255, 0.05) !important;
   border-radius: 16px;
-  background: rgba(255, 255, 255, 0.018) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.007)),
+    rgba(255, 255, 255, 0.012) !important;
   box-shadow: none !important;
 }
 
@@ -16848,6 +16863,18 @@ body {
 
 .projects-page .vercel-publish-history {
   gap: 12px;
+}
+
+.projects-page .github-workspace-head,
+.projects-page .vercel-publish-head {
+  gap: 10px 14px;
+}
+
+.projects-page .github-workspace-meta-row,
+.projects-page .github-workspace-target-row,
+.projects-page .github-workspace-cta-row,
+.projects-page .vercel-publish-actions {
+  gap: 10px 12px;
 }
 
 .projects-page .projects-handoff-section .section-head,
@@ -16906,6 +16933,13 @@ body {
     grid-template-columns: minmax(0, 1fr);
   }
 
+  .projects-page .github-workspace-grid,
+  .projects-page .vercel-publish-grid,
+  .projects-page .vercel-publish-status-grid,
+  .projects-page .vercel-publish-links {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .projects-page .projects-hero-open,
   .projects-page .projects-list-section,
   .projects-page .projects-publish-section,
@@ -16927,6 +16961,15 @@ body {
 
   .projects-page .projects-hero-actions > * {
     flex: 1 1 100%;
+  }
+
+  .projects-page .dashboard-project-link {
+    min-height: 0;
+  }
+
+  .projects-page .dashboard-project-link-cta {
+    align-self: flex-start;
+    padding-left: 0;
   }
 }
 
