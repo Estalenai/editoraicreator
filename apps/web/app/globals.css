@@ -9679,10 +9679,11 @@ body {
   gap: 6px;
   min-width: 0;
   padding: 15px 16px 14px;
-  border: 1px solid var(--ea-unified-divider) !important;
+  border: 1px solid rgba(191, 239, 255, 0.052) !important;
   border-radius: 18px;
   background:
-    radial-gradient(220px 90px at 100% 0%, rgba(88, 242, 255, 0.038), transparent 74%),
+    radial-gradient(220px 90px at 100% 0%, rgba(88, 242, 255, 0.035), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.007)),
     var(--ea-page-subtle-surface) !important;
   box-shadow: none !important;
   transform: none !important;
@@ -9801,9 +9802,12 @@ body {
 .credits-support-rail .credits-guide-note,
 .credits-support-rail .credits-support-state {
   padding: 14px 15px 13px;
-  border-color: var(--ea-unified-divider) !important;
+  border: 1px solid rgba(191, 239, 255, 0.048) !important;
+  border-left: 2px solid rgba(88, 242, 255, 0.12) !important;
+  border-radius: 16px;
   background:
-    radial-gradient(220px 88px at 100% 0%, rgba(88, 242, 255, 0.038), transparent 74%),
+    linear-gradient(90deg, rgba(88, 242, 255, 0.022), transparent 16%),
+    radial-gradient(220px 88px at 100% 0%, rgba(88, 242, 255, 0.03), transparent 74%),
     var(--ea-page-subtle-surface) !important;
   box-shadow: none !important;
 }
@@ -9856,10 +9860,11 @@ body {
   gap: 10px;
   min-height: 0;
   padding: 18px 18px 16px;
-  border: 1px solid var(--ea-unified-divider) !important;
+  border: 1px solid rgba(191, 239, 255, 0.052) !important;
   border-radius: 22px;
   background:
-    radial-gradient(220px 92px at 100% 0%, rgba(88, 242, 255, 0.042), transparent 74%),
+    radial-gradient(220px 92px at 100% 0%, rgba(88, 242, 255, 0.038), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.008)),
     var(--ea-page-subtle-surface) !important;
   box-shadow: none !important;
   transform: none !important;
@@ -9869,8 +9874,8 @@ body {
   grid-column: 1 / -1;
   padding: 20px 20px 18px;
   background:
-    radial-gradient(340px 120px at 100% 0%, rgba(88, 242, 255, 0.058), transparent 74%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01)) !important;
+    radial-gradient(340px 120px at 100% 0%, rgba(88, 242, 255, 0.052), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0.009)) !important;
 }
 
 .credits-page .credits-balance-list {
@@ -9880,9 +9885,9 @@ body {
 
 .credits-page .credits-balance-row {
   padding: 11px 12px;
-  border: 1px solid rgba(191, 239, 255, 0.06) !important;
+  border: 1px solid rgba(191, 239, 255, 0.05) !important;
   border-radius: 16px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.006)) !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.016), rgba(255, 255, 255, 0.005)) !important;
   box-shadow: none !important;
 }
 
@@ -9936,9 +9941,9 @@ body {
 
 .credits-page .credits-purchase-checkout-note {
   padding: 12px 14px;
-  border: 1px solid rgba(191, 239, 255, 0.06);
+  border: 1px solid rgba(191, 239, 255, 0.05);
   border-radius: 16px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.006));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.016), rgba(255, 255, 255, 0.005));
 }
 
 .credits-purchase-actions {
@@ -9997,17 +10002,19 @@ body {
 
 .credits-page .credits-history-list {
   margin-top: 0;
-  gap: 12px;
+  gap: 10px;
 }
 
 .credits-page .credits-history-item {
-  gap: 10px;
-  padding: 17px 16px 16px;
-  border: 1px solid var(--ea-unified-divider) !important;
-  border-radius: 18px;
+  gap: 8px;
+  padding: 15px 15px 14px;
+  border: 1px solid rgba(191, 239, 255, 0.048) !important;
+  border-left: 2px solid rgba(88, 242, 255, 0.12) !important;
+  border-radius: 16px;
   background:
-    radial-gradient(220px 84px at 100% 0%, rgba(88, 242, 255, 0.042), transparent 74%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.022), rgba(255, 255, 255, 0.007)) !important;
+    linear-gradient(90deg, rgba(88, 242, 255, 0.018), transparent 18%),
+    radial-gradient(220px 84px at 100% 0%, rgba(88, 242, 255, 0.032), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.006)) !important;
   box-shadow: none !important;
   transform: none !important;
 }
@@ -10031,9 +10038,11 @@ body {
 }
 
 .credits-page .credits-support-state {
-  border-color: var(--ea-unified-divider) !important;
+  border: 1px solid rgba(191, 239, 255, 0.048) !important;
+  border-left: 2px solid rgba(88, 242, 255, 0.12) !important;
   background:
-    radial-gradient(220px 88px at 100% 0%, rgba(88, 242, 255, 0.038), transparent 74%),
+    linear-gradient(90deg, rgba(88, 242, 255, 0.022), transparent 18%),
+    radial-gradient(220px 88px at 100% 0%, rgba(88, 242, 255, 0.03), transparent 74%),
     var(--ea-page-subtle-surface) !important;
   box-shadow: none !important;
 }
@@ -10041,9 +10050,10 @@ body {
 .credits-page .purchase-option-card,
 .credits-page .purchase-summary-card,
 .credits-page .quote-summary-card {
-  border-color: var(--ea-unified-divider) !important;
+  border: 1px solid rgba(191, 239, 255, 0.05) !important;
   background:
-    radial-gradient(220px 88px at 100% 0%, rgba(88, 242, 255, 0.038), transparent 74%),
+    radial-gradient(220px 88px at 100% 0%, rgba(88, 242, 255, 0.034), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.016), rgba(255, 255, 255, 0.006)),
     var(--ea-page-subtle-surface) !important;
   box-shadow: none !important;
   transform: none !important;
@@ -10196,6 +10206,14 @@ body {
 
   .credits-page .credits-purchase-cta {
     width: 100%;
+  }
+
+  .credits-support-rail .credits-context-item,
+  .credits-support-rail .credits-guide-card,
+  .credits-support-rail .credits-guide-note,
+  .credits-support-rail .credits-support-state,
+  .credits-page .credits-history-item {
+    border-left-width: 1px !important;
   }
 }
 
