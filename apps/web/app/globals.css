@@ -15245,7 +15245,7 @@ body {
 }
 
 .app-shell-frame:has(.dashboard-page) .dashboard-page::after {
-  opacity: 0.62;
+  opacity: 0.68;
 }
 
 .app-shell-frame:has(.dashboard-page) .dashboard-page-canvas {
@@ -15329,16 +15329,24 @@ body {
 }
 
 .app-shell-frame:has(.dashboard-page) .dashboard-workspace-shell::before {
-  inset: 10px -20px -20px -20px;
+  inset: 4px -28px -28px -28px;
   background:
-    radial-gradient(580px 200px at 18% 0%, rgba(75, 232, 255, 0.04), transparent 76%),
-    radial-gradient(760px 260px at 50% 100%, rgba(88, 120, 255, 0.055), transparent 82%);
-  opacity: 0.58;
-  filter: blur(2px);
+    radial-gradient(620px 220px at 10% 4%, rgba(75, 232, 255, 0.07), transparent 74%),
+    radial-gradient(720px 240px at 82% 18%, rgba(100, 146, 255, 0.06), transparent 78%),
+    radial-gradient(940px 320px at 50% 100%, rgba(88, 120, 255, 0.08), transparent 82%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.014), rgba(255, 255, 255, 0.004));
+  opacity: 0.74;
+  filter: blur(1px);
 }
 
 .app-shell-frame:has(.dashboard-page) .dashboard-workspace-shell::after {
-  opacity: 0.16;
+  inset: auto 8% -18% 8%;
+  height: clamp(220px, 26vw, 310px);
+  opacity: 0.28;
+  background:
+    radial-gradient(circle, rgba(88, 242, 255, 0.18), rgba(88, 242, 255, 0) 58%),
+    radial-gradient(circle, rgba(88, 120, 255, 0.18), rgba(88, 120, 255, 0) 72%);
+  filter: blur(32px);
 }
 
 .app-shell-frame:has(.dashboard-page) .dashboard-workspace-grid {
@@ -15365,6 +15373,11 @@ body {
 
 .app-shell-frame:has(.dashboard-page) .dashboard-pane-section {
   padding: clamp(20px, 2.3vw, 26px) !important;
+  border-color: rgba(191, 239, 255, 0.065) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.022),
+    0 12px 28px rgba(2, 6, 23, 0.07),
+    0 0 0 1px rgba(255, 255, 255, 0.012) !important;
 }
 
 .app-shell-frame:has(.dashboard-page) .dashboard-support-links-list {
@@ -15373,6 +15386,14 @@ body {
 
 .app-shell-frame:has(.dashboard-page) .dashboard-usage-band {
   margin-top: clamp(4px, 0.8vw, 10px);
+  border-color: rgba(191, 239, 255, 0.07) !important;
+  background:
+    radial-gradient(320px 132px at 10% 0%, rgba(88, 242, 255, 0.055), transparent 74%),
+    radial-gradient(360px 160px at 100% 100%, rgba(88, 120, 255, 0.06), transparent 78%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.006)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.024),
+    0 14px 34px rgba(2, 6, 23, 0.075) !important;
 }
 
 .app-shell-frame:has(.dashboard-page) .dashboard-usage-band .section-head {
@@ -15386,6 +15407,27 @@ body {
 
 .app-shell-frame:has(.dashboard-page) .dashboard-usage-list-band .dashboard-progress-card {
   min-height: 96px;
+  border-color: rgba(191, 239, 255, 0.065) !important;
+  background:
+    radial-gradient(200px 84px at 100% 0%, rgba(88, 242, 255, 0.05), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.022), rgba(255, 255, 255, 0.008)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.022),
+    0 10px 24px rgba(2, 6, 23, 0.065) !important;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-support-links-list .dashboard-quick-link,
+.app-shell-frame:has(.dashboard-page) .dashboard-context-list .trust-note,
+.app-shell-frame:has(.dashboard-page) .dashboard-summary-card-secondary,
+.app-shell-frame:has(.dashboard-page) .dashboard-summary-card-monitor {
+  border-color: rgba(191, 239, 255, 0.065) !important;
+  background:
+    radial-gradient(220px 92px at 100% 0%, rgba(88, 242, 255, 0.046), transparent 76%),
+    radial-gradient(260px 120px at 0% 100%, rgba(88, 120, 255, 0.045), transparent 80%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.019), rgba(255, 255, 255, 0.006)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.02),
+    0 10px 24px rgba(2, 6, 23, 0.06) !important;
 }
 
 @media (max-width: 1500px) and (min-width: 1181px) {
