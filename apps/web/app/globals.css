@@ -9408,7 +9408,22 @@ body {
 
 /* Credits page local surface hierarchy */
 .credits-page {
+  position: relative;
   gap: clamp(24px, 2.8vw, 36px);
+}
+
+.credits-page::after {
+  content: "";
+  position: absolute;
+  inset: clamp(180px, 16vw, 240px) clamp(-64px, -5vw, -18px) -72px;
+  background:
+    radial-gradient(760px 240px at 16% 20%, rgba(88, 242, 255, 0.07), transparent 74%),
+    radial-gradient(880px 300px at 82% 56%, rgba(88, 120, 255, 0.085), transparent 76%),
+    radial-gradient(720px 260px at 50% 100%, rgba(190, 244, 255, 0.042), transparent 80%);
+  opacity: 0.82;
+  pointer-events: none;
+  filter: blur(2px);
+  z-index: 0;
 }
 
 .credits-page-canvas {
@@ -9419,6 +9434,38 @@ body {
   border-radius: 0;
   background: transparent !important;
   box-shadow: none !important;
+  position: relative;
+  isolation: isolate;
+}
+
+.credits-page-canvas::before,
+.credits-page-canvas::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.credits-page-canvas::before {
+  inset: clamp(236px, 22vw, 312px) -38px auto -38px;
+  height: clamp(360px, 34vw, 470px);
+  background:
+    radial-gradient(closest-side at 16% 18%, rgba(88, 242, 255, 0.082), transparent 74%),
+    radial-gradient(closest-side at 84% 44%, rgba(88, 120, 255, 0.09), transparent 76%),
+    radial-gradient(closest-side at 48% 100%, rgba(190, 244, 255, 0.045), transparent 80%);
+  opacity: 0.74;
+  filter: blur(18px);
+  z-index: 0;
+}
+
+.credits-page-canvas::after {
+  inset: auto 7% -4% 7%;
+  height: clamp(320px, 28vw, 420px);
+  background:
+    radial-gradient(circle, rgba(88, 242, 255, 0.16), rgba(88, 242, 255, 0) 56%),
+    radial-gradient(circle, rgba(88, 120, 255, 0.16), rgba(88, 120, 255, 0) 70%);
+  opacity: 0.24;
+  filter: blur(48px);
+  z-index: 0;
 }
 
 .credits-page-hero-region {
@@ -9535,11 +9582,15 @@ body {
   align-items: start;
   padding-top: 0;
   border-top: 0;
+  position: relative;
+  z-index: 1;
 }
 
 .credits-main-region,
 .credits-support-rail {
   min-width: 0;
+  position: relative;
+  z-index: 1;
 }
 
 .credits-main-region {
@@ -9553,15 +9604,19 @@ body {
   display: grid;
   gap: 16px;
   padding: clamp(18px, 2.1vw, 24px);
-  border: 1px solid rgba(191, 239, 255, 0.08) !important;
+  border: 1px solid rgba(191, 239, 255, 0.095) !important;
   border-radius: 24px;
   background:
-    radial-gradient(320px 120px at 100% 0%, rgba(88, 242, 255, 0.05), transparent 76%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.022), rgba(255, 255, 255, 0.008)) !important;
+    radial-gradient(360px 128px at 0% 0%, rgba(88, 242, 255, 0.046), transparent 76%),
+    radial-gradient(380px 154px at 100% 0%, rgba(88, 120, 255, 0.076), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.009)) !important;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.028),
-    0 14px 34px rgba(2, 6, 23, 0.1) !important;
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 16px 36px rgba(2, 6, 23, 0.1),
+    0 0 0 1px rgba(255, 255, 255, 0.01) !important;
   overflow: clip;
+  position: relative;
+  z-index: 1;
 }
 
 .credits-main-section + .credits-main-section,
@@ -9578,6 +9633,19 @@ body {
   align-content: start;
   padding-left: 0;
   border-left: 0;
+}
+
+.credits-page .credits-packages-section,
+.credits-page .credits-main-section.credits-conversion-region,
+.credits-page .credits-history-region {
+  background:
+    radial-gradient(420px 152px at 12% 0%, rgba(88, 242, 255, 0.058), transparent 76%),
+    radial-gradient(460px 176px at 100% 0%, rgba(88, 120, 255, 0.082), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.032), rgba(255, 255, 255, 0.01)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.032),
+    0 18px 40px rgba(2, 6, 23, 0.105),
+    0 0 0 1px rgba(255, 255, 255, 0.012) !important;
 }
 
 .credits-support-rail .section-header-ea {
@@ -9598,6 +9666,14 @@ body {
 .credits-support-rail .credits-guide-note,
 .credits-support-rail .credits-support-state {
   padding: 14px 15px 13px;
+  border-color: rgba(191, 239, 255, 0.09) !important;
+  background:
+    radial-gradient(220px 88px at 100% 0%, rgba(88, 242, 255, 0.052), transparent 74%),
+    radial-gradient(220px 100px at 0% 100%, rgba(88, 120, 255, 0.044), transparent 78%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.026), rgba(255, 255, 255, 0.008)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.024),
+    0 12px 28px rgba(2, 6, 23, 0.08) !important;
 }
 
 .credits-support-rail .credits-context-list,
@@ -9785,23 +9861,27 @@ body {
 }
 
 .credits-page .credits-history-region {
-  gap: 16px;
+  gap: 18px;
+  padding: clamp(20px, 2.2vw, 26px);
 }
 
 .credits-page .credits-history-list {
   margin-top: 0;
-  gap: 10px;
+  gap: 12px;
 }
 
 .credits-page .credits-history-item {
   gap: 10px;
-  padding: 16px 16px 15px;
-  border: 1px solid rgba(191, 239, 255, 0.07) !important;
+  padding: 17px 16px 16px;
+  border: 1px solid rgba(191, 239, 255, 0.09) !important;
   border-radius: 18px;
   background:
-    radial-gradient(180px 72px at 100% 0%, rgba(88, 242, 255, 0.045), transparent 74%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.022), rgba(255, 255, 255, 0.008)) !important;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.022) !important;
+    radial-gradient(220px 84px at 100% 0%, rgba(88, 242, 255, 0.052), transparent 74%),
+    radial-gradient(220px 100px at 0% 100%, rgba(88, 120, 255, 0.046), transparent 78%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.026), rgba(255, 255, 255, 0.009)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.024),
+    0 12px 28px rgba(2, 6, 23, 0.075) !important;
   transform: none !important;
 }
 
