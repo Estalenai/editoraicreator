@@ -401,9 +401,10 @@ export default function DashboardPage() {
         )}
       </section>
 
+      <section className="dashboard-workspace-shell" data-reveal data-reveal-delay="135">
       <div className="dashboard-workspace-grid">
         <div className="dashboard-workspace-main">
-          <section className="dashboard-section-card dashboard-pane-section" data-reveal data-reveal-delay="150">
+          <section className="dashboard-section-card dashboard-pane-section dashboard-pane-section-featured dashboard-main-card dashboard-main-card-projects" data-reveal data-reveal-delay="150">
             <div className="section-head">
               <div className="section-header-ea">
                 <h3 className="heading-reset">Projetos recentes</h3>
@@ -470,7 +471,7 @@ export default function DashboardPage() {
             )}
           </section>
 
-          <section className="dashboard-section-card dashboard-pane-section" data-reveal data-reveal-delay="180">
+          <section className="dashboard-section-card dashboard-pane-section dashboard-pane-section-featured dashboard-main-card dashboard-main-card-core" data-reveal data-reveal-delay="180">
             <div className="section-head">
               <div className="section-header-ea">
                 <h3 className="heading-reset">Núcleo do beta pago/controlado</h3>
@@ -506,7 +507,7 @@ export default function DashboardPage() {
         </div>
 
         <aside className="dashboard-workspace-rail">
-          <section className="dashboard-section-card dashboard-pane-section dashboard-pane-section-quiet" data-reveal data-reveal-delay="120">
+          <section className="dashboard-section-card dashboard-pane-section dashboard-pane-section-quiet dashboard-pane-section-rail" data-reveal data-reveal-delay="120">
             <div className="section-head">
               <div className="section-header-ea">
                 <h3 className="heading-reset">Transparência de consumo</h3>
@@ -529,7 +530,7 @@ export default function DashboardPage() {
             </div>
           </section>
 
-          <section className="dashboard-section-card dashboard-pane-section dashboard-pane-section-quiet" data-reveal data-reveal-delay="195">
+          <section className="dashboard-section-card dashboard-pane-section dashboard-pane-section-quiet dashboard-pane-section-rail" data-reveal data-reveal-delay="195">
             <div className="section-head">
               <div className="section-header-ea">
                 <h3 className="heading-reset">Camadas operacionais</h3>
@@ -556,7 +557,7 @@ export default function DashboardPage() {
             </div>
           </section>
 
-          <section className="dashboard-section-card dashboard-pane-section dashboard-pane-section-quiet" data-reveal data-reveal-delay="210">
+          <section className="dashboard-section-card dashboard-pane-section dashboard-pane-section-quiet dashboard-pane-section-rail" data-reveal data-reveal-delay="210">
             <div className="section-head">
               <div className="section-header-ea">
                 <h3 className="heading-reset">Uso por feature</h3>
@@ -608,6 +609,7 @@ export default function DashboardPage() {
           </section>
         </aside>
       </div>
+      </section>
       </div>
     </div>
   );

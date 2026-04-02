@@ -12464,23 +12464,106 @@ body {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.024), rgba(255, 255, 255, 0.008)) !important;
 }
 
+.dashboard-workspace-shell {
+  position: relative;
+  isolation: isolate;
+  padding: clamp(20px, 2.5vw, 28px);
+  border: 1px solid rgba(191, 239, 255, 0.09);
+  border-radius: 30px;
+  background:
+    radial-gradient(520px 190px at 0% 0%, rgba(75, 232, 255, 0.08), transparent 70%),
+    radial-gradient(680px 260px at 50% 100%, rgba(88, 120, 255, 0.1), transparent 78%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.022), rgba(255, 255, 255, 0.008));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 18px 40px rgba(2, 6, 23, 0.14);
+  overflow: clip;
+}
+
+.dashboard-workspace-shell::before,
+.dashboard-workspace-shell::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.dashboard-workspace-shell::before {
+  inset: 0;
+  border-radius: inherit;
+  background:
+    linear-gradient(180deg, rgba(191, 239, 255, 0.035), transparent 18%, transparent 72%, rgba(88, 120, 255, 0.035));
+  opacity: 0.9;
+}
+
+.dashboard-workspace-shell::after {
+  inset: auto 8% -12% 8%;
+  height: clamp(180px, 26vw, 250px);
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(88, 120, 255, 0.22), rgba(88, 120, 255, 0));
+  opacity: 0.36;
+  filter: blur(32px);
+}
+
+.dashboard-workspace-shell > * {
+  position: relative;
+  z-index: 1;
+}
+
 .dashboard-workspace-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.72fr) minmax(clamp(15rem, 23vw, 18.5rem), 0.72fr);
-  gap: clamp(22px, 2.8vw, 34px);
+  grid-template-columns: minmax(0, 1.48fr) minmax(clamp(18rem, 27vw, 22rem), 1fr);
+  gap: clamp(18px, 2.4vw, 28px);
   align-items: start;
 }
 
 .dashboard-workspace-main,
 .dashboard-workspace-rail {
   display: grid;
-  gap: clamp(16px, 1.9vw, 22px);
+  gap: clamp(14px, 1.8vw, 20px);
   min-width: 0;
 }
 
+.dashboard-workspace-main {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  align-items: start;
+}
+
+.dashboard-main-card {
+  min-width: 0;
+}
+
+.dashboard-main-card-projects {
+  grid-column: span 7;
+}
+
+.dashboard-main-card-core {
+  grid-column: span 5;
+}
+
+.dashboard-workspace-main > .dashboard-onboarding-card {
+  grid-column: 1 / -1;
+}
+
 .dashboard-workspace-rail {
-  padding-left: 0;
+  position: relative;
+  padding-left: clamp(4px, 0.8vw, 10px);
   border-left: 0;
+}
+
+.dashboard-workspace-rail::before {
+  content: "";
+  position: absolute;
+  inset: 4px auto 4px 0;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(191, 239, 255, 0.14) 12%,
+    rgba(88, 242, 255, 0.12) 52%,
+    rgba(191, 239, 255, 0.14) 88%,
+    transparent
+  );
+  opacity: 0.7;
 }
 
 .dashboard-pane-section {
@@ -12496,10 +12579,25 @@ body {
   overflow: clip;
 }
 
+.dashboard-pane-section-featured {
+  background:
+    radial-gradient(340px 132px at 100% 0%, rgba(88, 242, 255, 0.065), transparent 76%),
+    radial-gradient(300px 140px at 0% 100%, rgba(88, 120, 255, 0.08), transparent 80%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 16px 38px rgba(2, 6, 23, 0.12) !important;
+}
+
 .dashboard-pane-section-quiet {
   background:
-    radial-gradient(240px 96px at 100% 0%, rgba(88, 242, 255, 0.04), transparent 76%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.006)) !important;
+    radial-gradient(240px 96px at 100% 0%, rgba(88, 242, 255, 0.05), transparent 76%),
+    radial-gradient(260px 120px at 0% 100%, rgba(88, 120, 255, 0.06), transparent 82%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.008)) !important;
+}
+
+.dashboard-pane-section-rail {
+  border-color: rgba(191, 239, 255, 0.09) !important;
 }
 
 .dashboard-pane-section > .helper-text-ea:last-child,
@@ -12520,7 +12618,7 @@ body {
 .dashboard-usage-list,
 .dashboard-support-links-list {
   display: grid;
-  gap: 10px;
+  gap: 12px;
 }
 
 .dashboard-project-skeleton-row {
@@ -12561,13 +12659,15 @@ body {
 .dashboard-support-links-list .dashboard-quick-link,
 .dashboard-usage-list .dashboard-progress-card {
   min-height: 0;
-  padding: 15px 16px;
+  padding: 16px 17px;
   border: 1px solid rgba(191, 239, 255, 0.07) !important;
-  border-radius: 18px;
+  border-radius: 20px;
   background:
-    radial-gradient(180px 72px at 100% 0%, rgba(88, 242, 255, 0.05), transparent 74%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.022), rgba(255, 255, 255, 0.008)) !important;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.022) !important;
+    radial-gradient(200px 84px at 100% 0%, rgba(88, 242, 255, 0.055), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.024), rgba(255, 255, 255, 0.01)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.024),
+    0 10px 24px rgba(2, 6, 23, 0.08) !important;
 }
 
 .dashboard-core-links-grid {
@@ -12587,6 +12687,14 @@ body {
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.024),
     0 10px 24px rgba(2, 6, 23, 0.08) !important;
+}
+
+.dashboard-support-links-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.dashboard-support-links-list .dashboard-quick-link {
+  min-height: 126px;
 }
 
 .dashboard-context-list {
@@ -12621,6 +12729,18 @@ body {
 .dashboard-page .dashboard-onboarding-card .onboarding-objective-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
+}
+
+.dashboard-page .dashboard-onboarding-card::after {
+  content: "";
+  position: absolute;
+  inset: auto 8% -14% 8%;
+  height: clamp(140px, 18vw, 200px);
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(88, 120, 255, 0.2), rgba(88, 120, 255, 0));
+  opacity: 0.28;
+  filter: blur(30px);
+  pointer-events: none;
 }
 
 .dashboard-page .dashboard-onboarding-card .onboarding-card-head,
@@ -12661,11 +12781,25 @@ body {
     grid-template-columns: minmax(0, 1fr);
   }
 
+  .dashboard-workspace-main {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dashboard-main-card-projects,
+  .dashboard-main-card-core,
+  .dashboard-workspace-main > .dashboard-onboarding-card {
+    grid-column: auto;
+  }
+
   .dashboard-workspace-rail {
     padding-left: 0;
     padding-top: 0;
     border-left: 0;
     border-top: 0;
+  }
+
+  .dashboard-workspace-rail::before {
+    display: none;
   }
 
   .dashboard-page-canvas .dashboard-hero-signal-strip {
@@ -12689,6 +12823,7 @@ body {
 
 @media (max-width: 900px) {
   .dashboard-core-links-grid,
+  .dashboard-support-links-list,
   .dashboard-page-canvas .dashboard-summary-grid,
   .dashboard-page .dashboard-onboarding-card .onboarding-trust-grid,
   .dashboard-page .dashboard-onboarding-card .onboarding-objective-grid {
@@ -12806,6 +12941,11 @@ body {
   .dashboard-page .dashboard-onboarding-card .onboarding-action-row,
   .dashboard-page .dashboard-onboarding-card .hero-meta-row {
     display: grid;
+  }
+
+  .dashboard-workspace-shell {
+    padding: 16px;
+    border-radius: 24px;
   }
 }
 
