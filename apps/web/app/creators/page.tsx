@@ -30,9 +30,9 @@ type CreatorsFocusSection = "showcase" | "catalog" | "workspace";
 type CreatorGroupId = "hero" | "secondary" | "labs";
 
 const CREATOR_GROUPS: Array<{ id: CreatorGroupId; title: string; subtitle: string }> = [
-  { id: "hero", title: "Creators hero", subtitle: "Núcleo principal de aquisição, repetição de uso e continuidade com o editor no beta pago/controlado." },
-  { id: "secondary", title: "Apoio estratégico", subtitle: "Complementam o pipeline, mas não carregam o centro da promessa agora." },
-  { id: "labs", title: "Labs e preview", subtitle: "Explorações úteis, ainda fora do núcleo principal do produto." },
+  { id: "hero", title: "Creators hero", subtitle: "Núcleo principal do produto." },
+  { id: "secondary", title: "Apoio estratégico", subtitle: "Apoio útil ao pipeline." },
+  { id: "labs", title: "Labs e preview", subtitle: "Explorações fora do núcleo." },
 ];
 
 const CREATOR_TABS: Array<{
@@ -49,30 +49,30 @@ const CREATOR_TABS: Array<{
     id: "post",
     group: "hero",
     label: "Creator Post",
-    description: "Posts com legenda, CTA e variações prontos para virar peça-mãe no editor.",
-    bestFor: "Publicação rápida com clareza de saída, repetição alta e continuidade pronta para o editor.",
-    expectedOutput: "Legenda principal, CTA e variações prontas para salvar em projeto.",
-    continuity: "Entra no editor como base de copy, versão e exportação.",
+    description: "Posts com legenda, CTA e variações prontos para seguir no editor.",
+    bestFor: "Publicação rápida com continuidade clara.",
+    expectedOutput: "Legenda principal, CTA e variações.",
+    continuity: "Entra no editor como base de copy e versão.",
     stageLabel: "Hero",
   },
   {
     id: "scripts",
     group: "hero",
     label: "Creator Scripts",
-    description: "Roteiros curtos e estruturados para vídeo, gravação e continuidade no editor.",
-    bestFor: "Narrativa estruturada antes de gravar, editar, anunciar ou transformar em clipe.",
-    expectedOutput: "Roteiro com gancho, desenvolvimento e fechamento utilizável de imediato.",
-    continuity: "Vira linha mestra de vídeo, anúncio, apresentação ou refinamento editorial.",
+    description: "Roteiros curtos para vídeo, gravação e continuidade no editor.",
+    bestFor: "Narrativa antes de gravar ou anunciar.",
+    expectedOutput: "Roteiro com gancho, desenvolvimento e fechamento.",
+    continuity: "Vira base de vídeo, anúncio ou apresentação.",
     stageLabel: "Hero",
   },
   {
     id: "ads",
     group: "secondary",
     label: "Creator Ads",
-    description: "Peças de conversão com briefing, headline e CTA.",
-    bestFor: "Campanhas e testes de mensagem quando o núcleo editorial já está claro.",
+    description: "Peças de conversão com headline e CTA.",
+    bestFor: "Campanhas quando o núcleo editorial já está claro.",
     expectedOutput: "Copy de anúncio e variações de conversão.",
-    continuity: "Complementa campanhas, mas não é o ponto mais forte do produto agora.",
+    continuity: "Complementa campanhas; não carrega a promessa principal.",
     stageLabel: "Apoio",
   },
   {
@@ -80,19 +80,19 @@ const CREATOR_TABS: Array<{
     group: "secondary",
     label: "Creator Music",
     description: "Trilhas e direção sonora para acelerar produção.",
-    bestFor: "Identidade sonora complementar quando o conteúdo principal já está definido.",
+    bestFor: "Identidade sonora quando o conteúdo já está definido.",
     expectedOutput: "Direção musical e job de trilha com acompanhamento.",
-    continuity: "Apoia o pipeline criativo, mas ainda não deve carregar a promessa principal.",
+    continuity: "Apoia o pipeline, mas não carrega a promessa principal.",
     stageLabel: "Apoio",
   },
   {
     id: "clips",
     group: "hero",
     label: "Creator Clips",
-    description: "Clipes com job assíncrono, status legível e continuidade para edição e publicação.",
-    bestFor: "Ideia transformada em vídeo curto com o maior potencial de impacto visual do produto.",
-    expectedOutput: "Job de clipe com status real, preview e rota clara para o editor.",
-    continuity: "Fecha a narrativa de vídeo: ideia, roteiro, geração, revisão e saída.",
+    description: "Clipes com job assíncrono, status claro e continuidade para edição.",
+    bestFor: "Ideia transformada em vídeo curto.",
+    expectedOutput: "Job de clipe com status, preview e rota para o editor.",
+    continuity: "Fecha a narrativa de vídeo: ideia, geração, revisão e saída.",
     stageLabel: "Hero",
   },
   {
@@ -100,9 +100,9 @@ const CREATOR_TABS: Array<{
     group: "labs",
     label: "Creator Live Cuts",
     description: "Sessões de cortes ao vivo em fase inicial.",
-    bestFor: "Operação recorrente de live ainda fora do centro da proposta atual.",
+    bestFor: "Operação recorrente de live fora do centro da proposta atual.",
     expectedOutput: "Sessão operacional com estimativa e acompanhamento.",
-    continuity: "É promissor, porém mais especializado e menos forte como wedge neste momento.",
+    continuity: "É promissor, mas ainda especializado.",
     stageLabel: "Lab",
   },
   {
@@ -110,9 +110,9 @@ const CREATOR_TABS: Array<{
     group: "labs",
     label: "Creator No Code",
     description: "Blueprint inicial de produto para exploração.",
-    bestFor: "Estruturação de ideia fora do núcleo criativo principal da plataforma.",
+    bestFor: "Estruturação de ideia fora do núcleo criativo principal.",
     expectedOutput: "Estrutura inicial de produto e escopo.",
-    continuity: "Serve como exploração lateral; não deve carregar aquisição nem retenção agora.",
+    continuity: "Serve como exploração lateral.",
     stageLabel: "Lab",
   },
 ];
@@ -129,36 +129,36 @@ const CREATOR_SHOWCASES = [
     kicker: "Saída de publicação",
     briefing: "Lançar uma consultoria de marca pessoal para vídeo com CTA para lista VIP.",
     delivery: "Legenda pronta, variações de hook e CTA final para testar distribuição.",
-    nextStep: "Salvar em projeto e abrir no editor para ajuste fino.",
+    nextStep: "Salvar no projeto e abrir no editor.",
   },
   {
     creator: "Creator Scripts",
     kicker: "Saída de roteiro",
     briefing: "Explicar em 40 segundos por que um anúncio sem prova social converte menos.",
     delivery: "Roteiro curto com abertura, argumento central e fechamento para gravação.",
-    nextStep: "Converter em clipe, anúncio ou base de apresentação.",
+    nextStep: "Virar clipe, anúncio ou base de apresentação.",
   },
   {
     creator: "Creator Clips",
     kicker: "Saída de vídeo curto",
     briefing: "Montar um clipe de apresentação com ritmo rápido e direção de cena.",
     delivery: "Job assíncrono com acompanhamento claro e continuidade para editar depois.",
-    nextStep: "Salvar contexto e preparar publicação quando a peça estiver pronta.",
+    nextStep: "Salvar contexto e preparar a publicação.",
   },
 ];
 
 const CREATOR_STAGE_GUIDANCE: Record<CreatorGroupId, { title: string; description: string }> = {
   hero: {
     title: "Creator hero do produto",
-    description: "Este creator faz parte do trio que precisa carregar aquisição, repetição de uso e continuidade com o editor. O valor real do beta pago/controlado começa aqui.",
+    description: "Este creator faz parte do trio que carrega aquisição, repetição e continuidade com o editor.",
   },
   secondary: {
     title: "Creator de apoio estratégico",
-    description: "Este creator complementa o pipeline, mas não deve carregar a promessa principal do produto agora. Use depois que o núcleo principal já estiver claro.",
+    description: "Este creator complementa o pipeline, sem carregar a promessa principal.",
   },
   labs: {
     title: "Creator em lab ou preview",
-    description: "Este creator continua disponível, mas ainda está fora do centro da proposta atual. Trate como exploração útil, não como ponto principal de entrada.",
+    description: "Este creator continua disponível, mas ainda está fora do centro da proposta.",
   },
 };
 
@@ -302,13 +302,13 @@ function CreatorsPageContent() {
               <p className="section-kicker">Workspace de criação</p>
               <h1 style={{ margin: 0, letterSpacing: -0.35 }}>Creators</h1>
               <p className="creators-hero-lead">
-                O núcleo da plataforma concentra briefing, geração, continuidade editorial e saída rastreável em um único workspace. Os creators hero entram primeiro, o editor amadurece a peça e o projeto preserva a continuidade até a exportação.
+                Creators concentra briefing, geração, projeto e continuidade editorial no mesmo workspace.
               </p>
             </div>
 
             <div className="hero-meta-row hero-meta-row-compact">
               <span className="premium-badge premium-badge-phase">Plano: {planLabelDisplay}</span>
-              <span className="premium-badge premium-badge-soon">Creators hero no centro do beta pago/controlado</span>
+              <span className="premium-badge premium-badge-soon">Creators hero no centro do produto</span>
             </div>
 
             <div className="hero-kpi-grid creators-hero-metrics creators-hero-metrics-compact">
@@ -320,12 +320,12 @@ function CreatorsPageContent() {
               <div className="creators-hero-metric-card">
                 <span className="hero-kpi-label">Saldo para operar</span>
                 <strong className="hero-kpi-value">{walletSummaryDisplay}</strong>
-                <span className="hero-kpi-text">{loading ? "Saldo, plano e regras de uso estão sendo sincronizados." : `Estimativa antes da geração. Consumo real em ${CREATOR_COINS_PUBLIC_NAME}.`}</span>
+                <span className="hero-kpi-text">{loading ? "Saldo e plano em sincronização." : `Estimativa antes da geração. Consumo real em ${CREATOR_COINS_PUBLIC_NAME}.`}</span>
               </div>
               <div className="creators-hero-metric-card">
                 <span className="hero-kpi-label">Próximo passo</span>
                 <strong className="hero-kpi-value">Gerar → editar → exportar</strong>
-                <span className="hero-kpi-text">Projeto salvo, refinamento no editor e exportação local quando a peça estiver pronta.</span>
+                <span className="hero-kpi-text">Projeto salvo, editor e exportação quando a peça estiver pronta.</span>
               </div>
             </div>
           </div>
@@ -333,16 +333,16 @@ function CreatorsPageContent() {
           <div className="creators-hero-panel creators-hero-panel-quiet">
             <div className="section-stack">
               <p className="section-kicker">Controle operacional</p>
-              <h2 className="creators-hero-panel-title">Criatividade com estrutura</h2>
+              <h2 className="creators-hero-panel-title">Criar com estrutura</h2>
               <p className="meta-text-ea creators-hero-panel-copy">
-                Briefing, configuração, ação e resultado ficam separados para reduzir ruído, acelerar leitura e manter previsibilidade.
+                Briefing, ação e resultado no mesmo eixo.
               </p>
             </div>
 
             <div className="creators-hero-panel-stack hero-side-list hero-side-list-compact">
               <div className="creators-hero-panel-note">
-                <strong>Briefing e continuidade em sequência curta</strong>
-                <span>Objetivo, contexto e resultado seguem na mesma trilha para reduzir ruído e manter a passagem para projeto e editor sem quebra.</span>
+                <strong>Briefing e continuidade</strong>
+                <span>Objetivo, contexto e resultado seguem na mesma trilha.</span>
               </div>
             </div>
 
@@ -382,7 +382,7 @@ function CreatorsPageContent() {
             <p className="section-kicker">Exemplos de resultado</p>
             <h2 className="heading-reset">O que os creators hero podem destravar</h2>
             <p className="helper-text-ea">
-              Estas amostras mostram o tipo de saída que o núcleo atual já organiza antes de abrir um projeto. A leitura continua objetiva, sem vender um fluxo maior do que o beta realmente sustenta hoje.
+              Exemplos do que o núcleo já organiza antes de abrir um projeto.
             </p>
           </div>
           <Link href="/projects" className="btn-link-ea btn-secondary btn-sm">
@@ -439,12 +439,12 @@ function CreatorsPageContent() {
             <p className="section-kicker">Creators hero</p>
             <h2 className="heading-reset">Os 3 creators que precisam carregar a plataforma</h2>
             <p className="helper-text-ea">
-              <strong>Creator Post</strong>, <strong>Creator Scripts</strong> e <strong>Creator Clips</strong> continuam no centro da promessa. Um quarto card secundário fecha a grade com apoio de campanha sem competir com o trio hero principal.
+              <strong>Creator Post</strong>, <strong>Creator Scripts</strong> e <strong>Creator Clips</strong> continuam no centro. Um quarto card fecha a grade como apoio.
             </p>
           </div>
           <div className="creators-hero-core-header-note">
             <span className="premium-badge premium-badge-phase">Núcleo principal</span>
-            <span className="helper-text-ea">O restante do catálogo continua disponível, mas sai do centro da promessa.</span>
+            <span className="helper-text-ea">O restante do catálogo continua disponível, mas fora do centro.</span>
           </div>
           <button
             type="button"
@@ -456,7 +456,7 @@ function CreatorsPageContent() {
           </button>
         </div>
         <div className="focus-shell-preview">
-          O trio hero continua visível como leitura estratégica, mas sem disputar o workspace ativo quando você estiver produzindo.
+          O trio hero continua visível sem disputar o workspace ativo.
         </div>
         <div className="focus-shell-body">
         <div className="creators-hero-core-grid">
@@ -527,7 +527,7 @@ function CreatorsPageContent() {
             <p className="section-kicker">Apoio e labs</p>
             <h2 className="heading-reset">O restante do catálogo continua útil, mas com papel mais claro</h2>
             <p className="helper-text-ea">
-              <strong>Apoio estratégico</strong> complementa campanhas e produção. <strong>Labs e preview</strong> seguem disponíveis para exploração, sem disputar o centro da promessa agora.
+              <strong>Apoio estratégico</strong> complementa campanhas e produção. <strong>Labs e preview</strong> seguem disponíveis para exploração.
             </p>
           </div>
           <button
@@ -540,7 +540,7 @@ function CreatorsPageContent() {
           </button>
         </div>
         <div className="focus-shell-preview">
-          Apoio estratégico e labs continuam acessíveis, mas entram recolhidos quando o foco principal está no creator ativo.
+          Apoio estratégico e labs continuam acessíveis, mas com menos peso quando o foco está no creator ativo.
         </div>
         <div className="focus-shell-body">
         <div className="creators-secondary-grid">
@@ -587,7 +587,7 @@ function CreatorsPageContent() {
         >
           <div className="section-header-ea">
             <h2 className="heading-reset">Workspace ativo</h2>
-            <p className="helper-text-ea">Uma ferramenta principal por vez, com briefing, estimativa e continuidade no mesmo eixo operacional.</p>
+            <p className="helper-text-ea">Uma ferramenta principal por vez, com briefing, estimativa e continuidade no mesmo eixo.</p>
           </div>
           <button
             type="button"
@@ -599,7 +599,7 @@ function CreatorsPageContent() {
           </button>
         </div>
         <div className="focus-shell-preview">
-          O workspace concentra o creator ativo, o saldo e o próximo passo sem manter showcase e catálogo com o mesmo peso visual.
+          O workspace concentra o creator ativo, o saldo e o próximo passo.
         </div>
         <div className="focus-shell-body creator-workspace-grid">
         <aside className="creator-workspace-side creators-sidebar creators-sidebar-soft layout-contract-rail" data-reveal data-reveal-delay="140">
@@ -645,7 +645,7 @@ function CreatorsPageContent() {
 
             <div className="creators-side-note creators-wallet-panel">
               <strong>Saldo disponível</strong>
-              <span>Cada Creator mostra a estimativa antes da geração. O histórico em Créditos confirma o consumo real.</span>
+              <span>Cada Creator mostra a estimativa antes. O histórico em Créditos confirma o consumo real.</span>
               <div className="creators-wallet-stack">
                 {walletByType.map((item) => (
                   <div key={item.coinType} className="creators-wallet-row">
@@ -663,7 +663,7 @@ function CreatorsPageContent() {
 
             <div className="creators-side-note">
               <strong>Contexto rápido</strong>
-              <span>Revise fluxo, Creator Coins e próximo passo sem sair do workspace.</span>
+              <span>Revise fluxo, Creator Coins e próximo passo sem sair daqui.</span>
               <Link href="/how-it-works" className="btn-link-ea btn-ghost btn-sm">
                 Abrir guia rápido
               </Link>

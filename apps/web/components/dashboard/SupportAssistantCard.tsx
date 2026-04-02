@@ -27,16 +27,16 @@ type Props = {
 };
 
 const CATEGORY_OPTIONS: Array<{ value: SupportCategory; label: string; hint: string }> = [
-  { value: "duvida", label: "Dúvida", hint: "Perguntas sobre uso da plataforma, próximos passos ou interpretação do fluxo." },
-  { value: "problema_tecnico", label: "Problema técnico", hint: "Falhas, erros, jobs travados, retorno inconsistente ou comportamento inesperado." },
-  { value: "pedido_financeiro", label: "Pedido financeiro", hint: "Cobrança, assinatura, compra de créditos, checkout ou divergência de saldo." },
-  { value: "outro", label: "Outro", hint: "Solicitações gerais, feedbacks ou pedidos que não entram nas categorias anteriores." },
+  { value: "duvida", label: "Dúvida", hint: "Uso, próximos passos ou interpretação do fluxo." },
+  { value: "problema_tecnico", label: "Problema técnico", hint: "Erros, jobs travados ou comportamento inesperado." },
+  { value: "pedido_financeiro", label: "Pedido financeiro", hint: "Cobrança, assinatura, compra de créditos ou saldo." },
+  { value: "outro", label: "Outro", hint: "Pedidos gerais e feedback." },
 ];
 
 const SUPPORT_EXPECTATIONS = [
-  "Descreva o que tentou fazer, o que esperava ver e o que aconteceu de fato.",
-  "Inclua referência de checkout, projeto, job, URL ou tela quando existir.",
-  "Se o tema envolver cobrança ou créditos, diga se o retorno da Stripe aconteceu e o que a tela mostrou depois.",
+  "Diga o que tentou fazer e o que aconteceu.",
+  "Inclua checkout, projeto, job, URL ou tela quando existir.",
+  "Se envolver cobrança, diga o que a Stripe mostrou e o que voltou para a conta.",
 ];
 
 function categoryLabel(category: SupportCategory): string {
@@ -117,7 +117,7 @@ export function SupportAssistantCard({
         },
       });
 
-      setSuccess("Solicitação enviada. A equipe acompanha a fila interna e responde neste histórico assim que a análise começar.");
+      setSuccess("Solicitação enviada. A resposta entra neste histórico.");
       setSubject("");
       setMessage("");
       setContextRef("");
@@ -155,7 +155,7 @@ export function SupportAssistantCard({
           <p className="section-kicker">Atendimento interno</p>
           <h3 className="heading-reset">Support Assistant</h3>
           <p className="helper-text-ea">
-            Use este canal para dúvidas, problemas técnicos e questões financeiras. A fila fica registrada no produto para acompanhamento contínuo.
+            Dúvidas, problemas e financeiro com histórico na mesma fila.
           </p>
         </div>
         <div className="hero-actions-row">
@@ -211,7 +211,7 @@ export function SupportAssistantCard({
             <textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="Descreva o caso com contexto objetivo: o que tentou fazer, o que apareceu e o que esperava ver."
+              placeholder="Descreva o caso: o que tentou fazer e o que apareceu."
               rows={5}
               className="field-ea support-message-field"
             />
@@ -235,7 +235,7 @@ export function SupportAssistantCard({
             >
               {loading ? "Enviando solicitação..." : "Enviar solicitação"}
             </button>
-            <span className="helper-text-ea">Quanto mais contexto objetivo, mais rápida tende a ser a triagem.</span>
+            <span className="helper-text-ea">Mais contexto objetivo acelera a triagem.</span>
           </div>
 
           {error ? (
@@ -265,7 +265,7 @@ export function SupportAssistantCard({
           <div className="support-guidelines-card">
             <strong>Quando falar com suporte</strong>
             <span>
-              Use suporte quando checkout, saldo, histórico, plano, publicação ou integrações não refletirem o comportamento esperado após atualização da tela.
+              Use suporte quando checkout, saldo, histórico, plano, publicação ou integrações não refletirem o esperado.
             </span>
           </div>
         </aside>
@@ -274,7 +274,7 @@ export function SupportAssistantCard({
       <div className="support-history-head">
         <div className="section-header-ea">
           <h4 className="heading-reset">Minhas solicitações</h4>
-          <p className="helper-text-ea">Acompanhe status, respostas internas e o histórico do que já foi enviado.</p>
+          <p className="helper-text-ea">Acompanhe status, respostas internas e histórico.</p>
         </div>
         <button
           type="button"
@@ -292,7 +292,7 @@ export function SupportAssistantCard({
         <div className="state-ea">
           <p className="state-ea-title">Nenhuma solicitação ainda</p>
           <div className="state-ea-text">
-            Quando você enviar seu primeiro pedido, ele aparece aqui com status de acompanhamento e possíveis notas da equipe.
+            Quando você enviar o primeiro pedido, ele aparece aqui com status e notas da equipe.
           </div>
           <div className="state-ea-actions">
             <button

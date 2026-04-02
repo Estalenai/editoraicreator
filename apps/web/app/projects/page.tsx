@@ -90,7 +90,7 @@ export default function ProjectsPage() {
               <p className="section-kicker">Continuidade</p>
               <h1 style={{ margin: 0, letterSpacing: -0.3 }}>Projetos</h1>
               <p className="section-header-copy hero-copy-compact">
-                Projetos é o hub de continuidade do beta pago/controlado: abra um draft salvo, continue no editor, acompanhe a saída e só então leve o trabalho para fora da plataforma quando fizer sentido.
+                Abra um draft salvo, continue no editor e acompanhe a saída com clareza.
               </p>
             </div>
             <div className="hero-meta-row">
@@ -131,7 +131,7 @@ export default function ProjectsPage() {
               </div>
               <div className="projects-hero-note">
                 <strong>Saída e handoff em apoio</strong>
-                <span>Draft, exported e published ficam claros, com GitHub e Vercel só como camada secundária.</span>
+                <span>Draft, exported e published ficam claros, com GitHub e Vercel em apoio.</span>
               </div>
             </div>
 
@@ -184,7 +184,7 @@ export default function ProjectsPage() {
           <div className="section-header-ea">
             <h2 className="heading-reset">Abrir no editor</h2>
             <p className="helper-text-ea">
-              Retome um projeto existente ou crie um novo para seguir no núcleo principal do beta: creators hero, editor, checkpoint e saída.
+              Retome um projeto existente ou crie um novo para seguir no editor.
             </p>
           </div>
           <button
@@ -205,7 +205,7 @@ export default function ProjectsPage() {
           <OperationalState
             kind="loading"
             title="Carregando projetos e continuidade"
-            description="A lista, os estados draft/exported/published e as camadas de handoff estão sendo sincronizados."
+            description="Lista, estados draft/exported/published e handoff em sincronização."
             meta={[
               { label: "Lista", value: "Projetos salvos" },
               { label: "Saída", value: "Pipeline draft/exported/published" },
@@ -217,7 +217,7 @@ export default function ProjectsPage() {
           <OperationalState
             kind="empty"
             title="Nenhum projeto salvo ainda"
-            description="Comece em Creators ou abra um novo projeto direto no editor para criar sua primeira base com trilha real de continuidade."
+            description="Comece em Creators ou abra um novo projeto direto no editor."
             meta={[
               { label: "Primeiro marco", value: "Salvar projeto" },
               { label: "Depois disso", value: "Checkpoint, exported e published" },
@@ -279,7 +279,7 @@ export default function ProjectsPage() {
           <p className="section-kicker">Pipeline de saída</p>
           <h2 className="heading-reset">Draft, exported e published sem ambiguidade</h2>
           <p className="helper-text-ea">
-            O beta pago/controlado separa três estados e mantém trilha de saída: o que ainda está em rascunho no projeto, o que já saiu como handoff exportado e o que já foi publicado manualmente fora da plataforma.
+            Três estados claros: o que ainda está em rascunho, o que já saiu como handoff e o que já foi publicado manualmente.
           </p>
         </div>
         <button
@@ -292,7 +292,7 @@ export default function ProjectsPage() {
         </button>
         </div>
         <div className="focus-shell-preview">
-          Veja os três estados de saída sem abrir o handoff completo enquanto a prioridade ainda é seguir no editor.
+          Veja os três estados de saída sem abrir o handoff completo.
         </div>
         <div className="focus-shell-body">
         <PublishConfidenceState projects={normalizedProjects} />
@@ -301,21 +301,21 @@ export default function ProjectsPage() {
             <div className="proof-value-block">
               <span className="proof-value-chip">Draft</span>
               <strong>No editor e em Projetos</strong>
-              <p>Projeto salvo, contexto ativo e entregável ainda em refinamento.</p>
+              <p>Projeto salvo e entregável em refinamento.</p>
             </div>
           </div>
           <div className="proof-value-card layout-contract-item">
             <div className="proof-value-block">
               <span className="proof-value-chip">Exported</span>
               <strong>Handoff beta gerado</strong>
-              <p>Snapshot GitHub ou manifest Vercel já saíram da plataforma para continuidade manual.</p>
+              <p>Snapshot GitHub ou manifest Vercel já saíram da plataforma.</p>
             </div>
           </div>
           <div className="proof-value-card layout-contract-item">
             <div className="proof-value-block">
               <span className="proof-value-chip">Published</span>
               <strong>Publicado com confirmação manual</strong>
-              <p>Publicação informada manualmente na base beta da Vercel, sem fingir sincronização automática.</p>
+              <p>Publicação informada manualmente, sem fingir sincronização automática.</p>
             </div>
           </div>
         </div>
@@ -342,7 +342,7 @@ export default function ProjectsPage() {
           <div className="section-header-ea">
             <h2 className="heading-reset">Handoff beta e publicação manual</h2>
             <p className="helper-text-ea">
-              GitHub e Vercel continuam disponíveis para saída manual, mas entram apenas como continuação do fluxo principal de projetos.
+              GitHub e Vercel continuam disponíveis para saída manual, como continuação do fluxo principal.
             </p>
           </div>
           <div className="hero-actions-row">
@@ -360,7 +360,7 @@ export default function ProjectsPage() {
           </div>
         </div>
         <div className="focus-shell-preview">
-          GitHub e Vercel seguem disponíveis como camada de saída manual, sem tomar a frente da lista de projetos.
+          GitHub e Vercel seguem disponíveis como camada de saída manual.
         </div>
         <div className="focus-shell-body">
         <div className="projects-handoff-stack">

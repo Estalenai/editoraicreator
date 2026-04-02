@@ -27,7 +27,7 @@ const QUICK_LINKS: QuickLinkItem[] = [
     group: "core",
     tag: "Workspace",
     title: "Creators",
-    description: "Abra Creator Post, Scripts ou Clips com briefing, estimativa e continuidade para o editor.",
+    description: "Abra Post, Scripts ou Clips com briefing e continuidade.",
     cta: "Abrir workspace",
   },
   {
@@ -35,7 +35,7 @@ const QUICK_LINKS: QuickLinkItem[] = [
     group: "core",
     tag: "Continuidade",
     title: "Projetos",
-    description: "Retome entregas salvas e siga direto para o editor com contexto.",
+    description: "Retome entregas salvas e siga para o editor.",
     cta: "Ver projetos",
   },
   {
@@ -43,7 +43,7 @@ const QUICK_LINKS: QuickLinkItem[] = [
     group: "core",
     tag: "Editor",
     title: "Novo projeto",
-    description: "Entre direto no editor quando já souber o entregável principal e quiser abrir a mesa central de produção.",
+    description: "Entre direto no editor quando já souber o entregável.",
     cta: "Abrir editor",
   },
   {
@@ -51,7 +51,7 @@ const QUICK_LINKS: QuickLinkItem[] = [
     group: "support",
     tag: "Financeiro",
     title: "Creator Coins",
-    description: "Acompanhe saldo, conversão e compra avulsa de Creator Coins como camada operacional do beta.",
+    description: "Acompanhe saldo, conversão e compra avulsa.",
     cta: "Abrir Creator Coins",
   },
   {
@@ -59,7 +59,7 @@ const QUICK_LINKS: QuickLinkItem[] = [
     group: "support",
     tag: "Assinatura",
     title: "Planos",
-    description: "Compare níveis, taxa de conversão e checkout com foco no plano principal do beta pago/controlado.",
+    description: "Compare níveis, conversão e checkout.",
     cta: "Revisar planos",
   },
   {
@@ -67,7 +67,7 @@ const QUICK_LINKS: QuickLinkItem[] = [
     group: "support",
     tag: "Suporte",
     title: "Suporte",
-    description: "Acione ajuda assistida quando precisar de ativação ou orientação.",
+    description: "Acione ajuda quando precisar.",
     cta: "Falar com suporte",
   },
   {
@@ -75,7 +75,7 @@ const QUICK_LINKS: QuickLinkItem[] = [
     group: "support",
     tag: "Guia",
     title: "Como funciona",
-    description: "Recapitule creators hero, editor, projetos e saída em poucos passos.",
+    description: "Revise o fluxo em poucos passos.",
     cta: "Ler guia",
   },
 ];
@@ -182,13 +182,13 @@ export default function DashboardPage() {
   const nextAction = recentProjects.length > 0
     ? {
         title: "Retomar projeto",
-        description: "Continue do ponto em que parou no editor ou use Creators para gerar a próxima peça.",
+        description: "Continue no editor ou gere a próxima peça.",
         href: recentProjects[0]?.id ? `/editor/${recentProjects[0].id}` : "/projects",
         cta: recentProjects[0]?.id ? "Abrir último projeto" : "Abrir projetos",
       }
     : {
         title: "Gerar primeira entrega",
-        description: "Abra um Creator, gere sua primeira saída e salve em Projetos para continuar com contexto.",
+        description: "Abra um Creator, gere a primeira saída e salve em Projetos.",
         href: "/creators",
         cta: "Abrir Creators",
       };
@@ -207,7 +207,7 @@ export default function DashboardPage() {
   const emailDisplay = loading ? "Sincronizando conta..." : email || "—";
   const walletSummaryDisplay = loading ? "Saldo em sincronização" : walletSummary;
   const recentUsageValueDisplay = loading || usageLoading ? "Uso em sincronização" : recentUsageValue;
-  const recentUsageDetailDisplay = loading ? "Sincronizando métricas, saldo e histórico recente." : recentUsageDetail;
+  const recentUsageDetailDisplay = loading ? "Sincronizando métricas e saldo." : recentUsageDetail;
   const nextActionTitleDisplay = loading ? "Preparando seu próximo passo" : nextAction.title;
   const nextActionCtaDisplay = loading ? "Aguarde a sincronização" : nextAction.cta;
   const nextActionDescriptionDisplay = loading
@@ -234,25 +234,25 @@ export default function DashboardPage() {
               <p className="section-kicker">Painel executivo</p>
               <h1 className="heading-reset">Dashboard</h1>
               <p className="section-header-copy hero-copy-compact">
-                Plano, saldo, uso recente e saída organizada para leitura rápida. Conta ativa: {emailDisplay}.
+                Plano, saldo, uso recente e próximo passo na mesma leitura. Conta ativa: {emailDisplay}.
               </p>
             </div>
             <div className="hero-meta-row">
               <span className="premium-badge premium-badge-phase">Plano: {planLabelDisplay}</span>
-              <span className="premium-badge premium-badge-warning">{loading ? "Conta em sincronização" : "Histórico confirma o consumo real"}</span>
+              <span className="premium-badge premium-badge-warning">{loading ? "Conta em sincronização" : "Consumo confirmado no histórico"}</span>
             </div>
             <div className="signal-strip dashboard-hero-signal-strip">
               <div className="signal-chip signal-chip-sober">
-                <strong>Saldo e uso visíveis</strong>
-                <span>Plano, Creator Coins e atividade recente aparecem na mesma leitura.</span>
+                <strong>Saldo e uso</strong>
+                <span>Plano, Creator Coins e atividade na mesma leitura.</span>
               </div>
               <div className="signal-chip signal-chip-sober">
-                <strong>Próxima ação clara</strong>
-                <span>Retome um projeto, refine no editor e avance para exportação sem perder contexto.</span>
+                <strong>Próxima ação</strong>
+                <span>Retome um projeto ou siga para o editor.</span>
               </div>
               <div className="signal-chip signal-chip-sober">
-                <strong>Histórico confiável</strong>
-                <span>Estimativa antes da ação e confirmação no consumo real.</span>
+                <strong>Histórico</strong>
+                <span>Estimativa antes da ação e consumo confirmado depois.</span>
               </div>
             </div>
           </div>
@@ -279,16 +279,16 @@ export default function DashboardPage() {
           </div>
           <div className="dashboard-hero-support-grid">
             <div className="dashboard-hero-support-note">
-                <strong>Núcleo do beta pago/controlado</strong>
-                <span>Creators hero, editor e projetos concentram a maior parte do valor recorrente da plataforma hoje.</span>
+                <strong>Núcleo atual</strong>
+                <span>Creators, editor e projetos concentram o valor principal.</span>
             </div>
             <div className="dashboard-hero-support-note">
                 <strong>Operação rastreada</strong>
-                <span>Conta, saldo, projetos e continuidade operacional ficam persistidos para retomar o trabalho com contexto.</span>
+                <span>Conta, saldo e projetos ficam persistidos.</span>
             </div>
             <div className="dashboard-hero-support-note">
                 <strong>Camadas de apoio</strong>
-                <span>Plans, Credits e Support continuam visíveis, mas sem disputar o centro da experiência criativa.</span>
+                <span>Plans, Credits e Support entram como apoio.</span>
             </div>
           </div>
         </div>
@@ -296,7 +296,7 @@ export default function DashboardPage() {
           <div className="hero-kpi" data-reveal data-reveal-delay="70">
             <span className="hero-kpi-label">Saldo total</span>
             <strong className="hero-kpi-value">{walletSummaryDisplay}</strong>
-            <span className="helper-text-ea">{loading ? "Saldo e distribuição estão sendo sincronizados." : "Distribuição pronta para operação e conversão."}</span>
+            <span className="helper-text-ea">{loading ? "Saldo em sincronização." : "Distribuição pronta para operar."}</span>
           </div>
           <div className="hero-kpi" data-reveal data-reveal-delay="120">
             <span className="hero-kpi-label">Uso recente</span>
@@ -383,7 +383,7 @@ export default function DashboardPage() {
             <div className="executive-card dashboard-summary-card dashboard-summary-card-secondary layout-contract-item layout-contract-metric">
               <p className="executive-eyebrow">Plano atual</p>
               <p className="executive-value">{planLabel ?? "—"}</p>
-              <p className="executive-detail">Revise assinatura, Creator Coins incluídas, checkout e benefícios no catálogo.</p>
+              <p className="executive-detail">Revise assinatura, Creator Coins incluídas e checkout.</p>
               <Link href="/plans" className="card-cta-link">
                 Gerenciar planos
               </Link>
@@ -408,7 +408,7 @@ export default function DashboardPage() {
             <div className="section-head">
               <div className="section-header-ea">
                 <h3 className="heading-reset">Projetos recentes</h3>
-                <p className="helper-text-ea">Retome uma entrega recente sem reconstruir contexto.</p>
+                <p className="helper-text-ea">Retome uma entrega sem reconstruir contexto.</p>
               </div>
               <Link href="/projects" className="btn-link-ea btn-ghost btn-sm">Abrir página de projetos</Link>
             </div>
@@ -422,7 +422,7 @@ export default function DashboardPage() {
               <div className="state-ea state-ea-spaced">
                 <p className="state-ea-title">Nenhum projeto criado ainda</p>
                 <div className="state-ea-text">
-                  Gere seu primeiro conteúdo em Creators e salve em Projetos para continuar no editor.
+                  Gere algo em Creators e salve em Projetos para continuar no editor.
                 </div>
                 <div className="state-ea-actions">
                   <Link href="/creators" className="btn-link-ea btn-primary btn-sm">
@@ -474,8 +474,8 @@ export default function DashboardPage() {
           <section className="dashboard-section-card dashboard-pane-section dashboard-pane-section-featured dashboard-main-card dashboard-main-card-core" data-reveal data-reveal-delay="180">
             <div className="section-head">
               <div className="section-header-ea">
-                <h3 className="heading-reset">Núcleo do beta pago/controlado</h3>
-                <p className="helper-text-ea">Atalhos para o que precisa carregar valor, retenção e continuidade real no uso recorrente.</p>
+                <h3 className="heading-reset">Núcleo principal</h3>
+                <p className="helper-text-ea">Atalhos para criar, salvar e seguir no editor.</p>
               </div>
             </div>
             <div className="dashboard-quick-links-stack">
@@ -511,7 +511,7 @@ export default function DashboardPage() {
             <div className="section-head">
               <div className="section-header-ea">
                 <h3 className="heading-reset">Transparência de consumo</h3>
-                <p className="helper-text-ea">Estimativa antes da ação e confirmação no histórico.</p>
+                <p className="helper-text-ea">Estimativa antes, confirmação depois.</p>
               </div>
               <Link href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
                 Ver histórico completo
@@ -526,7 +526,7 @@ export default function DashboardPage() {
               ))}
             </div>
             <div className="helper-text-ea">
-              Os Creators mostram estimativas antes da geração. O consumo final fica registrado no histórico de {CREATOR_COINS_PUBLIC_NAME}.
+              Os Creators mostram a estimativa antes. O consumo final entra no histórico de {CREATOR_COINS_PUBLIC_NAME}.
             </div>
           </section>
 
@@ -534,7 +534,7 @@ export default function DashboardPage() {
             <div className="section-head">
               <div className="section-header-ea">
                 <h3 className="heading-reset">Camadas operacionais</h3>
-                <p className="helper-text-ea">Financeiro, suporte e leitura do beta seguem acessíveis como apoio ao núcleo criativo e editorial.</p>
+                <p className="helper-text-ea">Financeiro, suporte e guia seguem como apoio.</p>
               </div>
             </div>
             <div className="dashboard-support-links-list">
@@ -562,7 +562,7 @@ export default function DashboardPage() {
         <div className="section-head">
           <div className="section-header-ea">
             <h3 className="heading-reset">Uso por feature</h3>
-            <p className="helper-text-ea">Consumo por módulo para ajustar ritmo, plano e próxima ação.</p>
+            <p className="helper-text-ea">Consumo por módulo para ajustar ritmo e plano.</p>
           </div>
           <Link href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
             Ver histórico
@@ -581,7 +581,7 @@ export default function DashboardPage() {
           <div className="state-ea">
             <p className="state-ea-title">Sem uso registrado neste mês</p>
             <div className="state-ea-text">
-              Assim que você gerar conteúdo em algum Creator, o consumo aparece aqui e no histórico de {CREATOR_COINS_PUBLIC_NAME}.
+              Quando você gerar conteúdo, o consumo aparece aqui e no histórico de {CREATOR_COINS_PUBLIC_NAME}.
             </div>
             <div className="state-ea-actions">
               <Link href="/creators" className="btn-link-ea btn-primary btn-sm">

@@ -515,11 +515,11 @@ export default function CreditsPage() {
           <div className="credits-hero-intro">
             <div className="hero-copy">
               <div className="hero-title-stack">
-                <p className="section-kicker">Transparência de consumo</p>
-                <h1 className="heading-reset">{CREATOR_COINS_PUBLIC_NAME}</h1>
-                <p className="section-header-copy hero-copy-compact">
-                  {CREATOR_COINS_PUBLIC_NAME} é a camada operacional do beta pago/controlado: saldo, compra avulsa, conversão e histórico ficam claros sem competir com o núcleo criativo do produto.
-                </p>
+              <p className="section-kicker">Transparência de consumo</p>
+              <h1 className="heading-reset">{CREATOR_COINS_PUBLIC_NAME}</h1>
+              <p className="section-header-copy hero-copy-compact">
+                  {CREATOR_COINS_PUBLIC_NAME} reúne saldo, compra, conversão e histórico na mesma leitura.
+              </p>
               </div>
               <div className="hero-meta-row hero-meta-row-compact credits-hero-meta">
                 <span className="premium-badge premium-badge-phase">Plano: {planLabelDisplay}</span>
@@ -538,11 +538,11 @@ export default function CreditsPage() {
             <div className="credits-hero-signals" aria-label={`Pontos-chave da operação de ${CREATOR_COINS_PUBLIC_NAME}`}>
                 <div className="credits-hero-signal">
                   <strong>Saldo por tipo</strong>
-                  <span>Comum, Pro e Ultra seguem visíveis sem abrir painéis paralelos.</span>
+                  <span>Comum, Pro e Ultra visíveis sem painéis extras.</span>
                 </div>
                 <div className="credits-hero-signal">
                   <strong>Conversão e histórico</strong>
-                  <span>Taxa, débito e movimento final aparecem na mesma trilha operacional.</span>
+                  <span>Taxa, débito e movimento final na mesma trilha.</span>
                 </div>
               </div>
           </div>
@@ -571,7 +571,7 @@ export default function CreditsPage() {
               <div className="section-head credits-region-head">
                 <div className="section-header-ea credits-region-heading">
                   <h3 className="heading-reset">Saldo, compra e conversão na mesma trilha</h3>
-                  <p className="helper-text-ea">A região principal concentra o que altera o saldo e o que confirma o consumo real, sem virar uma pilha de painéis independentes.</p>
+                  <p className="helper-text-ea">O essencial para alterar saldo e confirmar consumo.</p>
                 </div>
               </div>
               <div className="credits-summary-grid">
@@ -592,11 +592,11 @@ export default function CreditsPage() {
                   <p className="executive-value">{conversionFeeDisplay}</p>
                   <p className="executive-detail">
                     {loading
-                      ? "Sincronizando regras de conversão do seu plano e saldo disponível."
+                      ? "Sincronizando regras de conversão e saldo."
                       : conversionEnabled
                         ? conversionFeePercent === 0
-                          ? "Taxa zero na conversão entre tipos: todo o crédito líquido permanece com você."
-                          : "A taxa é aplicada sobre a origem. Planos maiores preservam mais crédito líquido."
+                          ? "Taxa zero na conversão entre tipos."
+                          : "A taxa é aplicada sobre a origem."
                         : `Seu plano atual ainda não habilita conversão entre tipos de ${CREATOR_COINS_PUBLIC_NAME}.`}
                   </p>
                 </div>
@@ -609,7 +609,7 @@ export default function CreditsPage() {
                   <p className="executive-eyebrow">Estimativa x consumo real</p>
                   <p className="executive-value metric-value-compact">Clareza total</p>
                   <p className="executive-detail">
-                    Creators estimam antes da geração; o histórico confirma o movimento final.
+                    Prévia antes da ação. Histórico confirma o final.
                   </p>
                 </div>
               </div>
@@ -619,7 +619,7 @@ export default function CreditsPage() {
               <div className="section-head credits-region-head">
                 <div className="section-header-ea">
                   <h3 className="heading-reset">Compra avulsa</h3>
-                  <p className="helper-text-ea">Abra uma cotação segura e monte o mix sem transformar a compra em um painel concorrente do saldo.</p>
+                  <p className="helper-text-ea">Abra uma cotação e ajuste o mix sem sair do fluxo.</p>
                 </div>
                 <div className="hero-actions-row">
                   <Link href="#credits-history" className="btn-link-ea btn-ghost btn-sm">
@@ -636,7 +636,7 @@ export default function CreditsPage() {
               <div className="section-head credits-region-head">
                 <div className="section-header-ea">
                   <h3 className="heading-reset">Conversão de {CREATOR_COINS_PUBLIC_NAME}</h3>
-              <p className="helper-text-ea">{`Veja débito, taxa, ${CREATOR_COINS_PUBLIC_NAME} recebidas e saldo estimado antes de confirmar.`}</p>
+              <p className="helper-text-ea">{`Veja débito, taxa e saldo estimado antes de confirmar.`}</p>
                 </div>
               </div>
 
@@ -869,16 +869,16 @@ export default function CreditsPage() {
           <section className="credits-support-section credits-context-section">
             <div className="section-header-ea">
             <h3 className="heading-reset">Segurança e controle</h3>
-              <p className="helper-text-ea">Apoio contextual para checkout e persistência, sem disputar a operação central.</p>
+              <p className="helper-text-ea">Apoio para checkout e persistência.</p>
             </div>
             <div className="credits-context-list">
               <div className="credits-context-item">
                 <strong>Apoio ao núcleo do produto</strong>
-                <span>Use esta área para sustentar creators, editor e projetos com leitura rápida de saldo e consumo.</span>
+                <span>Use esta área para sustentar creators, editor e projetos.</span>
               </div>
               <div className="credits-context-item">
                 <strong>Checkout e histórico persistidos</strong>
-                <span>Compras avulsas seguem por Stripe e retornam com confirmação operacional do saldo, do histórico e da retomada segura.</span>
+                <span>Compras passam pela Stripe e voltam com saldo e histórico conciliados.</span>
               </div>
             </div>
           </section>
@@ -886,7 +886,7 @@ export default function CreditsPage() {
           <section className="credits-guide-section credits-support-section">
             <div className="section-header-ea">
               <h3 className="heading-reset">Leitura rápida</h3>
-              <p className="helper-text-ea">Referência curta para interpretar saldo, estimativa e confirmação final.</p>
+              <p className="helper-text-ea">Saldo, estimativa e confirmação em leitura curta.</p>
             </div>
             <div className="credits-guide-grid">
               {CREDIT_GUIDE.map((item) => (
@@ -898,7 +898,7 @@ export default function CreditsPage() {
             </div>
             <div className="credits-guide-notes">
               <div className="credits-guide-note">
-                <strong>Estimativa e confirmação:</strong> creators mostram a prévia antes do consumo; o histórico confirma compra, conversão e saldo final.
+                <strong>Estimativa e confirmação:</strong> creators estimam antes; o histórico confirma compra, conversão e saldo.
               </div>
             </div>
           </section>
@@ -935,7 +935,7 @@ export default function CreditsPage() {
         <div className="section-head credits-region-head">
           <div className="section-header-ea">
             <h3 className="heading-reset">Histórico recente de {CREATOR_COINS_PUBLIC_NAME}</h3>
-            <p className="helper-text-ea">Fonte de verdade para consumo real, compras aprovadas e conversões processadas.</p>
+            <p className="helper-text-ea">Fonte de verdade para consumo, compra e conversão.</p>
           </div>
           <div className="hero-actions-row">
             <button onClick={loadTransactions} disabled={txLoading} className="btn-ea btn-ghost btn-sm">
@@ -972,7 +972,7 @@ export default function CreditsPage() {
           <OperationalState
             kind="empty"
             title={`Sem movimentações recentes de ${CREATOR_COINS_PUBLIC_NAME}`}
-            description={`Gere conteúdo em Creators para registrar consumo ou compre ${CREATOR_COINS_PUBLIC_NAME} avulsas para inaugurar o histórico.`}
+            description={`Gere conteúdo em Creators ou compre ${CREATOR_COINS_PUBLIC_NAME} para inaugurar o histórico.`}
             meta={[
               { label: "Ledger", value: "Ainda sem eventos" },
               { label: "Próximo marco", value: "Consumo, compra ou conversão" },

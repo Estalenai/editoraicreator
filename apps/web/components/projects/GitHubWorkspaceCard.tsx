@@ -1039,7 +1039,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
           <p className="section-kicker">GitHub beta</p>
           <h4 className="heading-reset">Handoff GitHub do projeto</h4>
           <p className="helper-text-ea">
-            Use GitHub como base de continuidade: identidade da conta quando disponível, repositório base e snapshots locais para app ou site.
+            Use GitHub como base de continuidade: identidade quando disponível, repositório e snapshots locais.
           </p>
         </div>
 
@@ -1167,7 +1167,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
           <p className="section-kicker">GitHub beta</p>
           <h2 className="heading-reset">Base GitHub para continuidade beta</h2>
           <p className="section-header-copy">
-            No beta, GitHub já cobre identidade da conta quando disponível, base owner/repositório/branch, versões locais e snapshot exportável para app ou site.
+            No beta, GitHub cobre identidade quando disponível, owner/repo/branch, versões locais e snapshot exportável.
           </p>
         </div>
         <div className="hero-meta-row github-workspace-meta-row">
@@ -1268,7 +1268,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
             <p className="section-kicker">1. Conta da equipe</p>
             <h3 className="heading-reset">Identidade GitHub quando disponível</h3>
             <p className="helper-text-ea">
-              Quando este ambiente expõe a conexão da conta, você pode associar sua identidade GitHub. Mesmo sem isso, a base local do repositório e os snapshots continuam disponíveis no beta.
+              Associe sua identidade GitHub quando disponível. Sem isso, a base local e os snapshots continuam.
             </p>
           </div>
 
@@ -1300,7 +1300,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
             <p className="section-kicker">2. Base do repositório</p>
             <h3 className="heading-reset">Owner, branch e destino</h3>
             <p className="helper-text-ea">
-              Salve uma base por projeto para importar a referência do repositório e usar o editor como ponto de continuidade do app ou site. Você pode colar owner/repositório ou a URL completa do GitHub.
+              Salve owner/repo, branch e destino do projeto. Aceita owner/repo ou URL completa.
             </p>
           </div>
 
@@ -1369,7 +1369,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
             <p className="section-kicker">3. Continuidade</p>
             <h3 className="heading-reset">Salvar versão e exportar snapshot</h3>
             <p className="helper-text-ea">
-              O beta já prepara continuidade fora da plataforma: abra um projeto no editor, registre versões locais e exporte um snapshot para seguir no app ou site com base real de handoff.
+              Salve versões locais e exporte um snapshot para seguir fora da plataforma.
             </p>
           </div>
 

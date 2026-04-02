@@ -12,19 +12,19 @@ import { toUserFacingError } from "../../lib/uiFeedback";
 const SUPPORT_PATHS = [
   {
     title: "Planos e cobrança",
-    description: "Entenda checkout, ativação assistida, atualização de assinatura e retorno da Stripe.",
+    description: "Entenda checkout, assinatura e retorno da Stripe.",
     href: "/plans",
     cta: "Revisar planos",
   },
   {
     title: `${CREATOR_COINS_PUBLIC_NAME} e histórico`,
-    description: `Consulte saldo, compra avulsa, conversão entre tipos e movimentações confirmadas de ${CREATOR_COINS_PUBLIC_NAME}.`,
+    description: `Consulte saldo, compra, conversão e movimentações de ${CREATOR_COINS_PUBLIC_NAME}.`,
     href: "/credits",
     cta: `Abrir ${CREATOR_COINS_PUBLIC_NAME}`,
   },
   {
     title: "Projetos e publicação",
-    description: "Retome o contexto salvo, organize handoff e valide a continuidade para GitHub e Vercel.",
+    description: "Retome o contexto salvo e organize o handoff para GitHub e Vercel.",
     href: "/projects",
     cta: "Ver projetos",
   },
@@ -42,27 +42,27 @@ const SUPPORT_FAQ = [
   {
     question: "Quando devo abrir suporte em vez de tentar novamente?",
     answer:
-      "Abra suporte quando o erro se repetir, quando o saldo ou o plano não refletirem a ação esperada ou quando você precisar de ativação assistida para cobrança, publicação ou integrações.",
+      "Abra suporte quando o erro se repetir, quando saldo ou plano não refletirem a ação esperada ou quando você precisar de ajuda em cobrança, publicação ou integrações.",
   },
   {
     question: "O que incluir para a equipe responder mais rápido?",
     answer:
-      "Envie assunto claro, contexto do que estava fazendo, mensagem de erro, referência do job ou checkout e a tela afetada. Quanto mais objetivo o relato, mais rápido a análise.",
+      "Envie assunto claro, mensagem de erro, referência do job ou checkout e a tela afetada.",
   },
   {
     question: `Como funciona o suporte para planos, ${CREATOR_COINS_PUBLIC_NAME} e pagamentos?`,
     answer:
-      `Pagamentos self-serve passam pela Stripe. Quando houver divergência entre checkout, saldo de ${CREATOR_COINS_PUBLIC_NAME}, histórico ou plano, o suporte valida o retorno e orienta o próximo passo com base no estado real da conta.`,
+      `Pagamentos passam pela Stripe. Se houver divergência entre checkout, saldo, histórico ou plano, o suporte valida o retorno e orienta o próximo passo.`,
   },
   {
     question: "GitHub e Vercel já têm suporte completo?",
     answer:
-      "No beta, GitHub e Vercel aparecem como fundações úteis de continuidade e publicação. Se algo não estiver claro no handoff, o suporte ajuda a interpretar o fluxo atual e o que ainda depende da próxima fase.",
+      "No beta, GitHub e Vercel seguem como base de continuidade e publicação. Se o handoff não estiver claro, o suporte ajuda a interpretar o fluxo atual.",
   },
   {
     question: "Meus dados enviados ao suporte treinam modelos?",
     answer:
-      "Não. Dados enviados em tickets, projetos e contexto operacional não são usados para treinar modelos. O processamento segue isolado por conta com foco em confidencialidade.",
+      "Não. Dados enviados em tickets, projetos e contexto operacional não entram em treino.",
   },
 ];
 
@@ -145,18 +145,18 @@ export default function SupportPage() {
               <p className="section-kicker">Canal operacional</p>
               <h1 style={{ margin: "4px 0 0", letterSpacing: -0.35 }}>Suporte</h1>
               <p className="section-header-copy hero-copy-compact">
-                {`Uma área objetiva para sustentar o beta pago/controlado: tirar dúvidas, registrar problemas e entender o próximo passo em planos, ${CREATOR_COINS_PUBLIC_NAME}, publicação e integrações sem ruído.`}
+                {`Dúvidas, problemas e próximo passo com menos ida e volta em planos, ${CREATOR_COINS_PUBLIC_NAME}, publicação e integrações.`}
               </p>
             </div>
 
             <div className="support-hero-signals">
               <div className="support-hero-signal">
                 <strong>FAQ útil</strong>
-                <span>Respostas curtas para as dúvidas mais comuns antes de abrir uma solicitação.</span>
+                <span>Respostas curtas antes de abrir uma solicitação.</span>
               </div>
               <div className="support-hero-signal">
-                <strong>Contexto claro</strong>
-                <span>{`Planos, ${CREATOR_COINS_PUBLIC_NAME}, checkout e publicação aparecem como trilhas de ajuda separadas.`}</span>
+                <strong>Trilha certa</strong>
+                <span>{`Planos, ${CREATOR_COINS_PUBLIC_NAME}, checkout e publicação aparecem separados.`}</span>
               </div>
             </div>
           </div>
@@ -164,9 +164,9 @@ export default function SupportPage() {
             <span className="support-hero-focus-label">
               {email ? "Triagem interna pronta" : "Triagem guiada"}
             </span>
-            <strong>Entre pelo FAQ, valide a trilha certa e leve o caso para a fila quando precisar de análise real.</strong>
+            <strong>Consulte o FAQ e leve o caso para a fila quando precisar.</strong>
             <p className="support-hero-focus-copy">
-              O Support Assistant mantém categoria, contexto e histórico no mesmo fluxo para reduzir ida e volta e preservar a continuidade do beta pago/controlado.
+              O Support Assistant mantém categoria, contexto e histórico no mesmo fluxo.
             </p>
             <div className="support-hero-focus-meta">
               <span className="premium-badge premium-badge-phase">
@@ -199,11 +199,11 @@ export default function SupportPage() {
           </div>
           <div className="support-context-item">
             <strong>Próximo passo sugerido</strong>
-            <span>Consulte o FAQ e a trilha certa antes de abrir uma solicitação. Isso reduz ida e volta e protege a experiência de um beta pago/controlado mais sério.</span>
+            <span>Consulte o FAQ e a trilha certa antes de abrir uma solicitação.</span>
           </div>
           <div className="support-context-item">
             <strong>Privacidade aplicada</strong>
-            <span>Dados enviados em tickets e projetos não são usados para treinar modelos e permanecem em processamento isolado.</span>
+            <span>Dados de tickets e projetos não entram em treino.</span>
           </div>
         </div>
       </section>
@@ -223,7 +223,7 @@ export default function SupportPage() {
         >
           <div className="section-header-ea">
             <h2 className="heading-reset">Caminhos rápidos de ajuda</h2>
-            <p className="helper-text-ea">Escolha a trilha mais próxima do seu caso antes de abrir uma solicitação.</p>
+            <p className="helper-text-ea">Escolha a trilha certa antes de abrir uma solicitação.</p>
           </div>
           <button
             type="button"
@@ -254,7 +254,7 @@ export default function SupportPage() {
 
       <section className="privacy-trust-note support-trust-note">
         <strong>Privacidade e confidencialidade</strong>
-        <span>Dados enviados em tickets e projetos não são usados para treinar modelos. O suporte opera com processamento isolado e foco em segurança operacional.</span>
+        <span>Dados enviados em tickets e projetos não entram em treino.</span>
       </section>
 
       {loading ? (
@@ -287,7 +287,7 @@ export default function SupportPage() {
         >
           <div className="section-header-ea">
             <h2 className="heading-reset">Perguntas frequentes</h2>
-            <p className="helper-text-ea">Respostas rápidas para dúvidas de operação, cobrança e continuidade do beta.</p>
+            <p className="helper-text-ea">Respostas rápidas para operação, cobrança e continuidade.</p>
           </div>
           <button
             type="button"

@@ -903,7 +903,7 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
             <p className="section-kicker">Vercel beta</p>
             <h3>{compact ? "Publicação" : "Publicação e deploy"}</h3>
             <p className="helper-text-ea">
-              A base inicial da Vercel entra quando houver um projeto salvo para preparar o handoff de publicação no fluxo criar → editar → publicar.
+              A base da Vercel entra quando houver um projeto salvo para preparar o handoff de publicação.
             </p>
           </div>
           <span className="premium-badge premium-badge-soon">Aguardando projeto</span>
@@ -912,7 +912,7 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
           kind="empty"
           compact={compact}
           title="Nenhum projeto elegível para publicação ainda"
-          description="Crie ou salve um projeto primeiro. Depois disso, você já consegue salvar a base de publicação beta e exportar o handoff para a Vercel."
+          description="Crie ou salve um projeto primeiro. Depois disso, já dá para salvar a base beta e exportar o handoff."
           badge="Vercel beta"
           emphasis="Aguardando projeto"
           meta={[
@@ -939,7 +939,7 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
           <p className="section-kicker">Vercel beta</p>
           <h3>{compact ? "Base de publicação" : "Base beta de publicação na Vercel"}</h3>
           <p className="helper-text-ea">
-            No beta, a Vercel cobre draft, exported e published informado manualmente. OAuth e publicação automática entram na próxima fase.
+            No beta, a Vercel cobre draft, exported e published manual. OAuth e automação entram depois.
           </p>
         </div>
         <span className={`premium-badge ${connected ? "premium-badge-phase" : "premium-badge-warning"}`}>
@@ -1200,7 +1200,7 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
           <p className="section-kicker">Histórico de saída</p>
           <h4 className="heading-reset">Draft, handoff e publicação registrados</h4>
           <p className="helper-text-ea">
-            Esta trilha mostra o que já foi salvo como base local, o que já saiu como handoff exported e o que já foi confirmado manualmente como published.
+            Esta trilha mostra base salva, handoff exported e published informado.
           </p>
         </div>
         <div className="vercel-publish-history-list">
@@ -1221,7 +1221,7 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
               compact
               kind="empty"
               title="Ainda sem histórico de saída neste projeto"
-              description="Salve a base, exporte o handoff ou registre a publicação manual para criar uma trilha operacional mais clara."
+              description="Salve a base, exporte o handoff ou registre a publicação manual."
               badge="Histórico"
               emphasis={selectedProject.title}
               meta={[
