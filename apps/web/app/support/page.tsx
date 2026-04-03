@@ -6,27 +6,28 @@ import { useDashboardBootstrap } from "../../hooks/useDashboardBootstrap";
 import { useSectionFocus } from "../../hooks/useSectionFocus";
 import { BetaAccessBlockedView } from "../../components/waitlist/BetaAccessBlockedView";
 import { SupportAssistantCard } from "../../components/dashboard/SupportAssistantCard";
+import { SupportOperationsPanel } from "../../components/support/SupportOperationsPanel";
 import { CREATOR_COINS_PUBLIC_NAME } from "../../lib/creatorCoins";
 import { toUserFacingError } from "../../lib/uiFeedback";
 
 const SUPPORT_PATHS = [
   {
-    title: "Planos e cobrança",
-    description: "Entenda checkout, assinatura e retorno da Stripe.",
-    href: "/plans",
-    cta: "Revisar planos",
-  },
-  {
-    title: `${CREATOR_COINS_PUBLIC_NAME} e histórico`,
-    description: `Consulte saldo, compra, conversão e movimentações de ${CREATOR_COINS_PUBLIC_NAME}.`,
+    title: "Cobrança e saldo",
+    description: `Consulte plano, checkout, saldo, compra e movimentações de ${CREATOR_COINS_PUBLIC_NAME} no mesmo histórico.`,
     href: "/credits",
     cta: `Abrir ${CREATOR_COINS_PUBLIC_NAME}`,
   },
   {
-    title: "Projetos e publicação",
-    description: "Retome o contexto salvo e organize o handoff para GitHub e Vercel.",
+    title: "Publicação e continuidade",
+    description: "Veja status de projeto, sincronização, GitHub, Vercel e saída registrada na mesma trilha.",
     href: "/projects",
     cta: "Ver projetos",
+  },
+  {
+    title: "Fluxo principal",
+    description: "Relembre como creators, editor, projetos e saída se conectam antes de abrir suporte.",
+    href: "/how-it-works",
+    cta: "Revisar fluxo",
   },
 ];
 
@@ -42,7 +43,7 @@ const SUPPORT_FAQ = [
   {
     question: "Quando devo abrir suporte em vez de tentar novamente?",
     answer:
-      "Abra suporte quando o erro se repetir, quando saldo ou plano não refletirem a ação esperada ou quando você precisar de ajuda em cobrança, publicação ou integrações.",
+      "Abra suporte quando o mesmo erro voltar, quando saldo ou publish não refletirem o histórico ou quando o quadro operacional indicar atenção.",
   },
   {
     question: "O que incluir para a equipe responder mais rápido?",
@@ -57,7 +58,7 @@ const SUPPORT_FAQ = [
   {
     question: "GitHub e Vercel já têm suporte completo?",
     answer:
-      "No beta, GitHub e Vercel seguem como base de continuidade e publicação. Se o handoff não estiver claro, o suporte ajuda a interpretar o fluxo atual.",
+      "GitHub e Vercel já têm trilha backend-owned, mas o caminho feliz ainda depende de credencial válida e resposta do provider. Se o status não avançar, abra o projeto e leve o contexto do erro para o suporte.",
   },
   {
     question: "Meus dados enviados ao suporte treinam modelos?",
@@ -151,12 +152,12 @@ export default function SupportPage() {
 
             <div className="support-hero-signals">
               <div className="support-hero-signal">
-                <strong>FAQ útil</strong>
-                <span>Respostas curtas antes de abrir uma solicitação.</span>
+                <strong>Status curto</strong>
+                <span>Confirme a prontidão da plataforma antes de interpretar falha local como erro geral.</span>
               </div>
               <div className="support-hero-signal">
-                <strong>Trilha certa</strong>
-                <span>{`Planos, ${CREATOR_COINS_PUBLIC_NAME}, checkout e publicação aparecem separados.`}</span>
+                <strong>Base certa</strong>
+                <span>{`Cobrança, ${CREATOR_COINS_PUBLIC_NAME}, publish e fluxo principal têm rota de apoio objetiva.`}</span>
               </div>
             </div>
           </div>
@@ -208,6 +209,8 @@ export default function SupportPage() {
         </div>
       </section>
 
+      <SupportOperationsPanel />
+
       <section
         ref={registerSection("guide")}
         className="support-guide-section focus-shell-section"
@@ -222,8 +225,8 @@ export default function SupportPage() {
           onKeyDown={activeSection !== "guide" ? (event) => onSectionTrigger(event, "guide") : undefined}
         >
           <div className="section-header-ea">
-            <h2 className="heading-reset">Caminhos rápidos de ajuda</h2>
-            <p className="helper-text-ea">Escolha a trilha certa antes de abrir uma solicitação.</p>
+            <h2 className="heading-reset">Bases de apoio</h2>
+            <p className="helper-text-ea">Documentação curta e rotas certas para cobrança, publish e fluxo principal.</p>
           </div>
           <button
             type="button"
@@ -235,7 +238,7 @@ export default function SupportPage() {
           </button>
         </div>
         <div className="focus-shell-preview">
-          Veja as trilhas mais comuns sem abrir o FAQ e o atendimento interno ao mesmo tempo.
+          Consulte a base certa sem depender de texto solto, FAQ longa ou interpretação de memória.
         </div>
         <div className="focus-shell-body">
         <div className="support-guide-grid">
