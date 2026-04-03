@@ -23,17 +23,17 @@ function statusLabel(status: BetaAccessStatus | null): string {
 }
 
 function statusMessage(status: BetaAccessStatus | null): string {
-  if (status === "approved") return "Seu acesso foi liberado. Faça login para entrar na plataforma.";
-  if (status === "rejected") return "Sua solicitação não foi aprovada neste ciclo. Você pode reenviar.";
+  if (status === "approved") return "Seu acesso foi liberado. Entre para abrir o núcleo criativo.";
+  if (status === "rejected") return "Sua solicitação não entrou neste ciclo. Você pode reenviar.";
   if (status === "pending") return "Seu pedido está em análise.";
-  return "Informe seu e-mail para entrar na fila.";
+  return "Use seu e-mail para pedir acesso.";
 }
 
 export function ClosedBetaAccessCard({
   initialEmail = "",
   initialStatus = null,
-  title = "Beta fechado",
-  description = "Solicite acesso para entrar na fila de liberação.",
+  title = "Pedir acesso",
+  description = "Entre na fila para usar creators, editor e projetos no mesmo fluxo.",
   compact = false,
 }: Props) {
   const [email, setEmail] = useState(initialEmail);
@@ -108,14 +108,14 @@ export function ClosedBetaAccessCard({
           />
         </label>
         <div className="helper-text-ea">
-          Usamos este e-mail para atualizar seu status.
+          Usamos este e-mail para atualizar seu acesso.
         </div>
         <button
           type="submit"
           disabled={loading || email.trim().length < 5}
           className="btn-ea btn-primary"
         >
-          {loading ? "Enviando..." : "Entrar na fila de espera"}
+          {loading ? "Enviando..." : "Pedir acesso"}
         </button>
       </form>
 

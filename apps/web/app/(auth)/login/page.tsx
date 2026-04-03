@@ -131,12 +131,12 @@ function LoginPageContent() {
             <div className="section-stack">
               <p className="section-kicker">Acesso à plataforma</p>
               <h1 className="auth-entry-title">
-                {mode === "signup" ? "Crie sua conta para entrar no beta fechado" : "Entre no Editor AI Creator"}
+                {mode === "signup" ? "Crie sua conta para pedir acesso" : "Entre no núcleo criativo"}
               </h1>
               <p className="auth-entry-copy">
                 {mode === "signup"
-                  ? "Cadastre sua conta e entre na fila de acesso."
-                  : "Use seu acesso aprovado para abrir o workspace."}
+                  ? "Cadastre sua conta e entre na fila."
+                  : "Use seu acesso aprovado para abrir creators, editor e projetos."}
               </p>
             </div>
 
@@ -146,12 +146,12 @@ function LoginPageContent() {
 
             <div className="auth-entry-context-grid">
               <div className="auth-entry-context-item">
-                <strong>Conta protegida</strong>
-                <span>Só contas aprovadas entram no workspace.</span>
+                <strong>Acesso aprovado</strong>
+                <span>Só contas liberadas entram no núcleo.</span>
               </div>
               <div className="auth-entry-context-item">
-                <strong>Privacidade clara</strong>
-                <span>Dados da conta ficam isolados do treino.</span>
+                <strong>Conta isolada</strong>
+                <span>Dados da conta não entram em treino.</span>
               </div>
             </div>
           </div>
@@ -164,7 +164,7 @@ function LoginPageContent() {
               </h2>
               <p className="meta-text-ea">
                 {mode === "signup"
-                  ? "Use um e-mail válido para entrar na fila."
+                  ? "Use um e-mail válido para pedir acesso."
                   : "Entre com e-mail e senha."}
               </p>
             </div>
@@ -244,7 +244,7 @@ function LoginPageContent() {
               <span>
                 {mode === "signup"
                   ? "Depois do cadastro, sua conta entra em análise."
-                  : "Contas aprovadas entram direto no dashboard."}
+                  : "Contas aprovadas entram direto no workspace."}
               </span>
             </div>
 

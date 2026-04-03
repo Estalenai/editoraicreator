@@ -4,7 +4,7 @@ import { MotionRuntime } from "../components/ui/MotionRuntime";
 
 export const metadata = {
   title: "Editor AI Creator",
-  description: "Editor AI Creator — Plataforma de criação com IA"
+  description: "Editor AI Creator — Creators, editor e projetos na mesma continuidade."
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -20,7 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   <div className="app-brand-mark" />
                   <div className="app-shell-head-copy">
                     <strong>Editor AI Creator</strong>
-                    <span className="app-shell-head-note">Workspace integrado para creators, editor, projetos e saída.</span>
+                    <span className="app-shell-head-note">Creators, editor e projetos na mesma continuidade.</span>
                   </div>
                 </div>
                 <span className="app-brand-badge">EditexAI</span>

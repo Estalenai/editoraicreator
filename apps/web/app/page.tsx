@@ -46,16 +46,16 @@ const HOME_HERO_FLOW = [
 
 const HOME_HERO_TRUST = [
   {
-    title: "Creators geram a base",
-    detail: "Post, Scripts e Clips iniciam o trabalho com contexto real.",
+    title: "Não começa do zero",
+    detail: "Creators já devolvem base utilizável.",
   },
   {
-    title: "Editor consolida a peça",
-    detail: "A revisão e o acabamento seguem no mesmo núcleo.",
+    title: "Não quebra o fluxo",
+    detail: "Editor e projetos continuam na mesma peça.",
   },
   {
-    title: "Projetos seguram a saída",
-    detail: "Continuidade e registro ficam claros antes de qualquer camada de apoio.",
+    title: "Não perde a saída",
+    detail: "A entrega continua visível até o fim.",
   },
 ];
 
@@ -70,9 +70,9 @@ export default function HomePage() {
                 <div className="premium-badge premium-badge-phase beta-entry-badge">
                   Beta pago/controlado
                 </div>
-                <h1 className="beta-entry-title">Creators, editor e projetos no centro do produto</h1>
+                <h1 className="beta-entry-title">Não é prompt solto. É creators, editor e projetos na mesma continuidade.</h1>
                 <p className="beta-entry-copy">
-                  O núcleo atual já precisa dominar a leitura: gerar em creators, consolidar no editor e registrar a continuidade até a saída.
+                  Gere a base, refine no editor e siga até a saída sem perder contexto no caminho.
                 </p>
               </div>
 
@@ -90,8 +90,8 @@ export default function HomePage() {
               </div>
 
               <div className="beta-entry-command-prompt">
-                <span className="beta-entry-command-prompt-label">Núcleo em foco</span>
-                <strong>Gerar uma peça em creators, abrir no editor e seguir com continuidade até a saída registrada.</strong>
+                <span className="beta-entry-command-prompt-label">Wedge</span>
+                <strong>O valor não está só em gerar. Está em continuar a mesma peça até a saída.</strong>
               </div>
 
               <div className="beta-entry-command-route" aria-label="Creators centrais do beta">
@@ -105,16 +105,16 @@ export default function HomePage() {
 
               <div className="beta-entry-command-proof">
                 <div className="beta-entry-command-proof-item">
-                  <span>Centro do produto</span>
-                  <strong>Creators + editor + projetos</strong>
+                  <span>Geração útil</span>
+                  <strong>Creators já entregam base utilizável</strong>
                 </div>
                 <div className="beta-entry-command-proof-item">
-                  <span>Saída clara</span>
-                  <strong>Rascunho, saída registrada e publicação confirmada</strong>
+                  <span>Revisão contínua</span>
+                  <strong>Editor e projeto seguram a mesma peça</strong>
                 </div>
                 <div className="beta-entry-command-proof-item">
-                  <span>Camada de apoio</span>
-                  <strong>Créditos, planos e suporte entram depois</strong>
+                  <span>Saída rastreada</span>
+                  <strong>O próximo passo continua claro até a entrega</strong>
                 </div>
               </div>
             </div>
@@ -133,11 +133,11 @@ export default function HomePage() {
         <section className="beta-entry-proof-open" data-reveal data-reveal-delay="60">
             <div className="section-stack-tight beta-entry-proof-head">
               <div className="premium-badge premium-badge-phase beta-entry-badge">
-                Prova de valor
+                Prova rápida
               </div>
-            <h2 className="heading-reset">O que o núcleo já sustenta</h2>
+            <h2 className="heading-reset">Não para na geração.</h2>
             <p className="helper-text-ea">
-              O valor principal já está aqui: gerar, salvar, abrir no editor e seguir até a saída com continuidade.
+              Cada creator já nasce com próximo passo: salvar, abrir no editor e seguir até a saída.
             </p>
           </div>
           <Link href="/creators" className="btn-link-ea btn-secondary btn-sm">
@@ -171,8 +171,8 @@ export default function HomePage() {
         <div data-reveal data-reveal-delay="100">
           <ClosedBetaAccessCard
             compact
-            title="Fila de espera"
-            description="Use seu e-mail de trabalho para entrar na fila de acesso."
+            title="Pedir acesso"
+            description="Entre na fila para usar creators, editor e projetos na mesma continuidade."
           />
         </div>
 
