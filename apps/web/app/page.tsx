@@ -27,31 +27,35 @@ const HOME_PROOF_SAMPLES = [
 
 const HOME_HERO_FLOW = [
   {
-    label: "Creator Post",
-    meta: "base comercial",
+    label: "Creators",
+    meta: "gera base",
   },
   {
-    label: "Creator Scripts",
-    meta: "roteiro pronto",
+    label: "Editor",
+    meta: "refina contexto",
   },
   {
-    label: "Creator Clips",
-    meta: "saída visual",
+    label: "Projetos",
+    meta: "segura continuidade",
+  },
+  {
+    label: "Saída",
+    meta: "registra o que foi entregue",
   },
 ];
 
 const HOME_HERO_TRUST = [
   {
-    title: "Fluxo contínuo",
-    detail: "Gerar, salvar, editar e exportar no mesmo fluxo.",
+    title: "Creators geram a base",
+    detail: "Post, Scripts e Clips iniciam o trabalho com contexto real.",
   },
   {
-    title: "Escopo decidido",
-    detail: "O núcleo atual já sustenta uso real.",
+    title: "Editor consolida a peça",
+    detail: "A revisão e o acabamento seguem no mesmo núcleo.",
   },
   {
-    title: "Confidencialidade",
-    detail: "O contexto da conta fica isolado.",
+    title: "Projetos seguram a saída",
+    detail: "Continuidade e registro ficam claros antes de qualquer camada de apoio.",
   },
 ];
 
@@ -66,9 +70,9 @@ export default function HomePage() {
                 <div className="premium-badge premium-badge-phase beta-entry-badge">
                   Beta pago/controlado
                 </div>
-                <h1 className="beta-entry-title">Acesso ao núcleo do Editor AI Creator</h1>
+                <h1 className="beta-entry-title">Creators, editor e projetos no centro do produto</h1>
                 <p className="beta-entry-copy">
-                  <strong>Creator Post</strong>, <strong>Creator Scripts</strong>, <strong>Creator Clips</strong>, editor e projetos no mesmo fluxo para gerar, salvar, editar e registrar a saída com rastreio real.
+                  O núcleo atual já precisa dominar a leitura: gerar em creators, consolidar no editor e registrar a continuidade até a saída.
                 </p>
               </div>
 
@@ -82,12 +86,12 @@ export default function HomePage() {
             <div className="beta-entry-command-surface" aria-label="Fluxo principal do beta pago/controlado">
               <div className="beta-entry-command-head">
                 <span className="beta-entry-command-kicker">Fluxo principal</span>
-                <span className="beta-entry-command-status">Criar → editar → registrar saída</span>
+                <span className="beta-entry-command-status">Creators → editor → projetos → saída</span>
               </div>
 
               <div className="beta-entry-command-prompt">
-                <span className="beta-entry-command-prompt-label">Briefing central</span>
-                <strong>Montar uma peça comercial com creator, projeto salvo e base pronta para editar.</strong>
+                <span className="beta-entry-command-prompt-label">Núcleo em foco</span>
+                <strong>Gerar uma peça em creators, abrir no editor e seguir com continuidade até a saída registrada.</strong>
               </div>
 
               <div className="beta-entry-command-route" aria-label="Creators centrais do beta">
@@ -108,6 +112,10 @@ export default function HomePage() {
                   <span>Saída clara</span>
                   <strong>Rascunho, saída registrada e publicação confirmada</strong>
                 </div>
+                <div className="beta-entry-command-proof-item">
+                  <span>Camada de apoio</span>
+                  <strong>Créditos, planos e suporte entram depois</strong>
+                </div>
               </div>
             </div>
           </div>
@@ -123,13 +131,13 @@ export default function HomePage() {
         </section>
 
         <section className="beta-entry-proof-open" data-reveal data-reveal-delay="60">
-          <div className="section-stack-tight beta-entry-proof-head">
-            <div className="premium-badge premium-badge-phase beta-entry-badge">
-              Prova de valor
-            </div>
-            <h2 className="heading-reset">O que o núcleo já entrega</h2>
+            <div className="section-stack-tight beta-entry-proof-head">
+              <div className="premium-badge premium-badge-phase beta-entry-badge">
+                Prova de valor
+              </div>
+            <h2 className="heading-reset">O que o núcleo já sustenta</h2>
             <p className="helper-text-ea">
-              Exemplos reais do fluxo atual: gerar, salvar no projeto, refinar no editor e fechar a saída com clareza.
+              O valor principal já está aqui: gerar, salvar, abrir no editor e seguir até a saída com continuidade.
             </p>
           </div>
           <Link href="/creators" className="btn-link-ea btn-secondary btn-sm">

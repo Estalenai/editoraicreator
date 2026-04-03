@@ -4,23 +4,26 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { api } from "../../lib/api";
+import { EditorRouteLink } from "../ui/EditorRouteLink";
 
 type NavItem = {
   href: string;
   label: string;
   meta: string;
+  group: "overview" | "core" | "support";
   aliases?: string[];
 };
 
 const NAV_ITEMS: NavItem[] = [
-  { href: "/dashboard", label: "Dashboard", meta: "Conta, saldo e visão executiva" },
-  { href: "/creators", label: "Creators", meta: "Gerar base para vídeo, foto e conteúdo" },
-  { href: "/projects", label: "Projetos", meta: "Editar, salvar e publicar", aliases: ["/editor"] },
-  { href: "/credits", label: "Créditos", meta: "Saldo, histórico e compra" },
-  { href: "/plans", label: "Planos", meta: "Assinatura, totais e disponibilidade" },
-  { href: "/support", label: "Suporte", meta: "Ajuda operacional" },
-  { href: "/how-it-works", label: "Como funciona", meta: "Fluxo, transparência e uso" },
-  { href: "/admin", label: "Admin", meta: "Operação restrita" },
+  { href: "/dashboard", label: "Dashboard", meta: "Visão geral do workspace", group: "overview" },
+  { href: "/creators", label: "Creators", meta: "Gerar base criativa com contexto", group: "core" },
+  { href: "/editor/new", label: "Editor", meta: "Abrir, revisar e consolidar a peça", group: "core", aliases: ["/editor"] },
+  { href: "/projects", label: "Projetos", meta: "Continuidade, saída e registro", group: "core" },
+  { href: "/credits", label: "Créditos", meta: "Saldo e histórico financeiro", group: "support" },
+  { href: "/plans", label: "Planos", meta: "Assinatura e disponibilidade", group: "support" },
+  { href: "/support", label: "Suporte", meta: "Ajuda operacional", group: "support" },
+  { href: "/how-it-works", label: "Como funciona", meta: "Guia rápido do fluxo", group: "support" },
+  { href: "/admin", label: "Admin", meta: "Operação restrita", group: "support" },
 ];
 
 function normalizePath(pathname: string): string {
@@ -86,6 +89,57 @@ export function AppTopNav() {
       }),
     [canAccessAdmin, pathname]
   );
+  const overviewItems = useMemo(
+    () => navItems.filter((item) => item.group === "overview"),
+    [navItems]
+  );
+  const coreItems = useMemo(
+    () => navItems.filter((item) => item.group === "core"),
+    [navItems]
+  );
+  const supportItems = useMemo(
+    () => navItems.filter((item) => item.group === "support"),
+    [navItems]
+  );
+
+  function renderNavItem(item: NavItem) {
+    const active = matchesNavPath(pathname, item);
+    const className = `app-nav-link layout-contract-item layout-contract-rail-link app-nav-link-${item.group}${active ? " app-nav-link-active" : ""}`;
+    const content = (
+      <>
+        <span className="app-nav-link-label">{item.label}</span>
+        <span className="app-nav-link-meta">{item.meta}</span>
+      </>
+    );
+
+    if (item.href.startsWith("/editor")) {
+      return (
+        <EditorRouteLink
+          key={item.href}
+          href={item.href}
+          className={className}
+          aria-current={active ? "page" : undefined}
+          data-active={active ? "true" : "false"}
+          data-group={item.group}
+        >
+          {content}
+        </EditorRouteLink>
+      );
+    }
+
+    return (
+      <Link
+        key={item.href}
+        href={item.href}
+        className={className}
+        aria-current={active ? "page" : undefined}
+        data-active={active ? "true" : "false"}
+        data-group={item.group}
+      >
+        {content}
+      </Link>
+    );
+  }
 
   if (hideNavigation) return null;
 
@@ -94,25 +148,34 @@ export function AppTopNav() {
       <div className="app-top-nav-head app-nav-rail-head layout-contract-rail-head">
         <p className="app-top-nav-title">Workspace</p>
         <p className="app-top-nav-text">
-          Creators hero, editor e projetos ficam no centro. Créditos, planos e suporte continuam como camadas operacionais do beta pago/controlado.
+          Creators, editor e projetos ficam no centro. Operação entra como apoio.
         </p>
+        <div className="app-nav-core-strip" aria-label="Fluxo principal do produto">
+          <span className="app-nav-core-pill">Creators</span>
+          <span className="app-nav-core-pill">Editor</span>
+          <span className="app-nav-core-pill">Projetos + saída</span>
+        </div>
       </div>
-      <div className="app-nav-links app-nav-rail-links layout-contract-collection">
-        {navItems.map((item) => {
-          const active = matchesNavPath(pathname, item);
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`app-nav-link layout-contract-item layout-contract-rail-link${active ? " app-nav-link-active" : ""}`}
-              aria-current={active ? "page" : undefined}
-              data-active={active ? "true" : "false"}
-            >
-              <span className="app-nav-link-label">{item.label}</span>
-              <span className="app-nav-link-meta">{item.meta}</span>
-            </Link>
-          );
-        })}
+      {overviewItems.length > 0 ? (
+        <div className="app-nav-overview">{overviewItems.map(renderNavItem)}</div>
+      ) : null}
+      <div className="app-nav-group app-nav-group-core">
+        <div className="app-nav-group-head">
+          <p className="app-nav-group-kicker">Núcleo criativo</p>
+          <p className="app-nav-group-text">Geração, edição, continuidade e saída em primeiro plano.</p>
+        </div>
+        <div className="app-nav-links app-nav-links-core app-nav-rail-links layout-contract-collection">
+          {coreItems.map(renderNavItem)}
+        </div>
+      </div>
+      <div className="app-nav-group app-nav-group-support">
+        <div className="app-nav-group-head">
+          <p className="app-nav-group-kicker">Camada operacional</p>
+          <p className="app-nav-group-text">Saldo, plano, suporte e área restrita só entram quando necessários.</p>
+        </div>
+        <div className="app-nav-links app-nav-links-support app-nav-rail-links layout-contract-collection">
+          {supportItems.map(renderNavItem)}
+        </div>
       </div>
     </nav>
   );

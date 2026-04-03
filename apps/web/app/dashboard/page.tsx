@@ -9,6 +9,7 @@ import { EditorRouteLink } from "../../components/ui/EditorRouteLink";
 import { coinTypeLabel } from "../../lib/coinTypeLabel";
 import { api } from "../../lib/api";
 import { CREATOR_COINS_PUBLIC_NAME, formatCreatorCoinsWalletSummary } from "../../lib/creatorCoins";
+import { ensureCanonicalProjectData, getCanonicalProjectSummary } from "../../lib/projectModel";
 import { toUserFacingError } from "../../lib/uiFeedback";
 
 type UsageItem = { feature: string; used: number; limit: number };
@@ -26,26 +27,34 @@ const QUICK_LINKS: QuickLinkItem[] = [
   {
     href: "/creators",
     group: "core",
-    tag: "Workspace",
+    tag: "Creators",
     title: "Creators",
-    description: "Abra Post, Scripts ou Clips com briefing e continuidade.",
+    description: "Abra Post, Scripts ou Clips e gere a base criativa com contexto.",
     cta: "Abrir workspace",
-  },
-  {
-    href: "/projects",
-    group: "core",
-    tag: "Continuidade",
-    title: "Projetos",
-    description: "Retome entregas salvas e siga para o editor.",
-    cta: "Ver projetos",
   },
   {
     href: "/editor/new",
     group: "core",
     tag: "Editor",
-    title: "Novo projeto",
-    description: "Entre direto no editor quando já souber o entregável.",
+    title: "Editor",
+    description: "Entre direto no núcleo de revisão quando já souber o entregável.",
     cta: "Abrir editor",
+  },
+  {
+    href: "/projects",
+    group: "core",
+    tag: "Projetos",
+    title: "Projetos",
+    description: "Retome continuidade, checkpoints e saída no mesmo fluxo.",
+    cta: "Ver projetos",
+  },
+  {
+    href: "/projects#publish",
+    group: "core",
+    tag: "Saída",
+    title: "Output",
+    description: "Conferir o que já saiu, o que falta publicar e o próximo passo.",
+    cta: "Ver saída",
   },
   {
     href: "/credits",
@@ -158,7 +167,28 @@ export default function DashboardPage() {
     window.location.replace(`/credits?${nextSearch.toString()}`);
   }, []);
 
-  const recentProjects = useMemo(() => projects.slice(0, 6), [projects]);
+  const recentProjects = useMemo(
+    () =>
+      projects.slice(0, 6).map((project: any) => {
+        const title = project?.name || project?.title || project?.id || "Projeto sem título";
+        const kind = String(project?.kind || project?.type || "projeto");
+        const data = ensureCanonicalProjectData(project?.data, {
+          projectKind: kind,
+          projectTitle: title,
+        });
+        return {
+          ...project,
+          title,
+          kind,
+          data,
+          summary: getCanonicalProjectSummary(data, {
+            projectKind: kind,
+            projectTitle: title,
+          }),
+        };
+      }),
+    [projects]
+  );
   const walletSummary = useMemo(() => formatCreatorCoinsWalletSummary(wallet), [wallet]);
   const coreQuickLinks = useMemo(
     () => QUICK_LINKS.filter((item) => item.group === "core"),
@@ -214,6 +244,23 @@ export default function DashboardPage() {
   const nextActionDescriptionDisplay = loading
     ? "Estamos sincronizando saldo, plano, projetos e próximos passos do workspace."
     : nextAction.description;
+  const leadProject = recentProjects[0] ?? null;
+  const continuityValue = loading ? "Projetos em sincronização" : `${recentProjects.length} projeto(s)`;
+  const continuityDetail = loading
+    ? "A trilha criativa entra completa quando a conta terminar de sincronizar."
+    : leadProject
+      ? `${leadProject.summary.continuityStatusLabel} • ${leadProject.title}`
+      : "Crie o primeiro projeto para registrar a continuidade.";
+  const outputValue = loading
+    ? "Saída em sincronização"
+    : leadProject
+      ? leadProject.summary.continuityStatusLabel
+      : "Sem saída registrada";
+  const outputDetail = loading
+    ? "Status do núcleo criativo em atualização."
+    : leadProject
+      ? `Último foco: ${leadProject.title}`
+      : "A saída aparece aqui depois do primeiro projeto salvo.";
 
   if (betaBlocked) {
     return (
@@ -244,23 +291,23 @@ export default function DashboardPage() {
             </div>
             <div className="signal-strip dashboard-hero-signal-strip">
               <div className="signal-chip signal-chip-sober">
-                <strong>Saldo e uso</strong>
-                <span>Plano, Creator Coins e atividade na mesma leitura.</span>
+                <strong>Creators</strong>
+                <span>Abra Post, Scripts ou Clips para iniciar a base.</span>
               </div>
               <div className="signal-chip signal-chip-sober">
-                <strong>Próxima ação</strong>
-                <span>Retome um projeto ou siga para o editor.</span>
+                <strong>Editor</strong>
+                <span>Refine a peça no mesmo núcleo sem trocar de contexto.</span>
               </div>
               <div className="signal-chip signal-chip-sober">
-                <strong>Histórico</strong>
-                <span>Estimativa antes da ação e consumo confirmado depois.</span>
+                <strong>Projetos + saída</strong>
+                <span>Continuidade, registro e publicação ficam em sequência.</span>
               </div>
             </div>
           </div>
         </div>
         <div className="dashboard-hero-support">
           <div className="dashboard-hero-support-head">
-            <span className="plan-card-section-label">Operação</span>
+            <span className="plan-card-section-label">Apoio operacional</span>
             <div className="hero-actions-row dashboard-hero-actions">
               <button
                 onClick={async () => {
@@ -280,32 +327,32 @@ export default function DashboardPage() {
           </div>
           <div className="dashboard-hero-support-grid">
             <div className="dashboard-hero-support-note">
-                <strong>Núcleo atual</strong>
-                <span>Creators, editor e projetos concentram o valor principal.</span>
+                <strong>Núcleo dominante</strong>
+                <span>Creators, editor, projetos e saída ficam na frente da leitura.</span>
             </div>
             <div className="dashboard-hero-support-note">
-                <strong>Operação rastreada</strong>
-                <span>Conta, saldo e projetos ficam persistidos.</span>
+                <strong>Operação em apoio</strong>
+                <span>Conta, saldo e plano seguem persistidos, mas não guiam o produto.</span>
             </div>
             <div className="dashboard-hero-support-note">
-                <strong>Camadas de apoio</strong>
-                <span>Plans, Credits e Support entram como apoio.</span>
+                <strong>Saída no mesmo eixo</strong>
+                <span>O que foi salvo, retomado e entregue continua no mesmo fluxo.</span>
             </div>
           </div>
         </div>
         <div className="hero-kpi-grid hero-kpi-grid-compact">
           <div className="hero-kpi" data-reveal data-reveal-delay="70">
-            <span className="hero-kpi-label">Saldo total</span>
-            <strong className="hero-kpi-value">{walletSummaryDisplay}</strong>
-            <span className="helper-text-ea">{loading ? "Saldo em sincronização." : "Distribuição pronta para operar."}</span>
+            <span className="hero-kpi-label">Centro do produto</span>
+            <strong className="hero-kpi-value">Creators → Editor</strong>
+            <span className="helper-text-ea">O núcleo criativo vem antes de qualquer camada operacional.</span>
           </div>
           <div className="hero-kpi" data-reveal data-reveal-delay="120">
-            <span className="hero-kpi-label">Uso recente</span>
-            <strong className="hero-kpi-value">{recentUsageValueDisplay}</strong>
-            <span className="helper-text-ea">{recentUsageDetailDisplay}</span>
+            <span className="hero-kpi-label">Continuidade</span>
+            <strong className="hero-kpi-value">{continuityValue}</strong>
+            <span className="helper-text-ea">{continuityDetail}</span>
           </div>
           <div className="hero-kpi" data-reveal data-reveal-delay="170">
-            <span className="hero-kpi-label">Próxima decisão</span>
+            <span className="hero-kpi-label">Próximo passo</span>
             <strong className="hero-kpi-value">{nextActionTitleDisplay}</strong>
             <span className="helper-text-ea">{nextActionCtaDisplay}</span>
           </div>
@@ -355,20 +402,13 @@ export default function DashboardPage() {
         ) : (
           <>
             <div className="executive-card dashboard-summary-card dashboard-summary-card-primary layout-contract-item layout-contract-metric">
-              <p className="executive-eyebrow">Saldo de {CREATOR_COINS_PUBLIC_NAME}</p>
-              <p className="executive-value metric-value-compact">{walletSummary}</p>
-              <div className="dashboard-balance-stack">
-                {walletBreakdown.map((item) => (
-                  <div key={item.coinType} className="dashboard-balance-chip layout-contract-note">
-                    <span className="helper-text-ea">
-                      {coinTypeLabel(item.coinType)} • {item.description}
-                    </span>
-                    <strong>{item.amount}</strong>
-                  </div>
-                ))}
-              </div>
-              <Link href="/credits" className="card-cta-link">
-                Comprar {CREATOR_COINS_PUBLIC_NAME}
+              <p className="executive-eyebrow">Centro do produto</p>
+              <p className="executive-value metric-value-compact">Creators → Editor → Saída</p>
+              <p className="executive-detail">
+                O dashboard agora aponta primeiro para geração, revisão, continuidade e output.
+              </p>
+              <Link href="/creators" className="card-cta-link">
+                Abrir Creators
               </Link>
             </div>
 
@@ -399,20 +439,20 @@ export default function DashboardPage() {
             )}
 
             <div className="executive-card dashboard-summary-card dashboard-summary-card-secondary layout-contract-item layout-contract-metric">
-              <p className="executive-eyebrow">Plano atual</p>
-              <p className="executive-value">{planLabel ?? "—"}</p>
-              <p className="executive-detail">Revise assinatura, Creator Coins incluídas e checkout.</p>
-              <Link href="/plans" className="card-cta-link">
-                Gerenciar planos
+              <p className="executive-eyebrow">Projetos em continuidade</p>
+              <p className="executive-value">{continuityValue}</p>
+              <p className="executive-detail">{continuityDetail}</p>
+              <Link href="/projects" className="card-cta-link">
+                Ver continuidade
               </Link>
             </div>
 
             <div className="executive-card dashboard-summary-card dashboard-summary-card-monitor layout-contract-item layout-contract-metric">
-              <p className="executive-eyebrow">Uso recente</p>
-              <p className="executive-value">{recentUsageValue}</p>
-              <p className="executive-detail">{recentUsageText}</p>
-              <Link href="/credits#credits-history" className="card-cta-link">
-                Ver histórico do período
+              <p className="executive-eyebrow">Saída atual</p>
+              <p className="executive-value">{outputValue}</p>
+              <p className="executive-detail">{outputDetail}</p>
+              <Link href="/projects#publish" className="card-cta-link">
+                Ver saída
               </Link>
             </div>
           </>
@@ -458,10 +498,12 @@ export default function DashboardPage() {
                   const content = (
                     <>
                       <div className="dashboard-project-link-main">
-                        <span className="dashboard-project-link-title">{project.name || project.title || project.id}</span>
-                        <span className="dashboard-project-link-meta">{String(project.kind || project.type || "projeto")}</span>
+                        <span className="dashboard-project-link-title">{project.title}</span>
+                        <span className="dashboard-project-link-meta">
+                          {project.kind} • {project.summary.continuityStatusLabel}
+                        </span>
                       </div>
-                      {projectId ? <span className="dashboard-project-link-cta">Abrir</span> : null}
+                      {projectId ? <span className="dashboard-project-link-cta">{project.summary.deliverable.label}</span> : null}
                     </>
                   );
                   return projectId ? (
@@ -493,7 +535,7 @@ export default function DashboardPage() {
             <div className="section-head">
               <div className="section-header-ea">
                 <h3 className="heading-reset">Núcleo principal</h3>
-                <p className="helper-text-ea">Atalhos para criar, salvar e seguir no editor.</p>
+                <p className="helper-text-ea">Creators, editor, projetos e saída em uma única linha de decisão.</p>
               </div>
             </div>
             <div className="dashboard-quick-links-stack">
@@ -569,7 +611,7 @@ export default function DashboardPage() {
             <div className="section-head">
               <div className="section-header-ea">
                 <h3 className="heading-reset">Camadas operacionais</h3>
-                <p className="helper-text-ea">Financeiro, suporte e guia seguem como apoio.</p>
+                <p className="helper-text-ea">Operação continua visível, mas não compete com o núcleo criativo.</p>
               </div>
             </div>
             <div className="dashboard-support-links-list">
