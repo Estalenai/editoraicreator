@@ -7366,11 +7366,13 @@ body {
 @keyframes premium-page-enter {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(14px) scale(0.992);
+    filter: saturate(0.9) brightness(0.96);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
+    filter: saturate(1) brightness(1);
   }
 }
 
@@ -7382,6 +7384,36 @@ body {
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes premium-prism-drift {
+  0% {
+    transform: translate3d(0, -50%, 0) scale(0.985);
+    opacity: 0.54;
+  }
+  50% {
+    transform: translate3d(4px, -50%, 0) scale(1.02);
+    opacity: 0.82;
+  }
+  100% {
+    transform: translate3d(-3px, -50%, 0) scale(0.99);
+    opacity: 0.62;
+  }
+}
+
+@keyframes premium-lumen-pulse {
+  0% {
+    opacity: 0.42;
+    filter: saturate(0.92);
+  }
+  50% {
+    opacity: 0.78;
+    filter: saturate(1.08);
+  }
+  100% {
+    opacity: 0.48;
+    filter: saturate(0.96);
   }
 }
 
@@ -8781,6 +8813,8 @@ body {
   border-radius: 24px;
   background:
     radial-gradient(520px 180px at 50% 0%, rgba(88, 242, 255, 0.028), transparent 74%),
+    radial-gradient(220px 120px at 100% 14%, rgba(255, 191, 107, 0.04), transparent 80%),
+    radial-gradient(180px 120px at 0% 100%, rgba(157, 139, 255, 0.032), transparent 82%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.006)),
     var(--ea-unified-surface);
 }
@@ -8803,6 +8837,7 @@ body {
   border: 1px solid var(--ea-unified-divider) !important;
   background:
     radial-gradient(220px 96px at 100% 0%, rgba(75, 232, 255, 0.042), transparent 74%),
+    radial-gradient(120px 82px at 0% 14%, rgba(255, 191, 107, 0.032), transparent 80%),
     var(--ea-unified-surface-soft) !important;
   box-shadow: none !important;
   transform: none !important;
@@ -15621,10 +15656,14 @@ body {
   --ea-brand-cyan: #72f2ff;
   --ea-brand-cyan-soft: rgba(114, 242, 255, 0.18);
   --ea-brand-core: rgba(195, 247, 255, 0.22);
+  --ea-brand-amber-soft: rgba(255, 191, 107, 0.16);
+  --ea-brand-violet-soft: rgba(157, 139, 255, 0.16);
   --ea-shell-glass: linear-gradient(180deg, rgba(8, 23, 58, 0.34), rgba(5, 16, 40, 0.14));
   --ea-shell-glass-border: rgba(191, 239, 255, 0.08);
   --ea-shell-glass-shadow: inset 0 1px 0 rgba(244, 251, 255, 0.06), 0 16px 36px rgba(1, 8, 24, 0.12);
-  --ea-command-surface: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.016));
+  --ea-command-surface:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.016)),
+    linear-gradient(128deg, rgba(255, 191, 107, 0.045), transparent 42%, rgba(88, 242, 255, 0.03) 74%, transparent);
 }
 
 .app-shell-bg::after {
@@ -16171,12 +16210,24 @@ body {
   --ea-page-canvas-divider: rgba(191, 239, 255, 0.055);
   --ea-page-subtle-surface:
     radial-gradient(220px 92px at 100% 0%, rgba(88, 242, 255, 0.06), transparent 74%),
+    radial-gradient(180px 94px at 0% 18%, rgba(255, 191, 107, 0.045), transparent 76%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.014));
   --ea-unified-surface-strong:
     radial-gradient(620px 220px at 50% -40px, rgba(75, 232, 255, 0.08), transparent 74%),
+    radial-gradient(280px 144px at 100% 8%, rgba(255, 191, 107, 0.06), transparent 76%),
+    radial-gradient(260px 132px at 0% 0%, rgba(157, 139, 255, 0.05), transparent 74%),
     radial-gradient(760px 280px at 50% 100%, rgba(88, 120, 255, 0.08), transparent 78%),
     linear-gradient(180deg, rgba(8, 28, 68, 0.91), rgba(6, 18, 44, 0.95) 46%, rgba(5, 17, 42, 0.97));
   --ea-unified-divider: rgba(191, 239, 255, 0.06);
+  --ea-unified-surface:
+    radial-gradient(460px 180px at 12% 0%, rgba(75, 232, 255, 0.07), transparent 74%),
+    radial-gradient(240px 124px at 100% 12%, rgba(255, 191, 107, 0.05), transparent 78%),
+    radial-gradient(220px 110px at 0% 100%, rgba(157, 139, 255, 0.04), transparent 82%),
+    linear-gradient(168deg, rgba(7, 24, 58, 0.86), rgba(5, 16, 40, 0.92));
+  --ea-unified-surface-soft:
+    radial-gradient(220px 96px at 100% 0%, rgba(75, 232, 255, 0.04), transparent 74%),
+    radial-gradient(160px 84px at 0% 10%, rgba(255, 191, 107, 0.035), transparent 78%),
+    linear-gradient(165deg, rgba(255, 255, 255, 0.042), rgba(255, 255, 255, 0.012));
 }
 
 .app-shell-system {
@@ -17868,6 +17919,7 @@ body {
     radial-gradient(3px 3px at 24% 50%, rgba(218, 252, 255, 0.6), transparent 72%),
     radial-gradient(2px 2px at 52% 26%, rgba(88, 242, 255, 0.46), transparent 74%),
     radial-gradient(2px 2px at 72% 62%, rgba(127, 183, 255, 0.4), transparent 76%),
+    radial-gradient(2px 2px at 86% 34%, rgba(255, 191, 107, 0.46), transparent 76%),
     linear-gradient(132deg, transparent 0 46%, rgba(193, 244, 255, 0.16) 46% 52%, transparent 52% 100%) 84% 32% / 24px 10px no-repeat;
   opacity: 0.78;
 }
@@ -17882,6 +17934,7 @@ body {
   box-shadow:
     0 0 0 1px rgba(88, 242, 255, 0.1),
     0 0 32px rgba(52, 245, 255, 0.28),
+    0 0 18px rgba(255, 191, 107, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.36);
 }
 
@@ -17904,6 +17957,16 @@ body {
     16px 5px 0 -3px rgba(127, 183, 255, 0.44);
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .app-brand-mark-group::before {
+    animation: premium-prism-drift 9.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  }
+
+  .app-brand-mark-group::after {
+    animation: premium-lumen-pulse 6.2s ease-in-out infinite;
+  }
+}
+
 .app-shell-head-copy strong {
   letter-spacing: -0.024em;
 }
@@ -17924,7 +17987,9 @@ body {
   border-radius: 999px;
   background:
     radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.96), rgba(187, 246, 255, 0.74) 46%, rgba(52, 245, 255, 0.24) 74%, transparent 76%);
-  box-shadow: 0 0 16px rgba(88, 242, 255, 0.34);
+  box-shadow:
+    0 0 16px rgba(88, 242, 255, 0.34),
+    0 0 22px rgba(255, 191, 107, 0.08);
 }
 
 .section-kicker::after {
@@ -17933,9 +17998,15 @@ body {
   height: 9px;
   flex: 0 0 auto;
   background:
-    linear-gradient(90deg, rgba(88, 242, 255, 0.42), rgba(193, 244, 255, 0.18) 58%, transparent);
+    linear-gradient(90deg, rgba(88, 242, 255, 0.42), rgba(193, 244, 255, 0.18) 42%, rgba(255, 191, 107, 0.22) 68%, transparent);
   clip-path: polygon(0 50%, 56% 12%, 100% 26%, 74% 50%, 100% 74%, 56% 88%, 0 50%);
   opacity: 0.88;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .section-kicker::after {
+    animation: premium-lumen-pulse 5.8s ease-in-out infinite;
+  }
 }
 
 .premium-badge {
@@ -17984,6 +18055,10 @@ body {
 .auth-entry-frame-open {
   position: relative;
   isolation: isolate;
+  transition:
+    border-color var(--ea-motion-base),
+    background var(--ea-motion-pop),
+    box-shadow var(--ea-motion-pop);
 }
 
 .surface-flow-hero::before,
@@ -18001,9 +18076,10 @@ body {
   background:
     radial-gradient(12px 12px at 18% 54%, rgba(224, 252, 255, 0.24), transparent 58%),
     radial-gradient(54px 42px at 32% 54%, rgba(88, 242, 255, 0.12), transparent 70%),
+    radial-gradient(42px 34px at 56% 44%, rgba(255, 191, 107, 0.1), transparent 78%),
     conic-gradient(from 214deg at 22% 54%, transparent 0 54deg, rgba(193, 244, 255, 0.14) 54deg 118deg, transparent 118deg 360deg);
-  filter: blur(10px);
-  opacity: 0.36;
+  filter: blur(10px) saturate(112%);
+  opacity: 0.42;
   z-index: 0;
 }
 
@@ -18023,8 +18099,9 @@ body {
     radial-gradient(3px 3px at 26% 60%, rgba(224, 252, 255, 0.26), transparent 74%),
     radial-gradient(2px 2px at 52% 30%, rgba(88, 242, 255, 0.22), transparent 76%),
     radial-gradient(2px 2px at 74% 66%, rgba(127, 183, 255, 0.2), transparent 76%),
+    radial-gradient(2px 2px at 86% 38%, rgba(255, 191, 107, 0.28), transparent 76%),
     linear-gradient(132deg, transparent 0 44%, rgba(193, 244, 255, 0.14) 44% 52%, transparent 52% 100%) 78% 34% / 42px 16px no-repeat;
-  opacity: 0.5;
+  opacity: 0.56;
   z-index: 0;
 }
 
@@ -18045,6 +18122,24 @@ body {
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.03),
     0 16px 34px rgba(2, 6, 23, 0.08) !important;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .surface-flow-hero::before,
+  .surface-flow-summary::before,
+  .surface-flow-region::before,
+  .focus-shell-section::before,
+  .auth-entry-frame-open::before {
+    animation: premium-prism-drift 12s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  }
+
+  .surface-flow-hero::after,
+  .surface-flow-summary::after,
+  .surface-flow-region::after,
+  .focus-shell-section::after,
+  .auth-entry-frame-open::after {
+    animation: premium-lumen-pulse 7.4s ease-in-out infinite;
+  }
 }
 
 @media (max-width: 768px) {
