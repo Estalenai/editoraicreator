@@ -252,6 +252,65 @@ body {
   background: rgba(255, 255, 255, 0.018);
 }
 
+/* Financial trust reinforcement for credits */
+.credits-page .credits-summary-card-trust,
+.credits-page .credits-ledger-summary,
+.credits-page .credits-ledger-summary-item {
+  position: relative;
+}
+
+.credits-page .credits-summary-card-trust {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.012)),
+    rgba(8, 12, 20, 0.62);
+  border-color: rgba(197, 232, 245, 0.14) !important;
+}
+
+.credits-page .credits-support-state {
+  border-color: rgba(197, 232, 245, 0.14) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.038), rgba(255, 255, 255, 0.012)),
+    rgba(8, 12, 20, 0.62) !important;
+}
+
+.credits-page .credits-ledger-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.credits-page .credits-ledger-summary-item {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid rgba(197, 232, 245, 0.12);
+  border-radius: 16px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0.008)),
+    rgba(8, 12, 20, 0.56);
+}
+
+.credits-page .credits-ledger-summary-item span {
+  color: var(--ea-text-dim);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.credits-page .credits-ledger-summary-item strong {
+  color: var(--ea-text-body);
+  line-height: 1.45;
+}
+
+@media (max-width: 960px) {
+  .credits-page .credits-ledger-summary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 .app-nav-core-strip {
   display: flex;
   flex-wrap: wrap;

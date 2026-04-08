@@ -761,6 +761,7 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
                           </div>
                         </div>
                         <div className="helper-note-inline">ID da cotação: {packageQuote.quote_id}</div>
+                        <div className="helper-note-inline">Processamento: Stripe Checkout com retorno para conciliação em Créditos</div>
                         <ul className="list-soft">
                           {Array.isArray(packageQuote.line_items)
                             ? packageQuote.line_items.map((line, idx) => (
@@ -820,7 +821,7 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
                       : packageLoading
                         ? "Calculando cotação..."
                         : quoteMatchesSelection
-                          ? "Cotação pronta. Revise subtotal, taxa e total antes de seguir para o pagamento."
+                          ? "Cotação pronta. Revise subtotal, taxa, total e ID antes de seguir para o pagamento."
                           : hasLiveQuoteTarget
                             ? "A cotação é atualizada automaticamente conforme você altera total e composição."
                             : "Escolha total e composição para liberar a cotação automática antes do pagamento."}
@@ -889,11 +890,11 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
           </div>
           <div className="trust-note credits-purchase-note trust-note-privacy">
             <strong>Pagamento via Stripe</strong>
-            <span>O checkout abre em Stripe e retorna a Créditos para confirmar saldo e histórico do pacote.</span>
+            <span>O checkout abre em Stripe e retorna a Créditos para confirmar saldo, ledger e reconciliação do pacote.</span>
           </div>
           <div className="trust-note credits-purchase-note">
-            <strong>Mix configurável</strong>
-            <span>Distribua o total entre Comum, Pro e Ultra antes de abrir a Stripe.</span>
+            <strong>Recibo antes do pagamento</strong>
+            <span>ID da cotação, subtotal, taxa e total final ficam visíveis antes de seguir.</span>
           </div>
         </div>
         <div className="credits-coin-grid">
@@ -911,7 +912,7 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
           <div className="helper-note-inline credits-purchase-checkout-note">
             {loading
               ? "Aguarde a sincronização do saldo para abrir uma cotação segura."
-              : "Pagamento seguro via Stripe com retorno a Créditos para confirmar saldo e histórico."}
+              : "Pagamento seguro via Stripe com retorno a Créditos para confirmar saldo, ledger e reconciliação."}
           </div>
           <div className="credits-purchase-action-row">
             <a href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">

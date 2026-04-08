@@ -111,6 +111,15 @@ function txReasonLabel(tx: CoinTransaction): string {
   return `Movimentação de ${CREATOR_COINS_PUBLIC_NAME}`;
 }
 
+function txSourceLabel(tx: CoinTransaction): string {
+  const refKind = String(tx.ref_kind || "").trim();
+  if (refKind) return refKind;
+  const reason = String(tx.reason || "").trim().toLowerCase();
+  if (reason.includes("checkout") || reason.includes("stripe")) return "stripe";
+  if (reason.includes("convert")) return "conversion";
+  return "ledger";
+}
+
 function waitForCheckoutSync(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -260,9 +269,47 @@ export default function CreditsPage() {
   const estimatedTargetAmount = conversionAmountSafe;
   const insufficientForEstimate = conversionEnabled && sourceBalance < estimatedDebitedAmount;
   const latestTransaction = useMemo(() => transactions[0] || null, [transactions]);
+  const latestCreditTransaction = useMemo(
+    () => transactions.find((tx) => Number(tx.amount || 0) > 0) || null,
+    [transactions]
+  );
+  const latestDebitTransaction = useMemo(
+    () => transactions.find((tx) => Number(tx.amount || 0) < 0) || null,
+    [transactions]
+  );
   const latestTransactionLabel = latestTransaction
     ? `${txReasonLabel(latestTransaction)} • ${formatDateTime(latestTransaction.created_at)}`
     : "Sem movimentações recentes";
+  const financialConfidenceTitle = txError
+    ? "Ledger indisponível"
+    : checkoutNotice?.tone === "success"
+      ? "Compra conciliada"
+      : checkoutNotice?.tone === "warning"
+        ? "Reconciliação em atenção"
+        : txLoading || loading
+          ? "Revalidando saldo"
+          : latestTransaction
+            ? "Ledger conciliado"
+            : "Ledger aguardando primeiro evento";
+  const financialConfidenceDescription = txError
+    ? "O histórico financeiro não respondeu com segurança suficiente para leitura confiável."
+    : checkoutNotice?.message
+      ? checkoutNotice.message
+      : latestTransaction
+        ? `Último evento confirmado em ${formatDateTime(latestTransaction.created_at)} com trilha de saldo e histórico disponíveis nesta conta.`
+        : `Ainda não há compra, conversão ou consumo registrado para ${CREATOR_COINS_PUBLIC_NAME}.`;
+  const financialConfidenceKind =
+    checkoutNotice?.tone === "success"
+      ? "reconciliation"
+      : checkoutNotice?.tone === "warning"
+        ? "retry"
+        : txError
+          ? "error"
+          : txLoading || loading
+            ? "loading"
+            : latestTransaction
+              ? "success"
+              : "empty";
 
   function updateConversionAmount(nextValue: number) {
     setConversionAmount(Math.max(1, Math.trunc(nextValue)));
@@ -605,11 +652,24 @@ export default function CreditsPage() {
                   <p className="executive-value metric-value-compact">{latestTransactionCountDisplay}</p>
                   <p className="executive-detail">{latestTransactionDisplay}</p>
                 </div>
-                <div className="credits-summary-card">
+              <div className="credits-summary-card">
                   <p className="executive-eyebrow">Estimativa x consumo real</p>
                   <p className="executive-value metric-value-compact">Clareza total</p>
                   <p className="executive-detail">
                     Prévia antes da ação. Histórico confirma o final.
+                  </p>
+                </div>
+                <div className="credits-summary-card credits-summary-card-trust">
+                  <p className="executive-eyebrow">Confiança financeira</p>
+                  <p className="executive-value metric-value-compact">
+                    {txError ? "Em atenção" : latestTransaction ? "Confirmada" : "Inicial"}
+                  </p>
+                  <p className="executive-detail">
+                    {txError
+                      ? "A leitura do ledger precisa ser revalidada."
+                      : latestTransaction
+                        ? "Saldo e histórico já têm trilha visível nesta conta."
+                        : "A primeira compra ou conversão inaugura a trilha auditável."}
                   </p>
                 </div>
               </div>
@@ -822,63 +882,74 @@ export default function CreditsPage() {
           </section>
 
         <aside className="credits-support-rail" aria-label={`Apoio contextual de ${CREATOR_COINS_PUBLIC_NAME}`}>
-          {checkoutNotice ? (
-            <OperationalState
-              kind={
-                checkoutNotice.tone === "success"
-                  ? "reconciliation"
-                  : checkoutNotice.tone === "warning"
-                    ? "retry"
-                    : "payment-processing"
-              }
-              title={
-                checkoutNotice.tone === "success"
-                  ? "Compra confirmada na Stripe"
-                  : checkoutNotice.tone === "warning"
-                    ? "Atenção no retorno do checkout"
-                    : "Sincronizando retorno do checkout"
-              }
-              description={checkoutNotice.message}
-              meta={[
-                { label: "Pagamento", value: checkoutNotice.tone === "success" ? "Confirmado" : "Em validação" },
-                { label: "Saldo", value: loading ? "Atualizando" : "Pronto para revalidar" },
-                { label: "Histórico", value: txLoading ? "Sincronizando" : "Disponível" },
-              ]}
-              actions={
-                <>
-                  <button
-                    onClick={async () => {
-                      await refresh();
-                      await loadTransactions();
-                    }}
-                    disabled={loading || txLoading}
-                    className="btn-ea btn-secondary btn-sm"
-                  >
-                    {loading || txLoading ? "Atualizando..." : "Atualizar saldo e histórico"}
-                  </button>
-                  <Link href="#credits-history" className="btn-link-ea btn-ghost btn-sm">
-                    Ver histórico
-                  </Link>
-                </>
-              }
-              className="credits-support-state"
-              compact
-            />
-          ) : null}
+          <OperationalState
+            kind={financialConfidenceKind}
+            title={financialConfidenceTitle}
+            description={financialConfidenceDescription}
+            meta={[
+              {
+                label: "Pagamento",
+                value:
+                  checkoutNotice?.tone === "success"
+                    ? "Confirmado"
+                    : checkoutNotice?.tone === "warning"
+                      ? "Em revisão"
+                      : latestCreditTransaction
+                        ? "Com trilha visível"
+                        : "Sem compra recente",
+              },
+              {
+                label: "Ledger",
+                value: txError ? "Indisponível" : txLoading ? "Sincronizando" : "Disponível",
+              },
+              {
+                label: "Última reconciliação",
+                value: latestTransaction ? formatDateTime(latestTransaction.created_at) : "Aguardando primeiro evento",
+              },
+            ]}
+            actions={
+              <>
+                <button
+                  onClick={async () => {
+                    await refresh();
+                    await loadTransactions();
+                  }}
+                  disabled={loading || txLoading}
+                  className="btn-ea btn-secondary btn-sm"
+                >
+                  {loading || txLoading ? "Atualizando..." : "Revalidar saldo e histórico"}
+                </button>
+                <Link href="#credits-history" className="btn-link-ea btn-ghost btn-sm">
+                  Ver ledger
+                </Link>
+              </>
+            }
+            footer={
+              latestCreditTransaction
+                ? `Último crédito: ${txReasonLabel(latestCreditTransaction)} • ${formatDateTime(latestCreditTransaction.created_at)}`
+                : "Sem crédito confirmado recentemente."
+            }
+            className="credits-support-state"
+            compact
+          />
 
           <section className="credits-support-section credits-context-section">
             <div className="section-header-ea">
-            <h3 className="heading-reset">Segurança e controle</h3>
-              <p className="helper-text-ea">Apoio para checkout e persistência.</p>
+            <h3 className="heading-reset">Recibo e conciliação</h3>
+              <p className="helper-text-ea">Leitura curta de confirmação, ledger e próxima ação.</p>
             </div>
             <div className="credits-context-list">
               <div className="credits-context-item">
-                <strong>Apoio ao núcleo do produto</strong>
-                <span>Use esta área para sustentar creators, editor e projetos.</span>
+                <strong>Fonte de verdade</strong>
+                <span>O histórico recente é a leitura canônica para compra, conversão e débito.</span>
               </div>
               <div className="credits-context-item">
-                <strong>Checkout e histórico persistidos</strong>
-                <span>Compras passam pela Stripe e voltam com saldo e histórico conciliados.</span>
+                <strong>Reconciliação visível</strong>
+                <span>Compras passam pela Stripe e retornam com saldo e ledger revalidados nesta conta.</span>
+              </div>
+              <div className="credits-context-item">
+                <strong>Próxima ação curta</strong>
+                <span>{txError ? "Atualize o ledger antes de confiar no saldo." : "Use o ledger para confirmar o resultado final."}</span>
               </div>
             </div>
           </section>
@@ -898,7 +969,7 @@ export default function CreditsPage() {
             </div>
             <div className="credits-guide-notes">
               <div className="credits-guide-note">
-                <strong>Estimativa e confirmação:</strong> creators estimam antes; o histórico confirma compra, conversão e saldo.
+                <strong>Estimativa e confirmação:</strong> creators estimam antes; o ledger confirma compra, conversão e saldo.
               </div>
             </div>
           </section>
@@ -934,8 +1005,8 @@ export default function CreditsPage() {
       <section id="credits-history" className="credits-section-card credits-history-region">
         <div className="section-head credits-region-head">
           <div className="section-header-ea">
-            <h3 className="heading-reset">Histórico recente de {CREATOR_COINS_PUBLIC_NAME}</h3>
-            <p className="helper-text-ea">Fonte de verdade para consumo, compra e conversão.</p>
+            <h3 className="heading-reset">Ledger recente de {CREATOR_COINS_PUBLIC_NAME}</h3>
+            <p className="helper-text-ea">Fonte de verdade para consumo, compra, reconciliação e conversão.</p>
           </div>
           <div className="hero-actions-row">
             <button onClick={loadTransactions} disabled={txLoading} className="btn-ea btn-ghost btn-sm">
@@ -943,6 +1014,30 @@ export default function CreditsPage() {
             </button>
           </div>
         </div>
+        {!txLoading && !txError ? (
+          <div className="credits-ledger-summary">
+            <div className="credits-ledger-summary-item">
+              <span>Último crédito confirmado</span>
+              <strong>
+                {latestCreditTransaction
+                  ? `${txReasonLabel(latestCreditTransaction)} • ${formatDateTime(latestCreditTransaction.created_at)}`
+                  : "Sem crédito recente"}
+              </strong>
+            </div>
+            <div className="credits-ledger-summary-item">
+              <span>Último débito confirmado</span>
+              <strong>
+                {latestDebitTransaction
+                  ? `${txReasonLabel(latestDebitTransaction)} • ${formatDateTime(latestDebitTransaction.created_at)}`
+                  : "Sem débito recente"}
+              </strong>
+            </div>
+            <div className="credits-ledger-summary-item">
+              <span>Estado do ledger</span>
+              <strong>{transactions.length > 0 ? "Conciliado" : "Sem eventos"}</strong>
+            </div>
+          </div>
+        ) : null}
         <div>
 
         {txError ? (
@@ -1004,7 +1099,7 @@ export default function CreditsPage() {
                     <div className="credits-history-main">
                       <strong>{txReasonLabel(tx)}</strong>
                       <span className="credits-history-meta">
-                        {formatDateTime(tx.created_at)} • {tx.ref_kind ? `Origem: ${tx.ref_kind}` : "Origem não informada"}
+                        {formatDateTime(tx.created_at)} • Origem: {txSourceLabel(tx)}{tx.ref_id ? ` • Ref: ${tx.ref_id}` : ""}
                       </span>
                     </div>
                     <div className="credits-history-side">
