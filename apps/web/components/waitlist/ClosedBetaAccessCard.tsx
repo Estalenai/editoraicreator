@@ -15,6 +15,21 @@ type Props = {
   compact?: boolean;
 };
 
+const BETA_AVAILABILITY = [
+  {
+    title: "Creators centrais",
+    detail: "Post, Scripts e Clips ja entram no mesmo fluxo.",
+  },
+  {
+    title: "Editor + projeto",
+    detail: "A mesma peca continua com contexto e checkpoints.",
+  },
+  {
+    title: "Saida visivel",
+    detail: "O proximo passo continua claro ate a entrega.",
+  },
+] as const;
+
 function statusLabel(status: BetaAccessStatus | null): string {
   if (status === "approved") return "Acesso liberado";
   if (status === "rejected") return "Solicitação não aprovada";
@@ -70,7 +85,7 @@ export function ClosedBetaAccessCard({
     <div className={`beta-access-card-open${compact ? " beta-access-card-compact" : ""}`}>
       <div className="beta-access-summary">
         <div className="section-stack beta-access-card-head">
-          <p className="section-kicker">Beta fechado</p>
+          <p className="section-kicker">Acesso ao nucleo</p>
           <h2 style={{ margin: 0, letterSpacing: -0.2 }}>{title}</h2>
           <p className="meta-text-ea">{description}</p>
         </div>
@@ -91,6 +106,15 @@ export function ClosedBetaAccessCard({
               Criar conta
             </Link>
           </div>
+        </div>
+
+        <div className="beta-access-context-grid" aria-label="Disponibilidade atual do beta">
+          {BETA_AVAILABILITY.map((item) => (
+            <div key={item.title} className="beta-access-context-item">
+              <strong>{item.title}</strong>
+              <span>{item.detail}</span>
+            </div>
+          ))}
         </div>
       </div>
 

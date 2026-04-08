@@ -30,22 +30,25 @@ const STEPS = [
 
 const RESULT_EXAMPLES = [
   {
-    title: "De briefing para post publicado",
+    title: "Post com CTA saindo do Creator Post",
     input: "Promover uma aula ao vivo de fotografia mobile com CTA para lista de espera.",
-    output: "Legenda curta, gancho inicial, prova social e variações.",
+    publicOutput: "\"Abra a camera antes do curso: 3 ajustes de luz que mudam seu reel em 30 segundos.\"",
+    output: "Gancho inicial, legenda com prova social e CTA para lista.",
     nextStep: "Salvar no projeto e ajustar no editor.",
   },
   {
-    title: "De ideia para roteiro de vídeo",
+    title: "Roteiro curto saindo do Creator Scripts",
     input: "Explicar por que pages lentas derrubam conversão em até 45 segundos.",
-    output: "Abertura, desenvolvimento e fechamento prontos para gravação.",
-    nextStep: "Virar clipe, anúncio ou base de landing.",
+    publicOutput: "\"Se o clique chega quente e a page responde fria, a conversao morre antes do argumento começar.\"",
+    output: "Abertura, desenvolvimento e fechamento prontos para gravacao.",
+    nextStep: "Virar clipe, anuncio ou base de landing.",
   },
   {
-    title: "De peça pronta para saída rastreada",
+    title: "Saída rastreada no fim do fluxo",
     input: "Organizar um post, roteiro ou clipe com estado claro de rascunho, saída registrada e publicação confirmada.",
-    output: "Projeto salvo, checkpoints no editor e trilha de saída registrada.",
-    nextStep: "Registrar a saída e concluir a publicação no canal correto.",
+    publicOutput: "\"A peça não some depois da geração: ela continua no editor, no projeto e na saída registrada.\"",
+    output: "Projeto salvo, checkpoints no editor e trilha de saida registrada.",
+    nextStep: "Registrar a saida e concluir a publicacao no canal correto.",
   },
 ];
 
@@ -113,10 +116,10 @@ export default function HowItWorksPage() {
 
         <section className="how-it-works-proof-open" data-reveal data-reveal-delay="90">
           <div className="how-it-works-flow-head section-stack-tight">
-            <p className="section-kicker">Exemplos concretos</p>
-            <h2 className="heading-reset">Do briefing ao resultado</h2>
+            <p className="section-kicker">Exemplos públicos</p>
+            <h2 className="heading-reset">Do briefing ao que já sai do fluxo</h2>
             <p className="helper-text-ea">
-              Três exemplos do que o núcleo atual já organiza com clareza.
+              Sem cliente inventado. Estes exemplos mostram o tipo de resultado que o núcleo atual já organiza hoje.
             </p>
           </div>
 
@@ -129,6 +132,12 @@ export default function HowItWorksPage() {
                 <div className="how-it-works-example-row">
                   <span className="how-it-works-example-label">Entrada</span>
                   <p>{example.input}</p>
+                </div>
+                <div className="how-it-works-example-row">
+                  <span className="how-it-works-example-label">Saída pública</span>
+                  <div className="proof-value-block proof-value-block-inline">
+                    <p>{example.publicOutput}</p>
+                  </div>
                 </div>
                 <div className="how-it-works-example-row">
                   <span className="how-it-works-example-label">Saída organizada</span>
