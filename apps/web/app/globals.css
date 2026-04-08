@@ -17369,6 +17369,88 @@ body {
   opacity: 0.5;
 }
 
+.projects-page-canvas {
+  display: grid;
+  gap: var(--ea-page-canvas-gap);
+  padding: var(--ea-page-canvas-padding);
+  border: 1px solid var(--ea-page-canvas-border);
+  border-radius: 30px;
+  background:
+    radial-gradient(520px 220px at 50% -52px, rgba(75, 232, 255, 0.07), transparent 72%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.022), rgba(255, 255, 255, 0.01)),
+    rgba(8, 22, 54, 0.7);
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.035),
+    0 14px 30px rgba(2, 6, 23, 0.12);
+}
+
+.projects-page-canvas > * {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+
+.projects-page-canvas > * + * {
+  position: relative;
+  padding-top: clamp(20px, 2.2vw, 28px);
+}
+
+.projects-page-canvas > * + *::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background:
+    linear-gradient(90deg, transparent, rgba(191, 239, 255, 0.12) 12%, rgba(191, 239, 255, 0.04) 78%, transparent);
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.projects-workspace-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.42fr) minmax(300px, 0.72fr);
+  gap: clamp(24px, 2.7vw, 36px);
+  align-items: start;
+}
+
+.projects-workspace-grid > * {
+  min-width: 0;
+}
+
+.projects-workspace-main,
+.projects-workspace-rail {
+  display: grid;
+  gap: clamp(18px, 2vw, 24px);
+  align-content: start;
+}
+
+.projects-workspace-main > * + * {
+  position: relative;
+  padding-top: clamp(18px, 2vw, 24px);
+}
+
+.projects-workspace-main > * + *::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background:
+    linear-gradient(90deg, rgba(191, 239, 255, 0.12), rgba(191, 239, 255, 0.04) 72%, transparent);
+  pointer-events: none;
+}
+
+.projects-workspace-rail {
+  padding-left: clamp(18px, 2vw, 24px);
+  border-left: 1px solid var(--ea-page-canvas-divider);
+}
+
 .projects-page .projects-hero-open,
 .projects-page .projects-list-section,
 .projects-page .projects-publish-section,
@@ -17395,6 +17477,10 @@ body {
 .projects-page .projects-handoff-section > * {
   position: relative;
   z-index: 1;
+}
+
+.projects-page .projects-hero-open {
+  padding: 0 !important;
 }
 
 .projects-page .projects-hero-split {
@@ -17469,7 +17555,6 @@ body {
 }
 
 .projects-page .projects-list-stack > * + *,
-.projects-page .projects-handoff-stack > * + *,
 .projects-page .github-workspace-card > * + *,
 .projects-page .vercel-publish-card > * + * {
   margin-top: 0;
@@ -17477,21 +17562,36 @@ body {
   border-top: 1px solid var(--ea-unified-divider);
 }
 
-.projects-page .dashboard-project-link {
-  min-height: 96px;
-  padding: 16px 18px !important;
-  border: 1px solid rgba(191, 239, 255, 0.052) !important;
-  border-radius: 18px;
+.projects-page .projects-list-stack {
+  gap: 0;
+  border: 1px solid rgba(191, 239, 255, 0.055);
+  border-radius: 26px;
+  overflow: clip;
   background:
-    radial-gradient(220px 88px at 100% 0%, rgba(88, 242, 255, 0.038), transparent 72%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.008)),
-    var(--ea-page-subtle-surface) !important;
+    radial-gradient(260px 108px at 100% 0%, rgba(88, 242, 255, 0.048), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.008)),
+    var(--ea-unified-surface-soft);
+}
+
+.projects-page .projects-list-stack > * + * {
+  padding-top: 0;
+}
+
+.projects-page .dashboard-project-link {
+  min-height: 0;
+  padding: 18px 20px !important;
+  border: 0 !important;
+  border-radius: 0;
+  background: transparent !important;
   box-shadow: none !important;
 }
 
 .projects-page .dashboard-project-link:hover {
   transform: none;
-  filter: brightness(1.02);
+  filter: none;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.012), rgba(255, 255, 255, 0.004)),
+    rgba(255, 255, 255, 0.008) !important;
 }
 
 .projects-page .dashboard-project-link-main {
@@ -17508,41 +17608,96 @@ body {
   color: var(--ea-ink-blue);
 }
 
+.projects-page .projects-list-entry-lead {
+  min-height: 114px;
+  padding-block: 20px !important;
+  background:
+    radial-gradient(260px 112px at 100% 0%, rgba(88, 242, 255, 0.058), transparent 72%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.008)),
+    rgba(255, 255, 255, 0.012) !important;
+}
+
+.projects-page .projects-list-entry-lead .dashboard-project-link-title {
+  font-size: clamp(1.08rem, 1.24vw, 1.2rem);
+}
+
+.projects-page .projects-publish-stack {
+  display: grid;
+  gap: 0;
+  padding: clamp(18px, 2vw, 22px);
+  border: 1px solid rgba(191, 239, 255, 0.055);
+  border-radius: 24px;
+  background:
+    radial-gradient(260px 112px at 100% 0%, rgba(88, 242, 255, 0.046), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.008)),
+    var(--ea-unified-surface-soft);
+}
+
+.projects-page .projects-publish-stack > * + * {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--ea-unified-divider);
+}
+
 .projects-page .projects-publish-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
 }
 
 .projects-page .projects-publish-status-layer {
-  margin-bottom: 6px;
+  margin-bottom: 0;
 }
 
 .projects-page .projects-publish-status-layer .state-ea {
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0;
+  box-shadow: none !important;
   border-color: rgba(191, 239, 255, 0.074);
   background:
     radial-gradient(320px 120px at 100% 0%, rgba(88, 242, 255, 0.06), transparent 76%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.024), rgba(255, 255, 255, 0.01)),
-    var(--ea-page-subtle-surface);
+    transparent;
 }
 
 .projects-page .projects-publish-status-layer .operational-state-actions {
   gap: 10px 12px;
 }
 
-.projects-page .proof-value-card,
-.projects-page .projects-publish-grid > .proof-value-card:first-child {
-  min-height: 160px;
-  padding: 16px 18px !important;
-  border: 1px solid rgba(191, 239, 255, 0.052) !important;
-  border-radius: 18px;
-  background:
-    radial-gradient(200px 84px at 100% 0%, rgba(88, 242, 255, 0.04), transparent 72%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.008)),
-    var(--ea-page-subtle-surface) !important;
+.projects-page .proof-value-card {
+  min-height: 0;
+  padding: 8px 18px 4px !important;
+  border: 0 !important;
+  border-left: 1px solid var(--ea-page-canvas-divider) !important;
+  border-radius: 0;
+  background: transparent !important;
   box-shadow: none !important;
+}
+
+.projects-page .projects-publish-grid > .proof-value-card:first-child {
+  padding-left: 0 !important;
+  border-left: 0 !important;
 }
 
 .projects-page .proof-value-block {
   gap: 8px;
+}
+
+.projects-page .projects-handoff-stack {
+  gap: 0;
+  padding: clamp(16px, 1.9vw, 22px);
+  border: 1px solid rgba(191, 239, 255, 0.05);
+  border-radius: 24px;
+  background:
+    radial-gradient(260px 104px at 100% 0%, rgba(88, 242, 255, 0.04), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.008)),
+    var(--ea-unified-surface-soft);
+}
+
+.projects-page .projects-handoff-stack > * + * {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--ea-unified-divider);
 }
 
 .projects-page .github-workspace-card,
@@ -17625,6 +17780,10 @@ body {
     max-width: min(1480px, calc(100vw - clamp(78px, 7vw, 120px)));
   }
 
+  .projects-workspace-grid {
+    grid-template-columns: minmax(0, 1.28fr) minmax(280px, 0.76fr);
+  }
+
   .projects-page .projects-hero-split {
     grid-template-columns: minmax(0, 1fr) minmax(252px, 0.62fr);
   }
@@ -17635,6 +17794,22 @@ body {
 }
 
 @media (max-width: 980px) {
+  .projects-page-canvas {
+    border-radius: 24px;
+  }
+
+  .projects-workspace-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 22px;
+  }
+
+  .projects-workspace-rail {
+    padding-left: 0;
+    padding-top: 20px;
+    border-left: 0;
+    border-top: 1px solid var(--ea-page-canvas-divider);
+  }
+
   .projects-page .projects-hero-open,
   .projects-page .projects-list-section,
   .projects-page .projects-publish-section,
@@ -17667,6 +17842,10 @@ body {
 }
 
 @media (max-width: 768px) {
+  .projects-page-canvas {
+    border-radius: 22px;
+  }
+
   .projects-page .projects-publish-grid {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -17693,6 +17872,11 @@ body {
     padding: 16px !important;
   }
 
+  .projects-page .projects-publish-stack,
+  .projects-page .projects-handoff-stack {
+    padding: 16px;
+  }
+
   .projects-page .projects-hero-panel-list {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -17705,9 +17889,24 @@ body {
     min-height: 0;
   }
 
+  .projects-page .projects-list-entry-lead {
+    min-height: 0;
+    padding-block: 18px !important;
+  }
+
   .projects-page .dashboard-project-link-cta {
     align-self: flex-start;
     padding-left: 0;
+  }
+
+  .projects-page .projects-publish-grid > * + * {
+    padding-top: 14px;
+    border-top: 1px solid var(--ea-page-canvas-divider);
+  }
+
+  .projects-page .proof-value-card {
+    padding: 0 !important;
+    border-left: 0 !important;
   }
 }
 

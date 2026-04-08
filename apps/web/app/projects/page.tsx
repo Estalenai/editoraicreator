@@ -84,92 +84,95 @@ export default function ProjectsPage() {
 
   return (
     <div className="page-shell projects-page">
-      <section className="projects-hero projects-hero-open">
-        <div className="hero-split projects-hero-split">
-          <div className="hero-copy">
-            <div className="hero-title-stack">
-              <p className="section-kicker">Continuidade</p>
-              <h1 style={{ margin: 0, letterSpacing: -0.3 }}>Projetos</h1>
-              <p className="section-header-copy hero-copy-compact">
-                Abra um rascunho salvo, continue no editor e acompanhe a saída com clareza.
-              </p>
-            </div>
-            <div className="hero-meta-row">
-              <span className="premium-badge premium-badge-phase">Plano: {planLabelDisplay}</span>
-              <span className="premium-badge premium-badge-soon">{projectCountLabel}</span>
-            </div>
-            <div className="projects-hero-bridge-stack">
-              <span className="projects-hero-bridge-label">
-                {loading ? "Sincronizando continuidade" : leadProject ? "Continue agora" : "Pronto para abrir"}
-              </span>
-              {loading ? (
-                <div className="projects-hero-bridge" aria-live="polite">
-                  <div className="projects-hero-bridge-main">
-                    <strong>Carregando projetos salvos</strong>
-                    <span className="projects-hero-bridge-meta">{leadProjectMeta}</span>
-                  </div>
-                  <span className="projects-hero-bridge-cta">Sincronizando</span>
-                </div>
-              ) : (
-                <EditorRouteLink href={leadProjectHref} className="projects-hero-bridge">
-                  <div className="projects-hero-bridge-main">
-                    <strong>{leadProject ? leadProject.title : "Abrir um novo projeto"}</strong>
-                    <span className="projects-hero-bridge-meta">{leadProjectMeta}</span>
-                  </div>
-                  <span className="projects-hero-bridge-cta">
-                    {leadProject ? "Continuar" : "Criar agora"}
-                  </span>
-                </EditorRouteLink>
-              )}
-            </div>
-          </div>
-
-          <div className="projects-hero-panel projects-hero-panel-quiet">
-            <div className="projects-hero-panel-list">
-              <div className="projects-hero-note">
-                    <strong>Abra e continue</strong>
-                    <span>Retome um rascunho salvo diretamente na lista logo abaixo.</span>
+      <div className="projects-page-canvas">
+        <section className="projects-hero projects-hero-open">
+          <div className="hero-split projects-hero-split">
+            <div className="hero-copy">
+              <div className="hero-title-stack">
+                <p className="section-kicker">Continuidade</p>
+                <h1 style={{ margin: 0, letterSpacing: -0.3 }}>Projetos</h1>
+                <p className="section-header-copy hero-copy-compact">
+                  Abra um rascunho salvo, continue no editor e acompanhe a saída com clareza.
+                </p>
               </div>
+              <div className="hero-meta-row">
+                <span className="premium-badge premium-badge-phase">Plano: {planLabelDisplay}</span>
+                <span className="premium-badge premium-badge-soon">{projectCountLabel}</span>
+              </div>
+              <div className="projects-hero-bridge-stack">
+                <span className="projects-hero-bridge-label">
+                  {loading ? "Sincronizando continuidade" : leadProject ? "Continue agora" : "Pronto para abrir"}
+                </span>
+                {loading ? (
+                  <div className="projects-hero-bridge" aria-live="polite">
+                    <div className="projects-hero-bridge-main">
+                      <strong>Carregando projetos salvos</strong>
+                      <span className="projects-hero-bridge-meta">{leadProjectMeta}</span>
+                    </div>
+                    <span className="projects-hero-bridge-cta">Sincronizando</span>
+                  </div>
+                ) : (
+                  <EditorRouteLink href={leadProjectHref} className="projects-hero-bridge">
+                    <div className="projects-hero-bridge-main">
+                      <strong>{leadProject ? leadProject.title : "Abrir um novo projeto"}</strong>
+                      <span className="projects-hero-bridge-meta">{leadProjectMeta}</span>
+                    </div>
+                    <span className="projects-hero-bridge-cta">
+                      {leadProject ? "Continuar" : "Criar agora"}
+                    </span>
+                  </EditorRouteLink>
+                )}
+              </div>
+            </div>
+
+            <div className="projects-hero-panel projects-hero-panel-quiet">
+              <div className="projects-hero-panel-list">
+                <div className="projects-hero-note">
+                  <strong>Abra e continue</strong>
+                  <span>Retome um rascunho salvo diretamente na lista logo abaixo.</span>
+                </div>
                 <div className="projects-hero-note">
                   <strong>Saída e handoff em apoio</strong>
                   <span>Rascunho, saída registrada e publicado ficam claros, com GitHub e Vercel centralizados no backend.</span>
                 </div>
-            </div>
+              </div>
 
-            <div className="hero-actions-row projects-hero-actions">
-              <EditorRouteLink href="/editor/new" className="btn-link-ea btn-primary">
-                Novo projeto
-              </EditorRouteLink>
-              <Link href="/dashboard" className="btn-link-ea btn-ghost">
-                Voltar ao dashboard
-              </Link>
+              <div className="hero-actions-row projects-hero-actions">
+                <EditorRouteLink href="/editor/new" className="btn-link-ea btn-primary">
+                  Novo projeto
+                </EditorRouteLink>
+                <Link href="/dashboard" className="btn-link-ea btn-ghost">
+                  Voltar ao dashboard
+                </Link>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {error ? (
-        <OperationalState
-          kind="error"
-          title="Não foi possível carregar os projetos"
-          description={error}
-          meta={[
-            { label: "Escopo", value: "Lista, pipeline e handoff" },
-            { label: "Impacto", value: "Sem leitura confiável da continuidade" },
-          ]}
-          actions={
-            <button onClick={refresh} className="btn-ea btn-secondary btn-sm">
-              Atualizar
-            </button>
-          }
-        />
-      ) : null}
+        {error ? (
+          <OperationalState
+            kind="error"
+            title="Não foi possível carregar os projetos"
+            description={error}
+            meta={[
+              { label: "Escopo", value: "Lista, pipeline e handoff" },
+              { label: "Impacto", value: "Sem leitura confiável da continuidade" },
+            ]}
+            actions={
+              <button onClick={refresh} className="btn-ea btn-secondary btn-sm">
+                Atualizar
+              </button>
+            }
+          />
+        ) : null}
 
-      <section
-        ref={registerSection("list")}
-        className="projects-list-section projects-list-open projects-flow-section projects-flow-section-start focus-shell-section"
-        data-focus-active={activeSection === "list"}
-      >
+        <div className="projects-workspace-grid">
+          <div className="projects-workspace-main">
+            <section
+              ref={registerSection("list")}
+              className="projects-list-section projects-list-open projects-flow-section projects-flow-section-start focus-shell-section"
+              data-focus-active={activeSection === "list"}
+            >
         <div
           className="section-head focus-shell-head"
           data-focus-clickable={activeSection !== "list"}
@@ -240,7 +243,9 @@ export default function ProjectsPage() {
               <EditorRouteLink
                 key={project.id || project.title}
                 href={project.id ? `/editor/${project.id}` : "/editor/new"}
-                className="dashboard-project-link layout-contract-item"
+                className={`dashboard-project-link layout-contract-item projects-list-entry${
+                  index === 0 ? " projects-list-entry-lead" : ""
+                }`}
               >
                 <div className="dashboard-project-link-main">
                   <span className="dashboard-project-link-title">{project.title}</span>
@@ -257,13 +262,13 @@ export default function ProjectsPage() {
           </div>
         )}
         </div>
-      </section>
+            </section>
 
-      <section
-        ref={registerSection("publish")}
-        className="projects-publish-section projects-publish-open projects-flow-section projects-flow-section-middle focus-shell-section"
-        data-focus-active={activeSection === "publish"}
-      >
+            <section
+              ref={registerSection("publish")}
+              className="projects-publish-section projects-publish-open projects-flow-section projects-flow-section-middle focus-shell-section"
+              data-focus-active={activeSection === "publish"}
+            >
         <div
           className="focus-shell-head"
           data-focus-clickable={activeSection !== "publish"}
@@ -296,38 +301,42 @@ export default function ProjectsPage() {
           Veja os três estados de saída sem abrir o handoff completo.
         </div>
         <div className="focus-shell-body">
-        <PublishConfidenceState projects={normalizedProjects} />
-        <div className="proof-value-grid projects-publish-grid">
-          <div className="proof-value-card layout-contract-item">
-            <div className="proof-value-block">
-              <span className="proof-value-chip">Rascunho</span>
-              <strong>No editor e em Projetos</strong>
-              <p>Projeto salvo e entregável em refinamento.</p>
+          <div className="projects-publish-stack">
+            <PublishConfidenceState projects={normalizedProjects} />
+            <div className="proof-value-grid projects-publish-grid">
+              <div className="proof-value-card layout-contract-item">
+                <div className="proof-value-block">
+                  <span className="proof-value-chip">Rascunho</span>
+                  <strong>No editor e em Projetos</strong>
+                  <p>Projeto salvo e entregável em refinamento.</p>
+                </div>
+              </div>
+              <div className="proof-value-card layout-contract-item">
+                <div className="proof-value-block">
+                  <span className="proof-value-chip">Saída registrada</span>
+                  <strong>Saída registrada</strong>
+                  <p>Commit GitHub ou deployment Vercel já foram registrados como próxima etapa do projeto.</p>
+                </div>
+              </div>
+              <div className="proof-value-card layout-contract-item">
+                <div className="proof-value-block">
+                  <span className="proof-value-chip">Publicado</span>
+                  <strong>Publicado com retorno do provider</strong>
+                  <p>Produção confirmada pelo provider e persistida no projeto com horário, ambiente e URL.</p>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="proof-value-card layout-contract-item">
-              <div className="proof-value-block">
-                <span className="proof-value-chip">Saída registrada</span>
-                <strong>Saída registrada</strong>
-                <p>Commit GitHub ou deployment Vercel já foram registrados como próxima etapa do projeto.</p>
-              </div>
-          </div>
-          <div className="proof-value-card layout-contract-item">
-              <div className="proof-value-block">
-                <span className="proof-value-chip">Publicado</span>
-                <strong>Publicado com retorno do provider</strong>
-                <p>Produção confirmada pelo provider e persistida no projeto com horário, ambiente e URL.</p>
-              </div>
-          </div>
         </div>
-        </div>
-      </section>
+            </section>
+          </div>
 
-      <section
-        ref={registerSection("handoff")}
-        className="projects-handoff-section projects-handoff-open projects-flow-section projects-flow-section-end focus-shell-section"
-        data-focus-active={activeSection === "handoff"}
-      >
+          <aside className="projects-workspace-rail">
+            <section
+              ref={registerSection("handoff")}
+              className="projects-handoff-section projects-handoff-open projects-flow-section projects-flow-section-end focus-shell-section"
+              data-focus-active={activeSection === "handoff"}
+            >
         <div
           className="section-head focus-shell-head"
           data-focus-clickable={activeSection !== "handoff"}
@@ -364,12 +373,15 @@ export default function ProjectsPage() {
           GitHub e Vercel já registram estado real no backend quando a credencial e o provider respondem com sucesso.
         </div>
         <div className="focus-shell-body">
-        <div className="projects-handoff-stack">
-          <GitHubWorkspaceCard projects={normalizedProjects.map((project) => ({ id: project.id, title: project.title, kind: project.kind, data: project.data }))} />
-          <VercelPublishCard projects={normalizedProjects.map((project) => ({ id: project.id, title: project.title, kind: project.kind, data: project.data }))} />
+          <div className="projects-handoff-stack">
+            <GitHubWorkspaceCard projects={normalizedProjects.map((project) => ({ id: project.id, title: project.title, kind: project.kind, data: project.data }))} />
+            <VercelPublishCard projects={normalizedProjects.map((project) => ({ id: project.id, title: project.title, kind: project.kind, data: project.data }))} />
+          </div>
         </div>
+            </section>
+          </aside>
         </div>
-      </section>
+      </div>
     </div>
   );
 }
