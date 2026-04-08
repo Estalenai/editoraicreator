@@ -18582,3 +18582,335 @@ body {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* Mobile/tablet density refinement for heavy logged-in routes */
+@media (max-width: 900px) {
+  .projects-page {
+    gap: 18px;
+  }
+
+  .projects-page .projects-hero-open,
+  .projects-page .projects-list-section,
+  .projects-page .projects-publish-section,
+  .projects-page .projects-handoff-section {
+    padding: 16px !important;
+  }
+
+  .projects-page .projects-hero-bridge,
+  .projects-page .projects-hero-panel-quiet,
+  .projects-page .dashboard-project-link,
+  .projects-page .proof-value-card,
+  .projects-page .github-workspace-pane,
+  .projects-page .vercel-publish-grid > *,
+  .projects-page .vercel-publish-links > * {
+    padding: 14px !important;
+    border-radius: 16px !important;
+  }
+
+  .projects-page .focus-shell-preview {
+    margin-top: 8px;
+    padding-top: 8px;
+    font-size: 12px;
+    line-height: 1.55;
+  }
+
+  .projects-page .projects-list-stack,
+  .projects-page .projects-handoff-stack,
+  .projects-page .projects-publish-grid,
+  .projects-page .github-workspace-grid,
+  .projects-page .vercel-publish-grid,
+  .projects-page .vercel-publish-status-grid,
+  .projects-page .vercel-publish-links {
+    gap: 10px;
+  }
+
+  .projects-page .github-workspace-status-item,
+  .projects-page .github-workspace-inline-note,
+  .projects-page .github-workspace-activity-item,
+  .projects-page .vercel-publish-status-item,
+  .projects-page .vercel-publish-link-card,
+  .projects-page .vercel-publish-empty,
+  .projects-page .vercel-publish-note,
+  .projects-page .vercel-publish-history-item {
+    padding: 10px 12px !important;
+    border-radius: 14px !important;
+  }
+
+  .projects-page .dashboard-project-link-main,
+  .projects-page .proof-value-block,
+  .projects-page .github-workspace-head,
+  .projects-page .vercel-publish-head {
+    gap: 6px;
+  }
+
+  .projects-page .projects-handoff-section .section-head {
+    display: grid;
+    gap: 10px;
+  }
+
+  .projects-page .projects-handoff-section .hero-actions-row {
+    width: 100%;
+    gap: 8px;
+  }
+
+  .projects-page .projects-handoff-section .hero-actions-row > * {
+    flex: 1 1 220px;
+  }
+
+  .credits-page {
+    gap: 18px;
+  }
+
+  .credits-page-canvas,
+  .credits-page-layout {
+    gap: 18px;
+  }
+
+  .credits-page .credits-page-hero-region,
+  .credits-page .credits-main-section,
+  .credits-page .credits-support-section,
+  .credits-page .credits-history-region {
+    padding: 16px !important;
+  }
+
+  .credits-page .credits-summary-card,
+  .credits-page .credits-summary-card-primary,
+  .credits-page .credits-history-item,
+  .credits-page .credits-guide-card,
+  .credits-page .credits-guide-note,
+  .credits-page .credits-support-state,
+  .credits-page .credits-context-item,
+  .credits-page .credits-purchase-checkout-note,
+  .credits-page .purchase-option-card,
+  .credits-page .purchase-summary-card,
+  .credits-page .quote-summary-card,
+  .credits-page .conversion-metric-card,
+  .credits-page .trust-note {
+    padding: 13px 14px !important;
+    border-radius: 16px !important;
+  }
+
+  .credits-page .credits-guide-grid,
+  .credits-page .credits-guide-notes,
+  .credits-page .credits-context-list,
+  .credits-page .credits-history-list,
+  .credits-page .credits-conversion-notes,
+  .credits-page .credits-conversion-metrics {
+    gap: 10px;
+  }
+
+  .credits-page .credits-balance-row,
+  .credits-page .credits-history-head {
+    gap: 8px;
+  }
+
+  .credits-page .credits-support-rail {
+    gap: 14px;
+  }
+
+  .credits-page .credits-region-head,
+  .credits-page .section-head {
+    gap: 10px;
+  }
+
+  .credits-page .credits-region-head .hero-actions-row {
+    width: 100%;
+  }
+
+  .credits-page .credits-region-head .hero-actions-row > * {
+    flex: 1 1 220px;
+  }
+
+  .admin-page-canvas {
+    gap: 18px;
+  }
+
+  .admin-hero-open,
+  .admin-page .admin-console-section,
+  .admin-page-restricted .state-ea {
+    padding: 16px !important;
+  }
+
+  .admin-hero-toolbar,
+  .admin-overview-item,
+  .admin-page .admin-subpanel,
+  .admin-page .admin-search-result,
+  .admin-page .admin-record-item,
+  .admin-page .admin-timeline-item {
+    padding: 13px 14px !important;
+    border-radius: 16px !important;
+  }
+
+  .admin-page .admin-inline-notice,
+  .admin-record-note {
+    padding: 10px 12px !important;
+    border-radius: 14px !important;
+  }
+
+  .admin-overview-strip,
+  .admin-observability-grid,
+  .admin-observability-detail-grid,
+  .admin-radar-grid,
+  .admin-attention-grid,
+  .admin-search-results,
+  .admin-timeline-list,
+  .admin-record-list {
+    gap: 10px;
+  }
+
+  .admin-page .surface-toolbar {
+    gap: 10px;
+  }
+
+  .admin-inline-stats {
+    gap: 8px;
+  }
+}
+
+@media (max-width: 640px) {
+  .projects-page {
+    gap: 16px;
+  }
+
+  .projects-page .projects-hero-open,
+  .projects-page .projects-list-section,
+  .projects-page .projects-publish-section,
+  .projects-page .projects-handoff-section {
+    padding: 14px !important;
+  }
+
+  .projects-page .projects-hero-bridge-stack,
+  .projects-page .projects-list-stack,
+  .projects-page .projects-handoff-stack,
+  .projects-page .projects-publish-grid {
+    gap: 8px;
+  }
+
+  .projects-page .projects-hero-bridge,
+  .projects-page .projects-hero-panel-quiet,
+  .projects-page .dashboard-project-link,
+  .projects-page .proof-value-card,
+  .projects-page .github-workspace-pane,
+  .projects-page .vercel-publish-grid > *,
+  .projects-page .vercel-publish-links > * {
+    padding: 12px !important;
+    border-radius: 15px !important;
+  }
+
+  .projects-page .github-workspace-status-item,
+  .projects-page .github-workspace-inline-note,
+  .projects-page .github-workspace-activity-item,
+  .projects-page .vercel-publish-status-item,
+  .projects-page .vercel-publish-link-card,
+  .projects-page .vercel-publish-empty,
+  .projects-page .vercel-publish-note,
+  .projects-page .vercel-publish-history-item {
+    padding: 9px 11px !important;
+  }
+
+  .projects-page .dashboard-project-link-cta {
+    padding-left: 0;
+    margin-top: 2px;
+  }
+
+  .projects-page .projects-handoff-section .hero-actions-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .projects-page .projects-handoff-section .hero-actions-row > * {
+    width: 100%;
+  }
+
+  .credits-page,
+  .credits-page-canvas,
+  .credits-page-layout {
+    gap: 16px;
+  }
+
+  .credits-page .credits-page-hero-region,
+  .credits-page .credits-main-section,
+  .credits-page .credits-support-section,
+  .credits-page .credits-history-region {
+    padding: 14px !important;
+  }
+
+  .credits-page .credits-summary-card,
+  .credits-page .credits-summary-card-primary,
+  .credits-page .credits-history-item,
+  .credits-page .credits-guide-card,
+  .credits-page .credits-guide-note,
+  .credits-page .credits-support-state,
+  .credits-page .credits-context-item,
+  .credits-page .credits-purchase-checkout-note,
+  .credits-page .purchase-option-card,
+  .credits-page .purchase-summary-card,
+  .credits-page .quote-summary-card,
+  .credits-page .conversion-metric-card,
+  .credits-page .trust-note {
+    padding: 12px !important;
+    border-radius: 15px !important;
+  }
+
+  .credits-page .credits-history-head,
+  .credits-page .credits-purchase-action-row,
+  .credits-page .credits-region-head .hero-actions-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .credits-page .credits-history-list,
+  .credits-page .credits-guide-grid,
+  .credits-page .credits-guide-notes,
+  .credits-page .credits-context-list,
+  .credits-page .credits-conversion-notes,
+  .credits-page .credits-conversion-metrics {
+    gap: 8px;
+  }
+
+  .credits-page .credits-history-item {
+    padding: 11px 11px 10px !important;
+  }
+
+  .admin-page-canvas {
+    gap: 16px;
+  }
+
+  .admin-hero-open,
+  .admin-page .admin-console-section,
+  .admin-page-restricted .state-ea {
+    padding: 14px !important;
+  }
+
+  .admin-hero-toolbar,
+  .admin-overview-item,
+  .admin-page .admin-subpanel,
+  .admin-page .admin-search-result,
+  .admin-page .admin-record-item,
+  .admin-page .admin-timeline-item {
+    padding: 12px !important;
+    border-radius: 15px !important;
+  }
+
+  .admin-page .surface-toolbar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .admin-page .surface-toolbar > * {
+    width: 100%;
+  }
+
+  .admin-page .admin-record-item > div:last-child {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .admin-search-results,
+  .admin-timeline-list,
+  .admin-record-list {
+    gap: 8px;
+  }
+}
