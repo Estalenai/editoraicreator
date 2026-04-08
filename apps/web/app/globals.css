@@ -19403,3 +19403,357 @@ body {
     opacity: 0.54;
   }
 }
+
+/* Shared structure discipline foundation
+   Canonicalize heights, column ratios and stacking so heavy pages stop behaving like loose mosaics. */
+:root {
+  --ea-structure-region-gap: clamp(14px, 1.8vw, 20px);
+  --ea-structure-region-gap-tight: clamp(10px, 1.35vw, 14px);
+  --ea-structure-summary-min: clamp(152px, 15vw, 184px);
+  --ea-structure-summary-min-hero: clamp(170px, 17vw, 208px);
+  --ea-structure-link-min: clamp(92px, 9.2vw, 116px);
+  --ea-structure-link-min-quiet: clamp(84px, 8vw, 104px);
+  --ea-structure-pane-min: clamp(196px, 19vw, 242px);
+  --ea-structure-pane-min-quiet: clamp(154px, 14vw, 188px);
+  --ea-structure-rail-width: clamp(17.25rem, 22vw, 20.5rem);
+  --ea-structure-rail-width-tight: clamp(15.75rem, 20vw, 18.5rem);
+}
+
+.summary-grid,
+.dashboard-summary-grid,
+.credits-summary-grid,
+.dashboard-section-body,
+.layout-contract-collection,
+.projects-page .projects-list-stack,
+.projects-page .projects-handoff-stack,
+.projects-page .projects-publish-grid,
+.credits-page .credits-history-list,
+.credits-page .credits-guide-grid,
+.credits-page .credits-guide-notes,
+.credits-page .credits-context-list,
+.admin-search-results,
+.admin-timeline-list,
+.admin-record-list {
+  align-items: stretch;
+  grid-auto-flow: row dense;
+}
+
+.surface-flow-summary > *,
+.dashboard-summary-grid > *,
+.credits-summary-grid > * {
+  min-height: var(--ea-structure-summary-min);
+}
+
+.dashboard-summary-card-primary,
+.credits-summary-card-primary,
+.credits-summary-card-trust {
+  min-height: var(--ea-structure-summary-min-hero);
+}
+
+.layout-contract-item,
+.dashboard-project-link,
+.dashboard-quick-link,
+.dashboard-progress-card,
+.projects-page .proof-value-card,
+.credits-page .credits-guide-card,
+.credits-page .credits-guide-note,
+.credits-page .credits-context-item,
+.credits-page .credits-history-item,
+.credits-page .credits-ledger-summary-item,
+.admin-page .admin-overview-item,
+.admin-page .admin-subpanel,
+.admin-page .admin-search-result,
+.admin-page .admin-record-item,
+.admin-page .admin-timeline-item {
+  align-content: start;
+  min-height: 0;
+}
+
+.dashboard-project-link,
+.dashboard-progress-card,
+.projects-page .dashboard-project-link,
+.admin-page .admin-search-result,
+.admin-page .admin-record-item,
+.admin-page .admin-timeline-item {
+  min-height: var(--ea-structure-link-min);
+}
+
+.dashboard-support-links-list .dashboard-quick-link,
+.credits-page .credits-context-item,
+.credits-page .credits-guide-note {
+  min-height: var(--ea-structure-link-min-quiet);
+}
+
+.dashboard-core-links-grid .dashboard-quick-link,
+.projects-page .proof-value-card,
+.credits-page .credits-guide-card,
+.admin-page .admin-subpanel-stat,
+.admin-page .admin-attention-item {
+  min-height: clamp(126px, 13vw, 156px);
+}
+
+.dashboard-section-card,
+.dashboard-pane-section,
+.projects-page .projects-list-section,
+.projects-page .projects-publish-section,
+.projects-page .projects-handoff-section,
+.credits-page .credits-main-section,
+.credits-page .credits-support-section,
+.credits-page .credits-history-region,
+.admin-hero-open,
+.admin-page .admin-console-section {
+  min-height: 0;
+}
+
+.dashboard-pane-section-featured,
+.projects-page .projects-list-section,
+.projects-page .projects-publish-section,
+.credits-page .credits-main-section {
+  min-height: var(--ea-structure-pane-min);
+}
+
+.dashboard-pane-section-quiet,
+.projects-page .projects-handoff-section,
+.credits-page .credits-support-section,
+.credits-page .credits-history-region,
+.admin-page .admin-console-section {
+  min-height: var(--ea-structure-pane-min-quiet);
+}
+
+.dashboard-workspace-grid {
+  grid-template-columns: minmax(0, 1.52fr) minmax(var(--ea-structure-rail-width), 0.86fr);
+  gap: clamp(18px, 2vw, 24px);
+}
+
+.dashboard-workspace-main {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--ea-structure-region-gap);
+}
+
+.dashboard-main-card-projects {
+  grid-column: span 8;
+}
+
+.dashboard-main-card-core {
+  grid-column: span 4;
+}
+
+.dashboard-page-canvas .dashboard-summary-grid {
+  gap: var(--ea-structure-region-gap-tight);
+}
+
+.dashboard-page-canvas .dashboard-summary-card-primary {
+  grid-column: span 6;
+}
+
+.dashboard-page-canvas .dashboard-summary-card-action {
+  grid-column: span 3;
+}
+
+.dashboard-page-canvas .dashboard-summary-card-secondary,
+.dashboard-page-canvas .dashboard-summary-card-monitor {
+  grid-column: span 3;
+}
+
+.dashboard-core-links-grid,
+.dashboard-support-links-list,
+.dashboard-projects-list,
+.dashboard-usage-list {
+  gap: var(--ea-structure-region-gap-tight);
+}
+
+.projects-page .projects-hero-split {
+  grid-template-columns: minmax(0, 1.14fr) minmax(var(--ea-structure-rail-width-tight), 0.72fr);
+  align-items: start;
+}
+
+.projects-page .projects-publish-grid {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--ea-structure-region-gap-tight);
+}
+
+.projects-page .projects-publish-grid > .proof-value-card:first-child {
+  grid-column: span 6;
+}
+
+.projects-page .projects-publish-grid > .proof-value-card:nth-child(2),
+.projects-page .projects-publish-grid > .proof-value-card:nth-child(3) {
+  grid-column: span 3;
+}
+
+.projects-page .projects-list-stack,
+.projects-page .projects-handoff-stack {
+  gap: var(--ea-structure-region-gap-tight);
+}
+
+.credits-page-layout {
+  grid-template-columns: minmax(0, 1.44fr) minmax(var(--ea-structure-rail-width-tight), 0.76fr);
+  gap: clamp(18px, 2vw, 24px);
+}
+
+.credits-main-region {
+  gap: var(--ea-structure-region-gap);
+}
+
+.credits-support-rail {
+  gap: var(--ea-structure-region-gap-tight);
+}
+
+.credits-page .credits-summary-grid {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--ea-structure-region-gap-tight);
+}
+
+.credits-page .credits-summary-card-primary {
+  grid-column: span 6;
+}
+
+.credits-page .credits-summary-card-action {
+  grid-column: span 3;
+}
+
+.credits-page .credits-summary-grid > .credits-summary-card:not(.credits-summary-card-primary):not(.credits-summary-card-action) {
+  grid-column: span 3;
+}
+
+.credits-page .credits-history-list {
+  gap: var(--ea-structure-region-gap-tight);
+}
+
+.admin-overview-strip,
+.admin-observability-grid,
+.admin-observability-detail-grid,
+.admin-radar-grid,
+.admin-attention-grid {
+  gap: 14px 16px;
+}
+
+.admin-overview-strip {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+}
+
+.admin-observability-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+}
+
+.admin-observability-detail-grid,
+.admin-attention-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+}
+
+.admin-radar-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr));
+}
+
+.admin-overview-item {
+  min-height: 114px;
+  align-content: start;
+}
+
+.admin-page .admin-subpanel-stat,
+.admin-page .admin-attention-item {
+  min-height: 148px;
+}
+
+.admin-search-results,
+.admin-timeline-list,
+.admin-record-list {
+  gap: var(--ea-structure-region-gap-tight);
+}
+
+@media (max-width: 1180px) {
+  .dashboard-workspace-grid,
+  .credits-page-layout,
+  .projects-page .projects-hero-split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dashboard-workspace-main {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dashboard-main-card-projects,
+  .dashboard-main-card-core {
+    grid-column: auto;
+  }
+
+  .dashboard-page-canvas .dashboard-summary-grid,
+  .credits-page .credits-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboard-page-canvas .dashboard-summary-card-primary,
+  .dashboard-page-canvas .dashboard-summary-card-action,
+  .dashboard-page-canvas .dashboard-summary-card-secondary,
+  .dashboard-page-canvas .dashboard-summary-card-monitor,
+  .credits-page .credits-summary-card-primary,
+  .credits-page .credits-summary-card-action,
+  .credits-page .credits-summary-grid > .credits-summary-card:not(.credits-summary-card-primary):not(.credits-summary-card-action) {
+    grid-column: auto;
+  }
+
+  .projects-page .projects-publish-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .projects-page .projects-publish-grid > .proof-value-card:first-child,
+  .projects-page .projects-publish-grid > .proof-value-card:nth-child(2),
+  .projects-page .projects-publish-grid > .proof-value-card:nth-child(3) {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .surface-flow-summary > *,
+  .dashboard-summary-grid > *,
+  .credits-summary-grid > *,
+  .dashboard-project-link,
+  .dashboard-quick-link,
+  .dashboard-progress-card,
+  .projects-page .dashboard-project-link,
+  .projects-page .proof-value-card,
+  .credits-page .credits-summary-card,
+  .credits-page .credits-guide-card,
+  .credits-page .credits-guide-note,
+  .credits-page .credits-context-item,
+  .credits-page .credits-history-item,
+  .credits-page .credits-ledger-summary-item,
+  .admin-page .admin-overview-item,
+  .admin-page .admin-subpanel,
+  .admin-page .admin-search-result,
+  .admin-page .admin-record-item,
+  .admin-page .admin-timeline-item {
+    min-height: 0 !important;
+  }
+
+  .dashboard-page-canvas .dashboard-summary-grid,
+  .credits-page .credits-summary-grid,
+  .projects-page .projects-publish-grid,
+  .admin-overview-strip,
+  .admin-observability-grid,
+  .admin-observability-detail-grid,
+  .admin-radar-grid,
+  .admin-attention-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .dashboard-workspace-grid,
+  .dashboard-workspace-main,
+  .credits-page-layout {
+    gap: 14px;
+  }
+
+  .dashboard-core-links-grid,
+  .dashboard-support-links-list,
+  .dashboard-projects-list,
+  .dashboard-usage-list,
+  .projects-page .projects-list-stack,
+  .projects-page .projects-handoff-stack,
+  .projects-page .projects-publish-grid,
+  .credits-page .credits-history-list,
+  .admin-search-results,
+  .admin-timeline-list,
+  .admin-record-list {
+    gap: 8px !important;
+  }
+}
