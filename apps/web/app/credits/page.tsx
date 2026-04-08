@@ -652,232 +652,326 @@ export default function CreditsPage() {
                   <p className="executive-value metric-value-compact">{latestTransactionCountDisplay}</p>
                   <p className="executive-detail">{latestTransactionDisplay}</p>
                 </div>
-              <div className="credits-summary-card">
-                  <p className="executive-eyebrow">Estimativa x consumo real</p>
-                  <p className="executive-value metric-value-compact">Clareza total</p>
-                  <p className="executive-detail">
-                    Prévia antes da ação. Histórico confirma o final.
-                  </p>
-                </div>
-                <div className="credits-summary-card credits-summary-card-trust">
-                  <p className="executive-eyebrow">Confiança financeira</p>
-                  <p className="executive-value metric-value-compact">
-                    {txError ? "Em atenção" : latestTransaction ? "Confirmada" : "Inicial"}
-                  </p>
-                  <p className="executive-detail">
-                    {txError
-                      ? "A leitura do ledger precisa ser revalidada."
-                      : latestTransaction
-                        ? "Saldo e histórico já têm trilha visível nesta conta."
-                        : "A primeira compra ou conversão inaugura a trilha auditável."}
-                  </p>
-                </div>
               </div>
             </section>
 
-            <section id="credits-packages" className="credits-packages-section credits-main-section">
+            <section className="credits-main-section credits-operations-region">
               <div className="section-head credits-region-head">
                 <div className="section-header-ea">
-                  <h3 className="heading-reset">Compra avulsa</h3>
-                  <p className="helper-text-ea">Abra uma cotação e ajuste o mix sem sair do fluxo.</p>
+                  <h3 className="heading-reset">Comprar, converter e confirmar na mesma operação</h3>
+                  <p className="helper-text-ea">Compra avulsa, conversão e confirmação final do ledger ficam alinhadas na mesma região principal.</p>
                 </div>
                 <div className="hero-actions-row">
                   <Link href="#credits-history" className="btn-link-ea btn-ghost btn-sm">
-                    Ver histórico
+                    Ver ledger
                   </Link>
                 </div>
               </div>
-              <div>
-                <CreditsPackagesCard wallet={wallet} loading={loading} latestTransactionId={latestTransaction?.id || null} />
+              <div className="credits-operations-grid">
+                <div id="credits-packages" className="credits-operation-panel credits-operation-panel-purchase">
+                  <CreditsPackagesCard wallet={wallet} loading={loading} latestTransactionId={latestTransaction?.id || null} />
+                </div>
+
+                <section className="credits-operation-panel credits-conversion-region">
+                  <div className="section-head credits-region-head">
+                    <div className="section-header-ea">
+                      <h3 className="heading-reset">Conversão de {CREATOR_COINS_PUBLIC_NAME}</h3>
+                      <p className="helper-text-ea">{`Veja débito, taxa e saldo estimado antes de confirmar.`}</p>
+                    </div>
+                  </div>
+
+                  {loading ? (
+                    <OperationalState
+                      kind="loading"
+                      title={`Carregando saldo, regras e histórico de ${CREATOR_COINS_PUBLIC_NAME}`}
+                      description="A conversão fica disponível assim que plano, carteira e histórico forem sincronizados."
+                      meta={[
+                        { label: "Saldo", value: "Sincronizando" },
+                        { label: "Conversão", value: "Regras do plano" },
+                        { label: "Histórico", value: "Conciliando" },
+                      ]}
+                      compact
+                    />
+                  ) : !conversionEnabled ? (
+                    <OperationalState
+                      kind="retry"
+                      title="Conversão indisponível neste plano"
+                      description={`Para converter ${CREATOR_COINS_PUBLIC_NAME} entre níveis, ative um plano com conversão habilitada.`}
+                      meta={[
+                        { label: "Estado", value: "Conversão bloqueada" },
+                        { label: "Próximo passo", value: "Ativar plano compatível" },
+                      ]}
+                      actions={
+                        <Link href="/plans" className="btn-link-ea btn-secondary btn-sm">
+                          Ver planos com conversão
+                        </Link>
+                      }
+                      compact
+                    />
+                  ) : (
+                    <>
+                      <div className="trust-grid credits-conversion-notes">
+                        <div className="trust-note">
+                          <strong>Origem e destino claros</strong>
+                          <span>Escolha qualquer combinação válida entre Comum, Pro e Ultra, exceto origem = destino.</span>
+                        </div>
+                        <div className="trust-note">
+                          <strong>Débito previsível</strong>
+                          <span>Taxa, total debitado e saldo estimado aparecem antes da confirmação.</span>
+                        </div>
+                      </div>
+
+                      <div className="form-grid-2 credits-conversion-form">
+                        <label className="field-label-ea">
+                          <span>Origem</span>
+                          <PremiumSelect
+                            value={conversionFrom}
+                            onChange={(next) => setConversionFrom(next as CoinType)}
+                            options={fromOptions}
+                            ariaLabel="Origem da conversão"
+                          />
+                        </label>
+
+                        <label className="field-label-ea">
+                          <span>Destino</span>
+                          <PremiumSelect
+                            value={conversionTo}
+                            onChange={(next) => setConversionTo(next as CoinType)}
+                            options={toOptions}
+                            ariaLabel="Destino da conversão"
+                          />
+                        </label>
+
+                        <label className="field-label-ea credits-conversion-amount-field">
+                          <span>Quantidade a converter</span>
+                          <div className="ea-amount-control">
+                            <button
+                              type="button"
+                              className="ea-amount-button"
+                              onClick={() => updateConversionAmount(conversionAmountSafe - 1)}
+                              aria-label="Diminuir quantidade a converter"
+                            >
+                              -
+                            </button>
+                            <div className="ea-amount-input-wrap">
+                              <input
+                                type="number"
+                                min={1}
+                                step={1}
+                                value={conversionAmountSafe}
+                                onChange={(e) => updateConversionAmount(Number(e.target.value || 0))}
+                                className="ea-amount-input"
+                                aria-label="Quantidade a converter"
+                              />
+                              <span className="ea-amount-suffix">{coinTypeLabel(conversionFrom)}</span>
+                            </div>
+                            <button
+                              type="button"
+                              className="ea-amount-button"
+                              onClick={() => updateConversionAmount(conversionAmountSafe + 1)}
+                              aria-label="Aumentar quantidade a converter"
+                            >
+                              +
+                            </button>
+                          </div>
+                        </label>
+                      </div>
+
+                      <div className="helper-text-ea">
+                        Escolha pares válidos entre Comum, Pro e Ultra. A taxa é aplicada na origem e o histórico confirma o resultado final.
+                      </div>
+                      <div className="conversion-metrics-grid credits-conversion-metrics">
+                        <div className="conversion-metric-card">
+                          <span className="helper-text-ea">Saldo disponível em {coinTypeLabel(conversionFrom)}</span>
+                          <strong>{sourceBalance}</strong>
+                        </div>
+                        <div className="conversion-metric-card">
+                          <span className="helper-text-ea">Total debitado ({coinTypeLabel(conversionFrom)})</span>
+                          <strong>{estimatedDebitedAmount}</strong>
+                        </div>
+                        <div className="conversion-metric-card">
+                          <span className="helper-text-ea">Crédito recebido ({coinTypeLabel(conversionTo)})</span>
+                          <strong>{estimatedTargetAmount}</strong>
+                        </div>
+                        <div className="conversion-metric-card">
+                          <span className="helper-text-ea">Taxa aplicada</span>
+                          <strong>{estimatedFeeAmount}</strong>
+                        </div>
+                        <div className="conversion-metric-card">
+                          <span className="helper-text-ea">Saldo final estimado ({coinTypeLabel(conversionTo)})</span>
+                          <strong>{Number(wallet?.[conversionTo] ?? 0) + estimatedTargetAmount}</strong>
+                        </div>
+                      </div>
+                      <div className="helper-text-ea">
+                        Esta é uma estimativa prévia. O saldo final é confirmado depois da conversão.
+                      </div>
+
+                      <div className="credits-conversion-actions">
+                        <button
+                          onClick={onConvertCredits}
+                          disabled={conversionLoading || insufficientForEstimate || !isPairSupported}
+                          className="btn-ea btn-primary btn-sm"
+                        >
+                          {conversionLoading ? "Convertendo..." : `Converter ${CREATOR_COINS_PUBLIC_NAME}`}
+                        </button>
+                        {!isPairSupported ? (
+                          <div className="inline-alert inline-alert-warning">
+                            Este par de conversão de {CREATOR_COINS_PUBLIC_NAME} não está disponível no momento.
+                          </div>
+                        ) : null}
+                        {insufficientForEstimate ? (
+                          <div className="inline-alert inline-alert-error">
+                            Saldo insuficiente para converter esse volume.
+                          </div>
+                        ) : null}
+                      </div>
+                    </>
+                  )}
+
+                  {conversionError ? (
+                    <OperationalState
+                      kind="error"
+                      title="Não foi possível concluir a conversão"
+                      description={conversionError}
+                      meta={[
+                        { label: "Origem", value: coinTypeLabel(conversionFrom) },
+                        { label: "Destino", value: coinTypeLabel(conversionTo) },
+                        { label: "Quantidade", value: conversionAmountSafe },
+                      ]}
+                      compact
+                    />
+                  ) : null}
+
+                  {conversionResult?.ok ? (
+                    <OperationalState
+                      kind="success"
+                      title="Conversão concluída com sucesso"
+                      description={`${coinTypeLabel(conversionResult.conversion?.from || conversionFrom)}: -${conversionResult.conversion?.debited_amount ?? estimatedDebitedAmount} • ${coinTypeLabel(conversionResult.conversion?.to || conversionTo)}: +${conversionResult.conversion?.converted_amount ?? estimatedTargetAmount}`}
+                      meta={[
+                        { label: "Taxa", value: conversionResult.conversion?.fee_amount ?? estimatedFeeAmount },
+                        {
+                          label: "Plano",
+                          value: conversionResult.conversion?.plan || planLabel || "Plano atual",
+                        },
+                      ]}
+                      footer="O histórico recente confirma a conversão processada e o novo saldo conciliado."
+                      compact
+                    />
+                  ) : null}
+                </section>
               </div>
             </section>
 
-            <section className="credits-section-card credits-main-section credits-conversion-region">
+            <section id="credits-history" className="credits-main-section credits-history-region">
               <div className="section-head credits-region-head">
                 <div className="section-header-ea">
-                  <h3 className="heading-reset">Conversão de {CREATOR_COINS_PUBLIC_NAME}</h3>
-              <p className="helper-text-ea">{`Veja débito, taxa e saldo estimado antes de confirmar.`}</p>
+                  <h3 className="heading-reset">Ledger recente de {CREATOR_COINS_PUBLIC_NAME}</h3>
+                  <p className="helper-text-ea">Fonte de verdade para consumo, compra, reconciliação e conversão.</p>
+                </div>
+                <div className="hero-actions-row">
+                  <button onClick={loadTransactions} disabled={txLoading} className="btn-ea btn-ghost btn-sm">
+                    {txLoading ? "Atualizando..." : "Atualizar histórico"}
+                  </button>
                 </div>
               </div>
-
-              {loading ? (
-                <OperationalState
-                  kind="loading"
-                  title={`Carregando saldo, regras e histórico de ${CREATOR_COINS_PUBLIC_NAME}`}
-                  description="A conversão fica disponível assim que plano, carteira e histórico forem sincronizados."
-                  meta={[
-                    { label: "Saldo", value: "Sincronizando" },
-                    { label: "Conversão", value: "Regras do plano" },
-                    { label: "Histórico", value: "Conciliando" },
-                  ]}
-                  compact
-                />
-              ) : !conversionEnabled ? (
-                <OperationalState
-                  kind="retry"
-                  title="Conversão indisponível neste plano"
-                  description={`Para converter ${CREATOR_COINS_PUBLIC_NAME} entre níveis, ative um plano com conversão habilitada.`}
-                  meta={[
-                    { label: "Estado", value: "Conversão bloqueada" },
-                    { label: "Próximo passo", value: "Ativar plano compatível" },
-                  ]}
-                  actions={
-                    <Link href="/plans" className="btn-link-ea btn-secondary btn-sm">
-                      Ver planos com conversão
-                    </Link>
-                  }
-                  compact
-                />
-              ) : (
-                <>
-                  <div className="trust-grid credits-conversion-notes">
-                    <div className="trust-note">
-                      <strong>Origem e destino claros</strong>
-                      <span>Escolha qualquer combinação válida entre Comum, Pro e Ultra, exceto origem = destino.</span>
-                    </div>
-                    <div className="trust-note">
-                      <strong>Débito previsível</strong>
-                      <span>Taxa, total debitado e saldo estimado aparecem antes da confirmação.</span>
-                    </div>
+              {!txLoading && !txError ? (
+                <div className="credits-ledger-summary">
+                  <div className="credits-ledger-summary-item">
+                    <span>Último crédito confirmado</span>
+                    <strong>
+                      {latestCreditTransaction
+                        ? `${txReasonLabel(latestCreditTransaction)} • ${formatDateTime(latestCreditTransaction.created_at)}`
+                        : "Sem crédito recente"}
+                    </strong>
                   </div>
+                  <div className="credits-ledger-summary-item">
+                    <span>Último débito confirmado</span>
+                    <strong>
+                      {latestDebitTransaction
+                        ? `${txReasonLabel(latestDebitTransaction)} • ${formatDateTime(latestDebitTransaction.created_at)}`
+                        : "Sem débito recente"}
+                    </strong>
+                  </div>
+                  <div className="credits-ledger-summary-item">
+                    <span>Estado do ledger</span>
+                    <strong>{transactions.length > 0 ? "Conciliado" : "Sem eventos"}</strong>
+                  </div>
+                </div>
+              ) : null}
+              <div>
+                {txError ? (
+                  <OperationalState
+                    kind="error"
+                    title="Histórico indisponível no momento"
+                    description={toUserFacingError(txError, "Tente atualizar o histórico novamente.")}
+                    meta={[
+                      { label: "Ledger", value: "Sem resposta" },
+                      { label: "Ação", value: "Nova tentativa necessária" },
+                    ]}
+                    actions={
+                      <button onClick={loadTransactions} disabled={txLoading} className="btn-ea btn-secondary btn-sm">
+                        Tentar novamente
+                      </button>
+                    }
+                  />
+                ) : null}
 
-                  <div className="form-grid-2 credits-conversion-form">
-                    <label className="field-label-ea">
-                      <span>Origem</span>
-                      <PremiumSelect
-                        value={conversionFrom}
-                        onChange={(next) => setConversionFrom(next as CoinType)}
-                        options={fromOptions}
-                        ariaLabel="Origem da conversão"
-                      />
-                    </label>
-
-                    <label className="field-label-ea">
-                      <span>Destino</span>
-                      <PremiumSelect
-                        value={conversionTo}
-                        onChange={(next) => setConversionTo(next as CoinType)}
-                        options={toOptions}
-                        ariaLabel="Destino da conversão"
-                      />
-                    </label>
-
-                    <label className="field-label-ea credits-conversion-amount-field">
-                      <span>Quantidade a converter</span>
-                      <div className="ea-amount-control">
-                        <button
-                          type="button"
-                          className="ea-amount-button"
-                          onClick={() => updateConversionAmount(conversionAmountSafe - 1)}
-                          aria-label="Diminuir quantidade a converter"
+                {txLoading ? (
+                  <div className="state-ea-spaced" style={{ display: "grid", gap: 8 }}>
+                    {Array.from({ length: 4 }).map((_, index) => (
+                      <div key={`credit-history-skeleton-${index}`} className="premium-skeleton premium-skeleton-card" />
+                    ))}
+                  </div>
+                ) : transactions.length === 0 ? (
+                  <OperationalState
+                    kind="empty"
+                    title={`Sem movimentações recentes de ${CREATOR_COINS_PUBLIC_NAME}`}
+                    description={`Gere conteúdo em Creators ou compre ${CREATOR_COINS_PUBLIC_NAME} para inaugurar o histórico.`}
+                    meta={[
+                      { label: "Ledger", value: "Ainda sem eventos" },
+                      { label: "Próximo marco", value: "Consumo, compra ou conversão" },
+                    ]}
+                    actions={
+                      <>
+                        <Link href="/creators" className="btn-link-ea btn-primary btn-sm">
+                          Ir para Creators
+                        </Link>
+                        <Link href="#credits-packages" className="btn-link-ea btn-ghost btn-sm">
+                          Ver pacotes
+                        </Link>
+                      </>
+                    }
+                  />
+                ) : (
+                  <div className="credits-history-list">
+                    {transactions.map((tx) => {
+                      const amount = Number(tx.amount || 0);
+                      const positive = amount > 0;
+                      const amountLabel = `${positive ? "+" : ""}${amount} ${coinTypeLabel(tx.coin_type)}`;
+                      const movementLabel = positive ? "Crédito" : "Débito";
+                      return (
+                        <div
+                          key={tx.id}
+                          className="credits-history-item"
                         >
-                          -
-                        </button>
-                        <div className="ea-amount-input-wrap">
-                          <input
-                            type="number"
-                            min={1}
-                            step={1}
-                            value={conversionAmountSafe}
-                            onChange={(e) => updateConversionAmount(Number(e.target.value || 0))}
-                            className="ea-amount-input"
-                            aria-label="Quantidade a converter"
-                          />
-                          <span className="ea-amount-suffix">{coinTypeLabel(conversionFrom)}</span>
+                          <div className="credits-history-head">
+                            <div className="credits-history-main">
+                              <strong>{txReasonLabel(tx)}</strong>
+                              <span className="credits-history-meta">
+                                {formatDateTime(tx.created_at)} • Origem: {txSourceLabel(tx)}{tx.ref_id ? ` • Ref: ${tx.ref_id}` : ""}
+                              </span>
+                            </div>
+                            <div className="credits-history-side">
+                              <span className={`premium-badge ${positive ? "premium-badge-phase" : "premium-badge-warning"}`}>{movementLabel}</span>
+                              <span className={`credits-history-amount ${positive ? "credits-history-amount-positive" : "credits-history-amount-negative"}`}>{amountLabel}</span>
+                            </div>
+                          </div>
                         </div>
-                        <button
-                          type="button"
-                          className="ea-amount-button"
-                          onClick={() => updateConversionAmount(conversionAmountSafe + 1)}
-                          aria-label="Aumentar quantidade a converter"
-                        >
-                          +
-                        </button>
-                      </div>
-                    </label>
+                      );
+                    })}
                   </div>
-
-                  <div className="helper-text-ea">
-                    Escolha pares válidos entre Comum, Pro e Ultra. A taxa é aplicada na origem e o histórico confirma o resultado final.
-                  </div>
-                  <div className="conversion-metrics-grid credits-conversion-metrics">
-                    <div className="conversion-metric-card">
-                      <span className="helper-text-ea">Saldo disponível em {coinTypeLabel(conversionFrom)}</span>
-                      <strong>{sourceBalance}</strong>
-                    </div>
-                    <div className="conversion-metric-card">
-                      <span className="helper-text-ea">Total debitado ({coinTypeLabel(conversionFrom)})</span>
-                      <strong>{estimatedDebitedAmount}</strong>
-                    </div>
-                    <div className="conversion-metric-card">
-                      <span className="helper-text-ea">Crédito recebido ({coinTypeLabel(conversionTo)})</span>
-                      <strong>{estimatedTargetAmount}</strong>
-                    </div>
-                    <div className="conversion-metric-card">
-                      <span className="helper-text-ea">Taxa aplicada</span>
-                      <strong>{estimatedFeeAmount}</strong>
-                    </div>
-                    <div className="conversion-metric-card">
-                      <span className="helper-text-ea">Saldo final estimado ({coinTypeLabel(conversionTo)})</span>
-                      <strong>{Number(wallet?.[conversionTo] ?? 0) + estimatedTargetAmount}</strong>
-                    </div>
-                  </div>
-                  <div className="helper-text-ea">
-                    Esta é uma estimativa prévia. O saldo final é confirmado depois da conversão.
-                  </div>
-
-                  <div className="credits-conversion-actions">
-                    <button
-                      onClick={onConvertCredits}
-                      disabled={conversionLoading || insufficientForEstimate || !isPairSupported}
-                      className="btn-ea btn-primary btn-sm"
-                    >
-                      {conversionLoading ? "Convertendo..." : `Converter ${CREATOR_COINS_PUBLIC_NAME}`}
-                    </button>
-                    {!isPairSupported ? (
-                      <div className="inline-alert inline-alert-warning">
-                        Este par de conversão de {CREATOR_COINS_PUBLIC_NAME} não está disponível no momento.
-                      </div>
-                    ) : null}
-                    {insufficientForEstimate ? (
-                      <div className="inline-alert inline-alert-error">
-                        Saldo insuficiente para converter esse volume.
-                      </div>
-                    ) : null}
-                  </div>
-                </>
-              )}
-
-              {conversionError ? (
-                <OperationalState
-                  kind="error"
-                  title="Não foi possível concluir a conversão"
-                  description={conversionError}
-                  meta={[
-                    { label: "Origem", value: coinTypeLabel(conversionFrom) },
-                    { label: "Destino", value: coinTypeLabel(conversionTo) },
-                    { label: "Quantidade", value: conversionAmountSafe },
-                  ]}
-                  compact
-                />
-              ) : null}
-
-              {conversionResult?.ok ? (
-                <OperationalState
-                  kind="success"
-                  title="Conversão concluída com sucesso"
-                  description={`${coinTypeLabel(conversionResult.conversion?.from || conversionFrom)}: -${conversionResult.conversion?.debited_amount ?? estimatedDebitedAmount} • ${coinTypeLabel(conversionResult.conversion?.to || conversionTo)}: +${conversionResult.conversion?.converted_amount ?? estimatedTargetAmount}`}
-                  meta={[
-                    { label: "Taxa", value: conversionResult.conversion?.fee_amount ?? estimatedFeeAmount },
-                    {
-                      label: "Plano",
-                      value: conversionResult.conversion?.plan || planLabel || "Plano atual",
-                    },
-                  ]}
-                  footer="O histórico recente confirma a conversão processada e o novo saldo conciliado."
-                  compact
-                />
-              ) : null}
+                )}
+              </div>
             </section>
           </section>
 
@@ -933,10 +1027,10 @@ export default function CreditsPage() {
             compact
           />
 
-          <section className="credits-support-section credits-context-section">
+          <section className="credits-support-section credits-context-section credits-support-overview">
             <div className="section-header-ea">
-            <h3 className="heading-reset">Recibo e conciliação</h3>
-              <p className="helper-text-ea">Leitura curta de confirmação, ledger e próxima ação.</p>
+              <h3 className="heading-reset">Recibo, leitura e próxima ação</h3>
+              <p className="helper-text-ea">Confirmação curta, origem do ledger e regra de uso sem abrir painéis extras.</p>
             </div>
             <div className="credits-context-list">
               <div className="credits-context-item">
@@ -951,13 +1045,6 @@ export default function CreditsPage() {
                 <strong>Próxima ação curta</strong>
                 <span>{txError ? "Atualize o ledger antes de confiar no saldo." : "Use o ledger para confirmar o resultado final."}</span>
               </div>
-            </div>
-          </section>
-
-          <section className="credits-guide-section credits-support-section">
-            <div className="section-header-ea">
-              <h3 className="heading-reset">Leitura rápida</h3>
-              <p className="helper-text-ea">Saldo, estimativa e confirmação em leitura curta.</p>
             </div>
             <div className="credits-guide-grid">
               {CREDIT_GUIDE.map((item) => (
@@ -1002,118 +1089,6 @@ export default function CreditsPage() {
         </aside>
       </div>
 
-      <section id="credits-history" className="credits-section-card credits-history-region">
-        <div className="section-head credits-region-head">
-          <div className="section-header-ea">
-            <h3 className="heading-reset">Ledger recente de {CREATOR_COINS_PUBLIC_NAME}</h3>
-            <p className="helper-text-ea">Fonte de verdade para consumo, compra, reconciliação e conversão.</p>
-          </div>
-          <div className="hero-actions-row">
-            <button onClick={loadTransactions} disabled={txLoading} className="btn-ea btn-ghost btn-sm">
-              {txLoading ? "Atualizando..." : "Atualizar histórico"}
-            </button>
-          </div>
-        </div>
-        {!txLoading && !txError ? (
-          <div className="credits-ledger-summary">
-            <div className="credits-ledger-summary-item">
-              <span>Último crédito confirmado</span>
-              <strong>
-                {latestCreditTransaction
-                  ? `${txReasonLabel(latestCreditTransaction)} • ${formatDateTime(latestCreditTransaction.created_at)}`
-                  : "Sem crédito recente"}
-              </strong>
-            </div>
-            <div className="credits-ledger-summary-item">
-              <span>Último débito confirmado</span>
-              <strong>
-                {latestDebitTransaction
-                  ? `${txReasonLabel(latestDebitTransaction)} • ${formatDateTime(latestDebitTransaction.created_at)}`
-                  : "Sem débito recente"}
-              </strong>
-            </div>
-            <div className="credits-ledger-summary-item">
-              <span>Estado do ledger</span>
-              <strong>{transactions.length > 0 ? "Conciliado" : "Sem eventos"}</strong>
-            </div>
-          </div>
-        ) : null}
-        <div>
-
-        {txError ? (
-          <OperationalState
-            kind="error"
-            title="Histórico indisponível no momento"
-            description={toUserFacingError(txError, "Tente atualizar o histórico novamente.")}
-            meta={[
-              { label: "Ledger", value: "Sem resposta" },
-              { label: "Ação", value: "Nova tentativa necessária" },
-            ]}
-            actions={
-              <button onClick={loadTransactions} disabled={txLoading} className="btn-ea btn-secondary btn-sm">
-                Tentar novamente
-              </button>
-            }
-          />
-        ) : null}
-
-        {txLoading ? (
-          <div className="state-ea-spaced" style={{ display: "grid", gap: 8 }}>
-            {Array.from({ length: 4 }).map((_, index) => (
-              <div key={`credit-history-skeleton-${index}`} className="premium-skeleton premium-skeleton-card" />
-            ))}
-          </div>
-        ) : transactions.length === 0 ? (
-          <OperationalState
-            kind="empty"
-            title={`Sem movimentações recentes de ${CREATOR_COINS_PUBLIC_NAME}`}
-            description={`Gere conteúdo em Creators ou compre ${CREATOR_COINS_PUBLIC_NAME} para inaugurar o histórico.`}
-            meta={[
-              { label: "Ledger", value: "Ainda sem eventos" },
-              { label: "Próximo marco", value: "Consumo, compra ou conversão" },
-            ]}
-            actions={
-              <>
-                <Link href="/creators" className="btn-link-ea btn-primary btn-sm">
-                  Ir para Creators
-                </Link>
-                <Link href="#credits-packages" className="btn-link-ea btn-ghost btn-sm">
-                  Ver pacotes
-                </Link>
-              </>
-            }
-          />
-        ) : (
-          <div className="credits-history-list">
-            {transactions.map((tx) => {
-              const amount = Number(tx.amount || 0);
-              const positive = amount > 0;
-              const amountLabel = `${positive ? "+" : ""}${amount} ${coinTypeLabel(tx.coin_type)}`;
-              const movementLabel = positive ? "Crédito" : "Débito";
-              return (
-                <div
-                  key={tx.id}
-                  className="credits-history-item"
-                >
-                  <div className="credits-history-head">
-                    <div className="credits-history-main">
-                      <strong>{txReasonLabel(tx)}</strong>
-                      <span className="credits-history-meta">
-                        {formatDateTime(tx.created_at)} • Origem: {txSourceLabel(tx)}{tx.ref_id ? ` • Ref: ${tx.ref_id}` : ""}
-                      </span>
-                    </div>
-                    <div className="credits-history-side">
-                      <span className={`premium-badge ${positive ? "premium-badge-phase" : "premium-badge-warning"}`}>{movementLabel}</span>
-                      <span className={`credits-history-amount ${positive ? "credits-history-amount-positive" : "credits-history-amount-negative"}`}>{amountLabel}</span>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-        </div>
-      </section>
       </div>
     </div>
   );
