@@ -142,14 +142,26 @@ export function PublishConfidenceState({ projects }: Props) {
     const delivery = canonical.delivery;
     const github = canonical.integrations.github;
     const vercel = canonical.integrations.vercel;
+    const publish = canonical.publish;
     const vercelBinding = vercel.binding;
     const publishMachine = resolveVercelPublishMachine(vercelBinding);
     const latestEvent = delivery.history[0] || null;
-    const publishChannel = channelLabel(delivery.connectedStorage || latestEvent?.channel || null);
-    const environment = vercelEnvironmentValue(vercelBinding);
+    const publishChannel = channelLabel(publish.primary.provider || delivery.connectedStorage || latestEvent?.channel || null);
+    const environment = publish.deployment.environment
+      ? vercelEnvironmentLabel(publish.deployment.environment)
+      : vercelEnvironmentValue(vercelBinding);
     const exportedAt =
-      publishMachine.lastTransitionAt || publishMachine.lastCheckedAt || vercelBinding?.lastDeployRequestedAt || delivery.lastExportedAt;
-    const publishedAt = publishMachine.lastSuccessAt || vercelBinding?.lastDeployReadyAt || delivery.lastPublishedAt;
+      publish.timestamps.deploymentRequestedAt ||
+      publish.timestamps.commitSyncedAt ||
+      publishMachine.lastTransitionAt ||
+      publishMachine.lastCheckedAt ||
+      vercelBinding?.lastDeployRequestedAt ||
+      delivery.lastExportedAt;
+    const publishedAt =
+      publish.timestamps.publishedAt ||
+      publishMachine.lastSuccessAt ||
+      vercelBinding?.lastDeployReadyAt ||
+      delivery.lastPublishedAt;
     const projectHref = project.id ? `/editor/${project.id}` : "/editor/new";
     const handoffHref = vercelBinding?.projectName ? "#vercel-publish" : "#github-workspace";
     const syncLabel =
@@ -189,16 +201,16 @@ export function PublishConfidenceState({ projects }: Props) {
     const details: ReactNode[] = [];
     let footer = canonical.deliverable.nextAction;
 
-    if (vercelBinding?.projectName) {
+    if (publish.deployment.projectName || vercelBinding?.projectName) {
       meta.push({
         label: "Deploy",
         value: vercelDeployStatusLabel(deriveVercelDeployStatus(vercelBinding)),
         tone: vercelPublishMachineMetaTone(publishMachine),
       });
-    } else if (github.binding) {
+    } else if (publish.repo.id || github.binding) {
       meta.push({
         label: "Workspace",
-        value: repoLabel(github.binding),
+        value: publish.repo.id || repoLabel(github.binding),
       });
     }
 
@@ -218,8 +230,8 @@ export function PublishConfidenceState({ projects }: Props) {
       title = "Publicação confirmada externamente";
       description =
         "A publicação agora depende da confirmação reconciliada do provider. O produto mostra canal, ambiente, horário e URL real sem semântica frouxa.";
-      if (vercelBinding?.productionUrl) {
-        details.push(`URL publicada: ${vercelBinding.productionUrl}.`);
+      if (publish.deployment.publishedUrl || vercelBinding?.productionUrl) {
+        details.push(`URL publicada: ${publish.deployment.publishedUrl || vercelBinding?.productionUrl}.`);
       }
       if (latestEvent?.note) {
         details.push(latestEvent.note);
@@ -233,8 +245,8 @@ export function PublishConfidenceState({ projects }: Props) {
         providerReady
           ? "O provider já devolveu READY. O produto mostra preview, ambiente e próximo passo sem ambiguidade."
           : "O deployment já saiu do produto e a camada de publish mostra o estado reconciliado devolvido pelo provider.";
-      if (vercelBinding?.lastDeploymentUrl) {
-        details.push(`Deployment: ${vercelBinding.lastDeploymentUrl}.`);
+      if (publish.deployment.deploymentUrl || vercelBinding?.lastDeploymentUrl) {
+        details.push(`Deployment: ${publish.deployment.deploymentUrl || vercelBinding?.lastDeploymentUrl}.`);
       }
       if (latestEvent?.note) {
         details.push(latestEvent.note);
@@ -247,11 +259,11 @@ export function PublishConfidenceState({ projects }: Props) {
       title = "Base de publish salva";
       description =
         "O projeto já tem base de saída persistida. Agora a camada confiável de publish depende do primeiro deployment ou sync real.";
-      if (vercelBinding?.projectName) {
-        details.push(`Projeto Vercel salvo: ${vercelBinding.projectName}.`);
+      if (publish.deployment.projectName || vercelBinding?.projectName) {
+        details.push(`Projeto Vercel salvo: ${publish.deployment.projectName || vercelBinding?.projectName}.`);
       }
-      if (github.binding) {
-        details.push(`Base GitHub salva em ${repoLabel(github.binding)}.`);
+      if (publish.repo.id || github.binding) {
+        details.push(`Base GitHub salva em ${publish.repo.id || repoLabel(github.binding)}.`);
       }
       footer = "Dispare o deployment antes de considerar qualquer saída como sincronizada ou publicada.";
     } else {
@@ -279,8 +291,8 @@ export function PublishConfidenceState({ projects }: Props) {
           <Link href={handoffHref} className="btn-link-ea btn-ghost btn-sm">
             Ver handoff
           </Link>
-          {vercelBinding?.productionUrl ? (
-            <a href={vercelBinding.productionUrl} target="_blank" rel="noreferrer" className="btn-link-ea btn-ghost btn-sm">
+            {publish.deployment.publishedUrl || vercelBinding?.productionUrl ? (
+            <a href={publish.deployment.publishedUrl || vercelBinding?.productionUrl || "#"} target="_blank" rel="noreferrer" className="btn-link-ea btn-ghost btn-sm">
               Abrir publicação
             </a>
           ) : null}

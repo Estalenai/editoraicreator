@@ -239,6 +239,7 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
   );
 
   const vercelIntegration = selectedProjectCanonical?.integrations.vercel || null;
+  const publish = selectedProjectCanonical?.publish || null;
   const workspace = (vercelIntegration?.binding as VercelWorkspace | null) || null;
   const publishMachine = useMemo(() => resolveVercelPublishMachine(workspace), [workspace]);
   const history = (vercelIntegration?.history || []) as VercelProjectEvent[];
@@ -896,7 +897,7 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
             <div className="vercel-publish-status-item">
               <span>Deployment</span>
               <strong>{workspace?.lastDeploymentId || "Ainda não solicitado"}</strong>
-              <small>{workspace?.lastDeploymentUrl ? workspace.lastDeploymentUrl : "Sem URL emitida ainda."}</small>
+              <small>{publish?.deployment.deploymentUrl || workspace?.lastDeploymentUrl || "Sem URL emitida ainda."}</small>
             </div>
             <div className="vercel-publish-status-item">
               <span>Estado</span>
@@ -913,7 +914,8 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
           <div className="vercel-publish-note">
             <strong>Fonte de verdade</strong>
             <span>
-              Projeto Vercel, ambiente, deployment id, deployment URL, inspector URL, estado e erro ficam persistidos no backend e no projeto.
+              Projeto Vercel, ambiente, deployment id, deployment URL, inspector URL, estado e erro agora ficam
+              consolidados em <code>publish</code> no projeto e atualizados pelo backend.
             </span>
           </div>
 

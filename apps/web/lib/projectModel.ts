@@ -1,6 +1,6 @@
 "use client";
 
-export const PROJECT_SCHEMA_VERSION = "editor-ai-creator.project.v1";
+export const PROJECT_SCHEMA_VERSION = "editor-ai-creator.project.v2";
 
 export type ReviewStatus = "draft" | "review_ready" | "approved" | "rework";
 export type OutputStage = "draft" | "exported" | "published";
@@ -241,6 +241,138 @@ export type ProjectIntegrationsModel = {
   vercel: ProjectVercelIntegration;
 };
 
+export type ProjectPublishSnapshot = {
+  provider: "github" | "vercel" | null;
+  status: string;
+  externalStatus: string | null;
+  environment: "preview" | "production" | null;
+  repo: string | null;
+  branch: string | null;
+  commitSha: string | null;
+  commitUrl: string | null;
+  deploymentId: string | null;
+  deploymentUrl: string | null;
+  deploymentInspectorUrl: string | null;
+  publishedUrl: string | null;
+  timestamps: {
+    updatedAt: string | null;
+    publishedAt: string | null;
+  };
+};
+
+export type ProjectPublishSourceOfTruth = {
+  version: string;
+  sourceOfTruth: "backend";
+  primary: ProjectPublishSnapshot;
+  repo: {
+    provider: "github" | null;
+    id: string | null;
+    owner: string | null;
+    name: string | null;
+    repositoryUrl: string | null;
+    branch: string | null;
+    defaultBranch: string | null;
+    rootPath: string | null;
+    target: string | null;
+  };
+  commit: {
+    provider: "github" | null;
+    sha: string | null;
+    url: string | null;
+    pullRequestNumber: number | null;
+    pullRequestUrl: string | null;
+    pullRequestState: string | null;
+    externalStatus: string | null;
+  };
+  deployment: {
+    provider: "vercel" | null;
+    projectId: string | null;
+    projectName: string | null;
+    projectUrl: string | null;
+    teamId: string | null;
+    teamSlug: string | null;
+    environment: "preview" | "production" | null;
+    deploymentId: string | null;
+    deploymentUrl: string | null;
+    deploymentInspectorUrl: string | null;
+    previewUrl: string | null;
+    productionUrl: string | null;
+    publishedUrl: string | null;
+    externalStatus: string | null;
+    deployStatus: string | null;
+    error: string | null;
+  };
+  providers: {
+    github: {
+      active: boolean;
+      provider: "github" | null;
+      status: string;
+      externalStatus: string | null;
+      repo: string | null;
+      repositoryUrl: string | null;
+      owner: string | null;
+      repoName: string | null;
+      branch: string | null;
+      defaultBranch: string | null;
+      commitSha: string | null;
+      commitUrl: string | null;
+      pullRequestNumber: number | null;
+      pullRequestUrl: string | null;
+      pullRequestState: string | null;
+      rootPath: string | null;
+      target: string | null;
+      timestamps: {
+        connectedAt: string | null;
+        workspaceVerifiedAt: string | null;
+        checkpointAt: string | null;
+        commitSyncedAt: string | null;
+        pullRequestAt: string | null;
+        updatedAt: string | null;
+      };
+    };
+    vercel: {
+      active: boolean;
+      provider: "vercel" | null;
+      status: string;
+      externalStatus: string | null;
+      projectId: string | null;
+      projectName: string | null;
+      projectUrl: string | null;
+      teamId: string | null;
+      teamSlug: string | null;
+      environment: "preview" | "production" | null;
+      deploymentId: string | null;
+      deploymentUrl: string | null;
+      deploymentInspectorUrl: string | null;
+      publishedUrl: string | null;
+      previewUrl: string | null;
+      productionUrl: string | null;
+      deployStatus: string | null;
+      error: string | null;
+      timestamps: {
+        connectedAt: string | null;
+        workspaceVerifiedAt: string | null;
+        deploymentRequestedAt: string | null;
+        deploymentReadyAt: string | null;
+        deploymentCheckedAt: string | null;
+        publishedAt: string | null;
+        updatedAt: string | null;
+      };
+    };
+  };
+  timestamps: {
+    workspaceVerifiedAt: string | null;
+    checkpointAt: string | null;
+    commitSyncedAt: string | null;
+    pullRequestAt: string | null;
+    deploymentRequestedAt: string | null;
+    deploymentReadyAt: string | null;
+    deploymentCheckedAt: string | null;
+    publishedAt: string | null;
+    updatedAt: string | null;
+  };
+};
+
 export type CanonicalProjectData = {
   schema: typeof PROJECT_SCHEMA_VERSION;
   source: ProjectSourceModel;
@@ -248,6 +380,7 @@ export type CanonicalProjectData = {
   deliverable: ProjectDeliverableModel;
   delivery: ProjectDeliveryModel;
   integrations: ProjectIntegrationsModel;
+  publish: ProjectPublishSourceOfTruth;
   editor?: any;
   [key: string]: any;
 };
@@ -1350,6 +1483,303 @@ function normalizeExistingIntegrations(value: any): ProjectIntegrationsModel {
   };
 }
 
+function pickFirstIso(...values: unknown[]): string | null {
+  for (const value of values) {
+    const text = asText(value);
+    if (!text) continue;
+    const parsed = Date.parse(text);
+    if (Number.isFinite(parsed)) return new Date(parsed).toISOString();
+  }
+  return null;
+}
+
+function latestGitHubPullRequestAt(delivery: ProjectDeliveryModel): string | null {
+  const match = delivery.history.find((event) => event.channel === "github" && /pull request/i.test(event.title));
+  return pickFirstIso(match?.ts);
+}
+
+function deriveGitHubPublishStatus(
+  github: ProjectGitHubIntegration,
+  delivery: ProjectDeliveryModel
+): string {
+  const binding = github.binding;
+  const latestExport = github.exports[0] || null;
+  const latestVersion = github.versions[0] || null;
+
+  if (binding?.lastPullRequestState === "open" || latestExport?.status === "pr_open") return "pull_request_open";
+  if (binding?.lastSyncStatus === "synced" || latestExport?.status === "synced") return "commit_synced";
+  if (latestVersion) return "checkpoint_saved";
+  if (binding?.owner && binding?.repo) return "workspace_saved";
+  if (delivery.connectedStorage === "github") return "output_registered";
+  return "idle";
+}
+
+function deriveVercelPublishStatus(
+  vercel: ProjectVercelIntegration,
+  delivery: ProjectDeliveryModel
+): string {
+  const machineState = asText(vercel.binding?.publishMachine?.state);
+  if (machineState) return machineState;
+  if (vercel.binding?.lastDeploymentId) return "deployment_requested";
+  if (vercel.binding?.projectName) return "workspace_saved";
+  if (delivery.connectedStorage === "vercel") return "output_registered";
+  return "idle";
+}
+
+function buildPublishSourceOfTruth(
+  delivery: ProjectDeliveryModel,
+  integrations: ProjectIntegrationsModel
+): ProjectPublishSourceOfTruth {
+  const github = integrations.github;
+  const vercel = integrations.vercel;
+  const githubBinding = github.binding;
+  const vercelBinding = vercel.binding;
+  const latestExport = github.exports[0] || null;
+  const latestVersion = github.versions[0] || null;
+  const githubStatus = deriveGitHubPublishStatus(github, delivery);
+  const vercelStatus = deriveVercelPublishStatus(vercel, delivery);
+  const githubRepoOwner = asText(githubBinding?.owner) || null;
+  const githubRepoName = asText(githubBinding?.repo) || null;
+  const githubRepoId = githubRepoOwner && githubRepoName ? `${githubRepoOwner}/${githubRepoName}` : null;
+  const githubCommitSha =
+    asText(githubBinding?.lastCommitSha) ||
+    asText(latestExport?.commitSha) ||
+    asText(githubBinding?.lastResolvedCommitSha) ||
+    null;
+  const githubCommitUrl = asText(githubBinding?.lastCommitUrl) || asText(latestExport?.commitUrl) || null;
+  const githubPullRequestNumber =
+    asOptionalNumber(githubBinding?.lastPullRequestNumber) ??
+    asOptionalNumber(latestExport?.pullRequestNumber) ??
+    null;
+  const githubPullRequestUrl = asText(githubBinding?.lastPullRequestUrl) || asText(latestExport?.pullRequestUrl) || null;
+  const githubPullRequestState = asText(githubBinding?.lastPullRequestState) || null;
+  const githubExternalStatus = githubPullRequestState || asText(githubBinding?.lastSyncStatus) || asText(latestExport?.status) || null;
+
+  const vercelEnvironment = (() => {
+    const value = asText(vercelBinding?.lastDeploymentTarget || vercelBinding?.target);
+    return value === "production" ? "production" : value === "preview" ? "preview" : null;
+  })();
+  const vercelExternalStatus =
+    asText(vercelBinding?.publishMachine?.externalState) || asText(vercelBinding?.lastDeploymentState) || null;
+  const vercelDeploymentUrl =
+    asText(vercelBinding?.lastDeploymentUrl) ||
+    (vercelEnvironment === "production" ? asText(vercelBinding?.productionUrl) : asText(vercelBinding?.previewUrl)) ||
+    null;
+  const vercelPublishedUrl = asText(vercelBinding?.productionUrl) || vercelDeploymentUrl || null;
+
+  const primary: ProjectPublishSnapshot = vercelBinding?.projectName
+    ? {
+        provider: "vercel",
+        status: vercelStatus,
+        externalStatus: vercelExternalStatus,
+        environment: vercelEnvironment,
+        repo: githubRepoId,
+        branch: asText(githubBinding?.branch) || null,
+        commitSha: githubCommitSha,
+        commitUrl: githubCommitUrl,
+        deploymentId: asText(vercelBinding?.lastDeploymentId) || null,
+        deploymentUrl: vercelDeploymentUrl,
+        deploymentInspectorUrl: asText(vercelBinding?.lastDeploymentInspectorUrl) || null,
+        publishedUrl: vercelPublishedUrl,
+        timestamps: {
+          updatedAt:
+            pickFirstIso(
+              vercelBinding?.publishMachine?.lastTransitionAt,
+              vercel.lastDeploymentCheckedAt,
+              vercelBinding?.updatedAt,
+              githubBinding?.lastSyncedAt,
+              delivery.lastPublishedAt,
+              delivery.lastExportedAt
+            ) || null,
+          publishedAt:
+            vercelEnvironment === "production"
+              ? pickFirstIso(
+                  vercelBinding?.publishMachine?.lastSuccessAt,
+                  vercelBinding?.lastDeployReadyAt,
+                  delivery.lastPublishedAt
+                )
+              : null,
+        },
+      }
+    : githubBinding?.owner && githubBinding?.repo
+      ? {
+          provider: "github",
+          status: githubStatus,
+          externalStatus: githubExternalStatus,
+          environment: null,
+          repo: githubRepoId,
+          branch: asText(githubBinding?.branch) || null,
+          commitSha: githubCommitSha,
+          commitUrl: githubCommitUrl,
+          deploymentId: null,
+          deploymentUrl: null,
+          deploymentInspectorUrl: null,
+          publishedUrl: null,
+          timestamps: {
+            updatedAt:
+              pickFirstIso(
+                githubBinding?.lastSyncedAt,
+                latestExport?.exportedAt,
+                latestVersion?.savedAt,
+                githubBinding?.updatedAt,
+                delivery.lastExportedAt
+              ) || null,
+            publishedAt: null,
+          },
+        }
+      : {
+          provider: null,
+          status: "idle",
+          externalStatus: null,
+          environment: null,
+          repo: null,
+          branch: null,
+          commitSha: null,
+          commitUrl: null,
+          deploymentId: null,
+          deploymentUrl: null,
+          deploymentInspectorUrl: null,
+          publishedUrl: null,
+          timestamps: {
+            updatedAt: pickFirstIso(delivery.lastPublishedAt, delivery.lastExportedAt),
+            publishedAt: pickFirstIso(delivery.lastPublishedAt),
+          },
+        };
+
+  return {
+    version: "editor-ai-creator.publish-source.v1",
+    sourceOfTruth: "backend",
+    primary,
+    repo: {
+      provider: githubRepoId ? "github" : null,
+      id: githubRepoId,
+      owner: githubRepoOwner,
+      name: githubRepoName,
+      repositoryUrl: asText(githubBinding?.repositoryUrl) || null,
+      branch: asText(githubBinding?.branch) || null,
+      defaultBranch: asText(githubBinding?.defaultBranch) || null,
+      rootPath: asText(githubBinding?.rootPath) || null,
+      target: asText(githubBinding?.target) || null,
+    },
+    commit: {
+      provider: githubRepoId ? "github" : null,
+      sha: githubCommitSha,
+      url: githubCommitUrl,
+      pullRequestNumber: githubPullRequestNumber,
+      pullRequestUrl: githubPullRequestUrl,
+      pullRequestState: githubPullRequestState,
+      externalStatus: githubExternalStatus,
+    },
+    deployment: {
+      provider: vercelBinding?.projectName ? "vercel" : null,
+      projectId: asText(vercelBinding?.projectId) || null,
+      projectName: asText(vercelBinding?.projectName) || null,
+      projectUrl: asText(vercelBinding?.projectUrl) || null,
+      teamId: asText(vercelBinding?.teamId) || null,
+      teamSlug: asText(vercelBinding?.teamSlug) || null,
+      environment: vercelEnvironment,
+      deploymentId: asText(vercelBinding?.lastDeploymentId) || null,
+      deploymentUrl: vercelDeploymentUrl,
+      deploymentInspectorUrl: asText(vercelBinding?.lastDeploymentInspectorUrl) || null,
+      previewUrl: asText(vercelBinding?.previewUrl) || null,
+      productionUrl: asText(vercelBinding?.productionUrl) || null,
+      publishedUrl: vercelPublishedUrl,
+      externalStatus: vercelExternalStatus,
+      deployStatus: asText(vercelBinding?.deployStatus) || null,
+      error: asText(vercelBinding?.lastDeployError) || null,
+    },
+    providers: {
+      github: {
+        active: Boolean(githubRepoId),
+        provider: githubRepoId ? "github" : null,
+        status: githubStatus,
+        externalStatus: githubExternalStatus,
+        repo: githubRepoId,
+        repositoryUrl: asText(githubBinding?.repositoryUrl) || null,
+        owner: githubRepoOwner,
+        repoName: githubRepoName,
+        branch: asText(githubBinding?.branch) || null,
+        defaultBranch: asText(githubBinding?.defaultBranch) || null,
+        commitSha: githubCommitSha,
+        commitUrl: githubCommitUrl,
+        pullRequestNumber: githubPullRequestNumber,
+        pullRequestUrl: githubPullRequestUrl,
+        pullRequestState: githubPullRequestState,
+        rootPath: asText(githubBinding?.rootPath) || null,
+        target: asText(githubBinding?.target) || null,
+        timestamps: {
+          connectedAt: pickFirstIso(githubBinding?.connectedAt),
+          workspaceVerifiedAt: pickFirstIso(githubBinding?.lastVerifiedAt, githubBinding?.updatedAt, githubBinding?.connectedAt),
+          checkpointAt: pickFirstIso(latestVersion?.savedAt),
+          commitSyncedAt: pickFirstIso(githubBinding?.lastSyncedAt, latestExport?.exportedAt),
+          pullRequestAt: latestGitHubPullRequestAt(delivery),
+          updatedAt: pickFirstIso(
+            githubBinding?.lastSyncedAt,
+            latestExport?.exportedAt,
+            latestVersion?.savedAt,
+            githubBinding?.updatedAt,
+            githubBinding?.connectedAt
+          ),
+        },
+      },
+      vercel: {
+        active: Boolean(vercelBinding?.projectName),
+        provider: vercelBinding?.projectName ? "vercel" : null,
+        status: vercelStatus,
+        externalStatus: vercelExternalStatus,
+        projectId: asText(vercelBinding?.projectId) || null,
+        projectName: asText(vercelBinding?.projectName) || null,
+        projectUrl: asText(vercelBinding?.projectUrl) || null,
+        teamId: asText(vercelBinding?.teamId) || null,
+        teamSlug: asText(vercelBinding?.teamSlug) || null,
+        environment: vercelEnvironment,
+        deploymentId: asText(vercelBinding?.lastDeploymentId) || null,
+        deploymentUrl: vercelDeploymentUrl,
+        deploymentInspectorUrl: asText(vercelBinding?.lastDeploymentInspectorUrl) || null,
+        publishedUrl: vercelPublishedUrl,
+        previewUrl: asText(vercelBinding?.previewUrl) || null,
+        productionUrl: asText(vercelBinding?.productionUrl) || null,
+        deployStatus: asText(vercelBinding?.deployStatus) || null,
+        error: asText(vercelBinding?.lastDeployError) || null,
+        timestamps: {
+          connectedAt: pickFirstIso(vercelBinding?.connectedAt),
+          workspaceVerifiedAt: pickFirstIso(vercelBinding?.lastVerifiedAt, vercelBinding?.updatedAt, vercelBinding?.connectedAt),
+          deploymentRequestedAt: pickFirstIso(vercelBinding?.lastDeployRequestedAt),
+          deploymentReadyAt: pickFirstIso(vercelBinding?.lastDeployReadyAt),
+          deploymentCheckedAt: pickFirstIso(vercel.lastDeploymentCheckedAt, vercelBinding?.publishMachine?.lastCheckedAt),
+          publishedAt:
+            vercelEnvironment === "production"
+              ? pickFirstIso(vercelBinding?.publishMachine?.lastSuccessAt, vercelBinding?.lastDeployReadyAt, delivery.lastPublishedAt)
+              : null,
+          updatedAt: pickFirstIso(vercelBinding?.publishMachine?.lastTransitionAt, vercel.lastDeploymentCheckedAt, vercelBinding?.updatedAt),
+        },
+      },
+    },
+    timestamps: {
+      workspaceVerifiedAt: pickFirstIso(
+        vercelBinding?.lastVerifiedAt,
+        githubBinding?.lastVerifiedAt,
+        vercelBinding?.updatedAt,
+        githubBinding?.updatedAt
+      ),
+      checkpointAt: pickFirstIso(latestVersion?.savedAt),
+      commitSyncedAt: pickFirstIso(githubBinding?.lastSyncedAt, latestExport?.exportedAt),
+      pullRequestAt: latestGitHubPullRequestAt(delivery),
+      deploymentRequestedAt: pickFirstIso(vercelBinding?.lastDeployRequestedAt),
+      deploymentReadyAt: pickFirstIso(vercelBinding?.lastDeployReadyAt),
+      deploymentCheckedAt: pickFirstIso(vercel.lastDeploymentCheckedAt, vercelBinding?.publishMachine?.lastCheckedAt),
+      publishedAt: pickFirstIso(vercelBinding?.publishMachine?.lastSuccessAt, vercelBinding?.lastDeployReadyAt, delivery.lastPublishedAt),
+      updatedAt: pickFirstIso(
+        primary.timestamps.updatedAt,
+        vercelBinding?.updatedAt,
+        githubBinding?.updatedAt,
+        delivery.lastPublishedAt,
+        delivery.lastExportedAt
+      ),
+    },
+  };
+}
+
 function mergeProjectIntegrations(
   current: ProjectIntegrationsModel,
   patch?: {
@@ -1423,6 +1853,7 @@ export function ensureCanonicalProjectData(rawData: any, meta: ProjectMeta = {})
       : null;
   const delivery = existingDelivery || legacyEditorDelivery || buildBaseDelivery();
   const integrations = normalizeExistingIntegrations(baseData.integrations);
+  const publish = buildPublishSourceOfTruth(delivery, integrations);
   const deliverableBase = normalizeExistingDeliverable(baseData.deliverable) || null;
   const derivedDeliverable = buildDeliverableFromData(baseData, meta, source, output, delivery);
   const deliverable: ProjectDeliverableModel = {
@@ -1442,6 +1873,7 @@ export function ensureCanonicalProjectData(rawData: any, meta: ProjectMeta = {})
     deliverable,
     delivery,
     integrations,
+    publish,
     editor: baseData.editor,
   };
 }
@@ -1488,6 +1920,7 @@ export function mergeCanonicalProjectData(
   const nextIntegrations = patch.integrations
     ? mergeProjectIntegrations(current.integrations, patch.integrations)
     : current.integrations;
+  const nextPublish = buildPublishSourceOfTruth(nextDelivery, nextIntegrations);
 
   const deliverablePatch: Partial<ProjectDeliverableModel> = patch.deliverable || {};
   const nextDeliverable: ProjectDeliverableModel = {
@@ -1519,6 +1952,7 @@ export function mergeCanonicalProjectData(
     deliverable: nextDeliverable,
     delivery: nextDelivery,
     integrations: nextIntegrations,
+    publish: nextPublish,
     editor: patch.editor !== undefined ? patch.editor : current.editor,
   };
 
@@ -1716,6 +2150,7 @@ export function getCanonicalProjectSummary(rawData: any, meta: ProjectMeta = {})
     deliverable: data.deliverable,
     delivery: data.delivery,
     integrations: data.integrations,
+    publish: data.publish,
     outputStageLabel: outputStageLabel(data.delivery.stage),
     reviewStatusLabel: reviewStatusLabel(data.deliverable.reviewStatus),
     continuityStatusLabel: continuityStatusLabel(data.delivery.stage, data.deliverable.reviewStatus),

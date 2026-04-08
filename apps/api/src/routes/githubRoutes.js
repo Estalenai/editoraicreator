@@ -14,6 +14,7 @@ import {
 } from "../utils/githubClient.js";
 import { decryptGitHubToken, encryptGitHubToken } from "../utils/githubCrypto.js";
 import { recordProductEvent } from "../utils/eventsStore.js";
+import { applyPublishSourceOfTruth } from "../utils/publishSourceOfTruth.js";
 import { createAuthedSupabaseClient } from "../utils/supabaseAuthed.js";
 
 const router = express.Router();
@@ -295,10 +296,11 @@ async function readProjectForUser(req, projectId) {
 }
 
 async function persistProjectData(req, projectId, nextData) {
+  const persistedData = applyPublishSourceOfTruth(nextData);
   const supabase = createAuthedSupabaseClient(req.access_token);
   const { data, error } = await supabase
     .from("projects")
-    .update({ data: nextData })
+    .update({ data: persistedData })
     .eq("id", projectId)
     .eq("user_id", req.user.id)
     .select("*")

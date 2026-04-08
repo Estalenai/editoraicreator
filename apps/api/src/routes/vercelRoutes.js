@@ -15,6 +15,7 @@ import {
   listVercelTeams,
 } from "../utils/vercelClient.js";
 import { decryptVercelToken, encryptVercelToken } from "../utils/vercelCrypto.js";
+import { applyPublishSourceOfTruth } from "../utils/publishSourceOfTruth.js";
 import { nowIso, resolveVercelPublishMachine } from "../utils/vercelPublishMachine.js";
 
 const router = express.Router();
@@ -283,10 +284,11 @@ async function readProjectForUser(req, projectId) {
 }
 
 async function persistProjectData(req, projectId, nextData) {
+  const persistedData = applyPublishSourceOfTruth(nextData);
   const supabase = createAuthedSupabaseClient(req.access_token);
   const { data, error } = await supabase
     .from("projects")
-    .update({ data: nextData })
+    .update({ data: persistedData })
     .eq("id", projectId)
     .eq("user_id", req.user.id)
     .select("*")

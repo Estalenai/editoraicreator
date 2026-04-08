@@ -208,6 +208,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
   );
 
   const githubIntegration = selectedProjectCanonical?.integrations.github || null;
+  const publish = selectedProjectCanonical?.publish || null;
   const workspace = (githubIntegration?.binding as GitHubWorkspace | null) || null;
   const versions = (githubIntegration?.versions || []) as GitHubProjectVersion[];
   const exportsHistory = (githubIntegration?.exports || []) as GitHubProjectExport[];
@@ -418,14 +419,14 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
       }
     );
 
-    if (workspace?.lastCommitSha) {
-      meta.push({ label: "Commit", value: workspace.lastCommitSha.slice(0, 7) });
+    if (publish?.commit.sha || workspace?.lastCommitSha) {
+      meta.push({ label: "Commit", value: String(publish?.commit.sha || workspace?.lastCommitSha).slice(0, 7) });
     }
-    if (workspace?.lastPullRequestNumber) {
+    if (publish?.commit.pullRequestNumber || workspace?.lastPullRequestNumber) {
       meta.push({
         label: "PR",
-        value: `#${workspace.lastPullRequestNumber}`,
-        tone: workspace.lastPullRequestState === "open" ? "success" : "default",
+        value: `#${publish?.commit.pullRequestNumber || workspace?.lastPullRequestNumber}`,
+        tone: (publish?.commit.pullRequestState || workspace?.lastPullRequestState) === "open" ? "success" : "default",
       });
     }
 
@@ -505,7 +506,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
       ],
       footer: "Crie o primeiro checkpoint para começar a trilha verificável do GitHub.",
     };
-  }, [assessment.branch, canCreatePullRequest, connection.connected, connection.login, connection.name, latestExport, latestVersion, repoLabel, selectedProject, workspace]);
+  }, [assessment.branch, canCreatePullRequest, connection.connected, connection.login, connection.name, latestExport, latestVersion, publish, repoLabel, selectedProject, workspace]);
 
   const workspaceState = useMemo(() => {
     if (!assessment.ready) {
@@ -827,7 +828,10 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
 
           <div className="github-workspace-inline-note">
             <strong>Fonte de verdade</strong>
-            <span>Binding, checkpoint, commit SHA, commit URL e PR ficam persistidos no projeto e atualizados pelo backend.</span>
+            <span>
+              Repo, branch, commit SHA, commit URL e PR agora ficam consolidados em <code>publish</code> no projeto e
+              atualizados pelo backend.
+            </span>
           </div>
 
           <div className="github-workspace-cta-row">

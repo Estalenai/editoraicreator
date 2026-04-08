@@ -2,6 +2,7 @@ import crypto from "crypto";
 import express from "express";
 import supabaseAdmin, { isSupabaseAdminEnabled } from "../config/supabaseAdmin.js";
 import { recordProductEvent } from "../utils/eventsStore.js";
+import { applyPublishSourceOfTruth } from "../utils/publishSourceOfTruth.js";
 import { nowIso, resolveVercelPublishMachine } from "../utils/vercelPublishMachine.js";
 
 const router = express.Router();
@@ -262,9 +263,10 @@ async function findProjectByDeploymentId(deploymentId) {
 }
 
 async function persistProject(projectId, nextData) {
+  const persistedData = applyPublishSourceOfTruth(nextData);
   const { data, error } = await supabaseAdmin
     .from("projects")
-    .update({ data: nextData })
+    .update({ data: persistedData })
     .eq("id", projectId)
     .select("*")
     .maybeSingle();
