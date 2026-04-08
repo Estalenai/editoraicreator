@@ -377,45 +377,51 @@ function CreatorsPageContent() {
         </div>
       ) : null}
 
-      <section className="proof-value-section creators-proof-section creators-flow-section surface-flow-region creators-flow-section-start layout-contract-region" data-reveal data-reveal-delay="60">
-        <div className="proof-value-header">
-          <div className="section-stack-tight">
-            <p className="section-kicker">Exemplos de resultado</p>
-            <h2 className="heading-reset">O que os creators hero podem destravar</h2>
-            <p className="helper-text-ea">
-              Exemplos do que o núcleo já organiza antes de abrir um projeto.
-            </p>
+      <div className="creators-core-canvas layout-contract-region" data-reveal data-reveal-delay="60">
+        <section className="proof-value-section creators-proof-section creators-flow-section surface-flow-region creators-flow-section-start layout-contract-region">
+          <div className="proof-value-header">
+            <div className="section-stack-tight">
+              <p className="section-kicker">Exemplos de resultado</p>
+              <h2 className="heading-reset">O que os creators hero podem destravar</h2>
+              <p className="helper-text-ea">
+                Exemplos do que o núcleo já organiza antes de abrir um projeto.
+              </p>
+            </div>
+            <Link href="/projects" className="btn-link-ea btn-secondary btn-sm">
+              Ver continuidade em Projetos
+            </Link>
           </div>
-          <Link href="/projects" className="btn-link-ea btn-secondary btn-sm">
-            Ver continuidade em Projetos
-          </Link>
-        </div>
 
-        <div className="proof-value-grid proof-value-grid-creators">
-          {CREATOR_SHOWCASES.map((item, index) => (
-            <article key={item.creator} className="proof-value-card layout-contract-item" data-reveal data-reveal-delay={String(70 + index * 55)}>
-              <div className="proof-value-meta-row">
-                <span className="proof-value-kicker">{item.kicker}</span>
-                <span className="proof-value-chip">{item.creator}</span>
-              </div>
-              <div className="proof-value-stack">
-                <div className="proof-value-block">
-                  <span className="proof-value-label">Briefing</span>
-                  <p>{item.briefing}</p>
+          <div className="proof-value-grid proof-value-grid-creators">
+            {CREATOR_SHOWCASES.map((item, index) => (
+              <article
+                key={item.creator}
+                className={`proof-value-card layout-contract-item ${index === 0 ? "creators-proof-card-primary" : "creators-proof-card-support"}`}
+                data-reveal
+                data-reveal-delay={String(70 + index * 55)}
+              >
+                <div className="proof-value-meta-row">
+                  <span className="proof-value-kicker">{item.kicker}</span>
+                  <span className="proof-value-chip">{item.creator}</span>
                 </div>
-                <div className="proof-value-block">
-                  <span className="proof-value-label">Entrega</span>
-                  <p>{item.delivery}</p>
+                <div className="proof-value-stack">
+                  <div className="proof-value-block">
+                    <span className="proof-value-label">Briefing</span>
+                    <p>{item.briefing}</p>
+                  </div>
+                  <div className="proof-value-block">
+                    <span className="proof-value-label">Entrega</span>
+                    <p>{item.delivery}</p>
+                  </div>
+                  <div className="proof-value-block proof-value-block-inline">
+                    <span className="proof-value-label">Próximo passo</span>
+                    <strong>{item.nextStep}</strong>
+                  </div>
                 </div>
-                <div className="proof-value-block proof-value-block-inline">
-                  <span className="proof-value-label">Próximo passo</span>
-                  <strong>{item.nextStep}</strong>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
+              </article>
+            ))}
+          </div>
+        </section>
 
       <section
         ref={registerSection("showcase")}
@@ -459,51 +465,52 @@ function CreatorsPageContent() {
         <div className="focus-shell-preview">
           O trio hero continua visível sem disputar o workspace ativo.
         </div>
-        <div className="focus-shell-body">
-        <div className="creators-hero-core-grid">
-          {heroCoreCards.map((tab, index) => (
-            <article
-              key={tab.id}
-              className={`creators-hero-core-card layout-contract-item ${tab.group !== "hero" ? "creators-hero-core-card-support" : ""}`}
-              data-active={activeTab === tab.id}
-              data-reveal
-              data-reveal-delay={String(70 + index * 50)}
-            >
-              <div className="creators-hero-core-card-head">
-                <span className={`premium-badge premium-badge-${creatorStageTone(tab.group)}`}>{tab.stageLabel}</span>
-                <span className="creators-hero-core-card-kicker">{tab.group === "hero" ? "Creator central" : "Apoio recomendado"}</span>
-              </div>
-              <div className="section-stack-tight">
-                <h3 className="heading-reset">{tab.label}</h3>
-                <p className="helper-text-ea">{tab.description}</p>
-              </div>
-              <div className="creators-hero-core-stack">
-                <div className="creators-hero-core-point">
-                  <span>Melhor para</span>
-                  <strong>{tab.bestFor}</strong>
-                </div>
-                <div className="creators-hero-core-point">
-                  <span>Saída esperada</span>
-                  <strong>{tab.expectedOutput}</strong>
-                </div>
-                <div className="creators-hero-core-point">
-                  <span>Continuidade</span>
-                  <strong>{tab.continuity}</strong>
-                </div>
-              </div>
-              <div className="creators-hero-card-actions">
-                <button onClick={() => activateTab(tab.id, { scrollToWorkspace: true })} className="btn-ea btn-primary btn-sm">
-                  {tab.group === "hero" ? "Abrir no workspace" : "Abrir apoio no workspace"}
-                </button>
-                <Link href="/projects" className="btn-link-ea btn-ghost btn-sm">
-                  Ver continuidade em Projetos
-                </Link>
-              </div>
-            </article>
-          ))}
-        </div>
-        </div>
-      </section>
+          <div className="focus-shell-body">
+            <div className="creators-hero-core-grid">
+              {heroCoreCards.map((tab, index) => (
+                <article
+                  key={tab.id}
+                  className={`creators-hero-core-card layout-contract-item ${tab.group !== "hero" ? "creators-hero-core-card-support" : ""}`}
+                  data-active={activeTab === tab.id}
+                  data-group={tab.group}
+                  data-reveal
+                  data-reveal-delay={String(70 + index * 50)}
+                >
+                  <div className="creators-hero-core-card-head">
+                    <span className={`premium-badge premium-badge-${creatorStageTone(tab.group)}`}>{tab.stageLabel}</span>
+                    <span className="creators-hero-core-card-kicker">{tab.group === "hero" ? "Creator central" : "Apoio recomendado"}</span>
+                  </div>
+                  <div className="section-stack-tight">
+                    <h3 className="heading-reset">{tab.label}</h3>
+                    <p className="helper-text-ea">{tab.description}</p>
+                  </div>
+                  <div className="creators-hero-core-stack">
+                    <div className="creators-hero-core-point">
+                      <span>Melhor para</span>
+                      <strong>{tab.bestFor}</strong>
+                    </div>
+                    <div className="creators-hero-core-point">
+                      <span>Saída esperada</span>
+                      <strong>{tab.expectedOutput}</strong>
+                    </div>
+                    <div className="creators-hero-core-point">
+                      <span>Continuidade</span>
+                      <strong>{tab.continuity}</strong>
+                    </div>
+                  </div>
+                  <div className="creators-hero-card-actions">
+                    <button onClick={() => activateTab(tab.id, { scrollToWorkspace: true })} className="btn-ea btn-primary btn-sm">
+                      {tab.group === "hero" ? "Abrir no workspace" : "Abrir apoio no workspace"}
+                    </button>
+                    <Link href="/projects" className="btn-link-ea btn-ghost btn-sm">
+                      Ver continuidade em Projetos
+                    </Link>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
 
       <section
         ref={registerSection("catalog")}
@@ -543,31 +550,32 @@ function CreatorsPageContent() {
         <div className="focus-shell-preview">
           Apoio estratégico e labs continuam acessíveis, mas com menos peso quando o foco está no creator ativo.
         </div>
-        <div className="focus-shell-body">
-        <div className="creators-secondary-grid">
-          {secondaryCatalog.map((tab, index) => (
-            <article key={tab.id} className="creators-secondary-card layout-contract-item" data-priority={tab.group} data-reveal data-reveal-delay={String(70 + index * 45)}>
-              <div className="creators-secondary-card-head">
-                <strong>{tab.label}</strong>
-                <span className={`premium-badge premium-badge-${creatorStageTone(tab.group)}`}>{tab.stageLabel}</span>
-              </div>
-              <p className="helper-text-ea">{tab.description}</p>
-              <div className="creators-secondary-card-copy">
-                <span>Saída esperada</span>
-                <strong>{tab.expectedOutput}</strong>
-              </div>
-              <div className="creators-secondary-card-copy">
-                <span>Papel atual</span>
-                <strong>{tab.continuity}</strong>
-              </div>
-              <button onClick={() => activateTab(tab.id, { scrollToWorkspace: true })} className="btn-ea btn-ghost btn-sm">
-                Abrir no workspace
-              </button>
-            </article>
-          ))}
-        </div>
-        </div>
-      </section>
+          <div className="focus-shell-body">
+            <div className="creators-secondary-grid">
+              {secondaryCatalog.map((tab, index) => (
+                <article key={tab.id} className="creators-secondary-card layout-contract-item" data-priority={tab.group} data-reveal data-reveal-delay={String(70 + index * 45)}>
+                  <div className="creators-secondary-card-head">
+                    <strong>{tab.label}</strong>
+                    <span className={`premium-badge premium-badge-${creatorStageTone(tab.group)}`}>{tab.stageLabel}</span>
+                  </div>
+                  <p className="helper-text-ea">{tab.description}</p>
+                  <div className="creators-secondary-card-copy">
+                    <span>Saída esperada</span>
+                    <strong>{tab.expectedOutput}</strong>
+                  </div>
+                  <div className="creators-secondary-card-copy">
+                    <span>Papel atual</span>
+                    <strong>{tab.continuity}</strong>
+                  </div>
+                  <button onClick={() => activateTab(tab.id, { scrollToWorkspace: true })} className="btn-ea btn-ghost btn-sm">
+                    Abrir no workspace
+                  </button>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      </div>
 
       <section
         ref={registerSection("workspace")}
@@ -681,7 +689,7 @@ function CreatorsPageContent() {
               <div className="premium-skeleton premium-skeleton-card" />
             </div>
           ) : (
-            <>
+            <div className="creator-workspace-main-stack">
               {loading ? (
                 <div className="creators-inline-note layout-contract-note">
                   <strong>Sincronização em segundo plano</strong>
@@ -741,7 +749,7 @@ function CreatorsPageContent() {
                   onRefetch={refresh}
                 />
               ) : null}
-            </>
+            </div>
           )}
         </div>
         </div>

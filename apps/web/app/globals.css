@@ -11670,6 +11670,284 @@ body {
   }
 }
 
+.creators-page .creators-core-canvas {
+  display: grid;
+  gap: 0;
+  padding: clamp(20px, 2.5vw, 28px);
+  border: 1px solid rgba(191, 239, 255, 0.055);
+  border-radius: 28px;
+  background:
+    radial-gradient(360px 160px at 0% 0%, rgba(88, 242, 255, 0.036), transparent 72%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.006)),
+    var(--ea-page-subtle-surface);
+  box-shadow: none !important;
+  overflow: clip;
+}
+
+.creators-page .creators-core-canvas > .creators-flow-section {
+  padding: 0;
+  border: 0 !important;
+  border-radius: 0;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.creators-page .creators-core-canvas > .creators-flow-section::before,
+.creators-page .creators-core-canvas > .creators-flow-section::after {
+  display: none;
+}
+
+.creators-page .creators-core-canvas > .creators-flow-section + .creators-flow-section {
+  margin-top: clamp(18px, 2vw, 24px);
+  padding-top: clamp(18px, 2vw, 24px);
+  border-top: 1px solid rgba(191, 239, 255, 0.06) !important;
+}
+
+.creators-page .creators-proof-section,
+.creators-page .creators-hero-core-section,
+.creators-page .creators-secondary-section {
+  gap: clamp(14px, 1.9vw, 20px);
+}
+
+.creators-page .proof-value-grid-creators {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: clamp(12px, 1.7vw, 18px);
+}
+
+.creators-page .creators-proof-card-primary {
+  grid-column: span 6;
+  min-height: clamp(260px, 28vw, 320px);
+}
+
+.creators-page .creators-proof-card-support {
+  grid-column: span 3;
+}
+
+.creators-page .creators-proof-card-primary .proof-value-stack {
+  align-content: start;
+}
+
+.creators-page .creators-hero-core-grid {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: clamp(12px, 1.7vw, 18px);
+}
+
+.creators-page .creators-hero-core-card[data-group="hero"] {
+  grid-column: span 4;
+}
+
+.creators-page .creators-hero-core-card[data-group="secondary"] {
+  grid-column: 1 / -1;
+  gap: 12px;
+  min-height: 0;
+  background:
+    radial-gradient(260px 96px at 100% 0%, rgba(255, 191, 107, 0.072), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.022), rgba(255, 255, 255, 0.008)),
+    var(--ea-page-subtle-surface) !important;
+}
+
+.creators-page .creators-secondary-grid {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: clamp(12px, 1.7vw, 18px);
+}
+
+.creators-page .creators-secondary-card[data-priority="secondary"] {
+  grid-column: 1 / -1;
+}
+
+.creators-page .creators-secondary-card[data-priority="labs"] {
+  grid-column: span 6;
+}
+
+.creators-page .creators-secondary-card[data-priority="secondary"],
+.creators-page .creators-hero-core-card[data-group="secondary"] {
+  padding: 18px 18px 17px;
+  border-color: rgba(255, 191, 107, 0.08) !important;
+}
+
+.creators-page .creator-workspace-shell {
+  gap: clamp(16px, 2vw, 22px);
+}
+
+.creators-page .creator-workspace-grid {
+  grid-template-columns: minmax(272px, 0.34fr) minmax(0, 1fr);
+  gap: clamp(20px, 2.2vw, 30px);
+  align-items: start;
+}
+
+.creators-page .creator-workspace-side {
+  padding-right: clamp(20px, 2vw, 28px);
+}
+
+.creators-page .creator-workspace-main {
+  min-width: 0;
+  padding-left: clamp(20px, 2vw, 28px);
+}
+
+.creators-page .creator-workspace-main-stack {
+  display: grid;
+  gap: 0;
+}
+
+.creators-page .creator-workspace-main-stack > * + * {
+  margin-top: clamp(16px, 1.8vw, 20px);
+  padding-top: clamp(16px, 1.8vw, 20px);
+  border-top: 1px solid rgba(191, 239, 255, 0.06);
+}
+
+.creators-page .creator-workspace-card {
+  gap: 0;
+}
+
+.creators-page .creator-workspace-card-modular .creator-workspace-header {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.creators-page .creator-workspace-zones {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.creators-page .creator-workspace-card-modular .creator-form-zone:first-of-type {
+  grid-column: span 8;
+}
+
+.creators-page .creator-workspace-card-modular .creator-form-zone + .creator-form-zone {
+  grid-column: span 4;
+}
+
+.creators-page .creator-workspace-card-modular .creator-context-zone,
+.creators-page .creator-workspace-card-modular .creator-inline-panel,
+.creators-page .creator-workspace-card-modular .creator-estimate-row,
+.creators-page .creator-workspace-card-modular .creator-loading-panel,
+.creators-page .creator-workspace-card-modular .creator-result-stack,
+.creators-page .creator-workspace-card-modular .creator-empty-state,
+.creators-page .creator-workspace-card-modular .creator-actions-row {
+  grid-column: 1 / -1;
+}
+
+.creators-page .creator-workspace-card-modular .creator-output-grid {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.creators-page .creator-workspace-card-modular .creator-output-card {
+  grid-column: span 6;
+}
+
+.creators-page .creator-workspace-card-modular .creator-output-card--wide,
+.creators-page .creator-workspace-card-modular .creator-next-step-panel {
+  grid-column: 1 / -1;
+}
+
+.creators-page .creator-form-zone,
+.creators-page .creator-context-zone,
+.creators-page .creator-inline-panel,
+.creators-page .creator-output-card,
+.creators-page .creator-next-step-panel,
+.creators-page .creator-estimate-row,
+.creators-page .creator-planner-panel,
+.creators-page .creator-loading-panel {
+  padding: 16px;
+  border-color: rgba(191, 239, 255, 0.048) !important;
+  background:
+    radial-gradient(240px 96px at 100% 0%, rgba(88, 242, 255, 0.022), transparent 76%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.012), rgba(255, 255, 255, 0.003)),
+    var(--ea-page-subtle-surface) !important;
+}
+
+@media (max-width: 1180px) {
+  .creators-page .proof-value-grid-creators {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  .creators-page .creators-proof-card-primary,
+  .creators-page .creators-proof-card-support {
+    grid-column: span 3;
+  }
+
+  .creators-page .creators-proof-card-primary {
+    grid-column: 1 / -1;
+    min-height: 0;
+  }
+
+  .creators-page .creators-hero-core-card[data-group="hero"] {
+    grid-column: span 6;
+  }
+
+  .creators-page .creators-secondary-card[data-priority="labs"] {
+    grid-column: span 6;
+  }
+
+  .creators-page .creator-workspace-grid {
+    grid-template-columns: minmax(248px, 0.36fr) minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .creators-page .creator-workspace-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+
+  .creators-page .creator-workspace-side {
+    padding-right: 0;
+    padding-bottom: 18px;
+    border-right: 0;
+    border-bottom: 1px solid rgba(191, 239, 255, 0.06);
+  }
+
+  .creators-page .creator-workspace-main {
+    padding-left: 0;
+    padding-top: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .creators-page .creators-core-canvas {
+    padding: 18px;
+    border-radius: 24px;
+  }
+
+  .creators-page .creators-proof-card-primary,
+  .creators-page .creators-proof-card-support,
+  .creators-page .creators-hero-core-card[data-group="hero"],
+  .creators-page .creators-hero-core-card[data-group="secondary"],
+  .creators-page .creators-secondary-card[data-priority="secondary"],
+  .creators-page .creators-secondary-card[data-priority="labs"] {
+    grid-column: 1 / -1;
+  }
+
+  .creators-page .creator-workspace-zones,
+  .creators-page .creator-workspace-card-modular .creator-output-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .creators-page .creator-workspace-card-modular .creator-form-zone:first-of-type,
+  .creators-page .creator-workspace-card-modular .creator-form-zone + .creator-form-zone,
+  .creators-page .creator-workspace-card-modular .creator-output-card {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 560px) {
+  .creators-page .creators-core-canvas {
+    padding: 16px;
+    border-radius: 20px;
+  }
+
+  .creators-page .creators-core-canvas > .creators-flow-section + .creators-flow-section {
+    margin-top: 16px;
+    padding-top: 16px;
+  }
+
+  .creators-page .creator-workspace-main-stack > * + * {
+    margin-top: 14px;
+    padding-top: 14px;
+  }
+}
+
 .projects-page .projects-list-section,
 .projects-page .projects-publish-section,
 .projects-page .projects-handoff-section,

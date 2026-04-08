@@ -263,6 +263,16 @@ export async function attachMockApi(context, state) {
       return;
     }
 
+    if (path === "/api/plans/catalog") {
+      await route.fulfill(json({ plans: [] }));
+      return;
+    }
+
+    if (path === "/api/admin/visibility") {
+      await route.fulfill(json({ visible: true, allowed: true }));
+      return;
+    }
+
     if (path === "/api/projects" && method === "GET") {
       const items = state.projectOrder.map((id) => state.projects.get(id)).filter(Boolean);
       await route.fulfill(json({ items }));
