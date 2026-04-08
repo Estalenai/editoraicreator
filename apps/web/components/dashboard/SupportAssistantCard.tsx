@@ -172,7 +172,7 @@ export function SupportAssistantCard({
           ) : null}
         </div>
       </div>
-      <div className="focus-shell-preview">{preview}</div>
+      {!focused && preview ? <div className="focus-shell-preview">{preview}</div> : null}
 
       {focused ? (
         <div className="focus-shell-body">

@@ -129,8 +129,8 @@ export function SupportOperationsPanel() {
         </div>
       </div>
 
-      <div className="support-ops-grid">
-        <article className="support-ops-card">
+      <div className="support-ops-layout">
+        <article className="support-ops-card support-ops-card-primary">
           <div className="support-ops-head">
             <div className="support-ops-title-stack">
               <span className={`support-ops-chip support-ops-chip-${platformState.tone}`}>
@@ -154,56 +154,58 @@ export function SupportOperationsPanel() {
           {error ? <div className="support-ops-inline-note">{error}</div> : null}
         </article>
 
-        <article className="support-ops-card">
-          <div className="support-ops-head">
-            <div className="support-ops-title-stack">
-              <span className="support-ops-chip support-ops-chip-muted">Próximo passo</span>
-              <strong>Quando tentar de novo</strong>
+        <div className="support-ops-stack">
+          <article className="support-ops-card support-ops-card-secondary">
+            <div className="support-ops-head">
+              <div className="support-ops-title-stack">
+                <span className="support-ops-chip support-ops-chip-muted">Próximo passo</span>
+                <strong>Quando tentar de novo</strong>
+              </div>
             </div>
-          </div>
-          <p className="support-ops-copy">
-            Repetir a ação faz sentido quando o sistema ainda está processando e o histórico não mostrou falha nova.
-          </p>
-          <ul className="support-ops-list">
-            {RETRY_GUIDELINES.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-        </article>
+            <p className="support-ops-copy">
+              Repetir a ação faz sentido quando o sistema ainda está processando e o histórico não mostrou falha nova.
+            </p>
+            <ul className="support-ops-list">
+              {RETRY_GUIDELINES.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </article>
 
-        <article className="support-ops-card">
-          <div className="support-ops-head">
-            <div className="support-ops-title-stack">
-              <span className="support-ops-chip support-ops-chip-muted">Escalada</span>
-              <strong>Quando abrir suporte</strong>
+          <article className="support-ops-card support-ops-card-secondary">
+            <div className="support-ops-head">
+              <div className="support-ops-title-stack">
+                <span className="support-ops-chip support-ops-chip-muted">Escalada</span>
+                <strong>Quando abrir suporte</strong>
+              </div>
             </div>
-          </div>
-          <p className="support-ops-copy">
-            Abra suporte quando o produto já deu sinal suficiente de que a ação não avançou sozinha.
-          </p>
-          <ul className="support-ops-list">
-            {ESCALATION_GUIDELINES.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-        </article>
+            <p className="support-ops-copy">
+              Abra suporte quando o produto já deu sinal suficiente de que a ação não avançou sozinha.
+            </p>
+            <ul className="support-ops-list">
+              {ESCALATION_GUIDELINES.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </article>
 
-        <article className="support-ops-card">
-          <div className="support-ops-head">
-            <div className="support-ops-title-stack">
-              <span className="support-ops-chip support-ops-chip-muted">Pedido claro</span>
-              <strong>O que incluir</strong>
+          <article className="support-ops-card support-ops-card-secondary">
+            <div className="support-ops-head">
+              <div className="support-ops-title-stack">
+                <span className="support-ops-chip support-ops-chip-muted">Pedido claro</span>
+                <strong>O que incluir</strong>
+              </div>
             </div>
-          </div>
-          <p className="support-ops-copy">
-            Quanto menos interpretação a equipe precisar fazer, mais rápido o retorno fica útil.
-          </p>
-          <ul className="support-ops-list">
-            {CONTEXT_GUIDELINES.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-        </article>
+            <p className="support-ops-copy">
+              Quanto menos interpretação a equipe precisar fazer, mais rápido o retorno fica útil.
+            </p>
+            <ul className="support-ops-list">
+              {CONTEXT_GUIDELINES.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </article>
+        </div>
       </div>
     </section>
   );

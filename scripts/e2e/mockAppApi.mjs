@@ -191,10 +191,12 @@ export function createMockApiState() {
     nextQuoteId: 1,
     nextCheckoutId: 1,
     nextJobId: 1,
+    nextSupportRequestId: 1,
     pendingPlanCode: null,
     quotes: new Map(),
     clipJobs: new Map(),
     transactions: [],
+    supportRequests: [],
     promptPrefs: {
       prompt_auto_enabled: true,
       prompt_auto_apply: true,
@@ -270,6 +272,40 @@ export async function attachMockApi(context, state) {
 
     if (path === "/api/admin/visibility") {
       await route.fulfill(json({ visible: true, allowed: true }));
+      return;
+    }
+
+    if (path === "/api/health/ready") {
+      await route.fulfill(
+        json({
+          ok: true,
+          deps: {
+            db: true,
+            supabaseAdmin: true,
+          },
+        })
+      );
+      return;
+    }
+
+    if (path === "/api/support/requests/me" && method === "GET") {
+      await route.fulfill(json({ items: state.supportRequests }));
+      return;
+    }
+
+    if (path === "/api/support/requests" && method === "POST") {
+      const body = parseJson(request);
+      const item = {
+        id: `support_${state.nextSupportRequestId++}`,
+        category: String(body?.category || "duvida"),
+        subject: String(body?.subject || "Solicitação sem assunto"),
+        message: String(body?.message || ""),
+        status: "open",
+        admin_note: null,
+        created_at: nowIso(),
+      };
+      state.supportRequests = [item, ...state.supportRequests];
+      await route.fulfill(json({ ok: true, item }));
       return;
     }
 

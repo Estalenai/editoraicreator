@@ -1,9 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, type KeyboardEvent } from "react";
 import { useDashboardBootstrap } from "../../hooks/useDashboardBootstrap";
-import { useSectionFocus } from "../../hooks/useSectionFocus";
 import { BetaAccessBlockedView } from "../../components/waitlist/BetaAccessBlockedView";
 import { SupportAssistantCard } from "../../components/dashboard/SupportAssistantCard";
 import { SupportOperationsPanel } from "../../components/support/SupportOperationsPanel";
@@ -30,14 +28,6 @@ const SUPPORT_PATHS = [
     cta: "Revisar fluxo",
   },
 ];
-
-type SupportFocusSection = "guide" | "faq" | "assistant";
-
-const SUPPORT_SECTION_HASH: Record<SupportFocusSection, string> = {
-  guide: "#support-guide",
-  faq: "#support-faq",
-  assistant: "#support-assistant",
-};
 
 const SUPPORT_FAQ = [
   {
@@ -75,57 +65,7 @@ export default function SupportPage() {
     betaAccess,
     betaBlocked,
     onLogout,
-  } = useDashboardBootstrap({ loadDashboard: false });
-  const { activeSection, registerSection, focusSection } =
-    useSectionFocus<SupportFocusSection>("assistant");
-
-  function updateSupportHash(section: SupportFocusSection) {
-    if (typeof window === "undefined") return;
-    const url = new URL(window.location.href);
-    url.hash = SUPPORT_SECTION_HASH[section];
-    window.history.replaceState(null, "", url.toString());
-  }
-
-  function activateSection(
-    section: SupportFocusSection,
-    options?: { scroll?: "auto" | "always" | "never" }
-  ) {
-    focusSection(section, { scroll: options?.scroll ?? "auto" });
-    updateSupportHash(section);
-  }
-
-  function onSectionTrigger(
-    event: KeyboardEvent,
-    section: SupportFocusSection,
-    scroll: "auto" | "always" | "never" = "auto"
-  ) {
-    if (event.key !== "Enter" && event.key !== " ") return;
-    event.preventDefault();
-    activateSection(section, { scroll });
-  }
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const syncFocusFromHash = () => {
-      const hash = String(window.location.hash || "").toLowerCase();
-      if (hash === "#support-guide") {
-        focusSection("guide", { scroll: "never" });
-        return;
-      }
-      if (hash === "#support-faq") {
-        focusSection("faq", { scroll: "never" });
-        return;
-      }
-      if (hash === "#support-assistant") {
-        focusSection("assistant", { scroll: "never" });
-      }
-    };
-
-    syncFocusFromHash();
-    window.addEventListener("hashchange", syncFocusFromHash);
-    return () => window.removeEventListener("hashchange", syncFocusFromHash);
-  }, [focusSection]);
+    } = useDashboardBootstrap({ loadDashboard: false });
 
   if (betaBlocked) {
     return (
@@ -178,15 +118,9 @@ export default function SupportPage() {
               </span>
             </div>
             <div className="hero-actions-row support-hero-actions">
-              <button
-                type="button"
-                onClick={() => {
-                  activateSection("assistant", { scroll: "always" });
-                }}
-                className="btn-link-ea btn-primary"
-              >
+              <Link href="#support-assistant" className="btn-link-ea btn-primary">
                 Abrir assistant
-              </button>
+              </Link>
               <Link href="/how-it-works" className="btn-link-ea btn-ghost">
                 Como funciona
               </Link>
@@ -209,118 +143,81 @@ export default function SupportPage() {
         </div>
       </section>
 
-      <SupportOperationsPanel />
+      <div className="support-workspace-grid">
+        <div className="support-workspace-main">
+          {loading ? (
+            <div className="support-loading-card layout-contract-card">
+              <div className="premium-skeleton premium-skeleton-line" style={{ width: "32%" }} />
+              <div className="premium-skeleton premium-skeleton-line" style={{ width: "70%" }} />
+              <div className="premium-skeleton premium-skeleton-card" />
+            </div>
+          ) : null}
 
-      <section
-        ref={registerSection("guide")}
-        className="support-guide-section focus-shell-section"
-        data-focus-active={activeSection === "guide"}
-      >
-        <div
-          className="section-head focus-shell-head"
-          data-focus-clickable={activeSection !== "guide"}
-          role={activeSection !== "guide" ? "button" : undefined}
-          tabIndex={activeSection !== "guide" ? 0 : -1}
-          onClick={activeSection !== "guide" ? () => activateSection("guide") : undefined}
-          onKeyDown={activeSection !== "guide" ? (event) => onSectionTrigger(event, "guide") : undefined}
-        >
-          <div className="section-header-ea">
-            <h2 className="heading-reset">Bases de apoio</h2>
-            <p className="helper-text-ea">Documentação curta e rotas certas para cobrança, publish e fluxo principal.</p>
-          </div>
-          <button
-            type="button"
-            onClick={() => activateSection("guide")}
-            className={`btn-ea ${activeSection === "guide" ? "btn-secondary" : "btn-ghost"} btn-sm focus-shell-toggle`}
-            aria-pressed={activeSection === "guide"}
-          >
-            {activeSection === "guide" ? "Em foco" : "Trazer para foco"}
-          </button>
-        </div>
-        <div className="focus-shell-preview">
-          Consulte a base certa sem depender de texto solto ou interpretação excessiva.
-        </div>
-        <div className="focus-shell-body">
-        <div className="support-guide-grid">
-          {SUPPORT_PATHS.map((item) => (
-            <Link key={item.title} href={item.href} className="support-guide-card">
-              <div className="support-guide-card-stack">
-                <strong>{item.title}</strong>
-                <span>{item.description}</span>
+          {error ? (
+            <div className="state-ea state-ea-error">
+              <p className="state-ea-title">Não foi possível carregar a área de suporte</p>
+              <div className="state-ea-text">{toUserFacingError(error, "Atualize a página e tente novamente.")}</div>
+            </div>
+          ) : null}
+
+          <SupportAssistantCard focused />
+
+          <section id="support-guide" className="support-reference-section">
+            <div className="section-head support-reference-head">
+              <div className="section-header-ea">
+                <h2 className="heading-reset">Bases de apoio e respostas rápidas</h2>
+                <p className="helper-text-ea">
+                  Abra a rota certa, confirme o contexto e só escale quando a própria trilha já indicar que a ação não avançou.
+                </p>
               </div>
-              <span className="dashboard-quick-link-cta">{item.cta}</span>
-            </Link>
-          ))}
-        </div>
-        </div>
-      </section>
+            </div>
 
-      <section className="privacy-trust-note support-trust-note">
-        <strong>Privacidade e confidencialidade</strong>
-        <span>Dados enviados em tickets e projetos não entram em treino.</span>
-      </section>
+            <div className="support-reference-grid">
+              <section className="support-reference-primary">
+                <div className="support-reference-subhead">
+                  <strong>Caminhos rápidos</strong>
+                  <span>Rotas curtas para cobrança, publish e fluxo principal.</span>
+                </div>
+                <div className="support-guide-grid">
+                  {SUPPORT_PATHS.map((item) => (
+                    <Link key={item.title} href={item.href} className="support-guide-card">
+                      <div className="support-guide-card-stack">
+                        <strong>{item.title}</strong>
+                        <span>{item.description}</span>
+                      </div>
+                      <span className="dashboard-quick-link-cta">{item.cta}</span>
+                    </Link>
+                  ))}
+                </div>
+              </section>
 
-      {loading ? (
-        <div className="support-loading-card layout-contract-card">
-          <div className="premium-skeleton premium-skeleton-line" style={{ width: "32%" }} />
-          <div className="premium-skeleton premium-skeleton-line" style={{ width: "70%" }} />
-          <div className="premium-skeleton premium-skeleton-card" />
+              <section id="support-faq" className="support-reference-faq">
+                <div className="support-reference-subhead">
+                  <strong>Perguntas frequentes</strong>
+                  <span>Respostas rápidas para operação, cobrança e continuidade.</span>
+                </div>
+                <div className="support-faq-list">
+                  {SUPPORT_FAQ.map((item) => (
+                    <article key={item.question} className="support-faq-item">
+                      <strong>{item.question}</strong>
+                      <p>{item.answer}</p>
+                    </article>
+                  ))}
+                </div>
+              </section>
+            </div>
+          </section>
         </div>
-      ) : null}
 
-      {error ? (
-        <div className="state-ea state-ea-error">
-          <p className="state-ea-title">Não foi possível carregar a área de suporte</p>
-          <div className="state-ea-text">{toUserFacingError(error, "Atualize a página e tente novamente.")}</div>
-        </div>
-      ) : null}
+        <aside className="support-workspace-rail">
+          <SupportOperationsPanel />
 
-      <section
-        ref={registerSection("faq")}
-        className="support-faq-section focus-shell-section"
-        data-focus-active={activeSection === "faq"}
-      >
-        <div
-          className="section-head focus-shell-head"
-          data-focus-clickable={activeSection !== "faq"}
-          role={activeSection !== "faq" ? "button" : undefined}
-          tabIndex={activeSection !== "faq" ? 0 : -1}
-          onClick={activeSection !== "faq" ? () => activateSection("faq") : undefined}
-          onKeyDown={activeSection !== "faq" ? (event) => onSectionTrigger(event, "faq") : undefined}
-        >
-          <div className="section-header-ea">
-            <h2 className="heading-reset">Perguntas frequentes</h2>
-            <p className="helper-text-ea">Respostas rápidas para operação, cobrança e continuidade.</p>
-          </div>
-          <button
-            type="button"
-            onClick={() => activateSection("faq")}
-            className={`btn-ea ${activeSection === "faq" ? "btn-secondary" : "btn-ghost"} btn-sm focus-shell-toggle`}
-            aria-pressed={activeSection === "faq"}
-          >
-            {activeSection === "faq" ? "Em foco" : "Trazer para foco"}
-          </button>
-        </div>
-        <div className="focus-shell-preview">
-          Consulte respostas rápidas sem manter múltiplas camadas abertas ao mesmo tempo.
-        </div>
-        <div className="focus-shell-body">
-        <div className="support-faq-grid">
-          {SUPPORT_FAQ.map((item) => (
-            <article key={item.question} className="support-faq-item">
-              <strong>{item.question}</strong>
-              <p>{item.answer}</p>
-            </article>
-          ))}
-        </div>
-        </div>
-      </section>
-
-      <SupportAssistantCard
-        focused={activeSection === "assistant"}
-        onFocus={() => activateSection("assistant")}
-        sectionRef={registerSection("assistant")}
-      />
+          <section className="privacy-trust-note support-trust-note support-privacy-rail">
+            <strong>Privacidade e confidencialidade</strong>
+            <span>Dados enviados em tickets e projetos não entram em treino.</span>
+          </section>
+        </aside>
+      </div>
     </div>
   );
 }
