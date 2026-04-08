@@ -104,7 +104,7 @@ function resolvePlanConversionState(code: string, plan: CatalogPlan) {
 }
 
 function resolvePlanCopy(plan: CatalogPlan | null): PlanCopy {
-  const shortDescription = String(plan?.short_description || "Plano beta disponível nesta fase.").trim();
+  const shortDescription = String(plan?.short_description || "Disponibilidade acompanhada nesta fase.").trim();
   const expandedDescription = String(plan?.expanded_description || shortDescription).trim();
   const stripeDescription = String(plan?.stripe_description || expandedDescription).trim();
   const audience = String(plan?.audience || expandedDescription).trim();
@@ -411,7 +411,7 @@ function PlansPageContent() {
     if (!checkoutPlanCode) {
       setCheckoutNotice({
         tone: "warning",
-        message: "Este plano ainda não abre checkout automático no beta. Use ativação assistida quando necessário.",
+        message: "Este plano ainda não abre checkout automático neste momento. Use ativação acompanhada quando necessário.",
       });
       return;
     }
@@ -444,7 +444,7 @@ function PlansPageContent() {
       if (rawMessage.toLowerCase().includes("plan_unavailable")) {
         setCheckoutNotice({
           tone: "warning",
-          message: "Este plano ainda não possui checkout configurado no ambiente atual. Use ativação assistida no suporte.",
+          message: "Este plano ainda não possui checkout configurado no ambiente atual. Use ativação acompanhada no suporte.",
         });
         return;
       }
@@ -462,7 +462,7 @@ function PlansPageContent() {
     const displayName = String(planName || normalized || "selecionado");
     setCheckoutNotice({
       tone: "info",
-      message: `O plano ${displayName} está disponível no beta com ativação assistida. Você será redirecionado para o suporte.`,
+      message: `O plano ${displayName} segue com ativação acompanhada nesta fase. Você será redirecionado para o suporte.`,
     });
     const query = new URLSearchParams({
       topic: "plan_activation",
@@ -490,12 +490,12 @@ function PlansPageContent() {
               <p className="section-kicker">Assinatura e disponibilidade</p>
               <h1 className="heading-reset">Planos</h1>
               <p className="section-header-copy hero-copy-compact">
-                Compare entrada, operação recorrente e escala criativa pela lógica real do produto: Creator Coins incluídas, continuidade de projeto, intensidade de uso e ativação clara quando o fluxo ainda não é self-serve.
+                Compare entrada, operação recorrente e escala criativa com leitura curta de disponibilidade, Creator Coins incluídas, continuidade de projeto e caminho de ativação.
               </p>
             </div>
             <div className="hero-meta-row hero-meta-row-compact plans-hero-meta">
               <span className="premium-badge premium-badge-phase">Plano atual: {planLabelDisplay}</span>
-              <span className="premium-badge premium-badge-warning">Editor Pro concentra o beta self-serve</span>
+              <span className="premium-badge premium-badge-warning">Editor Pro concentra a operação direta</span>
               <button
                 onClick={async () => {
                   await refresh();
@@ -513,8 +513,8 @@ function PlansPageContent() {
                 <span>Iniciante, Editor Pro e Creator Pro mostram o ritmo de operação que cada camada sustenta.</span>
               </div>
               <div className="plans-hero-signal">
-                <strong>Checkout quando existir, suporte quando precisar</strong>
-                <span>Planos self-serve seguem para a Stripe; ativações assistidas continuam explícitas no beta.</span>
+                <strong>Ativação sem ambiguidade</strong>
+                <span>Checkout direto quando o fluxo já está aberto; ativação acompanhada quando a operação ainda depende de validação.</span>
               </div>
               <div className="plans-hero-signal">
                 <strong>Contexto antes da decisão</strong>
@@ -594,12 +594,12 @@ function PlansPageContent() {
           <span>Iniciante estrutura a primeira rotina, Editor Pro sustenta operação recorrente e Creator Pro amplia escala sem perder contexto.</span>
         </div>
         <div className="plans-confidence-note">
-          <strong>Billing sem promessa artificial</strong>
-          <span>Checkout automático quando já existe fluxo aberto; ativação assistida quando a operação ainda depende de acompanhamento real.</span>
+          <strong>Ativação alinhada à operação</strong>
+          <span>Checkout automático quando já existe fluxo aberto; ativação acompanhada quando a operação ainda depende de validação real.</span>
         </div>
         <div className="plans-confidence-note plans-confidence-note-trust">
-          <strong>Empresarial e Enterprise com honestidade</strong>
-          <span>Empresarial segue assistido no beta e Enterprise continua por contrato, sem entrar no catálogo aberto como promessa pronta.</span>
+          <strong>Oferta institucional sem excesso de ruído</strong>
+          <span>Empresarial segue com ativação acompanhada e Enterprise continua por contrato, sem entrar no catálogo aberto como promessa pronta.</span>
         </div>
       </section>
 
@@ -607,7 +607,7 @@ function PlansPageContent() {
         <div className="section-head">
           <div className="section-header-ea">
             <h3 className="heading-reset">Catálogo de planos</h3>
-            <p className="helper-text-ea">Uma progressão curta entre primeira entrega, operação recorrente, escala criativa e ativação assistida, com equivalência interna de Creator Coins já recalculada.</p>
+            <p className="helper-text-ea">Uma progressão curta entre primeira entrega, operação recorrente, escala criativa e ativação acompanhada, com equivalência interna de Creator Coins já recalculada.</p>
           </div>
           <span className="premium-badge premium-badge-phase plans-catalog-badge">Escolha com contexto</span>
         </div>
@@ -621,7 +621,7 @@ function PlansPageContent() {
           <div className="state-ea">
             <p className="state-ea-title">Sem dados de catálogo nesta versão</p>
             <div className="state-ea-text">
-              Atualize o catálogo. Se persistir, use o suporte para validar disponibilidade dos planos no beta.
+              Atualize o catálogo. Se persistir, use o suporte para validar a disponibilidade dos planos neste ambiente.
             </div>
             <div className="state-ea-actions">
               <button onClick={loadCatalog} className="btn-ea btn-secondary btn-sm">
@@ -664,7 +664,7 @@ function PlansPageContent() {
                   ? "Em breve"
                   : hasInteractiveCheckout
                     ? "Checkout imediato via Stripe"
-                    : "Ativação assistida";
+                    : "Ativação acompanhada";
               const isMostPopular = String(item.highlight || "").toLowerCase() === "most_popular";
               const isRecommendedPlan = visibleCatalogCode === "EDITOR_PRO" && !isCurrentPlan;
               const isLoadingCheckout = checkoutLoadingCode === normalizedCatalogCode;
@@ -767,15 +767,15 @@ function PlansPageContent() {
                       </div>
                     ) : isRecommendedPlan ? (
                       <div className="plan-card-support-note">
-                        Melhor ponto de entrada comercial para o beta pago/controlado nesta fase.
+                        Melhor ponto de entrada comercial para operação recorrente nesta fase.
                       </div>
                     ) : comingSoon ? (
                       <div className="plan-card-support-note">
-                        {planCopy.statusNote || "Disponível em breve no beta."}
+                        {planCopy.statusNote || "Disponível em breve."}
                       </div>
                     ) : requiresAssistedActivation ? (
                       <div className="plan-card-support-note">
-                        Disponível no beta com ativação assistida via suporte.
+                        Disponível com ativação acompanhada via suporte.
                       </div>
                     ) : null}
                   </div>

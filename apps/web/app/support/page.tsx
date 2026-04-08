@@ -163,15 +163,15 @@ export default function SupportPage() {
           </div>
           <div className="support-hero-focus">
             <span className="support-hero-focus-label">
-              {email ? "Triagem interna pronta" : "Triagem guiada"}
+              {email ? "Canal pronto" : "Canal orientado"}
             </span>
-            <strong>Consulte o FAQ e leve o caso para a fila quando precisar.</strong>
+            <strong>Confirme status, consulte a base certa e abra o caso só quando precisar.</strong>
             <p className="support-hero-focus-copy">
-              O Support Assistant mantém categoria, contexto e histórico no mesmo fluxo.
+              O Support Assistant mantém categoria, contexto e histórico no mesmo fluxo, sem improviso operacional.
             </p>
             <div className="support-hero-focus-meta">
               <span className="premium-badge premium-badge-phase">
-                {email ? "Fila interna acompanhada" : "Fluxo de ajuda orientado"}
+                {email ? "Acompanhamento operacional ativo" : "Apoio operacional orientado"}
               </span>
               <span className="support-hero-focus-meta-copy">
                 {email || "Conta em validação no momento."}
@@ -200,7 +200,7 @@ export default function SupportPage() {
           </div>
           <div className="support-context-item">
             <strong>Próximo passo sugerido</strong>
-            <span>Consulte o FAQ e a trilha certa antes de abrir uma solicitação.</span>
+            <span>Consulte a base certa antes de abrir uma solicitação.</span>
           </div>
           <div className="support-context-item">
             <strong>Privacidade aplicada</strong>
@@ -238,7 +238,7 @@ export default function SupportPage() {
           </button>
         </div>
         <div className="focus-shell-preview">
-          Consulte a base certa sem depender de texto solto, FAQ longa ou interpretação de memória.
+          Consulte a base certa sem depender de texto solto ou interpretação excessiva.
         </div>
         <div className="focus-shell-body">
         <div className="support-guide-grid">
@@ -302,7 +302,7 @@ export default function SupportPage() {
           </button>
         </div>
         <div className="focus-shell-preview">
-          Consulte respostas rápidas sem manter a área de triagem e os atalhos abertos ao mesmo tempo.
+          Consulte respostas rápidas sem manter múltiplas camadas abertas ao mesmo tempo.
         </div>
         <div className="focus-shell-body">
         <div className="support-faq-grid">

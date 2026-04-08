@@ -725,7 +725,7 @@ export default function AdminPage() {
         <div className="section-head" style={{ marginBottom: 8 }}>
           <div>
             <p className="section-kicker">Saude do produto</p>
-            <h3 style={{ margin: "4px 0 0" }}>Observabilidade e debug minimo</h3>
+            <h3 style={{ margin: "4px 0 0" }}>Observabilidade essencial</h3>
           </div>
           <div style={{ opacity: 0.76, fontSize: 12 }}>
             {opsLastSync ? `Atualizado em ${new Date(opsLastSync).toLocaleTimeString("pt-BR")}` : "Sem sincronização recente"}
@@ -837,19 +837,19 @@ export default function AdminPage() {
       </div>
 
       <div className="premium-card admin-console-section" style={panelStyle}>
-        <h3 style={{ marginTop: 0 }}>Radar operacional</h3>
+        <h3 style={{ marginTop: 0 }}>Sinais principais</h3>
         <div style={{ opacity: 0.8, marginBottom: 10, fontSize: 13 }}>
           Indicadores baseados na lista atual (filtros aplicados).
         </div>
         <div className="admin-radar-grid">
           <div className="premium-card-soft admin-subpanel admin-subpanel-stat">
-            <div style={{ opacity: 0.76, fontSize: 12 }}>Fila beta • pendentes</div>
+            <div style={{ opacity: 0.76, fontSize: 12 }}>Acesso • pendentes</div>
             <div style={{ marginTop: 6, fontSize: 22, fontWeight: 700 }}>{betaAccessStats.pending}</div>
             <div style={{ marginTop: 6, fontSize: 12, opacity: 0.82 }}>Taxa pendente: {betaAccessStats.pendingRate}</div>
           </div>
 
           <div className="premium-card-soft admin-subpanel admin-subpanel-stat">
-            <div style={{ opacity: 0.76, fontSize: 12 }}>Fila beta • aprovados / reprovados</div>
+            <div style={{ opacity: 0.76, fontSize: 12 }}>Acesso • aprovados / reprovados</div>
             <div style={{ marginTop: 6, fontSize: 18, fontWeight: 700 }}>
               {betaAccessStats.approved} / {betaAccessStats.rejected}
             </div>
@@ -889,7 +889,7 @@ export default function AdminPage() {
       </div>
 
       <div className="premium-card admin-console-section" style={panelStyle}>
-        <h3 style={{ marginTop: 0 }}>Ações que exigem atenção</h3>
+        <h3 style={{ marginTop: 0 }}>Pendências principais</h3>
         {supportNeedsAttention.length === 0 && betaNeedsAttention.length === 0 ? (
           <div className="premium-card-soft admin-subpanel">
             Nenhuma pendência crítica no momento.
@@ -897,7 +897,7 @@ export default function AdminPage() {
         ) : (
           <div className="admin-attention-grid">
             <div className="premium-card-soft admin-subpanel admin-attention-item">
-              <div style={{ fontWeight: 700 }}>Fila beta pendente</div>
+              <div style={{ fontWeight: 700 }}>Acesso pendente</div>
               <div style={{ marginTop: 4, opacity: 0.82, fontSize: 13 }}>
                 {betaAccessStats.pending} solicitação(ões) aguardando decisão.
               </div>
@@ -920,7 +920,7 @@ export default function AdminPage() {
                   await loadBetaAccessRequests("pending");
                 }}
               >
-                Abrir fila pendente
+                Abrir pendências
               </button>
             </div>
 
@@ -958,7 +958,7 @@ export default function AdminPage() {
       <div className="premium-card admin-console-section" style={panelStyle}>
         <div className="section-head" style={{ marginBottom: 8 }}>
           <div>
-            <p className="section-kicker">Consulta rápida</p>
+            <p className="section-kicker">Consulta operacional</p>
             <h3 style={{ margin: "4px 0 0" }}>Buscar usuário</h3>
           </div>
         </div>
@@ -1005,8 +1005,8 @@ export default function AdminPage() {
       <div className="premium-card admin-console-section" style={panelStyle}>
         <div className="section-head" style={{ marginBottom: 8 }}>
           <div>
-            <p className="section-kicker">Operação de tickets</p>
-            <h3 style={{ margin: "4px 0 0" }}>Suporte interno</h3>
+            <p className="section-kicker">Atendimento</p>
+            <h3 style={{ margin: "4px 0 0" }}>Fila de suporte</h3>
           </div>
         </div>
         <div className="admin-inline-stats">
@@ -1111,7 +1111,7 @@ export default function AdminPage() {
         <div className="section-head" style={{ marginBottom: 8 }}>
           <div>
             <p className="section-kicker">Controle de acesso</p>
-            <h3 style={{ margin: "4px 0 0" }}>Beta fechado - fila de espera</h3>
+            <h3 style={{ margin: "4px 0 0" }}>Acesso e aprovação</h3>
           </div>
         </div>
         <div className="admin-inline-stats">
@@ -1159,7 +1159,7 @@ export default function AdminPage() {
 
         {betaAccessError ? (
           <div className="state-ea state-ea-error" style={{ marginBottom: 8 }}>
-            <p className="state-ea-title">Fila beta indisponível no momento</p>
+            <p className="state-ea-title">Fila de acesso indisponível no momento</p>
             <div className="state-ea-text">{betaAccessError}</div>
           </div>
         ) : null}

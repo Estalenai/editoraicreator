@@ -133,6 +133,125 @@ body {
   color: var(--ea-text-muted);
 }
 
+/* Silent maturity pass for plans, support and admin */
+.plans-page .plans-summary-strip,
+.plans-page .plans-confidence-strip,
+.plans-page .plans-catalog-section,
+.support-page .support-guide-section,
+.support-page .support-faq-section,
+.support-page .support-assistant-card,
+.support-page .support-ops-section,
+.admin-hero-open,
+.admin-page .admin-console-section {
+  border-top-color: rgba(185, 229, 244, 0.1) !important;
+}
+
+.plans-page .plans-hero-signal,
+.plans-page .plans-confidence-note,
+.plans-page .plan-card,
+.support-page .support-hero-signal,
+.support-page .support-context-item,
+.support-page .support-guide-card,
+.support-page .support-faq-item,
+.support-page .support-guidelines-card,
+.support-page .support-history-item,
+.support-page .support-history-note,
+.support-page .support-ops-card,
+.admin-page .admin-subpanel,
+.admin-page .admin-search-result,
+.admin-page .admin-record-item,
+.admin-page .admin-timeline-item,
+.admin-page .admin-inline-notice {
+  border-color: rgba(192, 231, 245, 0.12) !important;
+}
+
+.plans-page .plans-hero-signal strong,
+.plans-page .plans-confidence-note strong,
+.support-page .support-hero-signal strong,
+.support-page .support-context-item strong,
+.support-page .support-guide-card strong,
+.support-page .support-faq-item strong,
+.support-page .support-ops-card strong,
+.admin-page .admin-subpanel strong,
+.admin-page .admin-record-item strong {
+  letter-spacing: -0.01em;
+}
+
+.plans-page .plan-card {
+  gap: 12px;
+}
+
+.plans-page .plan-card-price {
+  letter-spacing: -0.04em;
+}
+
+.plans-page .plan-card-footer {
+  border-top-color: rgba(192, 231, 245, 0.1);
+}
+
+.plans-page .plans-hero-open .premium-badge-warning,
+.support-page .support-hero-open .premium-badge-phase,
+.admin-page .premium-badge {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04));
+  border-color: rgba(201, 235, 246, 0.18);
+  color: rgba(232, 247, 255, 0.9);
+}
+
+.support-page .support-hero-focus {
+  border-left-color: rgba(192, 231, 245, 0.12);
+}
+
+.support-page .support-hero-focus::before {
+  background:
+    radial-gradient(220px 120px at 10% 10%, rgba(75, 232, 255, 0.11), transparent 74%),
+    radial-gradient(180px 110px at 84% 22%, rgba(255, 188, 92, 0.08), transparent 76%),
+    linear-gradient(120deg, rgba(75, 232, 255, 0.05), transparent 52%);
+  opacity: 0.86;
+}
+
+.support-page .support-guide-card,
+.support-page .support-faq-item,
+.support-page .support-assistant-card,
+.support-page .support-ops-card {
+  transition: border-color 160ms ease, background-color 160ms ease;
+}
+
+.support-page .support-guide-card:hover,
+.support-page .support-faq-item:hover {
+  border-color: rgba(204, 236, 247, 0.18) !important;
+  background: rgba(255, 255, 255, 0.012) !important;
+}
+
+.admin-page .admin-console-section,
+.admin-hero-open {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0.012)),
+    rgba(6, 10, 18, 0.64) !important;
+  border-color: rgba(196, 233, 245, 0.12) !important;
+}
+
+.admin-page .admin-console-section::before,
+.admin-page .admin-console-section::after,
+.admin-hero-open::before,
+.admin-hero-open::after {
+  opacity: 0.58;
+}
+
+.admin-page .admin-subpanel,
+.admin-page .admin-search-result,
+.admin-page .admin-record-item,
+.admin-page .admin-timeline-item,
+.admin-page .admin-inline-notice {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.024), rgba(255, 255, 255, 0.008)),
+    rgba(7, 12, 22, 0.58) !important;
+}
+
+.admin-page .admin-record-note {
+  border-color: rgba(196, 233, 245, 0.12);
+  background: rgba(255, 255, 255, 0.018);
+}
+
 .app-nav-core-strip {
   display: flex;
   flex-wrap: wrap;
