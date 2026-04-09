@@ -721,529 +721,618 @@ export default function AdminPage() {
         </div>
       )}
 
-      <div className="premium-card admin-console-section" style={panelStyle}>
-        <div className="section-head" style={{ marginBottom: 8 }}>
-          <div>
-            <p className="section-kicker">Saude do produto</p>
-            <h3 style={{ margin: "4px 0 0" }}>Observabilidade essencial</h3>
-          </div>
-          <div style={{ opacity: 0.76, fontSize: 12 }}>
-            {opsLastSync ? `Atualizado em ${new Date(opsLastSync).toLocaleTimeString("pt-BR")}` : "Sem sincronização recente"}
-          </div>
-        </div>
-
-        {opsLoading ? (
-          <div className="empty-ea">Sincronizando sinais operacionais...</div>
-        ) : (
-          <>
-            <div className="admin-observability-grid">
-              <div className="premium-card-soft admin-subpanel admin-subpanel-stat">
-                <div style={{ opacity: 0.76, fontSize: 12 }}>Readiness da API</div>
-                <div style={{ marginTop: 6, fontSize: 22, fontWeight: 700 }}>
-                  {healthReady?.ok ? "OK" : healthReady ? "Degradado" : "Sem resposta"}
-                </div>
-                <div style={{ marginTop: 6, fontSize: 12, opacity: 0.82 }}>
-                  DB: {healthReady?.deps?.db ? "ok" : "falha"} • Supabase admin: {healthReady?.deps?.supabaseAdmin ? "ok" : "falha"}
-                </div>
+      <div className="admin-workspace-grid">
+        <div className="admin-workspace-main">
+          <div className="premium-card admin-console-section admin-control-region" style={panelStyle}>
+            <div className="section-head admin-section-head-split">
+              <div>
+                <p className="section-kicker">Saude do produto</p>
+                <h3 style={{ margin: "4px 0 0" }}>Observabilidade essencial</h3>
               </div>
-
-              <div className="premium-card-soft admin-subpanel admin-subpanel-stat">
-                <div style={{ opacity: 0.76, fontSize: 12 }}>Uptime e trilha</div>
-                <div style={{ marginTop: 6, fontSize: 18, fontWeight: 700 }}>
-                  {statusSnapshot?.uptime_seconds ? `${Math.round(statusSnapshot.uptime_seconds)}s` : "n/d"}
-                </div>
-                <div style={{ marginTop: 6, fontSize: 12, opacity: 0.82 }}>
-                  Samples de uso: {statusSnapshot?.metrics_snapshot?.total_usage_samples ?? 0} • Métricas: {statusSnapshot?.metrics_snapshot?.total_metrics_logged ?? 0}
-                </div>
-              </div>
-
-              <div className="premium-card-soft admin-subpanel admin-subpanel-stat">
-                <div style={{ opacity: 0.76, fontSize: 12 }}>Routing de IA</div>
-                <div style={{ marginTop: 6, fontSize: 18, fontWeight: 700 }}>
-                  Default: {statusSnapshot?.routing_defaults?.default_mode || "n/d"}
-                </div>
-                <div style={{ marginTop: 6, fontSize: 12, opacity: 0.82 }}>
-                  Quality: {routingSnapshot?.modes?.quality ?? 0} • Economy: {routingSnapshot?.modes?.economy ?? 0} • Manual: {routingSnapshot?.modes?.manual ?? 0}
-                </div>
-              </div>
-
-              <div className="premium-card-soft admin-subpanel admin-subpanel-stat">
-                <div style={{ opacity: 0.76, fontSize: 12 }}>Custo interno agregado</div>
-                <div style={{ marginTop: 6, fontSize: 18, fontWeight: 700 }}>
-                  {statusSnapshot?.internal_cost_totals?.global?.total_cost_score?.toFixed?.(2) ?? "0.00"}
-                </div>
-                <div style={{ marginTop: 6, fontSize: 12, opacity: 0.82 }}>
-                  Visão curta para identificar picos operacionais no período atual.
-                </div>
+              <div style={{ opacity: 0.76, fontSize: 12 }}>
+                {opsLastSync ? `Atualizado em ${new Date(opsLastSync).toLocaleTimeString("pt-BR")}` : "Sem sincronização recente"}
               </div>
             </div>
 
-            <div className="admin-observability-detail-grid">
-              <div className="premium-card-soft admin-subpanel admin-subpanel-list">
-                <div style={{ fontWeight: 700, marginBottom: 8 }}>Top erros recentes</div>
-                {topOperationalErrors.length === 0 ? (
-                  <div style={{ opacity: 0.78, fontSize: 13 }}>Sem erros agregados no buffer atual.</div>
-                ) : (
-                  <div style={{ display: "grid", gap: 6 }}>
-                    {topOperationalErrors.map((item) => (
-                      <div key={`ops-error-${item.error}`} style={{ display: "flex", justifyContent: "space-between", gap: 8, fontSize: 13 }}>
-                        <span style={{ opacity: 0.86, wordBreak: "break-word" }}>{item.error}</span>
-                        <strong>{item.count}</strong>
+            {opsLoading ? (
+              <div className="empty-ea">Sincronizando sinais operacionais...</div>
+            ) : (
+              <div className="admin-control-body">
+                <div className="admin-control-primary">
+                  <div className="admin-observability-grid">
+                    <div className="premium-card-soft admin-subpanel admin-subpanel-stat">
+                      <div style={{ opacity: 0.76, fontSize: 12 }}>Readiness da API</div>
+                      <div style={{ marginTop: 6, fontSize: 22, fontWeight: 700 }}>
+                        {healthReady?.ok ? "OK" : healthReady ? "Degradado" : "Sem resposta"}
                       </div>
-                    ))}
+                      <div style={{ marginTop: 6, fontSize: 12, opacity: 0.82 }}>
+                        DB: {healthReady?.deps?.db ? "ok" : "falha"} • Supabase admin: {healthReady?.deps?.supabaseAdmin ? "ok" : "falha"}
+                      </div>
+                    </div>
+
+                    <div className="premium-card-soft admin-subpanel admin-subpanel-stat">
+                      <div style={{ opacity: 0.76, fontSize: 12 }}>Uptime e trilha</div>
+                      <div style={{ marginTop: 6, fontSize: 18, fontWeight: 700 }}>
+                        {statusSnapshot?.uptime_seconds ? `${Math.round(statusSnapshot.uptime_seconds)}s` : "n/d"}
+                      </div>
+                      <div style={{ marginTop: 6, fontSize: 12, opacity: 0.82 }}>
+                        Samples de uso: {statusSnapshot?.metrics_snapshot?.total_usage_samples ?? 0} • Métricas: {statusSnapshot?.metrics_snapshot?.total_metrics_logged ?? 0}
+                      </div>
+                    </div>
+
+                    <div className="premium-card-soft admin-subpanel admin-subpanel-stat">
+                      <div style={{ opacity: 0.76, fontSize: 12 }}>Routing de IA</div>
+                      <div style={{ marginTop: 6, fontSize: 18, fontWeight: 700 }}>
+                        Default: {statusSnapshot?.routing_defaults?.default_mode || "n/d"}
+                      </div>
+                      <div style={{ marginTop: 6, fontSize: 12, opacity: 0.82 }}>
+                        Quality: {routingSnapshot?.modes?.quality ?? 0} • Economy: {routingSnapshot?.modes?.economy ?? 0} • Manual: {routingSnapshot?.modes?.manual ?? 0}
+                      </div>
+                    </div>
+
+                    <div className="premium-card-soft admin-subpanel admin-subpanel-stat">
+                      <div style={{ opacity: 0.76, fontSize: 12 }}>Custo interno agregado</div>
+                      <div style={{ marginTop: 6, fontSize: 18, fontWeight: 700 }}>
+                        {statusSnapshot?.internal_cost_totals?.global?.total_cost_score?.toFixed?.(2) ?? "0.00"}
+                      </div>
+                      <div style={{ marginTop: 6, fontSize: 12, opacity: 0.82 }}>
+                        Visão curta para identificar picos operacionais no período atual.
+                      </div>
+                    </div>
                   </div>
-                )}
+
+                  <div className="admin-observability-detail-grid">
+                    <div className="premium-card-soft admin-subpanel admin-subpanel-list">
+                      <div style={{ fontWeight: 700, marginBottom: 8 }}>Top erros recentes</div>
+                      {topOperationalErrors.length === 0 ? (
+                        <div style={{ opacity: 0.78, fontSize: 13 }}>Sem erros agregados no buffer atual.</div>
+                      ) : (
+                        <div style={{ display: "grid", gap: 6 }}>
+                          {topOperationalErrors.map((item) => (
+                            <div key={`ops-error-${item.error}`} style={{ display: "flex", justifyContent: "space-between", gap: 8, fontSize: 13 }}>
+                              <span style={{ opacity: 0.86, wordBreak: "break-word" }}>{item.error}</span>
+                              <strong>{item.count}</strong>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="premium-card-soft admin-subpanel admin-subpanel-list">
+                      <div style={{ fontWeight: 700, marginBottom: 8 }}>Providers e roteamento</div>
+                      {topOperationalProviders.length === 0 ? (
+                        <div style={{ opacity: 0.78, fontSize: 13 }}>Sem providers amostrados no buffer atual.</div>
+                      ) : (
+                        <div style={{ display: "grid", gap: 6 }}>
+                          {topOperationalProviders.map((item) => (
+                            <div key={`ops-provider-${item.provider}`} style={{ display: "flex", justifyContent: "space-between", gap: 8, fontSize: 13 }}>
+                              <span style={{ opacity: 0.86 }}>{item.provider}</span>
+                              <strong>{item.count}</strong>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="premium-card-soft admin-subpanel admin-subpanel-list">
+                      <div style={{ fontWeight: 700, marginBottom: 8 }}>Eventos recentes do produto</div>
+                      {recentEvents.length === 0 ? (
+                        <div style={{ opacity: 0.78, fontSize: 13 }}>Sem eventos recentes no buffer atual.</div>
+                      ) : (
+                        <div style={{ display: "grid", gap: 8 }}>
+                          {recentEvents.map((item, index) => (
+                            <div key={`ops-event-${item.timestamp}-${index}`} style={{ fontSize: 13 }}>
+                              <div style={{ fontWeight: 600 }}>{eventLabel(item.event)}</div>
+                              <div style={{ opacity: 0.78 }}>
+                                {new Date(item.timestamp).toLocaleString("pt-BR")}
+                                {item.plan ? ` • ${item.plan}` : ""}
+                                {item.additional?.status ? ` • ${String(item.additional.status)}` : ""}
+                                {item.additional?.source ? ` • ${String(item.additional.source)}` : ""}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="admin-control-rail">
+                  <div className="premium-card-soft admin-subpanel admin-subpanel-stat">
+                    <div style={{ opacity: 0.76, fontSize: 12 }}>Movimento hoje</div>
+                    <div style={{ marginTop: 6, fontSize: 15, fontWeight: 700 }}>
+                      +{todayStats.betaApprovedToday} aprovados • {todayStats.betaRejectedToday} reprovados
+                    </div>
+                    <div style={{ marginTop: 6, fontSize: 12, opacity: 0.82 }}>
+                      Pendentes novos: {todayStats.betaPendingToday} • Tickets criados: {todayStats.supportCreatedToday}
+                    </div>
+                  </div>
+
+                  <div className="premium-card-soft admin-subpanel admin-subpanel-stat">
+                    <div style={{ opacity: 0.76, fontSize: 12 }}>Fila ativa</div>
+                    <div style={{ marginTop: 6, fontSize: 18, fontWeight: 700 }}>
+                      {betaAccessStats.pending} pendentes • {supportStats.unresolved} tickets
+                    </div>
+                    <div style={{ marginTop: 6, fontSize: 12, opacity: 0.82 }}>
+                      Aprovação: {betaAccessStats.approvalRate} • Resolução: {supportStats.resolutionRate}
+                    </div>
+                  </div>
+
+                  <div className="premium-card-soft admin-subpanel admin-subpanel-list">
+                    <div style={{ fontWeight: 700, marginBottom: 8 }}>Janela do turno</div>
+                    <div style={{ display: "grid", gap: 6, fontSize: 13 }}>
+                      <div>Período atual: {days} dias</div>
+                      <div>Sessão ativa: {sessionEmail || "não identificada"}</div>
+                      <div>Última fila beta: {betaAccessLastSync ? new Date(betaAccessLastSync).toLocaleTimeString("pt-BR") : "sem sincronização"}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="premium-card admin-console-section admin-user-ops-region" style={panelStyle}>
+            <div className="section-head">
+              <div>
+                <p className="section-kicker">Consulta operacional</p>
+                <h3 style={{ margin: "4px 0 0" }}>Usuário e trilha</h3>
+              </div>
+            </div>
+
+            <div className={`admin-user-ops-grid${selectedUserId ? " is-timeline-open" : ""}`}>
+              <div className="premium-card-soft admin-subpanel admin-user-search-panel">
+                <div className="section-stack-tight" style={{ marginBottom: 10 }}>
+                  <strong>Buscar usuário</strong>
+                  <div style={{ opacity: 0.78, fontSize: 13 }}>
+                    Procure por e-mail parcial ou <code>user_id</code> e abra a trilha sem sair da região principal.
+                  </div>
+                </div>
+                <div className="surface-toolbar">
+                  <input
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder="email parcial ou user_id"
+                    className="field-ea"
+                    style={{ flex: 1, minWidth: 240 }}
+                  />
+                  <button onClick={onSearch} className="btn-ea btn-secondary">Buscar</button>
+                </div>
+                <ul className="admin-search-results">
+                  {users.map((u) => (
+                    <li key={u.user_id} className="premium-card-soft admin-search-result">
+                      <div className="admin-search-result-row">
+                        <div className="admin-search-result-copy">
+                          <strong>{u.email || "sem-email"}</strong>
+                          <div style={{ opacity: 0.82, fontSize: 13, marginTop: 4 }}>
+                            {u.user_id} • {u.plan_code} • créditos {u.coins?.common ?? 0}/{u.coins?.pro ?? 0}/{u.coins?.ultra ?? 0}
+                          </div>
+                        </div>
+                        <button onClick={() => onOpenTimeline(u.user_id)} className="btn-ea btn-ghost btn-sm">Timeline</button>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+                {query.trim() && users.length === 0 ? (
+                  <div className="empty-ea" style={{ marginTop: 10 }}>
+                    Nenhum usuário encontrado para essa busca.
+                  </div>
+                ) : null}
               </div>
 
-              <div className="premium-card-soft admin-subpanel admin-subpanel-list">
-                <div style={{ fontWeight: 700, marginBottom: 8 }}>Providers e roteamento</div>
-                {topOperationalProviders.length === 0 ? (
-                  <div style={{ opacity: 0.78, fontSize: 13 }}>Sem providers amostrados no buffer atual.</div>
-                ) : (
-                  <div style={{ display: "grid", gap: 6 }}>
-                    {topOperationalProviders.map((item) => (
-                      <div key={`ops-provider-${item.provider}`} style={{ display: "flex", justifyContent: "space-between", gap: 8, fontSize: 13 }}>
-                        <span style={{ opacity: 0.86 }}>{item.provider}</span>
-                        <strong>{item.count}</strong>
-                      </div>
-                    ))}
+              <div className="premium-card-soft admin-subpanel admin-user-timeline-panel">
+                <div className="section-stack-tight" style={{ marginBottom: 10 }}>
+                  <strong>Timeline do usuário</strong>
+                  <div style={{ opacity: 0.78, fontSize: 13 }}>
+                    {selectedUserId ? `Leitura aberta para ${selectedUserId}.` : "Selecione um usuário para abrir a trilha contextual."}
                   </div>
+                </div>
+                {selectedUserId ? (
+                  <ul className="admin-timeline-list">
+                    {timeline.map((item, index) => (
+                      <li key={`${item.type}-${item.created_at}-${index}`} className="admin-timeline-item">
+                        <div style={{ fontWeight: 600 }}>
+                          {eventLabel(item.type || item.event_type || "evento")}
+                        </div>
+                        <div style={{ marginTop: 4, opacity: 0.78, fontSize: 13 }}>
+                          {item.created_at}
+                          {item.feature || item.event_type || item.plan_code ? ` • ${item.feature || item.event_type || item.plan_code}` : ""}
+                          {item.status ? ` • ${item.status}` : ""}
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <div className="empty-ea">Abra uma timeline para acompanhar uso, plano e eventos do usuário.</div>
                 )}
               </div>
+            </div>
+          </div>
 
-              <div className="premium-card-soft admin-subpanel admin-subpanel-list">
-                <div style={{ fontWeight: 700, marginBottom: 8 }}>Eventos recentes do produto</div>
-                {recentEvents.length === 0 ? (
-                  <div style={{ opacity: 0.78, fontSize: 13 }}>Sem eventos recentes no buffer atual.</div>
+          <div className="premium-card admin-console-section admin-queue-region" style={panelStyle}>
+            <div className="section-head">
+              <div>
+                <p className="section-kicker">Filas operacionais</p>
+                <h3 style={{ margin: "4px 0 0" }}>Atendimento e acesso</h3>
+              </div>
+            </div>
+
+            <div className="admin-queue-grid">
+              <section className="premium-card-soft admin-subpanel admin-queue-surface">
+                <div className="section-head" style={{ marginBottom: 8 }}>
+                  <div>
+                    <p className="section-kicker">Atendimento</p>
+                    <h4 style={{ margin: "4px 0 0" }}>Fila de suporte</h4>
+                  </div>
+                </div>
+                <div className="admin-inline-stats">
+                  <span>Em aberto: {supportStats.open}</span>
+                  <span>Em análise: {supportStats.inReview}</span>
+                  <span>Resolvidos: {supportStats.resolved}</span>
+                </div>
+                <div className="surface-toolbar" style={{ marginBottom: 10 }}>
+                  <PremiumSelect
+                    className="field-inline"
+                    value={supportStatusFilter}
+                    options={SUPPORT_STATUS_FILTER_OPTIONS}
+                    ariaLabel="Filtro de status do suporte"
+                    onChange={(nextValue) => {
+                      const nextStatus = nextValue as "" | SupportStatus;
+                      setSupportStatusFilter(nextStatus);
+                      void loadSupportRequests(nextStatus, supportCategoryFilter);
+                    }}
+                  />
+                  <PremiumSelect
+                    className="field-inline"
+                    value={supportCategoryFilter}
+                    options={SUPPORT_CATEGORY_FILTER_OPTIONS}
+                    ariaLabel="Filtro de categoria do suporte"
+                    onChange={(nextValue) => {
+                      const nextCategory = String(nextValue || "");
+                      setSupportCategoryFilter(nextCategory);
+                      void loadSupportRequests(supportStatusFilter, nextCategory);
+                    }}
+                  />
+                  <button onClick={() => loadSupportRequests()} disabled={supportLoading} className="btn-ea btn-secondary">
+                    {supportLoading ? "Atualizando..." : "Atualizar suporte"}
+                  </button>
+                </div>
+
+                {supportLoading ? (
+                  <div className="empty-ea">Carregando solicitações...</div>
+                ) : supportItems.length === 0 ? (
+                  <div className="state-ea">
+                    <p className="state-ea-title">Nenhuma solicitação encontrada</p>
+                    <div className="state-ea-text">
+                      Ajuste os filtros ou atualize a lista para buscar novos tickets.
+                    </div>
+                    <div className="state-ea-actions">
+                      <button onClick={() => loadSupportRequests()} className="btn-ea btn-secondary btn-sm">
+                        Atualizar suporte
+                      </button>
+                      {(supportStatusFilter || supportCategoryFilter) ? (
+                        <button
+                          onClick={async () => {
+                            setSupportStatusFilter("");
+                            setSupportCategoryFilter("");
+                            await loadSupportRequests("", "");
+                          }}
+                          className="btn-ea btn-ghost btn-sm"
+                        >
+                          Limpar filtros
+                        </button>
+                      ) : null}
+                    </div>
+                  </div>
                 ) : (
-                  <div style={{ display: "grid", gap: 8 }}>
-                    {recentEvents.map((item, index) => (
-                      <div key={`ops-event-${item.timestamp}-${index}`} style={{ fontSize: 13 }}>
-                        <div style={{ fontWeight: 600 }}>{eventLabel(item.event)}</div>
-                        <div style={{ opacity: 0.78 }}>
-                          {new Date(item.timestamp).toLocaleString("pt-BR")}
-                          {item.plan ? ` • ${item.plan}` : ""}
-                          {item.additional?.status ? ` • ${String(item.additional.status)}` : ""}
-                          {item.additional?.source ? ` • ${String(item.additional.source)}` : ""}
+                  <div className="admin-record-list">
+                    {supportItems.map((item) => (
+                      <div key={item.id} className="premium-card-soft admin-record-item">
+                        <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
+                          <strong>{item.subject}</strong>
+                          <span style={supportStatusPillStyle(item.status)}>{supportStatusLabel(item.status)}</span>
+                        </div>
+                        <div style={{ marginTop: 4, opacity: 0.82, fontSize: 13 }}>
+                          Usuário: {item.user_id} • {supportCategoryLabel(item.category)} • {new Date(item.created_at).toLocaleString("pt-BR")}
+                        </div>
+                        {item.updated_at ? (
+                          <div style={{ marginTop: 2, opacity: 0.72, fontSize: 12 }}>
+                            Atualizado em: {new Date(item.updated_at).toLocaleString("pt-BR")}
+                          </div>
+                        ) : null}
+                        <div style={{ marginTop: 8, whiteSpace: "pre-wrap" }}>{item.message}</div>
+                        {item.admin_note ? (
+                          <div className="admin-record-note">
+                            Nota interna: {item.admin_note}
+                          </div>
+                        ) : null}
+                        <div style={{ display: "flex", gap: 8, marginTop: 8, flexWrap: "wrap" }}>
+                          <button className="btn-ea btn-ghost btn-sm" disabled={supportUpdatingId === item.id} onClick={() => openSupportActionDraft(item, "open")}>
+                            Marcar em aberto
+                          </button>
+                          <button className="btn-ea btn-secondary btn-sm" disabled={supportUpdatingId === item.id} onClick={() => openSupportActionDraft(item, "in_review")}>
+                            Marcar em análise
+                          </button>
+                          <button className="btn-ea btn-success btn-sm" disabled={supportUpdatingId === item.id} onClick={() => openSupportActionDraft(item, "resolved")}>
+                            Marcar resolvido
+                          </button>
                         </div>
                       </div>
                     ))}
                   </div>
                 )}
-              </div>
-            </div>
-          </>
-        )}
-      </div>
+              </section>
 
-      <div className="premium-card admin-console-section" style={panelStyle}>
-        <h3 style={{ marginTop: 0 }}>Sinais principais</h3>
-        <div style={{ opacity: 0.8, marginBottom: 10, fontSize: 13 }}>
-          Indicadores baseados na lista atual (filtros aplicados).
-        </div>
-        <div className="admin-radar-grid">
-          <div className="premium-card-soft admin-subpanel admin-subpanel-stat">
-            <div style={{ opacity: 0.76, fontSize: 12 }}>Acesso • pendentes</div>
-            <div style={{ marginTop: 6, fontSize: 22, fontWeight: 700 }}>{betaAccessStats.pending}</div>
-            <div style={{ marginTop: 6, fontSize: 12, opacity: 0.82 }}>Taxa pendente: {betaAccessStats.pendingRate}</div>
-          </div>
+              <section className="premium-card-soft admin-subpanel admin-queue-surface">
+                <div className="section-head" style={{ marginBottom: 8 }}>
+                  <div>
+                    <p className="section-kicker">Controle de acesso</p>
+                    <h4 style={{ margin: "4px 0 0" }}>Acesso e aprovação</h4>
+                  </div>
+                </div>
+                <div className="admin-inline-stats">
+                  <span>Pendentes: {betaAccessStats.pending}</span>
+                  <span>Aprovados: {betaAccessStats.approved}</span>
+                  <span>Reprovados: {betaAccessStats.rejected}</span>
+                  <span>Taxa de aprovação: {betaAccessStats.approvalRate}</span>
+                </div>
+                <div style={{ opacity: 0.78, marginBottom: 8, fontSize: 12 }}>
+                  Hoje: +{todayStats.betaApprovedToday} aprovados • {todayStats.betaRejectedToday} reprovados • {todayStats.betaPendingToday} novos pendentes
+                </div>
+                <div style={{ opacity: 0.8, marginBottom: 8, fontSize: 13 }}>
+                  {betaAccessItems.length} solicitação(ões)
+                  {betaAccessFilter ? ` • filtro: ${betaAccessStatusLabel(betaAccessFilter)}` : ""}
+                  {betaAccessLastSync ? ` • atualizado em ${new Date(betaAccessLastSync).toLocaleTimeString("pt-BR")}` : ""}
+                </div>
+                <div className="surface-toolbar" style={{ marginBottom: 10 }}>
+                  <PremiumSelect
+                    className="field-inline"
+                    value={betaAccessFilter}
+                    options={BETA_STATUS_FILTER_OPTIONS}
+                    ariaLabel="Filtro de status da fila beta"
+                    onChange={(nextValue) => {
+                      const next = nextValue as "" | BetaAccessStatus;
+                      setBetaAccessFilter(next);
+                      void loadBetaAccessRequests(next);
+                    }}
+                  />
+                  <button onClick={() => loadBetaAccessRequests()} disabled={betaAccessLoading} className="btn-ea btn-secondary">
+                    {betaAccessLoading ? "Atualizando..." : "Atualizar fila"}
+                  </button>
+                  {betaAccessFilter ? (
+                    <button
+                      className="btn-ea btn-ghost btn-sm"
+                      onClick={async () => {
+                        setBetaAccessFilter("");
+                        await loadBetaAccessRequests("");
+                      }}
+                      disabled={betaAccessLoading}
+                    >
+                      Limpar filtro
+                    </button>
+                  ) : null}
+                </div>
 
-          <div className="premium-card-soft admin-subpanel admin-subpanel-stat">
-            <div style={{ opacity: 0.76, fontSize: 12 }}>Acesso • aprovados / reprovados</div>
-            <div style={{ marginTop: 6, fontSize: 18, fontWeight: 700 }}>
-              {betaAccessStats.approved} / {betaAccessStats.rejected}
-            </div>
-            <div style={{ marginTop: 6, fontSize: 12, opacity: 0.82 }}>
-              Aprovação: {betaAccessStats.approvalRate} • Reprovação: {betaAccessStats.rejectionRate}
-            </div>
-          </div>
+                {betaAccessError ? (
+                  <div className="state-ea state-ea-error" style={{ marginBottom: 8 }}>
+                    <p className="state-ea-title">Fila de acesso indisponível no momento</p>
+                    <div className="state-ea-text">{betaAccessError}</div>
+                  </div>
+                ) : null}
 
-          <div className="premium-card-soft admin-subpanel admin-subpanel-stat">
-            <div style={{ opacity: 0.76, fontSize: 12 }}>Suporte • em aberto / em análise</div>
-            <div style={{ marginTop: 6, fontSize: 18, fontWeight: 700 }}>
-              {supportStats.open} / {supportStats.inReview}
-            </div>
-            <div style={{ marginTop: 6, fontSize: 12, opacity: 0.82 }}>
-              Tickets ativos: {supportStats.unresolved}
-            </div>
-          </div>
-
-          <div className="premium-card-soft admin-subpanel admin-subpanel-stat">
-            <div style={{ opacity: 0.76, fontSize: 12 }}>Suporte • resolvidos</div>
-            <div style={{ marginTop: 6, fontSize: 22, fontWeight: 700 }}>{supportStats.resolved}</div>
-            <div style={{ marginTop: 6, fontSize: 12, opacity: 0.82 }}>
-              Taxa de resolução: {supportStats.resolutionRate}
-            </div>
-          </div>
-
-          <div className="premium-card-soft admin-subpanel admin-subpanel-stat">
-            <div style={{ opacity: 0.76, fontSize: 12 }}>Movimento hoje</div>
-            <div style={{ marginTop: 6, fontSize: 14, fontWeight: 700 }}>
-              +{todayStats.betaApprovedToday} aprovados • {todayStats.betaRejectedToday} reprovados
-            </div>
-            <div style={{ marginTop: 6, fontSize: 12, opacity: 0.82 }}>
-              Pendentes novos: {todayStats.betaPendingToday} • Tickets criados: {todayStats.supportCreatedToday}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="premium-card admin-console-section" style={panelStyle}>
-        <h3 style={{ marginTop: 0 }}>Pendências principais</h3>
-        {supportNeedsAttention.length === 0 && betaNeedsAttention.length === 0 ? (
-          <div className="premium-card-soft admin-subpanel">
-            Nenhuma pendência crítica no momento.
-          </div>
-        ) : (
-          <div className="admin-attention-grid">
-            <div className="premium-card-soft admin-subpanel admin-attention-item">
-              <div style={{ fontWeight: 700 }}>Acesso pendente</div>
-              <div style={{ marginTop: 4, opacity: 0.82, fontSize: 13 }}>
-                {betaAccessStats.pending} solicitação(ões) aguardando decisão.
-              </div>
-              <div style={{ marginTop: 8, display: "grid", gap: 6 }}>
-                {betaNeedsAttention.length === 0 ? (
-                  <div style={{ opacity: 0.8, fontSize: 13 }}>Sem itens pendentes.</div>
-                ) : (
-                  betaNeedsAttention.map((item) => (
-                    <div key={`att-beta-${item.id}`} style={{ fontSize: 13, opacity: 0.9 }}>
-                      {item.email} • {new Date(item.created_at).toLocaleDateString("pt-BR")}
+                {betaAccessLoading ? (
+                  <div className="empty-ea">Carregando solicitações...</div>
+                ) : betaAccessItems.length === 0 ? (
+                  <div className="state-ea">
+                    <p className="state-ea-title">Nenhuma solicitação encontrada</p>
+                    <div className="state-ea-text">
+                      Ajuste o filtro ou atualize a fila para buscar novos pedidos de acesso.
                     </div>
-                  ))
-                )}
-              </div>
-              <button
-                className="btn-ea btn-secondary btn-sm"
-                style={{ marginTop: 8 }}
-                onClick={async () => {
-                  setBetaAccessFilter("pending");
-                  await loadBetaAccessRequests("pending");
-                }}
-              >
-                Abrir pendências
-              </button>
-            </div>
-
-            <div className="premium-card-soft admin-subpanel admin-attention-item">
-              <div style={{ fontWeight: 700 }}>Tickets de suporte ativos</div>
-              <div style={{ marginTop: 4, opacity: 0.82, fontSize: 13 }}>
-                {supportStats.unresolved} ticket(s) sem resolução.
-              </div>
-              <div style={{ marginTop: 8, display: "grid", gap: 6 }}>
-                {supportNeedsAttention.length === 0 ? (
-                  <div style={{ opacity: 0.8, fontSize: 13 }}>Sem tickets ativos.</div>
-                ) : (
-                  supportNeedsAttention.map((item) => (
-                    <div key={`att-support-${item.id}`} style={{ fontSize: 13, opacity: 0.9 }}>
-                      {item.subject} • {supportStatusLabel(item.status)}
+                    <div className="state-ea-actions">
+                      <button onClick={() => loadBetaAccessRequests()} className="btn-ea btn-secondary btn-sm">
+                        Atualizar fila
+                      </button>
+                      {betaAccessFilter ? (
+                        <button
+                          onClick={async () => {
+                            setBetaAccessFilter("");
+                            await loadBetaAccessRequests("");
+                          }}
+                          className="btn-ea btn-ghost btn-sm"
+                        >
+                          Limpar filtro
+                        </button>
+                      ) : null}
                     </div>
-                  ))
+                  </div>
+                ) : (
+                  <div className="admin-record-list">
+                    {betaAccessItems.map((item) => (
+                      <div key={item.id} className="premium-card-soft admin-record-item">
+                        <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
+                          <strong>{item.email}</strong>
+                          <span style={betaStatusPillStyle(item.status)}>{betaAccessStatusLabel(item.status)}</span>
+                        </div>
+                        <div style={{ marginTop: 4, opacity: 0.82, fontSize: 13 }}>
+                          {item.user_id ? `Usuário: ${item.user_id} • ` : ""}
+                          Solicitado em: {new Date(item.created_at).toLocaleString("pt-BR")}
+                        </div>
+                        {item.updated_at ? (
+                          <div style={{ marginTop: 2, opacity: 0.72, fontSize: 12 }}>
+                            Atualizado em: {new Date(item.updated_at).toLocaleString("pt-BR")}
+                          </div>
+                        ) : null}
+                        {item.admin_note ? (
+                          <div className="admin-record-note">
+                            Nota interna: {item.admin_note}
+                          </div>
+                        ) : null}
+                        {item.approved_at ? (
+                          <div style={{ marginTop: 6, opacity: 0.8, fontSize: 13 }}>
+                            Liberado em: {new Date(item.approved_at).toLocaleString("pt-BR")}
+                          </div>
+                        ) : null}
+                        <div style={{ display: "flex", gap: 8, marginTop: 8, flexWrap: "wrap" }}>
+                          <button
+                            className="btn-ea btn-ghost btn-sm"
+                            disabled={betaAccessUpdatingId === item.id}
+                            onClick={() => openBetaActionDraft(item, "pending")}
+                          >
+                            Marcar pendente
+                          </button>
+                          <button
+                            className="btn-ea btn-success btn-sm"
+                            disabled={betaAccessUpdatingId === item.id}
+                            onClick={() => openBetaActionDraft(item, "approved")}
+                          >
+                            Aprovar acesso
+                          </button>
+                          <button
+                            className="btn-ea btn-danger btn-sm"
+                            disabled={betaAccessUpdatingId === item.id}
+                            onClick={() => openBetaActionDraft(item, "rejected")}
+                          >
+                            Rejeitar
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 )}
+              </section>
+            </div>
+          </div>
+        </div>
+
+        <div className="admin-workspace-rail">
+          <div className="premium-card admin-console-section admin-attention-region" style={panelStyle}>
+            <div className="section-head">
+              <div>
+                <p className="section-kicker">Prioridade do turno</p>
+                <h3 style={{ margin: "4px 0 0" }}>Foco imediato</h3>
               </div>
-              <button
-                className="btn-ea btn-secondary btn-sm"
-                style={{ marginTop: 8 }}
-                onClick={async () => {
-                  setSupportStatusFilter("open");
-                  await loadSupportRequests("open", supportCategoryFilter);
-                }}
-              >
-                Ver tickets em aberto
-              </button>
             </div>
-          </div>
-        )}
-      </div>
-
-      <div className="premium-card admin-console-section" style={panelStyle}>
-        <div className="section-head" style={{ marginBottom: 8 }}>
-          <div>
-            <p className="section-kicker">Consulta operacional</p>
-            <h3 style={{ margin: "4px 0 0" }}>Buscar usuário</h3>
-          </div>
-        </div>
-        <div className="surface-toolbar">
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="email parcial ou user_id"
-            className="field-ea"
-            style={{ flex: 1, minWidth: 240 }}
-          />
-          <button onClick={onSearch} className="btn-ea btn-secondary">Buscar</button>
-        </div>
-        <ul className="admin-search-results">
-          {users.map((u) => (
-            <li key={u.user_id} className="premium-card-soft admin-search-result">
-              {u.user_id} | {u.email || "sem-email"} | {u.plan_code} | créditos (Comum/Pro/Ultra) {u.coins?.common ?? 0}/
-              {u.coins?.pro ?? 0}/{u.coins?.ultra ?? 0}{" "}
-              <button onClick={() => onOpenTimeline(u.user_id)} className="btn-ea btn-ghost btn-sm">Timeline</button>
-            </li>
-          ))}
-        </ul>
-        {query.trim() && users.length === 0 ? (
-          <div className="empty-ea" style={{ marginTop: 10 }}>
-            Nenhum usuário encontrado para essa busca.
-          </div>
-        ) : null}
-      </div>
-
-      {selectedUserId && (
-        <div className="premium-card admin-console-section" style={panelStyle}>
-          <h3 style={{ marginTop: 0 }}>Timeline: {selectedUserId}</h3>
-          <ul className="admin-timeline-list">
-            {timeline.map((item, i) => (
-              <li key={`${item.type}-${item.created_at}-${i}`} className="admin-timeline-item">
-                [{item.type}] {item.created_at} {item.feature || item.event_type || item.plan_code || ""}{" "}
-                {item.status || ""}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      <div className="premium-card admin-console-section" style={panelStyle}>
-        <div className="section-head" style={{ marginBottom: 8 }}>
-          <div>
-            <p className="section-kicker">Atendimento</p>
-            <h3 style={{ margin: "4px 0 0" }}>Fila de suporte</h3>
-          </div>
-        </div>
-        <div className="admin-inline-stats">
-          <span>Em aberto: {supportStats.open}</span>
-          <span>Em análise: {supportStats.inReview}</span>
-          <span>Resolvidos: {supportStats.resolved}</span>
-        </div>
-        <div className="surface-toolbar" style={{ marginBottom: 10 }}>
-          <PremiumSelect
-            className="field-inline"
-            value={supportStatusFilter}
-            options={SUPPORT_STATUS_FILTER_OPTIONS}
-            ariaLabel="Filtro de status do suporte"
-            onChange={(nextValue) => {
-              const nextStatus = nextValue as "" | SupportStatus;
-              setSupportStatusFilter(nextStatus);
-              void loadSupportRequests(nextStatus, supportCategoryFilter);
-            }}
-          />
-          <PremiumSelect
-            className="field-inline"
-            value={supportCategoryFilter}
-            options={SUPPORT_CATEGORY_FILTER_OPTIONS}
-            ariaLabel="Filtro de categoria do suporte"
-            onChange={(nextValue) => {
-              const nextCategory = String(nextValue || "");
-              setSupportCategoryFilter(nextCategory);
-              void loadSupportRequests(supportStatusFilter, nextCategory);
-            }}
-          />
-          <button onClick={() => loadSupportRequests()} disabled={supportLoading} className="btn-ea btn-secondary">
-            {supportLoading ? "Atualizando..." : "Atualizar suporte"}
-          </button>
-        </div>
-
-        {supportLoading ? (
-          <div className="empty-ea">Carregando solicitações...</div>
-        ) : supportItems.length === 0 ? (
-          <div className="state-ea">
-            <p className="state-ea-title">Nenhuma solicitação encontrada</p>
-            <div className="state-ea-text">
-              Ajuste os filtros ou atualize a lista para buscar novos tickets.
-            </div>
-            <div className="state-ea-actions">
-              <button onClick={() => loadSupportRequests()} className="btn-ea btn-secondary btn-sm">
-                Atualizar suporte
-              </button>
-              {(supportStatusFilter || supportCategoryFilter) ? (
-                <button
-                  onClick={async () => {
-                    setSupportStatusFilter("");
-                    setSupportCategoryFilter("");
-                    await loadSupportRequests("", "");
-                  }}
-                  className="btn-ea btn-ghost btn-sm"
-                >
-                  Limpar filtros
-                </button>
-              ) : null}
-            </div>
-          </div>
-        ) : (
-          <div className="admin-record-list">
-            {supportItems.map((item) => (
-              <div key={item.id} className="premium-card-soft admin-record-item">
-                <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
-                  <strong>{item.subject}</strong>
-                  <span style={supportStatusPillStyle(item.status)}>{supportStatusLabel(item.status)}</span>
-                </div>
-                <div style={{ marginTop: 4, opacity: 0.82, fontSize: 13 }}>
-                  Usuário: {item.user_id} • {supportCategoryLabel(item.category)} • {new Date(item.created_at).toLocaleString("pt-BR")}
-                </div>
-                {item.updated_at ? (
-                  <div style={{ marginTop: 2, opacity: 0.72, fontSize: 12 }}>
-                    Atualizado em: {new Date(item.updated_at).toLocaleString("pt-BR")}
+            {supportNeedsAttention.length === 0 && betaNeedsAttention.length === 0 ? (
+              <div className="premium-card-soft admin-subpanel">
+                Nenhuma pendência crítica no momento.
+              </div>
+            ) : (
+              <div className="admin-attention-grid">
+                <div className="premium-card-soft admin-subpanel admin-attention-item">
+                  <div style={{ fontWeight: 700 }}>Acesso pendente</div>
+                  <div style={{ marginTop: 4, opacity: 0.82, fontSize: 13 }}>
+                    {betaAccessStats.pending} solicitação(ões) aguardando decisão.
                   </div>
-                ) : null}
-                <div style={{ marginTop: 8, whiteSpace: "pre-wrap" }}>{item.message}</div>
-                {item.admin_note ? (
-                  <div className="admin-record-note">
-                    Nota interna: {item.admin_note}
+                  <div style={{ marginTop: 8, display: "grid", gap: 6 }}>
+                    {betaNeedsAttention.length === 0 ? (
+                      <div style={{ opacity: 0.8, fontSize: 13 }}>Sem itens pendentes.</div>
+                    ) : (
+                      betaNeedsAttention.map((item) => (
+                        <div key={`att-beta-${item.id}`} style={{ fontSize: 13, opacity: 0.9 }}>
+                          {item.email} • {new Date(item.created_at).toLocaleDateString("pt-BR")}
+                        </div>
+                      ))
+                    )}
                   </div>
-                ) : null}
-                <div style={{ display: "flex", gap: 8, marginTop: 8, flexWrap: "wrap" }}>
-                  <button className="btn-ea btn-ghost btn-sm" disabled={supportUpdatingId === item.id} onClick={() => openSupportActionDraft(item, "open")}>
-                    Marcar em aberto
+                  <button
+                    className="btn-ea btn-secondary btn-sm"
+                    style={{ marginTop: 8 }}
+                    onClick={async () => {
+                      setBetaAccessFilter("pending");
+                      await loadBetaAccessRequests("pending");
+                    }}
+                  >
+                    Abrir pendências
                   </button>
-                  <button className="btn-ea btn-secondary btn-sm" disabled={supportUpdatingId === item.id} onClick={() => openSupportActionDraft(item, "in_review")}>
-                    Marcar em análise
-                  </button>
-                  <button className="btn-ea btn-success btn-sm" disabled={supportUpdatingId === item.id} onClick={() => openSupportActionDraft(item, "resolved")}>
-                    Marcar resolvido
+                </div>
+
+                <div className="premium-card-soft admin-subpanel admin-attention-item">
+                  <div style={{ fontWeight: 700 }}>Tickets de suporte ativos</div>
+                  <div style={{ marginTop: 4, opacity: 0.82, fontSize: 13 }}>
+                    {supportStats.unresolved} ticket(s) sem resolução.
+                  </div>
+                  <div style={{ marginTop: 8, display: "grid", gap: 6 }}>
+                    {supportNeedsAttention.length === 0 ? (
+                      <div style={{ opacity: 0.8, fontSize: 13 }}>Sem tickets ativos.</div>
+                    ) : (
+                      supportNeedsAttention.map((item) => (
+                        <div key={`att-support-${item.id}`} style={{ fontSize: 13, opacity: 0.9 }}>
+                          {item.subject} • {supportStatusLabel(item.status)}
+                        </div>
+                      ))
+                    )}
+                  </div>
+                  <button
+                    className="btn-ea btn-secondary btn-sm"
+                    style={{ marginTop: 8 }}
+                    onClick={async () => {
+                      setSupportStatusFilter("open");
+                      await loadSupportRequests("open", supportCategoryFilter);
+                    }}
+                  >
+                    Ver tickets em aberto
                   </button>
                 </div>
               </div>
-            ))}
+            )}
           </div>
-        )}
-      </div>
 
-      <div className="premium-card admin-console-section" style={panelStyle}>
-        <div className="section-head" style={{ marginBottom: 8 }}>
-          <div>
-            <p className="section-kicker">Controle de acesso</p>
-            <h3 style={{ margin: "4px 0 0" }}>Acesso e aprovação</h3>
-          </div>
-        </div>
-        <div className="admin-inline-stats">
-          <span>Pendentes: {betaAccessStats.pending}</span>
-          <span>Aprovados: {betaAccessStats.approved}</span>
-          <span>Reprovados: {betaAccessStats.rejected}</span>
-          <span>Taxa de aprovação: {betaAccessStats.approvalRate}</span>
-        </div>
-        <div style={{ opacity: 0.78, marginBottom: 8, fontSize: 12 }}>
-          Hoje: +{todayStats.betaApprovedToday} aprovados • {todayStats.betaRejectedToday} reprovados • {todayStats.betaPendingToday} novos pendentes
-        </div>
-        <div style={{ opacity: 0.8, marginBottom: 8, fontSize: 13 }}>
-          {betaAccessItems.length} solicitação(ões)
-          {betaAccessFilter ? ` • filtro: ${betaAccessStatusLabel(betaAccessFilter)}` : ""}
-          {betaAccessLastSync ? ` • atualizado em ${new Date(betaAccessLastSync).toLocaleTimeString("pt-BR")}` : ""}
-        </div>
-        <div className="surface-toolbar" style={{ marginBottom: 10 }}>
-          <PremiumSelect
-            className="field-inline"
-            value={betaAccessFilter}
-            options={BETA_STATUS_FILTER_OPTIONS}
-            ariaLabel="Filtro de status da fila beta"
-            onChange={(nextValue) => {
-              const next = nextValue as "" | BetaAccessStatus;
-              setBetaAccessFilter(next);
-              void loadBetaAccessRequests(next);
-            }}
-          />
-          <button onClick={() => loadBetaAccessRequests()} disabled={betaAccessLoading} className="btn-ea btn-secondary">
-            {betaAccessLoading ? "Atualizando..." : "Atualizar fila"}
-          </button>
-          {betaAccessFilter ? (
-            <button
-              className="btn-ea btn-ghost btn-sm"
-              onClick={async () => {
-                setBetaAccessFilter("");
-                await loadBetaAccessRequests("");
-              }}
-              disabled={betaAccessLoading}
-            >
-              Limpar filtro
-            </button>
-          ) : null}
-        </div>
-
-        {betaAccessError ? (
-          <div className="state-ea state-ea-error" style={{ marginBottom: 8 }}>
-            <p className="state-ea-title">Fila de acesso indisponível no momento</p>
-            <div className="state-ea-text">{betaAccessError}</div>
-          </div>
-        ) : null}
-
-        {betaAccessLoading ? (
-          <div className="empty-ea">Carregando solicitações...</div>
-        ) : betaAccessItems.length === 0 ? (
-          <div className="state-ea">
-            <p className="state-ea-title">Nenhuma solicitação encontrada</p>
-            <div className="state-ea-text">
-              Ajuste o filtro ou atualize a fila para buscar novos pedidos de acesso.
+          <div className="premium-card admin-console-section admin-radar-region" style={panelStyle}>
+            <div className="section-head">
+              <div>
+                <p className="section-kicker">Pulso operacional</p>
+                <h3 style={{ margin: "4px 0 0" }}>Sinais principais</h3>
+              </div>
             </div>
-            <div className="state-ea-actions">
-              <button onClick={() => loadBetaAccessRequests()} className="btn-ea btn-secondary btn-sm">
-                Atualizar fila
-              </button>
-              {betaAccessFilter ? (
-                <button
-                  onClick={async () => {
-                    setBetaAccessFilter("");
-                    await loadBetaAccessRequests("");
-                  }}
-                  className="btn-ea btn-ghost btn-sm"
-                >
-                  Limpar filtro
-                </button>
-              ) : null}
+            <div style={{ opacity: 0.8, marginBottom: 2, fontSize: 13 }}>
+              Indicadores baseados na lista atual.
             </div>
-          </div>
-        ) : (
-          <div className="admin-record-list">
-            {betaAccessItems.map((item) => (
-              <div key={item.id} className="premium-card-soft admin-record-item">
-                <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
-                  <strong>{item.email}</strong>
-                  <span style={betaStatusPillStyle(item.status)}>{betaAccessStatusLabel(item.status)}</span>
+            <div className="admin-radar-grid">
+              <div className="premium-card-soft admin-subpanel admin-subpanel-stat">
+                <div style={{ opacity: 0.76, fontSize: 12 }}>Acesso • pendentes</div>
+                <div style={{ marginTop: 6, fontSize: 22, fontWeight: 700 }}>{betaAccessStats.pending}</div>
+                <div style={{ marginTop: 6, fontSize: 12, opacity: 0.82 }}>Taxa pendente: {betaAccessStats.pendingRate}</div>
+              </div>
+
+              <div className="premium-card-soft admin-subpanel admin-subpanel-stat">
+                <div style={{ opacity: 0.76, fontSize: 12 }}>Acesso • aprovados / reprovados</div>
+                <div style={{ marginTop: 6, fontSize: 18, fontWeight: 700 }}>
+                  {betaAccessStats.approved} / {betaAccessStats.rejected}
                 </div>
-                <div style={{ marginTop: 4, opacity: 0.82, fontSize: 13 }}>
-                  {item.user_id ? `Usuário: ${item.user_id} • ` : ""}
-                  Solicitado em: {new Date(item.created_at).toLocaleString("pt-BR")}
-                </div>
-                {item.updated_at ? (
-                  <div style={{ marginTop: 2, opacity: 0.72, fontSize: 12 }}>
-                    Atualizado em: {new Date(item.updated_at).toLocaleString("pt-BR")}
-                  </div>
-                ) : null}
-                {item.admin_note ? (
-                  <div className="admin-record-note">
-                    Nota interna: {item.admin_note}
-                  </div>
-                ) : null}
-                {item.approved_at ? (
-                  <div style={{ marginTop: 6, opacity: 0.8, fontSize: 13 }}>
-                    Liberado em: {new Date(item.approved_at).toLocaleString("pt-BR")}
-                  </div>
-                ) : null}
-                <div style={{ display: "flex", gap: 8, marginTop: 8, flexWrap: "wrap" }}>
-                  <button
-                    className="btn-ea btn-ghost btn-sm"
-                    disabled={betaAccessUpdatingId === item.id}
-                    onClick={() => openBetaActionDraft(item, "pending")}
-                  >
-                    Marcar pendente
-                  </button>
-                  <button
-                    className="btn-ea btn-success btn-sm"
-                    disabled={betaAccessUpdatingId === item.id}
-                    onClick={() => openBetaActionDraft(item, "approved")}
-                  >
-                    Aprovar acesso
-                  </button>
-                  <button
-                    className="btn-ea btn-danger btn-sm"
-                    disabled={betaAccessUpdatingId === item.id}
-                    onClick={() => openBetaActionDraft(item, "rejected")}
-                  >
-                    Rejeitar
-                  </button>
+                <div style={{ marginTop: 6, fontSize: 12, opacity: 0.82 }}>
+                  Aprovação: {betaAccessStats.approvalRate} • Reprovação: {betaAccessStats.rejectionRate}
                 </div>
               </div>
-            ))}
+
+              <div className="premium-card-soft admin-subpanel admin-subpanel-stat">
+                <div style={{ opacity: 0.76, fontSize: 12 }}>Suporte • em aberto / em análise</div>
+                <div style={{ marginTop: 6, fontSize: 18, fontWeight: 700 }}>
+                  {supportStats.open} / {supportStats.inReview}
+                </div>
+                <div style={{ marginTop: 6, fontSize: 12, opacity: 0.82 }}>
+                  Tickets ativos: {supportStats.unresolved}
+                </div>
+              </div>
+
+              <div className="premium-card-soft admin-subpanel admin-subpanel-stat">
+                <div style={{ opacity: 0.76, fontSize: 12 }}>Suporte • resolvidos</div>
+                <div style={{ marginTop: 6, fontSize: 22, fontWeight: 700 }}>{supportStats.resolved}</div>
+                <div style={{ marginTop: 6, fontSize: 12, opacity: 0.82 }}>
+                  Taxa de resolução: {supportStats.resolutionRate}
+                </div>
+              </div>
+
+              <div className="premium-card-soft admin-subpanel admin-subpanel-stat">
+                <div style={{ opacity: 0.76, fontSize: 12 }}>Movimento hoje</div>
+                <div style={{ marginTop: 6, fontSize: 14, fontWeight: 700 }}>
+                  +{todayStats.betaApprovedToday} aprovados • {todayStats.betaRejectedToday} reprovados
+                </div>
+                <div style={{ marginTop: 6, fontSize: 12, opacity: 0.82 }}>
+                  Pendentes novos: {todayStats.betaPendingToday} • Tickets criados: {todayStats.supportCreatedToday}
+                </div>
+              </div>
+            </div>
           </div>
-        )}
-      </div>
+        </div>
       </div>
 
       {actionDraft ? (
@@ -1315,6 +1404,7 @@ export default function AdminPage() {
           </div>
         </div>
       ) : null}
+      </div>
     </div>
   );
 }

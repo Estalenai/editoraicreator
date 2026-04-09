@@ -20544,6 +20544,81 @@ body {
   min-height: 148px;
 }
 
+.admin-workspace-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.56fr) minmax(var(--ea-structure-rail-width-tight), 0.8fr);
+  gap: clamp(18px, 2vw, 24px);
+  align-items: start;
+}
+
+.admin-workspace-main,
+.admin-workspace-rail,
+.admin-control-primary,
+.admin-control-rail,
+.admin-queue-surface {
+  display: grid;
+  gap: var(--ea-structure-region-gap-tight);
+}
+
+.admin-workspace-main,
+.admin-workspace-rail {
+  gap: var(--ea-structure-region-gap);
+}
+
+.admin-control-body,
+.admin-user-ops-grid,
+.admin-queue-grid {
+  display: grid;
+  gap: var(--ea-structure-region-gap);
+  align-items: start;
+}
+
+.admin-control-body {
+  grid-template-columns: minmax(0, 1.26fr) minmax(260px, 0.74fr);
+}
+
+.admin-user-ops-grid {
+  grid-template-columns: minmax(0, 1.18fr) minmax(280px, 0.82fr);
+}
+
+.admin-queue-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.admin-section-head-split {
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.admin-search-result-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.admin-search-result-copy {
+  min-width: 0;
+}
+
+.admin-queue-surface {
+  min-height: clamp(260px, 24vw, 340px);
+}
+
+.admin-attention-region .admin-attention-grid,
+.admin-radar-region .admin-radar-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.admin-radar-region .admin-radar-grid {
+  gap: var(--ea-structure-region-gap-tight);
+}
+
+.admin-user-timeline-panel .empty-ea,
+.admin-user-search-panel .empty-ea {
+  margin-top: 2px;
+}
+
 .admin-search-results,
 .admin-timeline-list,
 .admin-record-list {
@@ -20553,7 +20628,11 @@ body {
 @media (max-width: 1180px) {
   .dashboard-workspace-grid,
   .credits-page-layout,
-  .projects-page .projects-hero-split {
+  .projects-page .projects-hero-split,
+  .admin-workspace-grid,
+  .admin-control-body,
+  .admin-user-ops-grid,
+  .admin-queue-grid {
     grid-template-columns: minmax(0, 1fr);
   }
 
@@ -20644,5 +20723,19 @@ body {
   .admin-timeline-list,
   .admin-record-list {
     gap: 8px !important;
+  }
+
+  .admin-workspace-main,
+  .admin-workspace-rail {
+    gap: 14px;
+  }
+
+  .admin-queue-surface {
+    min-height: 0;
+  }
+
+  .admin-search-result-row {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
