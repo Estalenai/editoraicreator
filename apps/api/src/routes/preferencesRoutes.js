@@ -3,22 +3,15 @@ import { z } from "zod";
 import { authMiddleware } from "../middlewares/authMiddleware.js";
 import { createAuthedSupabaseClient } from "../utils/supabaseAuthed.js";
 import { recordProductEvent } from "../utils/eventsStore.js";
+import {
+  DEFAULT_USER_PREFERENCES,
+  mergeUserPreferences,
+  prefsKey,
+} from "../utils/userPreferences.js";
 
 const router = express.Router();
 
 router.use(authMiddleware);
-
-const DEFAULT_PREFS = {
-  prompt_auto_enabled: true,
-  prompt_auto_apply: false,
-  prompt_auto_dont_ask_again: false,
-  ai_execution_mode_preference: "automatic_quality",
-  language: "pt-BR",
-};
-
-function prefsKey(userId) {
-  return `prefs:${userId}`;
-}
 
 router.get("/", async (req, res) => {
   try {
@@ -35,8 +28,7 @@ router.get("/", async (req, res) => {
 
     if (error) return res.status(400).json({ error: error.message });
 
-    const stored = data?.value && typeof data.value === "object" ? data.value : {};
-    const prefs = { ...DEFAULT_PREFS, ...stored };
+    const prefs = mergeUserPreferences(data?.value);
     return res.json({ prefs });
   } catch (e) {
     return res.status(500).json({ error: "Erro interno" });
@@ -55,6 +47,11 @@ router.patch("/", async (req, res) => {
       prompt_auto_dont_ask_again: z.boolean().optional(),
       ai_execution_mode_preference: z.enum(["automatic_quality", "automatic_economy"]).optional(),
       language: z.string().min(2).max(10).optional(),
+      notification_inbox_enabled: z.boolean().optional(),
+      notification_toasts_enabled: z.boolean().optional(),
+      notification_support_updates: z.boolean().optional(),
+      notification_financial_updates: z.boolean().optional(),
+      notification_async_updates: z.boolean().optional(),
     });
 
     const body = Body.parse(req.body || {});
@@ -67,9 +64,9 @@ router.patch("/", async (req, res) => {
 
     if (readError) return res.status(400).json({ error: readError.message });
 
-    const stored = existing?.value && typeof existing.value === "object" ? existing.value : {};
-    const previousLanguage = String(stored?.language || DEFAULT_PREFS.language || "pt-BR");
-    const merged = { ...DEFAULT_PREFS, ...stored, ...body };
+    const stored = mergeUserPreferences(existing?.value);
+    const previousLanguage = String(stored?.language || DEFAULT_USER_PREFERENCES.language || "pt-BR");
+    const merged = { ...stored, ...body };
 
     const { data, error } = await supabase
       .from("configs")

@@ -21,6 +21,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/projects", label: "Projetos", meta: "Continuidade, saída e registro", group: "core" },
   { href: "/credits", label: "Créditos", meta: "Saldo e histórico financeiro", group: "support" },
   { href: "/plans", label: "Planos", meta: "Assinatura e disponibilidade", group: "support" },
+  { href: "/dashboard/account", label: "Conta", meta: "Sessões, preferências e inbox", group: "support" },
   { href: "/support", label: "Suporte", meta: "Ajuda operacional", group: "support" },
   { href: "/how-it-works", label: "Como funciona", meta: "Guia rápido do fluxo", group: "support" },
   { href: "/admin", label: "Admin", meta: "Operação restrita", group: "support" },

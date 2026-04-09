@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState, type KeyboardEvent, type Ref } from "reac
 import { api } from "../../lib/api";
 import { PremiumSelect } from "../ui/PremiumSelect";
 import { toUserFacingError } from "../../lib/uiFeedback";
+import { useAccountCenter } from "../account/AccountCenterProvider";
 
 type SupportCategory = "duvida" | "problema_tecnico" | "pedido_financeiro" | "outro";
 type SupportStatus = "open" | "in_review" | "resolved";
@@ -92,6 +93,7 @@ export function SupportAssistantCard({
   preview = "Abra o assistant quando quiser concentrar triagem, histórico e contexto do pedido na mesma área.",
   sectionRef,
 }: Props) {
+  const { pushLocalNotification } = useAccountCenter();
   const [category, setCategory] = useState<SupportCategory>("duvida");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
@@ -134,7 +136,7 @@ export function SupportAssistantCard({
     setError(null);
     setSuccess(null);
     try {
-      await api.supportCreateRequest({
+      const response = await api.supportCreateRequest({
         category,
         subject: subject.trim(),
         message: message.trim(),
@@ -145,6 +147,16 @@ export function SupportAssistantCard({
       });
 
       setSuccess("Solicitação enviada. A resposta entra neste histórico.");
+      pushLocalNotification({
+        source: "support",
+        title: "Solicitação enviada",
+        message: "O caso entrou no inbox operacional e segue na trilha de atendimento.",
+        status_code: "queued",
+        href: "/support",
+        meta: {
+          support_ref: response?.item?.metadata?.support_ref || response?.item?.id || null,
+        },
+      });
       setSubject("");
       setMessage("");
       setContextRef("");

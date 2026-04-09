@@ -800,6 +800,35 @@ export const api = {
   async adminExportCoinsCsv(days = 30) {
     return downloadWithAuth(`/api/admin/export/coins.csv?days=${encodeURIComponent(String(days))}`, `coins-${days}d.csv`);
   },
+
+  async accountOverview() {
+    return authJson("/api/account/overview");
+  },
+
+  async preferences() {
+    return authJson("/api/preferences");
+  },
+
+  async updatePreferences(
+    body: {
+      prompt_auto_enabled?: boolean;
+      prompt_auto_apply?: boolean;
+      prompt_auto_dont_ask_again?: boolean;
+      ai_execution_mode_preference?: "automatic_quality" | "automatic_economy";
+      language?: string;
+      notification_inbox_enabled?: boolean;
+      notification_toasts_enabled?: boolean;
+      notification_support_updates?: boolean;
+      notification_financial_updates?: boolean;
+      notification_async_updates?: boolean;
+    }
+  ) {
+    return authJson("/api/preferences", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+  },
 };
 
 

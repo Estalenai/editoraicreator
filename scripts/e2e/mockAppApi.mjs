@@ -315,6 +315,155 @@ function buildQuote(body, quoteId) {
   };
 }
 
+function buildAccountOverview(state) {
+  const notifications = [];
+  const supportItems = Array.isArray(state.supportRequests) ? state.supportRequests : [];
+  const transactions = Array.isArray(state.transactions) ? state.transactions : [];
+  const projects = state.projectOrder.map((id) => state.projects.get(id)).filter(Boolean);
+
+  for (const item of supportItems.slice(0, 6)) {
+    notifications.push({
+      id: `support:${item.id}:${item.status}`,
+      source: "support",
+      title: `${String(item.metadata?.support_ref || item.id || "SUP").trim()} • ${String(item.subject || "Suporte").trim()}`,
+      message:
+        item.status === "resolved"
+          ? String(item.metadata?.resolution_summary || item.admin_note || "Caso resolvido e documentado.")
+          : item.status === "in_review"
+            ? "Seu caso está em análise pela equipe."
+            : "Seu caso foi aberto e aguarda triagem.",
+      created_at: item.updated_at || item.created_at || nowIso(),
+      status_code: item.status === "resolved" ? "manually_resolved" : item.status === "in_review" ? "running" : "queued",
+      href: "/support",
+      meta: {
+        support_ref: item.metadata?.support_ref || item.id,
+        queue_label: item.metadata?.queue_label || "Atendimento",
+      },
+    });
+  }
+
+  for (const tx of transactions.slice(0, 5)) {
+    const stateCode = String(
+      tx?.meta?.financial_state || tx?.meta?.settlement_status || tx?.meta?.reconciliation_status || "confirmed"
+    ).toLowerCase();
+    notifications.push({
+      id: `credits:${tx.id}`,
+      source: "credits",
+      title: String(tx.feature || tx.reason || "Ledger"),
+      message:
+        stateCode.includes("pending")
+          ? "Movimentação aguardando confirmação."
+          : stateCode.includes("failed") || stateCode.includes("disputed")
+            ? "Movimentação exige atenção financeira."
+            : stateCode.includes("refunded")
+              ? "Movimentação ajustada manualmente."
+              : "Movimentação confirmada no ledger.",
+      created_at: tx.created_at || nowIso(),
+      status_code:
+        stateCode.includes("pending")
+          ? "queued"
+          : stateCode.includes("failed") || stateCode.includes("disputed")
+            ? "needs_attention"
+            : stateCode.includes("refund")
+              ? "manually_resolved"
+              : "confirmed",
+      href: "/credits#credits-history",
+      meta: {
+        coin_type: tx.coin_type,
+        amount: tx.amount,
+      },
+    });
+  }
+
+  for (const project of projects.slice(0, 3)) {
+    const githubStatus = String(project?.data?.integrations?.github?.exports?.[0]?.status || "").toLowerCase();
+    if (githubStatus) {
+      notifications.push({
+        id: `project:${project.id}:github`,
+        source: "projects",
+        title: `${String(project.title || "Projeto")} • GitHub`,
+        message:
+          githubStatus.includes("retry")
+            ? "A trilha GitHub está tentando novamente."
+            : githubStatus.includes("partial")
+              ? "A trilha GitHub avançou parcialmente e ainda exige revisão."
+              : githubStatus.includes("fail") || githubStatus.includes("attention")
+                ? "A trilha GitHub exige atenção."
+                : githubStatus.includes("queued") || githubStatus.includes("running")
+                  ? "A trilha GitHub continua em andamento."
+                  : "A trilha GitHub foi confirmada.",
+        created_at: project.updated_at || project.created_at || nowIso(),
+        status_code:
+          githubStatus.includes("retry")
+            ? "retrying"
+            : githubStatus.includes("partial")
+              ? "partially_failed"
+              : githubStatus.includes("fail") || githubStatus.includes("attention")
+                ? "needs_attention"
+                : githubStatus.includes("queued") || githubStatus.includes("running")
+                  ? "running"
+                  : "confirmed",
+        href: `/editor/${project.id}`,
+      });
+    }
+  }
+
+  notifications.sort((left, right) => new Date(right.created_at).getTime() - new Date(left.created_at).getTime());
+
+  const counts = notifications.reduce((acc, item) => {
+    const key = String(item.status_code || "confirmed");
+    acc[key] = Number(acc[key] || 0) + 1;
+    return acc;
+  }, {});
+
+  return {
+    ok: true,
+    profile: {
+      id: "user_seed_1",
+      email: "qa@editorai.test",
+      created_at: nowIso(),
+      last_sign_in_at: nowIso(),
+      email_confirmed_at: nowIso(),
+      is_admin: false,
+    },
+    plan: {
+      plan_code: state.planCode,
+      status: "active",
+    },
+    wallet: {
+      ...state.wallet,
+      total:
+        Number(state.wallet?.common || 0) +
+        Number(state.wallet?.pro || 0) +
+        Number(state.wallet?.ultra || 0),
+    },
+    preferences: {
+      ...state.promptPrefs,
+    },
+    beta_access: {
+      approved: true,
+      requested: true,
+      status: "approved",
+      request_id: "req_e2e",
+      approved_at: nowIso(),
+    },
+    support: {
+      unresolved_count: supportItems.filter((item) => item.status !== "resolved").length,
+      recent: supportItems.slice(0, 6),
+    },
+    financial: {
+      recent: transactions.slice(0, 8),
+    },
+    projects: {
+      recent: projects.slice(0, 8),
+    },
+    notifications: {
+      items: notifications.slice(0, 18),
+      counts,
+    },
+  };
+}
+
 export function createMockApiState() {
   return {
     planCode: "EDITOR_FREE",
@@ -346,8 +495,19 @@ export function createMockApiState() {
         category: "problema_tecnico",
         subject: "Fila de exportação atrasada",
         message: "A exportação demorou mais do que o esperado e precisei revisar o status manualmente.",
-        status: "open",
-        admin_note: null,
+        status: "in_review",
+        admin_note: "Equipe acompanhando o publish.",
+        metadata: {
+          support_ref: "SUP-SEED-1",
+          queue_label: "Publicação",
+          owner_label: "Ops",
+          resolution_summary: null,
+          next_step: "Aguardar nova tentativa automática.",
+          lifecycle: [
+            { at: nowIso(), summary: "Caso aberto", queue_label: "Atendimento" },
+            { at: nowIso(), summary: "Triagem iniciada", queue_label: "Publicação", owner_label: "Ops" },
+          ],
+        },
         created_at: nowIso(),
         updated_at: nowIso(),
       },
@@ -367,6 +527,14 @@ export function createMockApiState() {
     promptPrefs: {
       prompt_auto_enabled: true,
       prompt_auto_apply: true,
+      prompt_auto_dont_ask_again: false,
+      ai_execution_mode_preference: "automatic_quality",
+      language: "pt-BR",
+      notification_inbox_enabled: true,
+      notification_toasts_enabled: true,
+      notification_support_updates: true,
+      notification_financial_updates: true,
+      notification_async_updates: true,
     },
   };
 }
@@ -399,6 +567,11 @@ export async function attachMockApi(context, state) {
         ...parseJson(request),
       };
       await route.fulfill(json({ ok: true, prefs: state.promptPrefs }));
+      return;
+    }
+
+    if (path === "/api/account/overview" && method === "GET") {
+      await route.fulfill(json(buildAccountOverview(state)));
       return;
     }
 
@@ -556,7 +729,14 @@ export async function attachMockApi(context, state) {
         message: String(body?.message || ""),
         status: "open",
         admin_note: null,
+        metadata: {
+          support_ref: `SUP-E2E-${state.nextSupportRequestId}`,
+          queue_label: "Atendimento",
+          owner_label: null,
+          lifecycle: [{ at: nowIso(), summary: "Caso aberto", queue_label: "Atendimento" }],
+        },
         created_at: nowIso(),
+        updated_at: nowIso(),
       };
       state.supportRequests = [item, ...state.supportRequests];
       await route.fulfill(json({ ok: true, item }));
@@ -576,7 +756,13 @@ export async function attachMockApi(context, state) {
         id,
         title: String(body?.title || "Projeto sem título"),
         kind: String(body?.kind || "text"),
-        data: body?.data || {},
+        data: body?.data || {
+          integrations: {
+            github: {
+              exports: [{ id: `gh_${id}`, status: "retrying", exportedAt: nowIso() }],
+            },
+          },
+        },
         content: body?.content || null,
       });
       state.projects.set(id, item);

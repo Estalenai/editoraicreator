@@ -38,6 +38,7 @@ import plansCatalogRoutes from "./src/routes/plansCatalogRoutes.js";
 import enterpriseRoutes from "./src/routes/enterpriseRoutes.js";
 import launchRoutes from "./src/routes/launchRoutes.js";
 import betaAccessRoutes from "./src/routes/betaAccessRoutes.js";
+import accountRoutes from "./src/routes/accountRoutes.js";
 import supabaseAdmin, { isSupabaseAdminEnabled } from "./src/config/supabaseAdmin.js";
 
 import { notFound } from "./src/middlewares/notFound.js";
@@ -141,6 +142,7 @@ app.use("/api/creator-post", creatorPostRoutes);
 app.use("/api/creator-music", creatorMusicRoutes);
 app.use("/api/no-code", noCodeRoutes);
 app.use("/api/support", supportRoutes);
+app.use("/api/account", accountRoutes);
 app.use("/api/live-cuts", liveCutsRoutes);
 app.use("/api/social", socialRoutes);
 app.use("/api/github", githubRoutes);
