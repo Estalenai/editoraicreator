@@ -2,6 +2,7 @@ import "./globals.css";
 import { AppTopNav } from "../components/navigation/AppTopNav";
 import { MotionRuntime } from "../components/ui/MotionRuntime";
 import { AuthSessionBridge } from "../components/auth/AuthSessionBridge";
+import { FrontendErrorBridge } from "../components/observability/FrontendErrorBridge";
 
 export const metadata = {
   title: "Editor AI Creator",
@@ -14,6 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="app-root-body">
         <MotionRuntime />
         <AuthSessionBridge />
+        <FrontendErrorBridge />
         <div className="app-shell-bg">
           <div className="app-shell-wrapper">
             <div className="app-shell-frame app-shell-system layout-contract-shell">

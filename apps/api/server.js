@@ -46,6 +46,7 @@ import { globalLimiter } from "./src/middlewares/rateLimit.js";
 import { logger } from "./src/utils/logger.js";
 import { authMiddleware } from "./src/middlewares/authMiddleware.js";
 import { adminOnly } from "./src/utils/adminAuth.js";
+import { requestContext } from "./src/middlewares/requestContext.js";
 
 const app = express();
 
@@ -71,6 +72,7 @@ const allowedOrigins = getAllowedOrigins();
 
 app.set("trust proxy", isProduction ? 1 : 0);
 
+app.use(requestContext);
 app.use(helmet());
 app.use(
   cors({
@@ -86,7 +88,9 @@ app.use(
     credentials: !isProduction,
   })
 );
-app.use(morgan("dev"));
+if (!isProduction) {
+  app.use(morgan("dev"));
+}
 app.use(globalLimiter);
 
 // Stripe webhook uses raw body and must be mounted before global JSON parser.

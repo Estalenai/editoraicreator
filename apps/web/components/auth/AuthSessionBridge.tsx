@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { supabase } from "../../lib/supabaseClient";
 import { clearServerSession, getSessionSyncSignature, syncServerSession } from "../../lib/clientSessionSync";
+import { normalizeFrontendErrorPayload, reportFrontendEvent } from "../../lib/observability";
 
 export function AuthSessionBridge() {
   const lastSignatureRef = useRef<string>("");
@@ -23,8 +24,8 @@ export function AuthSessionBridge() {
         if (active) {
           lastSignatureRef.current = signature;
         }
-      } catch {
-        // Keep the UI running even if the server session sync fails.
+      } catch (error) {
+        reportFrontendEvent("auth_session_sync_failed", normalizeFrontendErrorPayload(error));
       }
     }
 

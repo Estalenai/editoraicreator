@@ -2,6 +2,7 @@ import { supabase } from "./supabaseClient";
 import { createIdempotencyKey } from "./idempotencyKey";
 import { extractApiErrorMessage } from "./uiFeedback";
 import type { NoCodeRuntimeSnapshot } from "./noCodeRuntime";
+import { createClientRequestId, getClientSessionId, getCurrentClientRoute, reportFrontendEvent } from "./observability";
 
 const DEV_DEFAULT_API_URL = "http://127.0.0.1:3000";
 const DEV_FALLBACK_API_URL = "http://127.0.0.1:3100";
@@ -96,6 +97,14 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
   if (!headers.has("Accept")) headers.set("Accept", "application/json");
   const method = String(options.method || "GET").toUpperCase();
   const { signal, cleanup } = createRequestSignal(options.signal);
+  const requestId = createClientRequestId();
+  const startedAt = Date.now();
+
+  headers.set("X-Request-Id", requestId);
+  if (typeof window !== "undefined") {
+    headers.set("X-Client-Route", getCurrentClientRoute());
+    headers.set("X-Client-Session-Id", getClientSessionId());
+  }
 
   const requestOptions: RequestInit = {
     ...options,
@@ -111,7 +120,16 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
   try {
     return await fetch(primaryUrl, requestOptions);
   } catch (error) {
+    const durationMs = Date.now() - startedAt;
     if (isAbortLikeError(error)) {
+      reportFrontendEvent("frontend_api_failure", {
+        requestId,
+        path,
+        method,
+        durationMs,
+        message: "A API demorou demais para responder.",
+        phase: "primary_timeout",
+      });
       throw new Error("A API demorou demais para responder.");
     }
 
@@ -127,15 +145,40 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
       try {
         return await fetch(fallbackUrl, fallbackRequestOptions);
       } catch (fallbackError) {
+        const fallbackDurationMs = Date.now() - startedAt;
         if (isAbortLikeError(fallbackError)) {
+          reportFrontendEvent("frontend_api_failure", {
+            requestId,
+            path,
+            method,
+            durationMs: fallbackDurationMs,
+            message: "A API demorou demais para responder.",
+            phase: "fallback_timeout",
+          });
           throw new Error("A API demorou demais para responder.");
         }
+        reportFrontendEvent("frontend_api_failure", {
+          requestId,
+          path,
+          method,
+          durationMs: fallbackDurationMs,
+          message: "Não foi possível conectar com a API (3000/3100).",
+          phase: "fallback_network_error",
+        });
         throw new Error("Não foi possível conectar com a API (3000/3100).");
       } finally {
         fallbackSignalState.cleanup();
       }
     }
 
+    reportFrontendEvent("frontend_api_failure", {
+      requestId,
+      path,
+      method,
+      durationMs,
+      message: "Não foi possível conectar com a API.",
+      phase: "primary_network_error",
+    });
     throw new Error("Não foi possível conectar com a API.");
   } finally {
     cleanup();
@@ -158,7 +201,21 @@ async function apiJson(path: string, options: RequestInit = {}) {
   const res = await apiFetch(path, options);
   const payload = await readJsonSafe(res);
   if (!res.ok) {
-    throw new Error(extractApiErrorMessage(payload, "Erro ao comunicar com a API"));
+    const message = extractApiErrorMessage(payload, "Erro ao comunicar com a API");
+    const requestId = res.headers.get("X-Request-Id") || undefined;
+    reportFrontendEvent("frontend_api_failure", {
+      requestId,
+      path,
+      method: String(options.method || "GET").toUpperCase(),
+      statusCode: res.status,
+      responseError: payload?.error || null,
+      message,
+      phase: "http_error",
+    });
+    const error = new Error(message) as Error & { requestId?: string; statusCode?: number };
+    error.requestId = requestId;
+    error.statusCode = res.status;
+    throw error;
   }
   return payload;
 }
