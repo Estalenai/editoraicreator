@@ -196,7 +196,31 @@ export function createMockApiState() {
     quotes: new Map(),
     clipJobs: new Map(),
     transactions: [],
-    supportRequests: [],
+    supportRequests: [
+      {
+        id: "support_seed_1",
+        user_id: "user_seed_1",
+        category: "problema_tecnico",
+        subject: "Fila de exportação atrasada",
+        message: "A exportação demorou mais do que o esperado e precisei revisar o status manualmente.",
+        status: "open",
+        admin_note: null,
+        created_at: nowIso(),
+        updated_at: nowIso(),
+      },
+    ],
+    betaAccessRequests: [
+      {
+        id: "beta_seed_1",
+        email: "beta@editorai.test",
+        user_id: "user_seed_beta_1",
+        status: "pending",
+        admin_note: null,
+        created_at: nowIso(),
+        updated_at: nowIso(),
+        approved_at: null,
+      },
+    ],
     promptPrefs: {
       prompt_auto_enabled: true,
       prompt_auto_apply: true,
@@ -210,6 +234,11 @@ export async function attachMockApi(context, state) {
     const method = request.method().toUpperCase();
     const url = new URL(request.url());
     const path = url.pathname;
+
+    if (path === "/api/auth/session" || path === "/api/observability/frontend-error") {
+      await route.continue();
+      return;
+    }
 
     if (method === "OPTIONS") {
       await route.fulfill({ status: 204, headers: JSON_HEADERS, body: "" });
@@ -260,13 +289,54 @@ export async function attachMockApi(context, state) {
       return;
     }
 
+    if (path === "/api/usage/limits") {
+      await route.fulfill(
+        json({
+          items: state.usageItems.map((item) => ({
+            feature: item.feature,
+            used: item.used,
+            limit: item.limit,
+            remaining: Math.max(0, Number(item.limit || 0) - Number(item.used || 0)),
+          })),
+        })
+      );
+      return;
+    }
+
     if (path === "/api/coins/transactions") {
       await route.fulfill(json({ transactions: state.transactions }));
       return;
     }
 
-    if (path === "/api/plans/catalog") {
-      await route.fulfill(json({ plans: [] }));
+    if (path === "/api/coins/packages/status" && method === "GET") {
+      const quoteId = String(url.searchParams.get("quote_id") || "").trim();
+      const quote = quoteId ? state.quotes.get(quoteId) : null;
+      await route.fulfill(
+        json({
+          ok: true,
+          quote: quote
+            ? {
+                quote_id: quote.quote_id,
+                package_total: quote.package_total,
+                breakdown: quote.breakdown,
+                used_at: nowIso(),
+                checkout_session_id: `cs_pkg_status_${quoteId}`,
+                payment_intent_id: `pi_pkg_status_${quoteId}`,
+              }
+            : null,
+          wallet: { ...state.wallet },
+        })
+      );
+      return;
+    }
+
+    if (path === "/api/github/connection" && method === "GET") {
+      await route.fulfill(json({ connected: false, connection: null }));
+      return;
+    }
+
+    if (path === "/api/vercel/connection" && method === "GET") {
+      await route.fulfill(json({ connected: false, connection: null }));
       return;
     }
 
@@ -290,6 +360,35 @@ export async function attachMockApi(context, state) {
 
     if (path === "/api/support/requests/me" && method === "GET") {
       await route.fulfill(json({ items: state.supportRequests }));
+      return;
+    }
+
+    if (path === "/api/support/admin/requests" && method === "GET") {
+      const statusFilter = String(url.searchParams.get("status") || "").trim();
+      const categoryFilter = String(url.searchParams.get("category") || "").trim();
+      const items = state.supportRequests.filter((item) => {
+        if (statusFilter && item.status !== statusFilter) return false;
+        if (categoryFilter && item.category !== categoryFilter) return false;
+        return true;
+      });
+      await route.fulfill(json({ items }));
+      return;
+    }
+
+    const supportAdminStatusMatch = path.match(/^\/api\/support\/admin\/requests\/([^/]+)\/status$/);
+    if (supportAdminStatusMatch && method === "PATCH") {
+      const body = parseJson(request);
+      state.supportRequests = state.supportRequests.map((item) =>
+        item.id === supportAdminStatusMatch[1]
+          ? {
+              ...item,
+              status: String(body?.status || item.status),
+              admin_note: String(body?.admin_note || item.admin_note || ""),
+              updated_at: nowIso(),
+            }
+          : item
+      );
+      await route.fulfill(json({ ok: true }));
       return;
     }
 
@@ -436,6 +535,21 @@ export async function attachMockApi(context, state) {
       return;
     }
 
+    if (path === "/api/no-code/runtime" && method === "GET") {
+      await route.fulfill(
+        json({
+          ok: true,
+          automations: [],
+          connectors: [],
+          templates: [
+            { id: "tpl_video", kind: "video", label: "Projeto de Vídeo" },
+            { id: "tpl_text", kind: "text", label: "Projeto de Texto" },
+          ],
+        })
+      );
+      return;
+    }
+
     if (path === "/api/stripe/checkout/session" && method === "POST") {
       const body = parseJson(request);
       state.pendingPlanCode = String(body?.plan_code || "").trim() || null;
@@ -522,6 +636,167 @@ export async function attachMockApi(context, state) {
         json({
           ok: true,
           conversion: { from, to, converted_amount: amount, fee_amount, debited_amount, fee_percent, plan: state.planCode },
+        })
+      );
+      return;
+    }
+
+    if (path === "/api/beta-access/admin/requests" && method === "GET") {
+      const statusFilter = String(url.searchParams.get("status") || "").trim();
+      const items = state.betaAccessRequests.filter((item) => !statusFilter || item.status === statusFilter);
+      await route.fulfill(json({ items }));
+      return;
+    }
+
+    const betaAdminRequestMatch = path.match(/^\/api\/beta-access\/admin\/requests\/([^/]+)$/);
+    if (betaAdminRequestMatch && method === "PATCH") {
+      const body = parseJson(request);
+      const nextStatus = String(body?.status || "pending");
+      state.betaAccessRequests = state.betaAccessRequests.map((item) =>
+        item.id === betaAdminRequestMatch[1]
+          ? {
+              ...item,
+              status: nextStatus,
+              admin_note: String(body?.admin_note || item.admin_note || ""),
+              updated_at: nowIso(),
+              approved_at: nextStatus === "approved" ? nowIso() : null,
+            }
+          : item
+      );
+      await route.fulfill(
+        json({
+          ok: true,
+          email_notification:
+            nextStatus === "approved"
+              ? { sent: true, provider: "e2e" }
+              : null,
+        })
+      );
+      return;
+    }
+
+    if (path === "/api/admin/overview" && method === "GET") {
+      await route.fulfill(
+        json({
+          ok: true,
+          metrics: {
+            total_users: 42,
+            active_users: 17,
+            open_support_requests: state.supportRequests.filter((item) => item.status !== "resolved").length,
+            pending_beta_requests: state.betaAccessRequests.filter((item) => item.status === "pending").length,
+          },
+          usage: state.usageItems,
+          plans: [
+            { plan_code: "EDITOR_FREE", total: 18 },
+            { plan_code: "EDITOR_PRO", total: 16 },
+            { plan_code: "EDITOR_ULTRA", total: 8 },
+          ],
+        })
+      );
+      return;
+    }
+
+    if (path === "/api/status" && method === "GET") {
+      await route.fulfill(
+        json({
+          ok: true,
+          uptime_seconds: 86400,
+          routing_defaults: {
+            default_mode: "balanced",
+            recommended_mode: "balanced",
+          },
+          metrics_snapshot: {
+            total_usage_samples: 120,
+            total_metrics_logged: 312,
+          },
+          internal_cost_totals: {
+            global: {
+              total_cost_score: 0.42,
+            },
+          },
+        })
+      );
+      return;
+    }
+
+    if (path === "/api/dashboard/errors" && method === "GET") {
+      await route.fulfill(
+        json({
+          items: [
+            { error: "timeout", count: 2 },
+            { error: "provider_unavailable", count: 1 },
+          ],
+        })
+      );
+      return;
+    }
+
+    if (path === "/api/dashboard/routing" && method === "GET") {
+      await route.fulfill(
+        json({
+          modes: {
+            balanced: 18,
+            fast: 9,
+            premium: 6,
+          },
+          providers: [
+            { provider: "openai", count: 20 },
+            { provider: "fallback", count: 4 },
+          ],
+        })
+      );
+      return;
+    }
+
+    if (path === "/api/events/recent" && method === "GET") {
+      await route.fulfill(
+        json({
+          items: [
+            { event: "auth.login.success", userId: "user_seed_1", plan: "EDITOR_PRO", timestamp: nowIso() },
+            { event: "project.exported", userId: "user_seed_1", plan: "EDITOR_PRO", timestamp: nowIso() },
+          ],
+        })
+      );
+      return;
+    }
+
+    if (path === "/api/admin/users/search" && method === "GET") {
+      const query = String(url.searchParams.get("q") || "").trim();
+      await route.fulfill(
+        json({
+          items: query
+            ? [
+                {
+                  id: "user_seed_1",
+                  email: "qa@editorai.test",
+                  full_name: "QA Editor",
+                  plan_code: state.planCode,
+                },
+              ]
+            : [],
+        })
+      );
+      return;
+    }
+
+    const adminUserTimelineMatch = path.match(/^\/api\/admin\/user\/([^/]+)\/timeline$/);
+    if (adminUserTimelineMatch && method === "GET") {
+      await route.fulfill(
+        json({
+          items: [
+            {
+              id: `timeline_${adminUserTimelineMatch[1]}_1`,
+              event: "project.saved",
+              created_at: nowIso(),
+              metadata: { projectId: "proj_1" },
+            },
+            {
+              id: `timeline_${adminUserTimelineMatch[1]}_2`,
+              event: "credits.converted",
+              created_at: nowIso(),
+              metadata: { from: "common", to: "pro" },
+            },
+          ],
         })
       );
       return;

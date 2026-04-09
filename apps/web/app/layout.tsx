@@ -13,6 +13,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="pt-BR">
       <body className="app-root-body">
+        <a href="#app-main-content" className="app-skip-link">
+          Pular para o conteúdo
+        </a>
         <MotionRuntime />
         <AuthSessionBridge />
         <FrontendErrorBridge />
@@ -31,7 +34,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </header>
               <div className="app-shell-body app-shell-workspace layout-contract-workspace">
                 <AppTopNav />
-                <main className="app-shell-main app-shell-canvas layout-contract-main">{children}</main>
+                <main
+                  id="app-main-content"
+                  tabIndex={-1}
+                  className="app-shell-main app-shell-canvas layout-contract-main"
+                >
+                  {children}
+                </main>
               </div>
             </div>
           </div>

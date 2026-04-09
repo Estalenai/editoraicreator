@@ -73,6 +73,38 @@ body {
   overflow-x: clip;
 }
 
+.app-skip-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 1200;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(188, 235, 255, 0.24);
+  background:
+    linear-gradient(180deg, rgba(11, 22, 42, 0.96), rgba(8, 16, 30, 0.94)),
+    rgba(7, 13, 24, 0.96);
+  color: var(--ea-text-strong);
+  text-decoration: none;
+  letter-spacing: 0.01em;
+  transform: translateY(-160%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 140ms ease, opacity 140ms ease;
+}
+
+.app-skip-link:focus,
+.app-skip-link:focus-visible {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+  outline: none;
+  box-shadow:
+    0 0 0 1px rgba(75, 232, 255, 0.72),
+    0 0 0 4px rgba(75, 232, 255, 0.18),
+    0 16px 34px rgba(1, 10, 30, 0.28);
+}
+
 .app-shell-body {
   display: grid;
   grid-template-columns: minmax(0, 1fr);

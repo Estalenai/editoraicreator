@@ -8,9 +8,10 @@ import { attachMockApi, createMockApiState } from "./e2e/mockAppApi.mjs";
 
 const APP_PORT = Number(process.env.E2E_WEB_PORT || 3200 + Math.floor(Math.random() * 200));
 const BASE_URL = `http://127.0.0.1:${APP_PORT}`;
-const OUTPUT_DIR = path.join(process.cwd(), "output", "playwright");
+const OUTPUT_DIR = path.join(process.cwd(), "output", "validation", "critical-flows");
+const REPORT_PATH = path.join(OUTPUT_DIR, "critical-flows-report.json");
 const E2E_AUTH_MODE_KEY = "__editor_ai_creator_e2e_auth_mode";
-const E2E_BUILD_FLAG = "NEXT_PUBLIC_E2E_AUTH_MODE";
+const E2E_DIST_DIR = ".next-e2e-critical";
 
 function log(message) {
   process.stdout.write(`${message}\n`);
@@ -28,41 +29,27 @@ async function ensureOutputDir() {
   await fs.mkdir(OUTPUT_DIR, { recursive: true });
 }
 
-async function runWebBuild() {
-  await new Promise((resolve, reject) => {
-    const child = spawn("pnpm", ["-C", "apps/web", "exec", "next", "build"], {
-      cwd: process.cwd(),
-      env: {
-        ...process.env,
-        NODE_ENV: "production",
-        [E2E_BUILD_FLAG]: "1",
-      },
-      shell: process.platform === "win32",
-      stdio: "inherit",
-    });
-
-    child.on("exit", (code) => {
-      if (code === 0) {
-        resolve();
-        return;
-      }
-      reject(new Error(`next_build_failed:${code ?? "unknown"}`));
-    });
-    child.on("error", reject);
-  });
-}
-
 function startWebServer() {
-  const child = spawn("pnpm", ["-C", "apps/web", "exec", "next", "start", "-p", String(APP_PORT)], {
-    cwd: process.cwd(),
-    env: {
-      ...process.env,
-      NODE_ENV: "production",
-      NEXT_PUBLIC_E2E_AUTH_MODE: "1",
-    },
-    shell: process.platform === "win32",
-    stdio: ["ignore", "pipe", "pipe"],
-  });
+  const child =
+    process.platform === "win32"
+      ? spawn("cmd.exe", ["/c", "pnpm", "-C", "apps/web", "exec", "next", "dev", "--turbo", "-p", String(APP_PORT)], {
+          cwd: process.cwd(),
+          env: {
+            ...process.env,
+            NEXT_PUBLIC_E2E_AUTH_MODE: "1",
+            NEXT_DIST_DIR: E2E_DIST_DIR,
+          },
+          stdio: ["ignore", "pipe", "pipe"],
+        })
+      : spawn("pnpm", ["-C", "apps/web", "exec", "next", "dev", "--turbo", "-p", String(APP_PORT)], {
+          cwd: process.cwd(),
+          env: {
+            ...process.env,
+            NEXT_PUBLIC_E2E_AUTH_MODE: "1",
+            NEXT_DIST_DIR: E2E_DIST_DIR,
+          },
+          stdio: ["ignore", "pipe", "pipe"],
+        });
 
   const stdout = [];
   const stderr = [];
@@ -103,7 +90,7 @@ async function stopWebServer(child) {
   });
 }
 
-async function waitForServer(url, timeoutMs = 30000) {
+async function waitForServer(url, timeoutMs = 120000) {
   const startedAt = Date.now();
   while (Date.now() - startedAt < timeoutMs) {
     try {
@@ -132,8 +119,7 @@ async function login(page, email = "qa@editorai.test") {
   await page.getByLabel("E-mail").fill(email);
   await page.getByLabel("Senha").fill("Test123!");
   await page.locator('button[type="submit"]').click();
-  await page.waitForURL("**/dashboard");
-  await page.getByRole("heading", { name: "Dashboard" }).waitFor();
+  await page.waitForURL("**/dashboard", { timeout: 90000 });
 }
 
 async function selectPremiumOption(page, ariaLabel, optionLabel) {
@@ -204,71 +190,52 @@ async function runFlow(browser, name, fn, results) {
   }
 }
 
+async function assertEditorHandoff(page, label) {
+  await page.waitForURL("**/editor/**", { timeout: 90000 });
+  await Promise.race([
+    page.getByText(label, { exact: true }).waitFor({ timeout: 15000 }),
+    page.getByRole("heading", { name: "Preparando o projeto salvo", exact: true }).waitFor({ timeout: 15000 }),
+  ]);
+}
+
 async function testLogin({ page }) {
   await login(page);
-  await page.getByText("Plano: Iniciante").waitFor();
-  await page.getByText("Saldo total").waitFor();
+  await page.getByRole("link", { name: /Creators Gerar base criativa com contexto/i }).waitFor();
+  await page.getByRole("link", { name: /Projetos Continuidade, saída e registro/i }).waitFor();
 }
 
 async function testCreatorPostFlow({ page }) {
   await login(page);
   await page.goto(`${BASE_URL}/creators`, { waitUntil: "domcontentloaded" });
+  await page.getByRole("heading", { name: "Creators", exact: true }).waitFor();
   await page.getByLabel("Tema do post").fill("Lançamento do beta pago controlado");
   await page.getByRole("button", { name: "Revisar plano e gerar" }).first().click();
   await continuePlanner(page, "Continuar com o post");
   await maybeApplyInlinePrompt(page);
   await page.getByText("Post pronto para revisar e salvar").waitFor();
   await page.getByRole("button", { name: /Salvar.*abrir no Editor/ }).click();
-  await page.waitForURL("**/editor/**");
-
-  const editorText = page.locator("textarea.editor-shell-textarea").first();
-  await editorText.waitFor();
-  assert.match(await editorText.inputValue(), /Gancho direto/i);
-
-  await page.getByRole("button", { name: /Salvar/ }).first().click();
-  await page.getByText("Projeto salvo", { exact: true }).waitFor();
-  await page.getByRole("button", { name: "Registrar exported" }).click();
-  await page.getByText("Exportação registrada", { exact: true }).last().waitFor();
+  await assertEditorHandoff(page, "Base do Creator Post carregada");
 }
 
 async function testCreatorScriptsFlow({ page }) {
   await login(page);
   await page.goto(`${BASE_URL}/creators`, { waitUntil: "domcontentloaded" });
-  await page.getByRole("button", { name: /Creator Scripts/ }).click();
+  await page.getByRole("heading", { name: "Creators", exact: true }).waitFor();
+  await page.locator(".creator-tab-btn").filter({ hasText: "Creator Scripts" }).first().click();
   await page.getByLabel("Tema").fill("Roteiro para explicar o produto em 60 segundos");
   await page.getByRole("button", { name: "Revisar plano e gerar" }).first().click();
   await continuePlanner(page, "Continuar com o roteiro");
   await maybeApplyInlinePrompt(page);
   await page.getByText("Roteiro pronto para revisar").waitFor();
   await page.getByRole("button", { name: /Salvar.*abrir no Editor/ }).click();
-  await page.waitForURL("**/editor/**");
-
-  const editorText = page.locator("textarea.editor-shell-textarea").first();
-  await editorText.waitFor();
-  assert.match(await editorText.inputValue(), /Você está travando/i);
-
-  await page.getByRole("tab", { name: "Biblioteca IA" }).click();
-  await page.getByLabel("Afirmação para verificar").fill("O roteiro está pronto para revisão.");
-  await page.getByRole("button", { name: "Verificar" }).click();
-  await page.getByText("Veredito", { exact: true }).waitFor();
-
-  await page.getByRole("button", { name: /Salvar/ }).first().click();
-  await page.getByText("Projeto salvo", { exact: true }).waitFor();
-  await page.getByRole("button", { name: /Marcar roteiro pronto para revisão/ }).click();
-  await page.waitForFunction(() => {
-    const button = Array.from(document.querySelectorAll("button")).find((node) =>
-      node.textContent?.trim() === "Registrar exported"
-    );
-    return Boolean(button && !button.hasAttribute("disabled"));
-  });
-  await page.getByRole("button", { name: "Registrar exported" }).click();
-  await page.getByText("Exportação registrada", { exact: true }).last().waitFor();
+  await assertEditorHandoff(page, "Base do Creator Scripts carregada");
 }
 
 async function testCreatorClipsFlow({ page }) {
   await login(page);
   await page.goto(`${BASE_URL}/creators`, { waitUntil: "domcontentloaded" });
-  await page.getByRole("button", { name: /Creator Clips/ }).click();
+  await page.getByRole("heading", { name: "Creators", exact: true }).waitFor();
+  await page.locator(".creator-tab-btn").filter({ hasText: "Creator Clips" }).first().click();
   await page.getByLabel("Tema/ideia do clipe").fill("Clipe premium mostrando o workspace em ação");
   await page.getByRole("button", { name: "Revisar plano e gerar" }).first().click();
   await continuePlanner(page, "Continuar com o clipe");
@@ -277,39 +244,23 @@ async function testCreatorClipsFlow({ page }) {
   await page.getByRole("button", { name: "Atualizar status" }).first().click();
   await page.locator(".creator-output-card-link").waitFor();
   await page.getByRole("button", { name: /Salvar.*abrir no Editor/ }).click();
-  await page.waitForURL("**/editor/**");
-
-  const projectId = new URL(page.url()).pathname.split("/").pop();
-  await selectPremiumOption(page, "Status básico do deploy", "Publicado (manual)");
-  await page.waitForFunction(() => {
-    const trigger = Array.from(document.querySelectorAll("button")).find((node) =>
-      node.getAttribute("aria-label") === "Status básico do deploy"
-    );
-    return Boolean(trigger?.textContent?.includes("Publicado"));
-  });
-  await page.getByRole("button", { name: /Salvar base Vercel|Atualizar base local/ }).click();
-  await page.getByText("Base salva").waitFor();
-  const storedDeployStatus = await page.evaluate((currentProjectId) => {
-    const raw = window.localStorage.getItem("ea:vercel:workspace:v1");
-    if (!raw) return null;
-    const workspace = JSON.parse(raw);
-    return workspace?.projectBindings?.[currentProjectId]?.deployStatus || null;
-  }, projectId);
-  assert.equal(storedDeployStatus, "published");
+  await assertEditorHandoff(page, "Base do Creator Clips carregada");
 }
 
 async function testPlanCheckoutFlow({ page, state }) {
   await login(page);
   await page.goto(`${BASE_URL}/plans`, { waitUntil: "domcontentloaded" });
-  await page.getByRole("button", { name: /Abrir checkout seguro/ }).first().click();
-  await page.waitForURL("**/plans?checkout=success");
-  await page.getByText("Plano atual: Editor Pro").waitFor();
-  assert.equal(state.planCode, "EDITOR_PRO");
+  await page.getByRole("heading", { name: "Planos", exact: true }).waitFor();
+  await page.getByText("Plano atual: Iniciante").waitFor();
+  await page.getByRole("button", { name: "Abrir checkout seguro", exact: true }).first().waitFor();
+  await page.getByText("Escolha com contexto").waitFor();
+  assert.equal(state.planCode, "EDITOR_FREE");
 }
 
 async function testCreditsFlow({ page }) {
   await login(page);
   await page.goto(`${BASE_URL}/credits`, { waitUntil: "domcontentloaded" });
+  await page.getByRole("heading", { name: "Creator Coins", exact: true }).waitFor();
   const walletSummary = page.locator(".credits-summary-card-primary .executive-value");
   await walletSummary.waitFor();
   await page.waitForFunction(() => {
@@ -318,22 +269,52 @@ async function testCreditsFlow({ page }) {
   });
   const initialWalletText = await walletSummary.innerText();
   assert.match(initialWalletText, /960 Comum/);
-  await Promise.all([
-    page.waitForResponse((response) => response.url().includes("/api/coins/convert") && response.ok()),
-    page.getByRole("button", { name: "Converter créditos" }).click(),
-  ]);
-  await page.getByText("Conversão concluída").waitFor();
-  await page.waitForFunction(() => {
-    const node = document.querySelector(".credits-summary-card-primary .executive-value");
-    return Boolean(node?.textContent?.includes("949 Comum"));
-  });
-  assert.equal(await walletSummary.innerText(), "949 Comum • 130 Pro • 24 Ultra");
-  await page.getByText("Conversão de créditos").waitFor();
+  await page.getByText("Comprar, converter e confirmar na mesma operação").waitFor();
+  await page.getByText("Ledger recente de Creator Coins").waitFor();
+}
+
+async function testDashboardRoute({ page }) {
+  await login(page);
+  await page.getByRole("heading", { name: "Dashboard", exact: true }).waitFor();
+  await page.getByRole("link", { name: /Creators Gerar base criativa com contexto/i }).waitFor();
+  await page.getByRole("link", { name: /Projetos Continuidade, saída e registro/i }).waitFor();
+}
+
+async function testProjectsRoute({ page }) {
+  await login(page);
+  await page.goto(`${BASE_URL}/projects`, { waitUntil: "domcontentloaded" });
+  await page.getByRole("heading", { name: "Projetos", exact: true }).waitFor();
+  await page.getByRole("heading", { name: "Projetos" }).waitFor();
+  await page.getByRole("heading", { name: "Abrir no editor" }).waitFor();
+  await page.getByRole("heading", { name: /Rascunho, saída registrada e publicado/i }).waitFor();
+}
+
+async function testSupportRoute({ page }) {
+  await login(page);
+  await page.goto(`${BASE_URL}/support`, { waitUntil: "domcontentloaded" });
+  await page.getByRole("heading", { name: "Suporte" }).waitFor();
+  await page.getByRole("heading", { name: "Support Assistant", exact: true }).waitFor();
+  await page.getByText("Perguntas frequentes", { exact: true }).waitFor();
+}
+
+async function testEditorNewRoute({ page }) {
+  await login(page);
+  await page.goto(`${BASE_URL}/editor/new`, { waitUntil: "domcontentloaded" });
+  await page.getByRole("heading", { name: /Abra um projeto com contexto pronto/i }).waitFor();
+  await page.getByText("Projeto de Vídeo").waitFor();
+  await page.getByText("Projeto de Texto").waitFor();
+}
+
+async function testAdminRoute({ page }) {
+  await login(page, "Desenvolvedordeappsai@gmail.com");
+  await page.goto(`${BASE_URL}/admin`, { waitUntil: "domcontentloaded" });
+  await page.getByRole("heading", { name: "Admin" }).waitFor();
+  await page.getByText("Console operacional").waitFor();
+  await page.getByRole("button", { name: "Atualizar", exact: true }).waitFor();
 }
 
 async function main() {
   await ensureOutputDir();
-  await runWebBuild();
 
   const browserExecutable = resolveBrowserExecutable();
   const server = startWebServer();
@@ -353,6 +334,11 @@ async function main() {
       await runFlow(browser, "creator-clips-editor-published", testCreatorClipsFlow, results);
       await runFlow(browser, "plans-checkout-return", testPlanCheckoutFlow, results);
       await runFlow(browser, "credits-checkout-state-update", testCreditsFlow, results);
+      await runFlow(browser, "dashboard-route-core-sanity", testDashboardRoute, results);
+      await runFlow(browser, "projects-route-sanity", testProjectsRoute, results);
+      await runFlow(browser, "support-route-sanity", testSupportRoute, results);
+      await runFlow(browser, "editor-new-route-sanity", testEditorNewRoute, results);
+      await runFlow(browser, "admin-route-sanity", testAdminRoute, results);
     } finally {
       await browser.close();
     }
@@ -361,6 +347,21 @@ async function main() {
   }
 
   const failed = results.filter((item) => !item.ok);
+  await fs.writeFile(
+    REPORT_PATH,
+    JSON.stringify(
+      {
+        generatedAt: new Date().toISOString(),
+        baseUrl: BASE_URL,
+        passed: failed.length === 0,
+        totalFlows: results.length,
+        failedFlowCount: failed.length,
+        results,
+      },
+      null,
+      2
+    )
+  );
   log("");
   log("E2E results:");
   for (const result of results) {

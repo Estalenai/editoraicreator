@@ -217,11 +217,10 @@ function LoginPageContent() {
               </p>
             </div>
 
-            <div className="auth-entry-toggle" role="tablist" aria-label="Modo de acesso">
+            <div className="auth-entry-toggle" role="group" aria-label="Modo de acesso">
               <button
                 type="button"
-                role="tab"
-                aria-selected={mode === "login"}
+                aria-pressed={mode === "login"}
                 data-active={mode === "login" ? "true" : "false"}
                 onClick={() => {
                   if (mode === "login") {
@@ -237,8 +236,7 @@ function LoginPageContent() {
               </button>
               <button
                 type="button"
-                role="tab"
-                aria-selected={mode === "signup"}
+                aria-pressed={mode === "signup"}
                 data-active={mode === "signup" ? "true" : "false"}
                 onClick={() => setAuthMode("signup")}
                 className={`btn-ea ${mode === "signup" ? "btn-primary" : "btn-ghost"}`}

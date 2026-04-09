@@ -542,13 +542,12 @@ export function CreditsPackagesCard({ wallet, loading = false, latestTransaction
                   <div className="credits-modal-main">
                     <section className="purchase-modal-section">
                       <div className="meta-text-ea">Formato da compra</div>
-                      <div className="purchase-mode-toggle" role="tablist" aria-label={`Formato da compra de ${CREATOR_COINS_PUBLIC_NAME}`}>
+                      <div className="purchase-mode-toggle" role="group" aria-label={`Formato da compra de ${CREATOR_COINS_PUBLIC_NAME}`}>
                         {(["packages", "custom"] as const).map((mode) => (
                           <button
                             key={mode}
                             type="button"
-                            role="tab"
-                            aria-selected={coinsPackageMode === mode}
+                            aria-pressed={coinsPackageMode === mode}
                             className="purchase-mode-toggle-btn"
                             data-active={coinsPackageMode === mode}
                             onClick={() => switchCoinsPackageMode(mode)}
