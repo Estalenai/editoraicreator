@@ -588,13 +588,6 @@ export default function AdminPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [forbidden, betaAccessFilter]);
 
-  useEffect(() => {
-    if (!forbidden) {
-      loadBetaAccessRequests();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [betaAccessFilter, forbidden]);
-
   if (forbidden) {
     return (
       <div className="page-shell admin-page admin-page-restricted">

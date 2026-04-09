@@ -212,17 +212,31 @@ async function downloadWithAuth(path: string, filename: string) {
 }
 
 export const api = {
-  async getDashboard() {
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
+  async getDashboard(sessionOverride?: {
+    accessToken?: string | null;
+    user?: { id: string; email?: string | null } | null;
+  }) {
+    let accessToken = String(sessionOverride?.accessToken || "").trim();
+    let user = sessionOverride?.user || null;
 
-    if (!session?.access_token) {
-      throw new Error("Not authenticated");
+    if (!accessToken || !user?.id) {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session?.access_token) {
+        throw new Error("Not authenticated");
+      }
+
+      accessToken = session.access_token;
+      user = {
+        id: session.user.id,
+        email: session.user.email || "",
+      };
     }
 
     const authHeaders = {
-      Authorization: `Bearer ${session.access_token}`,
+      Authorization: `Bearer ${accessToken}`,
     };
 
     const [subscription, balance, projects] = await Promise.allSettled([
@@ -248,8 +262,8 @@ export const api = {
     return {
       ok: true,
       user: {
-        id: session.user.id,
-        email: session.user.email || "",
+        id: user.id,
+        email: user.email || "",
       },
       plan: planCode,
       wallet,

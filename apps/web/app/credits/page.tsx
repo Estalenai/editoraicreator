@@ -203,6 +203,7 @@ function clearCheckoutSearchParams(keys: string[]) {
 export default function CreditsPage() {
   const {
     loading,
+    accessReady,
     error,
     email,
     planLabel,
@@ -348,10 +349,10 @@ export default function CreditsPage() {
   }, []);
 
   useEffect(() => {
-    if (!loading && !betaBlocked) {
+    if (accessReady) {
       loadTransactions();
     }
-  }, [loading, betaBlocked, loadTransactions]);
+  }, [accessReady, loadTransactions]);
 
   useEffect(() => {
     if (destinationOptions.length === 0) return;

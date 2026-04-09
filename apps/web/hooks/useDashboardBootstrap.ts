@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../lib/supabaseClient";
-import { api, apiFetch } from "../lib/api";
+import { api } from "../lib/api";
 import { resolvePlanLabel } from "../lib/planLabel";
 import { toUserFacingError } from "../lib/uiFeedback";
 
@@ -35,6 +35,7 @@ export function useDashboardBootstrap(options: Options = {}) {
   const router = useRouter();
 
   const [loading, setLoading] = useState(true);
+  const [accessResolved, setAccessResolved] = useState(false);
   const [syncingSubscription, setSyncingSubscription] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [email, setEmail] = useState("");
@@ -44,8 +45,16 @@ export function useDashboardBootstrap(options: Options = {}) {
   const [projects, setProjects] = useState<any[]>([]);
   const [betaAccess, setBetaAccess] = useState<BetaAccessState | null>(null);
 
+  const resetDashboardState = useCallback(() => {
+    setPlanLabel(null);
+    setPlanCodeRaw(null);
+    setWallet(null);
+    setProjects([]);
+  }, []);
+
   const load = useCallback(async () => {
     setLoading(true);
+    setAccessResolved(false);
     setError(null);
 
     const { data } = await supabase.auth.getSession();
@@ -59,6 +68,21 @@ export function useDashboardBootstrap(options: Options = {}) {
 
     setEmail(session.user.email ?? "");
 
+    const dashboardPromise = loadDashboard
+      ? api
+          .getDashboard({
+            accessToken: session.access_token,
+            user: {
+              id: session.user.id,
+              email: session.user.email ?? "",
+            },
+          })
+          .then(
+            (dashboard) => ({ ok: true as const, dashboard }),
+            (dashboardError) => ({ ok: false as const, dashboardError })
+          )
+      : null;
+
     try {
       const betaPayload = await api.betaAccessMe();
       const access = betaPayload?.access as BetaAccessState | undefined;
@@ -71,10 +95,8 @@ export function useDashboardBootstrap(options: Options = {}) {
           approved_at: access.approved_at || null,
           admin_bypass: Boolean(access.admin_bypass),
         });
-        setPlanLabel(null);
-        setPlanCodeRaw(null);
-        setWallet(null);
-        setProjects([]);
+        resetDashboardState();
+        setAccessResolved(true);
         setLoading(false);
         return;
       }
@@ -91,6 +113,7 @@ export function useDashboardBootstrap(options: Options = {}) {
       } else {
         setBetaAccess(null);
       }
+      setAccessResolved(true);
     } catch (betaError: any) {
       const betaMessage = String(betaError?.message || "");
       if (betaMessage.includes("beta_access_required")) {
@@ -99,10 +122,14 @@ export function useDashboardBootstrap(options: Options = {}) {
           requested: true,
           status: "pending",
         });
+        resetDashboardState();
+        setAccessResolved(true);
         setLoading(false);
         return;
       }
       setError(toUserFacingError(betaMessage, "Falha ao validar acesso do beta."));
+      resetDashboardState();
+      setAccessResolved(true);
       setLoading(false);
       return;
     }
@@ -113,26 +140,14 @@ export function useDashboardBootstrap(options: Options = {}) {
     }
 
     try {
-      const dashboard = (await api.getDashboard()) as DashboardData;
-
-      let nextPlanCodeRaw = String(dashboard.plan ?? "FREE").toUpperCase();
-      let nextPlanLabel = resolvePlanLabel(String(dashboard.plan ?? "FREE"));
-
-      try {
-        const res = await apiFetch("/api/subscriptions/me", {
-          headers: {
-            Authorization: `Bearer ${session.access_token}`,
-          },
-        });
-        if (res.ok) {
-          const subscription = await res.json().catch(() => null);
-          const planCode = String(subscription?.plan_code || "FREE").toUpperCase();
-          nextPlanCodeRaw = planCode;
-          nextPlanLabel = resolvePlanLabel(planCode || "FREE");
-        }
-      } catch {
-        // fallback para plano retornado pelo dashboard
+      const dashboardResult = await dashboardPromise;
+      if (!dashboardResult?.ok) {
+        throw dashboardResult?.dashboardError;
       }
+      const dashboard = dashboardResult.dashboard as DashboardData;
+
+      const nextPlanCodeRaw = String(dashboard.plan ?? "FREE").toUpperCase();
+      const nextPlanLabel = resolvePlanLabel(nextPlanCodeRaw);
 
       setPlanCodeRaw(nextPlanCodeRaw);
       setPlanLabel(nextPlanLabel);
@@ -140,14 +155,11 @@ export function useDashboardBootstrap(options: Options = {}) {
       setProjects(Array.isArray(dashboard.projects) ? dashboard.projects : []);
     } catch (loadError: any) {
       setError(toUserFacingError(loadError?.message, "Falha ao carregar dados da conta."));
-      setPlanCodeRaw(null);
-      setPlanLabel(null);
-      setWallet(null);
-      setProjects([]);
+      resetDashboardState();
     } finally {
       setLoading(false);
     }
-  }, [loadDashboard, router]);
+  }, [loadDashboard, resetDashboardState, router]);
 
   useEffect(() => {
     load();
@@ -181,9 +193,14 @@ export function useDashboardBootstrap(options: Options = {}) {
     () => !loading && !!betaAccess && betaAccess.approved !== true,
     [betaAccess, loading]
   );
+  const accessReady = useMemo(
+    () => accessResolved && (!betaAccess || betaAccess.approved === true),
+    [accessResolved, betaAccess]
+  );
 
   return {
     loading,
+    accessReady,
     syncingSubscription,
     error,
     email,

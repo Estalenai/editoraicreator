@@ -116,6 +116,7 @@ function usageProgress(item: UsageItem): number {
 export default function DashboardPage() {
   const {
     loading,
+    accessReady,
     syncingSubscription,
     error,
     email,
@@ -148,10 +149,10 @@ export default function DashboardPage() {
   }, []);
 
   useEffect(() => {
-    if (!loading && !betaBlocked) {
+    if (accessReady) {
       loadUsage();
     }
-  }, [loading, betaBlocked, loadUsage]);
+  }, [accessReady, loadUsage]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;

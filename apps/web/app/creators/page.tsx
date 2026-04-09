@@ -1,18 +1,12 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { Suspense, type KeyboardEvent, useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDashboardBootstrap } from "../../hooks/useDashboardBootstrap";
 import { useSectionFocus } from "../../hooks/useSectionFocus";
 import { BetaAccessBlockedView } from "../../components/waitlist/BetaAccessBlockedView";
-import { CreatorPostCard } from "../../components/dashboard/CreatorPostCard";
-import { CreatorMusicCard } from "../../components/dashboard/CreatorMusicCard";
-import { CreatorScriptCard } from "../../components/dashboard/CreatorScriptCard";
-import { CreatorAdsCard } from "../../components/dashboard/CreatorAdsCard";
-import { CreatorClipsCard } from "../../components/dashboard/CreatorClipsCard";
-import { CreatorLiveCutsCard } from "../../components/dashboard/CreatorLiveCutsCard";
-import { CreatorNoCodeCard } from "../../components/dashboard/CreatorNoCodeCard";
 import { EditorRouteLink } from "../../components/ui/EditorRouteLink";
 import { coinTypeLabel } from "../../lib/coinTypeLabel";
 import { CREATOR_COINS_PUBLIC_NAME, formatCreatorCoinsWalletSummary } from "../../lib/creatorCoins";
@@ -27,6 +21,56 @@ type CreatorTab =
   | "live-cuts"
   | "no-code";
 type CreatorsFocusSection = "showcase" | "catalog" | "workspace";
+type CreatorWorkspaceCardProps = {
+  planCode: string | null;
+  walletCommon: number;
+  onRefetch: () => Promise<void>;
+};
+
+function CreatorWorkspacePanelSkeleton() {
+  return (
+    <div className="creators-loading-card layout-contract-card">
+      <div className="premium-skeleton premium-skeleton-line" style={{ width: "40%" }} />
+      <div className="premium-skeleton premium-skeleton-line" style={{ width: "78%" }} />
+      <div className="premium-skeleton premium-skeleton-card" />
+      <div className="premium-skeleton premium-skeleton-card" />
+    </div>
+  );
+}
+
+const CreatorPostCard = dynamic<CreatorWorkspaceCardProps>(
+  () => import("../../components/dashboard/CreatorPostCard").then((mod) => mod.CreatorPostCard),
+  { loading: () => <CreatorWorkspacePanelSkeleton /> }
+);
+const CreatorMusicCard = dynamic<CreatorWorkspaceCardProps>(
+  () => import("../../components/dashboard/CreatorMusicCard").then((mod) => mod.CreatorMusicCard),
+  { loading: () => <CreatorWorkspacePanelSkeleton /> }
+);
+const CreatorScriptCard = dynamic<CreatorWorkspaceCardProps>(
+  () => import("../../components/dashboard/CreatorScriptCard").then((mod) => mod.CreatorScriptCard),
+  { loading: () => <CreatorWorkspacePanelSkeleton /> }
+);
+const CreatorAdsCard = dynamic<CreatorWorkspaceCardProps>(
+  () => import("../../components/dashboard/CreatorAdsCard").then((mod) => mod.CreatorAdsCard),
+  { loading: () => <CreatorWorkspacePanelSkeleton /> }
+);
+const CreatorClipsCard = dynamic<CreatorWorkspaceCardProps>(
+  () => import("../../components/dashboard/CreatorClipsCard").then((mod) => mod.CreatorClipsCard),
+  { loading: () => <CreatorWorkspacePanelSkeleton /> }
+);
+const CreatorLiveCutsCard = dynamic<CreatorWorkspaceCardProps>(
+  () =>
+    import("../../components/dashboard/CreatorLiveCutsCard").then((mod) => ({
+      default: function CreatorLiveCutsWorkspaceCard() {
+        return <mod.CreatorLiveCutsCard />;
+      },
+    })),
+  { loading: () => <CreatorWorkspacePanelSkeleton /> }
+);
+const CreatorNoCodeCard = dynamic<CreatorWorkspaceCardProps>(
+  () => import("../../components/dashboard/CreatorNoCodeCard").then((mod) => mod.CreatorNoCodeCard),
+  { loading: () => <CreatorWorkspacePanelSkeleton /> }
+);
 
 type CreatorGroupId = "hero" | "secondary" | "labs";
 
@@ -682,12 +726,7 @@ function CreatorsPageContent() {
 
         <div className="creator-workspace-main layout-contract-panel" data-reveal data-reveal-delay="180">
           {initialLoading ? (
-            <div className="creators-loading-card layout-contract-card">
-              <div className="premium-skeleton premium-skeleton-line" style={{ width: "40%" }} />
-              <div className="premium-skeleton premium-skeleton-line" style={{ width: "78%" }} />
-              <div className="premium-skeleton premium-skeleton-card" />
-              <div className="premium-skeleton premium-skeleton-card" />
-            </div>
+            <CreatorWorkspacePanelSkeleton />
           ) : (
             <div className="creator-workspace-main-stack">
               {loading ? (
@@ -741,7 +780,13 @@ function CreatorsPageContent() {
               {activeTab === "scripts" ? <CreatorScriptCard planCode={planCodeRaw} walletCommon={walletCommon} onRefetch={refresh} /> : null}
               {activeTab === "ads" ? <CreatorAdsCard planCode={planCodeRaw} walletCommon={walletCommon} onRefetch={refresh} /> : null}
               {activeTab === "clips" ? <CreatorClipsCard planCode={planCodeRaw} walletCommon={walletCommon} onRefetch={refresh} /> : null}
-              {activeTab === "live-cuts" ? <CreatorLiveCutsCard /> : null}
+              {activeTab === "live-cuts" ? (
+                <CreatorLiveCutsCard
+                  planCode={planCodeRaw}
+                  walletCommon={walletCommon}
+                  onRefetch={refresh}
+                />
+              ) : null}
               {activeTab === "no-code" ? (
                 <CreatorNoCodeCard
                   planCode={planCodeRaw}
