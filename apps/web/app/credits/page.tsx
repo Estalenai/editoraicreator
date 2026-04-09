@@ -565,7 +565,7 @@ export default function CreditsPage() {
               <p className="section-kicker">Transparência de consumo</p>
               <h1 className="heading-reset">{CREATOR_COINS_PUBLIC_NAME}</h1>
               <p className="section-header-copy hero-copy-compact">
-                  {CREATOR_COINS_PUBLIC_NAME} reúne saldo, compra, conversão e histórico na mesma leitura.
+                  {CREATOR_COINS_PUBLIC_NAME} reúne saldo, compra, conversão e histórico.
               </p>
               </div>
               <div className="hero-meta-row hero-meta-row-compact credits-hero-meta">
@@ -643,8 +643,8 @@ export default function CreditsPage() {
                       : conversionEnabled
                         ? conversionFeePercent === 0
                           ? "Taxa zero na conversão entre tipos."
-                          : "A taxa é aplicada sobre a origem."
-                        : `Seu plano atual ainda não habilita conversão entre tipos de ${CREATOR_COINS_PUBLIC_NAME}.`}
+                          : "A taxa é aplicada na origem."
+                        : `Seu plano atual não habilita conversão entre tipos de ${CREATOR_COINS_PUBLIC_NAME}.`}
                   </p>
                 </div>
                 <div className="credits-summary-card">
@@ -659,7 +659,7 @@ export default function CreditsPage() {
               <div className="section-head credits-region-head">
                 <div className="section-header-ea">
                   <h3 className="heading-reset">Comprar, converter e confirmar na mesma operação</h3>
-                  <p className="helper-text-ea">Compra avulsa, conversão e confirmação final do ledger ficam alinhadas na mesma região principal.</p>
+                  <p className="helper-text-ea">Compra, conversão e confirmação final do ledger na mesma região.</p>
                 </div>
                 <div className="hero-actions-row">
                   <Link href="#credits-history" className="btn-link-ea btn-ghost btn-sm">
@@ -676,7 +676,7 @@ export default function CreditsPage() {
                   <div className="section-head credits-region-head">
                     <div className="section-header-ea">
                       <h3 className="heading-reset">Conversão de {CREATOR_COINS_PUBLIC_NAME}</h3>
-                      <p className="helper-text-ea">{`Veja débito, taxa e saldo estimado antes de confirmar.`}</p>
+                      <p className="helper-text-ea">Veja débito, taxa e saldo estimado antes de confirmar.</p>
                     </div>
                   </div>
 
@@ -713,7 +713,7 @@ export default function CreditsPage() {
                       <div className="trust-grid credits-conversion-notes">
                         <div className="trust-note">
                           <strong>Origem e destino claros</strong>
-                          <span>Escolha qualquer combinação válida entre Comum, Pro e Ultra, exceto origem = destino.</span>
+                          <span>Escolha uma combinação válida entre Comum, Pro e Ultra.</span>
                         </div>
                         <div className="trust-note">
                           <strong>Débito previsível</strong>
@@ -778,7 +778,7 @@ export default function CreditsPage() {
                       </div>
 
                       <div className="helper-text-ea">
-                        Escolha pares válidos entre Comum, Pro e Ultra. A taxa é aplicada na origem e o histórico confirma o resultado final.
+                        A taxa é aplicada na origem. O histórico confirma o resultado final.
                       </div>
                       <div className="conversion-metrics-grid credits-conversion-metrics">
                         <div className="conversion-metric-card">
@@ -803,7 +803,7 @@ export default function CreditsPage() {
                         </div>
                       </div>
                       <div className="helper-text-ea">
-                        Esta é uma estimativa prévia. O saldo final é confirmado depois da conversão.
+                        Esta é uma estimativa. O saldo final é confirmado depois da conversão.
                       </div>
 
                       <div className="credits-conversion-actions">

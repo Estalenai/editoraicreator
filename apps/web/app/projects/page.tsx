@@ -92,7 +92,7 @@ export default function ProjectsPage() {
                 <p className="section-kicker">Continuidade</p>
                 <h1 style={{ margin: 0, letterSpacing: -0.3 }}>Projetos</h1>
                 <p className="section-header-copy hero-copy-compact">
-                  Abra um rascunho salvo, continue no editor e acompanhe a saída com clareza.
+                  Abra, continue e acompanhe a saída com clareza.
                 </p>
               </div>
               <div className="hero-meta-row">
@@ -129,11 +129,11 @@ export default function ProjectsPage() {
               <div className="projects-hero-panel-list">
                 <div className="projects-hero-note">
                   <strong>Abra e continue</strong>
-                  <span>Retome um rascunho salvo diretamente na lista logo abaixo.</span>
+                  <span>Retome um rascunho direto na lista.</span>
                 </div>
                 <div className="projects-hero-note">
                   <strong>Saída e handoff em apoio</strong>
-                  <span>Rascunho, saída registrada e publicado ficam claros, com GitHub e Vercel centralizados no backend.</span>
+                  <span>Rascunho, saída registrada e publicado ficam claros, com GitHub e Vercel no backend.</span>
                 </div>
               </div>
 
@@ -188,7 +188,7 @@ export default function ProjectsPage() {
           <div className="section-header-ea">
             <h2 className="heading-reset">Abrir no editor</h2>
             <p className="helper-text-ea">
-              Retome um projeto existente ou crie um novo para seguir no editor.
+              Retome um projeto existente ou crie um novo.
             </p>
           </div>
           <button
@@ -201,7 +201,7 @@ export default function ProjectsPage() {
           </button>
         </div>
         <div className="focus-shell-preview">
-          Abra um projeto salvo ou inicie um novo sem deixar as camadas de saída competirem na mesma leitura.
+          Abra um projeto salvo ou inicie um novo sem disputar com as camadas de saída.
         </div>
         <div className="focus-shell-body">
 
@@ -209,13 +209,13 @@ export default function ProjectsPage() {
           <OperationalState
             kind="loading"
             title="Carregando projetos e continuidade"
-            description="Lista, estados de saída e handoff em sincronização."
+            description="Lista, saída e handoff em sincronização."
             meta={[
               { label: "Lista", value: "Projetos salvos" },
               { label: "Saída", value: "Rascunho, saída registrada e publicado" },
               { label: "Sync", value: "GitHub server-owned e Vercel em apoio" },
             ]}
-            footer="A visualização só entra completa depois que a camada de continuidade responde com segurança."
+            footer="A visualização entra completa quando a continuidade responde com segurança."
           />
         ) : normalizedProjects.length === 0 ? (
           <OperationalState
@@ -285,7 +285,7 @@ export default function ProjectsPage() {
           <p className="section-kicker">Pipeline de saída</p>
           <h2 className="heading-reset">Rascunho, saída registrada e publicado sem ambiguidade</h2>
           <p className="helper-text-ea">
-            Três estados claros: o que ainda está em edição, o que já teve saída registrada e o que já foi publicado com retorno externo.
+            Três estados claros: em edição, com saída registrada e publicado.
           </p>
         </div>
         <button
@@ -298,7 +298,7 @@ export default function ProjectsPage() {
         </button>
         </div>
         <div className="focus-shell-preview">
-          Veja os três estados de saída sem abrir o handoff completo.
+          Veja os estados de saída sem abrir o handoff completo.
         </div>
         <div className="focus-shell-body">
           <div className="projects-publish-stack">
@@ -308,21 +308,21 @@ export default function ProjectsPage() {
                 <div className="proof-value-block">
                   <span className="proof-value-chip">Rascunho</span>
                   <strong>No editor e em Projetos</strong>
-                  <p>Projeto salvo e entregável em refinamento.</p>
+                  <p>Projeto salvo em refinamento.</p>
                 </div>
               </div>
               <div className="proof-value-card layout-contract-item">
                 <div className="proof-value-block">
                   <span className="proof-value-chip">Saída registrada</span>
                   <strong>Saída registrada</strong>
-                  <p>Commit GitHub ou deployment Vercel já foram registrados como próxima etapa do projeto.</p>
+                  <p>Commit GitHub ou deployment Vercel já registrados.</p>
                 </div>
               </div>
               <div className="proof-value-card layout-contract-item">
                 <div className="proof-value-block">
                   <span className="proof-value-chip">Publicado</span>
                   <strong>Publicado com retorno do provider</strong>
-                  <p>Produção confirmada pelo provider e persistida no projeto com horário, ambiente e URL.</p>
+                  <p>Produção confirmada e persistida com horário, ambiente e URL.</p>
                 </div>
               </div>
             </div>
@@ -352,7 +352,7 @@ export default function ProjectsPage() {
             <div className="section-header-ea">
               <h2 className="heading-reset">GitHub e Vercel integrados no backend</h2>
               <p className="helper-text-ea">
-                GitHub e Vercel já centralizam workspace e estados no backend. Sync, PR e deploy dependem de credenciais reais e retorno do provider.
+                GitHub e Vercel centralizam workspace e estados no backend. Sync, PR e deploy dependem de credenciais reais e retorno do provider.
               </p>
             </div>
           <div className="hero-actions-row">

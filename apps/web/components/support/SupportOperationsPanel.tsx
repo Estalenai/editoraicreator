@@ -35,7 +35,7 @@ function resolvePlatformTone(
     return {
       tone: "muted",
       label: "Verificando",
-      summary: "Consultando a prontidão da plataforma antes de pedir que o usuário interprete o problema sozinho.",
+      summary: "Consultando a prontidão da plataforma.",
     };
   }
 
@@ -51,7 +51,7 @@ function resolvePlatformTone(
     return {
       tone: "ok",
       label: "Operacional",
-      summary: "A API e as dependências centrais responderam. Falhas pontuais tendem a estar no fluxo específico, não na base inteira.",
+      summary: "A API e as dependências centrais responderam. Falhas pontuais tendem a estar no fluxo específico.",
     };
   }
 
@@ -163,7 +163,7 @@ export function SupportOperationsPanel() {
               </div>
             </div>
             <p className="support-ops-copy">
-              Repetir a ação faz sentido quando o sistema ainda está processando e o histórico não mostrou falha nova.
+              Repita a ação quando o sistema ainda estiver processando e o histórico não mostrar falha nova.
             </p>
             <ul className="support-ops-list">
               {RETRY_GUIDELINES.map((item) => (
@@ -180,7 +180,7 @@ export function SupportOperationsPanel() {
               </div>
             </div>
             <p className="support-ops-copy">
-              Abra suporte quando o produto já deu sinal suficiente de que a ação não avançou sozinha.
+              Abra suporte quando o produto já sinalizou que a ação não avançou sozinha.
             </p>
             <ul className="support-ops-list">
               {ESCALATION_GUIDELINES.map((item) => (

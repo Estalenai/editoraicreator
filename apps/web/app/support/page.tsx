@@ -11,19 +11,19 @@ import { toUserFacingError } from "../../lib/uiFeedback";
 const SUPPORT_PATHS = [
   {
     title: "Cobrança e saldo",
-    description: `Consulte plano, checkout, saldo, compra e movimentações de ${CREATOR_COINS_PUBLIC_NAME} no mesmo histórico.`,
+    description: `Consulte plano, checkout, saldo e movimentações de ${CREATOR_COINS_PUBLIC_NAME}.`,
     href: "/credits",
     cta: `Abrir ${CREATOR_COINS_PUBLIC_NAME}`,
   },
   {
     title: "Publicação e continuidade",
-    description: "Veja status de projeto, sincronização, GitHub, Vercel e saída registrada na mesma trilha.",
+    description: "Veja projeto, sincronização e saída na mesma trilha.",
     href: "/projects",
     cta: "Ver projetos",
   },
   {
     title: "Fluxo principal",
-    description: "Relembre como creators, editor, projetos e saída se conectam antes de abrir suporte.",
+    description: "Reveja creators, editor, projetos e saída antes de abrir suporte.",
     href: "/how-it-works",
     cta: "Revisar fluxo",
   },
@@ -33,12 +33,12 @@ const SUPPORT_FAQ = [
   {
     question: "Quando devo abrir suporte em vez de tentar novamente?",
     answer:
-      "Abra suporte quando o mesmo erro voltar, quando saldo ou publish não refletirem o histórico ou quando o quadro operacional indicar atenção.",
+      "Abra suporte quando o erro voltar, quando saldo ou publish não refletirem o histórico ou quando o quadro operacional indicar atenção.",
   },
   {
     question: "O que incluir para a equipe responder mais rápido?",
     answer:
-      "Envie assunto claro, mensagem de erro, referência do job ou checkout e a tela afetada.",
+      "Envie assunto claro, erro, referência do job ou checkout e a tela afetada.",
   },
   {
     question: `Como funciona o suporte para planos, ${CREATOR_COINS_PUBLIC_NAME} e pagamentos?`,
@@ -86,18 +86,18 @@ export default function SupportPage() {
               <p className="section-kicker">Canal operacional</p>
               <h1 style={{ margin: "4px 0 0", letterSpacing: -0.35 }}>Suporte</h1>
               <p className="section-header-copy hero-copy-compact">
-                {`Dúvidas, problemas e próximo passo com menos ida e volta em planos, ${CREATOR_COINS_PUBLIC_NAME}, publicação e integrações.`}
+                {`Dúvidas, problemas e próximo passo com menos ida e volta em planos, ${CREATOR_COINS_PUBLIC_NAME} e publicação.`}
               </p>
             </div>
 
             <div className="support-hero-signals">
               <div className="support-hero-signal">
                 <strong>Status curto</strong>
-                <span>Confirme a prontidão da plataforma antes de interpretar falha local como erro geral.</span>
+                <span>Confirme a prontidão da plataforma antes de assumir erro geral.</span>
               </div>
               <div className="support-hero-signal">
                 <strong>Base certa</strong>
-                <span>{`Cobrança, ${CREATOR_COINS_PUBLIC_NAME}, publish e fluxo principal têm rota de apoio objetiva.`}</span>
+                <span>{`Cobrança, ${CREATOR_COINS_PUBLIC_NAME}, publish e fluxo principal têm rota curta.`}</span>
               </div>
             </div>
           </div>
@@ -107,7 +107,7 @@ export default function SupportPage() {
             </span>
             <strong>Confirme status, consulte a base certa e abra o caso só quando precisar.</strong>
             <p className="support-hero-focus-copy">
-              O Support Assistant mantém categoria, contexto e histórico no mesmo fluxo, sem improviso operacional.
+              O Support Assistant mantém categoria, contexto e histórico no mesmo fluxo.
             </p>
             <div className="support-hero-focus-meta">
               <span className="premium-badge premium-badge-phase">
@@ -134,7 +134,7 @@ export default function SupportPage() {
           </div>
           <div className="support-context-item">
             <strong>Próximo passo sugerido</strong>
-            <span>Consulte a base certa antes de abrir uma solicitação.</span>
+            <span>Consulte a base certa antes de abrir um caso.</span>
           </div>
           <div className="support-context-item">
             <strong>Privacidade aplicada</strong>
@@ -167,7 +167,7 @@ export default function SupportPage() {
               <div className="section-header-ea">
                 <h2 className="heading-reset">Bases de apoio e respostas rápidas</h2>
                 <p className="helper-text-ea">
-                  Abra a rota certa, confirme o contexto e só escale quando a própria trilha já indicar que a ação não avançou.
+                  Abra a rota certa, confirme o contexto e só escale quando a trilha já indicar que a ação não avançou.
                 </p>
               </div>
             </div>

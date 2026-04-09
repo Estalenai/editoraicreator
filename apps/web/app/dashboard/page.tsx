@@ -29,7 +29,7 @@ const QUICK_LINKS: QuickLinkItem[] = [
     group: "core",
     tag: "Creators",
     title: "Creators",
-    description: "Abra Post, Scripts ou Clips e gere a base criativa com contexto.",
+    description: "Abra Post, Scripts ou Clips com contexto pronto.",
     cta: "Abrir workspace",
   },
   {
@@ -37,7 +37,7 @@ const QUICK_LINKS: QuickLinkItem[] = [
     group: "core",
     tag: "Editor",
     title: "Editor",
-    description: "Entre direto no núcleo de revisão quando já souber o entregável.",
+    description: "Entre direto no núcleo de revisão.",
     cta: "Abrir editor",
   },
   {
@@ -45,7 +45,7 @@ const QUICK_LINKS: QuickLinkItem[] = [
     group: "core",
     tag: "Projetos",
     title: "Projetos",
-    description: "Retome continuidade, checkpoints e saída no mesmo fluxo.",
+    description: "Retome continuidade e saída no mesmo fluxo.",
     cta: "Ver projetos",
   },
   {
@@ -53,7 +53,7 @@ const QUICK_LINKS: QuickLinkItem[] = [
     group: "core",
     tag: "Saída",
     title: "Output",
-    description: "Conferir o que já saiu, o que falta publicar e o próximo passo.",
+    description: "Veja o que saiu e o próximo passo.",
     cta: "Ver saída",
   },
   {
@@ -61,7 +61,7 @@ const QUICK_LINKS: QuickLinkItem[] = [
     group: "support",
     tag: "Financeiro",
     title: "Creator Coins",
-    description: "Acompanhe saldo, conversão e compra avulsa.",
+    description: "Veja saldo, conversão e compra.",
     cta: "Abrir Creator Coins",
   },
   {
@@ -69,7 +69,7 @@ const QUICK_LINKS: QuickLinkItem[] = [
     group: "support",
     tag: "Assinatura",
     title: "Planos",
-    description: "Compare níveis, conversão e checkout.",
+    description: "Compare níveis e checkout.",
     cta: "Revisar planos",
   },
   {
@@ -85,7 +85,7 @@ const QUICK_LINKS: QuickLinkItem[] = [
     group: "support",
     tag: "Guia",
     title: "Como funciona",
-    description: "Revise o fluxo em poucos passos.",
+    description: "Revise o fluxo principal.",
     cta: "Ler guia",
   },
 ];
@@ -211,15 +211,15 @@ export default function DashboardPage() {
     [usageItems]
   );
   const nextAction = recentProjects.length > 0
-    ? {
+      ? {
         title: "Retomar projeto",
-        description: "Continue no editor ou gere a próxima peça.",
+        description: "Continue no editor.",
         href: recentProjects[0]?.id ? `/editor/${recentProjects[0].id}` : "/projects",
         cta: recentProjects[0]?.id ? "Abrir último projeto" : "Abrir projetos",
       }
     : {
         title: "Gerar primeira entrega",
-        description: "Abra um Creator, gere a primeira saída e salve em Projetos.",
+        description: "Abra um Creator e salve a primeira saída.",
         href: "/creators",
         cta: "Abrir Creators",
       };
@@ -227,13 +227,13 @@ export default function DashboardPage() {
     ? "Atualizando métricas do mês."
     : usageItems.length === 0
       ? "Sem uso registrado neste mês."
-      : `${usageItems.length} feature(s) com atividade e ${totalUsage} consumo(s) registrados no período.`;
+      : `${usageItems.length} feature(s) ativas e ${totalUsage} consumo(s) no período.`;
   const recentUsageValue = usageLoading ? "..." : totalUsage.toLocaleString("pt-BR");
   const recentUsageDetail = usageLoading
     ? "Atualizando o monitoramento do período."
     : usageItems.length === 0
       ? "Sem consumo registrado neste mês."
-      : `${usageItems.length} feature(s) com atividade monitorada no período.`;
+      : `${usageItems.length} feature(s) monitoradas no período.`;
   const planLabelDisplay = loading ? "Plano em sincronização" : planLabel ?? "—";
   const emailDisplay = loading ? "Sincronizando conta..." : email || "—";
   const walletSummaryDisplay = loading ? "Saldo em sincronização" : walletSummary;
@@ -250,7 +250,7 @@ export default function DashboardPage() {
     ? "A trilha criativa entra completa quando a conta terminar de sincronizar."
     : leadProject
       ? `${leadProject.summary.continuityStatusLabel} • ${leadProject.title}`
-      : "Crie o primeiro projeto para registrar a continuidade.";
+      : "Crie o primeiro projeto.";
   const outputValue = loading
     ? "Saída em sincronização"
     : leadProject
@@ -282,7 +282,7 @@ export default function DashboardPage() {
               <p className="section-kicker">Painel executivo</p>
               <h1 className="heading-reset">Dashboard</h1>
               <p className="section-header-copy hero-copy-compact">
-                Plano, saldo, uso recente e próximo passo na mesma leitura. Conta ativa: {emailDisplay}.
+                Plano, saldo, uso recente e próximo passo na mesma leitura. Conta: {emailDisplay}.
               </p>
             </div>
             <div className="hero-meta-row">
@@ -292,15 +292,15 @@ export default function DashboardPage() {
             <div className="signal-strip dashboard-hero-signal-strip">
               <div className="signal-chip signal-chip-sober">
                 <strong>Creators</strong>
-                <span>Abra Post, Scripts ou Clips para iniciar a base.</span>
+                <span>Abra Post, Scripts ou Clips.</span>
               </div>
               <div className="signal-chip signal-chip-sober">
                 <strong>Editor</strong>
-                <span>Refine a peça no mesmo núcleo sem trocar de contexto.</span>
+                <span>Refine a peça no mesmo núcleo.</span>
               </div>
               <div className="signal-chip signal-chip-sober">
                 <strong>Projetos + saída</strong>
-                <span>Continuidade, registro e publicação ficam em sequência.</span>
+                <span>Continuidade, registro e publicação em sequência.</span>
               </div>
             </div>
           </div>
@@ -332,7 +332,7 @@ export default function DashboardPage() {
             </div>
             <div className="dashboard-hero-support-note">
                 <strong>Operação em apoio</strong>
-                <span>Conta, saldo e plano seguem persistidos, mas não guiam o produto.</span>
+                <span>Conta, saldo e plano seguem visíveis, mas não guiam o produto.</span>
             </div>
             <div className="dashboard-hero-support-note">
                 <strong>Saída no mesmo eixo</strong>
@@ -344,7 +344,7 @@ export default function DashboardPage() {
           <div className="hero-kpi" data-reveal data-reveal-delay="70">
             <span className="hero-kpi-label">Centro do produto</span>
             <strong className="hero-kpi-value">Creators → Editor</strong>
-            <span className="helper-text-ea">O núcleo criativo vem antes de qualquer camada operacional.</span>
+            <span className="helper-text-ea">O núcleo criativo vem primeiro.</span>
           </div>
           <div className="hero-kpi" data-reveal data-reveal-delay="120">
             <span className="hero-kpi-label">Continuidade</span>
@@ -405,7 +405,7 @@ export default function DashboardPage() {
               <p className="executive-eyebrow">Centro do produto</p>
               <p className="executive-value metric-value-compact">Creators → Editor → Saída</p>
               <p className="executive-detail">
-                O dashboard agora aponta primeiro para geração, revisão, continuidade e output.
+                O dashboard aponta primeiro para geração, revisão, continuidade e saída.
               </p>
               <Link href="/creators" className="card-cta-link">
                 Abrir Creators
@@ -535,7 +535,7 @@ export default function DashboardPage() {
             <div className="section-head">
               <div className="section-header-ea">
                 <h3 className="heading-reset">Núcleo principal</h3>
-                <p className="helper-text-ea">Creators, editor, projetos e saída em uma única linha de decisão.</p>
+                <p className="helper-text-ea">Creators, editor, projetos e saída na mesma linha.</p>
               </div>
             </div>
             <div className="dashboard-quick-links-stack">
@@ -603,7 +603,7 @@ export default function DashboardPage() {
               ))}
             </div>
             <div className="helper-text-ea">
-              Os Creators mostram a estimativa antes. O consumo final entra no histórico de {CREATOR_COINS_PUBLIC_NAME}.
+              Creators mostram a estimativa antes. O consumo final entra no histórico de {CREATOR_COINS_PUBLIC_NAME}.
             </div>
           </section>
 
@@ -611,7 +611,7 @@ export default function DashboardPage() {
             <div className="section-head">
               <div className="section-header-ea">
                 <h3 className="heading-reset">Camadas operacionais</h3>
-                <p className="helper-text-ea">Operação continua visível, mas não compete com o núcleo criativo.</p>
+                <p className="helper-text-ea">Operação visível, sem competir com o núcleo criativo.</p>
               </div>
             </div>
             <div className="dashboard-support-links-list">
