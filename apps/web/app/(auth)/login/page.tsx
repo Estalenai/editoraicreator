@@ -4,13 +4,22 @@ import { Suspense, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "../../../lib/supabaseClient";
+import { syncServerSession } from "../../../lib/clientSessionSync";
 import { toUserFacingError } from "../../../lib/uiFeedback";
+
+function normalizeNextPath(value: string | null | undefined) {
+  const raw = String(value || "").trim();
+  if (!raw.startsWith("/")) return "/dashboard";
+  if (raw.startsWith("//")) return "/dashboard";
+  return raw;
+}
 
 function LoginPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const formRef = useRef<HTMLFormElement | null>(null);
   const initialMode = searchParams?.get("mode") === "signup" ? "signup" : "login";
+  const nextPath = normalizeNextPath(searchParams?.get("next"));
 
   const [mode, setMode] = useState<"login" | "signup">(initialMode);
   const [email, setEmail] = useState("");
@@ -30,20 +39,36 @@ function LoginPageContent() {
   useEffect(() => {
     let active = true;
 
-    supabase.auth.getSession().then(({ data }) => {
+    supabase.auth.getSession().then(async ({ data }) => {
       if (!active) return;
 
       if (data.session) {
-        router.replace("/dashboard");
+        try {
+          await syncServerSession(data.session);
+          router.replace(nextPath);
+          return;
+        } catch (syncError: any) {
+          if (active) {
+            setError(toUserFacingError(syncError?.message, "Nao foi possivel validar sua sessao agora."));
+          }
+        }
         return;
       }
 
       setCheckingSession(false);
     });
 
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: authListener } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (session) {
-        router.replace("/dashboard");
+        try {
+          await syncServerSession(session);
+          router.replace(nextPath);
+          return;
+        } catch (syncError: any) {
+          if (active) {
+            setError(toUserFacingError(syncError?.message, "Nao foi possivel validar sua sessao agora."));
+          }
+        }
         return;
       }
 
@@ -56,7 +81,7 @@ function LoginPageContent() {
       active = false;
       authListener.subscription.unsubscribe();
     };
-  }, [router]);
+  }, [nextPath, router]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -88,8 +113,15 @@ function LoginPageContent() {
       }
 
       if (data.session) {
-        router.replace("/dashboard");
-        return;
+        try {
+          await syncServerSession(data.session);
+          router.replace(nextPath);
+          return;
+        } catch (syncError: any) {
+          setError(toUserFacingError(syncError?.message, "Nao foi possivel validar sua sessao agora."));
+          setLoading(false);
+          return;
+        }
       }
 
       setSuccess(
@@ -112,7 +144,23 @@ function LoginPageContent() {
       return;
     }
 
-    router.replace("/dashboard");
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    if (!session) {
+      setError("A sessao nao foi confirmada depois do login.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      await syncServerSession(session);
+      router.replace(nextPath);
+    } catch (syncError: any) {
+      setError(toUserFacingError(syncError?.message, "Nao foi possivel validar sua sessao agora."));
+      setLoading(false);
+    }
   }
 
   if (checkingSession) {

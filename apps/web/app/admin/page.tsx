@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../../lib/supabaseClient";
 import { api } from "../../lib/api";
+import { clearServerSession } from "../../lib/clientSessionSync";
 import { PremiumSelect } from "../../components/ui/PremiumSelect";
 import { toUserFacingError } from "../../lib/uiFeedback";
 
@@ -342,6 +343,7 @@ export default function AdminPage() {
 
   async function onLogoutToRelogin() {
     await supabase.auth.signOut();
+    await clearServerSession().catch(() => null);
     router.push("/login");
   }
 

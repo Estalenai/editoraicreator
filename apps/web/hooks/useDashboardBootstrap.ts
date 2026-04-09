@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../lib/supabaseClient";
 import { api } from "../lib/api";
+import { clearServerSession } from "../lib/clientSessionSync";
 import { resolvePlanLabel } from "../lib/planLabel";
 import { toUserFacingError } from "../lib/uiFeedback";
 
@@ -167,6 +168,7 @@ export function useDashboardBootstrap(options: Options = {}) {
 
   const onLogout = useCallback(async () => {
     await supabase.auth.signOut();
+    await clearServerSession().catch(() => null);
 
     if (typeof window !== "undefined") {
       window.location.assign("/");
