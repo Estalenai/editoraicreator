@@ -20866,3 +20866,193 @@ body {
     border-radius: 18px !important;
   }
 }
+
+/* Proprietary signature distinctness pass
+   Push recurring product materials away from generic dark-SaaS glass without changing palette or layout logic. */
+:root {
+  --ea-signature-panel-orbit:
+    radial-gradient(14px 14px at 12% 54%, rgba(226, 252, 255, 0.34), transparent 60%),
+    radial-gradient(46px 46px at 12% 54%, rgba(88, 242, 255, 0.16), transparent 74%),
+    conic-gradient(from 214deg at 12% 54%, transparent 0 58deg, rgba(193, 244, 255, 0.16) 58deg 118deg, transparent 118deg 360deg);
+  --ea-signature-panel-seam:
+    linear-gradient(
+      122deg,
+      transparent 0 34%,
+      rgba(193, 244, 255, 0.14) 34% 36.2%,
+      rgba(255, 191, 107, 0.12) 36.2% 37.3%,
+      transparent 37.3% 100%
+    );
+  --ea-signature-panel-trace:
+    radial-gradient(3px 3px at 18% 58%, rgba(233, 253, 255, 0.48), transparent 74%),
+    radial-gradient(2px 2px at 50% 30%, rgba(88, 242, 255, 0.4), transparent 76%),
+    radial-gradient(2px 2px at 82% 42%, rgba(255, 191, 107, 0.38), transparent 76%);
+}
+
+:is(
+    .signal-chip,
+    .hero-kpi,
+    .dashboard-summary-card,
+    .dashboard-quick-link,
+    .dashboard-project-link,
+    .auth-entry-context-item,
+    .auth-entry-support-note,
+    .auth-entry-inline-note,
+    .beta-entry-command-surface,
+    .beta-entry-command-node,
+    .beta-entry-proof-item,
+    .beta-entry-trust-item
+  ) {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+}
+
+:is(
+    .signal-chip,
+    .hero-kpi,
+    .dashboard-summary-card,
+    .dashboard-quick-link,
+    .dashboard-project-link,
+    .auth-entry-context-item,
+    .auth-entry-support-note,
+    .auth-entry-inline-note,
+    .beta-entry-command-surface,
+    .beta-entry-command-node,
+    .beta-entry-proof-item,
+    .beta-entry-trust-item
+  ) > * {
+  position: relative;
+  z-index: 1;
+}
+
+.signal-chip::before,
+.hero-kpi::before {
+  content: "";
+  display: block;
+  position: absolute;
+  inset: 10px auto auto 10px;
+  width: clamp(72px, 6vw, 92px);
+  height: clamp(42px, 4vw, 56px);
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(88, 242, 255, 0.78), rgba(127, 183, 255, 0.34)) 0 50% / 2px 74% no-repeat,
+    var(--ea-signature-panel-orbit),
+    radial-gradient(52px 30px at 74% 32%, rgba(255, 191, 107, 0.14), transparent 78%);
+  opacity: 0.84;
+  filter: blur(7px) saturate(118%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+:is(
+    .dashboard-summary-card,
+    .dashboard-quick-link,
+    .dashboard-project-link,
+    .auth-entry-context-item,
+    .auth-entry-support-note,
+    .auth-entry-inline-note,
+    .beta-entry-command-surface,
+    .beta-entry-command-node,
+    .beta-entry-proof-item,
+    .beta-entry-trust-item
+  )::before {
+  content: "";
+  display: block;
+  position: absolute;
+  inset: clamp(10px, 1vw, 14px) auto auto clamp(10px, 1vw, 14px);
+  width: clamp(66px, 6.4vw, 100px);
+  height: clamp(38px, 4vw, 58px);
+  border-radius: 999px;
+  background:
+    var(--ea-signature-panel-orbit),
+    radial-gradient(52px 30px at 76% 34%, rgba(255, 191, 107, 0.12), transparent 78%);
+  opacity: 0.58;
+  filter: blur(8px) saturate(116%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+:is(
+    .signal-chip,
+    .hero-kpi,
+    .dashboard-summary-card,
+    .dashboard-quick-link,
+    .dashboard-project-link,
+    .auth-entry-context-item,
+    .auth-entry-support-note,
+    .auth-entry-inline-note,
+    .beta-entry-command-surface,
+    .beta-entry-command-node,
+    .beta-entry-proof-item,
+    .beta-entry-trust-item
+  )::after {
+  content: "";
+  display: block;
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.034);
+  background:
+    var(--ea-signature-panel-trace) top right / 112px 38px no-repeat,
+    var(--ea-signature-panel-seam),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 28%);
+  opacity: 0.82;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.dashboard-page-canvas .dashboard-summary-card-primary,
+.dashboard-page-canvas .dashboard-summary-card-action,
+.beta-entry-command-surface,
+.auth-entry-support-note,
+.auth-entry-inline-note {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 16px 34px rgba(2, 6, 23, 0.14) !important;
+}
+
+.dashboard-page-canvas .dashboard-summary-card-primary::before,
+.beta-entry-command-surface::before,
+.auth-entry-support-note::before,
+.auth-entry-inline-note::before {
+  opacity: 0.68;
+  filter: blur(9px) saturate(118%);
+}
+
+@media (max-width: 768px) {
+  .signal-chip::before,
+  .hero-kpi::before,
+  :is(
+      .dashboard-summary-card,
+      .dashboard-quick-link,
+      .dashboard-project-link,
+      .auth-entry-context-item,
+      .auth-entry-support-note,
+      .auth-entry-inline-note,
+      .beta-entry-command-surface,
+      .beta-entry-command-node,
+      .beta-entry-proof-item,
+      .beta-entry-trust-item
+    )::before {
+    opacity: 0.48;
+    filter: blur(7px) saturate(112%);
+  }
+
+  :is(
+      .signal-chip,
+      .hero-kpi,
+      .dashboard-summary-card,
+      .dashboard-quick-link,
+      .dashboard-project-link,
+      .auth-entry-context-item,
+      .auth-entry-support-note,
+      .auth-entry-inline-note,
+      .beta-entry-command-surface,
+      .beta-entry-command-node,
+      .beta-entry-proof-item,
+      .beta-entry-trust-item
+    )::after {
+    background-size: 88px 30px, auto, auto;
+    opacity: 0.74;
+  }
+}
