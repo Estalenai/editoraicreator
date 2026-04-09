@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import { api } from "../../../lib/api";
 import { EditorShell, EditorTab } from "../../../components/editor/EditorShell";
@@ -10,7 +10,7 @@ import { OperationalState } from "../../../components/ui/OperationalState";
 import { toUserFacingError, toUserFacingGenerationSuccess } from "../../../lib/uiFeedback";
 import { ensureCanonicalProjectData, parseLegacyProjectPayload, syncProjectDataFromEditor } from "../../../lib/projectModel";
 
-type Project = { id: string; title: string; kind: string; data?: any };
+type Project = { id: string; title: string; kind: string; data?: any; created_at?: string; updated_at?: string };
 
 type AiStep = { id: string; ts: string; title: string; details?: string };
 
@@ -103,6 +103,20 @@ type EditorDoc = {
   };
 };
 
+type EditorWorkingDraft = {
+  text: string;
+  reviewStatus: ReviewStatus;
+  factResult: any | null;
+  professorMode: boolean;
+  transparentMode: boolean;
+  tab: EditorTab;
+};
+
+type StoredEditorDraft = {
+  updatedAt: string;
+  state: EditorWorkingDraft;
+};
+
 const PROJECT_KIND_LABEL: Record<string, string> = {
   video: "Projeto de Vídeo",
   text: "Projeto de Texto",
@@ -161,6 +175,12 @@ const OUTPUT_STAGE_META: Record<OutputStage, { label: string; detail: string; ba
     badge: "phase",
   },
 };
+
+const EDITOR_DRAFT_STORAGE_PREFIX = "editor_ai_creator:editor-draft:";
+const LEAVE_EDITOR_DIRTY_PROMPT =
+  "Você tem alterações não salvas neste documento. Se sair agora, a última versão salva continua disponível, mas o trabalho local ainda não registrado pode ser perdido.";
+const LEAVE_EDITOR_SAVING_PROMPT =
+  "O editor ainda está salvando este documento. Sair agora pode interromper o registro da versão ativa e do checkpoint. Deseja sair mesmo assim?";
 
 function extractProjectPayload(payload: any): Project {
   const resolved = (payload?.item || payload?.data?.item || payload?.data || payload || null) as Project | null;
@@ -395,6 +415,96 @@ function buildDeliveryEvent({
     title,
     note,
   };
+}
+
+function inferInitialEditorTab(kind: string): EditorTab {
+  if (kind === "video") return "video";
+  if (kind === "automation") return "automation";
+  if (kind === "course") return "course";
+  if (kind === "website") return "website";
+  return "text";
+}
+
+function buildEditorWorkingDraft({
+  text,
+  reviewStatus,
+  factResult,
+  professorMode,
+  transparentMode,
+  tab,
+}: EditorWorkingDraft): EditorWorkingDraft {
+  return {
+    text: String(text || ""),
+    reviewStatus,
+    factResult: factResult || null,
+    professorMode: !!professorMode,
+    transparentMode: !!transparentMode,
+    tab,
+  };
+}
+
+function serializeEditorDirtyState(state: EditorWorkingDraft) {
+  return JSON.stringify({
+    text: String(state.text || ""),
+    reviewStatus: state.reviewStatus,
+    factResult: state.factResult || null,
+    professorMode: !!state.professorMode,
+    transparentMode: !!state.transparentMode,
+  });
+}
+
+function getEditorDraftStorageKey(projectId: string) {
+  return `${EDITOR_DRAFT_STORAGE_PREFIX}${projectId}`;
+}
+
+function parseStoredEditorDraft(raw: string | null): StoredEditorDraft | null {
+  if (!raw) return null;
+
+  try {
+    const parsed = JSON.parse(raw) as Partial<StoredEditorDraft> | null;
+    const state = parsed?.state;
+    if (!state || typeof state !== "object") return null;
+
+    const tab = state.tab;
+    if (
+      tab !== "video" &&
+      tab !== "text" &&
+      tab !== "automation" &&
+      tab !== "course" &&
+      tab !== "website" &&
+      tab !== "library"
+    ) {
+      return null;
+    }
+
+    const reviewStatus = state.reviewStatus;
+    if (
+      reviewStatus !== "draft" &&
+      reviewStatus !== "review_ready" &&
+      reviewStatus !== "approved" &&
+      reviewStatus !== "rework"
+    ) {
+      return null;
+    }
+
+    return {
+      updatedAt: typeof parsed?.updatedAt === "string" ? parsed.updatedAt : new Date().toISOString(),
+      state: buildEditorWorkingDraft({
+        text: typeof state.text === "string" ? state.text : "",
+        reviewStatus,
+        factResult: state.factResult ?? null,
+        professorMode: !!state.professorMode,
+        transparentMode: !!state.transparentMode,
+        tab,
+      }),
+    };
+  } catch {
+    return null;
+  }
+}
+
+function getLatestEditorPersistenceTs(project: Project, editor: EditorDoc) {
+  return editor.checkpoints[0]?.ts || editor.versions[0]?.ts || project.updated_at || project.created_at || null;
 }
 
 function buildProjectAssets({
@@ -760,6 +870,7 @@ export default function EditorProjectPage() {
   const params = useParams() ?? {};
   const searchParams = useSearchParams();
   const id = String((params as any)?.id ?? "");
+  const navigationGuardRef = useRef({ isDirty: false, saving: false });
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -781,31 +892,66 @@ export default function EditorProjectPage() {
   const [aiBusy, setAiBusy] = useState<"text" | "fact" | null>(null);
   const [aiFeedback, setAiFeedback] = useState<{ tone: "success" | "warning"; text: string } | null>(null);
   const [saveFeedback, setSaveFeedback] = useState<string | null>(null);
+  const [draftRecoveryFeedback, setDraftRecoveryFeedback] = useState<string | null>(null);
+  const [persistedSignature, setPersistedSignature] = useState<string | null>(null);
+  const [lastPersistedAt, setLastPersistedAt] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
+      setLoading(true);
       setErr(null);
+      setDraftRecoveryFeedback(null);
       try {
         const p = await api.getProject(id);
         const proj = extractProjectPayload(p);
-        setProject(proj);
         const snapshot = buildCreatorSnapshot(proj);
-        setCreatorSnapshot(snapshot);
-
         const ed = ensureEditor(proj);
-        setProfessorMode(ed.mode.professor);
-        setTransparentMode(ed.mode.transparent);
-        setText(ed.doc.text || snapshot?.prefillText || "");
-        setAiSteps(ed.aiSteps);
-        setFactResult(ed.review.factCheck || null);
-        setReviewStatus(ed.review.status || "draft");
+        const initialDraft = buildEditorWorkingDraft({
+          text: ed.doc.text || snapshot?.prefillText || "",
+          reviewStatus: ed.review.status || "draft",
+          factResult: ed.review.factCheck || null,
+          professorMode: ed.mode.professor,
+          transparentMode: ed.mode.transparent,
+          tab: inferInitialEditorTab(proj.kind),
+        });
+        const nextPersistedSignature = serializeEditorDirtyState(initialDraft);
 
-        // Escolhe aba inicial baseada no kind
-        if (proj.kind === "video") setTab("video");
-        else if (proj.kind === "automation") setTab("automation");
-        else if (proj.kind === "course") setTab("course");
-        else if (proj.kind === "website") setTab("website");
-        else setTab("text");
+        let resolvedDraft = initialDraft;
+        let recoveredFromLocalDraft = false;
+
+        if (typeof window !== "undefined") {
+          const draftKey = getEditorDraftStorageKey(proj.id);
+          const storedDraft = parseStoredEditorDraft(window.sessionStorage.getItem(draftKey));
+          if (storedDraft) {
+            if (serializeEditorDirtyState(storedDraft.state) !== nextPersistedSignature) {
+              resolvedDraft = buildEditorWorkingDraft({
+                ...initialDraft,
+                ...storedDraft.state,
+              });
+              recoveredFromLocalDraft = true;
+            } else {
+              window.sessionStorage.removeItem(draftKey);
+            }
+          }
+        }
+
+        setProject(proj);
+        setCreatorSnapshot(snapshot);
+        setProfessorMode(resolvedDraft.professorMode);
+        setTransparentMode(resolvedDraft.transparentMode);
+        setText(resolvedDraft.text);
+        setTab(resolvedDraft.tab);
+        setAiSteps(ed.aiSteps);
+        setFactResult(resolvedDraft.factResult || null);
+        setReviewStatus(resolvedDraft.reviewStatus);
+        setPersistedSignature(nextPersistedSignature);
+        setLastPersistedAt(getLatestEditorPersistenceTs(proj, ed));
+
+        if (recoveredFromLocalDraft) {
+          setDraftRecoveryFeedback(
+            "Rascunho local recuperado. Revise o conteúdo e salve uma nova versão para registrar esse estado como checkpoint real."
+          );
+        }
       } catch (e: any) {
         setErr(typeof e === "string" ? e : (e?.message || e?.error?.message || "Falha ao carregar projeto"));
       } finally {
@@ -829,6 +975,13 @@ export default function EditorProjectPage() {
     return String(confidence);
   }, [factResult]);
   const editorState = useMemo(() => (project ? ensureEditor(project) : null), [project]);
+  const workspaceProjectRef = useMemo(
+    () => (project ? { id: project.id, title, kind: project.kind, data: project.data } : null),
+    [project, title]
+  );
+  const handleWorkspaceProjectDataChange = useCallback((projectId: string, data: any) => {
+    setProject((current) => (current && current.id === projectId ? { ...current, data } : current));
+  }, []);
   const versions = useMemo(() => editorState?.versions || [], [editorState]);
   const checkpoints = useMemo(() => editorState?.checkpoints || [], [editorState]);
   const deliveryHistory = useMemo(() => editorState?.delivery.history || [], [editorState]);
@@ -971,6 +1124,122 @@ export default function EditorProjectPage() {
       ? "A publicação manual do clipe só deve ser registrada depois da validação e aprovação final do ativo visual."
       : "A publicação manual do roteiro só deve ser registrada depois da aprovação editorial final."
     : null;
+  const workingDraft = useMemo(
+    () =>
+      buildEditorWorkingDraft({
+        text,
+        reviewStatus,
+        factResult,
+        professorMode,
+        transparentMode,
+        tab,
+      }),
+    [factResult, professorMode, reviewStatus, tab, text, transparentMode]
+  );
+  const workingSignature = useMemo(() => serializeEditorDirtyState(workingDraft), [workingDraft]);
+  const isDirty = useMemo(
+    () => !loading && !!project && persistedSignature !== null && workingSignature !== persistedSignature,
+    [loading, persistedSignature, project, workingSignature]
+  );
+  const hasPendingDocumentState = saving || isDirty;
+  const lastPersistedLabel = useMemo(
+    () => (lastPersistedAt ? new Date(lastPersistedAt).toLocaleString("pt-BR") : null),
+    [lastPersistedAt]
+  );
+  const documentGuardTitle = saving ? "Salvando documento" : isDirty ? "Alterações não salvas" : "Tudo salvo";
+  const documentGuardDetail = saving
+    ? "O editor está registrando a versão ativa e o checkpoint atual no projeto."
+    : isDirty
+      ? "Salve antes de sair. Reload, navegação e retorno agora são protegidos para reduzir risco de perda."
+      : lastPersistedLabel
+        ? `Último registro em ${lastPersistedLabel}.`
+        : "O documento está sincronizado e pronto para continuar.";
+
+  useEffect(() => {
+    navigationGuardRef.current = { isDirty, saving };
+  }, [isDirty, saving]);
+
+  useEffect(() => {
+    if (!project?.id || !persistedSignature || typeof window === "undefined") return;
+
+    const draftKey = getEditorDraftStorageKey(project.id);
+    if (isDirty) {
+      window.sessionStorage.setItem(
+        draftKey,
+        JSON.stringify({
+          updatedAt: new Date().toISOString(),
+          state: workingDraft,
+        })
+      );
+      return;
+    }
+
+    window.sessionStorage.removeItem(draftKey);
+  }, [isDirty, persistedSignature, project?.id, workingDraft]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const confirmLeave = () => {
+      const state = navigationGuardRef.current;
+      if (!state.isDirty && !state.saving) return true;
+      const prompt = state.saving ? LEAVE_EDITOR_SAVING_PROMPT : LEAVE_EDITOR_DIRTY_PROMPT;
+      return window.confirm(prompt);
+    };
+
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (!navigationGuardRef.current.isDirty && !navigationGuardRef.current.saving) return;
+      event.preventDefault();
+      event.returnValue = "";
+    };
+
+    const handleDocumentClick = (event: MouseEvent) => {
+      if (!navigationGuardRef.current.isDirty && !navigationGuardRef.current.saving) return;
+      if (event.defaultPrevented) return;
+
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+
+      const anchor = target.closest("a[href]");
+      if (!(anchor instanceof HTMLAnchorElement)) return;
+      if (anchor.target === "_blank" || anchor.hasAttribute("download")) return;
+
+      const href = anchor.getAttribute("href");
+      if (!href || href.startsWith("#")) return;
+
+      const nextUrl = new URL(anchor.href, window.location.href);
+      const currentUrl = new URL(window.location.href);
+      if (nextUrl.origin !== currentUrl.origin) return;
+      if (
+        nextUrl.pathname === currentUrl.pathname &&
+        nextUrl.search === currentUrl.search &&
+        nextUrl.hash === currentUrl.hash
+      ) {
+        return;
+      }
+
+      if (!confirmLeave()) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    };
+
+    const handlePopState = () => {
+      if (!navigationGuardRef.current.isDirty && !navigationGuardRef.current.saving) return;
+      if (confirmLeave()) return;
+      window.history.go(1);
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    document.addEventListener("click", handleDocumentClick, true);
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      document.removeEventListener("click", handleDocumentClick, true);
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
 
   async function persistEditor(next: EditorDoc, feedbackText: string) {
     if (!project) return null;
@@ -1038,6 +1307,20 @@ export default function EditorProjectPage() {
     setAiSteps(next.aiSteps);
     setFactResult(next.review.factCheck || null);
     setReviewStatus(nextReviewStatus);
+    setPersistedSignature(
+      serializeEditorDirtyState(
+        buildEditorWorkingDraft({
+          text: next.doc.text,
+          reviewStatus: nextReviewStatus,
+          factResult: next.review.factCheck || null,
+          professorMode: next.mode.professor,
+          transparentMode: next.mode.transparent,
+          tab,
+        })
+      )
+    );
+    setLastPersistedAt(getLatestEditorPersistenceTs(proj, ensureEditor(proj)) || new Date().toISOString());
+    setDraftRecoveryFeedback(null);
     setSaveFeedback(feedbackText);
     return proj;
   }
@@ -1355,7 +1638,36 @@ export default function EditorProjectPage() {
         />
       ) : null}
 
-      {saveFeedback ? (
+      {draftRecoveryFeedback ? (
+        <OperationalState
+          kind="unsaved"
+          title="Rascunho local recuperado"
+          description={draftRecoveryFeedback}
+          emphasis={documentGuardTitle}
+          meta={[
+            { label: "Proteção ativa", value: hasPendingDocumentState ? "Sim" : "Não" },
+            { label: "Último registro", value: lastPersistedLabel || "Sem registro anterior" },
+          ]}
+          footer="Este estado ainda é local. Salve uma nova versão para transformar a recuperação em checkpoint real do documento."
+        />
+      ) : null}
+
+      {isDirty && !saving ? (
+        <OperationalState
+          kind="unsaved"
+          compact
+          title="Documento com alterações locais"
+          description="O conteúdo mudou depois do último checkpoint salvo. Antes de sair, registre uma nova versão para não depender só do rascunho local."
+          emphasis={documentGuardTitle}
+          meta={[
+            { label: "Versão ativa", value: latestVersion?.title || "Sem versão salva ainda" },
+            { label: "Último registro", value: lastPersistedLabel || "Sem registro anterior" },
+            { label: "Saída pronta", value: `${outputMetrics.ready}` },
+          ]}
+        />
+      ) : null}
+
+      {saveFeedback && !isDirty ? (
         <OperationalState
           kind="saved"
           title="Projeto sincronizado"
@@ -2033,6 +2345,14 @@ export default function EditorProjectPage() {
         }
         footer={
           <div className="editor-shell-footer-stack">
+            <div
+              className="editor-document-guard"
+              data-document-state={saving ? "saving" : isDirty ? "dirty" : "saved"}
+              aria-live="polite"
+            >
+              <strong>{documentGuardTitle}</strong>
+              <span>{documentGuardDetail}</span>
+            </div>
             <div className="editor-shell-footer-wrap">
               <div className="editor-shell-footer-copy">
                 <p className="section-kicker">Projeto atual</p>
@@ -2095,17 +2415,13 @@ export default function EditorProjectPage() {
             ) : null}
             <GitHubWorkspaceCard
               variant="compact"
-              project={project ? { id: project.id, title, kind: project.kind, data: project.data } : null}
-              onProjectDataChange={(projectId, data) => {
-                setProject((current) => (current && current.id === projectId ? { ...current, data } : current));
-              }}
+              project={workspaceProjectRef}
+              onProjectDataChange={handleWorkspaceProjectDataChange}
             />
             <VercelPublishCard
               variant="compact"
-              project={project ? { id: project.id, title, kind: project.kind, data: project.data } : null}
-              onProjectDataChange={(projectId, data) => {
-                setProject((current) => (current && current.id === projectId ? { ...current, data } : current));
-              }}
+              project={workspaceProjectRef}
+              onProjectDataChange={handleWorkspaceProjectDataChange}
             />
           </div>
         }

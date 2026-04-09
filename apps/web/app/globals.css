@@ -6475,6 +6475,37 @@ textarea:focus {
   width: 100%;
 }
 
+.editor-document-guard {
+  display: grid;
+  gap: 6px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(191, 239, 255, 0.14);
+  background:
+    radial-gradient(180px 86px at 100% 0%, rgba(75, 232, 255, 0.08), transparent 72%),
+    linear-gradient(160deg, rgba(13, 49, 119, 0.24), rgba(7, 27, 68, 0.78));
+}
+
+.editor-document-guard strong {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--ea-text-strong);
+}
+
+.editor-document-guard span {
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--ea-text-subtle);
+}
+
+.editor-document-guard[data-document-state="dirty"] {
+  border-color: rgba(255, 209, 102, 0.2);
+}
+
+.editor-document-guard[data-document-state="saving"] {
+  border-color: rgba(75, 232, 255, 0.2);
+}
+
 @media (max-width: 1023px) {
   .editor-project-kpi-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));

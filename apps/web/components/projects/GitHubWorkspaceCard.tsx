@@ -130,11 +130,12 @@ function latestCommitLabel(item: GitHubProjectExport | null | undefined): string
 }
 
 export function GitHubWorkspaceCard({ variant = "full", project = null, projects = [], onProjectDataChange }: Props) {
+  const normalizedProjectsInput = projects.length ? projects : null;
   const availableProjects = useMemo(() => {
     const single = normalizeProject(project);
     if (single) return [single];
-    return projects.map((item) => normalizeProject(item)).filter(Boolean) as GitHubProjectRef[];
-  }, [project, projects]);
+    return (normalizedProjectsInput || []).map((item) => normalizeProject(item)).filter(Boolean) as GitHubProjectRef[];
+  }, [normalizedProjectsInput, project]);
 
   const [ready, setReady] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState("");

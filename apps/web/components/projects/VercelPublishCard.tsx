@@ -155,11 +155,12 @@ function extractUpdatedProjectData(response: any, fallback: any): any {
 }
 
 export function VercelPublishCard({ variant = "full", project = null, projects = [], onProjectDataChange }: Props) {
+  const normalizedProjectsInput = projects.length ? projects : null;
   const availableProjects = useMemo(() => {
     const single = normalizeProject(project);
     if (single) return [single];
-    return projects.map((item) => normalizeProject(item)).filter(Boolean) as VercelProjectSummary[];
-  }, [project, projects]);
+    return (normalizedProjectsInput || []).map((item) => normalizeProject(item)).filter(Boolean) as VercelProjectSummary[];
+  }, [normalizedProjectsInput, project]);
 
   const [ready, setReady] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState("");
