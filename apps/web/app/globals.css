@@ -3472,6 +3472,51 @@ body {
   color: var(--ea-text-subtle);
 }
 
+.credits-history-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.credits-financial-state {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 24px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(191, 239, 255, 0.16);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--ea-text-secondary);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.credits-financial-state[data-state="reconciled"],
+.credits-financial-state[data-state="settled"],
+.credits-financial-state[data-state="posted"] {
+  color: #cffff6;
+  border-color: rgba(95, 240, 200, 0.26);
+  background: rgba(48, 140, 114, 0.14);
+}
+
+.credits-financial-state[data-state="pending"] {
+  color: #ffe7ac;
+  border-color: rgba(255, 203, 88, 0.24);
+  background: rgba(163, 113, 18, 0.16);
+}
+
+.credits-financial-state[data-state="failed"],
+.credits-financial-state[data-state="refunded"],
+.credits-financial-state[data-state="disputed"] {
+  color: #ffd1d1;
+  border-color: rgba(255, 119, 119, 0.22);
+  background: rgba(120, 28, 28, 0.18);
+}
+
 .credits-history-amount {
   font-weight: 700;
 }
@@ -3482,6 +3527,44 @@ body {
 
 .credits-history-amount-negative {
   color: #ffd2d2;
+}
+
+.credits-history-proof-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.credits-history-proof-chip {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  padding: 10px 11px;
+  border-radius: 14px;
+  border: 1px solid rgba(191, 239, 255, 0.07);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0.01)),
+    rgba(8, 12, 20, 0.42);
+}
+
+.credits-history-proof-chip span {
+  color: var(--ea-text-dim);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.credits-history-proof-chip strong {
+  color: var(--ea-text-body);
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+@media (max-width: 640px) {
+  .credits-history-proof-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 .trust-note {

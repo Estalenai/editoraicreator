@@ -21,11 +21,13 @@ type CoinTransaction = {
   feature?: string | null;
   ref_kind?: string | null;
   ref_id?: string | null;
+  meta?: Record<string, any> | null;
   created_at?: string | null;
 };
 
 type CoinType = "common" | "pro" | "ultra";
 type NoticeTone = "info" | "warning" | "success";
+type FinancialState = "pending" | "settled" | "failed" | "refunded" | "disputed" | "reconciled" | "posted" | "unknown";
 const ALL_COIN_TYPES: CoinType[] = ["common", "pro", "ultra"];
 const COINS_CHECKOUT_CONTEXT_PREFIX = "ea:coins_checkout:";
 
@@ -49,11 +51,21 @@ type CoinsPackageStatusResponse = {
     quote_id?: string;
     package_total?: number;
     breakdown?: WalletSnapshot;
+    source?: string | null;
+    expires_at?: string | null;
     used_at?: string | null;
     checkout_session_id?: string | null;
     payment_intent_id?: string | null;
   } | null;
   wallet?: WalletSnapshot | null;
+  reconciliation?: {
+    ok?: boolean;
+    status?: string | null;
+    grant?: {
+      status?: string | null;
+      grantCallPath?: string | null;
+    } | null;
+  } | null;
 };
 
 type ConversionResponse = {
@@ -200,6 +212,177 @@ function clearCheckoutSearchParams(keys: string[]) {
   window.history.replaceState(window.history.state, "", nextUrl);
 }
 
+function normalizeFinancialState(rawValue: unknown): FinancialState {
+  const text = String(rawValue || "").trim().toLowerCase();
+  if (!text) return "unknown";
+  if (text.includes("reconc")) return "reconciled";
+  if (text.includes("disput")) return "disputed";
+  if (text.includes("refund")) return "refunded";
+  if (text.includes("fail") || text.includes("cancel") || text.includes("declin")) return "failed";
+  if (text.includes("pend") || text.includes("process") || text.includes("await")) return "pending";
+  if (text.includes("settl") || text.includes("paid") || text.includes("confirm")) return "settled";
+  if (text.includes("post")) return "posted";
+  return "unknown";
+}
+
+function resolveFinancialState(
+  tx: CoinTransaction,
+  packageStatus: CoinsPackageStatusResponse | null | undefined
+): FinancialState {
+  const meta = tx.meta || {};
+  const candidates = [
+    meta.financial_state,
+    meta.settlement_status,
+    meta.reconciliation_status,
+    meta.processing_state,
+    packageStatus?.reconciliation?.status,
+  ];
+  for (const candidate of candidates) {
+    const normalized = normalizeFinancialState(candidate);
+    if (normalized !== "unknown") return normalized;
+  }
+  if (packageStatus?.quote?.used_at && isPackageTransaction(tx)) return "reconciled";
+  if (isPackageTransaction(tx) && (meta.stripe_checkout_session_id || meta.stripe_payment_intent_id)) return "settled";
+  if (isConversionTransaction(tx)) return "reconciled";
+  return tx.amount > 0 ? "posted" : "reconciled";
+}
+
+function financialStateLabel(state: FinancialState): string {
+  switch (state) {
+    case "pending":
+      return "Pending";
+    case "settled":
+      return "Settled";
+    case "failed":
+      return "Failed";
+    case "refunded":
+      return "Refunded";
+    case "disputed":
+      return "Disputed";
+    case "reconciled":
+      return "Reconciled";
+    case "posted":
+      return "Posted";
+    default:
+      return "Sem trilha";
+  }
+}
+
+function financialStateSummary(state: FinancialState): string {
+  switch (state) {
+    case "pending":
+      return "Aguardando confirmação final do processamento.";
+    case "settled":
+      return "Pagamento confirmado, aguardando ou recém-fechado no ledger.";
+    case "failed":
+      return "Falha operacional registrada para revisão.";
+    case "refunded":
+      return "Valor devolvido e mantido na trilha financeira.";
+    case "disputed":
+      return "Cobrança em disputa e exigindo revisão.";
+    case "reconciled":
+      return "Recibo, saldo e ledger alinhados.";
+    case "posted":
+      return "Evento lançado no ledger com leitura disponível.";
+    default:
+      return "Sem estado financeiro explícito.";
+  }
+}
+
+function financialStateOperationalKind(state: FinancialState): "payment-processing" | "reconciliation" | "retry" | "error" | "success" | "empty" {
+  switch (state) {
+    case "pending":
+      return "payment-processing";
+    case "settled":
+      return "reconciliation";
+    case "failed":
+      return "error";
+    case "refunded":
+    case "disputed":
+      return "retry";
+    case "reconciled":
+    case "posted":
+      return "success";
+    default:
+      return "empty";
+  }
+}
+
+function isPackageTransaction(tx: CoinTransaction): boolean {
+  const refKind = String(tx.ref_kind || "").trim().toLowerCase();
+  const reason = String(tx.reason || "").trim().toLowerCase();
+  const feature = String(tx.feature || "").trim().toLowerCase();
+  const meta = tx.meta || {};
+  return (
+    refKind.includes("package") ||
+    reason.includes("compra") ||
+    reason.includes("checkout") ||
+    reason.includes("stripe") ||
+    feature.includes("compra") ||
+    String(meta.kind || "").trim().toLowerCase().includes("package")
+  );
+}
+
+function isConversionTransaction(tx: CoinTransaction): boolean {
+  const refKind = String(tx.ref_kind || "").trim().toLowerCase();
+  const reason = String(tx.reason || "").trim().toLowerCase();
+  const feature = String(tx.feature || "").trim().toLowerCase();
+  return refKind.includes("conversion") || reason.includes("convers") || feature.includes("convers");
+}
+
+function buildSupportReference(tx: CoinTransaction, packageStatus: CoinsPackageStatusResponse | null | undefined): string {
+  const meta = tx.meta || {};
+  return String(
+    meta.support_ref ||
+      meta.quote_id ||
+      meta.receipt_id ||
+      meta.stripe_payment_intent_id ||
+      meta.stripe_checkout_session_id ||
+      packageStatus?.quote?.payment_intent_id ||
+      packageStatus?.quote?.checkout_session_id ||
+      tx.ref_id ||
+      tx.id
+  ).trim();
+}
+
+function receiptReference(tx: CoinTransaction, packageStatus: CoinsPackageStatusResponse | null | undefined): string {
+  const meta = tx.meta || {};
+  return String(
+    meta.receipt_id ||
+      meta.quote_id ||
+      packageStatus?.quote?.quote_id ||
+      tx.ref_id ||
+      tx.id
+  ).trim();
+}
+
+function processingReference(tx: CoinTransaction, packageStatus: CoinsPackageStatusResponse | null | undefined): string {
+  const meta = tx.meta || {};
+  return String(
+    meta.stripe_payment_intent_id ||
+      meta.payment_intent_id ||
+      packageStatus?.quote?.payment_intent_id ||
+      meta.stripe_checkout_session_id ||
+      meta.checkout_session_id ||
+      packageStatus?.quote?.checkout_session_id ||
+      "Sem ID público"
+  ).trim();
+}
+
+function formatMoneyFromMeta(tx: CoinTransaction): string | null {
+  const meta = tx.meta || {};
+  const pricing = meta.pricing || {};
+  const numeric =
+    Number(pricing.total_amount ?? pricing.total_brl ?? meta.total_brl ?? meta.package_total ?? Number.NaN);
+  if (!Number.isFinite(numeric) || numeric <= 0) return null;
+  return numeric > 1000 ? formatBrl(numeric / 100) : formatBrl(numeric);
+}
+
+function formatBrl(value: number): string {
+  const normalized = Number.isFinite(value) ? value : 0;
+  return normalized.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+}
+
 export default function CreditsPage() {
   const {
     loading,
@@ -225,6 +408,7 @@ export default function CreditsPage() {
   const [conversionResult, setConversionResult] = useState<ConversionResponse | null>(null);
   const [checkoutNotice, setCheckoutNotice] = useState<{ tone: NoticeTone; message: string } | null>(null);
   const [handledCheckoutState, setHandledCheckoutState] = useState("");
+  const [latestPackageStatus, setLatestPackageStatus] = useState<CoinsPackageStatusResponse | null>(null);
 
   const walletSummary = useMemo(
     () => formatCreatorCoinsWalletSummary(wallet),
@@ -270,32 +454,75 @@ export default function CreditsPage() {
   const estimatedTargetAmount = conversionAmountSafe;
   const insufficientForEstimate = conversionEnabled && sourceBalance < estimatedDebitedAmount;
   const latestTransaction = useMemo(() => transactions[0] || null, [transactions]);
-  const latestCreditTransaction = useMemo(
-    () => transactions.find((tx) => Number(tx.amount || 0) > 0) || null,
-    [transactions]
+  const decoratedTransactions = useMemo(
+    () =>
+      transactions.map((tx) => {
+        const state = resolveFinancialState(tx, latestPackageStatus);
+        return {
+          tx,
+          state,
+          stateLabel: financialStateLabel(state),
+          stateSummary: financialStateSummary(state),
+          supportRef: buildSupportReference(tx, latestPackageStatus),
+          receiptRef: receiptReference(tx, latestPackageStatus),
+          processingRef: processingReference(tx, latestPackageStatus),
+          receiptAmount: formatMoneyFromMeta(tx),
+        };
+      }),
+    [transactions, latestPackageStatus]
   );
-  const latestDebitTransaction = useMemo(
-    () => transactions.find((tx) => Number(tx.amount || 0) < 0) || null,
-    [transactions]
+  const latestPackageEvent = useMemo(
+    () => decoratedTransactions.find(({ tx }) => isPackageTransaction(tx)) || null,
+    [decoratedTransactions]
+  );
+  const latestReconciledEvent = useMemo(
+    () => decoratedTransactions.find(({ state }) => state === "reconciled" || state === "settled") || null,
+    [decoratedTransactions]
+  );
+  const ledgerAttentionCount = useMemo(
+    () =>
+      decoratedTransactions.filter(({ state }) =>
+        state === "pending" || state === "failed" || state === "refunded" || state === "disputed"
+      ).length,
+    [decoratedTransactions]
+  );
+  const ledgerProofCount = useMemo(
+    () =>
+      decoratedTransactions.filter(({ receiptRef, processingRef }) =>
+        Boolean(receiptRef && receiptRef !== "Sem ID público") || Boolean(processingRef && processingRef !== "Sem ID público")
+      ).length,
+    [decoratedTransactions]
   );
   const latestTransactionLabel = latestTransaction
     ? `${txReasonLabel(latestTransaction)} • ${formatDateTime(latestTransaction.created_at)}`
     : "Sem movimentações recentes";
+  const currentFinancialState = latestPackageEvent?.state || (latestTransaction ? resolveFinancialState(latestTransaction, latestPackageStatus) : "unknown");
+  const currentFinancialStateLabel = financialStateLabel(currentFinancialState);
   const financialConfidenceTitle = txError
     ? "Ledger indisponível"
     : checkoutNotice?.tone === "success"
       ? "Compra conciliada"
       : checkoutNotice?.tone === "warning"
         ? "Reconciliação em atenção"
-        : txLoading || loading
-          ? "Revalidando saldo"
-          : latestTransaction
-            ? "Ledger conciliado"
+        : currentFinancialState === "pending"
+          ? "Pagamento em processamento"
+          : currentFinancialState === "failed"
+            ? "Falha financeira registrada"
+            : currentFinancialState === "refunded"
+              ? "Pagamento devolvido"
+              : currentFinancialState === "disputed"
+                ? "Pagamento em disputa"
+          : txLoading || loading
+            ? "Revalidando saldo"
+            : latestTransaction
+            ? `Ledger ${currentFinancialStateLabel.toLowerCase()}`
             : "Ledger aguardando primeiro evento";
   const financialConfidenceDescription = txError
     ? "O histórico financeiro não respondeu com segurança suficiente para leitura confiável."
     : checkoutNotice?.message
       ? checkoutNotice.message
+      : latestPackageEvent
+        ? `${latestPackageEvent.stateSummary} Recibo, processamento e suporte podem ser lidos nesta trilha.`
       : latestTransaction
         ? `Último evento confirmado em ${formatDateTime(latestTransaction.created_at)} com trilha de saldo e histórico disponíveis nesta conta.`
         : `Ainda não há compra, conversão ou consumo registrado para ${CREATOR_COINS_PUBLIC_NAME}.`;
@@ -309,7 +536,7 @@ export default function CreditsPage() {
           : txLoading || loading
             ? "loading"
             : latestTransaction
-              ? "success"
+              ? financialStateOperationalKind(currentFinancialState)
               : "empty";
 
   function updateConversionAmount(nextValue: number) {
@@ -387,12 +614,13 @@ export default function CreditsPage() {
     const baselineLatestTransactionId = String(checkoutContext?.latestTransactionId || "");
     const baselineWallet = checkoutContext?.walletBefore || null;
 
-    setCheckoutNotice({
-      tone: "info",
-      message: checkoutQuoteId
-        ? "Pagamento confirmado na Stripe. Validando o pacote comprado, o saldo e o histórico diretamente nesta conta..."
-        : `Pagamento confirmado na Stripe. Validando saldo e histórico de ${CREATOR_COINS_PUBLIC_NAME} nesta página...`,
-    });
+      setCheckoutNotice({
+        tone: "info",
+        message: checkoutQuoteId
+          ? "Pagamento confirmado na Stripe. Validando o pacote comprado, o saldo e o histórico diretamente nesta conta..."
+          : `Pagamento confirmado na Stripe. Validando saldo e histórico de ${CREATOR_COINS_PUBLIC_NAME} nesta página...`,
+      });
+      setLatestPackageStatus(null);
 
     (async () => {
       let checkoutStatus: CoinsPackageStatusResponse | null = null;
@@ -410,6 +638,7 @@ export default function CreditsPage() {
 
         try {
           checkoutStatus = checkoutQuoteId ? ((await api.getCoinsPackageStatus(checkoutQuoteId)) as CoinsPackageStatusResponse) : null;
+          setLatestPackageStatus(checkoutStatus);
           statusError = null;
         } catch (statusLoadError: any) {
           statusError = statusLoadError;
@@ -878,24 +1107,24 @@ export default function CreditsPage() {
               {!txLoading && !txError ? (
                 <div className="credits-ledger-summary">
                   <div className="credits-ledger-summary-item">
-                    <span>Último crédito confirmado</span>
+                    <span>Último evento conciliado</span>
                     <strong>
-                      {latestCreditTransaction
-                        ? `${txReasonLabel(latestCreditTransaction)} • ${formatDateTime(latestCreditTransaction.created_at)}`
-                        : "Sem crédito recente"}
+                      {latestReconciledEvent
+                        ? `${txReasonLabel(latestReconciledEvent.tx)} • ${formatDateTime(latestReconciledEvent.tx.created_at)}`
+                        : "Sem conciliação recente"}
                     </strong>
                   </div>
                   <div className="credits-ledger-summary-item">
-                    <span>Último débito confirmado</span>
+                    <span>Eventos em atenção</span>
                     <strong>
-                      {latestDebitTransaction
-                        ? `${txReasonLabel(latestDebitTransaction)} • ${formatDateTime(latestDebitTransaction.created_at)}`
-                        : "Sem débito recente"}
+                      {ledgerAttentionCount > 0
+                        ? `${ledgerAttentionCount} item(ns) exigem leitura`
+                        : "Sem pendência financeira aberta"}
                     </strong>
                   </div>
                   <div className="credits-ledger-summary-item">
-                    <span>Estado do ledger</span>
-                    <strong>{transactions.length > 0 ? "Conciliado" : "Sem eventos"}</strong>
+                    <span>Provas rastreáveis</span>
+                    <strong>{ledgerProofCount > 0 ? `${ledgerProofCount} item(ns) com recibo ou ID` : "Sem recibo público ainda"}</strong>
                   </div>
                 </div>
               ) : null}
@@ -945,11 +1174,18 @@ export default function CreditsPage() {
                   />
                 ) : (
                   <div className="credits-history-list">
-                    {transactions.map((tx) => {
+                    {decoratedTransactions.map(({ tx, state, stateLabel, stateSummary, supportRef, receiptRef, processingRef, receiptAmount }) => {
                       const amount = Number(tx.amount || 0);
                       const positive = amount > 0;
                       const amountLabel = `${positive ? "+" : ""}${amount} ${coinTypeLabel(tx.coin_type)}`;
                       const movementLabel = positive ? "Crédito" : "Débito";
+                      const proofItems = [
+                        { label: "Estado", value: stateLabel },
+                        { label: "Recibo", value: receiptRef || "Sem recibo público" },
+                        { label: "Processamento", value: processingRef || "Sem ID público" },
+                        { label: "Suporte", value: supportRef || tx.id },
+                        receiptAmount ? { label: "Valor", value: receiptAmount } : null,
+                      ].filter(Boolean) as Array<{ label: string; value: string }>;
                       return (
                         <div
                           key={tx.id}
@@ -961,11 +1197,23 @@ export default function CreditsPage() {
                               <span className="credits-history-meta">
                                 {formatDateTime(tx.created_at)} • Origem: {txSourceLabel(tx)}{tx.ref_id ? ` • Ref: ${tx.ref_id}` : ""}
                               </span>
+                              <span className="credits-history-meta">{stateSummary}</span>
                             </div>
                             <div className="credits-history-side">
-                              <span className={`premium-badge ${positive ? "premium-badge-phase" : "premium-badge-warning"}`}>{movementLabel}</span>
+                              <div className="credits-history-badge-row">
+                                <span className={`premium-badge ${positive ? "premium-badge-phase" : "premium-badge-warning"}`}>{movementLabel}</span>
+                                <span className="credits-financial-state" data-state={state}>{stateLabel}</span>
+                              </div>
                               <span className={`credits-history-amount ${positive ? "credits-history-amount-positive" : "credits-history-amount-negative"}`}>{amountLabel}</span>
                             </div>
+                          </div>
+                          <div className="credits-history-proof-grid">
+                            {proofItems.map((item) => (
+                              <div key={`${tx.id}-${item.label}`} className="credits-history-proof-chip">
+                                <span>{item.label}</span>
+                                <strong>{item.value}</strong>
+                              </div>
+                            ))}
                           </div>
                         </div>
                       );
@@ -983,23 +1231,26 @@ export default function CreditsPage() {
             description={financialConfidenceDescription}
             meta={[
               {
-                label: "Pagamento",
-                value:
-                  checkoutNotice?.tone === "success"
-                    ? "Confirmado"
-                    : checkoutNotice?.tone === "warning"
-                      ? "Em revisão"
-                      : latestCreditTransaction
-                        ? "Com trilha visível"
-                        : "Sem compra recente",
+                label: "Processamento",
+                value: currentFinancialStateLabel,
+                tone:
+                  currentFinancialState === "failed"
+                    ? "danger"
+                    : currentFinancialState === "pending" || currentFinancialState === "disputed"
+                      ? "warning"
+                      : "success",
               },
               {
-                label: "Ledger",
-                value: txError ? "Indisponível" : txLoading ? "Sincronizando" : "Disponível",
+                label: "Recibo",
+                value: latestPackageEvent ? latestPackageEvent.receiptRef : "Sem compra recente",
+              },
+              {
+                label: "Suporte",
+                value: latestPackageEvent ? latestPackageEvent.supportRef : "Aguardando primeiro evento",
               },
               {
                 label: "Última reconciliação",
-                value: latestTransaction ? formatDateTime(latestTransaction.created_at) : "Aguardando primeiro evento",
+                value: latestReconciledEvent ? formatDateTime(latestReconciledEvent.tx.created_at) : "Aguardando primeiro evento",
               },
             ]}
             actions={
@@ -1020,9 +1271,9 @@ export default function CreditsPage() {
               </>
             }
             footer={
-              latestCreditTransaction
-                ? `Último crédito: ${txReasonLabel(latestCreditTransaction)} • ${formatDateTime(latestCreditTransaction.created_at)}`
-                : "Sem crédito confirmado recentemente."
+              latestPackageEvent
+                ? `Processamento: ${latestPackageEvent.processingRef} • Ledger: ${latestPackageEvent.stateLabel}`
+                : "Sem compra confirmada recentemente."
             }
             className="credits-support-state"
             compact
@@ -1030,21 +1281,21 @@ export default function CreditsPage() {
 
           <section className="credits-support-section credits-context-section credits-support-overview">
             <div className="section-header-ea">
-              <h3 className="heading-reset">Recibo, leitura e próxima ação</h3>
-              <p className="helper-text-ea">Confirmação curta, origem do ledger e regra de uso sem abrir painéis extras.</p>
+              <h3 className="heading-reset">Recibo e conciliação</h3>
+              <p className="helper-text-ea">Recibo, processamento, extrato e referência de suporte na mesma leitura.</p>
             </div>
             <div className="credits-context-list">
               <div className="credits-context-item">
                 <strong>Fonte de verdade</strong>
-                <span>O histórico recente é a leitura canônica para compra, conversão e débito.</span>
+                <span>O ledger recente é a leitura final para compra, conversão, reembolso e disputa.</span>
+              </div>
+              <div className="credits-context-item">
+                <strong>Recibo rastreável</strong>
+                <span>{latestPackageEvent ? `Recibo ${latestPackageEvent.receiptRef} com processamento ${latestPackageEvent.processingRef}.` : "A próxima compra exibirá recibo, processamento e referência de suporte."}</span>
               </div>
               <div className="credits-context-item">
                 <strong>Reconciliação visível</strong>
-                <span>Compras passam pela Stripe e retornam com saldo e ledger revalidados nesta conta.</span>
-              </div>
-              <div className="credits-context-item">
-                <strong>Próxima ação curta</strong>
-                <span>{txError ? "Atualize o ledger antes de confiar no saldo." : "Use o ledger para confirmar o resultado final."}</span>
+                <span>{latestPackageEvent ? `${latestPackageEvent.stateLabel}: ${latestPackageEvent.stateSummary}` : "Stripe confirma o pagamento; o ledger fecha a leitura final nesta conta."}</span>
               </div>
             </div>
             <div className="credits-guide-grid">
@@ -1057,7 +1308,10 @@ export default function CreditsPage() {
             </div>
             <div className="credits-guide-notes">
               <div className="credits-guide-note">
-                <strong>Estimativa e confirmação:</strong> creators estimam antes; o ledger confirma compra, conversão e saldo.
+                <strong>Extrato recente:</strong> cada item preserva estado, recibo, processamento e referência útil para suporte.
+              </div>
+              <div className="credits-guide-note">
+                <strong>Estimativa e confirmação:</strong> creators estimam antes; o ledger confirma compra, conversão, saldo e qualquer exceção financeira.
               </div>
             </div>
           </section>

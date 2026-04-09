@@ -117,7 +117,12 @@ function createScriptResult(body) {
   };
 }
 
-function createTransactionsFromBreakdown(breakdown) {
+function createTransactionsFromBreakdown(breakdown, options = {}) {
+  const quoteId = String(options?.quoteId || `quote_${Date.now()}`).trim();
+  const checkoutSessionId = String(options?.checkoutSessionId || `cs_pkg_${quoteId}`).trim();
+  const paymentIntentId = String(options?.paymentIntentId || `pi_pkg_${quoteId}`).trim();
+  const supportRef = String(options?.supportRef || paymentIntentId || checkoutSessionId || quoteId).trim();
+  const packageTotal = Number(options?.packageTotal || 0);
   return Object.entries(breakdown)
     .filter(([, amount]) => Number(amount) > 0)
     .map(([coinType, amount], index) => ({
@@ -127,9 +132,147 @@ function createTransactionsFromBreakdown(breakdown) {
       reason: "Compra avulsa concluída",
       feature: "Compra avulsa",
       ref_kind: "coins_package",
-      ref_id: `pkg_${Date.now()}_${index}`,
+      ref_id: `${quoteId}_${index}`,
+      meta: {
+        provider: "stripe",
+        kind: "package_mix",
+        financial_state: "reconciled",
+        settlement_status: "settled",
+        reconciliation_status: "reconciled",
+        reconciled_at: nowIso(),
+        receipt_id: quoteId,
+        quote_id: quoteId,
+        stripe_checkout_session_id: checkoutSessionId,
+        stripe_payment_intent_id: paymentIntentId,
+        support_ref: supportRef,
+        package_total: packageTotal,
+        pricing: packageTotal ? { total_brl: packageTotal / 10 } : null,
+      },
       created_at: nowIso(),
     }));
+}
+
+function createSeedFinancialTransactions() {
+  const baseTime = Date.now();
+  return [
+    {
+      id: "tx_seed_reconciled_purchase",
+      coin_type: "pro",
+      amount: 120,
+      reason: "Compra avulsa concluída",
+      feature: "Compra avulsa",
+      ref_kind: "coins_package",
+      ref_id: "quote_seed_reconciled",
+      meta: {
+        provider: "stripe",
+        kind: "package_mix",
+        financial_state: "reconciled",
+        settlement_status: "settled",
+        reconciliation_status: "reconciled",
+        reconciled_at: nowIso(),
+        receipt_id: "quote_seed_reconciled",
+        quote_id: "quote_seed_reconciled",
+        stripe_checkout_session_id: "cs_seed_reconciled",
+        stripe_payment_intent_id: "pi_seed_reconciled",
+        support_ref: "pi_seed_reconciled",
+        package_total: 120,
+        pricing: { total_brl: 12 },
+      },
+      created_at: new Date(baseTime - 5 * 60 * 1000).toISOString(),
+    },
+    {
+      id: "tx_seed_pending_purchase",
+      coin_type: "common",
+      amount: 60,
+      reason: "Compra avulsa em processamento",
+      feature: "Compra avulsa",
+      ref_kind: "coins_package",
+      ref_id: "quote_seed_pending",
+      meta: {
+        provider: "stripe",
+        kind: "package_mix",
+        financial_state: "pending",
+        settlement_status: "pending",
+        receipt_id: "quote_seed_pending",
+        quote_id: "quote_seed_pending",
+        stripe_checkout_session_id: "cs_seed_pending",
+        stripe_payment_intent_id: "pi_seed_pending",
+        support_ref: "pi_seed_pending",
+        package_total: 60,
+        pricing: { total_brl: 6 },
+      },
+      created_at: new Date(baseTime - 55 * 60 * 1000).toISOString(),
+    },
+    {
+      id: "tx_seed_refunded_purchase",
+      coin_type: "common",
+      amount: -60,
+      reason: "Estorno de compra",
+      feature: "Reembolso",
+      ref_kind: "coins_package",
+      ref_id: "quote_seed_refunded",
+      meta: {
+        provider: "stripe",
+        kind: "package_mix",
+        financial_state: "refunded",
+        settlement_status: "refunded",
+        receipt_id: "quote_seed_refunded",
+        quote_id: "quote_seed_refunded",
+        stripe_checkout_session_id: "cs_seed_refunded",
+        stripe_payment_intent_id: "pi_seed_refunded",
+        support_ref: "pi_seed_refunded",
+        package_total: 60,
+        pricing: { total_brl: 6 },
+      },
+      created_at: new Date(baseTime - 26 * 60 * 60 * 1000).toISOString(),
+    },
+    {
+      id: "tx_seed_disputed_purchase",
+      coin_type: "ultra",
+      amount: 20,
+      reason: "Compra em disputa",
+      feature: "Disputa",
+      ref_kind: "coins_package",
+      ref_id: "quote_seed_disputed",
+      meta: {
+        provider: "stripe",
+        kind: "package_mix",
+        financial_state: "disputed",
+        settlement_status: "disputed",
+        receipt_id: "quote_seed_disputed",
+        quote_id: "quote_seed_disputed",
+        stripe_checkout_session_id: "cs_seed_disputed",
+        stripe_payment_intent_id: "pi_seed_disputed",
+        support_ref: "pi_seed_disputed",
+        package_total: 20,
+        pricing: { total_brl: 2 },
+      },
+      created_at: new Date(baseTime - 52 * 60 * 60 * 1000).toISOString(),
+    },
+    {
+      id: "tx_seed_failed_purchase",
+      coin_type: "pro",
+      amount: 0,
+      reason: "Falha de processamento",
+      feature: "Falha financeira",
+      ref_kind: "coins_package",
+      ref_id: "quote_seed_failed",
+      meta: {
+        provider: "stripe",
+        kind: "package_mix",
+        financial_state: "failed",
+        settlement_status: "failed",
+        receipt_id: "quote_seed_failed",
+        quote_id: "quote_seed_failed",
+        stripe_checkout_session_id: "cs_seed_failed",
+        stripe_payment_intent_id: "pi_seed_failed",
+        support_ref: "pi_seed_failed",
+        package_total: 40,
+        pricing: { total_brl: 4 },
+      },
+      created_at: new Date(baseTime - 79 * 60 * 60 * 1000).toISOString(),
+    },
+  ];
 }
 
 function buildQuote(body, quoteId) {
@@ -195,7 +338,7 @@ export function createMockApiState() {
     pendingPlanCode: null,
     quotes: new Map(),
     clipJobs: new Map(),
-    transactions: [],
+    transactions: createSeedFinancialTransactions(),
     supportRequests: [
       {
         id: "support_seed_1",
@@ -319,12 +462,24 @@ export async function attachMockApi(context, state) {
                 quote_id: quote.quote_id,
                 package_total: quote.package_total,
                 breakdown: quote.breakdown,
+                source: "stripe_checkout",
+                expires_at: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
                 used_at: nowIso(),
                 checkout_session_id: `cs_pkg_status_${quoteId}`,
                 payment_intent_id: `pi_pkg_status_${quoteId}`,
               }
             : null,
           wallet: { ...state.wallet },
+          reconciliation: quote
+            ? {
+                ok: true,
+                status: "reconciled",
+                grant: {
+                  status: "ok",
+                  grantCallPath: "e2e_mock_ledger",
+                },
+              }
+            : null,
         })
       );
       return;
@@ -585,6 +740,9 @@ export async function attachMockApi(context, state) {
       const body = parseJson(request);
       const quote = body?.quote_id ? state.quotes.get(String(body.quote_id)) : null;
       const appliedBreakdown = quote?.breakdown || body?.breakdown || { common: 0, pro: 0, ultra: 0 };
+      const quoteId = String(body?.quote_id || quote?.quote_id || `quote_${state.nextQuoteId++}`).trim();
+      const checkoutSessionId = `cs_pkg_${state.nextCheckoutId++}`;
+      const paymentIntentId = `pi_pkg_${state.nextCheckoutId++}`;
       state.wallet = {
         ...state.wallet,
         common: Number(state.wallet.common || 0) + Number(appliedBreakdown.common || 0),
@@ -592,12 +750,21 @@ export async function attachMockApi(context, state) {
         ultra: Number(state.wallet.ultra || 0) + Number(appliedBreakdown.ultra || 0),
         updated_at: nowIso(),
       };
-      state.transactions = [...createTransactionsFromBreakdown(appliedBreakdown), ...state.transactions];
+      state.transactions = [
+        ...createTransactionsFromBreakdown(appliedBreakdown, {
+          quoteId,
+          checkoutSessionId,
+          paymentIntentId,
+          packageTotal: Number(quote?.package_total || body?.package_total || 0),
+          supportRef: paymentIntentId,
+        }),
+        ...state.transactions,
+      ];
       await route.fulfill(
         json({
           ok: true,
           checkout: {
-            id: `cs_pkg_${state.nextCheckoutId++}`,
+            id: checkoutSessionId,
             url: String(body?.success_url || ""),
           },
         })
@@ -613,6 +780,7 @@ export async function attachMockApi(context, state) {
       const fee_percent = state.planCode === "EDITOR_FREE" ? 8 : state.planCode === "EDITOR_PRO" ? 4 : 2;
       const fee_amount = Math.ceil(amount * (fee_percent / 100));
       const debited_amount = amount + fee_amount;
+      const conversionRef = `conv_${Date.now()}`;
       state.wallet = {
         ...state.wallet,
         [from]: Number(state.wallet[from] || 0) - debited_amount,
@@ -621,13 +789,43 @@ export async function attachMockApi(context, state) {
       };
       state.transactions = [
         {
-          id: `tx_conv_${Date.now()}`,
+          id: `${conversionRef}_credit`,
           coin_type: to,
           amount,
           reason: "Conversão de créditos",
           feature: "Conversão",
           ref_kind: "conversion",
-          ref_id: `conv_${Date.now()}`,
+          ref_id: conversionRef,
+          meta: {
+            financial_state: "reconciled",
+            reconciliation_status: "reconciled",
+            support_ref: conversionRef,
+            converted_amount: amount,
+            fee_amount,
+            debited_amount,
+            fee_percent: fee_percent,
+            leg: "credit",
+          },
+          created_at: nowIso(),
+        },
+        {
+          id: `${conversionRef}_debit`,
+          coin_type: from,
+          amount: -debited_amount,
+          reason: "Conversão de créditos",
+          feature: "Conversão",
+          ref_kind: "conversion",
+          ref_id: conversionRef,
+          meta: {
+            financial_state: "reconciled",
+            reconciliation_status: "reconciled",
+            support_ref: conversionRef,
+            converted_amount: amount,
+            fee_amount,
+            debited_amount,
+            fee_percent: fee_percent,
+            leg: "debit",
+          },
           created_at: nowIso(),
         },
         ...state.transactions,
