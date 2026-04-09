@@ -21056,3 +21056,195 @@ body {
     opacity: 0.74;
   }
 }
+
+/* Launch-grade App Router boundaries
+   Keep route failures and waits inside the same product language without reopening broader visual direction. */
+.route-boundary-page {
+  display: grid;
+  align-content: start;
+  min-height: 100%;
+}
+
+.route-boundary-shell {
+  padding: clamp(22px, 3vw, 34px);
+}
+
+.route-boundary-grid {
+  gap: clamp(18px, 2.6vw, 30px);
+  align-items: start;
+}
+
+.route-boundary-copy,
+.route-boundary-aside,
+.route-boundary-list,
+.route-boundary-list-item,
+.route-boundary-digest {
+  display: grid;
+  gap: 10px;
+}
+
+.route-boundary-headline-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.route-boundary-badge {
+  align-self: flex-start;
+}
+
+.route-boundary-title {
+  margin: 0;
+  max-width: 16ch;
+  font-size: clamp(28px, 4.4vw, 44px);
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+}
+
+.route-boundary-description {
+  margin: 0;
+  max-width: 62ch;
+  font-size: clamp(14px, 1.45vw, 17px);
+  line-height: 1.62;
+  color: rgba(230, 246, 255, 0.82);
+}
+
+.route-boundary-actions {
+  margin-top: 4px;
+}
+
+.route-boundary-actions > * {
+  flex: 0 1 auto;
+  min-width: clamp(148px, 15vw, 190px);
+}
+
+.route-boundary-aside {
+  min-width: 0;
+  padding: clamp(18px, 2.1vw, 24px);
+  border-radius: 22px;
+  border: 1px solid var(--ea-unified-divider);
+  background:
+    radial-gradient(220px 108px at 100% 0%, rgba(75, 232, 255, 0.06), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.036), rgba(255, 255, 255, 0.014));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 16px 40px rgba(1, 10, 30, 0.16);
+}
+
+.route-boundary-list-item strong,
+.route-boundary-digest strong {
+  color: var(--ea-text-strong);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.route-boundary-list-item span {
+  color: rgba(220, 242, 255, 0.78);
+  font-size: 13px;
+  line-height: 1.58;
+}
+
+.route-boundary-digest {
+  padding-top: 10px;
+  border-top: 1px solid var(--ea-unified-divider);
+}
+
+.route-boundary-digest code {
+  display: inline-flex;
+  width: fit-content;
+  max-width: 100%;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.22);
+  color: rgba(229, 247, 255, 0.76);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  word-break: break-all;
+}
+
+.route-boundary-emphasis {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+}
+
+.route-boundary-pulse {
+  width: 52px;
+  height: 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(191, 239, 255, 0.18);
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05), rgba(88, 242, 255, 0.16), rgba(255, 255, 255, 0.05));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 0 0 1px rgba(88, 242, 255, 0.04);
+}
+
+.route-boundary-proof-page {
+  display: grid;
+  align-content: start;
+}
+
+.route-boundary-proof-card {
+  padding: clamp(22px, 2.4vw, 30px);
+}
+
+.route-boundary-proof-title {
+  margin: 0;
+  font-size: clamp(22px, 2.6vw, 30px);
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+}
+
+.route-boundary-proof-copy {
+  margin: 0;
+  max-width: 62ch;
+  color: rgba(226, 244, 255, 0.78);
+  line-height: 1.58;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .route-boundary-pulse {
+    animation: route-boundary-pulse 1.6s ease-in-out infinite;
+  }
+}
+
+@keyframes route-boundary-pulse {
+  0%,
+  100% {
+    opacity: 0.62;
+    transform: scaleX(0.96);
+  }
+  50% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+@media (max-width: 1200px) {
+  .route-boundary-actions > * {
+    flex-basis: calc(50% - var(--ea-space-2));
+    min-width: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .route-boundary-shell {
+    padding: 20px;
+  }
+
+  .route-boundary-title {
+    max-width: none;
+    font-size: clamp(24px, 8vw, 34px);
+  }
+
+  .route-boundary-description {
+    max-width: none;
+  }
+
+  .route-boundary-actions > * {
+    flex: 1 1 100%;
+  }
+}
