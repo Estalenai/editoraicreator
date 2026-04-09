@@ -27,7 +27,35 @@ const CreateWaitlistSchema = z.object({
 const AdminPatchSchema = z.object({
   status: z.enum(STATUS_VALUES),
   admin_note: z.string().max(1000).optional(),
+  decision_reason: z.string().max(1000).optional(),
+  owner_label: z.string().max(120).optional(),
 });
+
+function buildOpsRef(prefix) {
+  const datePart = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+  const randomPart = Math.random().toString(36).slice(2, 6).toUpperCase();
+  return `${prefix}-${datePart}-${randomPart}`;
+}
+
+function toTrimmedString(value) {
+  if (typeof value !== "string") return null;
+  const trimmed = value.trim();
+  return trimmed || null;
+}
+
+function normalizeAccessMetadata(input) {
+  const base = input && typeof input === "object" && !Array.isArray(input) ? { ...input } : {};
+  const decisionHistory = Array.isArray(base.decision_history)
+    ? base.decision_history.filter((item) => item && typeof item === "object")
+    : [];
+  return {
+    ...base,
+    access_ref: toTrimmedString(base.access_ref) || buildOpsRef("ACC"),
+    owner_label: toTrimmedString(base.owner_label),
+    decision_reason: toTrimmedString(base.decision_reason),
+    decision_history: decisionHistory,
+  };
+}
 
 function getAdminClientOr503(res) {
   if (!isSupabaseAdminEnabled() || !supabaseAdmin) {
@@ -86,7 +114,12 @@ router.post("/request", async (req, res) => {
       .from("beta_access_requests")
       .update({
         updated_at: nowIso,
-        metadata: parsed.data.metadata || existing.data.metadata || {},
+        metadata: {
+          ...normalizeAccessMetadata(existing.data.metadata || {}),
+          ...((parsed.data.metadata && typeof parsed.data.metadata === "object" && !Array.isArray(parsed.data.metadata))
+            ? parsed.data.metadata
+            : {}),
+        },
       })
       .eq("id", existing.data.id)
       .select("id,email,status,created_at,updated_at,approved_at")
@@ -116,7 +149,18 @@ router.post("/request", async (req, res) => {
       email: emailNorm,
       email_norm: emailNorm,
       status: STATUS_PENDING,
-      metadata: parsed.data.metadata || {},
+      metadata: {
+        ...normalizeAccessMetadata(parsed.data.metadata || {}),
+        decision_history: [
+          {
+            at: nowIso,
+            actor: "requester",
+            action: "requested",
+            status: STATUS_PENDING,
+            summary: "Solicitação registrada e aguardando decisão.",
+          },
+        ],
+      },
       created_at: nowIso,
       updated_at: nowIso,
     })
@@ -254,12 +298,46 @@ router.patch("/admin/requests/:id", authMiddleware, adminOnly, async (req, res) 
 
   const nextStatus = parsed.data.status;
   const nowIso = new Date().toISOString();
+  const currentMetadata = normalizeAccessMetadata(current.data.metadata || {});
+  const decisionHistory = Array.isArray(currentMetadata.decision_history)
+    ? [...currentMetadata.decision_history]
+    : [];
+  const decisionReason = toTrimmedString(parsed.data.decision_reason) || currentMetadata.decision_reason;
+  const ownerLabel = toTrimmedString(parsed.data.owner_label) || currentMetadata.owner_label;
+  decisionHistory.push({
+    at: nowIso,
+    actor: "admin",
+    action:
+      nextStatus === STATUS_APPROVED
+        ? "approved"
+        : nextStatus === STATUS_REJECTED
+          ? "rejected"
+          : "returned_to_queue",
+    status: nextStatus,
+    summary:
+      nextStatus === STATUS_APPROVED
+        ? "Solicitação aprovada para acesso."
+        : nextStatus === STATUS_REJECTED
+          ? "Solicitação rejeitada."
+          : "Solicitação voltou para a fila pendente.",
+    admin_user_id: req.user.id,
+    admin_note: toTrimmedString(parsed.data.admin_note),
+    decision_reason: decisionReason,
+    owner_label: ownerLabel,
+  });
   const patch = {
     status: nextStatus,
-    admin_note: typeof parsed.data.admin_note === "string" ? parsed.data.admin_note.trim() : null,
+    admin_note: toTrimmedString(parsed.data.admin_note),
     updated_at: nowIso,
     approved_at: nextStatus === STATUS_APPROVED ? nowIso : null,
     approved_by: nextStatus === STATUS_APPROVED ? req.user.id : null,
+    metadata: {
+      ...currentMetadata,
+      owner_label: ownerLabel,
+      decision_reason: decisionReason,
+      last_admin_update_at: nowIso,
+      decision_history: decisionHistory,
+    },
   };
 
   const updated = await db

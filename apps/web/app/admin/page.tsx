@@ -21,6 +21,7 @@ type SupportRequestItem = {
   admin_note?: string | null;
   created_at: string;
   updated_at?: string;
+  metadata?: Record<string, any> | null;
 };
 
 type BetaAccessItem = {
@@ -32,6 +33,8 @@ type BetaAccessItem = {
   created_at: string;
   updated_at?: string;
   approved_at?: string | null;
+  approved_by?: string | null;
+  metadata?: Record<string, any> | null;
 };
 
 type AdminNotice = {
@@ -89,13 +92,47 @@ type AdminActionDraft =
       item: SupportRequestItem;
       nextStatus: SupportStatus;
       note: string;
+      resolutionSummary: string;
+      nextStep: string;
+      ownerLabel: string;
+      queueLabel: string;
     }
   | {
       kind: "beta";
       item: BetaAccessItem;
       nextStatus: BetaAccessStatus;
       note: string;
+      decisionReason: string;
+      ownerLabel: string;
+    }
+  | {
+      kind: "support-batch";
+      ids: string[];
+      nextStatus: SupportStatus;
+      note: string;
+      resolutionSummary: string;
+      nextStep: string;
+      ownerLabel: string;
+      queueLabel: string;
+    }
+  | {
+      kind: "beta-batch";
+      ids: string[];
+      nextStatus: BetaAccessStatus;
+      note: string;
+      decisionReason: string;
+      ownerLabel: string;
     };
+
+type AdminSavedView = {
+  days: number;
+  supportStatusFilter: "" | SupportStatus;
+  supportCategoryFilter: string;
+  betaAccessFilter: "" | BetaAccessStatus;
+  savedAt: string;
+};
+
+const ADMIN_VIEW_STORAGE_KEY = "editor_ai_admin_saved_view_v1";
 
 function supportStatusLabel(status: SupportStatus): string {
   if (status === "in_review") return "Em análise";
@@ -216,6 +253,80 @@ function eventLabel(event: string): string {
   return String(event || "evento").replace(/\./g, " -> ");
 }
 
+function formatDateTime(value?: string | null): string {
+  if (!value) return "—";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "—";
+  return date.toLocaleString("pt-BR");
+}
+
+function relativeAgeLabel(value?: string | null): string {
+  if (!value) return "—";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "—";
+  const diffMs = Date.now() - date.getTime();
+  const diffMin = Math.max(1, Math.round(diffMs / 60000));
+  if (diffMin < 60) return `${diffMin} min`;
+  const diffHours = Math.round(diffMin / 60);
+  if (diffHours < 48) return `${diffHours} h`;
+  return `${Math.round(diffHours / 24)} d`;
+}
+
+function supportRef(item: SupportRequestItem): string {
+  return String(item.metadata?.support_ref || item.id || "SUPORTE");
+}
+
+function supportLifecycle(item: SupportRequestItem): Array<Record<string, any>> {
+  const lifecycle = Array.isArray(item.metadata?.lifecycle) ? item.metadata.lifecycle : [];
+  return lifecycle.filter((entry) => entry && typeof entry === "object");
+}
+
+function latestSupportLifecycle(item: SupportRequestItem): Record<string, any> | null {
+  const lifecycle = supportLifecycle(item);
+  return lifecycle.length > 0 ? lifecycle[lifecycle.length - 1] : null;
+}
+
+function supportQueue(item: SupportRequestItem): string {
+  return String(item.metadata?.queue_label || "Atendimento");
+}
+
+function supportOwner(item: SupportRequestItem): string {
+  return String(item.metadata?.owner_label || "Sem responsável");
+}
+
+function betaAccessRef(item: BetaAccessItem): string {
+  return String(item.metadata?.access_ref || item.id || "ACESSO");
+}
+
+function betaDecisionHistory(item: BetaAccessItem): Array<Record<string, any>> {
+  const history = Array.isArray(item.metadata?.decision_history) ? item.metadata.decision_history : [];
+  return history.filter((entry) => entry && typeof entry === "object");
+}
+
+function latestBetaDecision(item: BetaAccessItem): Record<string, any> | null {
+  const history = betaDecisionHistory(item);
+  return history.length > 0 ? history[history.length - 1] : null;
+}
+
+function readSavedAdminView(): AdminSavedView | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(ADMIN_VIEW_STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object") return null;
+    return {
+      days: Math.min(Math.max(Number(parsed.days || 7), 1), 30),
+      supportStatusFilter: parsed.supportStatusFilter || "",
+      supportCategoryFilter: String(parsed.supportCategoryFilter || ""),
+      betaAccessFilter: parsed.betaAccessFilter || "",
+      savedAt: String(parsed.savedAt || ""),
+    };
+  } catch {
+    return null;
+  }
+}
+
 const panelStyle = {
   padding: 0,
 } as const;
@@ -280,6 +391,9 @@ export default function AdminPage() {
   const [opsLastSync, setOpsLastSync] = useState<string | null>(null);
   const [adminNotice, setAdminNotice] = useState<AdminNotice | null>(null);
   const [actionDraft, setActionDraft] = useState<AdminActionDraft | null>(null);
+  const [savedView, setSavedView] = useState<AdminSavedView | null>(null);
+  const [selectedSupportIds, setSelectedSupportIds] = useState<string[]>([]);
+  const [selectedBetaIds, setSelectedBetaIds] = useState<string[]>([]);
 
   async function loadOverview(nextDays = days) {
     setLoading(true);
@@ -379,6 +493,7 @@ export default function AdminPage() {
         limit: 100,
       });
       setSupportItems(Array.isArray(data?.items) ? data.items : []);
+      setSelectedSupportIds([]);
     } catch (e: any) {
       setError(toUserFacingError(e?.message, "Falha ao carregar suporte."));
     } finally {
@@ -387,11 +502,19 @@ export default function AdminPage() {
   }
 
   async function onUpdateSupportStatus(item: SupportRequestItem, nextStatus: SupportStatus, noteInput = "") {
+    const lifecycle = latestSupportLifecycle(item);
     try {
       setSupportUpdatingId(item.id);
       await api.adminSupportUpdateStatus(item.id, {
         status: nextStatus,
         admin_note: noteInput.trim() || undefined,
+        resolution_summary:
+          nextStatus === "resolved"
+            ? String(item.metadata?.resolution_summary || lifecycle?.resolution_summary || "").trim() || undefined
+            : undefined,
+        next_step: String(item.metadata?.next_step || lifecycle?.next_step || "").trim() || undefined,
+        owner_label: String(item.metadata?.owner_label || lifecycle?.owner_label || "").trim() || undefined,
+        queue_label: String(item.metadata?.queue_label || lifecycle?.queue_label || "").trim() || undefined,
       });
       setAdminNotice({
         tone: "info",
@@ -414,6 +537,7 @@ export default function AdminPage() {
         limit: 200,
       });
       setBetaAccessItems(Array.isArray(data?.items) ? data.items : []);
+      setSelectedBetaIds([]);
       setBetaAccessLastSync(new Date().toISOString());
     } catch (e: any) {
       setBetaAccessError(toUserFacingError(e?.message, "Falha ao carregar fila de espera."));
@@ -424,11 +548,14 @@ export default function AdminPage() {
   }
 
   async function onUpdateBetaAccessStatus(item: BetaAccessItem, status: BetaAccessStatus, noteInput = "") {
+    const latestDecision = latestBetaDecision(item);
     try {
       setBetaAccessUpdatingId(item.id);
       const response = await api.adminBetaAccessUpdate(item.id, {
         status,
         admin_note: noteInput.trim() || undefined,
+        decision_reason: String(item.metadata?.decision_reason || latestDecision?.decision_reason || "").trim() || undefined,
+        owner_label: String(item.metadata?.owner_label || latestDecision?.owner_label || "").trim() || undefined,
       });
 
       const emailNotification = response?.email_notification || null;
@@ -459,30 +586,160 @@ export default function AdminPage() {
   }
 
   function openSupportActionDraft(item: SupportRequestItem, nextStatus: SupportStatus) {
+    const latestLifecycle = latestSupportLifecycle(item);
     setActionDraft({
       kind: "support",
       item,
       nextStatus,
       note: String(item.admin_note || ""),
+      resolutionSummary: String(item.metadata?.resolution_summary || latestLifecycle?.resolution_summary || ""),
+      nextStep: String(item.metadata?.next_step || latestLifecycle?.next_step || ""),
+      ownerLabel: String(item.metadata?.owner_label || latestLifecycle?.owner_label || ""),
+      queueLabel: String(item.metadata?.queue_label || latestLifecycle?.queue_label || ""),
     });
   }
 
   function openBetaActionDraft(item: BetaAccessItem, nextStatus: BetaAccessStatus) {
+    const latestDecision = latestBetaDecision(item);
     setActionDraft({
       kind: "beta",
       item,
       nextStatus,
       note: String(item.admin_note || ""),
+      decisionReason: String(item.metadata?.decision_reason || latestDecision?.decision_reason || ""),
+      ownerLabel: String(item.metadata?.owner_label || latestDecision?.owner_label || ""),
+    });
+  }
+
+  function openSupportBatchDraft(nextStatus: SupportStatus) {
+    if (selectedSupportIds.length === 0) return;
+    setActionDraft({
+      kind: "support-batch",
+      ids: selectedSupportIds,
+      nextStatus,
+      note: "",
+      resolutionSummary: "",
+      nextStep: "",
+      ownerLabel: "",
+      queueLabel: "",
+    });
+  }
+
+  function openBetaBatchDraft(nextStatus: BetaAccessStatus) {
+    if (selectedBetaIds.length === 0) return;
+    setActionDraft({
+      kind: "beta-batch",
+      ids: selectedBetaIds,
+      nextStatus,
+      note: "",
+      decisionReason: "",
+      ownerLabel: "",
     });
   }
 
   async function submitActionDraft() {
     if (!actionDraft) return;
-    const note = actionDraft.note;
     if (actionDraft.kind === "support") {
-      await onUpdateSupportStatus(actionDraft.item, actionDraft.nextStatus, note);
+      try {
+        setSupportUpdatingId(actionDraft.item.id);
+        await api.adminSupportUpdateStatus(actionDraft.item.id, {
+          status: actionDraft.nextStatus,
+          admin_note: actionDraft.note.trim() || undefined,
+          resolution_summary: actionDraft.resolutionSummary.trim() || undefined,
+          next_step: actionDraft.nextStep.trim() || undefined,
+          owner_label: actionDraft.ownerLabel.trim() || undefined,
+          queue_label: actionDraft.queueLabel.trim() || undefined,
+        });
+        setAdminNotice({
+          tone: "info",
+          message: `Ticket ${supportRef(actionDraft.item)} atualizado para "${supportStatusLabel(actionDraft.nextStatus)}".`,
+        });
+        await loadSupportRequests();
+      } catch (e: any) {
+        setError(toUserFacingError(e?.message, "Falha ao atualizar status de suporte."));
+      } finally {
+        setSupportUpdatingId(null);
+      }
+    } else if (actionDraft.kind === "beta") {
+      try {
+        setBetaAccessUpdatingId(actionDraft.item.id);
+        const response = await api.adminBetaAccessUpdate(actionDraft.item.id, {
+          status: actionDraft.nextStatus,
+          admin_note: actionDraft.note.trim() || undefined,
+          decision_reason: actionDraft.decisionReason.trim() || undefined,
+          owner_label: actionDraft.ownerLabel.trim() || undefined,
+        });
+        const emailNotification = response?.email_notification || null;
+        setAdminNotice({
+          tone:
+            actionDraft.nextStatus === "approved" && !emailNotification?.sent
+              ? "warning"
+              : actionDraft.nextStatus === "approved"
+                ? "success"
+                : "info",
+          message:
+            actionDraft.nextStatus === "approved"
+              ? emailNotification?.sent
+                ? "Acesso aprovado e comunicado enviado."
+                : `Acesso aprovado. E-mail não enviado (${emailReasonLabel(emailNotification?.reason)}).`
+              : `Solicitação marcada como "${betaAccessStatusLabel(actionDraft.nextStatus)}".`,
+        });
+        await loadBetaAccessRequests();
+      } catch (e: any) {
+        setError(toUserFacingError(e?.message, "Falha ao atualizar fila de espera."));
+      } finally {
+        setBetaAccessUpdatingId(null);
+      }
+    } else if (actionDraft.kind === "support-batch") {
+      try {
+        setSupportUpdatingId("batch");
+        await Promise.all(
+          actionDraft.ids.map((id) =>
+            api.adminSupportUpdateStatus(id, {
+              status: actionDraft.nextStatus,
+              admin_note: actionDraft.note.trim() || undefined,
+              resolution_summary: actionDraft.resolutionSummary.trim() || undefined,
+              next_step: actionDraft.nextStep.trim() || undefined,
+              owner_label: actionDraft.ownerLabel.trim() || undefined,
+              queue_label: actionDraft.queueLabel.trim() || undefined,
+            })
+          )
+        );
+        setAdminNotice({
+          tone: "info",
+          message: `${actionDraft.ids.length} ticket(s) atualizados para "${supportStatusLabel(actionDraft.nextStatus)}".`,
+        });
+        setSelectedSupportIds([]);
+        await loadSupportRequests();
+      } catch (e: any) {
+        setError(toUserFacingError(e?.message, "Falha ao atualizar o lote de suporte."));
+      } finally {
+        setSupportUpdatingId(null);
+      }
     } else {
-      await onUpdateBetaAccessStatus(actionDraft.item, actionDraft.nextStatus, note);
+      try {
+        setBetaAccessUpdatingId("batch");
+        await Promise.all(
+          actionDraft.ids.map((id) =>
+            api.adminBetaAccessUpdate(id, {
+              status: actionDraft.nextStatus,
+              admin_note: actionDraft.note.trim() || undefined,
+              decision_reason: actionDraft.decisionReason.trim() || undefined,
+              owner_label: actionDraft.ownerLabel.trim() || undefined,
+            })
+          )
+        );
+        setAdminNotice({
+          tone: actionDraft.nextStatus === "approved" ? "success" : "info",
+          message: `${actionDraft.ids.length} solicitação(ões) marcadas como "${betaAccessStatusLabel(actionDraft.nextStatus)}".`,
+        });
+        setSelectedBetaIds([]);
+        await loadBetaAccessRequests();
+      } catch (e: any) {
+        setError(toUserFacingError(e?.message, "Falha ao atualizar o lote da fila beta."));
+      } finally {
+        setBetaAccessUpdatingId(null);
+      }
     }
     setActionDraft(null);
   }
@@ -571,11 +828,28 @@ export default function AdminPage() {
 
   const actionDraftLabel = useMemo(() => {
     if (!actionDraft) return "";
-    if (actionDraft.kind === "support") return supportStatusLabel(actionDraft.nextStatus);
+    if (actionDraft.kind === "support" || actionDraft.kind === "support-batch") {
+      return supportStatusLabel(actionDraft.nextStatus);
+    }
     return betaAccessStatusLabel(actionDraft.nextStatus);
   }, [actionDraft]);
 
   useEffect(() => {
+    const nextSavedView = readSavedAdminView();
+    if (nextSavedView) {
+      setSavedView(nextSavedView);
+      setDays(nextSavedView.days);
+      setSupportStatusFilter(nextSavedView.supportStatusFilter);
+      setSupportCategoryFilter(nextSavedView.supportCategoryFilter);
+      setBetaAccessFilter(nextSavedView.betaAccessFilter);
+      void Promise.all([
+        loadOverview(nextSavedView.days),
+        loadOperationalTelemetry(),
+        loadSupportRequests(nextSavedView.supportStatusFilter, nextSavedView.supportCategoryFilter),
+        loadBetaAccessRequests(nextSavedView.betaAccessFilter),
+      ]);
+      return;
+    }
     refreshAdminScreen(7);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -589,6 +863,62 @@ export default function AdminPage() {
     return () => clearInterval(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [forbidden, betaAccessFilter]);
+
+  function toggleSupportSelection(id: string) {
+    setSelectedSupportIds((current) =>
+      current.includes(id) ? current.filter((item) => item !== id) : [...current, id]
+    );
+  }
+
+  function toggleBetaSelection(id: string) {
+    setSelectedBetaIds((current) =>
+      current.includes(id) ? current.filter((item) => item !== id) : [...current, id]
+    );
+  }
+
+  function saveCurrentView() {
+    const view: AdminSavedView = {
+      days,
+      supportStatusFilter,
+      supportCategoryFilter,
+      betaAccessFilter,
+      savedAt: new Date().toISOString(),
+    };
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(ADMIN_VIEW_STORAGE_KEY, JSON.stringify(view));
+    }
+    setSavedView(view);
+    setAdminNotice({
+      tone: "info",
+      message: "Visão operacional salva neste navegador.",
+    });
+  }
+
+  async function restoreSavedView() {
+    const nextSavedView = readSavedAdminView();
+    if (!nextSavedView) {
+      setAdminNotice({
+        tone: "warning",
+        message: "Nenhuma visão salva neste navegador.",
+      });
+      return;
+    }
+    setSavedView(nextSavedView);
+    setDays(nextSavedView.days);
+    setSupportStatusFilter(nextSavedView.supportStatusFilter);
+    setSupportCategoryFilter(nextSavedView.supportCategoryFilter);
+    setBetaAccessFilter(nextSavedView.betaAccessFilter);
+    await Promise.all([
+      loadOverview(nextSavedView.days),
+      loadOperationalTelemetry(),
+      loadSupportRequests(nextSavedView.supportStatusFilter, nextSavedView.supportCategoryFilter),
+      loadBetaAccessRequests(nextSavedView.betaAccessFilter),
+    ]);
+    setAdminNotice({
+      tone: "info",
+      message: "Visão operacional restaurada.",
+    });
+  }
 
   if (forbidden) {
     return (
@@ -633,6 +963,8 @@ export default function AdminPage() {
             </div>
             <div className="admin-hero-actions">
               <button onClick={() => refreshAdminScreen(days)} className="btn-ea btn-secondary">Atualizar</button>
+              <button onClick={saveCurrentView} className="btn-ea btn-ghost btn-sm">Salvar visão</button>
+              <button onClick={() => void restoreSavedView()} className="btn-ea btn-ghost btn-sm">Restaurar visão</button>
               <button onClick={() => api.adminExportUsageCsv(days)} className="btn-ea btn-ghost btn-sm">Exportar CSV de uso</button>
               <button onClick={() => api.adminExportCoinsCsv(days)} className="btn-ea btn-ghost btn-sm">Exportar CSV de créditos</button>
             </div>
@@ -964,6 +1296,9 @@ export default function AdminPage() {
                   <span>Em análise: {supportStats.inReview}</span>
                   <span>Resolvidos: {supportStats.resolved}</span>
                 </div>
+                <div style={{ opacity: 0.78, marginBottom: 8, fontSize: 12 }}>
+                  Caso ativo: {supportNeedsAttention[0] ? supportRef(supportNeedsAttention[0]) : "sem prioridade aberta"} • Resolução: {supportStats.resolutionRate}
+                </div>
                 <div className="surface-toolbar" style={{ marginBottom: 10 }}>
                   <PremiumSelect
                     className="field-inline"
@@ -991,6 +1326,20 @@ export default function AdminPage() {
                     {supportLoading ? "Atualizando..." : "Atualizar suporte"}
                   </button>
                 </div>
+                {selectedSupportIds.length > 0 ? (
+                  <div className="surface-toolbar" style={{ marginBottom: 10 }}>
+                    <span className="support-proof-chip">{selectedSupportIds.length} ticket(s) selecionados</span>
+                    <button className="btn-ea btn-ghost btn-sm" onClick={() => openSupportBatchDraft("open")}>
+                      Reabrir lote
+                    </button>
+                    <button className="btn-ea btn-secondary btn-sm" onClick={() => openSupportBatchDraft("in_review")}>
+                      Colocar em análise
+                    </button>
+                    <button className="btn-ea btn-success btn-sm" onClick={() => openSupportBatchDraft("resolved")}>
+                      Resolver lote
+                    </button>
+                  </div>
+                ) : null}
 
                 {supportLoading ? (
                   <div className="empty-ea">Carregando solicitações...</div>
@@ -1022,22 +1371,53 @@ export default function AdminPage() {
                   <div className="admin-record-list">
                     {supportItems.map((item) => (
                       <div key={item.id} className="premium-card-soft admin-record-item">
-                        <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
-                          <strong>{item.subject}</strong>
+                        <div style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "flex-start" }}>
+                          <div style={{ display: "flex", gap: 10, alignItems: "flex-start", flex: 1 }}>
+                            <input
+                              type="checkbox"
+                              aria-label={`Selecionar ticket ${supportRef(item)}`}
+                              checked={selectedSupportIds.includes(item.id)}
+                              onChange={() => toggleSupportSelection(item.id)}
+                              style={{ marginTop: 3 }}
+                            />
+                            <div style={{ display: "grid", gap: 4 }}>
+                              <strong>{item.subject}</strong>
+                              <div className="support-history-proof-row">
+                                <span className="support-proof-chip">{supportRef(item)}</span>
+                                <span className="support-proof-chip">Fila: {supportQueue(item)}</span>
+                                <span className="support-proof-chip">Responsável: {supportOwner(item)}</span>
+                              </div>
+                            </div>
+                          </div>
                           <span style={supportStatusPillStyle(item.status)}>{supportStatusLabel(item.status)}</span>
                         </div>
                         <div style={{ marginTop: 4, opacity: 0.82, fontSize: 13 }}>
-                          Usuário: {item.user_id} • {supportCategoryLabel(item.category)} • {new Date(item.created_at).toLocaleString("pt-BR")}
+                          Usuário: {item.user_id} • {supportCategoryLabel(item.category)} • aberto em {formatDateTime(item.created_at)} • idade {relativeAgeLabel(item.created_at)}
                         </div>
                         {item.updated_at ? (
                           <div style={{ marginTop: 2, opacity: 0.72, fontSize: 12 }}>
-                            Atualizado em: {new Date(item.updated_at).toLocaleString("pt-BR")}
+                            Atualizado em: {formatDateTime(item.updated_at)}
                           </div>
                         ) : null}
                         <div style={{ marginTop: 8, whiteSpace: "pre-wrap" }}>{item.message}</div>
+                        {item.metadata?.resolution_summary ? (
+                          <div className="admin-record-note">
+                            Resolução: {String(item.metadata.resolution_summary)}
+                          </div>
+                        ) : null}
+                        {item.metadata?.next_step ? (
+                          <div className="admin-record-note">
+                            Próximo passo: {String(item.metadata.next_step)}
+                          </div>
+                        ) : null}
                         {item.admin_note ? (
                           <div className="admin-record-note">
                             Nota interna: {item.admin_note}
+                          </div>
+                        ) : null}
+                        {latestSupportLifecycle(item) ? (
+                          <div style={{ marginTop: 6, opacity: 0.78, fontSize: 12 }}>
+                            Última ação: {String(latestSupportLifecycle(item)?.summary || "sem trilha")} • {formatDateTime(latestSupportLifecycle(item)?.at)}
                           </div>
                         ) : null}
                         <div style={{ display: "flex", gap: 8, marginTop: 8, flexWrap: "wrap" }}>
@@ -1106,6 +1486,20 @@ export default function AdminPage() {
                     </button>
                   ) : null}
                 </div>
+                {selectedBetaIds.length > 0 ? (
+                  <div className="surface-toolbar" style={{ marginBottom: 10 }}>
+                    <span className="support-proof-chip">{selectedBetaIds.length} solicitação(ões) selecionadas</span>
+                    <button className="btn-ea btn-ghost btn-sm" onClick={() => openBetaBatchDraft("pending")}>
+                      Voltar para pendente
+                    </button>
+                    <button className="btn-ea btn-success btn-sm" onClick={() => openBetaBatchDraft("approved")}>
+                      Aprovar lote
+                    </button>
+                    <button className="btn-ea btn-danger btn-sm" onClick={() => openBetaBatchDraft("rejected")}>
+                      Rejeitar lote
+                    </button>
+                  </div>
+                ) : null}
 
                 {betaAccessError ? (
                   <div className="state-ea state-ea-error" style={{ marginBottom: 8 }}>
@@ -1143,17 +1537,39 @@ export default function AdminPage() {
                   <div className="admin-record-list">
                     {betaAccessItems.map((item) => (
                       <div key={item.id} className="premium-card-soft admin-record-item">
-                        <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
-                          <strong>{item.email}</strong>
+                        <div style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "flex-start" }}>
+                          <div style={{ display: "flex", gap: 10, alignItems: "flex-start", flex: 1 }}>
+                            <input
+                              type="checkbox"
+                              aria-label={`Selecionar acesso ${betaAccessRef(item)}`}
+                              checked={selectedBetaIds.includes(item.id)}
+                              onChange={() => toggleBetaSelection(item.id)}
+                              style={{ marginTop: 3 }}
+                            />
+                            <div style={{ display: "grid", gap: 4 }}>
+                              <strong>{item.email}</strong>
+                              <div className="support-history-proof-row">
+                                <span className="support-proof-chip">{betaAccessRef(item)}</span>
+                                <span className="support-proof-chip">
+                                  Responsável: {String(item.metadata?.owner_label || "Sem responsável")}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
                           <span style={betaStatusPillStyle(item.status)}>{betaAccessStatusLabel(item.status)}</span>
                         </div>
                         <div style={{ marginTop: 4, opacity: 0.82, fontSize: 13 }}>
                           {item.user_id ? `Usuário: ${item.user_id} • ` : ""}
-                          Solicitado em: {new Date(item.created_at).toLocaleString("pt-BR")}
+                          Solicitado em: {formatDateTime(item.created_at)} • idade {relativeAgeLabel(item.created_at)}
                         </div>
                         {item.updated_at ? (
                           <div style={{ marginTop: 2, opacity: 0.72, fontSize: 12 }}>
-                            Atualizado em: {new Date(item.updated_at).toLocaleString("pt-BR")}
+                            Atualizado em: {formatDateTime(item.updated_at)}
+                          </div>
+                        ) : null}
+                        {item.metadata?.decision_reason ? (
+                          <div className="admin-record-note">
+                            Motivo da decisão: {String(item.metadata.decision_reason)}
                           </div>
                         ) : null}
                         {item.admin_note ? (
@@ -1164,6 +1580,16 @@ export default function AdminPage() {
                         {item.approved_at ? (
                           <div style={{ marginTop: 6, opacity: 0.8, fontSize: 13 }}>
                             Liberado em: {new Date(item.approved_at).toLocaleString("pt-BR")}
+                          </div>
+                        ) : null}
+                        {item.approved_by ? (
+                          <div style={{ marginTop: 6, opacity: 0.8, fontSize: 13 }}>
+                            Decidido por: {item.approved_by}
+                          </div>
+                        ) : null}
+                        {latestBetaDecision(item) ? (
+                          <div style={{ marginTop: 6, opacity: 0.78, fontSize: 12 }}>
+                            Última ação: {String(latestBetaDecision(item)?.summary || "sem trilha")} • {formatDateTime(latestBetaDecision(item)?.at)}
                           </div>
                         ) : null}
                         <div style={{ display: "flex", gap: 8, marginTop: 8, flexWrap: "wrap" }}>
@@ -1199,6 +1625,33 @@ export default function AdminPage() {
         </div>
 
         <div className="admin-workspace-rail">
+          <div className="premium-card admin-console-section admin-radar-region" style={panelStyle}>
+            <div className="section-head">
+              <div>
+                <p className="section-kicker">Visão persistida</p>
+                <h3 style={{ margin: "4px 0 0" }}>Workspace do turno</h3>
+              </div>
+            </div>
+            <div className="premium-card-soft admin-subpanel admin-subpanel-list">
+              <div style={{ fontWeight: 700, marginBottom: 8 }}>Visão salva neste navegador</div>
+              <div style={{ display: "grid", gap: 6, fontSize: 13 }}>
+                <div>Período: {savedView?.days ?? days} dias</div>
+                <div>Status suporte: {savedView?.supportStatusFilter ? supportStatusLabel(savedView.supportStatusFilter) : "Todos"}</div>
+                <div>Categoria suporte: {savedView?.supportCategoryFilter ? supportCategoryLabel(savedView.supportCategoryFilter) : "Todas"}</div>
+                <div>Fila beta: {savedView?.betaAccessFilter ? betaAccessStatusLabel(savedView.betaAccessFilter) : "Todas"}</div>
+                <div>Salva em: {savedView?.savedAt ? formatDateTime(savedView.savedAt) : "Ainda não salva"}</div>
+              </div>
+              <div style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
+                <button className="btn-ea btn-secondary btn-sm" onClick={saveCurrentView}>
+                  Salvar visão atual
+                </button>
+                <button className="btn-ea btn-ghost btn-sm" onClick={() => void restoreSavedView()}>
+                  Restaurar visão
+                </button>
+              </div>
+            </div>
+          </div>
+
           <div className="premium-card admin-console-section admin-attention-region" style={panelStyle}>
             <div className="section-head">
               <div>
@@ -1364,6 +1817,42 @@ export default function AdminPage() {
               </div>
             </div>
 
+            {"ownerLabel" in actionDraft ? (
+              <label className="field-label-ea">
+                <span>Responsável operacional</span>
+                <input
+                  className="field-ea"
+                  value={actionDraft.ownerLabel}
+                  onChange={(event) =>
+                    setActionDraft((current) => (current && "ownerLabel" in current ? { ...current, ownerLabel: event.target.value } : current))
+                  }
+                  placeholder="Ex.: Financeiro, Turno manhã, Operação"
+                  disabled={
+                    supportUpdatingId === ("item" in actionDraft ? actionDraft.item.id : "batch") ||
+                    betaAccessUpdatingId === ("item" in actionDraft ? actionDraft.item.id : "batch")
+                  }
+                />
+              </label>
+            ) : null}
+
+            {"queueLabel" in actionDraft ? (
+              <label className="field-label-ea">
+                <span>Fila operacional</span>
+                <input
+                  className="field-ea"
+                  value={actionDraft.queueLabel}
+                  onChange={(event) =>
+                    setActionDraft((current) => (current && "queueLabel" in current ? { ...current, queueLabel: event.target.value } : current))
+                  }
+                  placeholder="Ex.: Atendimento, Financeiro, Operação"
+                  disabled={
+                    supportUpdatingId === ("item" in actionDraft ? actionDraft.item.id : "batch") ||
+                    betaAccessUpdatingId === ("item" in actionDraft ? actionDraft.item.id : "batch")
+                  }
+                />
+              </label>
+            ) : null}
+
             <label className="field-label-ea">
               <span>Nota interna (opcional)</span>
               <textarea
@@ -1374,24 +1863,87 @@ export default function AdminPage() {
                   setActionDraft((current) => (current ? { ...current, note: event.target.value } : current))
                 }
                 placeholder="Adicione contexto para o time (opcional)"
-                disabled={supportUpdatingId === actionDraft.item.id || betaAccessUpdatingId === actionDraft.item.id}
+                disabled={
+                  supportUpdatingId === ("item" in actionDraft ? actionDraft.item.id : "batch") ||
+                  betaAccessUpdatingId === ("item" in actionDraft ? actionDraft.item.id : "batch")
+                }
               />
             </label>
+
+            {"resolutionSummary" in actionDraft ? (
+              <label className="field-label-ea">
+                <span>Resumo de resolução</span>
+                <textarea
+                  className="field-ea"
+                  rows={3}
+                  value={actionDraft.resolutionSummary}
+                  onChange={(event) =>
+                    setActionDraft((current) =>
+                      current && "resolutionSummary" in current ? { ...current, resolutionSummary: event.target.value } : current
+                    )
+                  }
+                  placeholder="O que foi validado ou resolvido neste ticket"
+                  disabled={supportUpdatingId === ("item" in actionDraft ? actionDraft.item.id : "batch")}
+                />
+              </label>
+            ) : null}
+
+            {"nextStep" in actionDraft ? (
+              <label className="field-label-ea">
+                <span>Próximo passo orientado</span>
+                <input
+                  className="field-ea"
+                  value={actionDraft.nextStep}
+                  onChange={(event) =>
+                    setActionDraft((current) =>
+                      current && "nextStep" in current ? { ...current, nextStep: event.target.value } : current
+                    )
+                  }
+                  placeholder="O que o usuário ou o time deve fazer depois"
+                  disabled={supportUpdatingId === ("item" in actionDraft ? actionDraft.item.id : "batch")}
+                />
+              </label>
+            ) : null}
+
+            {"decisionReason" in actionDraft ? (
+              <label className="field-label-ea">
+                <span>Motivo da decisão</span>
+                <textarea
+                  className="field-ea"
+                  rows={3}
+                  value={actionDraft.decisionReason}
+                  onChange={(event) =>
+                    setActionDraft((current) =>
+                      current && "decisionReason" in current ? { ...current, decisionReason: event.target.value } : current
+                    )
+                  }
+                  placeholder="Justifique aprovação, rejeição ou retorno para a fila"
+                  disabled={betaAccessUpdatingId === ("item" in actionDraft ? actionDraft.item.id : "batch")}
+                />
+              </label>
+            ) : null}
 
             <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", flexWrap: "wrap" }}>
               <button
                 className="btn-ea btn-ghost btn-sm"
                 onClick={() => setActionDraft(null)}
-                disabled={supportUpdatingId === actionDraft.item.id || betaAccessUpdatingId === actionDraft.item.id}
+                disabled={
+                  supportUpdatingId === ("item" in actionDraft ? actionDraft.item.id : "batch") ||
+                  betaAccessUpdatingId === ("item" in actionDraft ? actionDraft.item.id : "batch")
+                }
               >
                 Cancelar
               </button>
               <button
                 className="btn-ea btn-primary btn-sm"
                 onClick={submitActionDraft}
-                disabled={supportUpdatingId === actionDraft.item.id || betaAccessUpdatingId === actionDraft.item.id}
+                disabled={
+                  supportUpdatingId === ("item" in actionDraft ? actionDraft.item.id : "batch") ||
+                  betaAccessUpdatingId === ("item" in actionDraft ? actionDraft.item.id : "batch")
+                }
               >
-                {supportUpdatingId === actionDraft.item.id || betaAccessUpdatingId === actionDraft.item.id
+                {supportUpdatingId === ("item" in actionDraft ? actionDraft.item.id : "batch") ||
+                betaAccessUpdatingId === ("item" in actionDraft ? actionDraft.item.id : "batch")
                   ? "Salvando..."
                   : "Confirmar atualização"}
               </button>

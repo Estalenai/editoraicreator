@@ -7612,6 +7612,47 @@ body {
   border: 1px solid rgba(191, 239, 255, 0.12);
 }
 
+.support-history-proof-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.support-proof-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(191, 239, 255, 0.14);
+  background: rgba(11, 20, 46, 0.52);
+  color: var(--ea-text-muted);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.support-history-timeline {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.support-history-timeline-item {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  border: 1px solid rgba(191, 239, 255, 0.12);
+  background: rgba(7, 14, 32, 0.38);
+}
+
+.support-history-timeline-item span {
+  color: var(--ea-text-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
 /* P2-A: final premium interaction polish */
 .page-shell > * {
   animation: premium-page-enter 320ms var(--ea-motion-base) both;

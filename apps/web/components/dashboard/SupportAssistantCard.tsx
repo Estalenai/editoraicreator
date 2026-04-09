@@ -16,6 +16,8 @@ type SupportRequestItem = {
   status: SupportStatus;
   admin_note?: string | null;
   created_at: string;
+  updated_at?: string | null;
+  metadata?: Record<string, any> | null;
 };
 
 type Props = {
@@ -56,6 +58,31 @@ function formatSubject(value: string): string {
   const normalized = String(value || "").trim();
   if (!normalized) return "Solicitação sem assunto";
   return normalized.charAt(0).toUpperCase() + normalized.slice(1);
+}
+
+function formatDateTime(value?: string | null): string {
+  if (!value) return "—";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "—";
+  return date.toLocaleString("pt-BR");
+}
+
+function supportRef(item: SupportRequestItem): string {
+  return String(item.metadata?.support_ref || item.id || "SUPORTE");
+}
+
+function supportLifecycle(item: SupportRequestItem): Array<Record<string, any>> {
+  const lifecycle = Array.isArray(item.metadata?.lifecycle) ? item.metadata.lifecycle : [];
+  return lifecycle.filter((entry) => entry && typeof entry === "object");
+}
+
+function supportQueueLabel(item: SupportRequestItem): string {
+  return String(item.metadata?.queue_label || "Atendimento");
+}
+
+function supportOwnerLabel(item: SupportRequestItem): string | null {
+  const value = String(item.metadata?.owner_label || "").trim();
+  return value || null;
 }
 
 export function SupportAssistantCard({
@@ -321,15 +348,50 @@ export function SupportAssistantCard({
                 </span>
               </div>
               <div className="support-history-meta">
-                <span>{new Date(item.created_at).toLocaleString("pt-BR")}</span>
+                <span>{formatDateTime(item.created_at)}</span>
                 <span aria-hidden>•</span>
                 <span>{categoryLabel(item.category)}</span>
+                <span aria-hidden>•</span>
+                <span>{supportRef(item)}</span>
+              </div>
+              <div className="support-history-proof-row">
+                <span className="support-proof-chip">Fila: {supportQueueLabel(item)}</span>
+                <span className="support-proof-chip">
+                  Última atualização: {formatDateTime(item.updated_at || item.created_at)}
+                </span>
+                {supportOwnerLabel(item) ? (
+                  <span className="support-proof-chip">Responsável: {supportOwnerLabel(item)}</span>
+                ) : null}
               </div>
               <div className="support-history-message">{item.message}</div>
+              {item.metadata?.resolution_summary ? (
+                <div className="support-history-note">
+                  <strong>Resumo de resolução</strong>
+                  <span>{String(item.metadata.resolution_summary)}</span>
+                </div>
+              ) : null}
+              {item.metadata?.next_step ? (
+                <div className="support-history-note">
+                  <strong>Próximo passo orientado</strong>
+                  <span>{String(item.metadata.next_step)}</span>
+                </div>
+              ) : null}
               {item.admin_note ? (
                 <div className="support-history-note">
                   <strong>Nota da equipe</strong>
                   <span>{item.admin_note}</span>
+                </div>
+              ) : null}
+              {supportLifecycle(item).length > 0 ? (
+                <div className="support-history-timeline">
+                  {supportLifecycle(item).slice(-4).map((entry, index) => (
+                    <div key={`${item.id}-entry-${index}`} className="support-history-timeline-item">
+                      <strong>{String(entry.summary || statusLabel(item.status))}</strong>
+                      <span>
+                        {formatDateTime(entry.at)}{entry.owner_label ? ` • ${String(entry.owner_label)}` : ""}{entry.queue_label ? ` • ${String(entry.queue_label)}` : ""}
+                      </span>
+                    </div>
+                  ))}
                 </div>
               ) : null}
             </article>

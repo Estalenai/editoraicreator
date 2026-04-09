@@ -646,7 +646,12 @@ export const api = {
 
   async adminBetaAccessUpdate(
     requestId: string,
-    body: { status: "pending" | "approved" | "rejected"; admin_note?: string }
+    body: {
+      status: "pending" | "approved" | "rejected";
+      admin_note?: string;
+      decision_reason?: string;
+      owner_label?: string;
+    }
   ) {
     return authJson(`/api/beta-access/admin/requests/${encodeURIComponent(requestId)}`, {
       method: "PATCH",
@@ -683,7 +688,14 @@ export const api = {
 
   async adminSupportUpdateStatus(
     requestId: string,
-    body: { status: "open" | "in_review" | "resolved"; admin_note?: string }
+    body: {
+      status: "open" | "in_review" | "resolved";
+      admin_note?: string;
+      resolution_summary?: string;
+      next_step?: string;
+      owner_label?: string;
+      queue_label?: string;
+    }
   ) {
     return authJson(`/api/support/admin/requests/${encodeURIComponent(requestId)}/status`, {
       method: "PATCH",

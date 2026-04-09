@@ -57,6 +57,25 @@ const SUPPORT_FAQ = [
   },
 ];
 
+const SUPPORT_CASE_FLOW = [
+  {
+    title: "Abertura",
+    description: "O assistant registra assunto, referência e fila inicial do caso.",
+  },
+  {
+    title: "Triagem",
+    description: "A equipe move o caso para análise quando já existe contexto suficiente.",
+  },
+  {
+    title: "Resolução",
+    description: "O histórico recebe nota, resumo de resolução e próximo passo orientado.",
+  },
+  {
+    title: "Encerramento",
+    description: "O caso fica resolvido com trilha rastreável para retorno e suporte futuro.",
+  },
+];
+
 export default function SupportPage() {
   const {
     loading,
@@ -188,6 +207,14 @@ export default function SupportPage() {
                         </div>
                         <span className="dashboard-quick-link-cta">{item.cta}</span>
                       </Link>
+                    ))}
+                  </div>
+                  <div className="support-history-timeline" style={{ marginTop: 14 }}>
+                    {SUPPORT_CASE_FLOW.map((item) => (
+                      <div key={item.title} className="support-history-timeline-item">
+                        <strong>{item.title}</strong>
+                        <span>{item.description}</span>
+                      </div>
                     ))}
                   </div>
                 </section>
