@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ClosedBetaAccessCard } from "../components/waitlist/ClosedBetaAccessCard";
+import { PublicLaunchFooter } from "../components/public/PublicLaunchFooter";
 
 const HOME_PROOF_SAMPLES = [
   {
@@ -173,6 +174,10 @@ export default function HomePage() {
 
         <div className="helper-text-ea beta-entry-footnote" data-reveal data-reveal-delay="140">
           Editor AI Creator • Assistente interno EditexAI
+        </div>
+
+        <div data-reveal data-reveal-delay="160">
+          <PublicLaunchFooter />
         </div>
       </div>
     </div>

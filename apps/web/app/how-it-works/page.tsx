@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { EditorRouteLink } from "../../components/ui/EditorRouteLink";
+import { PublicLaunchFooter } from "../../components/public/PublicLaunchFooter";
 
 const STEPS = [
   {
@@ -169,6 +170,8 @@ export default function HowItWorksPage() {
             <span>Os dados da conta não entram em treino e o processamento segue isolado.</span>
           </div>
         </section>
+
+        <PublicLaunchFooter />
       </div>
     </div>
   );

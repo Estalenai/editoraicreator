@@ -6,6 +6,7 @@ import Link from "next/link";
 import { supabase } from "../../../lib/supabaseClient";
 import { syncServerSession } from "../../../lib/clientSessionSync";
 import { toUserFacingError } from "../../../lib/uiFeedback";
+import { PublicLaunchFooter } from "../../../components/public/PublicLaunchFooter";
 
 function normalizeNextPath(value: string | null | undefined) {
   const raw = String(value || "").trim();
@@ -329,6 +330,8 @@ function LoginPageContent() {
           </form>
         </div>
       </section>
+
+      <PublicLaunchFooter />
     </div>
   );
 }

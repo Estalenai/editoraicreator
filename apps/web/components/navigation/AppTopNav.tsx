@@ -46,8 +46,20 @@ function matchesNavPath(pathname: string, item: NavItem): boolean {
 function shouldHideNavigation(pathname: string): boolean {
   if (!pathname) return true;
   const current = normalizePath(pathname);
+  const publicStandaloneRoutes = new Set([
+    "/",
+    "/login",
+    "/how-it-works",
+    "/termos",
+    "/privacidade",
+    "/transparencia-ia",
+    "/uso-aceitavel",
+    "/cancelamento-e-reembolso",
+    "/como-operamos",
+  ]);
   if (current === "/") return true;
   if (current.startsWith("/login")) return true;
+  if (publicStandaloneRoutes.has(current)) return true;
   if (current.startsWith("/api")) return true;
   return false;
 }
