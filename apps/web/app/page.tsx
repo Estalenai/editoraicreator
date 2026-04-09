@@ -3,28 +3,22 @@ import { ClosedBetaAccessCard } from "../components/waitlist/ClosedBetaAccessCar
 
 const HOME_PROOF_SAMPLES = [
   {
-    label: "Exemplo público",
-    creator: "Creator Post",
-    prompt: "Lançar uma aula gratuita de color grading para reels e stories.",
-    publicOutput: "\"3 ajustes de cor que deixam seu reel com cara de campanha, não de improviso.\"",
-    output: "Gancho curto, legenda com prova social e CTA para lista.",
-    nextStep: "Salvar no projeto, abrir no editor e lapidar a peça.",
+    creator: "Post",
+    brief: "Lançar uma aula gratuita de color grading para reels.",
+    result: "\"3 ajustes de cor que deixam seu reel com cara de campanha.\"",
+    continuation: "Entra no editor com gancho, legenda e CTA prontos para virar projeto.",
   },
   {
-    label: "Exemplo público",
-    creator: "Creator Scripts",
-    prompt: "Explicar em 30 segundos por que uma landing lenta perde conversão.",
-    publicOutput: "\"Se a página demora, o clique esfria. E clique frio não compra.\"",
-    output: "Abertura, argumento central e fechamento prontos para gravação.",
-    nextStep: "Virar vídeo curto, anúncio ou base de página.",
+    creator: "Scripts",
+    brief: "Explicar em 30 segundos por que uma landing lenta perde conversão.",
+    result: "\"Se a página demora, o clique esfria. E clique frio não compra.\"",
+    continuation: "Sai com abertura, argumento e fechamento prontos para gravação ou página.",
   },
   {
-    label: "Exemplo público",
-    creator: "Creator Clips",
-    prompt: "Gerar um clipe curto com direção de cena, ritmo e continuidade.",
-    publicOutput: "\"Close no produto, corte na reação e fechamento com CTA sem perder o contexto.\"",
-    output: "Briefing visual com direção de cena e base pronta para editar.",
-    nextStep: "Continuar no editor e seguir com saída rastreada.",
+    creator: "Clips",
+    brief: "Gerar um clipe curto com direção de cena, ritmo e continuidade.",
+    result: "\"Close no produto, corte na reação e fechamento com CTA sem perder contexto.\"",
+    continuation: "Vira briefing visual pronto para editar e seguir até a saída.",
   },
 ];
 
@@ -49,16 +43,16 @@ const HOME_HERO_FLOW = [
 
 const HOME_HERO_TRUST = [
   {
-    title: "3 creators centrais já abertos",
+    title: "3 creators centrais",
     detail: "Post, Scripts e Clips já entram no mesmo fluxo.",
   },
   {
-    title: "Continuidade real no editor",
-    detail: "A mesma peça segue do creator para revisão e projeto.",
+    title: "A mesma peça continua",
+    detail: "Creator, editor e projeto seguram o mesmo contexto.",
   },
   {
-    title: "Saída acompanhada",
-    detail: "Projetos segura rascunho, saída registrada e publicação.",
+    title: "Saída sem perda de contexto",
+    detail: "Projetos mantém rascunho, revisão e próximo passo claros.",
   },
 ];
 
@@ -70,12 +64,10 @@ export default function HomePage() {
           <div className="beta-entry-hero-layout">
             <div className="beta-entry-hero-copy">
               <div className="beta-entry-headline-stack">
-                <div className="premium-badge premium-badge-phase beta-entry-badge">
-                  Beta pago/controlado
-                </div>
-                <h1 className="beta-entry-title">Não é prompt solto. É creators, editor e projetos na mesma continuidade.</h1>
+                <div className="premium-badge premium-badge-phase beta-entry-badge">Núcleo criativo</div>
+                <h1 className="beta-entry-title">A mesma peça vai do creator à saída.</h1>
                 <p className="beta-entry-copy">
-                  Gere a base, refine no editor e siga até a saída sem perder contexto no caminho.
+                  Creators gera a base, o editor lapida e projetos segura a continuidade sem fazer você recomeçar.
                 </p>
               </div>
 
@@ -93,8 +85,8 @@ export default function HomePage() {
               </div>
 
               <div className="beta-entry-command-prompt">
-                <span className="beta-entry-command-prompt-label">Wedge</span>
-                <strong>O valor não está só em gerar. Está em continuar a mesma peça até a saída.</strong>
+                <span className="beta-entry-command-prompt-label">O que muda</span>
+                <strong>Você não gera e descarta. Você continua.</strong>
               </div>
 
               <div className="beta-entry-command-route" aria-label="Creators centrais do beta">
@@ -108,16 +100,16 @@ export default function HomePage() {
 
               <div className="beta-entry-command-proof">
                 <div className="beta-entry-command-proof-item">
-                  <span>Geração útil</span>
-                  <strong>Creators já entregam base utilizável</strong>
+                  <span>Base útil</span>
+                  <strong>Creators já entregam material aproveitável</strong>
                 </div>
                 <div className="beta-entry-command-proof-item">
-                  <span>Revisão contínua</span>
-                  <strong>Editor e projeto seguram a mesma peça</strong>
+                  <span>Mesma peça</span>
+                  <strong>Editor e projeto mantêm o mesmo contexto</strong>
                 </div>
                 <div className="beta-entry-command-proof-item">
-                  <span>Saída rastreada</span>
-                  <strong>O próximo passo continua claro até a entrega</strong>
+                  <span>Saída clara</span>
+                  <strong>O próximo passo continua definido até a entrega</strong>
                 </div>
               </div>
             </div>
@@ -134,13 +126,11 @@ export default function HomePage() {
         </section>
 
         <section className="beta-entry-proof-open" data-reveal data-reveal-delay="60">
-            <div className="section-stack-tight beta-entry-proof-head">
-              <div className="premium-badge premium-badge-phase beta-entry-badge">
-                Prova pública
-              </div>
-            <h2 className="heading-reset">Exemplos públicos do que já sai do núcleo.</h2>
+          <div className="section-stack-tight beta-entry-proof-head">
+            <div className="premium-badge premium-badge-phase beta-entry-badge">Prova pública</div>
+            <h2 className="heading-reset">Veja o tipo de peça que já sai daqui.</h2>
             <p className="helper-text-ea">
-              Sem case inventado. Aqui está o tipo de saída que o produto já organiza hoje, com continuação clara até editor e projetos.
+              Brief curto, saída utilizável e continuação clara em creators, editor e projetos.
             </p>
           </div>
           <Link href="/how-it-works" className="btn-link-ea btn-secondary btn-sm">
@@ -152,26 +142,22 @@ export default function HomePage() {
           {HOME_PROOF_SAMPLES.map((sample, index) => (
             <article key={sample.creator} className="beta-entry-proof-item" data-reveal data-reveal-delay={String(80 + index * 55)}>
               <div className="beta-entry-proof-meta">
-                <span className="proof-value-kicker">{sample.label}</span>
+                <span className="proof-value-kicker">Exemplo público</span>
                 <span className="beta-entry-proof-chip">{sample.creator}</span>
               </div>
               <div className="beta-entry-proof-row">
-                <span className="proof-value-label">Briefing</span>
-                <p>{sample.prompt}</p>
+                <span className="proof-value-label">Entrada</span>
+                <p>{sample.brief}</p>
               </div>
               <div className="beta-entry-proof-row">
-                <span className="proof-value-label">Saída pública</span>
+                <span className="proof-value-label">Saída</span>
                 <div className="proof-value-block proof-value-block-inline">
-                  <p>{sample.publicOutput}</p>
+                  <p>{sample.result}</p>
                 </div>
               </div>
               <div className="beta-entry-proof-row">
-                <span className="proof-value-label">Entrega</span>
-                <p>{sample.output}</p>
-              </div>
-              <div className="beta-entry-proof-row beta-entry-proof-row-strong">
-                <span className="proof-value-label">Próximo passo</span>
-                <strong>{sample.nextStep}</strong>
+                <span className="proof-value-label">Continuação</span>
+                <strong>{sample.continuation}</strong>
               </div>
             </article>
           ))}
@@ -180,8 +166,8 @@ export default function HomePage() {
         <div data-reveal data-reveal-delay="100">
           <ClosedBetaAccessCard
             compact
-            title="Pedir acesso"
-            description="Entre na fila para usar creators, editor e projetos na mesma continuidade."
+            title="Entrar na fila"
+            description="Use creators, editor e projetos na mesma continuidade."
           />
         </div>
 
