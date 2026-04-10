@@ -10,6 +10,7 @@ import {
 } from "../../../../lib/authGate";
 
 export const dynamic = "force-dynamic";
+const BETA_STATUS_TIMEOUT_MS = 3000;
 
 function clearAuthCookies(response: NextResponse) {
   response.cookies.delete(AUTH_ACCESS_COOKIE);
@@ -26,6 +27,11 @@ function normalizeCookieMaxAge(expiresAt?: unknown) {
 }
 
 async function resolveBetaStatus(request: Request, accessToken: string) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => {
+    controller.abort(new DOMException("Request timed out", "TimeoutError"));
+  }, BETA_STATUS_TIMEOUT_MS);
+
   try {
     const response = await fetch(new URL("/api-proxy/beta-access/me", request.url), {
       method: "GET",
@@ -34,6 +40,7 @@ async function resolveBetaStatus(request: Request, accessToken: string) {
         Authorization: `Bearer ${accessToken}`,
       },
       cache: "no-store",
+      signal: controller.signal,
     });
 
     const payload = await response.json().catch(() => null);
@@ -49,6 +56,8 @@ async function resolveBetaStatus(request: Request, accessToken: string) {
     return String(payload?.access?.status || "pending");
   } catch {
     return "unknown";
+  } finally {
+    clearTimeout(timeoutId);
   }
 }
 
