@@ -267,9 +267,81 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
 
   const hasUnsavedWorkspaceDraft = Boolean(assessment.ready && draftSignature(draft) !== workspaceSignature(workspace));
   const canDeploy = Boolean(connection.connected && workspace?.projectName && workspace.linkedRepoId && !hasUnsavedWorkspaceDraft);
-  const canReconcile = Boolean(connection.connected && workspace?.lastDeploymentId);
-  const outputStage = resolveVercelOutputStage(workspace);
+  const vercelPublish = publish?.providers?.vercel || null;
+  const publishDeployment = publish?.deployment || null;
+  const effectiveProjectName = String(publishDeployment?.projectName || vercelPublish?.projectName || workspace?.projectName || "").trim();
+  const effectiveTeamSlug = String(publishDeployment?.teamSlug || vercelPublish?.teamSlug || workspace?.teamSlug || "").trim();
+  const effectiveEnvironment =
+    publishDeployment?.environment ||
+    vercelPublish?.environment ||
+    workspace?.lastDeploymentTarget ||
+    workspace?.target ||
+    assessment.target;
+  const effectiveProjectUrl = String(publishDeployment?.projectUrl || vercelPublish?.projectUrl || workspace?.projectUrl || "").trim() || null;
+  const effectiveDeploymentId =
+    String(publishDeployment?.deploymentId || vercelPublish?.deploymentId || workspace?.lastDeploymentId || "").trim() || null;
+  const effectiveDeploymentUrl =
+    String(publishDeployment?.deploymentUrl || vercelPublish?.deploymentUrl || workspace?.lastDeploymentUrl || "").trim() || null;
+  const effectiveDeploymentInspectorUrl =
+    String(
+      publishDeployment?.deploymentInspectorUrl ||
+        vercelPublish?.deploymentInspectorUrl ||
+        workspace?.lastDeploymentInspectorUrl ||
+        ""
+    ).trim() || null;
+  const effectivePreviewUrl =
+    String(publishDeployment?.previewUrl || vercelPublish?.previewUrl || workspace?.previewUrl || "").trim() || null;
+  const effectiveProductionUrl =
+    String(publishDeployment?.productionUrl || vercelPublish?.productionUrl || workspace?.productionUrl || "").trim() || null;
+  const effectivePublishedUrl =
+    String(publishDeployment?.publishedUrl || vercelPublish?.publishedUrl || effectiveProductionUrl || effectiveDeploymentUrl || "").trim() || null;
+  const effectiveDeployRequestedAt =
+    publish?.timestamps?.deploymentRequestedAt ||
+    vercelPublish?.timestamps?.deploymentRequestedAt ||
+    workspace?.lastDeployRequestedAt ||
+    null;
+  const effectiveDeployReadyAt =
+    publish?.timestamps?.deploymentReadyAt ||
+    vercelPublish?.timestamps?.deploymentReadyAt ||
+    workspace?.lastDeployReadyAt ||
+    null;
+  const effectiveDeployCheckedAt =
+    publish?.timestamps?.deploymentCheckedAt ||
+    vercelPublish?.timestamps?.deploymentCheckedAt ||
+    workspace?.lastReconciledAt ||
+    workspace?.lastDeploymentObservedAt ||
+    vercelIntegration?.lastDeploymentCheckedAt ||
+    publishMachine.lastCheckedAt ||
+    null;
+  const effectiveDeployReconciledAt =
+    publish?.timestamps?.deploymentReconciledAt ||
+    vercelPublish?.timestamps?.reconciledAt ||
+    workspace?.lastReconciledAt ||
+    effectiveDeployCheckedAt ||
+    null;
+  const effectiveDeployObservedAt =
+    publish?.timestamps?.deploymentObservedAt ||
+    vercelPublish?.timestamps?.deploymentObservedAt ||
+    workspace?.lastDeploymentObservedAt ||
+    effectiveDeployCheckedAt ||
+    null;
+  const effectiveDeployError =
+    String(publishDeployment?.error || vercelPublish?.error || workspace?.lastDeployError || "").trim() || null;
+  const effectiveProjectLabel = formatVercelProjectLabel({
+    projectName: effectiveProjectName,
+    teamSlug: effectiveTeamSlug,
+  } as VercelWorkspace);
   const deployStatus = deriveVercelDeployStatus(workspace);
+  const effectiveDeployStatus =
+    publishDeployment?.deployStatus === "published" || vercelPublish?.deployStatus === "published"
+      ? "published"
+      : publishDeployment?.deployStatus === "ready" || vercelPublish?.deployStatus === "ready" || deployStatus === "ready"
+        ? "ready"
+        : deployStatus === "published"
+          ? "published"
+          : "draft";
+  const canReconcile = Boolean(connection.connected && effectiveDeploymentId);
+  const outputStage = resolveVercelOutputStage(workspace);
   const compact = variant === "compact";
 
   async function refreshConnectionState() {
@@ -412,18 +484,18 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
     busyAction === "reconcile" ? "syncing" : busyAction === "disconnect" ? "retry" : busyAction ? "syncing" : null;
 
   const trustState = useMemo(() => {
-    const meta: OperationalStateMetaItem[] = [
-      { label: "Projeto", value: selectedProject?.title || "Abra um projeto" },
-      { label: "Vercel", value: connection.connected ? connection.username || connection.name || "Conectado" : "Pendente" },
-      { label: "Workspace", value: formatVercelProjectLabel(workspace) },
-      { label: "Ambiente", value: vercelEnvironmentLabel(workspace?.target || assessment.target) },
-    ];
+      const meta: OperationalStateMetaItem[] = [
+        { label: "Projeto", value: selectedProject?.title || "Abra um projeto" },
+        { label: "Vercel", value: connection.connected ? connection.username || connection.name || "Conectado" : "Pendente" },
+        { label: "Workspace", value: effectiveProjectLabel },
+        { label: "Ambiente", value: vercelEnvironmentLabel(effectiveEnvironment) },
+      ];
 
-    if (workspace?.lastDeploymentId) {
-      meta.push({ label: "Deployment", value: workspace.lastDeploymentId });
-      meta.push({
-        label: "Estado",
-        value: vercelPublishMachineLabel(publishMachine),
+      if (effectiveDeploymentId) {
+        meta.push({ label: "Deployment", value: effectiveDeploymentId });
+        meta.push({
+          label: "Estado",
+          value: vercelPublishMachineLabel(publishMachine),
         tone: vercelPublishMachineMetaTone(publishMachine),
       });
     } else {
@@ -482,31 +554,31 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
       return {
         kind: "failed-publish" as const,
         title: "Último deployment falhou",
-        description: "O estado veio da Vercel e já está persistido no projeto. A falha agora é verificável, não um texto solto no frontend.",
-        meta,
-        details: [
-          publishMachine.note || workspace.lastDeployError || "A Vercel devolveu falha ou cancelamento para o último deployment.",
-          workspace.lastDeploymentInspectorUrl ? `Inspector: ${workspace.lastDeploymentInspectorUrl}` : "Abra o deployment e revise o erro no provedor.",
-        ],
-        footer: "Corrija a origem do projeto e solicite um novo deploy só depois de resolver a causa real.",
-      };
+          description: "O estado veio da Vercel e já está persistido no projeto. A falha agora é verificável, não um texto solto no frontend.",
+          meta,
+          details: [
+            publishMachine.note || effectiveDeployError || "A Vercel devolveu falha ou cancelamento para o último deployment.",
+            effectiveDeploymentInspectorUrl ? `Inspector: ${effectiveDeploymentInspectorUrl}` : "Abra o deployment e revise o erro no provedor.",
+          ],
+          footer: "Corrija a origem do projeto e solicite um novo deploy só depois de resolver a causa real.",
+        };
     }
 
     if (publishMachine.state === "published") {
       return {
         kind: "published" as const,
         title: "Produção confirmada pela Vercel",
-        description: "Projeto, ambiente, deployment, URL e horário agora vêm do backend e do provedor, não de confirmação manual.",
-        meta,
-        details: [
-          workspace.lastDeploymentUrl ? `URL publicada: ${workspace.lastDeploymentUrl}` : "URL de produção ainda não registrada.",
-          publishMachine.lastSuccessAt
-            ? `Confirmado em ${formatDateLabel(publishMachine.lastSuccessAt)}.`
-            : workspace.lastDeployReadyAt
-              ? `Confirmado em ${formatDateLabel(workspace.lastDeployReadyAt)}.`
-              : "Deployment pronto e persistido no projeto.",
-        ],
-        footer: "Se houver nova iteração, abra o editor, sincronize a fonte e gere um novo deploy real.",
+          description: "Projeto, ambiente, deployment, URL e horário agora vêm do backend e do provedor, não de confirmação manual.",
+          meta,
+          details: [
+            effectivePublishedUrl ? `URL publicada: ${effectivePublishedUrl}` : "URL de produção ainda não registrada.",
+            publishMachine.lastSuccessAt
+              ? `Confirmado em ${formatDateLabel(publishMachine.lastSuccessAt)}.`
+              : effectiveDeployReadyAt
+                ? `Confirmado em ${formatDateLabel(effectiveDeployReadyAt)}.`
+                : "Deployment pronto e persistido no projeto.",
+          ],
+          footer: "Se houver nova iteração, abra o editor, sincronize a fonte e gere um novo deploy real.",
       };
     }
 
@@ -514,17 +586,17 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
       return {
         kind: "success" as const,
         title: "Preview confirmado pela Vercel",
-        description: "A Vercel já devolveu READY e o produto mantém preview, ambiente e deployment rastreados no projeto.",
-        meta,
-        details: [
-          workspace.lastDeploymentUrl ? `Preview: ${workspace.lastDeploymentUrl}` : "Preview pronta e persistida no backend.",
-          `Próxima origem usada: ${suggestedBranch}.`,
-        ],
-        footer:
-          workspace.target === "production"
-            ? "Mude o ambiente para produção e gere um novo deployment quando a branch estiver pronta."
-            : "Promova para produção só quando o projeto e a branch estiverem estáveis.",
-      };
+          description: "A Vercel já devolveu READY e o produto mantém preview, ambiente e deployment rastreados no projeto.",
+          meta,
+          details: [
+            effectiveDeploymentUrl ? `Preview: ${effectiveDeploymentUrl}` : "Preview pronta e persistida no backend.",
+            `Próxima origem usada: ${suggestedBranch}.`,
+          ],
+          footer:
+            effectiveEnvironment === "production"
+              ? "Mude o ambiente para produção e gere um novo deployment quando a branch estiver pronta."
+              : "Promova para produção só quando o projeto e a branch estiverem estáveis.",
+        };
     }
 
     if (publishMachine.state === "deployment_requested" || publishMachine.state === "deployment_running") {
@@ -534,8 +606,8 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
         description: publishMachine.note || "O deploy já saiu do produto e agora depende apenas da resposta da Vercel para virar READY ou ERROR.",
         meta,
         details: [
-          `Ambiente alvo: ${vercelEnvironmentLabel(workspace.lastDeploymentTarget || workspace.target)}.`,
-          `Branch usada: ${workspace.lastDeploymentRef || suggestedBranch}.`,
+          `Ambiente alvo: ${vercelEnvironmentLabel(effectiveEnvironment)}.`,
+          `Branch usada: ${workspace?.lastDeploymentRef || suggestedBranch}.`,
         ],
         footer: "Reconcile novamente até a Vercel devolver READY ou ERROR.",
       };
@@ -544,15 +616,32 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
     return {
       kind: "saved" as const,
       title: "Workspace verificado e pronto para deploy",
-      description: publishMachine.note || "Projeto, ambiente e root directory já foram validados no backend. O próximo passo real é disparar o primeiro deployment.",
-      meta,
-      details: [
-        workspace.projectUrl ? `Projeto Vercel: ${workspace.projectUrl}` : "Projeto validado no backend.",
-        `Branch sugerida: ${suggestedBranch}.`,
-      ],
-      footer: "Solicite o deployment só quando a fonte do projeto estiver pronta para a Vercel.",
-    };
-  }, [assessment.target, connection.connected, connection.name, connection.username, publishMachine, selectedProject, suggestedBranch, workspace]);
+        description: publishMachine.note || "Projeto, ambiente e root directory já foram validados no backend. O próximo passo real é disparar o primeiro deployment.",
+        meta,
+        details: [
+          effectiveProjectUrl ? `Projeto Vercel: ${effectiveProjectUrl}` : "Projeto validado no backend.",
+          `Branch sugerida: ${suggestedBranch}.`,
+        ],
+        footer: "Solicite o deployment só quando a fonte do projeto estiver pronta para a Vercel.",
+      };
+  }, [
+    connection.connected,
+    connection.name,
+    connection.username,
+    effectiveDeployError,
+    effectiveDeployReadyAt,
+    effectiveDeploymentId,
+    effectiveDeploymentInspectorUrl,
+    effectiveDeploymentUrl,
+    effectiveEnvironment,
+    effectiveProjectLabel,
+    effectiveProjectUrl,
+    effectivePublishedUrl,
+    publishMachine,
+    selectedProject,
+    suggestedBranch,
+    workspace,
+  ]);
 
   const workspaceState = useMemo(() => {
     if (!assessment.ready) {
@@ -707,18 +796,18 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
         footer={trustState.footer}
         actions={
           <div className="vercel-publish-actions">
-            {workspace?.projectUrl ? (
-              <a href={workspace.projectUrl} target="_blank" rel="noreferrer" className="btn-link-ea btn-secondary btn-sm">
+            {effectiveProjectUrl ? (
+              <a href={effectiveProjectUrl || ""} target="_blank" rel="noreferrer" className="btn-link-ea btn-secondary btn-sm">
                 Abrir projeto Vercel
               </a>
             ) : null}
-            {workspace?.lastDeploymentInspectorUrl ? (
-              <a href={workspace.lastDeploymentInspectorUrl} target="_blank" rel="noreferrer" className="btn-link-ea btn-ghost btn-sm">
+            {effectiveDeploymentInspectorUrl ? (
+              <a href={effectiveDeploymentInspectorUrl} target="_blank" rel="noreferrer" className="btn-link-ea btn-ghost btn-sm">
                 Ver deployment
               </a>
             ) : null}
-            {workspace?.lastDeploymentUrl ? (
-              <a href={workspace.lastDeploymentUrl} target="_blank" rel="noreferrer" className="btn-link-ea btn-ghost btn-sm">
+            {effectiveDeploymentUrl ? (
+              <a href={effectiveDeploymentUrl} target="_blank" rel="noreferrer" className="btn-link-ea btn-ghost btn-sm">
                 Abrir saída
               </a>
             ) : null}
@@ -882,12 +971,12 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
           <div className="vercel-publish-status-grid">
             <div className="vercel-publish-status-item">
               <span>Projeto</span>
-              <strong>{formatVercelProjectLabel(workspace)}</strong>
-              <small>{workspace?.teamSlug ? `${workspace.teamSlug} • ${workspace.framework}` : "Workspace pendente"}</small>
+              <strong>{effectiveProjectLabel}</strong>
+              <small>{effectiveTeamSlug ? `${effectiveTeamSlug} • ${workspace?.framework || draft.framework}` : "Workspace pendente"}</small>
             </div>
             <div className="vercel-publish-status-item">
               <span>Ambiente</span>
-              <strong>{vercelEnvironmentLabel(workspace?.target || assessment.target)}</strong>
+              <strong>{vercelEnvironmentLabel(effectiveEnvironment)}</strong>
               <small>{workspace?.linkedRepoId ? "Projeto ligado a repositório verificável." : "Projeto ainda sem repo utilizável."}</small>
             </div>
             <div className="vercel-publish-status-item">
@@ -897,18 +986,30 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
             </div>
             <div className="vercel-publish-status-item">
               <span>Deployment</span>
-              <strong>{workspace?.lastDeploymentId || "Ainda não solicitado"}</strong>
-              <small>{publish?.deployment.deploymentUrl || workspace?.lastDeploymentUrl || "Sem URL emitida ainda."}</small>
+              <strong>{effectiveDeploymentId || "Ainda não solicitado"}</strong>
+              <small>{effectiveDeploymentUrl || "Sem URL emitida ainda."}</small>
             </div>
             <div className="vercel-publish-status-item">
               <span>Estado</span>
               <strong>{vercelPublishMachineLabel(publishMachine)}</strong>
-              <small>{publishMachine.note || workspace?.lastDeployError || outputStage.detail}</small>
+              <small>
+                {publishMachine.note ||
+                  effectiveDeployError ||
+                  (effectiveDeployReconciledAt
+                    ? `Reconciliado em ${formatDateLabel(effectiveDeployReconciledAt)}.`
+                    : outputStage.detail)}
+              </small>
             </div>
             <div className="vercel-publish-status-item">
               <span>Status canônico</span>
-              <strong>{vercelDeployStatusLabel(deployStatus)}</strong>
-              <small>{workspace?.lastDeployRequestedAt ? `Solicitado em ${formatDateLabel(workspace.lastDeployRequestedAt)}.` : "Sem request persistido ainda."}</small>
+              <strong>{vercelDeployStatusLabel(effectiveDeployStatus)}</strong>
+              <small>
+                {effectiveDeployRequestedAt
+                  ? `Solicitado em ${formatDateLabel(effectiveDeployRequestedAt)}.`
+                  : effectiveDeployObservedAt
+                    ? `Observado em ${formatDateLabel(effectiveDeployObservedAt)}.`
+                    : "Sem request persistido ainda."}
+              </small>
             </div>
           </div>
 
@@ -931,22 +1032,22 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
         </article>
       </div>
 
-      {(workspace?.previewUrl || workspace?.productionUrl) ? (
+      {(effectivePreviewUrl || effectiveProductionUrl) ? (
         <div className="vercel-publish-links">
-          {workspace.previewUrl ? (
+          {effectivePreviewUrl ? (
             <div className="vercel-publish-link-card">
               <span>Preview URL</span>
-              <strong>{workspace.previewUrl}</strong>
-              <a href={workspace.previewUrl} target="_blank" rel="noreferrer" className="text-link-ea">
+              <strong>{effectivePreviewUrl}</strong>
+              <a href={effectivePreviewUrl} target="_blank" rel="noreferrer" className="text-link-ea">
                 Abrir preview
               </a>
             </div>
           ) : null}
-          {workspace.productionUrl ? (
+          {effectiveProductionUrl ? (
             <div className="vercel-publish-link-card">
               <span>Production URL</span>
-              <strong>{workspace.productionUrl}</strong>
-              <a href={workspace.productionUrl} target="_blank" rel="noreferrer" className="text-link-ea">
+              <strong>{effectiveProductionUrl}</strong>
+              <a href={effectiveProductionUrl} target="_blank" rel="noreferrer" className="text-link-ea">
                 Abrir produção
               </a>
             </div>

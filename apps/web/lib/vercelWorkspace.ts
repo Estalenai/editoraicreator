@@ -89,6 +89,9 @@ export type VercelWorkspace = {
   lastDeployRequestedAt: string | null;
   lastDeployReadyAt: string | null;
   lastDeployError: string | null;
+  lastDeploymentObservedAt: string | null;
+  lastReconciledAt: string | null;
+  publishMachine?: ProjectVercelPublishMachine | null;
 };
 
 export type VercelWorkspaceIssue = {

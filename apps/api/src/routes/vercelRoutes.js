@@ -16,7 +16,12 @@ import {
 } from "../utils/vercelClient.js";
 import { decryptVercelToken, encryptVercelToken } from "../utils/vercelCrypto.js";
 import { applyPublishSourceOfTruth } from "../utils/publishSourceOfTruth.js";
-import { nowIso, resolveVercelPublishMachine } from "../utils/vercelPublishMachine.js";
+import { nowIso } from "../utils/vercelPublishMachine.js";
+import {
+  buildVercelDeploymentRecord,
+  reconcileVercelBinding,
+  summarizeLatestVercelDeployments,
+} from "../utils/vercelReconciliation.js";
 
 const router = express.Router();
 router.use(authMiddleware);
@@ -88,42 +93,6 @@ function normalizeRootDirectory(value, framework = "nextjs") {
 function cloneJson(value) {
   if (!value || typeof value !== "object") return {};
   return JSON.parse(JSON.stringify(value));
-}
-
-function buildProjectUrl(teamSlug, projectName) {
-  if (!projectName) return null;
-  const teamSegment = asText(teamSlug);
-  return teamSegment ? `https://vercel.com/${teamSegment}/${projectName}` : "https://vercel.com/dashboard";
-}
-
-function deriveDeployStatus({
-  lastDeploymentState,
-  lastDeploymentTarget,
-  productionUrl,
-  previewUrl,
-}) {
-  const state = asText(lastDeploymentState).toUpperCase();
-  const target = asText(lastDeploymentTarget).toLowerCase();
-  if ((state === "READY" && target === "production") || productionUrl) return "published";
-  if (state && state !== "UNKNOWN") return "ready";
-  if (previewUrl) return "ready";
-  return "draft";
-}
-
-function sortDeploymentsDescending(deployments) {
-  return [...deployments].sort((a, b) => {
-    const left = Date.parse(a?.createdAt || "") || 0;
-    const right = Date.parse(b?.createdAt || "") || 0;
-    return right - left;
-  });
-}
-
-function summarizeDeployments(deployments) {
-  const ordered = sortDeploymentsDescending((Array.isArray(deployments) ? deployments : []).filter(Boolean));
-  const latest = ordered[0] || null;
-  const latestPreview = ordered.find((item) => item.target !== "production") || null;
-  const latestProduction = ordered.find((item) => item.target === "production") || null;
-  return { latest, latestPreview, latestProduction };
 }
 
 function buildVercelEvent(event) {
@@ -318,82 +287,6 @@ function handleVercelError(res, error, defaultMessage) {
   });
 }
 
-function latestExternalState(deployments) {
-  const { latest, latestPreview, latestProduction } = summarizeDeployments(deployments);
-  const previewUrl = latestPreview?.url || null;
-  const productionUrl = latestProduction?.url || null;
-  const deployStatus = deriveDeployStatus({
-    lastDeploymentState: latest?.readyState,
-    lastDeploymentTarget: latest?.target,
-    productionUrl,
-    previewUrl,
-  });
-
-  return {
-    latest,
-    previewUrl,
-    productionUrl,
-    deployStatus,
-  };
-}
-
-function buildBinding({
-  previousBinding,
-  projectInfo,
-  team,
-  framework,
-  rootDirectory,
-  target,
-}) {
-  const external = latestExternalState(projectInfo.latestDeployments);
-  const latest = external.latest;
-  const observedAt = nowIso();
-
-  return {
-    ...(previousBinding || {}),
-    provider: "vercel",
-    projectId: projectInfo.id,
-    projectName: projectInfo.name,
-    teamId: team?.id || null,
-    teamSlug: team?.slug || "",
-    framework,
-    rootDirectory,
-    target,
-    deployStatus: external.deployStatus,
-    previewUrl: external.previewUrl || "",
-    productionUrl: external.productionUrl || "",
-    projectUrl: buildProjectUrl(team?.slug || "", projectInfo.name),
-    connectedAt: previousBinding?.connectedAt || observedAt,
-    updatedAt: observedAt,
-    lastVerifiedAt: observedAt,
-    verificationStatus: "verified",
-    tokenConfigured: true,
-    linkedRepoId: projectInfo.link?.repoId ? String(projectInfo.link.repoId) : null,
-    linkedRepoType: asText(projectInfo.link?.type) || null,
-    lastDeploymentId: latest?.id || null,
-    lastDeploymentUrl: latest?.url || null,
-    lastDeploymentInspectorUrl: latest?.inspectorUrl || null,
-    lastDeploymentState: latest?.readyState || null,
-    lastDeploymentTarget: latest?.target || null,
-    lastDeploymentRef: projectInfo.link?.productionBranch || previousBinding?.lastDeploymentRef || null,
-    lastDeployRequestedAt: latest?.createdAt || null,
-    lastDeployReadyAt: latest?.readyAt || null,
-    lastDeployError: latest?.readyState === "ERROR" ? latest?.errorMessage || "vercel_deployment_failed" : null,
-    publishMachine: resolveVercelPublishMachine({
-      previousMachine: previousBinding?.publishMachine || null,
-      hasWorkspace: true,
-      deploymentId: latest?.id || null,
-      deploymentState: latest?.readyState || null,
-      deploymentTarget: latest?.target || target,
-      deploymentUrl: latest?.url || null,
-      errorMessage: latest?.readyState === "ERROR" ? latest?.errorMessage || "vercel_deployment_failed" : null,
-      source: "workspace_save",
-      eventType: "workspace_saved",
-      observedAt,
-    }),
-  };
-}
-
 function pushHistory(nextData, event) {
   nextData.integrations.vercel.history = [buildVercelEvent(event), ...nextData.integrations.vercel.history].slice(0, HISTORY_LIMIT);
 }
@@ -521,20 +414,33 @@ router.post("/projects/:id/workspace", async (req, res) => {
       projectName,
       teamId: team?.id || null,
     });
+    const observedAt = nowIso();
+    const latestExternal = summarizeLatestVercelDeployments(vercelProject.latestDeployments);
 
     const nextData = ensureVercelState(project.data);
     const previousBinding = nextData.integrations.vercel.binding || null;
-    const nextBinding = buildBinding({
+    const nextBinding = reconcileVercelBinding({
       previousBinding,
-      projectInfo: vercelProject,
-      team,
+      deployment: latestExternal.latest,
+      observedAt,
+      source: "workspace_save",
+      eventType: "workspace_saved",
+      projectId: vercelProject.id,
+      projectName: vercelProject.name,
+      teamId: team?.id || null,
+      teamSlug: team?.slug || "",
       framework,
       rootDirectory,
       target,
+      linkedRepoId: vercelProject.link?.repoId ? String(vercelProject.link.repoId) : null,
+      linkedRepoType: asText(vercelProject.link?.type) || null,
+      deploymentRef: vercelProject.link?.productionBranch || previousBinding?.lastDeploymentRef || null,
+      previewUrl: latestExternal.previewUrl,
+      productionUrl: latestExternal.productionUrl,
     });
 
     nextData.integrations.vercel.binding = nextBinding;
-    nextData.integrations.vercel.lastDeploymentCheckedAt = nowIso();
+    nextData.integrations.vercel.lastDeploymentCheckedAt = observedAt;
     pushHistory(nextData, {
       type: "workspace_saved",
       stage: nextBinding.lastDeploymentId ? "exported" : "draft",
@@ -557,16 +463,14 @@ router.post("/projects/:id/workspace", async (req, res) => {
     };
 
     const item = await persistProjectData(req, project.id, nextData);
-    if (nextBinding.lastDeploymentId) {
-      await saveDeploymentRecord(nextBinding.lastDeploymentId, {
-        projectId: project.id,
-        userId: req.user.id,
-        provider: "vercel",
-        teamId: nextBinding.teamId || null,
-        projectName: nextBinding.projectName,
-        target: nextBinding.lastDeploymentTarget || nextBinding.target,
-        updatedAt: nowIso(),
-      });
+    const deploymentRecord = buildVercelDeploymentRecord({
+      projectId: project.id,
+      userId: req.user.id,
+      binding: nextBinding,
+      observedAt,
+    });
+    if (deploymentRecord) {
+      await saveDeploymentRecord(nextBinding.lastDeploymentId, deploymentRecord);
     }
     recordProductEvent({
       event: "vercel.workspace.saved",
@@ -673,50 +577,26 @@ router.post("/projects/:id/deploy", async (req, res) => {
     });
     const observedAt = nowIso();
 
-    const nextBinding = {
-      ...binding,
-      deployStatus: deriveDeployStatus({
-        lastDeploymentState: deployment?.readyState,
-        lastDeploymentTarget: deployment?.target,
-        productionUrl: deployment?.target === "production" && deployment?.readyState === "READY" ? deployment?.url : binding.productionUrl,
-        previewUrl: deployment?.target !== "production" && deployment?.readyState === "READY" ? deployment?.url : binding.previewUrl,
-      }),
-      previewUrl:
-        deployment?.target === "preview" && deployment?.readyState === "READY"
-          ? deployment?.url || binding.previewUrl
-          : binding.previewUrl,
-      productionUrl:
-        deployment?.target === "production" && deployment?.readyState === "READY"
-          ? deployment?.url || binding.productionUrl
-          : binding.productionUrl,
-      updatedAt: observedAt,
-      lastDeploymentId: deployment?.id || null,
-      lastDeploymentUrl: deployment?.url || null,
-      lastDeploymentInspectorUrl: deployment?.inspectorUrl || null,
-      lastDeploymentState: deployment?.readyState || "UNKNOWN",
-      lastDeploymentTarget: deployment?.target || binding.target,
-      lastDeploymentRef: deployRef,
-      lastDeployRequestedAt: deployment?.createdAt || observedAt,
-      lastDeployReadyAt: deployment?.readyState === "READY" ? deployment?.readyAt || observedAt : null,
-      lastDeployError: deployment?.readyState === "ERROR" ? deployment?.errorMessage || "vercel_deployment_failed" : null,
+    const nextBinding = reconcileVercelBinding({
+      previousBinding: binding,
+      deployment,
+      observedAt,
+      source: "deployment_request",
+      eventType: "deployment_requested",
+      projectId: binding.projectId,
+      projectName: binding.projectName,
+      teamId: binding.teamId || null,
+      teamSlug: binding.teamSlug || "",
+      framework: binding.framework,
+      rootDirectory: binding.rootDirectory,
+      target: binding.target,
+      projectUrl: binding.projectUrl || null,
       linkedRepoId: String(repoId),
       linkedRepoType: vercelProject.link?.type || "github",
-      lastVerifiedAt: observedAt,
-      verificationStatus: "verified",
-      tokenConfigured: true,
-      publishMachine: resolveVercelPublishMachine({
-        previousMachine: binding.publishMachine || null,
-        hasWorkspace: true,
-        deploymentId: deployment?.id || null,
-        deploymentState: deployment?.readyState || null,
-        deploymentTarget: deployment?.target || binding.target,
-        deploymentUrl: deployment?.url || null,
-        errorMessage: deployment?.readyState === "ERROR" ? deployment?.errorMessage || "vercel_deployment_failed" : null,
-        source: "deployment_request",
-        eventType: "deployment_requested",
-        observedAt,
-      }),
-    };
+      deploymentRef: deployRef,
+      previewUrl: binding.previewUrl,
+      productionUrl: binding.productionUrl,
+    });
 
     nextData.integrations.vercel.binding = nextBinding;
     nextData.integrations.vercel.lastDeploymentCheckedAt = observedAt;
@@ -746,17 +626,14 @@ router.post("/projects/:id/deploy", async (req, res) => {
     };
 
     const item = await persistProjectData(req, project.id, nextData);
-    if (nextBinding.lastDeploymentId) {
-      await saveDeploymentRecord(nextBinding.lastDeploymentId, {
-        projectId: project.id,
-        userId: req.user.id,
-        provider: "vercel",
-        teamId: nextBinding.teamId || null,
-        projectName: nextBinding.projectName,
-        target: nextBinding.lastDeploymentTarget || nextBinding.target,
-        ref: nextBinding.lastDeploymentRef || null,
-        updatedAt: observedAt,
-      });
+    const deploymentRecord = buildVercelDeploymentRecord({
+      projectId: project.id,
+      userId: req.user.id,
+      binding: nextBinding,
+      observedAt,
+    });
+    if (deploymentRecord) {
+      await saveDeploymentRecord(nextBinding.lastDeploymentId, deploymentRecord);
     }
     recordProductEvent({
       event: "vercel.deploy.requested",
@@ -800,54 +677,26 @@ router.post("/projects/:id/reconcile", async (req, res) => {
     });
     const observedAt = nowIso();
 
-    const nextBinding = {
-      ...binding,
-      deployStatus: deriveDeployStatus({
-        lastDeploymentState: deployment?.readyState,
-        lastDeploymentTarget: deployment?.target,
-        productionUrl:
-          deployment?.target === "production" && deployment?.readyState === "READY"
-            ? deployment?.url || binding.productionUrl
-            : binding.productionUrl,
-        previewUrl:
-          deployment?.target === "preview" && deployment?.readyState === "READY"
-            ? deployment?.url || binding.previewUrl
-            : binding.previewUrl,
-      }),
-      previewUrl:
-        deployment?.target === "preview" && deployment?.readyState === "READY"
-          ? deployment?.url || binding.previewUrl
-          : binding.previewUrl,
-      productionUrl:
-        deployment?.target === "production" && deployment?.readyState === "READY"
-          ? deployment?.url || binding.productionUrl
-          : binding.productionUrl,
-      updatedAt: observedAt,
-      lastDeploymentUrl: deployment?.url || binding.lastDeploymentUrl || null,
-      lastDeploymentInspectorUrl: deployment?.inspectorUrl || binding.lastDeploymentInspectorUrl || null,
-      lastDeploymentState: deployment?.readyState || binding.lastDeploymentState || "UNKNOWN",
-      lastDeploymentTarget: deployment?.target || binding.lastDeploymentTarget || binding.target,
-      lastDeployReadyAt:
-        deployment?.readyState === "READY"
-          ? deployment?.readyAt || observedAt
-          : binding.lastDeployReadyAt || null,
-      lastDeployError: deployment?.readyState === "ERROR" ? deployment?.errorMessage || "vercel_deployment_failed" : null,
-      lastVerifiedAt: observedAt,
-      verificationStatus: "verified",
-      tokenConfigured: true,
-      publishMachine: resolveVercelPublishMachine({
-        previousMachine: binding.publishMachine || null,
-        hasWorkspace: true,
-        deploymentId: binding.lastDeploymentId,
-        deploymentState: deployment?.readyState || binding.lastDeploymentState || null,
-        deploymentTarget: deployment?.target || binding.lastDeploymentTarget || binding.target,
-        deploymentUrl: deployment?.url || binding.lastDeploymentUrl || null,
-        errorMessage: deployment?.readyState === "ERROR" ? deployment?.errorMessage || "vercel_deployment_failed" : null,
-        source: "provider_poll",
-        eventType: "deployment_reconciled",
-        observedAt,
-      }),
-    };
+    const nextBinding = reconcileVercelBinding({
+      previousBinding: binding,
+      deployment,
+      observedAt,
+      source: "provider_poll",
+      eventType: "deployment_reconciled",
+      projectId: binding.projectId,
+      projectName: binding.projectName,
+      teamId: binding.teamId || null,
+      teamSlug: binding.teamSlug || "",
+      framework: binding.framework,
+      rootDirectory: binding.rootDirectory,
+      target: binding.target,
+      projectUrl: binding.projectUrl || null,
+      linkedRepoId: binding.linkedRepoId || null,
+      linkedRepoType: binding.linkedRepoType || null,
+      deploymentRef: binding.lastDeploymentRef || null,
+      previewUrl: binding.previewUrl,
+      productionUrl: binding.productionUrl,
+    });
 
     nextData.integrations.vercel.binding = nextBinding;
     nextData.integrations.vercel.lastDeploymentCheckedAt = observedAt;
@@ -885,17 +734,14 @@ router.post("/projects/:id/reconcile", async (req, res) => {
     };
 
     const item = await persistProjectData(req, project.id, nextData);
-    if (nextBinding.lastDeploymentId) {
-      await saveDeploymentRecord(nextBinding.lastDeploymentId, {
-        projectId: project.id,
-        userId: req.user.id,
-        provider: "vercel",
-        teamId: nextBinding.teamId || null,
-        projectName: nextBinding.projectName,
-        target: nextBinding.lastDeploymentTarget || nextBinding.target,
-        ref: nextBinding.lastDeploymentRef || null,
-        updatedAt: observedAt,
-      });
+    const deploymentRecord = buildVercelDeploymentRecord({
+      projectId: project.id,
+      userId: req.user.id,
+      binding: nextBinding,
+      observedAt,
+    });
+    if (deploymentRecord) {
+      await saveDeploymentRecord(nextBinding.lastDeploymentId, deploymentRecord);
     }
     recordProductEvent({
       event: "vercel.deploy.reconciled",

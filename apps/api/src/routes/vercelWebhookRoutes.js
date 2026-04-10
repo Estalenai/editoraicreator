@@ -3,7 +3,13 @@ import express from "express";
 import supabaseAdmin, { isSupabaseAdminEnabled } from "../config/supabaseAdmin.js";
 import { recordProductEvent } from "../utils/eventsStore.js";
 import { applyPublishSourceOfTruth } from "../utils/publishSourceOfTruth.js";
-import { nowIso, resolveVercelPublishMachine } from "../utils/vercelPublishMachine.js";
+import { nowIso } from "../utils/vercelPublishMachine.js";
+import {
+  buildVercelDeploymentRecord,
+  isVercelDeploymentFailure,
+  isVercelDeploymentReady,
+  reconcileVercelBinding,
+} from "../utils/vercelReconciliation.js";
 
 const router = express.Router();
 
@@ -42,15 +48,6 @@ function normalizeTimestamp(value) {
 
 function normalizeTarget(value) {
   return asText(value) === "production" ? "production" : "preview";
-}
-
-function deriveDeployStatus({ lastDeploymentState, lastDeploymentTarget, productionUrl, previewUrl }) {
-  const state = asText(lastDeploymentState).toUpperCase();
-  const target = asText(lastDeploymentTarget).toLowerCase();
-  if ((state === "READY" && target === "production") || productionUrl) return "published";
-  if (state && state !== "UNKNOWN") return "ready";
-  if (previewUrl) return "ready";
-  return "draft";
 }
 
 function buildVercelEvent(event) {
@@ -332,66 +329,32 @@ router.post("/deployment", express.raw({ type: "application/json" }), async (req
       return res.status(202).json({ ok: true, ignored: "vercel_binding_missing" });
     }
 
-    const nextBinding = {
-      ...binding,
-      deployStatus: deriveDeployStatus({
-        lastDeploymentState: observation.deployment.readyState,
-        lastDeploymentTarget: observation.deployment.target || binding.lastDeploymentTarget || binding.target,
-        productionUrl:
-          observation.deployment.target === "production" && observation.deployment.readyState === "READY"
-            ? observation.deployment.url || binding.productionUrl
-            : binding.productionUrl,
-        previewUrl:
-          observation.deployment.target !== "production" && observation.deployment.readyState === "READY"
-            ? observation.deployment.url || binding.previewUrl
-            : binding.previewUrl,
-      }),
+    const nextBinding = reconcileVercelBinding({
+      previousBinding: binding,
+      deployment: observation.deployment,
+      observedAt: observation.observedAt,
+      source: "provider_webhook",
+      eventType: observation.eventType || "deployment.webhook",
       projectId: binding.projectId || observation.project.id || null,
       projectName: binding.projectName || observation.project.name || "",
       teamId: binding.teamId || observation.project.teamId || null,
       teamSlug: binding.teamSlug || observation.project.teamSlug || "",
-      updatedAt: observation.observedAt,
-      lastDeploymentId: observation.deployment.id,
-      lastDeploymentUrl: observation.deployment.url || binding.lastDeploymentUrl || null,
-      lastDeploymentInspectorUrl: observation.deployment.inspectorUrl || binding.lastDeploymentInspectorUrl || null,
-      lastDeploymentState: observation.deployment.readyState || binding.lastDeploymentState || "UNKNOWN",
-      lastDeploymentTarget: observation.deployment.target || binding.lastDeploymentTarget || binding.target,
-      lastDeployRequestedAt: binding.lastDeployRequestedAt || observation.deployment.createdAt || observation.observedAt,
-      lastDeployReadyAt:
-        observation.deployment.readyState === "READY"
-          ? observation.deployment.readyAt || observation.observedAt
-          : binding.lastDeployReadyAt || null,
-      lastDeployError:
-        observation.deployment.readyState === "ERROR" || observation.deployment.readyState === "CANCELED"
-          ? observation.deployment.errorMessage || "vercel_deployment_failed"
-          : null,
-      previewUrl:
-        observation.deployment.target !== "production" && observation.deployment.readyState === "READY"
-          ? observation.deployment.url || binding.previewUrl
-          : binding.previewUrl,
-      productionUrl:
-        observation.deployment.target === "production" && observation.deployment.readyState === "READY"
-          ? observation.deployment.url || binding.productionUrl
-          : binding.productionUrl,
-      publishMachine: resolveVercelPublishMachine({
-        previousMachine: binding.publishMachine || null,
-        hasWorkspace: true,
-        deploymentId: observation.deployment.id,
-        deploymentState: observation.deployment.readyState,
-        deploymentTarget: observation.deployment.target || binding.lastDeploymentTarget || binding.target,
-        deploymentUrl: observation.deployment.url || binding.lastDeploymentUrl || null,
-        errorMessage: observation.deployment.errorMessage || null,
-        source: "provider_webhook",
-        eventType: observation.eventType || "deployment.webhook",
-        observedAt: observation.observedAt,
-      }),
-    };
+      framework: binding.framework,
+      rootDirectory: binding.rootDirectory,
+      target: binding.target,
+      projectUrl: binding.projectUrl || null,
+      linkedRepoId: binding.linkedRepoId || null,
+      linkedRepoType: binding.linkedRepoType || null,
+      deploymentRef: binding.lastDeploymentRef || null,
+      previewUrl: binding.previewUrl,
+      productionUrl: binding.productionUrl,
+    });
 
     nextData.integrations.vercel.binding = nextBinding;
     nextData.integrations.vercel.lastDeploymentCheckedAt = observation.observedAt;
 
-    const isFailure = nextBinding.lastDeploymentState === "ERROR" || nextBinding.lastDeploymentState === "CANCELED";
-    const isReady = nextBinding.lastDeploymentState === "READY";
+    const isFailure = isVercelDeploymentFailure(nextBinding);
+    const isReady = isVercelDeploymentReady(nextBinding);
     nextData.integrations.vercel.history = [
       buildVercelEvent({
         type: isFailure ? "deployment_failed" : isReady ? "deployment_ready" : "deployment_reconciled",
@@ -425,15 +388,15 @@ router.post("/deployment", express.raw({ type: "application/json" }), async (req
     };
 
     await persistProject(project.id, nextData);
-    await saveConfigValue(deploymentKey(observation.deployment.id), {
+    const deploymentRecord = buildVercelDeploymentRecord({
       projectId: project.id,
       userId: project.user_id,
-      provider: "vercel",
-      projectName: nextBinding.projectName,
-      teamId: nextBinding.teamId || null,
-      target: nextBinding.lastDeploymentTarget || nextBinding.target,
-      updatedAt: observation.observedAt,
+      binding: nextBinding,
+      observedAt: observation.observedAt,
     });
+    if (deploymentRecord) {
+      await saveConfigValue(deploymentKey(observation.deployment.id), deploymentRecord);
+    }
     await saveConfigValue(eventKey(dedupeId), {
       deploymentId: observation.deployment.id,
       eventType: observation.eventType || "deployment.webhook",

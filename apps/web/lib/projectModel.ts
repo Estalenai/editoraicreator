@@ -184,6 +184,8 @@ export type ProjectVercelBinding = {
   lastDeployRequestedAt?: string | null;
   lastDeployReadyAt?: string | null;
   lastDeployError?: string | null;
+  lastDeploymentObservedAt?: string | null;
+  lastReconciledAt?: string | null;
   publishMachine?: ProjectVercelPublishMachine | null;
 };
 
@@ -361,6 +363,8 @@ export type ProjectPublishSourceOfTruth = {
         deploymentRequestedAt: string | null;
         deploymentReadyAt: string | null;
         deploymentCheckedAt: string | null;
+        deploymentObservedAt: string | null;
+        reconciledAt: string | null;
         publishedAt: string | null;
         updatedAt: string | null;
       };
@@ -374,6 +378,8 @@ export type ProjectPublishSourceOfTruth = {
     deploymentRequestedAt: string | null;
     deploymentReadyAt: string | null;
     deploymentCheckedAt: string | null;
+    deploymentObservedAt: string | null;
+    deploymentReconciledAt: string | null;
     publishedAt: string | null;
     updatedAt: string | null;
   };
@@ -1457,6 +1463,8 @@ function normalizeExistingVercelBinding(value: any): ProjectVercelBinding | null
     lastDeployRequestedAt: asText(value.lastDeployRequestedAt) || null,
     lastDeployReadyAt: asText(value.lastDeployReadyAt) || null,
     lastDeployError: asText(value.lastDeployError) || null,
+    lastDeploymentObservedAt: asText(value.lastDeploymentObservedAt) || null,
+    lastReconciledAt: asText(value.lastReconciledAt) || null,
     publishMachine: normalizeExistingVercelPublishMachine(value.publishMachine),
   };
 }
@@ -1782,12 +1790,34 @@ function buildPublishSourceOfTruth(
           workspaceVerifiedAt: pickFirstIso(vercelBinding?.lastVerifiedAt, vercelBinding?.updatedAt, vercelBinding?.connectedAt),
           deploymentRequestedAt: pickFirstIso(vercelBinding?.lastDeployRequestedAt),
           deploymentReadyAt: pickFirstIso(vercelBinding?.lastDeployReadyAt),
-          deploymentCheckedAt: pickFirstIso(vercel.lastDeploymentCheckedAt, vercelBinding?.publishMachine?.lastCheckedAt),
+          deploymentCheckedAt: pickFirstIso(
+            vercel.lastDeploymentCheckedAt,
+            vercelBinding?.lastReconciledAt,
+            vercelBinding?.lastDeploymentObservedAt,
+            vercelBinding?.publishMachine?.lastCheckedAt
+          ),
+          deploymentObservedAt: pickFirstIso(
+            vercelBinding?.lastDeploymentObservedAt,
+            vercelBinding?.lastReconciledAt,
+            vercel.lastDeploymentCheckedAt,
+            vercelBinding?.publishMachine?.lastCheckedAt
+          ),
+          reconciledAt: pickFirstIso(
+            vercelBinding?.lastReconciledAt,
+            vercel.lastDeploymentCheckedAt,
+            vercelBinding?.publishMachine?.lastCheckedAt
+          ),
           publishedAt:
             vercelEnvironment === "production"
               ? pickFirstIso(vercelBinding?.publishMachine?.lastSuccessAt, vercelBinding?.lastDeployReadyAt, delivery.lastPublishedAt)
               : null,
-          updatedAt: pickFirstIso(vercelBinding?.publishMachine?.lastTransitionAt, vercel.lastDeploymentCheckedAt, vercelBinding?.updatedAt),
+          updatedAt: pickFirstIso(
+            vercelBinding?.lastReconciledAt,
+            vercelBinding?.lastDeploymentObservedAt,
+            vercelBinding?.publishMachine?.lastTransitionAt,
+            vercel.lastDeploymentCheckedAt,
+            vercelBinding?.updatedAt
+          ),
         },
       },
     },
@@ -1803,7 +1833,23 @@ function buildPublishSourceOfTruth(
       pullRequestAt: latestGitHubPullRequestAt(delivery, github),
       deploymentRequestedAt: pickFirstIso(vercelBinding?.lastDeployRequestedAt),
       deploymentReadyAt: pickFirstIso(vercelBinding?.lastDeployReadyAt),
-      deploymentCheckedAt: pickFirstIso(vercel.lastDeploymentCheckedAt, vercelBinding?.publishMachine?.lastCheckedAt),
+      deploymentCheckedAt: pickFirstIso(
+        vercel.lastDeploymentCheckedAt,
+        vercelBinding?.lastReconciledAt,
+        vercelBinding?.lastDeploymentObservedAt,
+        vercelBinding?.publishMachine?.lastCheckedAt
+      ),
+      deploymentObservedAt: pickFirstIso(
+        vercelBinding?.lastDeploymentObservedAt,
+        vercelBinding?.lastReconciledAt,
+        vercel.lastDeploymentCheckedAt,
+        vercelBinding?.publishMachine?.lastCheckedAt
+      ),
+      deploymentReconciledAt: pickFirstIso(
+        vercelBinding?.lastReconciledAt,
+        vercel.lastDeploymentCheckedAt,
+        vercelBinding?.publishMachine?.lastCheckedAt
+      ),
       publishedAt: pickFirstIso(vercelBinding?.publishMachine?.lastSuccessAt, vercelBinding?.lastDeployReadyAt, delivery.lastPublishedAt),
       updatedAt: pickFirstIso(
         primary.timestamps.updatedAt,

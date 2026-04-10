@@ -194,7 +194,23 @@ function buildVercelSource(vercel, delivery) {
       workspaceVerifiedAt: pickFirstIso(binding?.lastVerifiedAt, binding?.updatedAt, binding?.connectedAt),
       deploymentRequestedAt: pickFirstIso(binding?.lastDeployRequestedAt),
       deploymentReadyAt: pickFirstIso(binding?.lastDeployReadyAt),
-      deploymentCheckedAt: pickFirstIso(vercel?.lastDeploymentCheckedAt, binding?.publishMachine?.lastCheckedAt),
+      deploymentCheckedAt: pickFirstIso(
+        vercel?.lastDeploymentCheckedAt,
+        binding?.lastReconciledAt,
+        binding?.lastDeploymentObservedAt,
+        binding?.publishMachine?.lastCheckedAt
+      ),
+      deploymentObservedAt: pickFirstIso(
+        binding?.lastDeploymentObservedAt,
+        binding?.lastReconciledAt,
+        vercel?.lastDeploymentCheckedAt,
+        binding?.publishMachine?.lastCheckedAt
+      ),
+      reconciledAt: pickFirstIso(
+        binding?.lastReconciledAt,
+        vercel?.lastDeploymentCheckedAt,
+        binding?.publishMachine?.lastCheckedAt
+      ),
       publishedAt:
         environment === "production"
           ? pickFirstIso(
@@ -204,6 +220,8 @@ function buildVercelSource(vercel, delivery) {
             )
           : null,
       updatedAt: pickFirstIso(
+        binding?.lastReconciledAt,
+        binding?.lastDeploymentObservedAt,
         binding?.publishMachine?.lastTransitionAt,
         vercel?.lastDeploymentCheckedAt,
         binding?.updatedAt
@@ -352,6 +370,8 @@ export function buildPublishSourceOfTruth(projectData) {
       deploymentRequestedAt: vercelSource.timestamps.deploymentRequestedAt,
       deploymentReadyAt: vercelSource.timestamps.deploymentReadyAt,
       deploymentCheckedAt: vercelSource.timestamps.deploymentCheckedAt,
+      deploymentObservedAt: vercelSource.timestamps.deploymentObservedAt,
+      deploymentReconciledAt: vercelSource.timestamps.reconciledAt,
       publishedAt:
         pickFirstIso(
           vercelSource.timestamps.publishedAt,
