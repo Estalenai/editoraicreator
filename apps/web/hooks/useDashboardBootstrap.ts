@@ -31,6 +31,17 @@ type Options = {
   loadDashboard?: boolean;
 };
 
+function isRecoverableAccessError(message: string) {
+  const normalized = String(message || "").toLowerCase();
+  return (
+    normalized.includes("demorou demais para responder") ||
+    normalized.includes("não foi possível conectar com a api") ||
+    normalized.includes("nao foi possivel conectar com a api") ||
+    normalized.includes("erro ao comunicar com a api") ||
+    normalized.includes("failed to fetch")
+  );
+}
+
 export function useDashboardBootstrap(options: Options = {}) {
   const { loadDashboard = true } = options;
   const router = useRouter();
@@ -128,11 +139,16 @@ export function useDashboardBootstrap(options: Options = {}) {
         setLoading(false);
         return;
       }
-      setError(toUserFacingError(betaMessage, "Falha ao validar acesso do beta."));
-      resetDashboardState();
+
+      if (!isRecoverableAccessError(betaMessage)) {
+        setError(toUserFacingError(betaMessage, "Falha ao validar acesso do beta."));
+        resetDashboardState();
+        setAccessResolved(true);
+        setLoading(false);
+        return;
+      }
+
       setAccessResolved(true);
-      setLoading(false);
-      return;
     }
 
     if (!loadDashboard) {

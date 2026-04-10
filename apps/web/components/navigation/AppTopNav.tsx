@@ -154,6 +154,39 @@ export function AppTopNav() {
     );
   }
 
+  function renderCompactNavItem(item: NavItem) {
+    const active = matchesNavPath(pathname, item);
+    const className = `app-nav-link app-nav-compact-link layout-contract-item layout-contract-rail-link app-nav-link-${item.group}${active ? " app-nav-link-active" : ""}`;
+
+    if (item.href.startsWith("/editor")) {
+      return (
+        <EditorRouteLink
+          key={`${item.href}-compact`}
+          href={item.href}
+          className={className}
+          aria-current={active ? "page" : undefined}
+          data-active={active ? "true" : "false"}
+          data-group={item.group}
+        >
+          <span className="app-nav-link-label">{item.label}</span>
+        </EditorRouteLink>
+      );
+    }
+
+    return (
+      <Link
+        key={`${item.href}-compact`}
+        href={item.href}
+        className={className}
+        aria-current={active ? "page" : undefined}
+        data-active={active ? "true" : "false"}
+        data-group={item.group}
+      >
+        <span className="app-nav-link-label">{item.label}</span>
+      </Link>
+    );
+  }
+
   if (hideNavigation) return null;
 
   return (
@@ -168,6 +201,9 @@ export function AppTopNav() {
           <span className="app-nav-core-pill">Editor</span>
           <span className="app-nav-core-pill">Projetos + saída</span>
         </div>
+      </div>
+      <div className="app-nav-compact-strip" aria-label="Atalhos do workspace">
+        {navItems.map(renderCompactNavItem)}
       </div>
       {overviewItems.length > 0 ? (
         <div className="app-nav-overview">{overviewItems.map(renderNavItem)}</div>

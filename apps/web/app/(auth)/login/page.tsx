@@ -19,6 +19,7 @@ function LoginPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const formRef = useRef<HTMLFormElement | null>(null);
+  const sessionProbeTimeoutRef = useRef<number | null>(null);
   const initialMode = searchParams?.get("mode") === "signup" ? "signup" : "login";
   const nextPath = normalizeNextPath(searchParams?.get("next"));
 
@@ -28,6 +29,8 @@ function LoginPageContent() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [checkingSession, setCheckingSession] = useState(true);
+  const [sessionProbeNonce, setSessionProbeNonce] = useState(0);
+  const [sessionProbeSlow, setSessionProbeSlow] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
@@ -39,50 +42,83 @@ function LoginPageContent() {
 
   useEffect(() => {
     let active = true;
+    let sessionCheckExpired = false;
+
+    setCheckingSession(true);
+    setSessionProbeSlow(false);
+    if (sessionProbeTimeoutRef.current) {
+      window.clearTimeout(sessionProbeTimeoutRef.current);
+    }
+    sessionProbeTimeoutRef.current = window.setTimeout(() => {
+      sessionCheckExpired = true;
+      if (!active) return;
+      setSessionProbeSlow(true);
+      setCheckingSession(false);
+      setError((current) =>
+        current || "A verificação da sessão demorou além do esperado. Você pode entrar manualmente agora."
+      );
+    }, 1800);
+
+    const finishChecking = () => {
+      if (!active) return;
+      if (sessionProbeTimeoutRef.current) {
+        window.clearTimeout(sessionProbeTimeoutRef.current);
+        sessionProbeTimeoutRef.current = null;
+      }
+      setCheckingSession(false);
+    };
 
     supabase.auth.getSession().then(async ({ data }) => {
       if (!active) return;
 
       if (data.session) {
         try {
+          if (sessionCheckExpired) return;
           await syncServerSession(data.session);
+          if (sessionCheckExpired || !active) return;
           router.replace(nextPath);
           return;
         } catch (syncError: any) {
           if (active) {
             setError(toUserFacingError(syncError?.message, "Nao foi possivel validar sua sessao agora."));
+            finishChecking();
           }
         }
         return;
       }
 
-      setCheckingSession(false);
+      finishChecking();
     });
 
     const { data: authListener } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (session) {
         try {
+          if (sessionCheckExpired) return;
           await syncServerSession(session);
+          if (sessionCheckExpired || !active) return;
           router.replace(nextPath);
           return;
         } catch (syncError: any) {
           if (active) {
             setError(toUserFacingError(syncError?.message, "Nao foi possivel validar sua sessao agora."));
+            finishChecking();
           }
         }
         return;
       }
 
-      if (active) {
-        setCheckingSession(false);
-      }
+      finishChecking();
     });
 
     return () => {
       active = false;
+      if (sessionProbeTimeoutRef.current) {
+        window.clearTimeout(sessionProbeTimeoutRef.current);
+        sessionProbeTimeoutRef.current = null;
+      }
       authListener.subscription.unsubscribe();
     };
-  }, [nextPath, router]);
+  }, [nextPath, router, sessionProbeNonce]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -166,8 +202,25 @@ function LoginPageContent() {
 
   if (checkingSession) {
     return (
-      <div className="auth-entry-shell">
-        <div className="auth-entry-loading">Verificando sessão...</div>
+      <div className="auth-entry-shell auth-entry-shell-loading">
+        <section className="auth-entry-loading-surface premium-card">
+          <div className="section-stack">
+            <p className="section-kicker">Acesso à plataforma</p>
+            <h1 className="auth-entry-loading-title">Verificando sessão</h1>
+            <p className="auth-entry-loading-copy">
+              Estamos restaurando sua conta e retomando o workspace com segurança.
+            </p>
+          </div>
+          <div className="auth-entry-loading-progress" aria-hidden="true">
+            <div className="premium-skeleton premium-skeleton-line auth-entry-loading-line auth-entry-loading-line-strong" />
+            <div className="premium-skeleton premium-skeleton-line auth-entry-loading-line" />
+            <div className="premium-skeleton premium-skeleton-line auth-entry-loading-line auth-entry-loading-line-short" />
+          </div>
+          <div className="auth-entry-inline-note">
+            <strong>Recuperando sessão e permissões</strong>
+            <span>Se a confirmação demorar demais, liberamos entrada manual sem deixar a tela vazia.</span>
+          </div>
+        </section>
       </div>
     );
   }
@@ -255,6 +308,7 @@ function LoginPageContent() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
+                  autoComplete="email"
                   className="field-ea"
                 />
               </label>
@@ -267,6 +321,7 @@ function LoginPageContent() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
+                  autoComplete={mode === "signup" ? "new-password" : "current-password"}
                   className="field-ea"
                 />
               </label>
@@ -275,14 +330,15 @@ function LoginPageContent() {
                 <label className="field-label-ea">
                   <span>Confirmar senha</span>
                   <input
-                    type="password"
-                    placeholder="Repita sua senha"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    required
-                    className="field-ea"
-                  />
-                </label>
+                  type="password"
+                  placeholder="Repita sua senha"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  autoComplete="new-password"
+                  className="field-ea"
+                />
+              </label>
               ) : null}
             </div>
 
@@ -310,6 +366,22 @@ function LoginPageContent() {
               <div className="state-ea state-ea-success">
                 <p className="state-ea-title">Conta criada</p>
                 <div className="state-ea-text">{success}</div>
+              </div>
+            ) : null}
+
+            {sessionProbeSlow ? (
+              <div className="auth-entry-loading-actions">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setError(null);
+                    setSessionProbeSlow(false);
+                    setSessionProbeNonce((value) => value + 1);
+                  }}
+                  className="btn-ea btn-secondary btn-sm"
+                >
+                  Tentar verificar novamente
+                </button>
               </div>
             ) : null}
 
