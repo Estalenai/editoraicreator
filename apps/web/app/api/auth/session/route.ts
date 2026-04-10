@@ -8,6 +8,7 @@ import {
   isE2EServerAuthAllowed,
   validateSupabaseAccessToken,
 } from "../../../../lib/authGate";
+import { buildUpstreamUrl, resolveUpstreamBaseUrl } from "../../../../lib/upstreamApi";
 
 export const dynamic = "force-dynamic";
 const BETA_STATUS_TIMEOUT_MS = 3000;
@@ -27,13 +28,16 @@ function normalizeCookieMaxAge(expiresAt?: unknown) {
 }
 
 async function resolveBetaStatus(request: Request, accessToken: string) {
+  const upstreamBaseUrl = resolveUpstreamBaseUrl(request.url);
+  if (!upstreamBaseUrl) return "unknown";
+
   const controller = new AbortController();
   const timeoutId = setTimeout(() => {
     controller.abort(new DOMException("Request timed out", "TimeoutError"));
   }, BETA_STATUS_TIMEOUT_MS);
 
   try {
-    const response = await fetch(new URL("/api-proxy/beta-access/me", request.url), {
+    const response = await fetch(buildUpstreamUrl(upstreamBaseUrl, ["beta-access", "me"], request.url), {
       method: "GET",
       headers: {
         Accept: "application/json",
