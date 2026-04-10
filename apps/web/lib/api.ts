@@ -41,6 +41,12 @@ function buildUrl(path: string, baseUrl: string) {
   return `${baseUrl}${normalizedPath}`;
 }
 
+function buildFirstPartyUrl(path: string) {
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  if (typeof window === "undefined") return normalizedPath;
+  return new URL(normalizedPath, window.location.origin).toString();
+}
+
 function isAbortLikeError(error: unknown) {
   return (
     error instanceof DOMException
@@ -793,7 +799,7 @@ export const api = {
   },
 
   async accountOverview() {
-    return authJson("/api/account/overview");
+    return apiJson(buildFirstPartyUrl("/api/account/overview"));
   },
 
   async preferences() {

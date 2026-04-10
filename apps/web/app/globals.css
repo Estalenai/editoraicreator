@@ -22029,6 +22029,54 @@ body {
   }
 }
 
+@media (max-width: 480px) {
+  .app-shell-head {
+    gap: 6px !important;
+    padding: 8px 10px 2px !important;
+  }
+
+  .app-brand-mark-group {
+    gap: 10px !important;
+  }
+
+  .app-brand-mark {
+    width: 24px;
+    height: 24px;
+    flex: 0 0 24px;
+  }
+
+  .app-shell-head-copy strong {
+    font-size: 13px !important;
+    line-height: 1.05;
+  }
+
+  .app-shell-head-actions,
+  .app-account-controls {
+    gap: 4px !important;
+  }
+
+  .app-account-inbox-button,
+  .app-account-link {
+    min-height: 32px;
+    padding: 5px 8px;
+    gap: 6px;
+    border-radius: 14px;
+  }
+
+  .app-account-inbox-icon,
+  .app-account-avatar {
+    width: 22px;
+    height: 22px;
+    font-size: 8px;
+  }
+
+  .app-account-inbox-copy strong,
+  .app-account-link-copy strong {
+    font-size: 10px;
+    line-height: 1.05;
+  }
+}
+
 /* Production regression stabilization */
 .auth-entry-shell-loading {
   align-content: center;
@@ -22210,6 +22258,34 @@ body {
 
   .creators-page .creator-workspace-side {
     padding-bottom: 14px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-top-nav {
+    padding: 6px !important;
+    gap: 3px !important;
+    border-radius: 14px !important;
+  }
+
+  .app-nav-compact-strip {
+    gap: 3px;
+  }
+
+  .app-nav-link.app-nav-compact-link {
+    min-height: 30px !important;
+    padding: 4px 9px 4px 10px !important;
+    border-radius: 11px !important;
+  }
+
+  .app-nav-link.app-nav-compact-link::after {
+    left: 4px !important;
+    top: 7px !important;
+    bottom: 7px !important;
+  }
+
+  .app-nav-link.app-nav-compact-link .app-nav-link-label {
+    font-size: 10px;
   }
 }
 

@@ -131,11 +131,17 @@ export default function AccountPage() {
   const betaAccess = overview?.beta_access || {};
   const plan = overview?.plan || {};
   const unresolvedSupportCount = Number(overview?.support?.unresolved_count || 0);
+  const isInitialLoading = loading && !overview && !error;
   const accountSummary = [
-    { label: "Conta", value: String(profile.email || "—") },
-    { label: "Plano", value: String(plan.plan_code || "FREE") },
-    { label: "Saldo total", value: `${Number(wallet.total || 0).toLocaleString("pt-BR")} ${CREATOR_COINS_PUBLIC_NAME}` },
-    { label: "Inbox", value: unreadCount > 0 ? `${unreadCount} pendente(s)` : "Tudo acompanhado" },
+    { label: "Conta", value: isInitialLoading ? "Sincronizando..." : String(profile.email || "—") },
+    { label: "Plano", value: isInitialLoading ? "Sincronizando..." : String(plan.plan_code || "FREE") },
+    {
+      label: "Saldo total",
+      value: isInitialLoading
+        ? "Sincronizando..."
+        : `${Number(wallet.total || 0).toLocaleString("pt-BR")} ${CREATOR_COINS_PUBLIC_NAME}`,
+    },
+    { label: "Inbox", value: isInitialLoading ? "Sincronizando..." : unreadCount > 0 ? `${unreadCount} pendente(s)` : "Tudo acompanhado" },
   ];
 
   async function onSavePreferences() {
