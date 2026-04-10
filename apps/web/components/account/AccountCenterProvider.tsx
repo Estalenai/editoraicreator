@@ -161,6 +161,8 @@ export function AccountCenterProvider({ children }: { children: ReactNode }) {
   const [readIds, setReadIds] = useState<string[]>([]);
   const [localNotifications, setLocalNotifications] = useState<NotificationItem[]>([]);
   const [toastIds, setToastIds] = useState<string[]>([]);
+  const [overviewUnavailable, setOverviewUnavailable] = useState(false);
+  const accountSurfaceActive = pathname.startsWith(ACCOUNT_ROUTE) || drawerOpen;
 
   useEffect(() => {
     setReadIds(readStoredArray(READ_IDS_STORAGE_KEY));
@@ -177,7 +179,7 @@ export function AccountCenterProvider({ children }: { children: ReactNode }) {
 
   const refresh = useCallback(
     async (silent = false) => {
-      if (hiddenOnRoute) return;
+      if (hiddenOnRoute || overviewUnavailable || !accountSurfaceActive) return;
       const {
         data: { session },
       } = await supabase.auth.getSession();
@@ -195,16 +197,22 @@ export function AccountCenterProvider({ children }: { children: ReactNode }) {
         const payload = await api.accountOverview();
         setOverview(payload || null);
       } catch (loadError: any) {
+        if (Number(loadError?.statusCode || 0) === 404) {
+          setOverviewUnavailable(true);
+          setOverview(null);
+          setError(null);
+          return;
+        }
         setError(loadError?.message || "Falha ao carregar conta.");
       } finally {
         if (!silent) setLoading(false);
       }
     },
-    [hiddenOnRoute]
+    [accountSurfaceActive, hiddenOnRoute, overviewUnavailable]
   );
 
   useEffect(() => {
-    if (hiddenOnRoute) return;
+    if (hiddenOnRoute || overviewUnavailable || !accountSurfaceActive) return;
     refresh();
 
     const intervalId = window.setInterval(() => {
@@ -219,7 +227,7 @@ export function AccountCenterProvider({ children }: { children: ReactNode }) {
       window.clearInterval(intervalId);
       subscription.subscription.unsubscribe();
     };
-  }, [hiddenOnRoute, refresh]);
+  }, [accountSurfaceActive, hiddenOnRoute, overviewUnavailable, refresh]);
 
   const remoteNotifications = useMemo(() => {
     const items = Array.isArray(overview?.notifications?.items) ? overview.notifications.items : [];

@@ -15,6 +15,31 @@ function normalizeNextPath(value: string | null | undefined) {
   return raw;
 }
 
+function LoginSessionLoadingSurface() {
+  return (
+    <div className="auth-entry-shell auth-entry-shell-loading">
+      <section className="auth-entry-loading-surface premium-card">
+        <div className="section-stack">
+          <p className="section-kicker">Acesso à plataforma</p>
+          <h1 className="auth-entry-loading-title">Verificando sessão</h1>
+          <p className="auth-entry-loading-copy">
+            Estamos restaurando sua conta e retomando o workspace com segurança.
+          </p>
+        </div>
+        <div className="auth-entry-loading-progress" aria-hidden="true">
+          <div className="premium-skeleton premium-skeleton-line auth-entry-loading-line auth-entry-loading-line-strong" />
+          <div className="premium-skeleton premium-skeleton-line auth-entry-loading-line" />
+          <div className="premium-skeleton premium-skeleton-line auth-entry-loading-line auth-entry-loading-line-short" />
+        </div>
+        <div className="auth-entry-inline-note">
+          <strong>Recuperando sessão e permissões</strong>
+          <span>Se a confirmação demorar demais, liberamos entrada manual sem deixar a tela vazia.</span>
+        </div>
+      </section>
+    </div>
+  );
+}
+
 function LoginPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -201,28 +226,7 @@ function LoginPageContent() {
   }
 
   if (checkingSession) {
-    return (
-      <div className="auth-entry-shell auth-entry-shell-loading">
-        <section className="auth-entry-loading-surface premium-card">
-          <div className="section-stack">
-            <p className="section-kicker">Acesso à plataforma</p>
-            <h1 className="auth-entry-loading-title">Verificando sessão</h1>
-            <p className="auth-entry-loading-copy">
-              Estamos restaurando sua conta e retomando o workspace com segurança.
-            </p>
-          </div>
-          <div className="auth-entry-loading-progress" aria-hidden="true">
-            <div className="premium-skeleton premium-skeleton-line auth-entry-loading-line auth-entry-loading-line-strong" />
-            <div className="premium-skeleton premium-skeleton-line auth-entry-loading-line" />
-            <div className="premium-skeleton premium-skeleton-line auth-entry-loading-line auth-entry-loading-line-short" />
-          </div>
-          <div className="auth-entry-inline-note">
-            <strong>Recuperando sessão e permissões</strong>
-            <span>Se a confirmação demorar demais, liberamos entrada manual sem deixar a tela vazia.</span>
-          </div>
-        </section>
-      </div>
-    );
+    return <LoginSessionLoadingSurface />;
   }
 
   return (
@@ -411,13 +415,7 @@ function LoginPageContent() {
 export default function LoginPage() {
   return (
     <Suspense
-      fallback={
-        <div className="auth-entry-shell">
-          <div className="auth-entry-loading">
-            Carregando acesso...
-          </div>
-        </div>
-      }
+      fallback={<LoginSessionLoadingSurface />}
     >
       <LoginPageContent />
     </Suspense>

@@ -114,6 +114,17 @@ export function AppTopNav() {
     () => navItems.filter((item) => item.group === "support"),
     [navItems]
   );
+  const compactNavItems = useMemo(() => {
+    const currentSupportItem = supportItems.find((item) => matchesNavPath(pathname, item));
+    const compactSupportItem = currentSupportItem || supportItems.find((item) => item.href === "/dashboard/account") || null;
+    const baseItems = [...overviewItems, ...coreItems];
+
+    if (!compactSupportItem) {
+      return baseItems;
+    }
+
+    return [...baseItems, compactSupportItem];
+  }, [coreItems, overviewItems, pathname, supportItems]);
 
   function renderNavItem(item: NavItem) {
     const active = matchesNavPath(pathname, item);
@@ -205,7 +216,7 @@ export function AppTopNav() {
         </div>
       </div>
       <div className="app-nav-compact-strip" aria-label="Atalhos do workspace">
-        {navItems.map(renderCompactNavItem)}
+        {compactNavItems.map(renderCompactNavItem)}
       </div>
       {overviewItems.length > 0 ? (
         <div className="app-nav-overview">{overviewItems.map(renderNavItem)}</div>

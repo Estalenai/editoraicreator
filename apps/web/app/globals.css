@@ -21972,6 +21972,7 @@ body {
   .app-account-controls {
     width: 100%;
     justify-content: space-between;
+    gap: 8px;
   }
 
   .app-account-inbox-button,
@@ -21991,6 +21992,30 @@ body {
 }
 
 @media (max-width: 640px) {
+  .app-shell-head-actions,
+  .app-account-controls {
+    gap: 6px;
+  }
+
+  .app-account-inbox-button,
+  .app-account-link {
+    min-height: 36px;
+    padding: 6px 10px;
+    gap: 8px;
+  }
+
+  .app-account-inbox-icon,
+  .app-account-avatar {
+    width: 24px;
+    height: 24px;
+    font-size: 9px;
+  }
+
+  .app-account-inbox-copy strong,
+  .app-account-link-copy strong {
+    font-size: 11px;
+  }
+
   .app-account-inbox-copy span,
   .app-account-link-copy span {
     display: none;
@@ -22129,8 +22154,8 @@ body {
   }
 
   .app-top-nav {
-    padding: 10px !important;
-    gap: 6px !important;
+    padding: 8px !important;
+    gap: 4px !important;
     border-radius: 16px !important;
   }
 
@@ -22144,10 +22169,10 @@ body {
     display: grid;
     grid-auto-flow: column;
     grid-auto-columns: max-content;
-    gap: 6px;
+    gap: 4px;
     overflow-x: auto;
     overscroll-behavior-x: contain;
-    padding-bottom: 2px;
+    padding-bottom: 1px;
     scrollbar-width: none;
   }
 
@@ -22156,8 +22181,8 @@ body {
   }
 
   .app-nav-link.app-nav-compact-link {
-    min-height: 38px !important;
-    padding: 6px 12px 6px 14px !important;
+    min-height: 34px !important;
+    padding: 5px 10px 5px 12px !important;
     border-radius: 12px !important;
     white-space: nowrap;
   }
@@ -22169,7 +22194,7 @@ body {
   }
 
   .app-nav-link.app-nav-compact-link .app-nav-link-label {
-    font-size: 12px;
+    font-size: 11px;
   }
 
   .app-nav-link.app-nav-compact-link .app-nav-link-meta {
@@ -22190,11 +22215,11 @@ body {
 
 @media (max-width: 768px) {
   .app-shell-wrapper {
-    padding: 12px 10px 16px !important;
+    padding: 10px 8px 14px !important;
   }
 
   .page-shell {
-    gap: 14px !important;
+    gap: 12px !important;
   }
 
   .auth-entry-loading-surface {
