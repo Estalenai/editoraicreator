@@ -76,7 +76,7 @@ export function AppShellAccountControls() {
         {unreadCount > 0 ? <span className="app-account-inbox-count">{unreadCount}</span> : null}
       </button>
 
-      <Link href={ACCOUNT_ROUTE} className="app-account-link">
+      <Link href={ACCOUNT_ROUTE} prefetch={false} className="app-account-link">
         <span className="app-account-avatar" aria-hidden>
           {initials}
         </span>
