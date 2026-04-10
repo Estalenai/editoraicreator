@@ -5,6 +5,7 @@ import { attachPlan } from "../middlewares/planMiddleware.js";
 import { enforcePlanLimit } from "../middlewares/limitMiddleware.js";
 import { createAuthedSupabaseClient } from "../utils/supabaseAuthed.js";
 import { recordProductEvent } from "../utils/eventsStore.js";
+import { applyPublishSourceOfTruth } from "../utils/publishSourceOfTruth.js";
 
 const router = express.Router();
 router.use(authMiddleware);
@@ -105,7 +106,7 @@ router.post(
         user_id: req.user.id,
         title: body.title,
         kind: (body.kind === "post" || body.kind === "creator_post") ? "text" : body.kind,
-        data: body.data ?? {}
+        data: applyPublishSourceOfTruth(body.data ?? {})
       };
 
       const { data, error } = await supabase
@@ -133,11 +134,17 @@ router.post(
 router.patch("/:id", async (req, res) => {
   try {
     const body = UpdateSchema.parse(req.body || {});
+    const nextBody = Object.prototype.hasOwnProperty.call(body, "data")
+      ? {
+          ...body,
+          data: applyPublishSourceOfTruth(body.data ?? {}),
+        }
+      : body;
     const supabase = createAuthedSupabaseClient(req.access_token);
 
     const { data, error } = await supabase
       .from("projects")
-      .update(body)
+      .update(nextBody)
       .eq("id", req.params.id)
       .eq("user_id", req.user.id)
       .select("*")

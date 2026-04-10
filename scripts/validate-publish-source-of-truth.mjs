@@ -165,6 +165,7 @@ function buildVercelSample() {
 }
 
 async function main() {
+  const projectsRoutes = await read("apps/api/src/routes/projectsRoutes.js");
   const githubRoutes = await read("apps/api/src/routes/githubRoutes.js");
   const vercelRoutes = await read("apps/api/src/routes/vercelRoutes.js");
   const vercelWebhookRoutes = await read("apps/api/src/routes/vercelWebhookRoutes.js");
@@ -194,10 +195,14 @@ async function main() {
   const report = {
     generatedAt: new Date().toISOString(),
     sourceChecks: {
+      projectsCreateApplyPublishSource: projectsRoutes.includes("data: applyPublishSourceOfTruth(body.data ?? {})"),
+      projectsUpdateApplyPublishSource: projectsRoutes.includes("data: applyPublishSourceOfTruth(body.data ?? {}),"),
       githubRoutesApplyPublishSource: githubRoutes.includes("applyPublishSourceOfTruth(nextData)"),
       vercelRoutesApplyPublishSource: vercelRoutes.includes("applyPublishSourceOfTruth(nextData)"),
       vercelWebhookApplyPublishSource: vercelWebhookRoutes.includes("applyPublishSourceOfTruth(nextData)"),
       projectModelHasPublishType: projectModel.includes("export type ProjectPublishSourceOfTruth"),
+      projectModelPrefersBackendPublish: projectModel.includes("normalizeExistingPublishSourceOfTruth(baseData.publish, derivedPublish) || derivedPublish"),
+      projectModelKeepsPublishWhenPatchIsUnrelated: projectModel.includes(": current.publish;"),
       projectModelReturnsPublish: projectModel.includes("publish: nextPublish") && projectModel.includes("publish: data.publish"),
     },
     githubSnapshot: {

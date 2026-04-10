@@ -1780,6 +1780,78 @@ function buildPublishSourceOfTruth(
   };
 }
 
+function normalizeExistingPublishSourceOfTruth(
+  value: any,
+  fallback: ProjectPublishSourceOfTruth
+): ProjectPublishSourceOfTruth | null {
+  if (!value || typeof value !== "object") return null;
+  if (asText(value.sourceOfTruth) !== "backend") return null;
+
+  const primaryValue = value.primary && typeof value.primary === "object" ? value.primary : {};
+  const repoValue = value.repo && typeof value.repo === "object" ? value.repo : {};
+  const commitValue = value.commit && typeof value.commit === "object" ? value.commit : {};
+  const deploymentValue = value.deployment && typeof value.deployment === "object" ? value.deployment : {};
+  const providersValue = value.providers && typeof value.providers === "object" ? value.providers : {};
+  const githubProviderValue =
+    providersValue.github && typeof providersValue.github === "object" ? providersValue.github : {};
+  const vercelProviderValue =
+    providersValue.vercel && typeof providersValue.vercel === "object" ? providersValue.vercel : {};
+  const timestampsValue = value.timestamps && typeof value.timestamps === "object" ? value.timestamps : {};
+
+  return {
+    ...fallback,
+    ...value,
+    version: asText(value.version) || fallback.version,
+    sourceOfTruth: "backend",
+    primary: {
+      ...fallback.primary,
+      ...primaryValue,
+      timestamps: {
+        ...fallback.primary.timestamps,
+        ...(primaryValue.timestamps && typeof primaryValue.timestamps === "object" ? primaryValue.timestamps : {}),
+      },
+    },
+    repo: {
+      ...fallback.repo,
+      ...repoValue,
+    },
+    commit: {
+      ...fallback.commit,
+      ...commitValue,
+    },
+    deployment: {
+      ...fallback.deployment,
+      ...deploymentValue,
+    },
+    providers: {
+      github: {
+        ...fallback.providers.github,
+        ...githubProviderValue,
+        timestamps: {
+          ...fallback.providers.github.timestamps,
+          ...(githubProviderValue.timestamps && typeof githubProviderValue.timestamps === "object"
+            ? githubProviderValue.timestamps
+            : {}),
+        },
+      },
+      vercel: {
+        ...fallback.providers.vercel,
+        ...vercelProviderValue,
+        timestamps: {
+          ...fallback.providers.vercel.timestamps,
+          ...(vercelProviderValue.timestamps && typeof vercelProviderValue.timestamps === "object"
+            ? vercelProviderValue.timestamps
+            : {}),
+        },
+      },
+    },
+    timestamps: {
+      ...fallback.timestamps,
+      ...timestampsValue,
+    },
+  };
+}
+
 function mergeProjectIntegrations(
   current: ProjectIntegrationsModel,
   patch?: {
@@ -1853,7 +1925,8 @@ export function ensureCanonicalProjectData(rawData: any, meta: ProjectMeta = {})
       : null;
   const delivery = existingDelivery || legacyEditorDelivery || buildBaseDelivery();
   const integrations = normalizeExistingIntegrations(baseData.integrations);
-  const publish = buildPublishSourceOfTruth(delivery, integrations);
+  const derivedPublish = buildPublishSourceOfTruth(delivery, integrations);
+  const publish = normalizeExistingPublishSourceOfTruth(baseData.publish, derivedPublish) || derivedPublish;
   const deliverableBase = normalizeExistingDeliverable(baseData.deliverable) || null;
   const derivedDeliverable = buildDeliverableFromData(baseData, meta, source, output, delivery);
   const deliverable: ProjectDeliverableModel = {
@@ -1889,6 +1962,7 @@ export function mergeCanonicalProjectData(
       github?: Partial<ProjectGitHubIntegration>;
       vercel?: Partial<ProjectVercelIntegration>;
     };
+    publish?: ProjectPublishSourceOfTruth | null;
     editor?: any;
   } & Record<string, any>
 ): CanonicalProjectData {
@@ -1920,7 +1994,12 @@ export function mergeCanonicalProjectData(
   const nextIntegrations = patch.integrations
     ? mergeProjectIntegrations(current.integrations, patch.integrations)
     : current.integrations;
-  const nextPublish = buildPublishSourceOfTruth(nextDelivery, nextIntegrations);
+  const derivedNextPublish = buildPublishSourceOfTruth(nextDelivery, nextIntegrations);
+  const nextPublish = Object.prototype.hasOwnProperty.call(patch, "publish")
+    ? normalizeExistingPublishSourceOfTruth(patch.publish, derivedNextPublish) || derivedNextPublish
+    : patch.delivery || patch.integrations
+      ? derivedNextPublish
+      : current.publish;
 
   const deliverablePatch: Partial<ProjectDeliverableModel> = patch.deliverable || {};
   const nextDeliverable: ProjectDeliverableModel = {
