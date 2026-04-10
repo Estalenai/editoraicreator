@@ -60,11 +60,6 @@ export function AuthSessionBridge() {
       }
     }
 
-    supabase.auth.getSession().then(({ data }) => {
-      if (!active) return;
-      void syncFromSession(data.session);
-    });
-
     const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
       void syncFromSession(session);
     });

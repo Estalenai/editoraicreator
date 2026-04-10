@@ -65,6 +65,16 @@ export async function POST(request: Request) {
   const payload = await request.json().catch(() => null);
   const response = NextResponse.json({ ok: true });
   clearAuthCookies(response);
+  const requestCookies = request.headers.get("cookie") || "";
+  const existingBetaStatus = requestCookies
+    .split(";")
+    .map((part) => part.trim())
+    .find((part) => part.startsWith(`${AUTH_BETA_STATUS_COOKIE}=`))
+    ?.split("=")
+    .slice(1)
+    .join("=")
+    .trim()
+    .toLowerCase();
 
   const maxAge = normalizeCookieMaxAge(payload?.expiresAt);
   const cookieOptions = buildAuthCookieOptions(maxAge);
@@ -90,7 +100,10 @@ export async function POST(request: Request) {
     return invalidResponse;
   }
 
-  const betaStatus = await resolveBetaStatus(request, accessToken);
+  const resolvedBetaStatus = await resolveBetaStatus(request, accessToken);
+  const betaStatus = resolvedBetaStatus === "unknown" && existingBetaStatus === "approved"
+    ? "approved"
+    : resolvedBetaStatus;
   response.cookies.set(AUTH_ACCESS_COOKIE, accessToken, cookieOptions);
   response.cookies.set(AUTH_BETA_STATUS_COOKIE, betaStatus, cookieOptions);
   return response;
