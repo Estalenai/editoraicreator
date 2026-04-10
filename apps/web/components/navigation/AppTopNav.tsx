@@ -144,6 +144,7 @@ export function AppTopNav() {
       <Link
         key={item.href}
         href={item.href}
+        prefetch={false}
         className={className}
         aria-current={active ? "page" : undefined}
         data-active={active ? "true" : "false"}
@@ -177,6 +178,7 @@ export function AppTopNav() {
       <Link
         key={`${item.href}-compact`}
         href={item.href}
+        prefetch={false}
         className={className}
         aria-current={active ? "page" : undefined}
         data-active={active ? "true" : "false"}
