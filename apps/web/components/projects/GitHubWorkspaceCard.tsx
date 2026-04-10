@@ -37,7 +37,7 @@ type WorkspaceDraft = {
   target: GitHubWorkspaceTarget;
 };
 
-type BusyAction = "connect" | "disconnect" | "save" | "clear" | "checkpoint" | "sync" | "pull-request" | null;
+type BusyAction = "connect" | "disconnect" | "save" | "clear" | "checkpoint" | "sync" | "reconcile" | "pull-request" | null;
 
 const DEFAULT_DRAFT: WorkspaceDraft = {
   owner: "",
@@ -115,6 +115,7 @@ function actionLabel(action: BusyAction): string | null {
   if (action === "clear") return "Removendo workspace GitHub";
   if (action === "checkpoint") return "Registrando checkpoint";
   if (action === "sync") return "Sincronizando commit";
+  if (action === "reconcile") return "Reconciliando estado GitHub";
   if (action === "pull-request") return "Abrindo pull request";
   return null;
 }
@@ -210,6 +211,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
 
   const githubIntegration = selectedProjectCanonical?.integrations.github || null;
   const publish = selectedProjectCanonical?.publish || null;
+  const backendGitHub = publish?.providers.github || null;
   const workspace = (githubIntegration?.binding as GitHubWorkspace | null) || null;
   const versions = (githubIntegration?.versions || []) as GitHubProjectVersion[];
   const exportsHistory = (githubIntegration?.exports || []) as GitHubProjectExport[];
@@ -235,12 +237,22 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
 
   const hasUnsavedWorkspaceDraft = Boolean(assessment.ready && draftSignature(draft) !== workspaceSignature(workspace));
   const repoLabel = formatGitHubRepoLabel(workspace);
+  const effectiveGitHubStatus = backendGitHub?.status || workspace?.lastSyncStatus || latestExport?.status || null;
+  const effectivePullRequestState =
+    publish?.commit.pullRequestState || workspace?.lastPullRequestState || latestExport?.pullRequestState || null;
+  const effectiveCommitSha = publish?.commit.sha || workspace?.lastCommitSha || latestExport?.commitSha || null;
+  const effectiveCommitUrl = publish?.commit.url || workspace?.lastCommitUrl || latestExport?.commitUrl || null;
+  const effectivePullRequestNumber =
+    publish?.commit.pullRequestNumber || workspace?.lastPullRequestNumber || latestExport?.pullRequestNumber || null;
+  const effectivePullRequestUrl =
+    publish?.commit.pullRequestUrl || workspace?.lastPullRequestUrl || latestExport?.pullRequestUrl || null;
   const canCreatePullRequest = Boolean(
     workspace?.branch &&
       workspace?.defaultBranch &&
       workspace.branch !== workspace.defaultBranch &&
-      latestExport?.status &&
-      ["synced", "pr_open"].includes(latestExport.status)
+      effectiveCommitSha &&
+      effectivePullRequestState !== "open" &&
+      effectivePullRequestState !== "merged"
   );
 
   async function refreshConnectionState() {
@@ -374,6 +386,21 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
     });
   }
 
+  async function handleReconcile() {
+    if (!selectedProject) {
+      setError("Abra um projeto antes de reconciliar o estado GitHub.");
+      return;
+    }
+
+    await runProjectAction("reconcile", async () => {
+      const response = await api.reconcileGitHubProject(selectedProject.id);
+      const nextData = extractUpdatedProjectData(response, selectedProjectData);
+      persistProjectData(selectedProject.id, nextData);
+      const statusLabel = githubSyncStatusLabel(response?.reconciliation?.status || "verified");
+      setSuccess(`Estado GitHub reconciliado pelo backend. ${statusLabel}.`);
+    });
+  }
+
   async function handleCreatePullRequest() {
     if (!selectedProject) {
       setError("Abra um projeto antes de abrir o pull request.");
@@ -414,20 +441,31 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
     meta.push(
       { label: "Último checkpoint", value: formatDateLabel(latestVersion?.savedAt) },
       {
-        label: "Último sync",
-        value: latestExport ? `${formatDateLabel(latestExport.exportedAt)} • ${githubSyncStatusLabel(latestExport.status)}` : "Nenhum",
-        tone: latestExport?.status === "pr_open" || latestExport?.status === "synced" ? "success" : "default",
+        label: "Status backend",
+        value: effectiveGitHubStatus ? githubSyncStatusLabel(effectiveGitHubStatus) : "Nenhum",
+        tone:
+          effectiveGitHubStatus === "pr_open" ||
+          effectiveGitHubStatus === "pr_merged" ||
+          effectiveGitHubStatus === "synced" ||
+          effectiveGitHubStatus === "verified" ||
+          effectiveGitHubStatus === "workspace_verified"
+            ? "success"
+            : "default",
       }
     );
 
-    if (publish?.commit.sha || workspace?.lastCommitSha) {
-      meta.push({ label: "Commit", value: String(publish?.commit.sha || workspace?.lastCommitSha).slice(0, 7) });
+    if (workspace?.lastReconciledAt) {
+      meta.push({ label: "Última reconciliação", value: formatDateLabel(workspace.lastReconciledAt) });
     }
-    if (publish?.commit.pullRequestNumber || workspace?.lastPullRequestNumber) {
+
+    if (effectiveCommitSha) {
+      meta.push({ label: "Commit", value: String(effectiveCommitSha).slice(0, 7) });
+    }
+    if (effectivePullRequestNumber) {
       meta.push({
         label: "PR",
-        value: `#${publish?.commit.pullRequestNumber || workspace?.lastPullRequestNumber}`,
-        tone: (publish?.commit.pullRequestState || workspace?.lastPullRequestState) === "open" ? "success" : "default",
+        value: `#${effectivePullRequestNumber}`,
+        tone: effectivePullRequestState === "open" || effectivePullRequestState === "merged" ? "success" : "default",
       });
     }
 
@@ -456,21 +494,52 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
       };
     }
 
-    if (latestExport?.status === "pr_open" || workspace.lastPullRequestState === "open") {
+    if (effectiveGitHubStatus === "pr_open" || effectivePullRequestState === "open") {
       return {
         kind: "success" as const,
         title: "GitHub sincronizado com PR ativo",
         description: "Workspace, commit e pull request já foram registrados pelo backend. O fluxo agora parece integração real, não handoff solto.",
         meta,
         details: [
-          workspace.lastPullRequestUrl ? `PR: ${workspace.lastPullRequestUrl}` : "PR aberto e rastreado no projeto.",
-          workspace.lastCommitUrl ? `Commit: ${workspace.lastCommitUrl}` : "Último commit persistido no histórico do projeto.",
+          effectivePullRequestUrl ? `PR: ${effectivePullRequestUrl}` : "PR aberto e rastreado no projeto.",
+          effectiveCommitUrl ? `Commit: ${effectiveCommitUrl}` : "Último commit persistido no histórico do projeto.",
         ],
         footer: "O próximo passo é revisar o PR e manter a trilha do projeto consistente até o publish.",
       };
     }
 
-    if (latestExport?.status === "synced" || workspace.lastSyncStatus === "synced") {
+    if (effectiveGitHubStatus === "pr_merged") {
+      return {
+        kind: "success" as const,
+        title: "GitHub reconciliado com PR mergeado",
+        description: "O backend confirmou que o pull request desta branch já foi mergeado e a trilha do projeto está persistida.",
+        meta,
+        details: [
+          effectivePullRequestUrl ? `PR: ${effectivePullRequestUrl}` : "PR mergeado confirmado pelo backend.",
+          effectiveCommitUrl ? `Commit base: ${effectiveCommitUrl}` : "Último commit confirmado pelo backend.",
+        ],
+        footer: "Se houver nova iteração, gere checkpoint e sincronize novamente antes do próximo publish.",
+      };
+    }
+
+    if (effectiveGitHubStatus === "repo_missing" || effectiveGitHubStatus === "branch_missing" || effectiveGitHubStatus === "diverged") {
+      return {
+        kind: "retry" as const,
+        title: "GitHub precisa de reconciliação operacional",
+        description: "O backend encontrou divergência real entre o projeto salvo e o estado observado no GitHub.",
+        meta,
+        details: [
+          effectiveGitHubStatus === "repo_missing"
+            ? "O repositório salvo no projeto não foi encontrado pelo backend."
+            : effectiveGitHubStatus === "branch_missing"
+              ? "A branch salva no projeto não foi encontrada pelo backend."
+              : "A branch existe, mas o HEAD diverge do último commit registrado pelo produto.",
+        ],
+        footer: "Reconcile o estado antes de seguir com novo sync, PR ou publish.",
+      };
+    }
+
+    if (effectiveGitHubStatus === "synced" || workspace.lastSyncStatus === "synced") {
       return {
         kind: "syncing" as const,
         title: "Commit sincronizado e aguardando próximo passo",
@@ -478,7 +547,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
         meta,
         details: [
           latestExport?.path ? `Arquivo sincronizado: ${latestExport.path}` : "Snapshot do projeto sincronizado no repositório.",
-          workspace.lastCommitUrl ? `Commit: ${workspace.lastCommitUrl}` : "Commit rastreado no projeto.",
+          effectiveCommitUrl ? `Commit: ${effectiveCommitUrl}` : "Commit rastreado no projeto.",
         ],
         footer: canCreatePullRequest
           ? "Abra o pull request para fechar a trilha GitHub dentro do produto."
@@ -507,7 +576,24 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
       ],
       footer: "Crie o primeiro checkpoint para começar a trilha verificável do GitHub.",
     };
-  }, [assessment.branch, canCreatePullRequest, connection.connected, connection.login, connection.name, latestExport, latestVersion, publish, repoLabel, selectedProject, workspace]);
+  }, [
+    assessment.branch,
+    canCreatePullRequest,
+    connection.connected,
+    connection.login,
+    connection.name,
+    effectiveCommitSha,
+    effectiveCommitUrl,
+    effectiveGitHubStatus,
+    effectivePullRequestNumber,
+    effectivePullRequestState,
+    effectivePullRequestUrl,
+    latestExport,
+    latestVersion,
+    repoLabel,
+    selectedProject,
+    workspace,
+  ]);
 
   const workspaceState = useMemo(() => {
     if (!assessment.ready) {
@@ -573,11 +659,7 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
           </span>
           <span className="premium-badge premium-badge-warning">{repoLabel || "Workspace pendente"}</span>
           <span className="premium-badge premium-badge-soon">
-            {workspace?.lastPullRequestState === "open"
-              ? "PR aberto"
-              : workspace?.lastSyncStatus === "synced"
-                ? "Sync concluído"
-                : "Sem sync remoto"}
+            {effectiveGitHubStatus ? githubSyncStatusLabel(effectiveGitHubStatus) : "Sem sync remoto"}
           </span>
         </div>
       </div>
@@ -647,13 +729,13 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
                 Abrir repositório
               </a>
             ) : null}
-            {workspace?.lastCommitUrl ? (
-              <a href={workspace.lastCommitUrl} target="_blank" rel="noreferrer" className="btn-link-ea btn-ghost btn-sm">
+            {effectiveCommitUrl ? (
+              <a href={effectiveCommitUrl} target="_blank" rel="noreferrer" className="btn-link-ea btn-ghost btn-sm">
                 Ver commit
               </a>
             ) : null}
-            {workspace?.lastPullRequestUrl ? (
-              <a href={workspace.lastPullRequestUrl} target="_blank" rel="noreferrer" className="btn-link-ea btn-ghost btn-sm">
+            {effectivePullRequestUrl ? (
+              <a href={effectivePullRequestUrl} target="_blank" rel="noreferrer" className="btn-link-ea btn-ghost btn-sm">
                 Ver PR
               </a>
             ) : null}
@@ -802,26 +884,28 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
             </div>
             <div className="github-workspace-status-item">
               <span className="github-workspace-status-label">Último sync</span>
-              <strong>{latestExport ? githubSyncStatusLabel(latestExport.status) : "Nenhum"}</strong>
+              <strong>{effectiveGitHubStatus ? githubSyncStatusLabel(effectiveGitHubStatus) : "Nenhum"}</strong>
               <small>
                 {latestExport
-                  ? `${formatDateLabel(latestExport.exportedAt)}${latestExport.path ? ` • ${latestExport.path}` : ""}`
+                  ? `${formatDateLabel(latestExport.statusUpdatedAt || latestExport.exportedAt)}${latestExport.path ? ` • ${latestExport.path}` : ""}`
                   : "O commit ainda não foi enviado pelo backend."}
               </small>
             </div>
             <div className="github-workspace-status-item">
               <span className="github-workspace-status-label">Commit</span>
-              <strong>{latestCommitLabel(latestExport)}</strong>
-              <small>{latestExport?.commitUrl ? "Commit rastreado e disponível para auditoria." : "Sem commit remoto registrado ainda."}</small>
+              <strong>{effectiveCommitSha ? String(effectiveCommitSha).slice(0, 7) : latestCommitLabel(latestExport)}</strong>
+              <small>{effectiveCommitUrl ? "Commit rastreado e disponível para auditoria." : "Sem commit remoto registrado ainda."}</small>
             </div>
             <div className="github-workspace-status-item">
               <span className="github-workspace-status-label">Pull request</span>
-              <strong>{workspace?.lastPullRequestNumber ? `#${workspace.lastPullRequestNumber}` : "Ainda não aberto"}</strong>
+              <strong>{effectivePullRequestNumber ? `#${effectivePullRequestNumber}` : "Ainda não aberto"}</strong>
               <small>
                 {canCreatePullRequest
                   ? `Branch ${workspace?.branch} pronta para abrir PR contra ${workspace?.defaultBranch}.`
-                  : workspace?.defaultBranch
-                    ? `Base padrão: ${workspace.defaultBranch}.`
+                  : effectivePullRequestState
+                    ? `Estado atual do PR: ${effectivePullRequestState}.`
+                    : workspace?.defaultBranch
+                      ? `Base padrão: ${workspace.defaultBranch}.`
                     : "O backend precisa resolver a branch base antes do PR."}
               </small>
             </div>
@@ -841,6 +925,9 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
             </button>
             <button onClick={handleSync} disabled={busyAction === "sync" || !selectedProject || !workspace || !connection.connected} className="btn-ea btn-primary btn-sm">
               {busyAction === "sync" ? "Sincronizando..." : "Sincronizar commit"}
+            </button>
+            <button onClick={handleReconcile} disabled={busyAction === "reconcile" || !selectedProject || !workspace || !connection.connected} className="btn-ea btn-secondary btn-sm">
+              {busyAction === "reconcile" ? "Reconciliando..." : "Reconciliar estado"}
             </button>
             <button onClick={handleCreatePullRequest} disabled={busyAction === "pull-request" || !selectedProject || !canCreatePullRequest} className="btn-ea btn-ghost btn-sm">
               {busyAction === "pull-request" ? "Abrindo PR..." : "Abrir pull request"}

@@ -101,6 +101,43 @@ export async function getGitHubBranch({ owner, repo, branch, token = null }) {
   };
 }
 
+function normalizePullRequest(data, fallback = {}) {
+  return {
+    number: Number(data?.number || fallback.number || 0) || null,
+    htmlUrl: typeof data?.html_url === "string" ? data.html_url : fallback.htmlUrl || null,
+    state: typeof data?.state === "string" ? data.state : fallback.state || "open",
+    mergedAt: typeof data?.merged_at === "string" ? data.merged_at : fallback.mergedAt || null,
+    updatedAt: typeof data?.updated_at === "string" ? data.updated_at : fallback.updatedAt || null,
+    head: typeof data?.head?.ref === "string" ? data.head.ref : fallback.head || null,
+    base: typeof data?.base?.ref === "string" ? data.base.ref : fallback.base || null,
+    existing: Boolean(fallback.existing),
+  };
+}
+
+export async function getGitHubPullRequest({ owner, repo, number, token }) {
+  const { data } = await githubRequest(
+    `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/pulls/${encodeURIComponent(String(number || "").trim())}`,
+    { token }
+  );
+
+  return normalizePullRequest(data, { number });
+}
+
+export async function findGitHubPullRequest({ owner, repo, head, base = null, state = "open", token }) {
+  const search = new URLSearchParams();
+  search.set("state", state);
+  search.set("head", `${owner}:${head}`);
+  if (base) search.set("base", base);
+
+  const { data } = await githubRequest(
+    `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/pulls?${search.toString()}`,
+    { token }
+  );
+
+  const match = Array.isArray(data) ? data[0] : null;
+  return match ? normalizePullRequest(match, { head, base, existing: true }) : null;
+}
+
 export async function ensureGitHubBranch({ owner, repo, baseBranch, targetBranch, token }) {
   const safeBase = String(baseBranch || "main").trim() || "main";
   const safeTarget = String(targetBranch || safeBase).trim() || safeBase;
@@ -207,33 +244,25 @@ export async function createGitHubPullRequest({ owner, repo, title, body, head, 
       },
     });
 
-    return {
-      number: Number(data?.number || 0) || null,
-      htmlUrl: typeof data?.html_url === "string" ? data.html_url : null,
-      state: typeof data?.state === "string" ? data.state : "open",
-      head: typeof data?.head?.ref === "string" ? data.head.ref : head,
-      base: typeof data?.base?.ref === "string" ? data.base.ref : base,
+    return normalizePullRequest(data, {
+      head,
+      base,
       existing: false,
-    };
+    });
   } catch (error) {
     if (!(error instanceof GitHubApiError) || error.status !== 422) {
       throw error;
     }
 
-    const { data } = await githubRequest(
-      `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/pulls?state=open&head=${encodeURIComponent(`${owner}:${head}`)}&base=${encodeURIComponent(base)}`,
-      { token }
-    );
-    const existing = Array.isArray(data) ? data[0] : null;
-    if (!existing) throw error;
-
-    return {
-      number: Number(existing?.number || 0) || null,
-      htmlUrl: typeof existing?.html_url === "string" ? existing.html_url : null,
-      state: typeof existing?.state === "string" ? existing.state : "open",
+    const existing = await findGitHubPullRequest({
+      owner,
+      repo,
       head,
       base,
-      existing: true,
-    };
+      state: "open",
+      token,
+    });
+    if (!existing) throw error;
+    return existing;
   }
 }

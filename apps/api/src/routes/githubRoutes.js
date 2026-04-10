@@ -7,12 +7,15 @@ import {
   GitHubApiError,
   createGitHubPullRequest,
   ensureGitHubBranch,
+  findGitHubPullRequest,
   getGitHubAuthenticatedUser,
   getGitHubBranch,
+  getGitHubPullRequest,
   getGitHubRepo,
   upsertGitHubJsonFile,
 } from "../utils/githubClient.js";
 import { decryptGitHubToken, encryptGitHubToken } from "../utils/githubCrypto.js";
+import { reconcileGitHubBinding } from "../utils/githubReconciliation.js";
 import { recordProductEvent } from "../utils/eventsStore.js";
 import { applyPublishSourceOfTruth } from "../utils/publishSourceOfTruth.js";
 import { createAuthedSupabaseClient } from "../utils/supabaseAuthed.js";
@@ -612,6 +615,8 @@ router.post("/projects/:id/sync", async (req, res) => {
       commitSha: syncInfo.commitSha,
       commitUrl: syncInfo.commitUrl,
       status: "synced",
+      statusUpdatedAt: nowIso(),
+      observedHeadSha: syncInfo.commitSha,
     };
 
     nextData.integrations.github.binding = {
@@ -623,6 +628,7 @@ router.post("/projects/:id/sync", async (req, res) => {
       verificationStatus: "verified",
       tokenConfigured: true,
       lastResolvedCommitSha: syncInfo.commitSha,
+      lastCommitStatus: "confirmed",
       lastSyncStatus: "synced",
       lastSyncedAt: exportRecord.exportedAt,
       lastCommitSha: syncInfo.commitSha,
@@ -733,6 +739,8 @@ router.post("/projects/:id/pull-request", async (req, res) => {
       latestExport.pullRequestNumber = pr.number;
       latestExport.pullRequestUrl = pr.htmlUrl;
       latestExport.status = "pr_open";
+      latestExport.statusUpdatedAt = nowIso();
+      latestExport.pullRequestState = pr.state;
     }
 
     nextData.integrations.github.binding = {
@@ -743,6 +751,7 @@ router.post("/projects/:id/pull-request", async (req, res) => {
       lastPullRequestNumber: pr.number,
       lastPullRequestUrl: pr.htmlUrl,
       lastPullRequestState: pr.state,
+      lastPullRequestUpdatedAt: pr.updatedAt || nowIso(),
       lastSyncStatus: pr.state === "open" ? "pr_open" : binding.lastSyncStatus || null,
     };
 
@@ -775,6 +784,141 @@ router.post("/projects/:id/pull-request", async (req, res) => {
       return badRequest(res, "Pull request GitHub inválido", error.flatten());
     }
     return handleGitHubError(res, error, "Não foi possível abrir o pull request no GitHub.");
+  }
+});
+
+router.post("/projects/:id/reconcile", async (req, res) => {
+  try {
+    const project = await readProjectForUser(req, req.params.id);
+    if (!project) return notFound(res);
+
+    const nextData = ensureGitHubState(project.data);
+    const binding = nextData.integrations.github.binding;
+    if (!binding?.owner || !binding?.repo || !binding?.branch) {
+      return badRequest(res, "A base GitHub do projeto ainda não está pronta.");
+    }
+
+    const connection = await requireConnectionRecord(req.user.id);
+    if (!connection.token) {
+      return res.status(412).json({
+        error: "github_connection_required",
+        message: "Conecte um token GitHub com acesso ao repositório antes de reconciliar o estado GitHub pelo backend.",
+      });
+    }
+
+    const observedAt = nowIso();
+    let repoInfo = null;
+    let branchInfo = null;
+    let pullRequest = null;
+
+    try {
+      repoInfo = await getGitHubRepo({
+        owner: binding.owner,
+        repo: binding.repo,
+        token: connection.token,
+      });
+    } catch (error) {
+      if (!(error instanceof GitHubApiError) || error.status !== 404) {
+        return handleGitHubError(res, error, "Não foi possível reconciliar o repositório GitHub.");
+      }
+    }
+
+    if (repoInfo) {
+      try {
+        branchInfo = await getGitHubBranch({
+          owner: binding.owner,
+          repo: binding.repo,
+          branch: binding.branch,
+          token: connection.token,
+        });
+      } catch (error) {
+        if (!(error instanceof GitHubApiError) || error.status !== 404) {
+          return handleGitHubError(res, error, "Não foi possível reconciliar a branch GitHub.");
+        }
+      }
+    }
+
+    if (repoInfo && binding.lastPullRequestNumber) {
+      try {
+        pullRequest = await getGitHubPullRequest({
+          owner: binding.owner,
+          repo: binding.repo,
+          number: binding.lastPullRequestNumber,
+          token: connection.token,
+        });
+      } catch (error) {
+        if (!(error instanceof GitHubApiError) || error.status !== 404) {
+          return handleGitHubError(res, error, "Não foi possível reconciliar o pull request GitHub.");
+        }
+      }
+    }
+
+    if (!pullRequest && repoInfo && binding.branch && binding.branch !== (repoInfo.defaultBranch || binding.defaultBranch || "main")) {
+      try {
+        pullRequest = await findGitHubPullRequest({
+          owner: binding.owner,
+          repo: binding.repo,
+          head: binding.branch,
+          base: repoInfo.defaultBranch || binding.defaultBranch || "main",
+          state: "all",
+          token: connection.token,
+        });
+      } catch (error) {
+        return handleGitHubError(res, error, "Não foi possível localizar o pull request desta branch no GitHub.");
+      }
+    }
+
+    const reconciled = reconcileGitHubBinding({
+      binding,
+      repoInfo,
+      branchInfo,
+      pullRequest,
+      observedAt,
+    });
+
+    nextData.integrations.github.binding = reconciled.binding;
+
+    const latestExport = Array.isArray(nextData.integrations.github.exports) ? nextData.integrations.github.exports[0] || null : null;
+    if (latestExport) {
+      Object.assign(latestExport, reconciled.exportPatch);
+    }
+
+    nextData.delivery.history = [
+      {
+        id: localId(),
+        ts: reconciled.event.observedAt,
+        stage: nextData.delivery.stage === "published" ? "published" : "exported",
+        channel: "github",
+        title: reconciled.event.title,
+        note: reconciled.event.note,
+      },
+      ...nextData.delivery.history,
+    ].slice(0, 16);
+
+    nextData.deliverable = {
+      ...nextData.deliverable,
+      nextAction: reconciled.event.nextAction,
+    };
+
+    const item = await persistProjectData(req, project.id, nextData);
+    recordProductEvent({
+      event: "github.reconcile.completed",
+      userId: req.user.id,
+      plan: req.plan?.code || null,
+      additional: { source: "github.reconcile.post", status: reconciled.status },
+    });
+
+    return res.json({
+      item,
+      reconciliation: {
+        status: reconciled.status,
+        commitStatus: reconciled.commitStatus,
+        pullRequestState: reconciled.pullRequestState,
+        observedAt: reconciled.event.observedAt,
+      },
+    });
+  } catch (error) {
+    return handleGitHubError(res, error, "Não foi possível reconciliar o estado GitHub do projeto.");
   }
 });
 

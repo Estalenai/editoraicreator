@@ -415,6 +415,12 @@ export const api = {
     });
   },
 
+  async reconcileGitHubProject(id: string) {
+    return authJson(`/api/github/projects/${encodeURIComponent(id)}/reconcile`, {
+      method: "POST",
+    });
+  },
+
   async getVercelConnection() {
     return authJson("/api/vercel/connection");
   },

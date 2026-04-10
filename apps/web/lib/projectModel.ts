@@ -111,6 +111,7 @@ export type ProjectGitHubBinding = {
   verificationStatus?: string | null;
   tokenConfigured?: boolean;
   lastResolvedCommitSha?: string | null;
+  lastCommitStatus?: string | null;
   lastSyncStatus?: string | null;
   lastSyncedAt?: string | null;
   lastCommitSha?: string | null;
@@ -118,6 +119,8 @@ export type ProjectGitHubBinding = {
   lastPullRequestNumber?: number | null;
   lastPullRequestUrl?: string | null;
   lastPullRequestState?: string | null;
+  lastPullRequestUpdatedAt?: string | null;
+  lastReconciledAt?: string | null;
 };
 
 export type ProjectGitHubVersionRecord = {
@@ -139,8 +142,11 @@ export type ProjectGitHubExportRecord = {
   commitSha?: string | null;
   commitUrl?: string | null;
   status?: string | null;
+  statusUpdatedAt?: string | null;
+  observedHeadSha?: string | null;
   pullRequestNumber?: number | null;
   pullRequestUrl?: string | null;
+  pullRequestState?: string | null;
 };
 
 export type ProjectGitHubIntegration = {
@@ -1303,8 +1309,11 @@ function normalizeGitHubExportRecords(value: any): ProjectGitHubExportRecord[] {
       commitSha: asText(item.commitSha) || null,
       commitUrl: asText(item.commitUrl) || null,
       status: asText(item.status) || null,
+      statusUpdatedAt: asText(item.statusUpdatedAt) || null,
+      observedHeadSha: asText(item.observedHeadSha) || null,
       pullRequestNumber: asOptionalNumber(item.pullRequestNumber),
       pullRequestUrl: asText(item.pullRequestUrl) || null,
+      pullRequestState: asText(item.pullRequestState) || null,
     }))
     .slice(0, 16);
 }
@@ -1330,6 +1339,7 @@ function normalizeExistingGitHubBinding(value: any): ProjectGitHubBinding | null
     verificationStatus: asText(value.verificationStatus) || null,
     tokenConfigured: Boolean(value.tokenConfigured),
     lastResolvedCommitSha: asText(value.lastResolvedCommitSha) || null,
+    lastCommitStatus: asText(value.lastCommitStatus) || null,
     lastSyncStatus: asText(value.lastSyncStatus) || null,
     lastSyncedAt: asText(value.lastSyncedAt) || null,
     lastCommitSha: asText(value.lastCommitSha) || null,
@@ -1337,6 +1347,8 @@ function normalizeExistingGitHubBinding(value: any): ProjectGitHubBinding | null
     lastPullRequestNumber: asOptionalNumber(value.lastPullRequestNumber),
     lastPullRequestUrl: asText(value.lastPullRequestUrl) || null,
     lastPullRequestState: asText(value.lastPullRequestState) || null,
+    lastPullRequestUpdatedAt: asText(value.lastPullRequestUpdatedAt) || null,
+    lastReconciledAt: asText(value.lastReconciledAt) || null,
   };
 }
 
@@ -1493,9 +1505,18 @@ function pickFirstIso(...values: unknown[]): string | null {
   return null;
 }
 
-function latestGitHubPullRequestAt(delivery: ProjectDeliveryModel): string | null {
+function latestGitHubPullRequestAt(
+  delivery: ProjectDeliveryModel,
+  github: ProjectGitHubIntegration
+): string | null {
   const match = delivery.history.find((event) => event.channel === "github" && /pull request/i.test(event.title));
-  return pickFirstIso(match?.ts);
+  const latestExport = github.exports[0] || null;
+  return pickFirstIso(
+    github.binding?.lastPullRequestUpdatedAt,
+    latestExport?.statusUpdatedAt,
+    latestExport?.exportedAt,
+    match?.ts
+  );
 }
 
 function deriveGitHubPublishStatus(
@@ -1506,8 +1527,14 @@ function deriveGitHubPublishStatus(
   const latestExport = github.exports[0] || null;
   const latestVersion = github.versions[0] || null;
 
+  if (binding?.lastPullRequestState === "merged" || latestExport?.status === "pr_merged") return "pull_request_merged";
+  if (binding?.lastPullRequestState === "closed" || latestExport?.status === "pr_closed") return "pull_request_closed";
   if (binding?.lastPullRequestState === "open" || latestExport?.status === "pr_open") return "pull_request_open";
+  if (binding?.lastSyncStatus === "repo_missing" || latestExport?.status === "repo_missing") return "repo_missing";
+  if (binding?.lastSyncStatus === "branch_missing" || latestExport?.status === "branch_missing") return "branch_missing";
+  if (binding?.lastSyncStatus === "diverged" || latestExport?.status === "diverged") return "diverged";
   if (binding?.lastSyncStatus === "synced" || latestExport?.status === "synced") return "commit_synced";
+  if (binding?.lastSyncStatus === "verified") return "workspace_verified";
   if (latestVersion) return "checkpoint_saved";
   if (binding?.owner && binding?.repo) return "workspace_saved";
   if (delivery.connectedStorage === "github") return "output_registered";
@@ -1618,7 +1645,9 @@ function buildPublishSourceOfTruth(
           timestamps: {
             updatedAt:
               pickFirstIso(
+                githubBinding?.lastReconciledAt,
                 githubBinding?.lastSyncedAt,
+                latestExport?.statusUpdatedAt,
                 latestExport?.exportedAt,
                 latestVersion?.savedAt,
                 githubBinding?.updatedAt,
@@ -1709,12 +1738,19 @@ function buildPublishSourceOfTruth(
         target: asText(githubBinding?.target) || null,
         timestamps: {
           connectedAt: pickFirstIso(githubBinding?.connectedAt),
-          workspaceVerifiedAt: pickFirstIso(githubBinding?.lastVerifiedAt, githubBinding?.updatedAt, githubBinding?.connectedAt),
+          workspaceVerifiedAt: pickFirstIso(
+            githubBinding?.lastVerifiedAt,
+            githubBinding?.lastReconciledAt,
+            githubBinding?.updatedAt,
+            githubBinding?.connectedAt
+          ),
           checkpointAt: pickFirstIso(latestVersion?.savedAt),
-          commitSyncedAt: pickFirstIso(githubBinding?.lastSyncedAt, latestExport?.exportedAt),
-          pullRequestAt: latestGitHubPullRequestAt(delivery),
+          commitSyncedAt: pickFirstIso(githubBinding?.lastSyncedAt, latestExport?.statusUpdatedAt, latestExport?.exportedAt),
+          pullRequestAt: latestGitHubPullRequestAt(delivery, github),
           updatedAt: pickFirstIso(
+            githubBinding?.lastReconciledAt,
             githubBinding?.lastSyncedAt,
+            latestExport?.statusUpdatedAt,
             latestExport?.exportedAt,
             latestVersion?.savedAt,
             githubBinding?.updatedAt,
@@ -1763,8 +1799,8 @@ function buildPublishSourceOfTruth(
         githubBinding?.updatedAt
       ),
       checkpointAt: pickFirstIso(latestVersion?.savedAt),
-      commitSyncedAt: pickFirstIso(githubBinding?.lastSyncedAt, latestExport?.exportedAt),
-      pullRequestAt: latestGitHubPullRequestAt(delivery),
+      commitSyncedAt: pickFirstIso(githubBinding?.lastSyncedAt, latestExport?.statusUpdatedAt, latestExport?.exportedAt),
+      pullRequestAt: latestGitHubPullRequestAt(delivery, github),
       deploymentRequestedAt: pickFirstIso(vercelBinding?.lastDeployRequestedAt),
       deploymentReadyAt: pickFirstIso(vercelBinding?.lastDeployReadyAt),
       deploymentCheckedAt: pickFirstIso(vercel.lastDeploymentCheckedAt, vercelBinding?.publishMachine?.lastCheckedAt),

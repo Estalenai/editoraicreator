@@ -213,7 +213,12 @@ export function assessGitHubWorkspaceDraft(
 export function githubSyncStatusLabel(value: string | null | undefined): string {
   if (value === "synced") return "Sync concluído";
   if (value === "pr_open") return "PR aberto";
-  if (value === "verified") return "Workspace verificado";
+  if (value === "pr_merged") return "PR mergeado";
+  if (value === "pr_closed") return "PR fechado";
+  if (value === "diverged") return "Branch divergente";
+  if (value === "branch_missing") return "Branch ausente";
+  if (value === "repo_missing") return "Repositório ausente";
+  if (value === "verified" || value === "workspace_verified") return "Workspace verificado";
   if (value === "pending") return "Pendente";
   if (value === "failed") return "Falhou";
   return "Ainda não sincronizado";

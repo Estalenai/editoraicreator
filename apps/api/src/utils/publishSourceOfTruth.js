@@ -29,12 +29,24 @@ function pickFirstIso(...values) {
   return null;
 }
 
-function latestGitHubPullRequestTimestamp(history) {
-  if (!Array.isArray(history)) return null;
+function latestGitHubPullRequestTimestamp(github, history) {
+  const latestExport = Array.isArray(github?.exports) ? github.exports[0] || null : null;
+  if (!Array.isArray(history)) {
+    return pickFirstIso(
+      github?.binding?.lastPullRequestUpdatedAt,
+      latestExport?.statusUpdatedAt,
+      latestExport?.exportedAt
+    );
+  }
   const match = history.find(
     (event) => event && event.channel === "github" && /pull request/i.test(asText(event.title))
   );
-  return safeIso(match?.ts);
+  return pickFirstIso(
+    github?.binding?.lastPullRequestUpdatedAt,
+    latestExport?.statusUpdatedAt,
+    latestExport?.exportedAt,
+    match?.ts
+  );
 }
 
 function deriveGitHubStatus(github, delivery) {
@@ -42,11 +54,29 @@ function deriveGitHubStatus(github, delivery) {
   const latestExport = Array.isArray(github?.exports) ? github.exports[0] || null : null;
   const latestVersion = Array.isArray(github?.versions) ? github.versions[0] || null : null;
 
+  if (asText(binding?.lastPullRequestState) === "merged" || latestExport?.status === "pr_merged") {
+    return "pull_request_merged";
+  }
+  if (asText(binding?.lastPullRequestState) === "closed" || latestExport?.status === "pr_closed") {
+    return "pull_request_closed";
+  }
   if (asText(binding?.lastPullRequestState) === "open" || latestExport?.status === "pr_open") {
     return "pull_request_open";
   }
+  if (asText(binding?.lastSyncStatus) === "repo_missing" || latestExport?.status === "repo_missing") {
+    return "repo_missing";
+  }
+  if (asText(binding?.lastSyncStatus) === "branch_missing" || latestExport?.status === "branch_missing") {
+    return "branch_missing";
+  }
+  if (asText(binding?.lastSyncStatus) === "diverged" || latestExport?.status === "diverged") {
+    return "diverged";
+  }
   if (asText(binding?.lastSyncStatus) === "synced" || latestExport?.status === "synced") {
     return "commit_synced";
+  }
+  if (asText(binding?.lastSyncStatus) === "verified") {
+    return "workspace_verified";
   }
   if (latestVersion) return "checkpoint_saved";
   if (binding?.owner && binding?.repo) return "workspace_saved";
@@ -94,12 +124,14 @@ function buildGitHubSource(github, delivery) {
     target: asText(binding?.target) || null,
     timestamps: {
       connectedAt: pickFirstIso(binding?.connectedAt),
-      workspaceVerifiedAt: pickFirstIso(binding?.lastVerifiedAt, binding?.updatedAt, binding?.connectedAt),
+      workspaceVerifiedAt: pickFirstIso(binding?.lastVerifiedAt, binding?.lastReconciledAt, binding?.updatedAt, binding?.connectedAt),
       checkpointAt: pickFirstIso(latestVersion?.savedAt),
-      commitSyncedAt: pickFirstIso(binding?.lastSyncedAt, latestExport?.exportedAt),
-      pullRequestAt: pickFirstIso(latestGitHubPullRequestTimestamp(delivery?.history)),
+      commitSyncedAt: pickFirstIso(binding?.lastSyncedAt, latestExport?.statusUpdatedAt, latestExport?.exportedAt),
+      pullRequestAt: pickFirstIso(latestGitHubPullRequestTimestamp(github, delivery?.history)),
       updatedAt: pickFirstIso(
+        binding?.lastReconciledAt,
         binding?.lastSyncedAt,
+        latestExport?.statusUpdatedAt,
         latestExport?.exportedAt,
         latestVersion?.savedAt,
         binding?.updatedAt,
