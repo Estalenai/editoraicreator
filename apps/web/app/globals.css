@@ -22335,3 +22335,492 @@ body {
 .motion-runtime [data-reveal][data-reveal-axis="x"] {
   transform: translate3d(5px, 0, 0) scale(0.998);
 }
+
+/* Dashboard final de-card pass
+   Collapse the dashboard into two deliberate surfaces: orientation hero + continuous workspace. */
+.app-shell-frame:has(.dashboard-page) .dashboard-hero-flat {
+  gap: clamp(18px, 2.2vw, 24px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-hero-main-flat {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: clamp(16px, 2vw, 28px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-hero-copy-flat {
+  min-width: 0;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-hero-actions-flat {
+  justify-content: flex-end;
+  align-self: flex-start;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-hero-flow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  border-block: 1px solid rgba(191, 239, 255, 0.09);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-hero-flow-node {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  padding: 16px 18px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-hero-flow-node + .dashboard-hero-flow-node {
+  border-left: 1px solid rgba(191, 239, 255, 0.09);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-hero-flow-node strong,
+.app-shell-frame:has(.dashboard-page) .dashboard-overview-item strong,
+.app-shell-frame:has(.dashboard-page) .dashboard-stream-link-title {
+  font-size: clamp(1rem, 1.28vw, 1.16rem);
+  line-height: 1.2;
+  color: var(--ea-text-strong);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-hero-flow-node span:last-child,
+.app-shell-frame:has(.dashboard-page) .dashboard-overview-item span:last-child {
+  color: rgba(229, 244, 255, 0.76);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-hero-flow-label,
+.app-shell-frame:has(.dashboard-page) .dashboard-overview-label,
+.app-shell-frame:has(.dashboard-page) .dashboard-stream-link-kicker {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(190, 225, 246, 0.58);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-overview-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
+  border-top: 1px solid rgba(191, 239, 255, 0.09);
+  padding-top: 16px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-overview-item {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  padding-inline: 18px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-overview-item:first-child {
+  padding-left: 0;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-overview-item:last-child {
+  padding-right: 0;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-overview-item + .dashboard-overview-item {
+  border-left: 1px solid rgba(191, 239, 255, 0.08);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-overview-item-action {
+  align-content: start;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-inline-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  color: var(--ea-ink-blue);
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-inline-action::after {
+  content: ">";
+  opacity: 0.72;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-workspace-shell-flat {
+  position: relative;
+  isolation: isolate;
+  padding: clamp(20px, 2.4vw, 30px);
+  border: 1px solid rgba(191, 239, 255, 0.085);
+  border-radius: clamp(24px, 3vw, 30px);
+  background:
+    radial-gradient(520px 180px at 0% 0%, rgba(75, 232, 255, 0.045), transparent 74%),
+    radial-gradient(620px 240px at 100% 100%, rgba(88, 120, 255, 0.06), transparent 82%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.006));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.02),
+    0 18px 40px rgba(2, 6, 23, 0.08);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-workspace-shell-flat::before,
+.app-shell-frame:has(.dashboard-page) .dashboard-workspace-shell-flat::after {
+  display: none;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-workspace-grid-flat {
+  display: grid;
+  grid-template-columns: minmax(0, 1.56fr) minmax(280px, 0.84fr);
+  gap: clamp(22px, 2.4vw, 32px);
+  align-items: start;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-workspace-main-flat,
+.app-shell-frame:has(.dashboard-page) .dashboard-workspace-rail-flat {
+  display: grid;
+  gap: 0;
+  min-width: 0;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-flow-section {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-section-head-flat {
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 0;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-flow-divider {
+  height: 1px;
+  margin: clamp(18px, 2vw, 22px) 0;
+  background: linear-gradient(90deg, transparent, rgba(191, 239, 255, 0.11), transparent);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-flow-divider-compact {
+  margin: 12px 0;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-project-stream,
+.app-shell-frame:has(.dashboard-page) .dashboard-core-stream,
+.app-shell-frame:has(.dashboard-page) .dashboard-support-stream,
+.app-shell-frame:has(.dashboard-page) .dashboard-usage-stream,
+.app-shell-frame:has(.dashboard-page) .dashboard-wallet-breakdown,
+.app-shell-frame:has(.dashboard-page) .dashboard-onboarding-step-list,
+.app-shell-frame:has(.dashboard-page) .dashboard-onboarding-path-list {
+  display: grid;
+  gap: 0;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-project-stream > * + *,
+.app-shell-frame:has(.dashboard-page) .dashboard-core-stream > * + *,
+.app-shell-frame:has(.dashboard-page) .dashboard-support-stream > * + *,
+.app-shell-frame:has(.dashboard-page) .dashboard-usage-stream > * + *,
+.app-shell-frame:has(.dashboard-page) .dashboard-wallet-breakdown > * + *,
+.app-shell-frame:has(.dashboard-page) .dashboard-onboarding-step-list > * + *,
+.app-shell-frame:has(.dashboard-page) .dashboard-onboarding-path-list > * + * {
+  border-top: 1px solid rgba(191, 239, 255, 0.085);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-stream-link,
+.app-shell-frame:has(.dashboard-page) .dashboard-wallet-row,
+.app-shell-frame:has(.dashboard-page) .dashboard-usage-row,
+.app-shell-frame:has(.dashboard-page) .dashboard-onboarding-step-row,
+.app-shell-frame:has(.dashboard-page) .dashboard-onboarding-path-row {
+  min-width: 0;
+  padding: 15px 0;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-stream-link,
+.app-shell-frame:has(.dashboard-page) .dashboard-onboarding-path-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: center;
+  color: inherit;
+  text-decoration: none;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-stream-link-main,
+.app-shell-frame:has(.dashboard-page) .dashboard-wallet-row-main,
+.app-shell-frame:has(.dashboard-page) .dashboard-usage-row-main,
+.app-shell-frame:has(.dashboard-page) .dashboard-onboarding-path-main {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-stream-link-copy,
+.app-shell-frame:has(.dashboard-page) .dashboard-wallet-row-main span,
+.app-shell-frame:has(.dashboard-page) .dashboard-onboarding-step-row span,
+.app-shell-frame:has(.dashboard-page) .dashboard-onboarding-path-main span {
+  color: rgba(229, 244, 255, 0.72);
+  line-height: 1.55;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-stream-link-cta,
+.app-shell-frame:has(.dashboard-page) .dashboard-wallet-row-value {
+  color: var(--ea-ink-blue);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-stream-link-cta::after {
+  content: ">";
+  margin-left: 8px;
+  opacity: 0.7;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-stream-link:hover,
+.app-shell-frame:has(.dashboard-page) .dashboard-inline-action:hover,
+.app-shell-frame:has(.dashboard-page) .dashboard-onboarding-path-row:hover {
+  color: #d9fbff;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-stream-link:hover .dashboard-stream-link-title,
+.app-shell-frame:has(.dashboard-page) .dashboard-onboarding-path-row:hover strong,
+.app-shell-frame:has(.dashboard-page) .dashboard-inline-action:hover {
+  color: #d9fbff;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-project-skeleton-row,
+.app-shell-frame:has(.dashboard-page) .dashboard-usage-row-skeleton {
+  min-height: 0;
+  padding: 15px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  position: relative;
+  display: grid;
+  align-items: center;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-project-stream > .dashboard-project-skeleton-row + .dashboard-project-skeleton-row,
+.app-shell-frame:has(.dashboard-page) .dashboard-usage-stream > .dashboard-usage-row-skeleton + .dashboard-usage-row-skeleton {
+  border-top: 1px solid rgba(191, 239, 255, 0.085);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-project-skeleton-row::before,
+.app-shell-frame:has(.dashboard-page) .dashboard-project-skeleton-row::after {
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-wallet-summary {
+  padding-bottom: 4px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-wallet-summary-copy {
+  display: grid;
+  gap: 6px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-wallet-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-usage-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(180px, 220px);
+  gap: 18px;
+  align-items: center;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-usage-row-meter {
+  display: grid;
+  gap: 8px;
+  justify-items: end;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-usage-row-meter strong {
+  font-size: 12px;
+  color: var(--ea-text-strong);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-progress-track {
+  width: min(220px, 100%);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-onboarding-band {
+  display: grid;
+  gap: 18px;
+  margin-top: clamp(18px, 2vw, 24px);
+  padding-top: clamp(18px, 2vw, 24px);
+  border-top: 1px solid rgba(191, 239, 255, 0.09);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-onboarding-band-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-onboarding-band-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+  gap: clamp(18px, 2vw, 24px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-onboarding-step-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-onboarding-step-row,
+.app-shell-frame:has(.dashboard-page) .dashboard-onboarding-path-row {
+  min-width: 0;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-onboarding-step-row strong,
+.app-shell-frame:has(.dashboard-page) .dashboard-onboarding-path-main strong {
+  color: var(--ea-text-strong);
+  line-height: 1.3;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-onboarding-path-row-support strong {
+  color: #f1d671;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-onboarding-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 18px;
+  align-items: center;
+  padding-top: 14px;
+  border-top: 1px solid rgba(191, 239, 255, 0.09);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-onboarding-summary-copy {
+  display: grid;
+  gap: 6px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-onboarding-summary-badges {
+  justify-content: flex-start;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-onboarding-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+@media (max-width: 1280px) {
+  .app-shell-frame:has(.dashboard-page) .dashboard-overview-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px 0;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-overview-item:nth-child(3),
+  .app-shell-frame:has(.dashboard-page) .dashboard-overview-item:nth-child(4) {
+    border-top: 1px solid rgba(191, 239, 255, 0.08);
+    padding-top: 14px;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-overview-item:nth-child(3) {
+    border-left: 0;
+    padding-left: 0;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-workspace-grid-flat,
+  .app-shell-frame:has(.dashboard-page) .dashboard-onboarding-band-grid,
+  .app-shell-frame:has(.dashboard-page) .dashboard-onboarding-summary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-onboarding-actions {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 900px) {
+  .app-shell-frame:has(.dashboard-page) .dashboard-hero-main-flat,
+  .app-shell-frame:has(.dashboard-page) .dashboard-hero-flow,
+  .app-shell-frame:has(.dashboard-page) .dashboard-core-stream {
+    grid-template-columns: minmax(0, 1fr);
+    display: grid;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-hero-actions-flat {
+    justify-content: start;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-hero-flow-node,
+  .app-shell-frame:has(.dashboard-page) .dashboard-overview-item {
+    padding-inline: 0;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-hero-flow-node + .dashboard-hero-flow-node,
+  .app-shell-frame:has(.dashboard-page) .dashboard-overview-item + .dashboard-overview-item {
+    border-left: 0;
+    border-top: 1px solid rgba(191, 239, 255, 0.08);
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-stream-link,
+  .app-shell-frame:has(.dashboard-page) .dashboard-onboarding-path-row,
+  .app-shell-frame:has(.dashboard-page) .dashboard-usage-row,
+  .app-shell-frame:has(.dashboard-page) .dashboard-wallet-row {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-usage-row-meter {
+    justify-items: start;
+  }
+}
+
+@media (max-width: 640px) {
+  .app-shell-frame:has(.dashboard-page) .dashboard-hero-flat {
+    gap: 14px;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-workspace-shell-flat {
+    padding: 16px;
+    border-radius: 22px;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-overview-strip {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-overview-item {
+    padding: 14px 0 0;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-overview-item:first-child {
+    padding-top: 0;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-overview-item + .dashboard-overview-item {
+    border-left: 0;
+    border-top: 1px solid rgba(191, 239, 255, 0.08);
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-hero-actions-flat,
+  .app-shell-frame:has(.dashboard-page) .dashboard-onboarding-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-hero-actions-flat > *,
+  .app-shell-frame:has(.dashboard-page) .dashboard-onboarding-actions > * {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-onboarding-band {
+    gap: 16px;
+  }
+}

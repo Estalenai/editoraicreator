@@ -93,8 +93,8 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
   if (!ready || !visible) return null;
 
   return (
-    <section className="onboarding-card-ea dashboard-onboarding-card" data-reveal data-reveal-delay="90">
-      <div className="onboarding-card-head">
+    <section className="dashboard-onboarding-band" data-reveal data-reveal-delay="90">
+      <div className="dashboard-onboarding-band-head">
         <div className="section-stack">
           <p className="section-kicker">Onboarding</p>
           <h3 style={{ margin: 0 }}>Primeiros passos no beta</h3>
@@ -107,74 +107,72 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
         </button>
       </div>
 
-      <div className="trust-grid onboarding-trust-grid">
-        <div className="trust-note dashboard-onboarding-step" data-reveal data-reveal-delay="120">
-          <strong>1) Escolha um Creator</strong>
-          <span>Comece por Post, Scripts ou Clips.</span>
-        </div>
-        <div className="trust-note dashboard-onboarding-step" data-reveal data-reveal-delay="160">
-          <strong>2) Revise a estimativa</strong>
-          <span>Cada geração mostra a estimativa antes do consumo.</span>
-        </div>
-        <div className="trust-note dashboard-onboarding-step" data-reveal data-reveal-delay="200">
-          <strong>3) Salve, edite e exporte</strong>
-          <span>Projetos salva a base e o editor fecha a peça.</span>
-        </div>
-        <div className="trust-note trust-note-privacy dashboard-onboarding-step" data-reveal data-reveal-delay="240">
-          <strong>4) Trabalhe com confidencialidade</strong>
-          <span>Os dados não entram em treino.</span>
-        </div>
-      </div>
+      <div className="dashboard-onboarding-band-grid">
+        <ol className="dashboard-onboarding-step-list">
+          <li className="dashboard-onboarding-step-row" data-reveal data-reveal-delay="120">
+            <strong>1) Escolha um Creator</strong>
+            <span>Comece por Post, Scripts ou Clips.</span>
+          </li>
+          <li className="dashboard-onboarding-step-row" data-reveal data-reveal-delay="160">
+            <strong>2) Revise a estimativa</strong>
+            <span>Cada geração mostra a estimativa antes do consumo.</span>
+          </li>
+          <li className="dashboard-onboarding-step-row" data-reveal data-reveal-delay="200">
+            <strong>3) Salve, edite e exporte</strong>
+            <span>Projetos salva a base e o editor fecha a peça.</span>
+          </li>
+          <li className="dashboard-onboarding-step-row" data-reveal data-reveal-delay="240">
+            <strong>4) Trabalhe com confidencialidade</strong>
+            <span>Os dados não entram em treino.</span>
+          </li>
+        </ol>
 
-      <div className="onboarding-objective-shell">
-        <div className="section-stack">
-          <p className="section-kicker">Rotas iniciais recomendadas</p>
-          <h4 style={{ margin: 0 }}>Núcleo principal com um apoio complementar</h4>
-          <p className="helper-text-ea">
-            Comece pelo trio hero e use Ads como apoio.
-          </p>
-        </div>
-        <div className="onboarding-objective-grid">
+        <div className="dashboard-onboarding-path-list">
+          <div className="section-stack">
+            <p className="section-kicker">Rotas iniciais recomendadas</p>
+            <h4 style={{ margin: 0 }}>Núcleo principal com um apoio complementar</h4>
+            <p className="helper-text-ea">
+              Comece pelo trio hero e use Ads como apoio.
+            </p>
+          </div>
+
           {OBJECTIVE_PATHS.map((item, index) => (
             <Link
               key={item.key}
               href={item.href}
-              className={`onboarding-objective-card dashboard-onboarding-path ${index === OBJECTIVE_PATHS.length - 1 ? "onboarding-objective-card-support" : ""}`}
+              className={`dashboard-onboarding-path-row ${index === OBJECTIVE_PATHS.length - 1 ? "dashboard-onboarding-path-row-support" : ""}`}
               onClick={dismiss}
               data-reveal
               data-reveal-delay={String(80 + index * 55)}
             >
-              <strong>{item.title}</strong>
-              <div className="helper-text-ea">{item.description}</div>
-              <div>
-                <span className="card-link-hint">{item.cta}</span>
+              <div className="dashboard-onboarding-path-main">
+                <strong>{item.title}</strong>
+                <span className="helper-text-ea">{item.description}</span>
               </div>
+              <span className="dashboard-stream-link-cta">{item.cta}</span>
             </Link>
           ))}
         </div>
       </div>
 
-      <div className="onboarding-credit-panel dashboard-onboarding-credit">
-        <div className="section-stack">
+      <div className="dashboard-onboarding-summary">
+        <div className="dashboard-onboarding-summary-copy">
           <strong>{CREATOR_COINS_PUBLIC_NAME} no fluxo atual</strong>
-          <div className="helper-text-ea">
-            Saldo atual: {summary}. Estimativa antes; débito no histórico.
-          </div>
+          <div className="helper-text-ea">Saldo atual: {summary}. Estimativa antes; débito no histórico.</div>
         </div>
-        <div className="hero-meta-row">
+        <div className="hero-meta-row dashboard-onboarding-summary-badges">
           <span className="premium-badge premium-badge-warning">{coinTypeLabel("common")}: tarefas de rotina</span>
           <span className="premium-badge premium-badge-phase">{coinTypeLabel("pro")}: maior qualidade</span>
           <span className="premium-badge premium-badge-soon">{coinTypeLabel("ultra")}: processamento premium</span>
         </div>
-      </div>
-
-      <div className="onboarding-action-row dashboard-onboarding-actions">
-        <Link href="/creators?tab=post" onClick={dismiss} className="btn-link-ea btn-primary">
-          Iniciar fluxo
-        </Link>
-        <Link href="/credits" onClick={dismiss} className="btn-link-ea btn-secondary">
-          Entender {CREATOR_COINS_PUBLIC_NAME}
-        </Link>
+        <div className="dashboard-onboarding-actions">
+          <Link href="/creators?tab=post" onClick={dismiss} className="btn-link-ea btn-primary">
+            Iniciar fluxo
+          </Link>
+          <Link href="/credits" onClick={dismiss} className="btn-link-ea btn-secondary">
+            Entender {CREATOR_COINS_PUBLIC_NAME}
+          </Link>
+        </div>
       </div>
     </section>
   );
