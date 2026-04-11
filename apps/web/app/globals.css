@@ -22362,7 +22362,7 @@ body {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0;
-  border-block: 1px solid rgba(191, 239, 255, 0.09);
+  padding-block: 4px;
 }
 
 .app-shell-frame:has(.dashboard-page) .dashboard-hero-flow-node {
@@ -22402,7 +22402,7 @@ body {
 .app-shell-frame:has(.dashboard-page) .dashboard-overview-strip {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0;
+  gap: 18px;
   border-top: 1px solid rgba(191, 239, 255, 0.09);
   padding-top: 16px;
 }
@@ -22411,19 +22411,6 @@ body {
   display: grid;
   gap: 6px;
   min-width: 0;
-  padding-inline: 18px;
-}
-
-.app-shell-frame:has(.dashboard-page) .dashboard-overview-item:first-child {
-  padding-left: 0;
-}
-
-.app-shell-frame:has(.dashboard-page) .dashboard-overview-item:last-child {
-  padding-right: 0;
-}
-
-.app-shell-frame:has(.dashboard-page) .dashboard-overview-item + .dashboard-overview-item {
-  border-left: 1px solid rgba(191, 239, 255, 0.08);
 }
 
 .app-shell-frame:has(.dashboard-page) .dashboard-overview-item-action {
@@ -22468,7 +22455,7 @@ body {
 
 .app-shell-frame:has(.dashboard-page) .dashboard-workspace-grid-flat {
   display: grid;
-  grid-template-columns: minmax(0, 1.56fr) minmax(280px, 0.84fr);
+  grid-template-columns: minmax(0, 1.7fr) minmax(250px, 0.72fr);
   gap: clamp(22px, 2.4vw, 32px);
   align-items: start;
 }
@@ -22480,16 +22467,32 @@ body {
   min-width: 0;
 }
 
+.app-shell-frame:has(.dashboard-page) .dashboard-workspace-rail-flat {
+  align-content: start;
+  padding-left: clamp(18px, 2.2vw, 28px);
+  border-left: 1px solid rgba(191, 239, 255, 0.08);
+}
+
 .app-shell-frame:has(.dashboard-page) .dashboard-flow-section {
   display: grid;
   gap: 16px;
   min-width: 0;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
 .app-shell-frame:has(.dashboard-page) .dashboard-section-head-flat {
   align-items: flex-start;
   gap: 12px;
   margin-bottom: 0;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-flow-section::before,
+.app-shell-frame:has(.dashboard-page) .dashboard-flow-section::after {
+  display: none !important;
 }
 
 .app-shell-frame:has(.dashboard-page) .dashboard-flow-divider {
@@ -22521,6 +22524,13 @@ body {
 .app-shell-frame:has(.dashboard-page) .dashboard-onboarding-step-list > * + *,
 .app-shell-frame:has(.dashboard-page) .dashboard-onboarding-path-list > * + * {
   border-top: 1px solid rgba(191, 239, 255, 0.085);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-flow-section-projects,
+.app-shell-frame:has(.dashboard-page) .dashboard-flow-section-core,
+.app-shell-frame:has(.dashboard-page) .dashboard-flow-section-usage,
+.app-shell-frame:has(.dashboard-page) .dashboard-flow-section-operations {
+  background: transparent !important;
 }
 
 .app-shell-frame:has(.dashboard-page) .dashboard-stream-link,
@@ -22610,7 +22620,7 @@ body {
 }
 
 .app-shell-frame:has(.dashboard-page) .dashboard-wallet-summary {
-  padding-bottom: 4px;
+  padding: 2px 0 8px;
 }
 
 .app-shell-frame:has(.dashboard-page) .dashboard-wallet-summary-copy {
@@ -22718,18 +22728,7 @@ body {
 @media (max-width: 1280px) {
   .app-shell-frame:has(.dashboard-page) .dashboard-overview-strip {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px 0;
-  }
-
-  .app-shell-frame:has(.dashboard-page) .dashboard-overview-item:nth-child(3),
-  .app-shell-frame:has(.dashboard-page) .dashboard-overview-item:nth-child(4) {
-    border-top: 1px solid rgba(191, 239, 255, 0.08);
-    padding-top: 14px;
-  }
-
-  .app-shell-frame:has(.dashboard-page) .dashboard-overview-item:nth-child(3) {
-    border-left: 0;
-    padding-left: 0;
+    gap: 14px 18px;
   }
 
   .app-shell-frame:has(.dashboard-page) .dashboard-workspace-grid-flat,
@@ -22755,13 +22754,12 @@ body {
     justify-content: start;
   }
 
-  .app-shell-frame:has(.dashboard-page) .dashboard-hero-flow-node,
-  .app-shell-frame:has(.dashboard-page) .dashboard-overview-item {
+  .app-shell-frame:has(.dashboard-page) .dashboard-hero-flow-node + .dashboard-hero-flow-node,
+  .app-shell-frame:has(.dashboard-page) .dashboard-overview-strip > .dashboard-overview-item {
     padding-inline: 0;
   }
 
-  .app-shell-frame:has(.dashboard-page) .dashboard-hero-flow-node + .dashboard-hero-flow-node,
-  .app-shell-frame:has(.dashboard-page) .dashboard-overview-item + .dashboard-overview-item {
+  .app-shell-frame:has(.dashboard-page) .dashboard-hero-flow-node + .dashboard-hero-flow-node {
     border-left: 0;
     border-top: 1px solid rgba(191, 239, 255, 0.08);
   }
@@ -22777,6 +22775,13 @@ body {
   .app-shell-frame:has(.dashboard-page) .dashboard-usage-row-meter {
     justify-items: start;
   }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-workspace-rail-flat {
+    padding-left: 0;
+    padding-top: 18px;
+    border-left: 0;
+    border-top: 1px solid rgba(191, 239, 255, 0.08);
+  }
 }
 
 @media (max-width: 640px) {
@@ -22791,20 +22796,11 @@ body {
 
   .app-shell-frame:has(.dashboard-page) .dashboard-overview-strip {
     grid-template-columns: minmax(0, 1fr);
-    gap: 0;
+    gap: 12px;
   }
 
   .app-shell-frame:has(.dashboard-page) .dashboard-overview-item {
-    padding: 14px 0 0;
-  }
-
-  .app-shell-frame:has(.dashboard-page) .dashboard-overview-item:first-child {
-    padding-top: 0;
-  }
-
-  .app-shell-frame:has(.dashboard-page) .dashboard-overview-item + .dashboard-overview-item {
-    border-left: 0;
-    border-top: 1px solid rgba(191, 239, 255, 0.08);
+    padding: 0;
   }
 
   .app-shell-frame:has(.dashboard-page) .dashboard-hero-actions-flat,
