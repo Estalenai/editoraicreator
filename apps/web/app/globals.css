@@ -11776,10 +11776,18 @@ body {
 }
 
 @supports (animation-timeline: view()) {
-  .creators-page > * {
+  .creators-page > *,
+  .creators-page .creator-workspace-card,
+  .creators-page .proof-value-card,
+  .creators-page .creators-hero-core-card,
+  .creators-page .creators-secondary-card,
+  .creators-page .creators-side-note {
     animation: none !important;
+    animation-timeline: auto !important;
+    animation-range: normal !important;
     opacity: 1 !important;
     transform: none !important;
+    filter: none !important;
   }
 }
 
@@ -12789,10 +12797,15 @@ body {
 }
 
 @supports (animation-timeline: view()) {
-  .projects-page > * {
+  .projects-page > *,
+  .projects-page .dashboard-project-link,
+  .projects-page .projects-list-stack > * {
     animation: none !important;
+    animation-timeline: auto !important;
+    animation-range: normal !important;
     opacity: 1 !important;
     transform: none !important;
+    filter: none !important;
   }
 
   .projects-page .github-workspace-card,
