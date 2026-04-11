@@ -1,5 +1,11 @@
 "use client";
 
+import {
+  buildPublishReconciliation,
+  type PublishReconciliationSnapshot,
+  type PublishReconciliationState,
+} from "./publishReconciliation";
+
 export const PROJECT_SCHEMA_VERSION = "editor-ai-creator.project.v2";
 
 export type ReviewStatus = "draft" | "review_ready" | "approved" | "rework";
@@ -268,10 +274,14 @@ export type ProjectPublishSnapshot = {
   };
 };
 
+export type ProjectPublishReconciliationState = PublishReconciliationState;
+export type ProjectPublishReconciliation = PublishReconciliationSnapshot;
+
 export type ProjectPublishSourceOfTruth = {
   version: string;
   sourceOfTruth: "backend";
   primary: ProjectPublishSnapshot;
+  reconciliation: ProjectPublishReconciliation;
   repo: {
     provider: "github" | null;
     id: string | null;
@@ -1682,11 +1692,123 @@ function buildPublishSourceOfTruth(
             publishedAt: pickFirstIso(delivery.lastPublishedAt),
           },
         };
+  const aggregateTimestamps = {
+    workspaceVerifiedAt: pickFirstIso(
+      vercelBinding?.lastVerifiedAt,
+      githubBinding?.lastVerifiedAt,
+      vercelBinding?.updatedAt,
+      githubBinding?.updatedAt
+    ),
+    checkpointAt: pickFirstIso(latestVersion?.savedAt),
+    commitSyncedAt: pickFirstIso(githubBinding?.lastSyncedAt, latestExport?.statusUpdatedAt, latestExport?.exportedAt),
+    pullRequestAt: latestGitHubPullRequestAt(delivery, github),
+    deploymentRequestedAt: pickFirstIso(vercelBinding?.lastDeployRequestedAt),
+    deploymentReadyAt: pickFirstIso(vercelBinding?.lastDeployReadyAt),
+    deploymentCheckedAt: pickFirstIso(
+      vercel.lastDeploymentCheckedAt,
+      vercelBinding?.lastReconciledAt,
+      vercelBinding?.lastDeploymentObservedAt,
+      vercelBinding?.publishMachine?.lastCheckedAt
+    ),
+    deploymentObservedAt: pickFirstIso(
+      vercelBinding?.lastDeploymentObservedAt,
+      vercelBinding?.lastReconciledAt,
+      vercel.lastDeploymentCheckedAt,
+      vercelBinding?.publishMachine?.lastCheckedAt
+    ),
+    deploymentReconciledAt: pickFirstIso(
+      vercelBinding?.lastReconciledAt,
+      vercel.lastDeploymentCheckedAt,
+      vercelBinding?.publishMachine?.lastCheckedAt
+    ),
+    publishedAt: pickFirstIso(
+      vercelBinding?.publishMachine?.lastSuccessAt,
+      vercelBinding?.lastDeployReadyAt,
+      delivery.lastPublishedAt
+    ),
+    updatedAt: pickFirstIso(
+      primary.timestamps.updatedAt,
+      vercelBinding?.updatedAt,
+      githubBinding?.updatedAt,
+      delivery.lastPublishedAt,
+      delivery.lastExportedAt
+    ),
+  };
+  const reconciliation = buildPublishReconciliation({
+    githubSource: {
+      active: Boolean(githubRepoId),
+      status: githubStatus,
+      externalStatus: githubExternalStatus,
+      repo: githubRepoId,
+      branch: asText(githubBinding?.branch) || null,
+      commitSha: githubCommitSha,
+      pullRequestState: githubPullRequestState,
+      pullRequestUrl: githubPullRequestUrl,
+      timestamps: {
+        commitSyncedAt: pickFirstIso(githubBinding?.lastSyncedAt, latestExport?.statusUpdatedAt, latestExport?.exportedAt),
+        pullRequestAt: latestGitHubPullRequestAt(delivery, github),
+        updatedAt: pickFirstIso(
+          githubBinding?.lastReconciledAt,
+          githubBinding?.lastSyncedAt,
+          latestExport?.statusUpdatedAt,
+          latestExport?.exportedAt,
+          latestVersion?.savedAt,
+          githubBinding?.updatedAt,
+          githubBinding?.connectedAt
+        ),
+      },
+    },
+    vercelSource: {
+      active: Boolean(vercelBinding?.projectName),
+      status: vercelStatus,
+      externalStatus: vercelExternalStatus,
+      environment: vercelEnvironment,
+      deploymentId: asText(vercelBinding?.lastDeploymentId) || null,
+      deploymentUrl: vercelDeploymentUrl,
+      publishedUrl: vercelPublishedUrl,
+      error: asText(vercelBinding?.lastDeployError) || null,
+      timestamps: {
+        deploymentRequestedAt: pickFirstIso(vercelBinding?.lastDeployRequestedAt),
+        deploymentObservedAt: pickFirstIso(
+          vercelBinding?.lastDeploymentObservedAt,
+          vercelBinding?.lastReconciledAt,
+          vercel.lastDeploymentCheckedAt,
+          vercelBinding?.publishMachine?.lastCheckedAt
+        ),
+        deploymentReadyAt: pickFirstIso(vercelBinding?.lastDeployReadyAt),
+        publishedAt:
+          vercelEnvironment === "production"
+            ? pickFirstIso(
+                vercelBinding?.publishMachine?.lastSuccessAt,
+                vercelBinding?.lastDeployReadyAt,
+                delivery.lastPublishedAt
+              )
+            : null,
+        reconciledAt: pickFirstIso(
+          vercelBinding?.lastReconciledAt,
+          vercel.lastDeploymentCheckedAt,
+          vercelBinding?.publishMachine?.lastCheckedAt
+        ),
+        updatedAt: pickFirstIso(
+          vercelBinding?.lastReconciledAt,
+          vercelBinding?.lastDeploymentObservedAt,
+          vercelBinding?.publishMachine?.lastTransitionAt,
+          vercel.lastDeploymentCheckedAt,
+          vercelBinding?.updatedAt
+        ),
+      },
+    },
+    delivery,
+    timestamps: {
+      updatedAt: aggregateTimestamps.updatedAt,
+    },
+  });
 
   return {
-    version: "editor-ai-creator.publish-source.v1",
+    version: "editor-ai-creator.publish-source.v2",
     sourceOfTruth: "backend",
     primary,
+    reconciliation,
     repo: {
       provider: githubRepoId ? "github" : null,
       id: githubRepoId,
@@ -1821,44 +1943,7 @@ function buildPublishSourceOfTruth(
         },
       },
     },
-    timestamps: {
-      workspaceVerifiedAt: pickFirstIso(
-        vercelBinding?.lastVerifiedAt,
-        githubBinding?.lastVerifiedAt,
-        vercelBinding?.updatedAt,
-        githubBinding?.updatedAt
-      ),
-      checkpointAt: pickFirstIso(latestVersion?.savedAt),
-      commitSyncedAt: pickFirstIso(githubBinding?.lastSyncedAt, latestExport?.statusUpdatedAt, latestExport?.exportedAt),
-      pullRequestAt: latestGitHubPullRequestAt(delivery, github),
-      deploymentRequestedAt: pickFirstIso(vercelBinding?.lastDeployRequestedAt),
-      deploymentReadyAt: pickFirstIso(vercelBinding?.lastDeployReadyAt),
-      deploymentCheckedAt: pickFirstIso(
-        vercel.lastDeploymentCheckedAt,
-        vercelBinding?.lastReconciledAt,
-        vercelBinding?.lastDeploymentObservedAt,
-        vercelBinding?.publishMachine?.lastCheckedAt
-      ),
-      deploymentObservedAt: pickFirstIso(
-        vercelBinding?.lastDeploymentObservedAt,
-        vercelBinding?.lastReconciledAt,
-        vercel.lastDeploymentCheckedAt,
-        vercelBinding?.publishMachine?.lastCheckedAt
-      ),
-      deploymentReconciledAt: pickFirstIso(
-        vercelBinding?.lastReconciledAt,
-        vercel.lastDeploymentCheckedAt,
-        vercelBinding?.publishMachine?.lastCheckedAt
-      ),
-      publishedAt: pickFirstIso(vercelBinding?.publishMachine?.lastSuccessAt, vercelBinding?.lastDeployReadyAt, delivery.lastPublishedAt),
-      updatedAt: pickFirstIso(
-        primary.timestamps.updatedAt,
-        vercelBinding?.updatedAt,
-        githubBinding?.updatedAt,
-        delivery.lastPublishedAt,
-        delivery.lastExportedAt
-      ),
-    },
+    timestamps: aggregateTimestamps,
   };
 }
 
@@ -1870,6 +1955,8 @@ function normalizeExistingPublishSourceOfTruth(
   if (asText(value.sourceOfTruth) !== "backend") return null;
 
   const primaryValue = value.primary && typeof value.primary === "object" ? value.primary : {};
+  const reconciliationValue =
+    value.reconciliation && typeof value.reconciliation === "object" ? value.reconciliation : {};
   const repoValue = value.repo && typeof value.repo === "object" ? value.repo : {};
   const commitValue = value.commit && typeof value.commit === "object" ? value.commit : {};
   const deploymentValue = value.deployment && typeof value.deployment === "object" ? value.deployment : {};
@@ -1891,6 +1978,34 @@ function normalizeExistingPublishSourceOfTruth(
       timestamps: {
         ...fallback.primary.timestamps,
         ...(primaryValue.timestamps && typeof primaryValue.timestamps === "object" ? primaryValue.timestamps : {}),
+      },
+    },
+    reconciliation: {
+      ...fallback.reconciliation,
+      ...reconciliationValue,
+      github: {
+        ...fallback.reconciliation.github,
+        ...(reconciliationValue.github && typeof reconciliationValue.github === "object"
+          ? reconciliationValue.github
+          : {}),
+      },
+      vercel: {
+        ...fallback.reconciliation.vercel,
+        ...(reconciliationValue.vercel && typeof reconciliationValue.vercel === "object"
+          ? reconciliationValue.vercel
+          : {}),
+      },
+      evidence: {
+        ...fallback.reconciliation.evidence,
+        ...(reconciliationValue.evidence && typeof reconciliationValue.evidence === "object"
+          ? reconciliationValue.evidence
+          : {}),
+      },
+      timestamps: {
+        ...fallback.reconciliation.timestamps,
+        ...(reconciliationValue.timestamps && typeof reconciliationValue.timestamps === "object"
+          ? reconciliationValue.timestamps
+          : {}),
       },
     },
     repo: {

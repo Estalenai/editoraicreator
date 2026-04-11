@@ -1,4 +1,6 @@
-const PUBLISH_SOURCE_VERSION = "editor-ai-creator.publish-source.v1";
+import { buildPublishReconciliation } from "./publishReconciliation.js";
+
+const PUBLISH_SOURCE_VERSION = "editor-ai-creator.publish-source.v2";
 const PROJECT_SCHEMA_VERSION = "editor-ai-creator.project.v2";
 
 function asText(value) {
@@ -311,11 +313,44 @@ export function buildPublishSourceOfTruth(projectData) {
   const githubSource = buildGitHubSource(integrations.github, delivery);
   const vercelSource = buildVercelSource(integrations.vercel, delivery);
   const primary = buildPrimarySnapshot(githubSource, vercelSource, delivery);
+  const aggregateTimestamps = {
+    workspaceVerifiedAt:
+      pickFirstIso(
+        vercelSource.timestamps.workspaceVerifiedAt,
+        githubSource.timestamps.workspaceVerifiedAt
+      ) || null,
+    checkpointAt: githubSource.timestamps.checkpointAt,
+    commitSyncedAt: githubSource.timestamps.commitSyncedAt,
+    pullRequestAt: githubSource.timestamps.pullRequestAt,
+    deploymentRequestedAt: vercelSource.timestamps.deploymentRequestedAt,
+    deploymentReadyAt: vercelSource.timestamps.deploymentReadyAt,
+    deploymentCheckedAt: vercelSource.timestamps.deploymentCheckedAt,
+    deploymentObservedAt: vercelSource.timestamps.deploymentObservedAt,
+    deploymentReconciledAt: vercelSource.timestamps.reconciledAt,
+    publishedAt:
+      pickFirstIso(
+        vercelSource.timestamps.publishedAt,
+        delivery?.lastPublishedAt
+      ) || null,
+    updatedAt:
+      pickFirstIso(
+        primary.timestamps.updatedAt,
+        vercelSource.timestamps.updatedAt,
+        githubSource.timestamps.updatedAt
+      ) || null,
+  };
+  const reconciliation = buildPublishReconciliation({
+    githubSource,
+    vercelSource,
+    delivery,
+    timestamps: aggregateTimestamps,
+  });
 
   return {
     version: PUBLISH_SOURCE_VERSION,
     sourceOfTruth: "backend",
     primary,
+    reconciliation,
     repo: {
       provider: githubSource.active ? "github" : null,
       id: githubSource.repo,
@@ -358,32 +393,7 @@ export function buildPublishSourceOfTruth(projectData) {
       github: githubSource,
       vercel: vercelSource,
     },
-    timestamps: {
-      workspaceVerifiedAt:
-        pickFirstIso(
-          vercelSource.timestamps.workspaceVerifiedAt,
-          githubSource.timestamps.workspaceVerifiedAt
-        ) || null,
-      checkpointAt: githubSource.timestamps.checkpointAt,
-      commitSyncedAt: githubSource.timestamps.commitSyncedAt,
-      pullRequestAt: githubSource.timestamps.pullRequestAt,
-      deploymentRequestedAt: vercelSource.timestamps.deploymentRequestedAt,
-      deploymentReadyAt: vercelSource.timestamps.deploymentReadyAt,
-      deploymentCheckedAt: vercelSource.timestamps.deploymentCheckedAt,
-      deploymentObservedAt: vercelSource.timestamps.deploymentObservedAt,
-      deploymentReconciledAt: vercelSource.timestamps.reconciledAt,
-      publishedAt:
-        pickFirstIso(
-          vercelSource.timestamps.publishedAt,
-          delivery?.lastPublishedAt
-        ) || null,
-      updatedAt:
-        pickFirstIso(
-          primary.timestamps.updatedAt,
-          vercelSource.timestamps.updatedAt,
-          githubSource.timestamps.updatedAt
-        ) || null,
-    },
+    timestamps: aggregateTimestamps,
   };
 }
 
