@@ -211,6 +211,13 @@ export default function DashboardPage() {
     () => usageItems.reduce((sum, item) => sum + Number(item.used || 0), 0),
     [usageItems]
   );
+  const leadProject = recentProjects[0] ?? null;
+  const featuredProject = leadProject;
+  const supportingProjects = useMemo(
+    () => recentProjects.slice(featuredProject ? 1 : 0, 5),
+    [recentProjects, featuredProject]
+  );
+  const usagePreviewItems = useMemo(() => usageItems.slice(0, 8), [usageItems]);
   const nextAction = recentProjects.length > 0
       ? {
         title: "Retomar projeto",
@@ -232,12 +239,12 @@ export default function DashboardPage() {
   const planLabelDisplay = loading ? "Plano em sincronização" : planLabel ?? "—";
   const emailDisplay = loading ? "Sincronizando conta..." : email || "—";
   const walletSummaryDisplay = loading ? "Saldo em sincronização" : walletSummary;
+  const totalUsageDisplay = loading || usageLoading ? "Uso em sincronização" : totalUsage.toLocaleString("pt-BR");
   const nextActionTitleDisplay = loading ? "Preparando seu próximo passo" : nextAction.title;
   const nextActionCtaDisplay = loading ? "Aguarde a sincronização" : nextAction.cta;
   const nextActionDescriptionDisplay = loading
     ? "Estamos sincronizando saldo, plano, projetos e próximos passos do workspace."
     : nextAction.description;
-  const leadProject = recentProjects[0] ?? null;
   const continuityValue = loading ? "Projetos em sincronização" : `${recentProjects.length} projeto(s)`;
   const continuityDetail = loading
     ? "A trilha criativa entra completa quando a conta terminar de sincronizar."
@@ -264,8 +271,7 @@ export default function DashboardPage() {
               <p className="section-kicker">Painel executivo</p>
               <h1 className="heading-reset">Dashboard</h1>
               <p className="section-header-copy hero-copy-compact">
-                O dashboard passa a operar em duas superfícies: orientação no topo e trabalho contínuo abaixo.
-                Conta: {emailDisplay}.
+                Orientação, continuidade e operação entram na mesma leitura. Conta: {emailDisplay}.
               </p>
             </div>
             <div className="hero-meta-row">
@@ -378,195 +384,233 @@ export default function DashboardPage() {
       <section className="dashboard-workspace-shell dashboard-workspace-shell-flat" data-reveal data-reveal-delay="135">
         <div className="dashboard-workspace-grid dashboard-workspace-grid-flat">
           <div className="dashboard-workspace-main dashboard-workspace-main-flat">
-            <section className="dashboard-flow-section dashboard-flow-section-projects" data-reveal data-reveal-delay="150">
-              <div className="section-head dashboard-section-head-flat">
+            <section className="dashboard-stage-feature dashboard-region-wash dashboard-region-wash-strong" data-reveal data-reveal-delay="150">
+              <div className="section-head dashboard-stage-feature-head">
                 <div className="section-header-ea">
                   <p className="section-kicker">Continuidade viva</p>
                   <h3 className="heading-reset">Projetos recentes</h3>
-                  <p className="helper-text-ea">Retome uma entrega sem reconstruir contexto.</p>
+                  <p className="helper-text-ea">Uma região forte para retomada, status atual e próximo avanço.</p>
                 </div>
                 <Link href="/projects" className="btn-link-ea btn-ghost btn-sm">Abrir projetos</Link>
               </div>
+
+              <div className="dashboard-stage-feature-layout">
+                <div className="dashboard-stage-lead">
+                  {loading ? (
+                    <div className="dashboard-stage-lead-skeleton">
+                      <div className="premium-skeleton premium-skeleton-line" style={{ width: "28%" }} />
+                      <div className="premium-skeleton premium-skeleton-line" style={{ width: "72%", marginTop: 12 }} />
+                      <div className="premium-skeleton premium-skeleton-line" style={{ width: "54%", marginTop: 14 }} />
+                    </div>
+                  ) : featuredProject ? (
+                    <EditorRouteLink href={`/editor/${featuredProject.id}`} className="dashboard-stage-lead-link">
+                      <span className="dashboard-stage-lead-kicker">{featuredProject.kind}</span>
+                      <strong className="dashboard-stage-lead-title">{featuredProject.title}</strong>
+                      <span className="dashboard-stage-lead-status">
+                        {featuredProject.summary.continuityStatusLabel} • {featuredProject.summary.deliverable.label}
+                      </span>
+                      <p className="dashboard-stage-lead-copy">
+                        Use este projeto como eixo do dashboard: retomada no editor, continuidade em projetos e saída no mesmo ciclo.
+                      </p>
+                      <span className="dashboard-stage-lead-action">Abrir projeto</span>
+                    </EditorRouteLink>
+                  ) : (
+                    <div className="state-ea state-ea-spaced">
+                      <p className="state-ea-title">Nenhum projeto criado ainda</p>
+                      <div className="state-ea-text">
+                        Gere algo em Creators e salve em Projetos para continuar no editor.
+                      </div>
+                      <div className="state-ea-actions">
+                        <Link href="/creators" className="btn-link-ea btn-primary btn-sm">
+                          Ir para Creators
+                        </Link>
+                        <EditorRouteLink href="/editor/new" className="btn-link-ea btn-ghost btn-sm">
+                          Criar projeto manual
+                        </EditorRouteLink>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="dashboard-stage-side">
+                  <div className="dashboard-stage-stat">
+                    <span className="dashboard-stage-stat-label">Projetos ativos</span>
+                    <strong>{continuityValue}</strong>
+                    <span>{continuityDetail}</span>
+                  </div>
+                  <div className="dashboard-stage-stat">
+                    <span className="dashboard-stage-stat-label">{CREATOR_COINS_PUBLIC_NAME}</span>
+                    <strong>{walletSummaryDisplay}</strong>
+                    <span>Saldo confirmado e histórico reconciliado.</span>
+                  </div>
+                  <div className="dashboard-stage-stat dashboard-stage-stat-action">
+                    <span className="dashboard-stage-stat-label">Próximo passo</span>
+                    <strong>{nextActionTitleDisplay}</strong>
+                    <span>{nextActionDescriptionDisplay}</span>
+                    {nextAction.href.startsWith("/editor") ? (
+                      <EditorRouteLink href={nextAction.href} className="dashboard-inline-action">
+                        {nextActionCtaDisplay}
+                      </EditorRouteLink>
+                    ) : (
+                      <Link href={nextAction.href} className="dashboard-inline-action">
+                        {nextActionCtaDisplay}
+                      </Link>
+                    )}
+                  </div>
+                </div>
+              </div>
+
               {loading ? (
-                <div className="dashboard-project-stream">
+                <div className="dashboard-stage-project-grid">
                   {Array.from({ length: 3 }).map((_, index) => (
                     <div key={`project-skeleton-${index}`} className="dashboard-project-skeleton-row" />
                   ))}
                 </div>
-              ) : recentProjects.length === 0 ? (
-                <div className="state-ea state-ea-spaced">
-                  <p className="state-ea-title">Nenhum projeto criado ainda</p>
-                  <div className="state-ea-text">
-                    Gere algo em Creators e salve em Projetos para continuar no editor.
-                  </div>
-                  <div className="state-ea-actions">
-                    <Link href="/creators" className="btn-link-ea btn-primary btn-sm">
-                      Ir para Creators
-                    </Link>
-                    <EditorRouteLink href="/editor/new" className="btn-link-ea btn-ghost btn-sm">
-                      Criar projeto manual
-                    </EditorRouteLink>
-                  </div>
-                </div>
-              ) : (
-                <div className="dashboard-project-stream">
-                  {recentProjects.map((project: any, index: number) => {
-                    const projectId = String(project.id || project.project_id || "");
-                    const content = (
-                      <>
-                        <div className="dashboard-stream-link-main">
-                          <span className="dashboard-stream-link-kicker">{project.kind}</span>
-                          <strong className="dashboard-stream-link-title">{project.title}</strong>
-                          <span className="dashboard-stream-link-copy">{project.summary.continuityStatusLabel}</span>
-                        </div>
-                        {projectId ? (
-                          <span className="dashboard-stream-link-cta">{project.summary.deliverable.label}</span>
-                        ) : null}
-                      </>
-                    );
-
-                    return projectId ? (
-                      <EditorRouteLink
-                        key={projectId || JSON.stringify(project)}
-                        href={`/editor/${projectId}`}
-                        className="dashboard-stream-link dashboard-stream-link-project"
-                        data-reveal
-                        data-reveal-delay={String(70 + Math.min(index, 5) * 35)}
-                      >
-                        {content}
-                      </EditorRouteLink>
-                    ) : (
-                      <div
-                        key={projectId || JSON.stringify(project)}
-                        className="dashboard-stream-link dashboard-stream-link-project"
-                        data-reveal
-                        data-reveal-delay={String(70 + Math.min(index, 5) * 35)}
-                      >
-                        {content}
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </section>
-
-            <div className="dashboard-flow-divider" aria-hidden="true" />
-
-            <section className="dashboard-flow-section dashboard-flow-section-core" data-reveal data-reveal-delay="185">
-              <div className="section-head dashboard-section-head-flat">
-                <div className="section-header-ea">
-                  <p className="section-kicker">Centro da experiência</p>
-                  <h3 className="heading-reset">Fluxo principal</h3>
-                  <p className="helper-text-ea">Menos caixas, mais sequência clara entre geração, revisão e saída.</p>
-                </div>
-              </div>
-              <div className="dashboard-core-stream">
-                {coreQuickLinks.map((item, index) =>
-                  item.href.startsWith("/editor") ? (
+              ) : supportingProjects.length > 0 ? (
+                <div className="dashboard-stage-project-grid">
+                  {supportingProjects.map((project: any, index: number) => (
                     <EditorRouteLink
-                      key={item.href}
-                      href={item.href}
-                      className="dashboard-stream-link dashboard-stream-link-core"
+                      key={String(project.id || project.project_id || index)}
+                      href={`/editor/${project.id}`}
+                      className="dashboard-stream-link dashboard-stream-link-project"
                       data-reveal
                       data-reveal-delay={String(80 + index * 35)}
                     >
                       <div className="dashboard-stream-link-main">
-                        <span className="dashboard-stream-link-kicker">{item.tag}</span>
-                        <strong className="dashboard-stream-link-title">{item.title}</strong>
-                        <span className="dashboard-stream-link-copy">{item.description}</span>
+                        <span className="dashboard-stream-link-kicker">{project.kind}</span>
+                        <strong className="dashboard-stream-link-title">{project.title}</strong>
+                        <span className="dashboard-stream-link-copy">{project.summary.continuityStatusLabel}</span>
                       </div>
-                      <span className="dashboard-stream-link-cta">{item.cta}</span>
+                      <span className="dashboard-stream-link-cta">{project.summary.deliverable.label}</span>
                     </EditorRouteLink>
-                  ) : (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className="dashboard-stream-link dashboard-stream-link-core"
-                      data-reveal
-                      data-reveal-delay={String(80 + index * 35)}
-                    >
-                      <div className="dashboard-stream-link-main">
-                        <span className="dashboard-stream-link-kicker">{item.tag}</span>
-                        <strong className="dashboard-stream-link-title">{item.title}</strong>
-                        <span className="dashboard-stream-link-copy">{item.description}</span>
-                      </div>
-                      <span className="dashboard-stream-link-cta">{item.cta}</span>
-                    </Link>
-                  )
-                )}
-              </div>
-            </section>
-
-            <div className="dashboard-flow-divider" aria-hidden="true" />
-
-            <section className="dashboard-flow-section dashboard-flow-section-usage" data-reveal data-reveal-delay="215">
-              <div className="section-head dashboard-section-head-flat">
-                <div className="section-header-ea">
-                  <p className="section-kicker">Uso recente</p>
-                  <h3 className="heading-reset">Uso por feature</h3>
-                  <p className="helper-text-ea">{recentUsageText}</p>
-                </div>
-                <Link href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
-                  Ver histórico
-                </Link>
-              </div>
-              {loading || usageLoading ? (
-                <div className="dashboard-usage-stream">
-                  {Array.from({ length: 6 }).map((_, index) => (
-                    <div key={`usage-skeleton-${index}`} className="dashboard-usage-row-skeleton">
-                      <div className="premium-skeleton premium-skeleton-line" style={{ width: "32%" }} />
-                      <div className="premium-skeleton premium-skeleton-line" style={{ width: "18%" }} />
-                    </div>
                   ))}
                 </div>
-              ) : usageItems.length === 0 ? (
-                <div className="state-ea">
-                  <p className="state-ea-title">Sem uso registrado neste mês</p>
-                  <div className="state-ea-text">
-                    Quando você gerar conteúdo, o consumo aparece aqui e no histórico de {CREATOR_COINS_PUBLIC_NAME}.
+              ) : null}
+            </section>
+
+            <section className="dashboard-main-detail-region dashboard-region-wash" data-reveal data-reveal-delay="210">
+              <div className="dashboard-main-detail-grid">
+                <section className="dashboard-flow-section dashboard-flow-section-core">
+                  <div className="section-head dashboard-section-head-flat">
+                    <div className="section-header-ea">
+                      <p className="section-kicker">Centro da experiência</p>
+                      <h3 className="heading-reset">Fluxo principal</h3>
+                      <p className="helper-text-ea">Geração, revisão, continuidade e saída em leitura rápida.</p>
+                    </div>
                   </div>
-                  <div className="state-ea-actions">
-                    <Link href="/creators" className="btn-link-ea btn-primary btn-sm">
-                      Gerar agora
-                    </Link>
+                  <div className="dashboard-core-stream dashboard-core-stream-grid">
+                    {coreQuickLinks.map((item, index) =>
+                      item.href.startsWith("/editor") ? (
+                        <EditorRouteLink
+                          key={item.href}
+                          href={item.href}
+                          className="dashboard-stream-link dashboard-stream-link-core"
+                          data-reveal
+                          data-reveal-delay={String(90 + index * 30)}
+                        >
+                          <div className="dashboard-stream-link-main">
+                            <span className="dashboard-stream-link-kicker">{item.tag}</span>
+                            <strong className="dashboard-stream-link-title">{item.title}</strong>
+                            <span className="dashboard-stream-link-copy">{item.description}</span>
+                          </div>
+                          <span className="dashboard-stream-link-cta">{item.cta}</span>
+                        </EditorRouteLink>
+                      ) : (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          className="dashboard-stream-link dashboard-stream-link-core"
+                          data-reveal
+                          data-reveal-delay={String(90 + index * 30)}
+                        >
+                          <div className="dashboard-stream-link-main">
+                            <span className="dashboard-stream-link-kicker">{item.tag}</span>
+                            <strong className="dashboard-stream-link-title">{item.title}</strong>
+                            <span className="dashboard-stream-link-copy">{item.description}</span>
+                          </div>
+                          <span className="dashboard-stream-link-cta">{item.cta}</span>
+                        </Link>
+                      )
+                    )}
+                  </div>
+                </section>
+
+                <section className="dashboard-flow-section dashboard-flow-section-usage">
+                  <div className="section-head dashboard-section-head-flat">
+                    <div className="section-header-ea">
+                      <p className="section-kicker">Uso recente</p>
+                      <h3 className="heading-reset">Uso por feature</h3>
+                      <p className="helper-text-ea">{recentUsageText}</p>
+                    </div>
                     <Link href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
                       Ver histórico
                     </Link>
                   </div>
-                </div>
-              ) : (
-                <div className="dashboard-usage-stream">
-                  {usageItems.map((item) => {
-                    const progress = usageProgress(item);
-                    return (
-                      <div key={item.feature} className="dashboard-usage-row">
-                        <div className="dashboard-usage-row-main">
-                          <span className="dashboard-stream-link-title">{item.feature}</span>
-                          <span className="dashboard-stream-link-copy">
-                            {item.used} de {item.limit} consumo(s) no período.
-                          </span>
+                  {loading || usageLoading ? (
+                    <div className="dashboard-usage-grid">
+                      {Array.from({ length: 6 }).map((_, index) => (
+                        <div key={`usage-skeleton-${index}`} className="dashboard-usage-row-skeleton">
+                          <div className="premium-skeleton premium-skeleton-line" style={{ width: "42%" }} />
+                          <div className="premium-skeleton premium-skeleton-line" style={{ width: "26%" }} />
                         </div>
-                        <div className="dashboard-usage-row-meter">
-                          <strong>{item.used}/{item.limit}</strong>
-                          <div className="dashboard-progress-track">
-                            <div className="dashboard-progress-bar" style={{ width: `${progress}%` }} />
-                          </div>
-                        </div>
+                      ))}
+                    </div>
+                  ) : usagePreviewItems.length === 0 ? (
+                    <div className="state-ea">
+                      <p className="state-ea-title">Sem uso registrado neste mês</p>
+                      <div className="state-ea-text">
+                        Quando você gerar conteúdo, o consumo aparece aqui e no histórico de {CREATOR_COINS_PUBLIC_NAME}.
                       </div>
-                    );
-                  })}
-                </div>
-              )}
+                      <div className="state-ea-actions">
+                        <Link href="/creators" className="btn-link-ea btn-primary btn-sm">
+                          Gerar agora
+                        </Link>
+                        <Link href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
+                          Ver histórico
+                        </Link>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="dashboard-usage-summary-line">
+                        <strong>{totalUsageDisplay}</strong>
+                        <span>consumos confirmados no período atual.</span>
+                      </div>
+                      <div className="dashboard-usage-grid">
+                        {usagePreviewItems.map((item) => {
+                          const progress = usageProgress(item);
+                          return (
+                            <div key={item.feature} className="dashboard-usage-row">
+                              <div className="dashboard-usage-row-main">
+                                <span className="dashboard-stream-link-title">{item.feature}</span>
+                                <span className="dashboard-stream-link-copy">
+                                  {item.used} de {item.limit} consumo(s) no período.
+                                </span>
+                              </div>
+                              <div className="dashboard-usage-row-meter">
+                                <strong>{item.used}/{item.limit}</strong>
+                                <div className="dashboard-progress-track">
+                                  <div className="dashboard-progress-bar" style={{ width: `${progress}%` }} />
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </>
+                  )}
+                </section>
+              </div>
             </section>
           </div>
 
           <aside className="dashboard-workspace-rail dashboard-workspace-rail-flat">
-            <section className="dashboard-flow-section dashboard-flow-section-operations" data-reveal data-reveal-delay="170">
+            <section className="dashboard-flow-section dashboard-flow-section-operations dashboard-operations-region dashboard-region-wash dashboard-region-wash-quiet" data-reveal data-reveal-delay="170">
               <div className="section-head dashboard-section-head-flat">
                 <div className="section-header-ea">
                   <p className="section-kicker">Operação em apoio</p>
                   <h3 className="heading-reset">Conta, saldo e suporte</h3>
-                  <p className="helper-text-ea">Camada operacional visível sem competir com o fluxo criativo.</p>
+                  <p className="helper-text-ea">Rail secundária com densidade útil, não painel lateral isolado.</p>
                 </div>
                 <Link href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
                   Ver histórico completo
