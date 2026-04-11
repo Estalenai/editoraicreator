@@ -30,6 +30,7 @@ import {
   type VercelWorkspace,
 } from "../../lib/vercelWorkspace";
 import { toUserFacingError } from "../../lib/uiFeedback";
+import { buildPublishTrustState } from "./publishTrust";
 
 type ProjectInput = {
   id?: string;
@@ -343,6 +344,10 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
   const canReconcile = Boolean(connection.connected && effectiveDeploymentId);
   const outputStage = resolveVercelOutputStage(workspace);
   const compact = variant === "compact";
+  const publishTrustState = useMemo(
+    () => (publish ? buildPublishTrustState({ publish, scope: "vercel" }) : null),
+    [publish]
+  );
 
   async function refreshConnectionState() {
     const payload = await api.getVercelConnection();
@@ -784,12 +789,26 @@ export function VercelPublishCard({ variant = "full", project = null, projects =
         />
       ) : null}
 
+      {publishTrustState ? (
+        <OperationalState
+          compact={compact}
+          kind={publishTrustState.kind}
+          title={publishTrustState.title}
+          description={publishTrustState.description}
+          badge="Publish reconciliado"
+          emphasis={selectedProject.title}
+          meta={publishTrustState.meta}
+          details={publishTrustState.details}
+          footer={publishTrustState.footer}
+        />
+      ) : null}
+
       <OperationalState
         compact={compact}
         kind={trustState.kind}
         title={trustState.title}
         description={trustState.description}
-        badge="Vercel status"
+        badge="Vercel base"
         emphasis={selectedProject.title}
         meta={trustState.meta}
         details={trustState.details}

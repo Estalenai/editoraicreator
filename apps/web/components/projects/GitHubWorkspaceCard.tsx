@@ -21,6 +21,7 @@ import {
   type GitHubWorkspaceTarget,
 } from "../../lib/githubWorkspace";
 import { toUserFacingError } from "../../lib/uiFeedback";
+import { buildPublishTrustState } from "./publishTrust";
 
 type Props = {
   variant?: "full" | "compact";
@@ -253,6 +254,10 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
       effectiveCommitSha &&
       effectivePullRequestState !== "open" &&
       effectivePullRequestState !== "merged"
+  );
+  const publishTrustState = useMemo(
+    () => (publish ? buildPublishTrustState({ publish, scope: "github" }) : null),
+    [publish]
   );
 
   async function refreshConnectionState() {
@@ -712,12 +717,26 @@ export function GitHubWorkspaceCard({ variant = "full", project = null, projects
         />
       ) : null}
 
+      {publishTrustState ? (
+        <OperationalState
+          compact={compact}
+          kind={publishTrustState.kind}
+          title={publishTrustState.title}
+          description={publishTrustState.description}
+          badge="Publish reconciliado"
+          emphasis={selectedProject?.title || "Sem projeto selecionado"}
+          meta={publishTrustState.meta}
+          details={publishTrustState.details}
+          footer={publishTrustState.footer}
+        />
+      ) : null}
+
       <OperationalState
         compact={compact}
         kind={trustState.kind}
         title={trustState.title}
         description={trustState.description}
-        badge="GitHub status"
+        badge="GitHub base"
         emphasis={selectedProject?.title || "Sem projeto selecionado"}
         meta={trustState.meta}
         details={trustState.details}
