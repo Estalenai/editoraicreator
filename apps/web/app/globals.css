@@ -23350,34 +23350,43 @@ body {
   align-items: flex-start;
   justify-content: flex-end;
   gap: 12px;
+  width: min(252px, 100%);
 }
 
 .app-shell-frame:has(.dashboard-page) .dashboard-command-actions > * {
   min-width: 0;
+  min-height: 46px;
+  width: 100%;
+  border-radius: 18px;
 }
 
 .app-shell-frame:has(.dashboard-page) .dashboard-command-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.22fr) minmax(280px, 0.9fr);
-  gap: clamp(16px, 1.8vw, 22px);
+  grid-template-columns: minmax(0, 1.24fr) minmax(300px, 0.86fr);
+  gap: clamp(18px, 2vw, 24px);
   align-items: stretch;
 }
 
 .app-shell-frame:has(.dashboard-page) .dashboard-command-track,
-.app-shell-frame:has(.dashboard-page) .dashboard-command-snapshot {
+.app-shell-frame:has(.dashboard-page) .dashboard-command-rail,
+.app-shell-frame:has(.dashboard-page) .dashboard-command-signal {
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(191, 239, 255, 0.1);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.015));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(191, 239, 255, 0.085);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.012));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.032);
 }
 
 .app-shell-frame:has(.dashboard-page) .dashboard-command-track {
   display: grid;
-  gap: clamp(14px, 1.7vw, 18px);
-  padding: clamp(18px, 2vw, 24px);
-  border-radius: clamp(24px, 2.6vw, 30px);
+  gap: clamp(18px, 1.9vw, 22px);
+  align-content: space-between;
+  padding: clamp(24px, 2.6vw, 30px);
+  border-radius: clamp(28px, 3vw, 34px);
   min-height: 100%;
+  background:
+    radial-gradient(400px 220px at 100% 0%, rgba(84, 232, 255, 0.14), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.038), rgba(255, 255, 255, 0.012));
 }
 
 .app-shell-frame:has(.dashboard-page) .dashboard-command-track::before {
@@ -23386,33 +23395,43 @@ body {
 
 .app-shell-frame:has(.dashboard-page) .dashboard-command-track-head {
   display: grid;
-  gap: 8px;
-  max-width: 48ch;
+  gap: 12px;
+  max-width: 34rem;
 }
 
 .app-shell-frame:has(.dashboard-page) .dashboard-command-track-head strong {
-  font-size: clamp(1.28rem, 1.9vw, 1.7rem);
-  line-height: 1.18;
+  font-size: clamp(1.62rem, 2.5vw, 2.3rem);
+  line-height: 1.04;
+  letter-spacing: -0.04em;
   color: var(--ea-text-strong);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-command-track-copy {
+  max-width: 36ch;
+  color: rgba(224, 241, 255, 0.74);
+  font-size: clamp(0.96rem, 1.1vw, 1.02rem);
+  line-height: 1.58;
 }
 
 .app-shell-frame:has(.dashboard-page) .dashboard-command-track-list {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(12px, 1.5vw, 16px);
+  gap: clamp(16px, 1.8vw, 20px);
+  padding-top: 10px;
+  border-top: 1px solid rgba(191, 239, 255, 0.08);
 }
 
 .app-shell-frame:has(.dashboard-page) .dashboard-command-node {
   position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 10px;
+  gap: 12px;
   align-items: start;
   min-width: 0;
-  padding: 14px 14px 16px;
-  border-radius: 18px;
-  border: 1px solid rgba(191, 239, 255, 0.08);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.032), rgba(255, 255, 255, 0.012));
+  padding: 0;
+  border-radius: 0;
+  border: 0;
+  background: transparent;
 }
 
 .app-shell-frame:has(.dashboard-page) .dashboard-command-node-step {
@@ -23441,62 +23460,73 @@ body {
 }
 
 .app-shell-frame:has(.dashboard-page) .dashboard-command-node-copy strong {
-  font-size: clamp(0.98rem, 1.16vw, 1.08rem);
-  line-height: 1.22;
-  color: var(--ea-text-strong);
-}
-
-.app-shell-frame:has(.dashboard-page) .dashboard-command-node-copy span:last-child {
-  max-width: 26ch;
-  color: rgba(224, 241, 255, 0.76);
-  font-size: 0.94rem;
-  line-height: 1.48;
-}
-
-.app-shell-frame:has(.dashboard-page) .dashboard-command-snapshots {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(12px, 1.2vw, 14px);
-}
-
-.app-shell-frame:has(.dashboard-page) .dashboard-command-snapshot {
-  display: grid;
-  gap: 6px;
-  align-content: start;
-  min-width: 0;
-  min-height: 122px;
-  padding: clamp(15px, 1.6vw, 18px);
-  border-radius: 20px;
-}
-
-.app-shell-frame:has(.dashboard-page) .dashboard-command-snapshot strong {
-  font-size: clamp(1.04rem, 1.3vw, 1.24rem);
+  font-size: clamp(1rem, 1.14vw, 1.14rem);
   line-height: 1.16;
   color: var(--ea-text-strong);
 }
 
-.app-shell-frame:has(.dashboard-page) .dashboard-command-snapshot span:last-child {
-  color: rgba(224, 241, 255, 0.74);
-  font-size: 0.94rem;
+.app-shell-frame:has(.dashboard-page) .dashboard-command-node-copy span:last-child {
+  max-width: 22ch;
+  color: rgba(224, 241, 255, 0.76);
   line-height: 1.45;
 }
 
-.app-shell-frame:has(.dashboard-page) .dashboard-command-snapshot-primary {
-  grid-column: 1 / -1;
-  min-height: 136px;
+.app-shell-frame:has(.dashboard-page) .dashboard-command-rail {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+  padding: clamp(18px, 1.9vw, 22px);
+  border-radius: 26px;
   background:
-    radial-gradient(260px 120px at 100% 0%, rgba(81, 233, 255, 0.14), transparent 72%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.018));
+    radial-gradient(280px 180px at 100% 0%, rgba(82, 229, 255, 0.1), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.034), rgba(255, 255, 255, 0.012));
 }
 
-.app-shell-frame:has(.dashboard-page) .dashboard-command-snapshot-action {
-  background:
-    linear-gradient(180deg, rgba(69, 226, 255, 0.08), rgba(255, 255, 255, 0.012)),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015));
+.app-shell-frame:has(.dashboard-page) .dashboard-command-rail-head,
+.app-shell-frame:has(.dashboard-page) .dashboard-command-rail-action-copy {
+  display: grid;
+  gap: 6px;
 }
 
-.app-shell-frame:has(.dashboard-page) .dashboard-command-snapshot-action .dashboard-inline-action {
-  margin-top: auto;
+.app-shell-frame:has(.dashboard-page) .dashboard-command-rail-head strong,
+.app-shell-frame:has(.dashboard-page) .dashboard-command-rail-action-copy strong,
+.app-shell-frame:has(.dashboard-page) .dashboard-command-signal strong {
+  font-size: clamp(1.16rem, 1.46vw, 1.4rem);
+  line-height: 1.12;
+  color: var(--ea-text-strong);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-command-rail-head span:last-child,
+.app-shell-frame:has(.dashboard-page) .dashboard-command-rail-action-copy span:last-child,
+.app-shell-frame:has(.dashboard-page) .dashboard-command-signal span:last-child {
+  color: rgba(224, 241, 255, 0.72);
+  line-height: 1.48;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-command-rail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-command-signal {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  min-height: 124px;
+  padding: 14px 14px 16px;
+  border-radius: 18px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-command-rail-action {
+  display: grid;
+  gap: 12px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(191, 239, 255, 0.08);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-command-rail .dashboard-inline-action {
+  justify-self: start;
 }
 
 .app-shell-frame:has(.dashboard-page) .dashboard-workspace-shell-flat {
@@ -23565,8 +23595,11 @@ body {
 
 .app-shell-frame:has(.dashboard-page) .dashboard-stage-shell {
   display: grid;
-  gap: clamp(18px, 2vw, 22px);
-  padding: clamp(20px, 2.2vw, 26px);
+  gap: clamp(20px, 2.2vw, 24px);
+  padding: clamp(22px, 2.4vw, 28px);
+  background:
+    radial-gradient(360px 180px at 0% 0%, rgba(83, 231, 255, 0.08), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.034), rgba(255, 255, 255, 0.012));
 }
 
 .app-shell-frame:has(.dashboard-page) .dashboard-stage-feature-head {
@@ -23576,24 +23609,24 @@ body {
 }
 
 .app-shell-frame:has(.dashboard-page) .dashboard-stage-feature-layout {
-  grid-template-columns: minmax(0, 1.06fr) minmax(260px, 0.94fr);
-  gap: clamp(16px, 1.8vw, 20px);
+  grid-template-columns: minmax(0, 1.08fr) minmax(280px, 0.92fr);
+  gap: clamp(18px, 2vw, 24px);
 }
 
 .app-shell-frame:has(.dashboard-page) .dashboard-stage-lead-link,
 .app-shell-frame:has(.dashboard-page) .dashboard-stage-lead-skeleton {
   display: grid;
-  gap: 12px;
+  gap: 14px;
   min-height: 100%;
-  padding: clamp(20px, 2vw, 24px);
-  border: 1px solid rgba(191, 239, 255, 0.11);
-  border-radius: clamp(24px, 2.5vw, 28px);
+  padding: clamp(24px, 2.4vw, 30px);
+  border: 1px solid rgba(191, 239, 255, 0.08);
+  border-radius: clamp(26px, 2.8vw, 30px);
   background:
-    radial-gradient(280px 150px at 100% 0%, rgba(76, 232, 255, 0.12), transparent 74%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.014));
+    radial-gradient(320px 180px at 100% 0%, rgba(76, 232, 255, 0.13), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0.008));
   text-decoration: none;
   color: inherit;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
 .app-shell-frame:has(.dashboard-page) .dashboard-stage-lead-topline,
@@ -23704,7 +23737,7 @@ body {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0 clamp(14px, 1.4vw, 18px);
-  padding-top: clamp(16px, 1.7vw, 20px);
+  padding-top: clamp(18px, 1.9vw, 22px);
   border-top: 1px solid rgba(191, 239, 255, 0.09);
 }
 
@@ -23736,7 +23769,7 @@ body {
 
 .app-shell-frame:has(.dashboard-page) .dashboard-detail-region-premium,
 .app-shell-frame:has(.dashboard-page) .dashboard-operations-region-premium {
-  padding: clamp(20px, 2.2vw, 26px);
+  padding: clamp(22px, 2.4vw, 28px);
 }
 
 .app-shell-frame:has(.dashboard-page) .dashboard-detail-region-premium::before {
@@ -23838,8 +23871,8 @@ body {
 }
 
 .app-shell-frame:has(.dashboard-page) .dashboard-core-atlas {
-  gap: clamp(16px, 1.8vw, 20px);
-  padding-bottom: clamp(18px, 2vw, 22px);
+  gap: clamp(18px, 2vw, 22px);
+  padding-bottom: clamp(20px, 2.2vw, 24px);
   border-bottom: 1px solid rgba(191, 239, 255, 0.09);
 }
 
@@ -23879,7 +23912,9 @@ body {
 .app-shell-frame:has(.dashboard-page) .dashboard-operations-region-premium {
   gap: clamp(18px, 2vw, 24px);
   border-color: rgba(191, 239, 255, 0.075);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.024), rgba(255, 255, 255, 0.008));
+  background:
+    radial-gradient(240px 140px at 100% 0%, rgba(82, 229, 255, 0.07), transparent 76%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.024), rgba(255, 255, 255, 0.008));
 }
 
 .app-shell-frame:has(.dashboard-page) .dashboard-ops-account,
@@ -23968,14 +24003,14 @@ body {
 
 .app-shell-frame:has(.dashboard-page) .dashboard-usage-pane-grid {
   display: grid;
-  grid-template-columns: minmax(240px, 0.72fr) minmax(0, 1.28fr);
-  gap: clamp(16px, 1.8vw, 22px);
+  grid-template-columns: minmax(260px, 0.68fr) minmax(0, 1.32fr);
+  gap: clamp(20px, 2vw, 24px);
   align-items: start;
 }
 
 .app-shell-frame:has(.dashboard-page) .dashboard-usage-pane-copy {
   display: grid;
-  gap: 14px;
+  gap: 16px;
   min-width: 0;
   padding-right: clamp(14px, 1.5vw, 18px);
   border-right: 1px solid rgba(191, 239, 255, 0.08);
@@ -24001,10 +24036,17 @@ body {
 }
 
 .app-shell-frame:has(.dashboard-page) .dashboard-usage-empty-copy {
+  display: grid;
+  gap: 8px;
   max-width: 32ch;
   color: rgba(224, 241, 255, 0.72);
   font-size: 0.95rem;
   line-height: 1.56;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-usage-empty-copy strong,
+.app-shell-frame:has(.dashboard-page) .dashboard-usage-empty-copy span {
+  display: block;
 }
 
 .app-shell-frame:has(.dashboard-page) .dashboard-usage-empty-tags {
@@ -24093,12 +24135,8 @@ body {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .app-shell-frame:has(.dashboard-page) .dashboard-command-snapshots {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .app-shell-frame:has(.dashboard-page) .dashboard-command-snapshot-primary {
-    grid-column: 1 / -1;
+  .app-shell-frame:has(.dashboard-page) .dashboard-command-rail-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .app-shell-frame:has(.dashboard-page) .dashboard-workspace-rail-flat {
@@ -24149,7 +24187,7 @@ body {
     max-width: 44ch;
   }
 
-  .app-shell-frame:has(.dashboard-page) .dashboard-command-snapshots {
+  .app-shell-frame:has(.dashboard-page) .dashboard-command-rail-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -24225,7 +24263,7 @@ body {
     font-size: clamp(2.2rem, 12vw, 3rem);
   }
 
-  .app-shell-frame:has(.dashboard-page) .dashboard-command-snapshots,
+  .app-shell-frame:has(.dashboard-page) .dashboard-command-rail-grid,
   .app-shell-frame:has(.dashboard-page) .dashboard-stage-ribbon,
   .app-shell-frame:has(.dashboard-page) .dashboard-core-stream-grid {
     grid-template-columns: minmax(0, 1fr);
@@ -24237,10 +24275,6 @@ body {
 
   .app-shell-frame:has(.dashboard-page) .dashboard-command-node {
     padding: 12px 14px;
-  }
-
-  .app-shell-frame:has(.dashboard-page) .dashboard-command-snapshot {
-    min-height: 0;
   }
 
   .app-shell-frame:has(.dashboard-page) .dashboard-stage-lead-link,

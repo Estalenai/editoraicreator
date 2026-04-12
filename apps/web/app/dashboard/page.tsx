@@ -419,7 +419,11 @@ export default function DashboardPage() {
           <div className="dashboard-command-track">
             <div className="dashboard-command-track-head">
               <span className="dashboard-hero-flow-label">Linha criativa</span>
-              <strong>Creator, editor e saida no mesmo plano, sem cenografia sobrando.</strong>
+              <strong>Creator, editor e saida no mesmo plano, com presença de produto principal.</strong>
+              <p className="dashboard-command-track-copy">
+                A base criativa, a lapidação e a publicação entram logo na primeira leitura para
+                o dashboard parecer eixo real do produto, não painel de apoio.
+              </p>
             </div>
             <div className="dashboard-command-track-list">
               <div className="dashboard-command-node">
@@ -449,26 +453,32 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div className="dashboard-command-snapshots" data-reveal data-reveal-delay="90">
-            <div className="dashboard-command-snapshot dashboard-command-snapshot-primary">
+          <div className="dashboard-command-rail" data-reveal data-reveal-delay="90">
+            <div className="dashboard-command-rail-head">
               <span className="dashboard-overview-label">Conta ativa</span>
               <strong>{planLabelDisplay}</strong>
               <span>{emailDisplay}</span>
             </div>
-            <div className="dashboard-command-snapshot">
-              <span className="dashboard-overview-label">{CREATOR_COINS_PUBLIC_NAME}</span>
-              <strong>{walletSummaryDisplay}</strong>
-              <span>Saldo confirmado e histórico reconciliado.</span>
+
+            <div className="dashboard-command-rail-grid">
+              <div className="dashboard-command-signal">
+                <span className="dashboard-overview-label">{CREATOR_COINS_PUBLIC_NAME}</span>
+                <strong>{walletSummaryDisplay}</strong>
+                <span>Saldo confirmado e histórico reconciliado.</span>
+              </div>
+              <div className="dashboard-command-signal">
+                <span className="dashboard-overview-label">Continuidade</span>
+                <strong>{continuityValue}</strong>
+                <span>{continuityDetail}</span>
+              </div>
             </div>
-            <div className="dashboard-command-snapshot">
-              <span className="dashboard-overview-label">Continuidade</span>
-              <strong>{continuityValue}</strong>
-              <span>{continuityDetail}</span>
-            </div>
-            <div className="dashboard-command-snapshot dashboard-command-snapshot-action">
-              <span className="dashboard-overview-label">Próximo passo</span>
-              <strong>{nextActionTitleDisplay}</strong>
-              <span>{nextActionDescriptionDisplay}</span>
+
+            <div className="dashboard-command-rail-action">
+              <div className="dashboard-command-rail-action-copy">
+                <span className="dashboard-overview-label">Próximo passo</span>
+                <strong>{nextActionTitleDisplay}</strong>
+                <span>{nextActionDescriptionDisplay}</span>
+              </div>
               {nextAction.href.startsWith("/editor") ? (
                 <EditorRouteLink href={nextAction.href} className="dashboard-inline-action">
                   {nextActionCtaDisplay}
@@ -725,7 +735,7 @@ export default function DashboardPage() {
                         <div className="dashboard-usage-empty">
                           <div className="dashboard-usage-empty-copy">
                             <span className="dashboard-stage-stat-label">Aguardando confirmações</span>
-                            <strong>Nenhum consumo confirmado neste ciclo</strong>
+                            <strong>O consumo confirmado entra aqui quando a trilha completa fecha.</strong>
                             <span>
                               Assim que uma geração atravessar creators, editor ou saída, este
                               painel passa a mostrar o histórico real e reconciliado.
