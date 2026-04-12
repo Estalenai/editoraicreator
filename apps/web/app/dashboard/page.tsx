@@ -598,13 +598,24 @@ export default function DashboardPage() {
             </section>
 
             <section className="dashboard-main-detail-region dashboard-detail-region-premium" data-reveal data-reveal-delay="210">
-              <div className="dashboard-main-detail-grid">
-                <section className="dashboard-flow-section dashboard-flow-section-core">
-                  <div className="section-head dashboard-section-head-flat">
+              <div className="dashboard-main-detail-stack">
+                <section className="dashboard-flow-section dashboard-flow-section-core dashboard-core-atlas">
+                  <div className="dashboard-core-atlas-head">
                     <div className="section-header-ea">
                       <p className="section-kicker">Centro da experiência</p>
                       <h3 className="heading-reset">Núcleo em ação</h3>
-                      <p className="helper-text-ea">Os atalhos principais entram como uma malha clara, nao como quatro modulos soltos.</p>
+                      <p className="helper-text-ea">
+                        A parte central do produto precisa parecer uma mesa de comando, não uma
+                        malha estreita de atalhos.
+                      </p>
+                    </div>
+                    <div className="dashboard-core-atlas-summary">
+                      <span className="dashboard-stage-stat-label">Fluxo principal</span>
+                      <strong>Creators, editor, projetos e saída no mesmo ritmo.</strong>
+                      <span>
+                        Base criativa, revisão, continuidade e publicação aparecem como uma mesma
+                        experiência operacional.
+                      </span>
                     </div>
                   </div>
                   <div className="dashboard-core-stream dashboard-core-stream-grid">
@@ -644,43 +655,19 @@ export default function DashboardPage() {
                   </div>
                 </section>
 
-                <section className="dashboard-flow-section dashboard-flow-section-usage">
-                  <div className="section-head dashboard-section-head-flat">
-                    <div className="section-header-ea">
-                      <p className="section-kicker">Uso recente</p>
-                      <h3 className="heading-reset">Uso confirmado</h3>
-                      <p className="helper-text-ea">{recentUsageText}</p>
-                    </div>
-                    <Link href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
-                      Ver histórico
-                    </Link>
-                  </div>
-                  {loading || usageLoading ? (
-                    <div className="dashboard-usage-grid">
-                      {Array.from({ length: 6 }).map((_, index) => (
-                        <div key={`usage-skeleton-${index}`} className="dashboard-usage-row-skeleton">
-                          <div className="premium-skeleton premium-skeleton-line" style={{ width: "42%" }} />
-                          <div className="premium-skeleton premium-skeleton-line" style={{ width: "26%" }} />
+                <section className="dashboard-flow-section dashboard-flow-section-usage dashboard-usage-pane">
+                  <div className="dashboard-usage-pane-grid">
+                    <div className="dashboard-usage-pane-copy">
+                      <div className="section-head dashboard-section-head-flat">
+                        <div className="section-header-ea">
+                          <p className="section-kicker">Uso recente</p>
+                          <h3 className="heading-reset">Uso confirmado</h3>
+                          <p className="helper-text-ea">{recentUsageText}</p>
                         </div>
-                      ))}
-                    </div>
-                  ) : usagePreviewItems.length === 0 ? (
-                    <div className="state-ea">
-                      <p className="state-ea-title">Sem uso registrado neste mês</p>
-                      <div className="state-ea-text">
-                        Quando você gerar conteúdo, o consumo aparece aqui e no histórico de {CREATOR_COINS_PUBLIC_NAME}.
-                      </div>
-                      <div className="state-ea-actions">
-                        <Link href="/creators" className="btn-link-ea btn-primary btn-sm">
-                          Gerar agora
-                        </Link>
                         <Link href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
                           Ver histórico
                         </Link>
                       </div>
-                    </div>
-                  ) : (
-                    <>
                       <div className="dashboard-usage-hero">
                         <div className="dashboard-usage-hero-main">
                           <span className="dashboard-stage-stat-label">Consumo confirmado</span>
@@ -688,34 +675,65 @@ export default function DashboardPage() {
                         </div>
                         <p>{usageLeadInsight}</p>
                       </div>
-                      <div className="dashboard-usage-grid">
-                        {usagePreviewItems.map((item) => {
-                          const progress = usageProgress(item);
-                          return (
-                            <div key={item.feature} className="dashboard-usage-row">
-                              <div className="dashboard-usage-row-main">
-                                <span className="dashboard-stream-link-title">{item.feature}</span>
-                                <span className="dashboard-stream-link-copy">
-                                  {item.used} de {item.limit} consumo(s) no período.
-                                </span>
-                              </div>
-                              <div className="dashboard-usage-row-meter">
-                                <strong>{item.used}/{item.limit}</strong>
-                                <div className="dashboard-progress-track">
-                                  <div className="dashboard-progress-bar" style={{ width: `${progress}%` }} />
-                                </div>
-                              </div>
+                    </div>
+
+                    <div className="dashboard-usage-pane-list">
+                      {loading || usageLoading ? (
+                        <div className="dashboard-usage-grid">
+                          {Array.from({ length: 6 }).map((_, index) => (
+                            <div key={`usage-skeleton-${index}`} className="dashboard-usage-row-skeleton">
+                              <div className="premium-skeleton premium-skeleton-line" style={{ width: "42%" }} />
+                              <div className="premium-skeleton premium-skeleton-line" style={{ width: "26%" }} />
                             </div>
-                          );
-                        })}
-                      </div>
-                      {usageRemainingCount > 0 ? (
-                        <div className="dashboard-usage-footnote">
-                          +{usageRemainingCount} feature(s) adicionais aparecem no histórico completo.
+                          ))}
                         </div>
-                      ) : null}
-                    </>
-                  )}
+                      ) : usagePreviewItems.length === 0 ? (
+                        <div className="state-ea">
+                          <p className="state-ea-title">Sem uso registrado neste mês</p>
+                          <div className="state-ea-text">
+                            Quando você gerar conteúdo, o consumo aparece aqui e no histórico de {CREATOR_COINS_PUBLIC_NAME}.
+                          </div>
+                          <div className="state-ea-actions">
+                            <Link href="/creators" className="btn-link-ea btn-primary btn-sm">
+                              Gerar agora
+                            </Link>
+                            <Link href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
+                              Ver histórico
+                            </Link>
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="dashboard-usage-grid">
+                            {usagePreviewItems.map((item) => {
+                              const progress = usageProgress(item);
+                              return (
+                                <div key={item.feature} className="dashboard-usage-row">
+                                  <div className="dashboard-usage-row-main">
+                                    <span className="dashboard-stream-link-title">{item.feature}</span>
+                                    <span className="dashboard-stream-link-copy">
+                                      {item.used} de {item.limit} consumo(s) no período.
+                                    </span>
+                                  </div>
+                                  <div className="dashboard-usage-row-meter">
+                                    <strong>{item.used}/{item.limit}</strong>
+                                    <div className="dashboard-progress-track">
+                                      <div className="dashboard-progress-bar" style={{ width: `${progress}%` }} />
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                          {usageRemainingCount > 0 ? (
+                            <div className="dashboard-usage-footnote">
+                              +{usageRemainingCount} feature(s) adicionais aparecem no histórico completo.
+                            </div>
+                          ) : null}
+                        </>
+                      )}
+                    </div>
+                  </div>
                 </section>
               </div>
             </section>
@@ -734,19 +752,21 @@ export default function DashboardPage() {
                 </Link>
               </div>
 
-              <div className="dashboard-ops-account">
-                <span className="dashboard-stage-stat-label">Conta ativa</span>
-                <strong>{planLabelDisplay}</strong>
-                <span>{emailDisplay}</span>
-              </div>
+              <div className="dashboard-ops-console">
+                <div className="dashboard-ops-console-shelf dashboard-ops-account">
+                  <span className="dashboard-stage-stat-label">Conta ativa</span>
+                  <strong>{planLabelDisplay}</strong>
+                  <span>{emailDisplay}</span>
+                </div>
 
-              <div className="dashboard-wallet-summary dashboard-ops-wallet">
-                <div className="dashboard-wallet-summary-copy">
-                  <span className="dashboard-stream-link-kicker">{CREATOR_COINS_PUBLIC_NAME}</span>
-                  <strong className="dashboard-stream-link-title">{walletSummaryDisplay}</strong>
-                  <span className="dashboard-stream-link-copy">
-                    O creator mostra a estimativa antes e o historico confirma depois.
-                  </span>
+                <div className="dashboard-ops-console-shelf dashboard-ops-wallet">
+                  <div className="dashboard-wallet-summary-copy">
+                    <span className="dashboard-stream-link-kicker">{CREATOR_COINS_PUBLIC_NAME}</span>
+                    <strong className="dashboard-stream-link-title">{walletSummaryDisplay}</strong>
+                    <span className="dashboard-stream-link-copy">
+                      O creator mostra a estimativa antes e o historico confirma depois.
+                    </span>
+                  </div>
                 </div>
               </div>
 
@@ -764,12 +784,17 @@ export default function DashboardPage() {
 
               <div className="dashboard-flow-divider dashboard-flow-divider-compact" aria-hidden="true" />
 
-              <div className="dashboard-support-stream">
+              <div className="dashboard-ops-actions-head">
+                <span className="dashboard-stage-stat-label">Comandos de apoio</span>
+                <strong>Plano, suporte e leitura financeira sem virar painel auxiliar genérico.</strong>
+              </div>
+
+              <div className="dashboard-support-stream dashboard-support-command-list">
                 {supportQuickLinks.map((item, index) => (
                   <Link
                     key={item.href}
                     href={item.href}
-                    className="dashboard-stream-link dashboard-stream-link-support"
+                    className="dashboard-stream-link dashboard-stream-link-support dashboard-stream-link-support-command"
                     data-reveal
                     data-reveal-delay={String(95 + index * 30)}
                   >
