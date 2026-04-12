@@ -137,6 +137,32 @@ function formatDashboardKindLabel(value: string | null | undefined, fallback: st
   return normalized.charAt(0).toUpperCase() + normalized.slice(1);
 }
 
+function formatDashboardUsageFeatureLabel(value: string | null | undefined): string {
+  const normalized = String(value || "").trim().toLowerCase();
+  if (!normalized) return "Feature";
+
+  const presets: Record<string, string> = {
+    text_generate: "Peca textual",
+    image_generate: "Imagem",
+    video_generate: "Video",
+    voice_generate: "Voz",
+    music_generate: "Musica",
+    publish: "Publicacao",
+    project_sync: "Continuidade",
+    creator_post: "Creator Post",
+    creator_scripts: "Creator Scripts",
+    creator_clips: "Creator Clips",
+  };
+
+  if (presets[normalized]) return presets[normalized];
+
+  return normalized
+    .replace(/[_-]+/g, " ")
+    .replace(/\s{2,}/g, " ")
+    .trim()
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
 export default function DashboardPage() {
   const {
     loading,
@@ -288,16 +314,25 @@ export default function DashboardPage() {
     () =>
       [...usageItems]
         .sort((a, b) => Number(b.used || 0) - Number(a.used || 0) || Number(b.limit || 0) - Number(a.limit || 0))
-        .slice(0, 5),
+        .slice(0, 4),
     [usageItems]
   );
+  const usageDisplayItems = useMemo(
+    () =>
+      usagePreviewItems.map((item) => ({
+        ...item,
+        displayLabel: formatDashboardUsageFeatureLabel(item.feature),
+      })),
+    [usagePreviewItems]
+  );
   const usageRemainingCount = Math.max(0, usageItems.length - usagePreviewItems.length);
+  const hasConfirmedUsage = totalUsage > 0;
   const usageLeadInsight =
     loading || usageLoading
       ? "Sincronizando as features mais usadas no período."
-      : usagePreviewItems[0]
-        ? `${usagePreviewItems[0].feature} puxa a atividade confirmada deste ciclo.`
-        : `Quando você gerar conteúdo, o consumo confirmado aparece aqui e no histórico de ${CREATOR_COINS_PUBLIC_NAME}.`;
+      : hasConfirmedUsage && usageDisplayItems[0]
+        ? `${usageDisplayItems[0].displayLabel} puxa a atividade confirmada deste ciclo.`
+        : `Quando uma entrega atravessar o fluxo completo, o consumo confirmado aparece aqui e no histórico de ${CREATOR_COINS_PUBLIC_NAME}.`;
   const nextAction = recentProjects.length > 0
       ? {
         title: "Retomar projeto",
@@ -384,7 +419,7 @@ export default function DashboardPage() {
           <div className="dashboard-command-track">
             <div className="dashboard-command-track-head">
               <span className="dashboard-hero-flow-label">Linha criativa</span>
-              <strong>Do creator a saida sem romper contexto.</strong>
+              <strong>Creator, editor e saida no mesmo plano, sem cenografia sobrando.</strong>
             </div>
             <div className="dashboard-command-track-list">
               <div className="dashboard-command-node">
@@ -487,10 +522,9 @@ export default function DashboardPage() {
                 <div className="section-head dashboard-stage-feature-head">
                   <div className="section-header-ea">
                     <p className="section-kicker">Continuidade viva</p>
-                    <h3 className="heading-reset">Projeto em foco e trilha de retomada</h3>
+                    <h3 className="heading-reset">Projeto em foco</h3>
                     <p className="helper-text-ea">
-                      O dashboard deixa de listar modulos e passa a abrir um palco claro para o que
-                      continua agora.
+                      Uma retomada central: menos painel bruto e mais clareza sobre o que esta vivo agora.
                     </p>
                   </div>
                   <Link href="/projects" className="btn-link-ea btn-ghost btn-sm">Abrir projetos</Link>
@@ -544,17 +578,17 @@ export default function DashboardPage() {
 
                   <div className="dashboard-stage-side">
                     <div className="dashboard-stage-side-block dashboard-stage-side-block-primary">
-                      <span className="dashboard-stage-stat-label">Projetos ativos</span>
+                      <span className="dashboard-stage-stat-label">Ritmo atual</span>
                       <strong>{continuityValue}</strong>
                       <span>{continuityDetail}</span>
                     </div>
                     <div className="dashboard-stage-side-block">
-                      <span className="dashboard-stage-stat-label">{CREATOR_COINS_PUBLIC_NAME}</span>
+                      <span className="dashboard-stage-stat-label">Saldo pronto</span>
                       <strong>{walletSummaryDisplay}</strong>
                       <span>Saldo confirmado e historico reconciliado.</span>
                     </div>
                     <div className="dashboard-stage-side-block dashboard-stage-side-block-action">
-                      <span className="dashboard-stage-stat-label">Próximo passo</span>
+                      <span className="dashboard-stage-stat-label">Próximo movimento</span>
                       <strong>{nextActionTitleDisplay}</strong>
                       <span>{nextActionDescriptionDisplay}</span>
                       {nextAction.href.startsWith("/editor") ? (
@@ -605,16 +639,16 @@ export default function DashboardPage() {
                       <p className="section-kicker">Centro da experiência</p>
                       <h3 className="heading-reset">Núcleo em ação</h3>
                       <p className="helper-text-ea">
-                        A parte central do produto precisa parecer uma mesa de comando, não uma
-                        malha estreita de atalhos.
+                        A operação central precisa respirar, orientar e empurrar o trabalho adiante
+                        sem parecer uma grade utilitária apertada.
                       </p>
                     </div>
                     <div className="dashboard-core-atlas-summary">
                       <span className="dashboard-stage-stat-label">Fluxo principal</span>
-                      <strong>Creators, editor, projetos e saída no mesmo ritmo.</strong>
+                      <strong>Creators, editor, projetos e saida em uma mesma cadencia.</strong>
                       <span>
-                        Base criativa, revisão, continuidade e publicação aparecem como uma mesma
-                        experiência operacional.
+                        Base criativa, revisao, continuidade e publicacao aparecem como uma trilha
+                        unica, não como modulos encaixados.
                       </span>
                     </div>
                   </div>
@@ -687,6 +721,26 @@ export default function DashboardPage() {
                             </div>
                           ))}
                         </div>
+                      ) : !hasConfirmedUsage ? (
+                        <div className="dashboard-usage-empty">
+                          <div className="dashboard-usage-empty-copy">
+                            <span className="dashboard-stage-stat-label">Aguardando confirmações</span>
+                            <strong>Nenhum consumo confirmado neste ciclo</strong>
+                            <span>
+                              Assim que uma geração atravessar creators, editor ou saída, este
+                              painel passa a mostrar o histórico real e reconciliado.
+                            </span>
+                          </div>
+                          {usageDisplayItems.length > 0 ? (
+                            <div className="dashboard-usage-empty-tags">
+                              {usageDisplayItems.slice(0, 3).map((item) => (
+                                <span key={item.feature} className="dashboard-usage-empty-tag">
+                                  {item.displayLabel}
+                                </span>
+                              ))}
+                            </div>
+                          ) : null}
+                        </div>
                       ) : usagePreviewItems.length === 0 ? (
                         <div className="state-ea">
                           <p className="state-ea-title">Sem uso registrado neste mês</p>
@@ -705,12 +759,12 @@ export default function DashboardPage() {
                       ) : (
                         <>
                           <div className="dashboard-usage-grid">
-                            {usagePreviewItems.map((item) => {
+                            {usageDisplayItems.map((item) => {
                               const progress = usageProgress(item);
                               return (
                                 <div key={item.feature} className="dashboard-usage-row">
                                   <div className="dashboard-usage-row-main">
-                                    <span className="dashboard-stream-link-title">{item.feature}</span>
+                                    <span className="dashboard-stream-link-title">{item.displayLabel}</span>
                                     <span className="dashboard-stream-link-copy">
                                       {item.used} de {item.limit} consumo(s) no período.
                                     </span>
@@ -745,7 +799,7 @@ export default function DashboardPage() {
                 <div className="section-header-ea">
                   <p className="section-kicker">Operação em apoio</p>
                   <h3 className="heading-reset">Conta, saldo e suporte</h3>
-                  <p className="helper-text-ea">Uma rail de apoio mais enxuta, mais legivel e com cara de console premium.</p>
+                  <p className="helper-text-ea">Uma camada de apoio mais nobre, menos lateral genérica e mais integrada à página.</p>
                 </div>
                 <Link href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
                   Ver histórico completo
@@ -786,7 +840,7 @@ export default function DashboardPage() {
 
               <div className="dashboard-ops-actions-head">
                 <span className="dashboard-stage-stat-label">Comandos de apoio</span>
-                <strong>Plano, suporte e leitura financeira sem virar painel auxiliar genérico.</strong>
+                <strong>Plano, suporte e leitura financeira sem cara de coluna auxiliar improvisada.</strong>
               </div>
 
               <div className="dashboard-support-stream dashboard-support-command-list">
