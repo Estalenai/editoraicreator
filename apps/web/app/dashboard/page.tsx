@@ -396,9 +396,9 @@ export default function DashboardPage() {
   return (
     <div className="page-shell dashboard-page">
       <div className="dashboard-page-canvas">
-      <section className="premium-hero dashboard-hero surface-flow-hero dashboard-command-stage dashboard-benchmark-hero dashboard-foundation-hero" data-reveal>
-        <div className="dashboard-command-header">
-          <div className="hero-copy dashboard-command-intro">
+      <section className="premium-hero dashboard-hero surface-flow-hero dashboard-command-stage dashboard-benchmark-hero dashboard-foundation-hero dashboard-phase-a2-hero" data-reveal>
+        <div className="dashboard-command-header dashboard-phase-a2-hero-head">
+          <div className="hero-copy dashboard-command-intro dashboard-phase-a2-hero-copy">
             <div className="hero-title-stack">
               <p className="section-kicker">Painel executivo</p>
               <h1 className="heading-reset">Dashboard</h1>
@@ -407,14 +407,14 @@ export default function DashboardPage() {
                 superficie. Conta: {emailDisplay}.
               </p>
             </div>
-            <div className="hero-meta-row dashboard-command-meta">
+            <div className="hero-meta-row dashboard-command-meta dashboard-phase-a2-hero-meta">
               <span className="premium-badge premium-badge-phase">Plano: {planLabelDisplay}</span>
               <span className="premium-badge premium-badge-warning">
                 {loading ? "Conta em sincronização" : "Histórico confirmado no backend"}
               </span>
             </div>
           </div>
-          <div className="hero-actions-row dashboard-command-actions">
+          <div className="hero-actions-row dashboard-command-actions dashboard-phase-a2-hero-actions">
             <button
               onClick={async () => {
                 await onSyncSubscription();
@@ -432,10 +432,10 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="dashboard-command-grid dashboard-benchmark-hero-grid dashboard-foundation-hero-grid" data-reveal data-reveal-delay="55">
-          <div className="dashboard-benchmark-hero-main dashboard-foundation-hero-main">
-            <div className="dashboard-command-track dashboard-benchmark-hero-poster dashboard-foundation-hero-poster">
-              <div className="dashboard-command-track-head">
+        <div className="dashboard-command-grid dashboard-benchmark-hero-grid dashboard-foundation-hero-grid dashboard-phase-a2-hero-grid" data-reveal data-reveal-delay="55">
+          <div className="dashboard-benchmark-hero-main dashboard-foundation-hero-main dashboard-phase-a2-hero-main">
+            <div className="dashboard-command-track dashboard-benchmark-hero-poster dashboard-foundation-hero-poster dashboard-phase-a2-hero-poster">
+              <div className="dashboard-command-track-head dashboard-phase-a2-hero-track">
                 <span className="dashboard-hero-flow-label">Linha criativa</span>
                 <strong>Creator, editor e saida ocupam o palco principal do produto.</strong>
                 <p className="dashboard-command-track-copy">
@@ -444,7 +444,7 @@ export default function DashboardPage() {
                 </p>
               </div>
 
-              <div className="dashboard-benchmark-hero-sequence">
+              <div className="dashboard-benchmark-hero-sequence dashboard-phase-a2-hero-sequence">
                 <div className="dashboard-benchmark-step">
                   <span className="dashboard-benchmark-step-index">01</span>
                   <div className="dashboard-command-node-copy">
@@ -473,14 +473,14 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <aside className="dashboard-benchmark-hero-rail dashboard-foundation-hero-rail" data-reveal data-reveal-delay="90">
+          <aside className="dashboard-benchmark-hero-rail dashboard-foundation-hero-rail dashboard-phase-a2-hero-rail" data-reveal data-reveal-delay="90">
             <div className="dashboard-benchmark-hero-rail-row dashboard-benchmark-hero-rail-row-strong">
               <span className="dashboard-overview-label">Conta ativa</span>
               <strong>{planLabelDisplay}</strong>
               <span>{emailDisplay}</span>
             </div>
 
-            <div className="dashboard-benchmark-hero-rail-split">
+            <div className="dashboard-benchmark-hero-rail-split dashboard-phase-a2-hero-rail-split">
               <div className="dashboard-benchmark-hero-rail-row">
                 <span className="dashboard-overview-label">{CREATOR_COINS_PUBLIC_NAME}</span>
                 <strong>{walletSummaryDisplay}</strong>
@@ -493,7 +493,7 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <div className="dashboard-benchmark-hero-rail-row dashboard-benchmark-hero-rail-next">
+            <div className="dashboard-benchmark-hero-rail-row dashboard-benchmark-hero-rail-next dashboard-phase-a2-hero-next">
               <span className="dashboard-overview-label">Próximo passo</span>
               <strong>{nextActionTitleDisplay}</strong>
               <span>{nextActionDescriptionDisplay}</span>
@@ -543,11 +543,11 @@ export default function DashboardPage() {
         </div>
       ) : null}
 
-      <section className="dashboard-workspace-shell dashboard-workspace-shell-flat dashboard-benchmark-shell dashboard-foundation-shell" data-reveal data-reveal-delay="135">
-        <div className="dashboard-workspace-grid dashboard-workspace-grid-flat dashboard-benchmark-grid dashboard-foundation-grid">
-          <div className="dashboard-workspace-main dashboard-workspace-main-flat dashboard-benchmark-main dashboard-foundation-main">
-            <section className="dashboard-stage-feature dashboard-stage-feature-premium dashboard-benchmark-focus-section dashboard-foundation-region dashboard-foundation-focus" data-reveal data-reveal-delay="150">
-                <div className="section-head dashboard-stage-feature-head dashboard-benchmark-focus-head">
+      <section className="dashboard-workspace-shell dashboard-workspace-shell-flat dashboard-benchmark-shell dashboard-foundation-shell dashboard-phase-a2-shell" data-reveal data-reveal-delay="135">
+        <div className="dashboard-workspace-grid dashboard-workspace-grid-flat dashboard-benchmark-grid dashboard-foundation-grid dashboard-phase-a2-grid">
+          <div className="dashboard-workspace-main dashboard-workspace-main-flat dashboard-benchmark-main dashboard-foundation-main dashboard-phase-a2-main">
+            <section className="dashboard-stage-feature dashboard-stage-feature-premium dashboard-benchmark-focus-section dashboard-foundation-region dashboard-foundation-focus dashboard-phase-a2-focus" data-reveal data-reveal-delay="150">
+                <div className="section-head dashboard-stage-feature-head dashboard-benchmark-focus-head dashboard-phase-a2-focus-head">
                   <div className="section-header-ea">
                     <p className="section-kicker">Continuidade viva</p>
                     <h3 className="heading-reset">Projeto em foco</h3>
@@ -558,7 +558,7 @@ export default function DashboardPage() {
                   <Link href="/projects" className="btn-link-ea btn-ghost btn-sm">Abrir projetos</Link>
                 </div>
 
-                <div className="dashboard-benchmark-focus-grid dashboard-foundation-focus-grid">
+                <div className="dashboard-benchmark-focus-grid dashboard-foundation-focus-grid dashboard-phase-a2-focus-grid">
                   <div className="dashboard-benchmark-focus-lead dashboard-foundation-focus-lead">
                     {loading ? (
                         <div className="dashboard-stage-lead-skeleton dashboard-foundation-focus-skeleton">
@@ -567,7 +567,7 @@ export default function DashboardPage() {
                         <div className="premium-skeleton premium-skeleton-line" style={{ width: "48%", marginTop: 16 }} />
                       </div>
                     ) : featuredProjectDisplay ? (
-                      <EditorRouteLink href={`/editor/${featuredProjectDisplay.id}`} className="dashboard-benchmark-focus-link dashboard-foundation-focus-link">
+                      <EditorRouteLink href={`/editor/${featuredProjectDisplay.id}`} className="dashboard-benchmark-focus-link dashboard-foundation-focus-link dashboard-phase-a2-focus-primary">
                         <div className="dashboard-stage-lead-topline">
                           <span className="dashboard-stage-lead-kicker">Projeto em foco</span>
                           <span className="dashboard-stage-lead-pill">{featuredProjectDisplay.stageLabel}</span>
@@ -585,7 +585,7 @@ export default function DashboardPage() {
                         </div>
                       </EditorRouteLink>
                     ) : (
-                      <div className="dashboard-benchmark-focus-empty dashboard-foundation-focus-link">
+                      <div className="dashboard-benchmark-focus-empty dashboard-foundation-focus-link dashboard-phase-a2-focus-primary">
                         <span className="dashboard-stage-lead-kicker">Projeto em foco</span>
                         <strong>A trilha fica premium quando um Creator vira projeto de verdade.</strong>
                         <p>
@@ -604,7 +604,7 @@ export default function DashboardPage() {
                     )}
                   </div>
 
-                  <div className="dashboard-benchmark-focus-side dashboard-foundation-focus-side">
+                  <div className="dashboard-benchmark-focus-side dashboard-foundation-focus-side dashboard-phase-a2-focus-side">
                     <div className="dashboard-benchmark-focus-kpi">
                       <span className="dashboard-stage-stat-label">Ritmo atual</span>
                       <strong>{continuityValue}</strong>
@@ -633,13 +633,13 @@ export default function DashboardPage() {
                 </div>
 
                 {loading ? (
-                  <div className="dashboard-benchmark-ribbon dashboard-foundation-ribbon">
+                  <div className="dashboard-benchmark-ribbon dashboard-foundation-ribbon dashboard-phase-a2-ribbon">
                     {Array.from({ length: 3 }).map((_, index) => (
                       <div key={`project-skeleton-${index}`} className="dashboard-project-skeleton-row" />
                     ))}
                   </div>
                 ) : supportingProjectDisplay.length > 0 ? (
-                  <div className="dashboard-benchmark-ribbon dashboard-foundation-ribbon">
+                  <div className="dashboard-benchmark-ribbon dashboard-foundation-ribbon dashboard-phase-a2-ribbon">
                     {supportingProjectDisplay.map((project: any, index: number) => (
                       <EditorRouteLink
                         key={String(project.id || project.project_id || index)}
@@ -658,10 +658,10 @@ export default function DashboardPage() {
                 ) : null}
             </section>
 
-            <section className="dashboard-main-detail-region dashboard-detail-region-premium dashboard-benchmark-detail-region dashboard-foundation-region dashboard-foundation-detail" data-reveal data-reveal-delay="210">
-              <div className="dashboard-main-detail-grid dashboard-benchmark-detail-grid dashboard-foundation-detail-grid">
-                <section className="dashboard-flow-section dashboard-flow-section-core dashboard-core-atlas dashboard-benchmark-core dashboard-foundation-core">
-                  <div className="dashboard-core-atlas-head dashboard-benchmark-core-head">
+            <section className="dashboard-main-detail-region dashboard-detail-region-premium dashboard-benchmark-detail-region dashboard-foundation-region dashboard-foundation-detail dashboard-phase-a2-detail" data-reveal data-reveal-delay="210">
+              <div className="dashboard-main-detail-grid dashboard-benchmark-detail-grid dashboard-foundation-detail-grid dashboard-phase-a2-detail-grid">
+                <section className="dashboard-flow-section dashboard-flow-section-core dashboard-core-atlas dashboard-benchmark-core dashboard-foundation-core dashboard-phase-a2-core">
+                  <div className="dashboard-core-atlas-head dashboard-benchmark-core-head dashboard-phase-a2-core-head">
                     <div className="section-header-ea">
                       <p className="section-kicker">Centro da experiência</p>
                       <h3 className="heading-reset">Núcleo em ação</h3>
@@ -679,7 +679,7 @@ export default function DashboardPage() {
                       </span>
                     </div>
                   </div>
-                  <div className="dashboard-core-stream dashboard-core-stream-grid dashboard-benchmark-core-grid dashboard-foundation-core-grid">
+                  <div className="dashboard-core-stream dashboard-core-stream-grid dashboard-benchmark-core-grid dashboard-foundation-core-grid dashboard-phase-a2-core-grid">
                     {coreQuickLinks.map((item, index) =>
                       item.href.startsWith("/editor") ? (
                         <EditorRouteLink
@@ -716,9 +716,9 @@ export default function DashboardPage() {
                   </div>
                 </section>
 
-                <section className="dashboard-flow-section dashboard-flow-section-usage dashboard-usage-pane dashboard-benchmark-usage dashboard-foundation-usage">
-                  <div className="dashboard-usage-pane-grid dashboard-benchmark-usage-grid dashboard-foundation-usage-grid">
-                    <div className="dashboard-usage-pane-copy dashboard-benchmark-usage-copy dashboard-foundation-usage-copy">
+                <section className="dashboard-flow-section dashboard-flow-section-usage dashboard-usage-pane dashboard-benchmark-usage dashboard-foundation-usage dashboard-phase-a2-usage">
+                  <div className="dashboard-usage-pane-grid dashboard-benchmark-usage-grid dashboard-foundation-usage-grid dashboard-phase-a2-usage-grid">
+                    <div className="dashboard-usage-pane-copy dashboard-benchmark-usage-copy dashboard-foundation-usage-copy dashboard-phase-a2-usage-copy">
                       <div className="section-head dashboard-section-head-flat">
                         <div className="section-header-ea">
                           <p className="section-kicker">Uso recente</p>
@@ -738,7 +738,7 @@ export default function DashboardPage() {
                       </div>
                     </div>
 
-                    <div className="dashboard-usage-pane-list dashboard-benchmark-usage-list dashboard-foundation-usage-list">
+                    <div className="dashboard-usage-pane-list dashboard-benchmark-usage-list dashboard-foundation-usage-list dashboard-phase-a2-usage-list">
                       {loading || usageLoading ? (
                         <div className="dashboard-usage-grid">
                           {Array.from({ length: 6 }).map((_, index) => (
@@ -817,8 +817,8 @@ export default function DashboardPage() {
             </section>
           </div>
 
-          <aside className="dashboard-workspace-rail dashboard-workspace-rail-flat dashboard-benchmark-rail dashboard-foundation-rail">
-            <section className="dashboard-flow-section dashboard-flow-section-operations dashboard-operations-region dashboard-operations-region-premium dashboard-benchmark-ops dashboard-foundation-region dashboard-foundation-ops" data-reveal data-reveal-delay="170">
+          <aside className="dashboard-workspace-rail dashboard-workspace-rail-flat dashboard-benchmark-rail dashboard-foundation-rail dashboard-phase-a2-rail">
+            <section className="dashboard-flow-section dashboard-flow-section-operations dashboard-operations-region dashboard-operations-region-premium dashboard-benchmark-ops dashboard-foundation-region dashboard-foundation-ops dashboard-phase-a2-ops" data-reveal data-reveal-delay="170">
               <div className="section-head dashboard-section-head-flat">
                 <div className="section-header-ea">
                   <p className="section-kicker">Operação em apoio</p>
@@ -833,13 +833,13 @@ export default function DashboardPage() {
                 </Link>
               </div>
 
-              <div className="dashboard-benchmark-ops-account dashboard-foundation-ops-account">
+              <div className="dashboard-benchmark-ops-account dashboard-foundation-ops-account dashboard-phase-a2-ops-account">
                 <span className="dashboard-stage-stat-label">Conta ativa</span>
                 <strong>{planLabelDisplay}</strong>
                 <span>{emailDisplay}</span>
               </div>
 
-              <div className="dashboard-benchmark-ops-wallet dashboard-foundation-ops-wallet">
+              <div className="dashboard-benchmark-ops-wallet dashboard-foundation-ops-wallet dashboard-phase-a2-ops-wallet">
                 <div className="dashboard-wallet-summary-copy">
                   <span className="dashboard-stream-link-kicker">{CREATOR_COINS_PUBLIC_NAME}</span>
                   <strong className="dashboard-stream-link-title">{walletSummaryDisplay}</strong>
@@ -868,7 +868,7 @@ export default function DashboardPage() {
                 <strong>Plano, suporte e leitura financeira sem cara de coluna auxiliar improvisada.</strong>
               </div>
 
-              <div className="dashboard-support-stream dashboard-support-command-list dashboard-benchmark-rail-links dashboard-foundation-rail-links">
+              <div className="dashboard-support-stream dashboard-support-command-list dashboard-benchmark-rail-links dashboard-foundation-rail-links dashboard-phase-a2-rail-links">
                 {supportQuickLinks.map((item, index) => (
                   <Link
                     key={item.href}
