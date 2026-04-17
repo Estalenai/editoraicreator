@@ -24999,3 +24999,296 @@ body {
     border-radius: 18px;
   }
 }
+
+/* Dashboard phase A1 compositional reset
+   Purpose: remove parent surfaces, open the internal regions, and stop the
+   dashboard from reading as hero + boxes + sidebar + utility base. */
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-shell {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-shell::before,
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-shell::after,
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-region::before {
+  display: none;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-grid {
+  grid-template-columns: minmax(0, 1.5fr) minmax(280px, 0.72fr);
+  gap: clamp(22px, 2.6vw, 34px);
+  align-items: start;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-main {
+  gap: clamp(24px, 2.7vw, 32px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-rail {
+  gap: clamp(18px, 2vw, 24px);
+  padding-left: clamp(20px, 2.2vw, 28px);
+  border-left: 1px solid rgba(191, 239, 255, 0.08);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-region {
+  position: relative;
+  isolation: isolate;
+  overflow: visible;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-hero {
+  gap: clamp(20px, 2.5vw, 30px);
+  padding: clamp(24px, 2.7vw, 32px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 20px 48px rgba(1, 6, 20, 0.18);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-hero::before {
+  opacity: 0.7;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-hero-grid {
+  grid-template-columns: minmax(0, 1.42fr) minmax(280px, 0.74fr);
+  gap: clamp(20px, 2.4vw, 30px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-hero-poster {
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
+  gap: clamp(20px, 2.2vw, 28px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-hero-poster::before {
+  display: none;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-hero-poster .dashboard-command-track-head strong {
+  max-width: 11ch;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-hero-rail {
+  align-content: start;
+  gap: 0;
+  padding: 0 0 0 clamp(20px, 2.2vw, 28px);
+  border: 0;
+  border-left: 1px solid rgba(191, 239, 255, 0.08);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-hero-rail-row {
+  padding: 16px 0;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-focus {
+  padding-bottom: clamp(24px, 2.5vw, 30px);
+  border-bottom: 1px solid rgba(191, 239, 255, 0.08);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-focus-grid {
+  grid-template-columns: minmax(0, 1.22fr) minmax(250px, 0.78fr);
+  gap: clamp(20px, 2.1vw, 26px);
+  align-items: start;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-focus-link,
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-focus-skeleton {
+  min-height: 0;
+  padding: 0 0 8px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-focus-link .dashboard-stage-lead-title {
+  max-width: 12ch;
+  font-size: clamp(1.92rem, 2.8vw, 2.72rem);
+  line-height: 0.98;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-focus-side {
+  display: grid;
+  gap: 0;
+  padding-left: clamp(20px, 2vw, 24px);
+  border-left: 1px solid rgba(191, 239, 255, 0.08);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-ribbon {
+  padding-top: clamp(18px, 1.9vw, 24px);
+  border-top: 1px solid rgba(191, 239, 255, 0.08);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-detail {
+  gap: clamp(22px, 2.4vw, 30px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-detail-grid {
+  gap: clamp(22px, 2.4vw, 30px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-core,
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-usage,
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-ops {
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-core {
+  padding-bottom: clamp(22px, 2.3vw, 28px) !important;
+  border-bottom: 1px solid rgba(191, 239, 255, 0.08);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-core-head {
+  grid-template-columns: minmax(0, 1.08fr) minmax(280px, 0.92fr);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-core-grid {
+  gap: 0 clamp(20px, 2vw, 24px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-core-grid > * {
+  min-height: 0;
+  padding: 16px 0;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-core-grid > *:nth-child(2n) {
+  padding-left: clamp(18px, 1.8vw, 22px);
+  border-left: 1px solid rgba(191, 239, 255, 0.08);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-core-grid > *:nth-child(n + 3) {
+  padding-top: 18px;
+  border-top: 1px solid rgba(191, 239, 255, 0.08);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-usage-grid {
+  grid-template-columns: minmax(250px, 0.72fr) minmax(0, 1.28fr);
+  gap: clamp(18px, 2vw, 24px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-usage-copy {
+  gap: 16px;
+  padding-right: clamp(18px, 1.8vw, 22px);
+  border-right: 1px solid rgba(191, 239, 255, 0.08);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-usage-list {
+  gap: 8px;
+  padding-left: clamp(18px, 1.8vw, 22px);
+  border-left: 1px solid rgba(191, 239, 255, 0.08);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-usage-list .dashboard-usage-row {
+  padding: 15px 0;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-ops {
+  gap: clamp(16px, 1.8vw, 22px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-ops-account {
+  padding: 0 0 18px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  border-bottom: 1px solid rgba(191, 239, 255, 0.08);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-ops-wallet {
+  gap: 14px;
+  padding-bottom: 4px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-rail-links {
+  gap: 0;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-rail-links .dashboard-stream-link-support-command {
+  padding: 14px 0;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-foundation-rail-links .dashboard-stream-link-support-command + .dashboard-stream-link-support-command {
+  border-top: 1px solid rgba(191, 239, 255, 0.08);
+}
+
+@media (max-width: 1220px) {
+  .app-shell-frame:has(.dashboard-page) .dashboard-foundation-hero-grid,
+  .app-shell-frame:has(.dashboard-page) .dashboard-foundation-grid,
+  .app-shell-frame:has(.dashboard-page) .dashboard-foundation-detail-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-foundation-hero-rail,
+  .app-shell-frame:has(.dashboard-page) .dashboard-foundation-rail {
+    padding-left: 0;
+    padding-top: 22px;
+    border-left: 0;
+    border-top: 1px solid rgba(191, 239, 255, 0.08);
+  }
+}
+
+@media (max-width: 980px) {
+  .app-shell-frame:has(.dashboard-page) .dashboard-foundation-focus-grid,
+  .app-shell-frame:has(.dashboard-page) .dashboard-foundation-core-head,
+  .app-shell-frame:has(.dashboard-page) .dashboard-foundation-usage-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-foundation-focus-side {
+    padding-left: 0;
+    padding-top: 18px;
+    border-left: 0;
+    border-top: 1px solid rgba(191, 239, 255, 0.08);
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-foundation-usage-copy {
+    padding-right: 0;
+    padding-bottom: 18px;
+    border-right: 0;
+    border-bottom: 1px solid rgba(191, 239, 255, 0.08);
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-foundation-usage-list {
+    padding-left: 0;
+    border-left: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .app-shell-frame:has(.dashboard-page) .dashboard-foundation-hero {
+    padding: 18px;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-foundation-hero-poster .dashboard-command-track-head strong {
+    max-width: 12ch;
+    font-size: clamp(2.2rem, 10vw, 3.2rem);
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-foundation-hero-poster,
+  .app-shell-frame:has(.dashboard-page) .dashboard-foundation-focus-link {
+    padding-bottom: 6px;
+  }
+}

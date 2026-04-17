@@ -396,7 +396,7 @@ export default function DashboardPage() {
   return (
     <div className="page-shell dashboard-page">
       <div className="dashboard-page-canvas">
-      <section className="premium-hero dashboard-hero surface-flow-hero dashboard-command-stage dashboard-benchmark-hero" data-reveal>
+      <section className="premium-hero dashboard-hero surface-flow-hero dashboard-command-stage dashboard-benchmark-hero dashboard-foundation-hero" data-reveal>
         <div className="dashboard-command-header">
           <div className="hero-copy dashboard-command-intro">
             <div className="hero-title-stack">
@@ -432,9 +432,9 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="dashboard-command-grid dashboard-benchmark-hero-grid" data-reveal data-reveal-delay="55">
-          <div className="dashboard-benchmark-hero-main">
-            <div className="dashboard-command-track dashboard-benchmark-hero-poster">
+        <div className="dashboard-command-grid dashboard-benchmark-hero-grid dashboard-foundation-hero-grid" data-reveal data-reveal-delay="55">
+          <div className="dashboard-benchmark-hero-main dashboard-foundation-hero-main">
+            <div className="dashboard-command-track dashboard-benchmark-hero-poster dashboard-foundation-hero-poster">
               <div className="dashboard-command-track-head">
                 <span className="dashboard-hero-flow-label">Linha criativa</span>
                 <strong>Creator, editor e saida ocupam o palco principal do produto.</strong>
@@ -473,7 +473,7 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <aside className="dashboard-benchmark-hero-rail" data-reveal data-reveal-delay="90">
+          <aside className="dashboard-benchmark-hero-rail dashboard-foundation-hero-rail" data-reveal data-reveal-delay="90">
             <div className="dashboard-benchmark-hero-rail-row dashboard-benchmark-hero-rail-row-strong">
               <span className="dashboard-overview-label">Conta ativa</span>
               <strong>{planLabelDisplay}</strong>
@@ -543,11 +543,10 @@ export default function DashboardPage() {
         </div>
       ) : null}
 
-      <section className="dashboard-workspace-shell dashboard-workspace-shell-flat dashboard-benchmark-shell" data-reveal data-reveal-delay="135">
-        <div className="dashboard-workspace-grid dashboard-workspace-grid-flat dashboard-benchmark-grid">
-          <div className="dashboard-workspace-main dashboard-workspace-main-flat dashboard-benchmark-main">
-            <section className="dashboard-stage-feature dashboard-stage-feature-premium dashboard-benchmark-focus-section" data-reveal data-reveal-delay="150">
-              <div className="dashboard-stage-shell dashboard-stage-shell-benchmark">
+      <section className="dashboard-workspace-shell dashboard-workspace-shell-flat dashboard-benchmark-shell dashboard-foundation-shell" data-reveal data-reveal-delay="135">
+        <div className="dashboard-workspace-grid dashboard-workspace-grid-flat dashboard-benchmark-grid dashboard-foundation-grid">
+          <div className="dashboard-workspace-main dashboard-workspace-main-flat dashboard-benchmark-main dashboard-foundation-main">
+            <section className="dashboard-stage-feature dashboard-stage-feature-premium dashboard-benchmark-focus-section dashboard-foundation-region dashboard-foundation-focus" data-reveal data-reveal-delay="150">
                 <div className="section-head dashboard-stage-feature-head dashboard-benchmark-focus-head">
                   <div className="section-header-ea">
                     <p className="section-kicker">Continuidade viva</p>
@@ -559,16 +558,16 @@ export default function DashboardPage() {
                   <Link href="/projects" className="btn-link-ea btn-ghost btn-sm">Abrir projetos</Link>
                 </div>
 
-                <div className="dashboard-benchmark-focus-grid">
-                  <div className="dashboard-benchmark-focus-lead">
+                <div className="dashboard-benchmark-focus-grid dashboard-foundation-focus-grid">
+                  <div className="dashboard-benchmark-focus-lead dashboard-foundation-focus-lead">
                     {loading ? (
-                      <div className="dashboard-stage-lead-skeleton">
+                        <div className="dashboard-stage-lead-skeleton dashboard-foundation-focus-skeleton">
                         <div className="premium-skeleton premium-skeleton-line" style={{ width: "24%" }} />
                         <div className="premium-skeleton premium-skeleton-line" style={{ width: "62%", marginTop: 18 }} />
                         <div className="premium-skeleton premium-skeleton-line" style={{ width: "48%", marginTop: 16 }} />
                       </div>
                     ) : featuredProjectDisplay ? (
-                      <EditorRouteLink href={`/editor/${featuredProjectDisplay.id}`} className="dashboard-benchmark-focus-link">
+                      <EditorRouteLink href={`/editor/${featuredProjectDisplay.id}`} className="dashboard-benchmark-focus-link dashboard-foundation-focus-link">
                         <div className="dashboard-stage-lead-topline">
                           <span className="dashboard-stage-lead-kicker">Projeto em foco</span>
                           <span className="dashboard-stage-lead-pill">{featuredProjectDisplay.stageLabel}</span>
@@ -586,7 +585,7 @@ export default function DashboardPage() {
                         </div>
                       </EditorRouteLink>
                     ) : (
-                      <div className="dashboard-benchmark-focus-empty">
+                      <div className="dashboard-benchmark-focus-empty dashboard-foundation-focus-link">
                         <span className="dashboard-stage-lead-kicker">Projeto em foco</span>
                         <strong>A trilha fica premium quando um Creator vira projeto de verdade.</strong>
                         <p>
@@ -605,7 +604,7 @@ export default function DashboardPage() {
                     )}
                   </div>
 
-                  <div className="dashboard-benchmark-focus-side">
+                  <div className="dashboard-benchmark-focus-side dashboard-foundation-focus-side">
                     <div className="dashboard-benchmark-focus-kpi">
                       <span className="dashboard-stage-stat-label">Ritmo atual</span>
                       <strong>{continuityValue}</strong>
@@ -634,13 +633,13 @@ export default function DashboardPage() {
                 </div>
 
                 {loading ? (
-                  <div className="dashboard-benchmark-ribbon">
+                  <div className="dashboard-benchmark-ribbon dashboard-foundation-ribbon">
                     {Array.from({ length: 3 }).map((_, index) => (
                       <div key={`project-skeleton-${index}`} className="dashboard-project-skeleton-row" />
                     ))}
                   </div>
                 ) : supportingProjectDisplay.length > 0 ? (
-                  <div className="dashboard-benchmark-ribbon">
+                  <div className="dashboard-benchmark-ribbon dashboard-foundation-ribbon">
                     {supportingProjectDisplay.map((project: any, index: number) => (
                       <EditorRouteLink
                         key={String(project.id || project.project_id || index)}
@@ -657,12 +656,11 @@ export default function DashboardPage() {
                     ))}
                   </div>
                 ) : null}
-              </div>
             </section>
 
-            <section className="dashboard-main-detail-region dashboard-detail-region-premium dashboard-benchmark-detail-region" data-reveal data-reveal-delay="210">
-              <div className="dashboard-main-detail-grid dashboard-benchmark-detail-grid">
-                <section className="dashboard-flow-section dashboard-flow-section-core dashboard-core-atlas dashboard-benchmark-core">
+            <section className="dashboard-main-detail-region dashboard-detail-region-premium dashboard-benchmark-detail-region dashboard-foundation-region dashboard-foundation-detail" data-reveal data-reveal-delay="210">
+              <div className="dashboard-main-detail-grid dashboard-benchmark-detail-grid dashboard-foundation-detail-grid">
+                <section className="dashboard-flow-section dashboard-flow-section-core dashboard-core-atlas dashboard-benchmark-core dashboard-foundation-core">
                   <div className="dashboard-core-atlas-head dashboard-benchmark-core-head">
                     <div className="section-header-ea">
                       <p className="section-kicker">Centro da experiência</p>
@@ -681,7 +679,7 @@ export default function DashboardPage() {
                       </span>
                     </div>
                   </div>
-                  <div className="dashboard-core-stream dashboard-core-stream-grid dashboard-benchmark-core-grid">
+                  <div className="dashboard-core-stream dashboard-core-stream-grid dashboard-benchmark-core-grid dashboard-foundation-core-grid">
                     {coreQuickLinks.map((item, index) =>
                       item.href.startsWith("/editor") ? (
                         <EditorRouteLink
@@ -718,9 +716,9 @@ export default function DashboardPage() {
                   </div>
                 </section>
 
-                <section className="dashboard-flow-section dashboard-flow-section-usage dashboard-usage-pane dashboard-benchmark-usage">
-                  <div className="dashboard-usage-pane-grid dashboard-benchmark-usage-grid">
-                    <div className="dashboard-usage-pane-copy dashboard-benchmark-usage-copy">
+                <section className="dashboard-flow-section dashboard-flow-section-usage dashboard-usage-pane dashboard-benchmark-usage dashboard-foundation-usage">
+                  <div className="dashboard-usage-pane-grid dashboard-benchmark-usage-grid dashboard-foundation-usage-grid">
+                    <div className="dashboard-usage-pane-copy dashboard-benchmark-usage-copy dashboard-foundation-usage-copy">
                       <div className="section-head dashboard-section-head-flat">
                         <div className="section-header-ea">
                           <p className="section-kicker">Uso recente</p>
@@ -740,7 +738,7 @@ export default function DashboardPage() {
                       </div>
                     </div>
 
-                    <div className="dashboard-usage-pane-list dashboard-benchmark-usage-list">
+                    <div className="dashboard-usage-pane-list dashboard-benchmark-usage-list dashboard-foundation-usage-list">
                       {loading || usageLoading ? (
                         <div className="dashboard-usage-grid">
                           {Array.from({ length: 6 }).map((_, index) => (
@@ -819,8 +817,8 @@ export default function DashboardPage() {
             </section>
           </div>
 
-          <aside className="dashboard-workspace-rail dashboard-workspace-rail-flat dashboard-benchmark-rail">
-            <section className="dashboard-flow-section dashboard-flow-section-operations dashboard-operations-region dashboard-operations-region-premium dashboard-benchmark-ops" data-reveal data-reveal-delay="170">
+          <aside className="dashboard-workspace-rail dashboard-workspace-rail-flat dashboard-benchmark-rail dashboard-foundation-rail">
+            <section className="dashboard-flow-section dashboard-flow-section-operations dashboard-operations-region dashboard-operations-region-premium dashboard-benchmark-ops dashboard-foundation-region dashboard-foundation-ops" data-reveal data-reveal-delay="170">
               <div className="section-head dashboard-section-head-flat">
                 <div className="section-header-ea">
                   <p className="section-kicker">Operação em apoio</p>
@@ -835,13 +833,13 @@ export default function DashboardPage() {
                 </Link>
               </div>
 
-              <div className="dashboard-benchmark-ops-account">
+              <div className="dashboard-benchmark-ops-account dashboard-foundation-ops-account">
                 <span className="dashboard-stage-stat-label">Conta ativa</span>
                 <strong>{planLabelDisplay}</strong>
                 <span>{emailDisplay}</span>
               </div>
 
-              <div className="dashboard-benchmark-ops-wallet">
+              <div className="dashboard-benchmark-ops-wallet dashboard-foundation-ops-wallet">
                 <div className="dashboard-wallet-summary-copy">
                   <span className="dashboard-stream-link-kicker">{CREATOR_COINS_PUBLIC_NAME}</span>
                   <strong className="dashboard-stream-link-title">{walletSummaryDisplay}</strong>
@@ -870,7 +868,7 @@ export default function DashboardPage() {
                 <strong>Plano, suporte e leitura financeira sem cara de coluna auxiliar improvisada.</strong>
               </div>
 
-              <div className="dashboard-support-stream dashboard-support-command-list dashboard-benchmark-rail-links">
+              <div className="dashboard-support-stream dashboard-support-command-list dashboard-benchmark-rail-links dashboard-foundation-rail-links">
                 {supportQuickLinks.map((item, index) => (
                   <Link
                     key={item.href}
