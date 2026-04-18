@@ -26508,3 +26508,267 @@ body {
     width: 100%;
   }
 }
+
+/* Dashboard phase 2 central axis
+   Purpose: turn the middle of the page into one living product field instead
+   of a strong card plus KPI column plus module grid. */
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-hero-sequence {
+  position: relative;
+  gap: 0 clamp(28px, 2.9vw, 36px);
+  padding-top: clamp(24px, 2.4vw, 30px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-hero-step {
+  gap: 12px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-hero-step:nth-child(2) {
+  padding-top: clamp(10px, 1vw, 14px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-hero-step:nth-child(3) {
+  padding-top: clamp(18px, 1.7vw, 24px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-hero-step .dashboard-command-node-copy {
+  gap: 6px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-hero-step .dashboard-command-node-copy strong {
+  font-size: clamp(1.18rem, 1.44vw, 1.38rem);
+  line-height: 1.08;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-focus {
+  gap: clamp(20px, 2.4vw, 28px);
+  padding-bottom: clamp(28px, 2.7vw, 34px) !important;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-focus-head {
+  gap: 18px;
+  padding-bottom: clamp(16px, 1.9vw, 22px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-focus-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(20px, 2.3vw, 28px);
+  padding-top: clamp(22px, 2.3vw, 28px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-focus-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1.24fr) minmax(290px, 0.76fr);
+  gap: clamp(28px, 3vw, 40px);
+  align-items: stretch;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-focus-lead {
+  min-width: 0;
+  padding-right: clamp(24px, 2.4vw, 32px);
+  border-right: 1px solid rgba(191, 239, 255, 0.09);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-focus-primary {
+  overflow: visible;
+  min-height: 0;
+  padding: clamp(10px, 1.2vw, 16px) 0 clamp(16px, 1.8vw, 22px);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  gap: clamp(16px, 1.8vw, 22px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-focus-primary::before {
+  display: none;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-focus-primary .dashboard-stage-lead-topline {
+  align-items: center;
+  justify-content: flex-start;
+  gap: 14px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-focus-primary .dashboard-stage-lead-title {
+  max-width: 9.4ch;
+  font-size: clamp(3.1rem, 4.6vw, 4.7rem);
+  line-height: 0.88;
+  letter-spacing: -0.085em;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-focus-primary .dashboard-stage-lead-copy {
+  max-width: 34ch;
+  font-size: clamp(1.04rem, 1.2vw, 1.16rem);
+  line-height: 1.68;
+  color: rgba(231, 244, 255, 0.82);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-focus-primary .dashboard-stage-lead-meta {
+  gap: 10px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-focus-primary .dashboard-stage-lead-footer {
+  padding-top: 14px;
+  border-top: 1px solid rgba(191, 239, 255, 0.08);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-focus-summary {
+  display: grid;
+  align-content: start;
+  gap: 0;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-focus-stat {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  padding: 14px 0 18px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-focus-stat + .dashboard-phase-f2-focus-stat {
+  border-top: 1px solid rgba(191, 239, 255, 0.08);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-focus-stat strong {
+  font-size: clamp(1.6rem, 2vw, 2.12rem);
+  line-height: 1;
+  letter-spacing: -0.06em;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-focus-stat span:last-child {
+  max-width: 28ch;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-focus-stat-action .dashboard-inline-action {
+  margin-top: 4px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-ribbon {
+  gap: 0 clamp(24px, 2.3vw, 30px);
+  margin-top: clamp(20px, 2vw, 26px);
+  padding-top: clamp(20px, 2vw, 26px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-ribbon-link {
+  gap: 8px;
+  padding: 0;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-ribbon-link + .dashboard-phase-f2-ribbon-link {
+  padding-left: clamp(20px, 2vw, 26px);
+  border-left: 1px solid rgba(191, 239, 255, 0.08);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-core {
+  padding-top: clamp(6px, 0.9vw, 10px) !important;
+  gap: clamp(20px, 2.3vw, 28px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-core-head {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-core-head .dashboard-core-atlas-summary {
+  max-width: 44rem;
+  display: grid;
+  gap: 8px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-core-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0 clamp(24px, 2.3vw, 30px);
+  padding-top: clamp(22px, 2.2vw, 28px);
+  border-top: 1px solid rgba(191, 239, 255, 0.08);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-core-grid > * {
+  min-height: 0;
+  padding: 0;
+  border-left: 0 !important;
+  border-top: 0 !important;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-core-link {
+  gap: 12px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-core-link .dashboard-stream-link-main {
+  gap: 8px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-core-link .dashboard-stream-link-title {
+  font-size: clamp(1.3rem, 1.58vw, 1.52rem);
+  line-height: 1.08;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-core-link .dashboard-stream-link-copy {
+  max-width: 24ch;
+  line-height: 1.58;
+}
+
+@media (max-width: 1360px) {
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-focus-stage,
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-core-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-core-grid > *:nth-child(2n) {
+    padding-left: clamp(20px, 2vw, 24px);
+    border-left: 1px solid rgba(191, 239, 255, 0.08) !important;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-core-grid > *:nth-child(n + 3) {
+    padding-top: 18px;
+    border-top: 1px solid rgba(191, 239, 255, 0.08) !important;
+  }
+}
+
+@media (max-width: 1180px) {
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-focus-stage {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-focus-lead {
+    padding-right: 0;
+    padding-bottom: 22px;
+    border-right: 0;
+    border-bottom: 1px solid rgba(191, 239, 255, 0.08);
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-hero-step:nth-child(2),
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-hero-step:nth-child(3) {
+    padding-top: 0;
+  }
+}
+
+@media (max-width: 980px) {
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-ribbon,
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-core-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-ribbon-link + .dashboard-phase-f2-ribbon-link,
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-core-grid > * + * {
+    padding-top: 16px;
+    padding-left: 0;
+    border-left: 0 !important;
+    border-top: 1px solid rgba(191, 239, 255, 0.08) !important;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-focus-primary .dashboard-stage-lead-title {
+    max-width: 10.2ch;
+    font-size: clamp(2.7rem, 6.8vw, 4rem);
+  }
+}
+
+@media (max-width: 720px) {
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-focus-primary .dashboard-stage-lead-title {
+    font-size: clamp(2.38rem, 10.2vw, 3.4rem);
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f2-focus-stat strong {
+    font-size: clamp(1.42rem, 8vw, 1.9rem);
+  }
+}
