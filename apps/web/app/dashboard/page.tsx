@@ -403,8 +403,8 @@ export default function DashboardPage() {
               <p className="section-kicker">Painel executivo</p>
               <h1 className="heading-reset">Dashboard</h1>
               <p className="section-header-copy hero-copy-compact">
-                O nucleo criativo, a continuidade dos projetos e a operacao em apoio entram na mesma
-                superficie. Conta: {emailDisplay}.
+                Criacao, revisao, continuidade e operacao entram na mesma primeira leitura, sem cair
+                em painel administrativo.
               </p>
             </div>
             <div className="hero-meta-row dashboard-command-meta dashboard-phase-a2-hero-meta dashboard-phase-a3-hero-meta">
@@ -414,22 +414,6 @@ export default function DashboardPage() {
               </span>
             </div>
           </div>
-          <div className="hero-actions-row dashboard-command-actions dashboard-phase-a2-hero-actions dashboard-phase-a3-hero-actions">
-            <button
-              onClick={async () => {
-                await onSyncSubscription();
-                await refresh();
-                await loadUsage();
-              }}
-              disabled={syncingSubscription || loading}
-              className="btn-ea btn-secondary"
-            >
-              {syncingSubscription ? "Sincronizando..." : "Sincronizar assinatura"}
-            </button>
-            <button onClick={onLogout} className="btn-ea btn-ghost">
-              Sair
-            </button>
-          </div>
         </div>
 
         <div className="dashboard-command-grid dashboard-benchmark-hero-grid dashboard-foundation-hero-grid dashboard-phase-a2-hero-grid dashboard-phase-a3-hero-grid" data-reveal data-reveal-delay="55">
@@ -437,10 +421,10 @@ export default function DashboardPage() {
             <div className="dashboard-command-track dashboard-benchmark-hero-poster dashboard-foundation-hero-poster dashboard-phase-a2-hero-poster dashboard-phase-a3-hero-poster">
               <div className="dashboard-command-track-head dashboard-phase-a2-hero-track dashboard-phase-a3-hero-track">
                 <span className="dashboard-hero-flow-label">Linha criativa</span>
-                <strong>Creator, editor e saida ocupam o palco principal do produto.</strong>
+                <strong>Creator, editor e saida conduzem o eixo principal do produto.</strong>
                 <p className="dashboard-command-track-copy">
-                  O dashboard precisa abrir como superficie principal: criacao, refinamento,
-                  continuidade e saida aparecem na primeira leitura, sem cara de painel tecnico.
+                  A abertura precisa mostrar criacao, refinamento, continuidade e saida como uma
+                  trilha unica, nao como uma sequencia de paineis tecnicos.
                 </p>
               </div>
 
@@ -478,6 +462,23 @@ export default function DashboardPage() {
               <span className="dashboard-overview-label">Conta ativa</span>
               <strong>{planLabelDisplay}</strong>
               <span>{emailDisplay}</span>
+            </div>
+
+            <div className="dashboard-phase-f1-hero-controls">
+              <button
+                onClick={async () => {
+                  await onSyncSubscription();
+                  await refresh();
+                  await loadUsage();
+                }}
+                disabled={syncingSubscription || loading}
+                className="btn-ea btn-secondary"
+              >
+                {syncingSubscription ? "Sincronizando..." : "Sincronizar assinatura"}
+              </button>
+              <button onClick={onLogout} className="btn-ea btn-ghost">
+                Sair
+              </button>
             </div>
 
             <div className="dashboard-benchmark-hero-rail-split dashboard-phase-a2-hero-rail-split dashboard-phase-a3-hero-rail-split">
