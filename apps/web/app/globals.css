@@ -25782,3 +25782,686 @@ body {
     border-top: 1px solid rgba(191, 239, 255, 0.08);
   }
 }
+
+/* Dashboard phase A3 benchmark close-out
+   Purpose: remove the remaining "premium internal tool" reading by opening the
+   nested surfaces, strengthening the main stage, and carrying the same product
+   quality from the hero to the base. */
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-shell {
+  margin-top: clamp(14px, 1.2vw, 20px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-grid {
+  grid-template-columns: minmax(0, 1.64fr) minmax(300px, 0.74fr);
+  gap: clamp(30px, 3.1vw, 42px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-main {
+  gap: clamp(34px, 3.4vw, 46px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-rail {
+  position: relative;
+  gap: clamp(24px, 2.5vw, 34px);
+  padding-left: clamp(24px, 2.5vw, 32px);
+  border-left: 0;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-rail::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    rgba(191, 239, 255, 0.14),
+    rgba(191, 239, 255, 0.08) 48%,
+    rgba(191, 239, 255, 0.02)
+  );
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-hero {
+  gap: clamp(26px, 3vw, 36px);
+  padding: clamp(32px, 3.4vw, 46px) clamp(34px, 3.5vw, 48px) clamp(30px, 3.2vw, 42px);
+  border-color: rgba(191, 239, 255, 0.12);
+  background:
+    radial-gradient(860px 340px at 2% 0%, rgba(79, 232, 255, 0.14), transparent 72%),
+    radial-gradient(720px 320px at 100% 0%, rgba(92, 126, 255, 0.16), transparent 78%),
+    linear-gradient(180deg, rgba(8, 23, 57, 0.97), rgba(8, 21, 52, 0.92));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 32px 80px rgba(1, 6, 20, 0.24);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-hero::before {
+  background:
+    linear-gradient(120deg, transparent 0 18%, rgba(115, 159, 255, 0.18) 18% 19.5%, transparent 19.5% 100%),
+    radial-gradient(680px 260px at 10% 0%, rgba(79, 232, 255, 0.14), transparent 74%);
+  opacity: 0.95;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-hero-head {
+  grid-template-columns: minmax(0, 1.18fr) auto;
+  gap: clamp(24px, 2vw, 32px);
+  align-items: end;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-hero-copy {
+  gap: clamp(18px, 2vw, 26px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-hero-copy .hero-title-stack {
+  max-width: min(58rem, 100%);
+  gap: 14px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-hero-copy h1 {
+  font-size: clamp(4.2rem, 6.4vw, 6.35rem);
+  line-height: 0.88;
+  letter-spacing: -0.082em;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-hero-copy .section-header-copy {
+  max-width: 34ch;
+  font-size: clamp(1.08rem, 1.42vw, 1.26rem);
+  line-height: 1.62;
+  color: rgba(232, 245, 255, 0.84);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-hero-meta {
+  gap: 12px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-hero-actions {
+  align-self: end;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-hero-grid {
+  grid-template-columns: minmax(0, 1.58fr) minmax(320px, 0.72fr);
+  gap: clamp(30px, 3vw, 40px);
+  align-items: stretch;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-hero-main {
+  gap: clamp(24px, 2.4vw, 32px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-hero-poster {
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  gap: clamp(22px, 2.2vw, 30px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-hero-track {
+  gap: 14px;
+  align-content: start;
+  max-width: min(48rem, 100%);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-hero-track strong {
+  max-width: 8.4ch;
+  font-size: clamp(3.55rem, 5.7vw, 5.95rem);
+  line-height: 0.88;
+  letter-spacing: -0.08em;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-hero-track .dashboard-command-track-copy {
+  max-width: 34ch;
+  font-size: clamp(1.04rem, 1.34vw, 1.16rem);
+  line-height: 1.64;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-hero-sequence {
+  gap: 0 clamp(22px, 2.2vw, 28px);
+  padding-top: clamp(22px, 2.2vw, 28px);
+  border-top: 1px solid rgba(191, 239, 255, 0.1);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-hero-sequence .dashboard-benchmark-step {
+  gap: 10px;
+  padding-left: 0;
+  border-left: 0;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-hero-sequence .dashboard-benchmark-step + .dashboard-benchmark-step {
+  padding-left: clamp(18px, 2vw, 24px);
+  border-left: 1px solid rgba(191, 239, 255, 0.08);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-hero-sequence .dashboard-benchmark-step-index {
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(180deg, rgba(79, 232, 255, 0.18), rgba(255, 255, 255, 0.04));
+  border-color: rgba(191, 239, 255, 0.16);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-hero-rail {
+  padding: 6px 0 0 clamp(26px, 2.6vw, 34px);
+  border: 0;
+  border-left: 1px solid rgba(191, 239, 255, 0.1);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  gap: 0;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-hero-rail-split {
+  border-top-color: rgba(191, 239, 255, 0.1);
+  border-bottom-color: rgba(191, 239, 255, 0.1);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-hero-rail .dashboard-benchmark-hero-rail-row {
+  padding: 20px 0;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-hero-rail .dashboard-benchmark-hero-rail-row strong,
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-hero-next strong {
+  font-size: clamp(1.72rem, 2.2vw, 2.36rem);
+  line-height: 0.98;
+  letter-spacing: -0.06em;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-focus {
+  gap: clamp(22px, 2.5vw, 30px);
+  padding: 4px 0 34px !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(191, 239, 255, 0.08) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-focus-head {
+  align-items: end;
+  gap: 22px;
+  padding-bottom: clamp(18px, 2vw, 24px);
+  border-bottom: 1px solid rgba(191, 239, 255, 0.08);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-focus-grid {
+  grid-template-columns: minmax(0, 1.26fr) minmax(280px, 0.74fr);
+  gap: clamp(28px, 2.8vw, 36px);
+  padding-top: clamp(24px, 2.3vw, 30px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-focus-primary {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: clamp(340px, 31vw, 406px);
+  padding: clamp(28px, 3vw, 36px);
+  border: 1px solid rgba(191, 239, 255, 0.085);
+  border-radius: clamp(28px, 3vw, 34px);
+  background:
+    radial-gradient(440px 200px at 0% 0%, rgba(79, 232, 255, 0.1), transparent 72%),
+    radial-gradient(320px 180px at 100% 100%, rgba(95, 120, 255, 0.1), transparent 78%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.012));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 20px 52px rgba(2, 6, 23, 0.16);
+  gap: 18px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-focus-primary::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(126deg, transparent 0 58%, rgba(111, 154, 255, 0.12) 58% 60%, transparent 60% 100%),
+    radial-gradient(320px 180px at 100% 0%, rgba(79, 232, 255, 0.08), transparent 76%);
+  opacity: 0.9;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-focus-primary > * {
+  position: relative;
+  z-index: 1;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-focus-primary .dashboard-stage-lead-title {
+  max-width: 8.8ch;
+  font-size: clamp(2.9rem, 4.4vw, 4.3rem);
+  line-height: 0.9;
+  letter-spacing: -0.08em;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-focus-primary .dashboard-stage-lead-copy {
+  max-width: 31ch;
+  font-size: 1.08rem;
+  line-height: 1.72;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-focus-side {
+  display: grid;
+  gap: 0;
+  padding-left: clamp(26px, 2.3vw, 32px);
+  border-left: 1px solid rgba(191, 239, 255, 0.08);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-focus-side > * {
+  padding: 18px 0;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-focus-side > * + * {
+  border-top: 1px solid rgba(191, 239, 255, 0.08);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-focus-side strong {
+  font-size: clamp(1.62rem, 2vw, 2.08rem);
+  line-height: 1;
+  letter-spacing: -0.06em;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-ribbon {
+  gap: 0 clamp(24px, 2.3vw, 30px);
+  margin-top: clamp(26px, 2.5vw, 32px);
+  padding-top: clamp(22px, 2.2vw, 28px);
+  border-top: 1px solid rgba(191, 239, 255, 0.08);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-detail {
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-detail-grid {
+  grid-template-columns: minmax(0, 1.18fr) minmax(320px, 0.82fr);
+  gap: clamp(30px, 3vw, 40px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-core {
+  padding: 0 clamp(26px, 2.4vw, 32px) 0 0 !important;
+  border: 0 !important;
+  border-right: 1px solid rgba(191, 239, 255, 0.08) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-core-head {
+  grid-template-columns: minmax(0, 0.98fr) minmax(280px, 0.92fr);
+  gap: clamp(22px, 2.2vw, 30px);
+  align-items: end;
+  padding-bottom: clamp(18px, 2vw, 24px);
+  border-bottom: 1px solid rgba(191, 239, 255, 0.08);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-core-head .dashboard-core-atlas-summary strong {
+  font-size: clamp(1.62rem, 2.2vw, 2.16rem);
+  line-height: 1.04;
+  letter-spacing: -0.055em;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-core-grid {
+  gap: 0 clamp(28px, 2.4vw, 34px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-core-grid .dashboard-benchmark-core-link {
+  min-height: 170px;
+  padding: 20px 0;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-core-grid .dashboard-stream-link-title {
+  font-size: clamp(1.48rem, 1.9vw, 1.92rem);
+  line-height: 1.06;
+  letter-spacing: -0.05em;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-usage {
+  align-content: start;
+  padding-left: clamp(2px, 0.5vw, 10px) !important;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-usage-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(20px, 2vw, 28px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-usage-copy {
+  gap: 20px;
+  padding: 0 0 22px;
+  border-right: 0;
+  border-bottom: 1px solid rgba(191, 239, 255, 0.08);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-usage .dashboard-benchmark-usage-hero {
+  gap: 14px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-usage .dashboard-usage-hero-main strong {
+  font-size: clamp(3.2rem, 4.5vw, 4.5rem);
+  line-height: 0.88;
+  letter-spacing: -0.07em;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-usage-list {
+  gap: 0;
+  padding-left: 0;
+  border-left: 0;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-usage-list .dashboard-usage-row {
+  grid-template-columns: minmax(0, 1fr) minmax(150px, 190px);
+  gap: 18px;
+  padding: 16px 0;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-usage-list .dashboard-usage-row + .dashboard-usage-row {
+  border-top: 1px solid rgba(191, 239, 255, 0.08);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-usage-list .dashboard-progress-track {
+  width: min(190px, 100%);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-usage .dashboard-benchmark-usage-empty {
+  gap: 18px;
+  padding: 8px 0 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-usage .dashboard-usage-empty-copy strong {
+  max-width: 13ch;
+  font-size: clamp(1.58rem, 2.2vw, 2.16rem);
+  line-height: 1.04;
+  letter-spacing: -0.05em;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-ops {
+  gap: clamp(20px, 2vw, 26px);
+  padding: 2px 0 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-ops .section-head {
+  align-items: end;
+  padding-bottom: 22px;
+  border-bottom: 1px solid rgba(191, 239, 255, 0.08);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-ops-account {
+  padding: 0 0 18px;
+  border-bottom: 1px solid rgba(191, 239, 255, 0.08);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-ops-account strong {
+  font-size: clamp(1.9rem, 2.25vw, 2.42rem);
+  line-height: 0.98;
+  letter-spacing: -0.06em;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-ops-wallet {
+  gap: 20px;
+  padding-bottom: 10px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-ops-wallet .dashboard-stream-link-title {
+  font-size: clamp(1.72rem, 2vw, 2.22rem);
+  line-height: 1;
+  letter-spacing: -0.055em;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-ops .dashboard-ops-actions-head {
+  padding-top: 4px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-rail-links {
+  gap: 0;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-rail-links .dashboard-stream-link-support-command {
+  padding: 18px 0;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-onboarding {
+  position: relative;
+  gap: 22px;
+  margin-top: clamp(32px, 3vw, 42px);
+  padding-top: clamp(28px, 2.6vw, 34px);
+  border-top: 1px solid rgba(191, 239, 255, 0.08);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-onboarding-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: end;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-onboarding-head .section-stack {
+  max-width: min(46rem, 100%);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-onboarding-grid {
+  grid-template-columns: minmax(0, 0.94fr) minmax(0, 1.06fr);
+  gap: clamp(26px, 2.6vw, 34px);
+  align-items: start;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-onboarding-steps {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 clamp(20px, 2vw, 28px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-onboarding-step {
+  gap: 10px;
+  padding: 18px 0 16px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-onboarding-step:nth-child(-n + 2) {
+  padding-top: 0;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-onboarding-steps > *:nth-child(-n + 2) {
+  border-top: 0;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-onboarding-paths {
+  padding-left: clamp(24px, 2.3vw, 30px);
+  border-left: 1px solid rgba(191, 239, 255, 0.08);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-onboarding-path {
+  padding: 18px 0;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-onboarding-summary {
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: clamp(18px, 2vw, 24px);
+  align-items: end;
+  padding-top: 22px;
+  border-top: 1px solid rgba(191, 239, 255, 0.08);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-onboarding-summary-copy {
+  gap: 8px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-onboarding-summary-badges {
+  gap: 10px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-onboarding-actions {
+  justify-content: flex-start;
+}
+
+@media (max-width: 1360px) {
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-grid,
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-detail-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-rail {
+    padding-left: 0;
+    padding-top: 26px;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-rail::before {
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: auto;
+    width: auto;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      rgba(191, 239, 255, 0.12),
+      rgba(191, 239, 255, 0.06) 52%,
+      rgba(191, 239, 255, 0.02)
+    );
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-core {
+    padding-right: 0 !important;
+    padding-bottom: 24px !important;
+    border-right: 0 !important;
+    border-bottom: 1px solid rgba(191, 239, 255, 0.08) !important;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-onboarding-grid,
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-onboarding-summary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-onboarding-paths {
+    padding-left: 0;
+    padding-top: 18px;
+    border-left: 0;
+    border-top: 1px solid rgba(191, 239, 255, 0.08);
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1199px) {
+  .app-shell-frame:has(.dashboard-page) .app-shell-body {
+    grid-template-columns: 212px minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .app-top-nav {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    align-self: start;
+    border-right: 1px solid var(--ea-canvas-divider);
+    border-bottom: 0;
+  }
+}
+
+@media (max-width: 1240px) {
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-hero-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-hero-rail {
+    padding-left: 0;
+    padding-top: 24px;
+    border-left: 0;
+    border-top: 1px solid rgba(191, 239, 255, 0.1);
+  }
+}
+
+@media (max-width: 1180px) {
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-hero-head,
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-focus-grid,
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-core-head {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-hero-actions {
+    align-self: auto;
+    justify-content: flex-start;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-hero-track strong {
+    max-width: 8.6ch;
+    font-size: clamp(3.05rem, 6.1vw, 4.7rem);
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-focus-side {
+    padding-left: 0;
+    padding-top: 18px;
+    border-left: 0;
+    border-top: 1px solid rgba(191, 239, 255, 0.08);
+  }
+}
+
+@media (max-width: 980px) {
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-hero-head,
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-focus-grid,
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-core-head {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-focus-side {
+    padding-left: 0;
+    padding-top: 18px;
+    border-left: 0;
+    border-top: 1px solid rgba(191, 239, 255, 0.08);
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-onboarding-steps {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-onboarding-step:nth-child(-n + 2) {
+    padding-top: 18px;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-onboarding-steps > *:nth-child(-n + 2) {
+    border-top: 1px solid rgba(191, 239, 255, 0.08);
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-onboarding-steps > *:first-child {
+    padding-top: 0;
+    border-top: 0;
+  }
+}
+
+@media (max-width: 720px) {
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-hero {
+    padding: 24px 20px 22px;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-hero-copy h1 {
+    font-size: clamp(3.2rem, 11vw, 4.6rem);
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-hero-track strong {
+    max-width: 9.2ch;
+    font-size: clamp(2.65rem, 10.2vw, 3.7rem);
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-hero-sequence,
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-ribbon,
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-core-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-hero-sequence .dashboard-benchmark-step + .dashboard-benchmark-step,
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-ribbon .dashboard-benchmark-ribbon-link + .dashboard-benchmark-ribbon-link,
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-core-grid > * + * {
+    padding-top: 16px;
+    padding-left: 0;
+    border-left: 0;
+    border-top: 1px solid rgba(191, 239, 255, 0.08);
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-focus-primary,
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-a3-onboarding-actions {
+    width: 100%;
+  }
+}

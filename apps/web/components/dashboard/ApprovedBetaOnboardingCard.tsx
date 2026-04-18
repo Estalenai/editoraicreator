@@ -93,8 +93,8 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
   if (!ready || !visible) return null;
 
   return (
-    <section className="dashboard-onboarding-band" data-reveal data-reveal-delay="90">
-      <div className="dashboard-onboarding-band-head">
+    <section className="dashboard-onboarding-band dashboard-phase-a3-onboarding" data-reveal data-reveal-delay="90">
+      <div className="dashboard-onboarding-band-head dashboard-phase-a3-onboarding-head">
         <div className="section-stack">
           <p className="section-kicker">Onboarding</p>
           <h3 style={{ margin: 0 }}>Primeiros passos no beta</h3>
@@ -107,27 +107,27 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
         </button>
       </div>
 
-      <div className="dashboard-onboarding-band-grid">
-        <ol className="dashboard-onboarding-step-list">
-          <li className="dashboard-onboarding-step-row" data-reveal data-reveal-delay="120">
+      <div className="dashboard-onboarding-band-grid dashboard-phase-a3-onboarding-grid">
+        <ol className="dashboard-onboarding-step-list dashboard-phase-a3-onboarding-steps">
+          <li className="dashboard-onboarding-step-row dashboard-phase-a3-onboarding-step" data-reveal data-reveal-delay="120">
             <strong>1) Escolha um Creator</strong>
             <span>Comece por Post, Scripts ou Clips.</span>
           </li>
-          <li className="dashboard-onboarding-step-row" data-reveal data-reveal-delay="160">
+          <li className="dashboard-onboarding-step-row dashboard-phase-a3-onboarding-step" data-reveal data-reveal-delay="160">
             <strong>2) Revise a estimativa</strong>
             <span>Cada geração mostra a estimativa antes do consumo.</span>
           </li>
-          <li className="dashboard-onboarding-step-row" data-reveal data-reveal-delay="200">
+          <li className="dashboard-onboarding-step-row dashboard-phase-a3-onboarding-step" data-reveal data-reveal-delay="200">
             <strong>3) Salve, edite e exporte</strong>
             <span>Projetos salva a base e o editor fecha a peça.</span>
           </li>
-          <li className="dashboard-onboarding-step-row" data-reveal data-reveal-delay="240">
+          <li className="dashboard-onboarding-step-row dashboard-phase-a3-onboarding-step" data-reveal data-reveal-delay="240">
             <strong>4) Trabalhe com confidencialidade</strong>
             <span>Os dados não entram em treino.</span>
           </li>
         </ol>
 
-        <div className="dashboard-onboarding-path-list">
+        <div className="dashboard-onboarding-path-list dashboard-phase-a3-onboarding-paths">
           <div className="section-stack">
             <p className="section-kicker">Rotas iniciais recomendadas</p>
             <h4 style={{ margin: 0 }}>Núcleo principal com um apoio complementar</h4>
@@ -140,7 +140,7 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
             <Link
               key={item.key}
               href={item.href}
-              className={`dashboard-onboarding-path-row ${index === OBJECTIVE_PATHS.length - 1 ? "dashboard-onboarding-path-row-support" : ""}`}
+              className={`dashboard-onboarding-path-row dashboard-phase-a3-onboarding-path ${index === OBJECTIVE_PATHS.length - 1 ? "dashboard-onboarding-path-row-support" : ""}`}
               onClick={dismiss}
               data-reveal
               data-reveal-delay={String(80 + index * 55)}
@@ -155,17 +155,17 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
         </div>
       </div>
 
-      <div className="dashboard-onboarding-summary">
-        <div className="dashboard-onboarding-summary-copy">
+      <div className="dashboard-onboarding-summary dashboard-phase-a3-onboarding-summary">
+        <div className="dashboard-onboarding-summary-copy dashboard-phase-a3-onboarding-summary-copy">
           <strong>{CREATOR_COINS_PUBLIC_NAME} no fluxo atual</strong>
           <div className="helper-text-ea">Saldo atual: {summary}. Estimativa antes; débito no histórico.</div>
         </div>
-        <div className="hero-meta-row dashboard-onboarding-summary-badges">
+        <div className="hero-meta-row dashboard-onboarding-summary-badges dashboard-phase-a3-onboarding-summary-badges">
           <span className="premium-badge premium-badge-warning">{coinTypeLabel("common")}: tarefas de rotina</span>
           <span className="premium-badge premium-badge-phase">{coinTypeLabel("pro")}: maior qualidade</span>
           <span className="premium-badge premium-badge-soon">{coinTypeLabel("ultra")}: processamento premium</span>
         </div>
-        <div className="dashboard-onboarding-actions">
+        <div className="dashboard-onboarding-actions dashboard-phase-a3-onboarding-actions">
           <Link href="/creators?tab=post" onClick={dismiss} className="btn-link-ea btn-primary">
             Iniciar fluxo
           </Link>
