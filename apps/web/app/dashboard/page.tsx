@@ -266,6 +266,14 @@ export default function DashboardPage() {
     () => QUICK_LINKS.filter((item) => item.group === "support"),
     []
   );
+  const railPrimaryQuickLinks = useMemo(
+    () => supportQuickLinks.filter((item) => item.href === "/plans" || item.href === "/support"),
+    [supportQuickLinks]
+  );
+  const railSecondaryQuickLinks = useMemo(
+    () => supportQuickLinks.filter((item) => item.href !== "/plans" && item.href !== "/support"),
+    [supportQuickLinks]
+  );
   const walletBreakdown = useMemo(
     () =>
       CREDIT_GUIDE_ITEMS.map((item) => ({
@@ -854,6 +862,9 @@ export default function DashboardPage() {
                       <strong>{planLabelDisplay}</strong>
                       <span>{emailDisplay}</span>
                     </div>
+                    <Link href="/dashboard/account" className="dashboard-inline-action dashboard-phase-f3-account-link">
+                      Abrir conta
+                    </Link>
                   </div>
 
                   <div className="dashboard-benchmark-ops-wallet dashboard-foundation-ops-wallet dashboard-phase-a2-ops-wallet dashboard-phase-a3-ops-wallet dashboard-phase-f3-ops-wallet">
@@ -886,23 +897,58 @@ export default function DashboardPage() {
                     <strong>Plano, suporte e leitura financeira entram como camada complementar, não como sidebar.</strong>
                   </div>
 
-                  <div className="dashboard-support-stream dashboard-support-command-list dashboard-benchmark-rail-links dashboard-foundation-rail-links dashboard-phase-a2-rail-links dashboard-phase-a3-rail-links dashboard-phase-f3-rail-links">
-                    {supportQuickLinks.map((item, index) => (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        className="dashboard-stream-link dashboard-stream-link-support dashboard-stream-link-support-command dashboard-phase-f3-rail-link"
-                        data-reveal
-                        data-reveal-delay={String(95 + index * 30)}
-                      >
-                        <div className="dashboard-stream-link-main">
-                          <span className="dashboard-stream-link-kicker">{item.tag}</span>
-                          <strong className="dashboard-stream-link-title">{item.title}</strong>
-                          <span className="dashboard-stream-link-copy">{item.description}</span>
-                        </div>
-                        <span className="dashboard-stream-link-cta">{item.cta}</span>
-                      </Link>
-                    ))}
+                  <div className="dashboard-phase-f3-command-grid">
+                    <div className="dashboard-phase-f3-command-cluster dashboard-phase-f3-command-cluster-primary">
+                      <div className="dashboard-phase-f3-command-cluster-head">
+                        <span className="dashboard-stage-stat-label">Camada principal</span>
+                        <strong>Planos e suporte</strong>
+                      </div>
+
+                      <div className="dashboard-support-stream dashboard-support-command-list dashboard-benchmark-rail-links dashboard-foundation-rail-links dashboard-phase-a2-rail-links dashboard-phase-a3-rail-links dashboard-phase-f3-rail-links dashboard-phase-f3-rail-links-primary">
+                        {railPrimaryQuickLinks.map((item, index) => (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            className="dashboard-stream-link dashboard-stream-link-support dashboard-stream-link-support-command dashboard-phase-f3-rail-link dashboard-phase-f3-rail-link-primary"
+                            data-reveal
+                            data-reveal-delay={String(95 + index * 30)}
+                          >
+                            <div className="dashboard-stream-link-main">
+                              <span className="dashboard-stream-link-kicker">{item.tag}</span>
+                              <strong className="dashboard-stream-link-title">{item.title}</strong>
+                              <span className="dashboard-stream-link-copy">{item.description}</span>
+                            </div>
+                            <span className="dashboard-stream-link-cta">{item.cta}</span>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="dashboard-phase-f3-command-cluster dashboard-phase-f3-command-cluster-secondary">
+                      <div className="dashboard-phase-f3-command-cluster-head">
+                        <span className="dashboard-stage-stat-label">Apoio contínuo</span>
+                        <strong>Financeiro e guia</strong>
+                      </div>
+
+                      <div className="dashboard-support-stream dashboard-support-command-list dashboard-benchmark-rail-links dashboard-foundation-rail-links dashboard-phase-a2-rail-links dashboard-phase-a3-rail-links dashboard-phase-f3-rail-links dashboard-phase-f3-rail-links-secondary">
+                        {railSecondaryQuickLinks.map((item, index) => (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            className="dashboard-stream-link dashboard-stream-link-support dashboard-stream-link-support-command dashboard-phase-f3-rail-link dashboard-phase-f3-rail-link-secondary"
+                            data-reveal
+                            data-reveal-delay={String(155 + index * 30)}
+                          >
+                            <div className="dashboard-stream-link-main">
+                              <span className="dashboard-stream-link-kicker">{item.tag}</span>
+                              <strong className="dashboard-stream-link-title">{item.title}</strong>
+                              <span className="dashboard-stream-link-copy">{item.description}</span>
+                            </div>
+                            <span className="dashboard-stream-link-cta">{item.cta}</span>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
