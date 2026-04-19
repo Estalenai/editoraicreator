@@ -553,7 +553,7 @@ export default function DashboardPage() {
       ) : null}
 
       <section className="dashboard-workspace-shell dashboard-workspace-shell-flat dashboard-benchmark-shell dashboard-foundation-shell dashboard-phase-a2-shell dashboard-phase-a3-shell" data-reveal data-reveal-delay="135">
-        <div className="dashboard-workspace-grid dashboard-workspace-grid-flat dashboard-benchmark-grid dashboard-foundation-grid dashboard-phase-a2-grid dashboard-phase-a3-grid">
+        <div className="dashboard-workspace-grid dashboard-workspace-grid-flat dashboard-benchmark-grid dashboard-foundation-grid dashboard-phase-a2-grid dashboard-phase-a3-grid dashboard-phase-f3-grid">
           <div className="dashboard-workspace-main dashboard-workspace-main-flat dashboard-benchmark-main dashboard-foundation-main dashboard-phase-a2-main dashboard-phase-a3-main">
             <section className="dashboard-stage-feature dashboard-stage-feature-premium dashboard-benchmark-focus-section dashboard-foundation-region dashboard-foundation-focus dashboard-phase-a2-focus dashboard-phase-a3-focus dashboard-phase-f2-focus dashboard-phase-f2b-focus" data-reveal data-reveal-delay="150">
                 <div className="section-head dashboard-stage-feature-head dashboard-benchmark-focus-head dashboard-phase-a2-focus-head dashboard-phase-a3-focus-head dashboard-phase-f2-focus-head">
@@ -830,9 +830,9 @@ export default function DashboardPage() {
             </section>
           </div>
 
-          <aside className="dashboard-workspace-rail dashboard-workspace-rail-flat dashboard-benchmark-rail dashboard-foundation-rail dashboard-phase-a2-rail dashboard-phase-a3-rail">
-            <section className="dashboard-flow-section dashboard-flow-section-operations dashboard-operations-region dashboard-operations-region-premium dashboard-benchmark-ops dashboard-foundation-region dashboard-foundation-ops dashboard-phase-a2-ops dashboard-phase-a3-ops" data-reveal data-reveal-delay="170">
-              <div className="section-head dashboard-section-head-flat">
+          <aside className="dashboard-workspace-rail dashboard-workspace-rail-flat dashboard-benchmark-rail dashboard-foundation-rail dashboard-phase-a2-rail dashboard-phase-a3-rail dashboard-phase-f3-rail">
+            <section className="dashboard-flow-section dashboard-flow-section-operations dashboard-operations-region dashboard-operations-region-premium dashboard-benchmark-ops dashboard-foundation-region dashboard-foundation-ops dashboard-phase-a2-ops dashboard-phase-a3-ops dashboard-phase-f3-ops" data-reveal data-reveal-delay="170">
+              <div className="section-head dashboard-section-head-flat dashboard-phase-f3-ops-head">
                 <div className="section-header-ea">
                   <p className="section-kicker">Operação em apoio</p>
                   <h3 className="heading-reset">Conta, saldo e suporte</h3>
@@ -846,58 +846,65 @@ export default function DashboardPage() {
                 </Link>
               </div>
 
-              <div className="dashboard-benchmark-ops-account dashboard-foundation-ops-account dashboard-phase-a2-ops-account dashboard-phase-a3-ops-account">
-                <span className="dashboard-stage-stat-label">Conta ativa</span>
-                <strong>{planLabelDisplay}</strong>
-                <span>{emailDisplay}</span>
-              </div>
+              <div className="dashboard-phase-f3-ops-stage">
+                <div className="dashboard-phase-f3-ops-context">
+                  <div className="dashboard-benchmark-ops-account dashboard-foundation-ops-account dashboard-phase-a2-ops-account dashboard-phase-a3-ops-account dashboard-phase-f3-ops-account">
+                    <span className="dashboard-stage-stat-label">Conta ativa</span>
+                    <div className="dashboard-phase-f3-ops-account-main">
+                      <strong>{planLabelDisplay}</strong>
+                      <span>{emailDisplay}</span>
+                    </div>
+                  </div>
 
-              <div className="dashboard-benchmark-ops-wallet dashboard-foundation-ops-wallet dashboard-phase-a2-ops-wallet dashboard-phase-a3-ops-wallet">
-                <div className="dashboard-wallet-summary-copy">
-                  <span className="dashboard-stream-link-kicker">{CREATOR_COINS_PUBLIC_NAME}</span>
-                  <strong className="dashboard-stream-link-title">{walletSummaryDisplay}</strong>
-                  <span className="dashboard-stream-link-copy">
-                    O creator estima antes. O histórico confirma depois. A rail segura essa leitura sem roubar o palco.
-                  </span>
+                  <div className="dashboard-benchmark-ops-wallet dashboard-foundation-ops-wallet dashboard-phase-a2-ops-wallet dashboard-phase-a3-ops-wallet dashboard-phase-f3-ops-wallet">
+                    <div className="dashboard-wallet-summary-copy dashboard-phase-f3-ops-wallet-head">
+                      <span className="dashboard-stream-link-kicker">{CREATOR_COINS_PUBLIC_NAME}</span>
+                      <strong className="dashboard-stream-link-title">{walletSummaryDisplay}</strong>
+                      <span className="dashboard-stream-link-copy">
+                        O creator estima antes. O histórico confirma depois. A rail precisa sustentar essa
+                        leitura como extensão nobre do fluxo principal.
+                      </span>
+                    </div>
+
+                    <div className="dashboard-wallet-breakdown dashboard-benchmark-wallet-breakdown dashboard-phase-f3-wallet-breakdown">
+                      {walletBreakdown.map((item) => (
+                        <div key={item.coinType} className="dashboard-wallet-row">
+                          <div className="dashboard-wallet-row-main">
+                            <strong>{coinTypeLabel(item.coinType)}</strong>
+                            <span>{item.description}</span>
+                          </div>
+                          <span className="dashboard-wallet-row-value">{item.amount.toLocaleString("pt-BR")}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
 
-                <div className="dashboard-wallet-breakdown dashboard-benchmark-wallet-breakdown">
-                  {walletBreakdown.map((item) => (
-                    <div key={item.coinType} className="dashboard-wallet-row">
-                      <div className="dashboard-wallet-row-main">
-                        <strong>{coinTypeLabel(item.coinType)}</strong>
-                        <span>{item.description}</span>
-                      </div>
-                      <span className="dashboard-wallet-row-value">{item.amount.toLocaleString("pt-BR")}</span>
-                    </div>
-                  ))}
+                <div className="dashboard-phase-f3-ops-command-stage">
+                  <div className="dashboard-ops-actions-head dashboard-phase-f3-command-head">
+                    <span className="dashboard-stage-stat-label">Comandos de apoio</span>
+                    <strong>Plano, suporte e leitura financeira entram como camada complementar, não como sidebar.</strong>
+                  </div>
+
+                  <div className="dashboard-support-stream dashboard-support-command-list dashboard-benchmark-rail-links dashboard-foundation-rail-links dashboard-phase-a2-rail-links dashboard-phase-a3-rail-links dashboard-phase-f3-rail-links">
+                    {supportQuickLinks.map((item, index) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className="dashboard-stream-link dashboard-stream-link-support dashboard-stream-link-support-command dashboard-phase-f3-rail-link"
+                        data-reveal
+                        data-reveal-delay={String(95 + index * 30)}
+                      >
+                        <div className="dashboard-stream-link-main">
+                          <span className="dashboard-stream-link-kicker">{item.tag}</span>
+                          <strong className="dashboard-stream-link-title">{item.title}</strong>
+                          <span className="dashboard-stream-link-copy">{item.description}</span>
+                        </div>
+                        <span className="dashboard-stream-link-cta">{item.cta}</span>
+                      </Link>
+                    ))}
+                  </div>
                 </div>
-              </div>
-
-              <div className="dashboard-flow-divider dashboard-flow-divider-compact" aria-hidden="true" />
-
-              <div className="dashboard-ops-actions-head">
-                <span className="dashboard-stage-stat-label">Comandos de apoio</span>
-                <strong>Plano, suporte e leitura financeira sem cara de coluna auxiliar improvisada.</strong>
-              </div>
-
-              <div className="dashboard-support-stream dashboard-support-command-list dashboard-benchmark-rail-links dashboard-foundation-rail-links dashboard-phase-a2-rail-links dashboard-phase-a3-rail-links">
-                {supportQuickLinks.map((item, index) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="dashboard-stream-link dashboard-stream-link-support dashboard-stream-link-support-command"
-                    data-reveal
-                    data-reveal-delay={String(95 + index * 30)}
-                  >
-                    <div className="dashboard-stream-link-main">
-                      <span className="dashboard-stream-link-kicker">{item.tag}</span>
-                      <strong className="dashboard-stream-link-title">{item.title}</strong>
-                      <span className="dashboard-stream-link-copy">{item.description}</span>
-                    </div>
-                    <span className="dashboard-stream-link-cta">{item.cta}</span>
-                  </Link>
-                ))}
               </div>
             </section>
           </aside>

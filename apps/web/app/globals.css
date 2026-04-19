@@ -27288,3 +27288,278 @@ body {
     font-size: clamp(2.18rem, 9vw, 2.92rem);
   }
 }
+
+/* Dashboard phase 3 rail closure: convert the operations column into an integrated support layer. */
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-grid {
+  grid-template-columns: minmax(0, 1.52fr) minmax(340px, 0.94fr);
+  gap: clamp(32px, 3vw, 44px);
+  align-items: start;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-rail {
+  position: relative;
+  container-type: inline-size;
+  gap: 0;
+  padding-left: clamp(28px, 2.8vw, 38px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-rail::before {
+  background: linear-gradient(
+    180deg,
+    rgba(191, 239, 255, 0.18),
+    rgba(191, 239, 255, 0.08) 54%,
+    rgba(191, 239, 255, 0.02)
+  );
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-ops {
+  gap: clamp(22px, 2.2vw, 30px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-ops-head {
+  align-items: end;
+  gap: 18px;
+  padding-bottom: clamp(20px, 2vw, 24px);
+  border-bottom: 1px solid rgba(191, 239, 255, 0.08);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-ops-head .helper-text-ea {
+  max-width: 33ch;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-ops-stage {
+  display: grid;
+  gap: clamp(22px, 2.2vw, 28px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-ops-context {
+  display: grid;
+  gap: clamp(18px, 1.9vw, 22px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-ops-account {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  padding: 0 0 18px;
+  border-bottom: 1px solid rgba(191, 239, 255, 0.08);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-ops-account-main {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  max-width: 28ch;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-ops-account strong {
+  font-size: clamp(1.96rem, 2.35vw, 2.5rem);
+  line-height: 0.98;
+  letter-spacing: -0.06em;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-ops-account-main span {
+  color: rgba(224, 241, 255, 0.72);
+  line-height: 1.55;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-ops-wallet {
+  display: grid;
+  gap: clamp(18px, 1.9vw, 24px);
+  padding: 0;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-ops-wallet-head {
+  display: grid;
+  gap: 8px;
+  max-width: 31ch;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-ops-wallet .dashboard-stream-link-title {
+  font-size: clamp(1.84rem, 2.2vw, 2.36rem);
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-wallet-breakdown {
+  display: grid;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(191, 239, 255, 0.08);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-wallet-breakdown > * + * {
+  border-top: 0;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-wallet-breakdown .dashboard-wallet-row {
+  display: grid;
+  gap: 10px;
+  min-height: 0;
+  padding: 14px 16px;
+  border: 1px solid rgba(191, 239, 255, 0.08);
+  border-radius: 18px;
+  background:
+    radial-gradient(180px 96px at 100% 0%, rgba(79, 232, 255, 0.06), transparent 76%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.026), rgba(255, 255, 255, 0.01));
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-wallet-breakdown .dashboard-wallet-row-main {
+  gap: 6px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-wallet-breakdown .dashboard-wallet-row-main strong {
+  font-size: 0.96rem;
+  line-height: 1.22;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-wallet-breakdown .dashboard-wallet-row-main span {
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: rgba(224, 241, 255, 0.68);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-wallet-breakdown .dashboard-wallet-row-value {
+  color: var(--ea-text-strong);
+  font-size: 1.02rem;
+  letter-spacing: -0.02em;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-ops-command-stage {
+  display: grid;
+  gap: 16px;
+  padding-top: clamp(20px, 2vw, 24px);
+  border-top: 1px solid rgba(191, 239, 255, 0.08);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-command-head {
+  gap: 8px;
+  max-width: 31ch;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-command-head strong {
+  font-size: clamp(1.04rem, 1.24vw, 1.16rem);
+  line-height: 1.4;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-rail-links {
+  display: grid;
+  gap: 0;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-rail-link {
+  min-height: 0;
+  padding: 16px 0 14px;
+  gap: 10px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-rail-link + .dashboard-phase-f3-rail-link {
+  border-top: 1px solid rgba(191, 239, 255, 0.08);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-rail-link .dashboard-stream-link-main {
+  gap: 8px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-rail-link .dashboard-stream-link-title {
+  font-size: 1.08rem;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-rail-link .dashboard-stream-link-copy {
+  max-width: none;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-rail-link .dashboard-stream-link-cta {
+  justify-self: start;
+}
+
+@container (min-width: 410px) {
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-ops-context {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    align-items: start;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-ops-account {
+    padding: 0 18px 0 0;
+    border-right: 1px solid rgba(191, 239, 255, 0.08);
+    border-bottom: 0;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-rail-links {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-rail-link {
+    padding: 14px 16px;
+    border: 1px solid rgba(191, 239, 255, 0.08);
+    border-radius: 18px;
+    background:
+      radial-gradient(180px 96px at 100% 0%, rgba(79, 232, 255, 0.05), transparent 76%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.022), rgba(255, 255, 255, 0.008));
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-rail-link + .dashboard-phase-f3-rail-link {
+    border-top: 1px solid rgba(191, 239, 255, 0.08);
+  }
+}
+
+@container (min-width: 560px) {
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-wallet-breakdown {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+}
+
+@container (min-width: 760px) {
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-wallet-breakdown {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-wallet-breakdown .dashboard-wallet-row {
+    align-content: start;
+  }
+}
+
+@media (max-width: 1220px) {
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-rail {
+    padding-left: 0;
+    padding-top: 28px;
+    border-left: 0;
+    border-top: 1px solid rgba(191, 239, 255, 0.09);
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-rail::before {
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: auto;
+    width: auto;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      rgba(191, 239, 255, 0.14),
+      rgba(191, 239, 255, 0.06) 52%,
+      rgba(191, 239, 255, 0.02)
+    );
+  }
+}
+
+@media (max-width: 640px) {
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-ops-head {
+    align-items: start;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-ops-head .btn-link-ea {
+    width: 100%;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-wallet-breakdown,
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f3-rail-links {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
