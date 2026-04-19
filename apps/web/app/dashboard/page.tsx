@@ -108,6 +108,21 @@ const CREDIT_GUIDE_ITEMS = [
   },
 ];
 
+const USAGE_FLOW_MARKERS = [
+  {
+    title: "Creators abre a base",
+    description: "A primeira geração organiza a entrada do fluxo.",
+  },
+  {
+    title: "Editor consolida a peça",
+    description: "Revisão e acabamento transformam o rascunho em entrega.",
+  },
+  {
+    title: "Saída fecha o ciclo",
+    description: `O histórico confirmado aparece quando a trilha chega em ${CREATOR_COINS_PUBLIC_NAME}.`,
+  },
+];
+
 function usageProgress(item: UsageItem): number {
   if (!item.limit || item.limit <= 0) return 0;
   return Math.min(100, Math.max(0, Math.round((item.used / item.limit) * 100)));
@@ -353,7 +368,7 @@ export default function DashboardPage() {
   const usageRemainingCount = Math.max(0, usageItems.length - usagePreviewItems.length);
   const hasConfirmedUsage = totalUsage > 0;
   const usageLeadInsight =
-    loading || usageLoading
+  loading || usageLoading
       ? "Sincronizando as features mais usadas no período."
       : hasConfirmedUsage && usageDisplayItems[0]
         ? `${usageDisplayItems[0].displayLabel} puxa a atividade confirmada deste ciclo.`
@@ -371,6 +386,75 @@ export default function DashboardPage() {
         href: "/creators",
         cta: "Abrir Creators",
       };
+  const usageSignalItems = useMemo(
+    () => [
+      {
+        label: "Estado do histórico",
+        value: loading || usageLoading ? "Sincronizando" : hasConfirmedUsage ? "Reconciliado" : "Em observação",
+        note:
+          loading || usageLoading
+            ? "Atualizando a leitura completa do ciclo."
+            : hasConfirmedUsage
+              ? `${usageItems.length} feature(s) entram no mesmo histórico confirmado.`
+              : "A base acompanha creators, editor e saída até a primeira entrega fechar.",
+      },
+      {
+        label: "Ritmo acompanhado",
+        value:
+          loading || usageLoading
+            ? "Carregando"
+            : hasConfirmedUsage && usageDisplayItems[0]
+              ? usageDisplayItems[0].displayLabel
+              : "Primeira entrega",
+        note:
+          loading || usageLoading
+            ? "Sincronizando a feature com mais atividade."
+            : hasConfirmedUsage && usageDisplayItems[0]
+              ? `${usageDisplayItems[0].used} de ${usageDisplayItems[0].limit} consumo(s) aparecem neste período.`
+              : "Assim que a primeira saída fechar o ciclo, esta camada deixa de ser provisória.",
+      },
+      {
+        label: "Próximo passo",
+        value: loading ? "Preparando" : nextAction.title,
+        note:
+          loading
+            ? "Estamos sincronizando saldo, plano, projetos e próximos passos do workspace."
+            : nextAction.description,
+      },
+    ],
+    [
+      hasConfirmedUsage,
+      loading,
+      usageDisplayItems,
+      usageItems.length,
+      usageLoading,
+      nextAction.description,
+      nextAction.title,
+    ]
+  );
+  const usageEmptyState = !hasConfirmedUsage
+    ? {
+        kicker: "Aguardando confirmações",
+        title: "O histórico confirmado entra quando a trilha fecha.",
+        description:
+          "Quando creators, editor e saída completarem o mesmo ciclo, esta área deixa de ser provisória e passa a mostrar o consumo reconciliado.",
+        primaryHref: "/creators",
+        primaryLabel: "Abrir Creators",
+        secondaryHref: "/credits#credits-history",
+        secondaryLabel: `Abrir ${CREATOR_COINS_PUBLIC_NAME}`,
+      }
+    : usagePreviewItems.length === 0
+      ? {
+          kicker: "Sem uso confirmado",
+          title: "A primeira entrega publicada inaugura este histórico.",
+          description:
+            `Gere no creators, revise no editor e acompanhe o fechamento completo em ${CREATOR_COINS_PUBLIC_NAME}.`,
+          primaryHref: "/creators",
+          primaryLabel: "Gerar agora",
+          secondaryHref: "/credits#credits-history",
+          secondaryLabel: "Ver histórico",
+        }
+      : null;
   const recentUsageText = usageLoading
     ? "Atualizando métricas do mês."
     : usageItems.length === 0
@@ -737,9 +821,9 @@ export default function DashboardPage() {
                   </div>
                 </section>
 
-                <section className="dashboard-flow-section dashboard-flow-section-usage dashboard-usage-pane dashboard-benchmark-usage dashboard-foundation-usage dashboard-phase-a2-usage dashboard-phase-a3-usage">
-                  <div className="dashboard-usage-pane-grid dashboard-benchmark-usage-grid dashboard-foundation-usage-grid dashboard-phase-a2-usage-grid dashboard-phase-a3-usage-grid">
-                    <div className="dashboard-usage-pane-copy dashboard-benchmark-usage-copy dashboard-foundation-usage-copy dashboard-phase-a2-usage-copy dashboard-phase-a3-usage-copy">
+                <section className="dashboard-flow-section dashboard-flow-section-usage dashboard-usage-pane dashboard-benchmark-usage dashboard-foundation-usage dashboard-phase-a2-usage dashboard-phase-a3-usage dashboard-phase-f4-usage">
+                  <div className="dashboard-usage-pane-grid dashboard-benchmark-usage-grid dashboard-foundation-usage-grid dashboard-phase-a2-usage-grid dashboard-phase-a3-usage-grid dashboard-phase-f4-usage-grid">
+                    <div className="dashboard-usage-pane-copy dashboard-benchmark-usage-copy dashboard-foundation-usage-copy dashboard-phase-a2-usage-copy dashboard-phase-a3-usage-copy dashboard-phase-f4-usage-copy">
                       <div className="section-head dashboard-section-head-flat">
                         <div className="section-header-ea">
                           <p className="section-kicker">Uso recente</p>
@@ -757,75 +841,89 @@ export default function DashboardPage() {
                         </div>
                         <p>{usageLeadInsight}</p>
                       </div>
+
+                      <div className="dashboard-phase-f4-usage-signals">
+                        {usageSignalItems.map((item) => (
+                          <div key={item.label} className="dashboard-phase-f4-usage-signal">
+                            <span className="dashboard-stage-stat-label">{item.label}</span>
+                            <strong>{item.value}</strong>
+                            <span>{item.note}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
 
-                    <div className="dashboard-usage-pane-list dashboard-benchmark-usage-list dashboard-foundation-usage-list dashboard-phase-a2-usage-list dashboard-phase-a3-usage-list">
+                    <div className="dashboard-usage-pane-list dashboard-benchmark-usage-list dashboard-foundation-usage-list dashboard-phase-a2-usage-list dashboard-phase-a3-usage-list dashboard-phase-f4-usage-list">
                       {loading || usageLoading ? (
-                        <div className="dashboard-usage-grid">
+                        <div className="dashboard-usage-grid dashboard-phase-f4-usage-cards">
                           {Array.from({ length: 6 }).map((_, index) => (
-                            <div key={`usage-skeleton-${index}`} className="dashboard-usage-row-skeleton">
+                            <div key={`usage-skeleton-${index}`} className="dashboard-usage-row-skeleton dashboard-phase-f4-usage-card-skeleton">
                               <div className="premium-skeleton premium-skeleton-line" style={{ width: "42%" }} />
                               <div className="premium-skeleton premium-skeleton-line" style={{ width: "26%" }} />
                             </div>
                           ))}
                         </div>
-                      ) : !hasConfirmedUsage ? (
-                        <div className="dashboard-usage-empty dashboard-benchmark-usage-empty">
-                          <div className="dashboard-usage-empty-copy">
-                            <span className="dashboard-stage-stat-label">Aguardando confirmações</span>
-                            <strong>O histórico confirmado aparece quando a trilha fecha.</strong>
-                            <span>
-                              Quando creators, editor e saída completarem o mesmo ciclo, esta área
-                              sai do provisório e passa a mostrar o consumo reconciliado.
-                            </span>
+                      ) : usageEmptyState ? (
+                        <div className="dashboard-usage-empty dashboard-benchmark-usage-empty dashboard-phase-f4-usage-empty">
+                          <div className="dashboard-phase-f4-usage-empty-story">
+                            <div className="dashboard-usage-empty-copy dashboard-phase-f4-usage-empty-copy">
+                              <span className="dashboard-stage-stat-label">{usageEmptyState.kicker}</span>
+                              <strong>{usageEmptyState.title}</strong>
+                              <span>{usageEmptyState.description}</span>
+                            </div>
+                            <div className="dashboard-phase-f4-usage-empty-actions">
+                              <Link href={usageEmptyState.primaryHref} className="btn-link-ea btn-primary btn-sm">
+                                {usageEmptyState.primaryLabel}
+                              </Link>
+                              <Link href={usageEmptyState.secondaryHref} className="btn-link-ea btn-ghost btn-sm">
+                                {usageEmptyState.secondaryLabel}
+                              </Link>
+                            </div>
                           </div>
-                          <Link href="/creators" className="dashboard-inline-action">
-                            Abrir Creators
-                          </Link>
-                        </div>
-                      ) : usagePreviewItems.length === 0 ? (
-                        <div className="dashboard-benchmark-usage-empty">
-                          <div className="dashboard-usage-empty-copy">
-                            <span className="dashboard-stage-stat-label">Sem uso confirmado</span>
-                            <strong>O consumo aparece aqui assim que a primeira entrega fechar o ciclo.</strong>
-                            <span>
-                              Gere no creators, revise no editor e acompanhe o histórico completo em {CREATOR_COINS_PUBLIC_NAME}.
-                            </span>
-                          </div>
-                          <div className="dashboard-benchmark-focus-empty-actions">
-                            <Link href="/creators" className="btn-link-ea btn-primary btn-sm">
-                              Gerar agora
-                            </Link>
-                            <Link href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
-                              Ver histórico
-                            </Link>
+
+                          <div className="dashboard-phase-f4-usage-route">
+                            {USAGE_FLOW_MARKERS.map((item, index) => (
+                              <div key={item.title} className="dashboard-phase-f4-usage-route-step">
+                                <span className="dashboard-phase-f4-usage-route-index">{String(index + 1).padStart(2, "0")}</span>
+                                <div className="dashboard-phase-f4-usage-route-copy">
+                                  <strong>{item.title}</strong>
+                                  <span>{item.description}</span>
+                                </div>
+                              </div>
+                            ))}
                           </div>
                         </div>
                       ) : (
                         <>
-                          <div className="dashboard-usage-grid">
-                            {usageDisplayItems.map((item) => {
+                          <div className="dashboard-usage-grid dashboard-phase-f4-usage-cards">
+                            {usageDisplayItems.map((item, index) => {
                               const progress = usageProgress(item);
                               return (
-                                <div key={item.feature} className="dashboard-usage-row">
-                                  <div className="dashboard-usage-row-main">
-                                    <span className="dashboard-stream-link-title">{item.displayLabel}</span>
+                                <article
+                                  key={item.feature}
+                                  className={`dashboard-phase-f4-usage-card ${index === 0 ? "dashboard-phase-f4-usage-card-lead" : ""}`}
+                                >
+                                  <div className="dashboard-phase-f4-usage-card-copy">
+                                    <span className="dashboard-stage-stat-label">
+                                      {index === 0 ? "Feature líder" : "Uso confirmado"}
+                                    </span>
+                                    <strong className="dashboard-stream-link-title">{item.displayLabel}</strong>
                                     <span className="dashboard-stream-link-copy">
                                       {item.used} de {item.limit} consumo(s) no período.
                                     </span>
                                   </div>
-                                  <div className="dashboard-usage-row-meter">
+                                  <div className="dashboard-usage-row-meter dashboard-phase-f4-usage-card-meter">
                                     <strong>{item.used}/{item.limit}</strong>
                                     <div className="dashboard-progress-track">
                                       <div className="dashboard-progress-bar" style={{ width: `${progress}%` }} />
                                     </div>
                                   </div>
-                                </div>
+                                </article>
                               );
                             })}
                           </div>
                           {usageRemainingCount > 0 ? (
-                            <div className="dashboard-usage-footnote">
+                            <div className="dashboard-usage-footnote dashboard-phase-f4-usage-footnote">
                               +{usageRemainingCount} feature(s) adicionais aparecem no histórico completo.
                             </div>
                           ) : null}

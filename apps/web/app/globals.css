@@ -27588,3 +27588,335 @@ body {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* Dashboard phase 4 deep scroll
+   Purpose: make the lower half of the dashboard hold the same product quality
+   as the hero, center and rail instead of falling into utility/system reading. */
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-usage {
+  gap: 0;
+  padding: clamp(24px, 2.5vw, 32px) !important;
+  border: 1px solid rgba(191, 239, 255, 0.08) !important;
+  border-radius: clamp(28px, 2.7vw, 34px);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.024), rgba(255, 255, 255, 0.008)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.024),
+    0 18px 36px rgba(2, 6, 23, 0.075) !important;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-usage-grid {
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  gap: clamp(22px, 2.4vw, 32px);
+  align-items: start;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-usage-copy {
+  gap: 18px;
+  padding: 0;
+  border: 0;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-usage-signals {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-usage-signal {
+  display: grid;
+  gap: 8px;
+  min-height: 0;
+  padding: 16px 18px 18px;
+  border: 1px solid rgba(191, 239, 255, 0.075);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.014);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-usage-signal strong {
+  font-size: clamp(1.02rem, 1.18vw, 1.14rem);
+  line-height: 1.28;
+  color: var(--ea-text-strong);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-usage-signal span:last-child {
+  color: rgba(224, 241, 255, 0.68);
+  line-height: 1.55;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-usage-list {
+  gap: 14px;
+  padding-left: clamp(20px, 2vw, 26px);
+  border-left: 1px solid rgba(191, 239, 255, 0.08);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-usage-empty {
+  gap: 18px;
+  padding: 0;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-usage-empty-story {
+  display: grid;
+  gap: 16px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-usage-empty-copy {
+  max-width: 36ch;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-usage-empty-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-usage-route {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-usage-route-step {
+  display: grid;
+  gap: 12px;
+  min-height: 0;
+  padding: 16px 18px 18px;
+  border: 1px solid rgba(191, 239, 255, 0.075);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.014);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-usage-route-index,
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-onboarding-step-index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  min-width: 2rem;
+  padding: 0.4rem 0.55rem;
+  border: 1px solid rgba(191, 239, 255, 0.1);
+  border-radius: 999px;
+  color: rgba(191, 239, 255, 0.9);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-usage-route-copy,
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-onboarding-step-copy {
+  display: grid;
+  gap: 8px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-usage-route-copy strong {
+  font-size: 1rem;
+  line-height: 1.3;
+  color: var(--ea-text-strong);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-usage-route-copy span {
+  color: rgba(224, 241, 255, 0.68);
+  line-height: 1.55;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-usage-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-usage-card {
+  display: grid;
+  gap: 14px;
+  min-height: 0;
+  padding: 18px 18px 20px;
+  border: 1px solid rgba(191, 239, 255, 0.075);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.014);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-usage-card-lead {
+  grid-column: span 2;
+  grid-template-columns: minmax(0, 1fr) minmax(180px, 220px);
+  align-items: end;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-usage-card-copy {
+  display: grid;
+  gap: 8px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-usage-card-copy .dashboard-stream-link-title {
+  font-size: clamp(1.16rem, 1.4vw, 1.34rem);
+  line-height: 1.14;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-usage-card-meter {
+  gap: 8px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-usage-footnote {
+  padding-top: 4px;
+  color: rgba(224, 241, 255, 0.64);
+  font-size: 0.9rem;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-onboarding {
+  gap: 24px;
+  margin-top: clamp(34px, 3vw, 44px);
+  padding-top: clamp(30px, 2.7vw, 36px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-onboarding-signals {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-onboarding-signal {
+  display: grid;
+  gap: 8px;
+  min-height: 0;
+  padding: 16px 18px 18px;
+  border: 1px solid rgba(191, 239, 255, 0.075);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.014);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-onboarding-signal strong {
+  font-size: clamp(1.02rem, 1.18vw, 1.14rem);
+  line-height: 1.28;
+  color: var(--ea-text-strong);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-onboarding-signal span:last-child {
+  color: rgba(224, 241, 255, 0.68);
+  line-height: 1.55;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-onboarding-grid {
+  gap: clamp(24px, 2.5vw, 32px);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-onboarding-steps {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-onboarding-step {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  min-height: 0;
+  padding: 16px 18px 18px;
+  border: 1px solid rgba(191, 239, 255, 0.075);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.014);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-onboarding-step:nth-child(-n + 2) {
+  padding-top: 16px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-onboarding-steps > *:nth-child(-n + 2) {
+  border-top: 1px solid rgba(191, 239, 255, 0.075);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-onboarding-paths {
+  display: grid;
+  gap: 12px;
+  padding-left: 0;
+  border-left: 0;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-onboarding-path {
+  padding: 16px 18px 18px;
+  border: 1px solid rgba(191, 239, 255, 0.075);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.014);
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-onboarding-summary {
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) auto;
+  gap: clamp(18px, 2vw, 24px);
+  align-items: center;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-onboarding-summary-copy {
+  gap: 10px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-onboarding-summary-badges {
+  gap: 10px;
+}
+
+.app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-onboarding-actions {
+  justify-content: flex-end;
+}
+
+@media (max-width: 1360px) {
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-usage-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-usage-list {
+    padding-left: 0;
+    padding-top: 18px;
+    border-left: 0;
+    border-top: 1px solid rgba(191, 239, 255, 0.08);
+  }
+}
+
+@media (max-width: 1180px) {
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-usage-signals,
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-onboarding-signals,
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-usage-route {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-onboarding-summary {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-onboarding-actions {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 980px) {
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-usage-cards,
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-onboarding-steps {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-usage-card-lead {
+    grid-column: auto;
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-usage,
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-onboarding {
+    padding-top: 22px;
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-usage-signals,
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-onboarding-signals,
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-usage-route {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-usage-empty-actions,
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-onboarding-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .app-shell-frame:has(.dashboard-page) .dashboard-phase-f4-onboarding-head {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+}
