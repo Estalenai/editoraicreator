@@ -17893,15 +17893,15 @@ body {
 @media (max-width: 1360px) {
   .app-shell-frame:has(.dashboard-phase-final-page) .dashboard-benchmark-hero-grid,
   .app-shell-frame:has(.dashboard-phase-final-page) .dashboard-workspace-grid-flat {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) !important;
   }
 
   .app-shell-frame:has(.dashboard-phase-final-page) .dashboard-benchmark-hero-rail,
   .app-shell-frame:has(.dashboard-phase-final-page) .dashboard-workspace-rail-flat {
-    padding-left: 0;
-    padding-top: 20px;
-    border-left: 0;
-    border-top: 1px solid rgba(191, 239, 255, 0.085);
+    padding-left: 0 !important;
+    padding-top: 20px !important;
+    border-left: 0 !important;
+    border-top: 1px solid rgba(191, 239, 255, 0.085) !important;
   }
 
   .app-shell-frame:has(.dashboard-phase-final-page) .dashboard-benchmark-hero-poster .dashboard-command-track-head strong {
