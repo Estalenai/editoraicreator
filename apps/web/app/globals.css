@@ -23097,6 +23097,11 @@ body {
   min-width: 0;
 }
 
+.app-shell-frame:has(.dashboard-page) .dashboard-main-detail-grid > .dashboard-flow-section-core,
+.app-shell-frame:has(.dashboard-page) .dashboard-main-detail-grid > .dashboard-phase-f4-usage {
+  grid-column: 1 / -1;
+}
+
 .app-shell-frame:has(.dashboard-page) .dashboard-main-detail-region .dashboard-section-head-flat,
 .app-shell-frame:has(.dashboard-page) .dashboard-operations-region .dashboard-section-head-flat {
   padding-bottom: 10px;
