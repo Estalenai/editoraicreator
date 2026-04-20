@@ -17805,6 +17805,131 @@ body {
   }
 }
 
+/* Dashboard final benchmark calibration */
+.app-shell-frame:has(.dashboard-phase-final-page) .dashboard-page-canvas {
+  gap: clamp(18px, 2vw, 24px);
+}
+
+.app-shell-frame:has(.dashboard-phase-final-page) .dashboard-page-canvas > * + * {
+  padding-top: clamp(14px, 1.5vw, 18px);
+}
+
+.app-shell-frame:has(.dashboard-phase-final-page) .dashboard-page-canvas > * + *::before {
+  opacity: 0.1;
+}
+
+.app-shell-frame:has(.dashboard-phase-final-page) .dashboard-phase-final-hero {
+  gap: clamp(16px, 1.9vw, 22px);
+  padding-bottom: 0;
+}
+
+.app-shell-frame:has(.dashboard-phase-final-page) .dashboard-benchmark-hero-grid {
+  gap: clamp(20px, 2.2vw, 28px);
+}
+
+.app-shell-frame:has(.dashboard-phase-final-page) .dashboard-benchmark-hero-poster {
+  gap: clamp(18px, 2vw, 24px);
+  min-height: clamp(300px, 31vw, 390px);
+  padding: clamp(22px, 2.3vw, 30px);
+}
+
+.app-shell-frame:has(.dashboard-phase-final-page) .dashboard-benchmark-hero-poster .dashboard-command-track-head strong {
+  max-width: 11.5ch;
+  font-size: clamp(2.55rem, 4.7vw, 4.45rem);
+}
+
+.app-shell-frame:has(.dashboard-phase-final-page) .dashboard-benchmark-hero-sequence {
+  gap: 0 clamp(16px, 1.7vw, 20px);
+  padding-top: clamp(16px, 1.7vw, 20px);
+  border-top-color: rgba(191, 239, 255, 0.075);
+}
+
+.app-shell-frame:has(.dashboard-phase-final-page) .dashboard-phase-final-shell {
+  padding: clamp(24px, 2.6vw, 32px);
+}
+
+.app-shell-frame:has(.dashboard-phase-final-page) .dashboard-workspace-grid-flat {
+  gap: clamp(20px, 2.2vw, 28px);
+}
+
+.app-shell-frame:has(.dashboard-phase-final-page) .dashboard-workspace-main-flat {
+  gap: clamp(22px, 2.4vw, 30px);
+}
+
+.app-shell-frame:has(.dashboard-phase-final-page) .dashboard-workspace-rail-flat {
+  gap: clamp(18px, 1.8vw, 22px);
+}
+
+.app-shell-frame:has(.dashboard-phase-final-page) .dashboard-main-detail-region .dashboard-section-head-flat,
+.app-shell-frame:has(.dashboard-phase-final-page) .dashboard-operations-region .dashboard-section-head-flat,
+.app-shell-frame:has(.dashboard-phase-final-page) .dashboard-phase-f4-usage .section-head,
+.app-shell-frame:has(.dashboard-phase-final-page) .dashboard-phase-f4-onboarding-head {
+  padding-bottom: 8px;
+  border-bottom-color: rgba(191, 239, 255, 0.065);
+}
+
+.app-shell-frame:has(.dashboard-phase-final-page) .dashboard-phase-f4-usage {
+  padding: clamp(22px, 2.3vw, 28px) !important;
+}
+
+.app-shell-frame:has(.dashboard-phase-final-page) .dashboard-phase-f4-usage-grid {
+  gap: clamp(20px, 2.2vw, 28px);
+}
+
+.app-shell-frame:has(.dashboard-phase-final-page) .dashboard-phase-f4-onboarding {
+  gap: clamp(20px, 2.1vw, 24px);
+  margin-top: clamp(22px, 2vw, 28px);
+  padding-top: clamp(18px, 1.8vw, 24px);
+}
+
+.app-shell-frame:has(.dashboard-phase-final-page) .dashboard-phase-f4-onboarding-grid {
+  gap: clamp(20px, 2.2vw, 26px);
+}
+
+.app-shell-frame:has(.dashboard-phase-final-page) .dashboard-phase-f4-onboarding-summary {
+  gap: clamp(16px, 1.6vw, 20px);
+}
+
+@media (max-width: 1360px) {
+  .app-shell-frame:has(.dashboard-phase-final-page) .dashboard-benchmark-hero-grid,
+  .app-shell-frame:has(.dashboard-phase-final-page) .dashboard-workspace-grid-flat {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .app-shell-frame:has(.dashboard-phase-final-page) .dashboard-benchmark-hero-rail,
+  .app-shell-frame:has(.dashboard-phase-final-page) .dashboard-workspace-rail-flat {
+    padding-left: 0;
+    padding-top: 20px;
+    border-left: 0;
+    border-top: 1px solid rgba(191, 239, 255, 0.085);
+  }
+
+  .app-shell-frame:has(.dashboard-phase-final-page) .dashboard-benchmark-hero-poster .dashboard-command-track-head strong {
+    max-width: 12ch;
+    font-size: clamp(2.4rem, 4.8vw, 3.8rem);
+  }
+}
+
+@media (max-width: 1180px) {
+  .app-shell-frame:has(.dashboard-phase-final-page) .dashboard-page-canvas {
+    gap: 16px;
+  }
+
+  .app-shell-frame:has(.dashboard-phase-final-page) .dashboard-page-canvas > * + * {
+    padding-top: 14px;
+  }
+
+  .app-shell-frame:has(.dashboard-phase-final-page) .dashboard-phase-final-shell,
+  .app-shell-frame:has(.dashboard-phase-final-page) .dashboard-phase-f4-usage {
+    padding: 20px !important;
+  }
+
+  .app-shell-frame:has(.dashboard-phase-final-page) .dashboard-phase-f4-onboarding {
+    margin-top: 18px;
+    padding-top: 16px;
+  }
+}
+
 /* Projects premium continuity pass */
 .app-shell-frame:has(.projects-page) .app-shell-main::before {
   background:
