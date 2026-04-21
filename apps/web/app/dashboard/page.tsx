@@ -494,9 +494,9 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="page-shell dashboard-page dashboard-phase-final-page">
-        <div className="dashboard-page-canvas">
-      <section className="premium-hero dashboard-hero surface-flow-hero dashboard-command-stage dashboard-benchmark-hero dashboard-foundation-hero dashboard-phase-a2-hero dashboard-phase-a3-hero dashboard-phase-final-hero" data-reveal>
+    <div className="page-shell dashboard-page dashboard-phase-final-page dashboard-benchmark-unified-page">
+        <div className="dashboard-page-canvas dashboard-benchmark-unified-canvas">
+      <section className="premium-hero dashboard-hero surface-flow-hero dashboard-command-stage dashboard-benchmark-hero dashboard-foundation-hero dashboard-phase-a2-hero dashboard-phase-a3-hero dashboard-phase-final-hero dashboard-benchmark-unified-hero" data-reveal>
         <div className="dashboard-command-header dashboard-phase-a2-hero-head dashboard-phase-a3-hero-head">
           <div className="hero-copy dashboard-command-intro dashboard-phase-a2-hero-copy dashboard-phase-a3-hero-copy">
             <div className="hero-title-stack">
@@ -644,7 +644,7 @@ export default function DashboardPage() {
         </div>
       ) : null}
 
-      <section className="dashboard-workspace-shell dashboard-workspace-shell-flat dashboard-benchmark-shell dashboard-foundation-shell dashboard-phase-a2-shell dashboard-phase-a3-shell dashboard-phase-final-shell" data-reveal data-reveal-delay="135">
+      <section className="dashboard-workspace-shell dashboard-workspace-shell-flat dashboard-benchmark-shell dashboard-foundation-shell dashboard-phase-a2-shell dashboard-phase-a3-shell dashboard-phase-final-shell dashboard-benchmark-unified-shell" data-reveal data-reveal-delay="135">
         <div className="dashboard-workspace-grid dashboard-workspace-grid-flat dashboard-benchmark-grid dashboard-foundation-grid dashboard-phase-a2-grid dashboard-phase-a3-grid dashboard-phase-f3-grid">
           <div className="dashboard-workspace-main dashboard-workspace-main-flat dashboard-benchmark-main dashboard-foundation-main dashboard-phase-a2-main dashboard-phase-a3-main">
             <section className="dashboard-stage-feature dashboard-stage-feature-premium dashboard-benchmark-focus-section dashboard-foundation-region dashboard-foundation-focus dashboard-phase-a2-focus dashboard-phase-a3-focus dashboard-phase-f2-focus dashboard-phase-f2b-focus" data-reveal data-reveal-delay="150">
