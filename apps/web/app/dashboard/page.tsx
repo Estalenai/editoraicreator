@@ -925,9 +925,10 @@ export default function DashboardPage() {
           </div>
         </section>
 
-        <section className="dashboard-flow-section dashboard-flow-section-usage dashboard-usage-pane dashboard-benchmark-usage dashboard-foundation-usage dashboard-phase-a2-usage dashboard-phase-a3-usage dashboard-phase-f4-usage">
-                  <div className="dashboard-usage-pane-grid dashboard-benchmark-usage-grid dashboard-foundation-usage-grid dashboard-phase-a2-usage-grid dashboard-phase-a3-usage-grid dashboard-phase-f4-usage-grid">
-                    <div className="dashboard-usage-pane-copy dashboard-benchmark-usage-copy dashboard-foundation-usage-copy dashboard-phase-a2-usage-copy dashboard-phase-a3-usage-copy dashboard-phase-f4-usage-copy">
+        <section className="dashboard-r1-tail" data-reveal data-reveal-delay="110">
+          <section className="dashboard-flow-section dashboard-flow-section-usage dashboard-usage-pane dashboard-benchmark-usage dashboard-foundation-usage dashboard-phase-a2-usage dashboard-phase-a3-usage dashboard-phase-f4-usage dashboard-r1-usage">
+                  <div className="dashboard-usage-pane-grid dashboard-benchmark-usage-grid dashboard-foundation-usage-grid dashboard-phase-a2-usage-grid dashboard-phase-a3-usage-grid dashboard-phase-f4-usage-grid dashboard-r1-usage-grid">
+                    <div className="dashboard-usage-pane-copy dashboard-benchmark-usage-copy dashboard-foundation-usage-copy dashboard-phase-a2-usage-copy dashboard-phase-a3-usage-copy dashboard-phase-f4-usage-copy dashboard-r1-usage-copy">
                       <div className="section-head dashboard-section-head-flat">
                         <div className="section-header-ea">
                           <p className="section-kicker">Uso recente</p>
@@ -946,9 +947,9 @@ export default function DashboardPage() {
                         <p>{usageLeadInsight}</p>
                       </div>
 
-                      <div className="dashboard-phase-f4-usage-signals">
+                      <div className="dashboard-phase-f4-usage-signals dashboard-r1-usage-signals">
                         {usageSignalItems.map((item) => (
-                          <div key={item.label} className="dashboard-phase-f4-usage-signal">
+                          <div key={item.label} className="dashboard-phase-f4-usage-signal dashboard-r1-usage-signal">
                             <span className="dashboard-stage-stat-label">{item.label}</span>
                             <strong>{item.value}</strong>
                             <span>{item.note}</span>
@@ -957,9 +958,9 @@ export default function DashboardPage() {
                       </div>
                     </div>
 
-                    <div className="dashboard-usage-pane-list dashboard-benchmark-usage-list dashboard-foundation-usage-list dashboard-phase-a2-usage-list dashboard-phase-a3-usage-list dashboard-phase-f4-usage-list">
+                    <div className="dashboard-usage-pane-list dashboard-benchmark-usage-list dashboard-foundation-usage-list dashboard-phase-a2-usage-list dashboard-phase-a3-usage-list dashboard-phase-f4-usage-list dashboard-r1-usage-list">
                       {loading || usageLoading ? (
-                        <div className="dashboard-usage-grid dashboard-phase-f4-usage-cards">
+                        <div className="dashboard-usage-grid dashboard-phase-f4-usage-cards dashboard-r1-usage-cards">
                           {Array.from({ length: 6 }).map((_, index) => (
                             <div key={`usage-skeleton-${index}`} className="dashboard-usage-row-skeleton dashboard-phase-f4-usage-card-skeleton">
                               <div className="premium-skeleton premium-skeleton-line" style={{ width: "42%" }} />
@@ -999,13 +1000,13 @@ export default function DashboardPage() {
                         </div>
                       ) : (
                         <>
-                          <div className="dashboard-usage-grid dashboard-phase-f4-usage-cards">
+                          <div className="dashboard-usage-grid dashboard-phase-f4-usage-cards dashboard-r1-usage-cards">
                             {usageDisplayItems.map((item, index) => {
                               const progress = usageProgress(item);
                               return (
                                 <article
                                   key={item.feature}
-                                  className={`dashboard-phase-f4-usage-card ${index === 0 ? "dashboard-phase-f4-usage-card-lead" : ""}`}
+                                  className={`dashboard-phase-f4-usage-card dashboard-r1-usage-card ${index === 0 ? "dashboard-phase-f4-usage-card-lead dashboard-r1-usage-card-lead" : ""}`}
                                 >
                                   <div className="dashboard-phase-f4-usage-card-copy">
                                     <span className="dashboard-stage-stat-label">
@@ -1035,8 +1036,9 @@ export default function DashboardPage() {
                       )}
                     </div>
                   </div>
+          </section>
+          <ApprovedBetaOnboardingCard email={email} wallet={wallet} loading={loading} />
         </section>
-        <ApprovedBetaOnboardingCard email={email} wallet={wallet} loading={loading} />
       </div>
     </div>
   );
