@@ -67,6 +67,7 @@ function shouldHideNavigation(pathname: string): boolean {
 
 export function AppTopNav() {
   const pathname = usePathname() || "";
+  const currentPath = normalizePath(pathname);
   const [canAccessAdmin, setCanAccessAdmin] = useState(false);
   const hideNavigation = shouldHideNavigation(pathname);
 
@@ -102,6 +103,7 @@ export function AppTopNav() {
       }),
     [canAccessAdmin, pathname]
   );
+  const dashboardShellMode = currentPath === "/dashboard";
   const overviewItems = useMemo(
     () => navItems.filter((item) => item.group === "overview"),
     [navItems]
@@ -125,11 +127,22 @@ export function AppTopNav() {
 
     return [...baseItems, compactSupportItem];
   }, [coreItems, overviewItems, pathname, supportItems]);
+  const activeNavItem = useMemo(
+    () =>
+      navItems.find((item) => matchesNavPath(pathname, item)) ??
+      navItems.find((item) => item.href === "/dashboard") ??
+      navItems[0] ??
+      null,
+    [navItems, pathname]
+  );
 
-  function renderNavItem(item: NavItem) {
+  function renderNavItem(item: NavItem, options?: { minimal?: boolean }) {
     const active = matchesNavPath(pathname, item);
-    const className = `app-nav-link layout-contract-item layout-contract-rail-link app-nav-link-${item.group}${active ? " app-nav-link-active" : ""}`;
-    const content = (
+    const minimal = Boolean(options?.minimal);
+    const className = `app-nav-link layout-contract-item layout-contract-rail-link app-nav-link-${item.group}${minimal ? " app-nav-link-minimal" : ""}${active ? " app-nav-link-active" : ""}`;
+    const content = minimal ? (
+      <span className="app-nav-link-label">{item.label}</span>
+    ) : (
       <>
         <span className="app-nav-link-label">{item.label}</span>
         <span className="app-nav-link-meta">{item.meta}</span>
@@ -202,6 +215,39 @@ export function AppTopNav() {
 
   if (hideNavigation) return null;
 
+  if (dashboardShellMode) {
+    return (
+      <nav className="app-top-nav app-nav-rail layout-contract-rail app-nav-dashboard-mode" aria-label="Navegação principal">
+        <div className="app-top-nav-head app-nav-rail-head layout-contract-rail-head">
+          <p className="app-top-nav-title">Fluxo</p>
+          <div className="app-nav-dashboard-context">
+            <span className="app-nav-dashboard-context-label">Workspace</span>
+            <strong>{activeNavItem?.label ?? "Dashboard"}</strong>
+          </div>
+        </div>
+        {overviewItems.length > 0 ? (
+          <div className="app-nav-group app-nav-group-overview">
+            <div className="app-nav-links app-nav-links-overview app-nav-rail-links layout-contract-collection">
+              {overviewItems.map((item) => renderNavItem(item, { minimal: true }))}
+            </div>
+          </div>
+        ) : null}
+        <div className="app-nav-group app-nav-group-core">
+          <p className="app-nav-group-kicker">Núcleo</p>
+          <div className="app-nav-links app-nav-links-core app-nav-rail-links layout-contract-collection">
+            {coreItems.map((item) => renderNavItem(item, { minimal: true }))}
+          </div>
+        </div>
+        <div className="app-nav-group app-nav-group-support">
+          <p className="app-nav-group-kicker">Apoio</p>
+          <div className="app-nav-links app-nav-links-support app-nav-rail-links layout-contract-collection">
+            {supportItems.map((item) => renderNavItem(item, { minimal: true }))}
+          </div>
+        </div>
+      </nav>
+    );
+  }
+
   return (
     <nav className="app-top-nav app-nav-rail layout-contract-rail" aria-label="Navegação principal">
       <div className="app-top-nav-head app-nav-rail-head layout-contract-rail-head">
@@ -219,7 +265,7 @@ export function AppTopNav() {
         {compactNavItems.map(renderCompactNavItem)}
       </div>
       {overviewItems.length > 0 ? (
-        <div className="app-nav-overview">{overviewItems.map(renderNavItem)}</div>
+        <div className="app-nav-overview">{overviewItems.map((item) => renderNavItem(item))}</div>
       ) : null}
       <div className="app-nav-group app-nav-group-core">
         <div className="app-nav-group-head">
@@ -227,7 +273,7 @@ export function AppTopNav() {
           <p className="app-nav-group-text">Geração, edição, continuidade e saída em primeiro plano.</p>
         </div>
         <div className="app-nav-links app-nav-links-core app-nav-rail-links layout-contract-collection">
-          {coreItems.map(renderNavItem)}
+          {coreItems.map((item) => renderNavItem(item))}
         </div>
       </div>
       <div className="app-nav-group app-nav-group-support">
@@ -236,7 +282,7 @@ export function AppTopNav() {
           <p className="app-nav-group-text">Saldo, plano, suporte e área restrita só entram quando necessários.</p>
         </div>
         <div className="app-nav-links app-nav-links-support app-nav-rail-links layout-contract-collection">
-          {supportItems.map(renderNavItem)}
+          {supportItems.map((item) => renderNavItem(item))}
         </div>
       </div>
     </nav>

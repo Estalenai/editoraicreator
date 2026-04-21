@@ -494,161 +494,102 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="page-shell dashboard-page dashboard-phase-final-page dashboard-benchmark-unified-page">
-        <div className="dashboard-page-canvas dashboard-benchmark-unified-canvas">
-      <section className="premium-hero dashboard-hero surface-flow-hero dashboard-command-stage dashboard-benchmark-hero dashboard-foundation-hero dashboard-phase-a2-hero dashboard-phase-a3-hero dashboard-phase-final-hero dashboard-benchmark-unified-hero" data-reveal>
-        <div className="dashboard-command-header dashboard-phase-a2-hero-head dashboard-phase-a3-hero-head">
-          <div className="hero-copy dashboard-command-intro dashboard-phase-a2-hero-copy dashboard-phase-a3-hero-copy">
-            <div className="hero-title-stack">
-              <p className="section-kicker">Painel executivo</p>
-              <h1 className="heading-reset">Dashboard</h1>
-              <p className="section-header-copy hero-copy-compact">
-                Criacao, revisao, continuidade e operacao entram na mesma primeira leitura, sem cair
-                em painel administrativo.
-              </p>
-            </div>
-            <div className="hero-meta-row dashboard-command-meta dashboard-phase-a2-hero-meta dashboard-phase-a3-hero-meta">
-              <span className="premium-badge premium-badge-phase">Plano: {planLabelDisplay}</span>
-              <span className="premium-badge premium-badge-warning">
-                {loading ? "Conta em sincronização" : "Histórico confirmado no backend"}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div className="dashboard-command-grid dashboard-benchmark-hero-grid dashboard-foundation-hero-grid dashboard-phase-a2-hero-grid dashboard-phase-a3-hero-grid" data-reveal data-reveal-delay="55">
-          <div className="dashboard-benchmark-hero-main dashboard-foundation-hero-main dashboard-phase-a2-hero-main dashboard-phase-a3-hero-main">
-            <div className="dashboard-command-track dashboard-benchmark-hero-poster dashboard-foundation-hero-poster dashboard-phase-a2-hero-poster dashboard-phase-a3-hero-poster">
-              <div className="dashboard-command-track-head dashboard-phase-a2-hero-track dashboard-phase-a3-hero-track">
-                <span className="dashboard-hero-flow-label">Linha criativa</span>
-                <strong>Creator, editor e saida conduzem o eixo principal do produto.</strong>
-                <p className="dashboard-command-track-copy">
-                  A abertura precisa mostrar criacao, refinamento, continuidade e saida como uma
-                  trilha unica, nao como uma sequencia de paineis tecnicos.
-                </p>
-              </div>
-
-              <div className="dashboard-benchmark-hero-sequence dashboard-phase-a2-hero-sequence dashboard-phase-a3-hero-sequence dashboard-phase-f2-hero-sequence dashboard-phase-f2b-hero-sequence">
-                <div className="dashboard-benchmark-step dashboard-phase-f2-hero-step dashboard-phase-f2b-hero-step">
-                  <span className="dashboard-benchmark-step-index">01</span>
-                  <div className="dashboard-command-node-copy">
-                    <span className="dashboard-hero-flow-label">Creators</span>
-                    <strong>gera a base</strong>
-                    <span>Abra Post, Scripts ou Clips com contexto pronto.</span>
+    <div className="page-shell dashboard-page dashboard-r1-page">
+      <div className="dashboard-page-canvas dashboard-r1-canvas">
+        <section className="dashboard-r1-stage" data-reveal>
+          <div className="dashboard-r1-stage-grid">
+            <div className="dashboard-r1-stage-main">
+              <header className="dashboard-r1-hero" data-reveal data-reveal-delay="35">
+                <div className="dashboard-r1-hero-intro">
+                  <div className="hero-title-stack">
+                    <p className="section-kicker">Painel executivo</p>
+                    <h1 className="heading-reset">Dashboard</h1>
+                    <p className="section-header-copy hero-copy-compact">
+                      Criacao, revisao, continuidade e operacao entram na mesma primeira leitura, sem cair
+                      em painel administrativo.
+                    </p>
+                  </div>
+                  <div className="hero-meta-row dashboard-r1-hero-badges">
+                    <span className="premium-badge premium-badge-phase">Plano: {planLabelDisplay}</span>
+                    <span className="premium-badge premium-badge-warning">
+                      {loading ? "Conta em sincronização" : "Histórico confirmado no backend"}
+                    </span>
                   </div>
                 </div>
-                <div className="dashboard-benchmark-step dashboard-phase-f2-hero-step dashboard-phase-f2b-hero-step">
-                  <span className="dashboard-benchmark-step-index">02</span>
-                  <div className="dashboard-command-node-copy">
-                    <span className="dashboard-hero-flow-label">Editor</span>
-                    <strong>lapida o material</strong>
-                    <span>Revise, consolide e preserve a continuidade.</span>
+
+                <div className="dashboard-r1-command" data-reveal data-reveal-delay="70">
+                  <div className="dashboard-r1-command-copy">
+                    <span className="dashboard-hero-flow-label">Linha criativa</span>
+                    <strong>Creator, editor e saida conduzem o eixo principal do produto.</strong>
+                    <p>
+                      A abertura precisa mostrar criacao, refinamento, continuidade e saida como uma trilha unica,
+                      nao como uma sequencia de paineis tecnicos.
+                    </p>
+                  </div>
+
+                  <div className="dashboard-r1-command-sequence">
+                    <div className="dashboard-r1-command-step">
+                      <span className="dashboard-benchmark-step-index">01</span>
+                      <div className="dashboard-r1-command-step-copy">
+                        <span className="dashboard-hero-flow-label">Creators</span>
+                        <strong>gera a base</strong>
+                        <span>Abra Post, Scripts ou Clips com contexto pronto.</span>
+                      </div>
+                    </div>
+                    <div className="dashboard-r1-command-step">
+                      <span className="dashboard-benchmark-step-index">02</span>
+                      <div className="dashboard-r1-command-step-copy">
+                        <span className="dashboard-hero-flow-label">Editor</span>
+                        <strong>lapida o material</strong>
+                        <span>Revise, consolide e preserve a continuidade.</span>
+                      </div>
+                    </div>
+                    <div className="dashboard-r1-command-step">
+                      <span className="dashboard-benchmark-step-index">03</span>
+                      <div className="dashboard-r1-command-step-copy">
+                        <span className="dashboard-hero-flow-label">Projetos + saída</span>
+                        <strong>fecha o ciclo</strong>
+                        <span>O que foi salvo e entregue continua no mesmo eixo.</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div className="dashboard-benchmark-step dashboard-phase-f2-hero-step dashboard-phase-f2b-hero-step">
-                  <span className="dashboard-benchmark-step-index">03</span>
-                  <div className="dashboard-command-node-copy">
-                    <span className="dashboard-hero-flow-label">Projetos + saída</span>
-                    <strong>fecha o ciclo</strong>
-                    <span>O que foi salvo e entregue continua no mesmo eixo.</span>
-                  </div>
+              </header>
+
+              {error || usageError ? (
+                <div className="dashboard-status-stack dashboard-r1-inline-status">
+                  {error ? (
+                    <div className="state-ea state-ea-error">
+                      <p className="state-ea-title">Não foi possível carregar painel, plano e saldo agora</p>
+                      <div className="state-ea-text">{toUserFacingError(error, "Atualize a página e tente novamente.")}</div>
+                      <div className="state-ea-actions">
+                        <button onClick={refresh} className="btn-ea btn-secondary btn-sm">
+                          Atualizar dashboard
+                        </button>
+                        <Link href="/support" className="btn-link-ea btn-ghost btn-sm">
+                          Pedir ajuda
+                        </Link>
+                      </div>
+                    </div>
+                  ) : null}
+
+                  {usageError ? (
+                    <div className="dashboard-benchmark-inline-warning" role="status" aria-live="polite">
+                      <div className="dashboard-benchmark-inline-warning-copy">
+                        <span className="dashboard-stage-stat-label">Uso do período indisponível</span>
+                        <strong>As métricas não responderam agora.</strong>
+                        <span>{toUserFacingError(usageError, "Atualize as métricas para tentar novamente.")}</span>
+                      </div>
+                      <button onClick={loadUsage} className="btn-ea btn-secondary btn-sm">
+                        Atualizar uso
+                      </button>
+                    </div>
+                  ) : null}
                 </div>
-              </div>
-            </div>
-          </div>
+              ) : null}
 
-          <aside className="dashboard-benchmark-hero-rail dashboard-foundation-hero-rail dashboard-phase-a2-hero-rail dashboard-phase-a3-hero-rail" data-reveal data-reveal-delay="90">
-            <div className="dashboard-benchmark-hero-rail-row dashboard-benchmark-hero-rail-row-strong">
-              <span className="dashboard-overview-label">Conta ativa</span>
-              <strong>{planLabelDisplay}</strong>
-              <span>{emailDisplay}</span>
-            </div>
-
-            <div className="dashboard-phase-f1-hero-controls">
-              <button
-                onClick={async () => {
-                  await onSyncSubscription();
-                  await refresh();
-                  await loadUsage();
-                }}
-                disabled={syncingSubscription || loading}
-                className="btn-ea btn-secondary"
-              >
-                {syncingSubscription ? "Sincronizando..." : "Sincronizar assinatura"}
-              </button>
-              <button onClick={onLogout} className="btn-ea btn-ghost">
-                Sair
-              </button>
-            </div>
-
-            <div className="dashboard-benchmark-hero-rail-split dashboard-phase-a2-hero-rail-split dashboard-phase-a3-hero-rail-split">
-              <div className="dashboard-benchmark-hero-rail-row">
-                <span className="dashboard-overview-label">{CREATOR_COINS_PUBLIC_NAME}</span>
-                <strong>{walletSummaryDisplay}</strong>
-                <span>Saldo confirmado e leitura financeira reconciliada.</span>
-              </div>
-              <div className="dashboard-benchmark-hero-rail-row">
-                <span className="dashboard-overview-label">Continuidade</span>
-                <strong>{continuityValue}</strong>
-                <span>{continuityDetail}</span>
-              </div>
-            </div>
-
-            <div className="dashboard-benchmark-hero-rail-row dashboard-benchmark-hero-rail-next dashboard-phase-a2-hero-next dashboard-phase-a3-hero-next">
-              <span className="dashboard-overview-label">Próximo passo</span>
-              <strong>{nextActionTitleDisplay}</strong>
-              <span>{nextActionDescriptionDisplay}</span>
-              {nextAction.href.startsWith("/editor") ? (
-                <EditorRouteLink href={nextAction.href} className="dashboard-inline-action">
-                  {nextActionCtaDisplay}
-                </EditorRouteLink>
-              ) : (
-                <Link href={nextAction.href} className="dashboard-inline-action">
-                  {nextActionCtaDisplay}
-                </Link>
-              )}
-            </div>
-          </aside>
-        </div>
-      </section>
-
-      {error || usageError ? (
-        <div className="dashboard-status-stack">
-          {error ? (
-            <div className="state-ea state-ea-error">
-              <p className="state-ea-title">Não foi possível carregar painel, plano e saldo agora</p>
-              <div className="state-ea-text">{toUserFacingError(error, "Atualize a página e tente novamente.")}</div>
-              <div className="state-ea-actions">
-                <button onClick={refresh} className="btn-ea btn-secondary btn-sm">
-                  Atualizar dashboard
-                </button>
-                <Link href="/support" className="btn-link-ea btn-ghost btn-sm">
-                  Pedir ajuda
-                </Link>
-              </div>
-            </div>
-          ) : null}
-
-          {usageError ? (
-            <div className="dashboard-benchmark-inline-warning" role="status" aria-live="polite">
-              <div className="dashboard-benchmark-inline-warning-copy">
-                <span className="dashboard-stage-stat-label">Uso do período indisponível</span>
-                <strong>As métricas não responderam agora.</strong>
-                <span>{toUserFacingError(usageError, "Atualize as métricas para tentar novamente.")}</span>
-              </div>
-              <button onClick={loadUsage} className="btn-ea btn-secondary btn-sm">
-                Atualizar uso
-              </button>
-            </div>
-          ) : null}
-        </div>
-      ) : null}
-
-      <section className="dashboard-workspace-shell dashboard-workspace-shell-flat dashboard-benchmark-shell dashboard-foundation-shell dashboard-phase-a2-shell dashboard-phase-a3-shell dashboard-phase-final-shell dashboard-benchmark-unified-shell" data-reveal data-reveal-delay="135">
-        <div className="dashboard-workspace-grid dashboard-workspace-grid-flat dashboard-benchmark-grid dashboard-foundation-grid dashboard-phase-a2-grid dashboard-phase-a3-grid dashboard-phase-f3-grid">
-          <div className="dashboard-workspace-main dashboard-workspace-main-flat dashboard-benchmark-main dashboard-foundation-main dashboard-phase-a2-main dashboard-phase-a3-main">
-            <section className="dashboard-stage-feature dashboard-stage-feature-premium dashboard-benchmark-focus-section dashboard-foundation-region dashboard-foundation-focus dashboard-phase-a2-focus dashboard-phase-a3-focus dashboard-phase-f2-focus dashboard-phase-f2b-focus" data-reveal data-reveal-delay="150">
-                <div className="section-head dashboard-stage-feature-head dashboard-benchmark-focus-head dashboard-phase-a2-focus-head dashboard-phase-a3-focus-head dashboard-phase-f2-focus-head">
+              <section className="dashboard-r1-focus" data-reveal data-reveal-delay="140">
+                <div className="dashboard-r1-section-head">
                   <div className="section-header-ea">
                     <p className="section-kicker">Continuidade viva</p>
                     <h3 className="heading-reset">Projeto em foco</h3>
@@ -656,20 +597,21 @@ export default function DashboardPage() {
                       Uma retomada central: menos painel bruto e mais clareza sobre o que esta vivo agora.
                     </p>
                   </div>
-                  <Link href="/projects" className="btn-link-ea btn-ghost btn-sm">Abrir projetos</Link>
+                  <Link href="/projects" className="btn-link-ea btn-ghost btn-sm">
+                    Abrir projetos
+                  </Link>
                 </div>
 
-                <div className="dashboard-benchmark-focus-grid dashboard-foundation-focus-grid dashboard-phase-a2-focus-grid dashboard-phase-a3-focus-grid dashboard-phase-f2-focus-grid">
-                  <div className="dashboard-phase-f2-focus-stage dashboard-phase-f2b-focus-stage dashboard-phase-f2c-focus-stage">
-                    <div className="dashboard-benchmark-focus-lead dashboard-foundation-focus-lead dashboard-phase-f2-focus-lead dashboard-phase-f2b-focus-lead">
+                <div className="dashboard-r1-focus-grid">
+                  <div className="dashboard-r1-focus-lead-wrap">
                     {loading ? (
-                        <div className="dashboard-stage-lead-skeleton dashboard-foundation-focus-skeleton">
+                      <div className="dashboard-r1-focus-lead dashboard-r1-focus-skeleton">
                         <div className="premium-skeleton premium-skeleton-line" style={{ width: "24%" }} />
                         <div className="premium-skeleton premium-skeleton-line" style={{ width: "62%", marginTop: 18 }} />
                         <div className="premium-skeleton premium-skeleton-line" style={{ width: "48%", marginTop: 16 }} />
                       </div>
                     ) : featuredProjectDisplay ? (
-                      <EditorRouteLink href={`/editor/${featuredProjectDisplay.id}`} className="dashboard-benchmark-focus-link dashboard-foundation-focus-link dashboard-phase-a2-focus-primary dashboard-phase-a3-focus-primary dashboard-phase-f2-focus-primary dashboard-phase-f2b-focus-primary dashboard-phase-f2c-focus-primary">
+                      <EditorRouteLink href={`/editor/${featuredProjectDisplay.id}`} className="dashboard-r1-focus-lead">
                         <div className="dashboard-stage-lead-topline">
                           <span className="dashboard-stage-lead-kicker">Projeto em foco</span>
                           <span className="dashboard-stage-lead-pill">{featuredProjectDisplay.stageLabel}</span>
@@ -687,7 +629,7 @@ export default function DashboardPage() {
                         </div>
                       </EditorRouteLink>
                     ) : (
-                      <div className="dashboard-benchmark-focus-empty dashboard-foundation-focus-link dashboard-phase-a2-focus-primary dashboard-phase-a3-focus-primary dashboard-phase-f2-focus-primary dashboard-phase-f2b-focus-primary dashboard-phase-f2c-focus-primary">
+                      <div className="dashboard-r1-focus-lead dashboard-r1-focus-empty">
                         <span className="dashboard-stage-lead-kicker">Projeto em foco</span>
                         <strong>A trilha fica premium quando um Creator vira projeto de verdade.</strong>
                         <p>
@@ -704,124 +646,286 @@ export default function DashboardPage() {
                         </div>
                       </div>
                     )}
-                    </div>
+                  </div>
 
-                    <div className="dashboard-phase-f2-focus-summary dashboard-phase-f2b-focus-summary dashboard-phase-f2c-focus-summary">
-                      <div className="dashboard-phase-f2-focus-stat dashboard-phase-f2b-focus-stat dashboard-phase-f2c-focus-stat">
-                        <span className="dashboard-stage-stat-label">Continuidade ativa</span>
-                        <strong>{focusContinuationLabel}</strong>
-                        <span>{focusContinuationDetail}</span>
-                      </div>
-                      <div className="dashboard-phase-f2-focus-stat dashboard-phase-f2b-focus-stat dashboard-phase-f2c-focus-stat">
-                        <span className="dashboard-stage-stat-label">Ritmo atual</span>
-                        <strong>{continuityValue}</strong>
-                        <span>{continuityDetail}</span>
-                      </div>
-                      <div className="dashboard-phase-f2-focus-stat dashboard-phase-f2-focus-stat-action dashboard-phase-f2b-focus-stat dashboard-phase-f2c-focus-stat">
-                        <span className="dashboard-stage-stat-label">Próximo movimento</span>
-                        <strong>{nextActionTitleDisplay}</strong>
-                        <span>{nextActionDescriptionDisplay}</span>
-                        {nextAction.href.startsWith("/editor") ? (
-                          <EditorRouteLink href={nextAction.href} className="dashboard-inline-action">
-                            {nextActionCtaDisplay}
-                          </EditorRouteLink>
-                        ) : (
-                          <Link href={nextAction.href} className="dashboard-inline-action">
-                            {nextActionCtaDisplay}
-                          </Link>
-                        )}
-                      </div>
+                  <div className="dashboard-r1-focus-side">
+                    <div className="dashboard-r1-stat">
+                      <span className="dashboard-stage-stat-label">Continuidade ativa</span>
+                      <strong>{focusContinuationLabel}</strong>
+                      <span>{focusContinuationDetail}</span>
+                    </div>
+                    <div className="dashboard-r1-stat">
+                      <span className="dashboard-stage-stat-label">Ritmo atual</span>
+                      <strong>{continuityValue}</strong>
+                      <span>{continuityDetail}</span>
+                    </div>
+                    <div className="dashboard-r1-stat dashboard-r1-stat-action">
+                      <span className="dashboard-stage-stat-label">Próximo movimento</span>
+                      <strong>{nextActionTitleDisplay}</strong>
+                      <span>{nextActionDescriptionDisplay}</span>
+                      {nextAction.href.startsWith("/editor") ? (
+                        <EditorRouteLink href={nextAction.href} className="dashboard-inline-action">
+                          {nextActionCtaDisplay}
+                        </EditorRouteLink>
+                      ) : (
+                        <Link href={nextAction.href} className="dashboard-inline-action">
+                          {nextActionCtaDisplay}
+                        </Link>
+                      )}
                     </div>
                   </div>
                 </div>
 
                 {loading ? (
-                  <div className="dashboard-benchmark-ribbon dashboard-foundation-ribbon dashboard-phase-a2-ribbon dashboard-phase-a3-ribbon dashboard-phase-f2-ribbon dashboard-phase-f2c-ribbon">
+                  <div className="dashboard-r1-ribbon">
                     {Array.from({ length: 3 }).map((_, index) => (
                       <div key={`project-skeleton-${index}`} className="dashboard-project-skeleton-row" />
                     ))}
                   </div>
                 ) : supportingProjectDisplay.length > 0 ? (
-                  <div className="dashboard-benchmark-ribbon dashboard-foundation-ribbon dashboard-phase-a2-ribbon dashboard-phase-a3-ribbon dashboard-phase-f2-ribbon dashboard-phase-f2b-ribbon dashboard-phase-f2c-ribbon">
+                  <div className="dashboard-r1-ribbon">
                     {supportingProjectDisplay.map((project: any, index: number) => (
                       <EditorRouteLink
                         key={String(project.id || project.project_id || index)}
                         href={`/editor/${project.id}`}
-                        className="dashboard-benchmark-ribbon-link dashboard-phase-f2-ribbon-link dashboard-phase-f2b-ribbon-link dashboard-phase-f2c-ribbon-link"
+                        className="dashboard-r1-ribbon-link"
                         data-reveal
                         data-reveal-delay={String(80 + index * 35)}
                       >
-                        <div className="dashboard-phase-f2c-ribbon-copy">
+                        <div className="dashboard-r1-ribbon-copy">
                           <span className="dashboard-stream-link-kicker">{project.deliverableLabel}</span>
                           <strong className="dashboard-stream-link-title">{project.displayTitle}</strong>
                           <span className="dashboard-stream-link-copy">{project.statusLabel}</span>
                         </div>
-                        <span className="dashboard-stream-link-cta dashboard-phase-f2c-ribbon-cta">{project.stageLabel}</span>
+                        <span className="dashboard-stream-link-cta">{project.stageLabel}</span>
                       </EditorRouteLink>
                     ))}
                   </div>
                 ) : null}
-            </section>
+              </section>
 
-            <section className="dashboard-main-detail-region dashboard-detail-region-premium dashboard-benchmark-detail-region dashboard-foundation-region dashboard-foundation-detail dashboard-phase-a2-detail dashboard-phase-a3-detail dashboard-phase-f2b-detail dashboard-phase-f2c-detail" data-reveal data-reveal-delay="210">
-              <div className="dashboard-main-detail-grid dashboard-benchmark-detail-grid dashboard-foundation-detail-grid dashboard-phase-a2-detail-grid dashboard-phase-a3-detail-grid dashboard-phase-f2b-detail-grid dashboard-phase-f2c-detail-grid">
-                <section className="dashboard-flow-section dashboard-flow-section-core dashboard-core-atlas dashboard-benchmark-core dashboard-foundation-core dashboard-phase-a2-core dashboard-phase-a3-core dashboard-phase-f2-core dashboard-phase-f2b-core dashboard-phase-f2c-core">
-                  <div className="dashboard-core-atlas-head dashboard-benchmark-core-head dashboard-phase-a2-core-head dashboard-phase-a3-core-head dashboard-phase-f2-core-head dashboard-phase-f2b-core-head dashboard-phase-f2c-core-head">
-                    <div className="section-header-ea">
-                      <p className="section-kicker">Centro da experiência</p>
-                      <h3 className="heading-reset">Núcleo em ação</h3>
-                      <p className="helper-text-ea">
-                        O centro da tela precisa orientar o fluxo inteiro em uma única leitura,
-                        sem cair em grade utilitária ou catálogo de módulos.
-                      </p>
-                    </div>
-                    <div className="dashboard-core-atlas-summary">
-                      <span className="dashboard-stage-stat-label">Fluxo principal</span>
-                      <strong>Creators, editor e saída seguem a mesma trilha principal.</strong>
-                      <span>
-                        Criação, revisão, continuidade e publicação aparecem como uma linha única,
-                        com peso de produto principal em vez de módulos encaixados.
-                      </span>
-                    </div>
+              <section className="dashboard-r1-core" data-reveal data-reveal-delay="205">
+                <div className="dashboard-r1-section-head">
+                  <div className="section-header-ea">
+                    <p className="section-kicker">Centro da experiência</p>
+                    <h3 className="heading-reset">Núcleo em ação</h3>
+                    <p className="helper-text-ea">
+                      O centro da tela precisa orientar o fluxo inteiro em uma única leitura,
+                      sem cair em grade utilitária ou catálogo de módulos.
+                    </p>
                   </div>
-                  <div className="dashboard-core-stream dashboard-core-stream-grid dashboard-benchmark-core-grid dashboard-foundation-core-grid dashboard-phase-a2-core-grid dashboard-phase-a3-core-grid dashboard-phase-f2-core-grid dashboard-phase-f2b-core-grid dashboard-phase-f2c-core-grid">
-                    {coreQuickLinks.map((item, index) =>
-                      item.href.startsWith("/editor") ? (
-                        <EditorRouteLink
-                          key={item.href}
-                          href={item.href}
-                          className="dashboard-stream-link dashboard-stream-link-core dashboard-benchmark-core-link dashboard-phase-f2-core-link dashboard-phase-f2b-core-link dashboard-phase-f2c-core-link"
-                          data-reveal
-                          data-reveal-delay={String(90 + index * 30)}
-                        >
-                          <div className="dashboard-stream-link-main">
-                            <span className="dashboard-stream-link-kicker">{item.tag}</span>
-                            <strong className="dashboard-stream-link-title">{item.title}</strong>
-                            <span className="dashboard-stream-link-copy">{item.description}</span>
-                          </div>
-                          <span className="dashboard-stream-link-cta">{item.cta}</span>
-                        </EditorRouteLink>
-                      ) : (
+                  <div className="dashboard-r1-head-note">
+                    <span className="dashboard-stage-stat-label">Fluxo principal</span>
+                    <strong>Creators, editor e saída seguem a mesma trilha principal.</strong>
+                    <span>
+                      Criação, revisão, continuidade e publicação aparecem como uma linha única,
+                      com peso de produto principal em vez de módulos encaixados.
+                    </span>
+                  </div>
+                </div>
+
+                <div className="dashboard-r1-core-grid">
+                  {coreQuickLinks.map((item, index) =>
+                    item.href.startsWith("/editor") ? (
+                      <EditorRouteLink
+                        key={item.href}
+                        href={item.href}
+                        className="dashboard-r1-core-link"
+                        data-reveal
+                        data-reveal-delay={String(90 + index * 30)}
+                      >
+                        <div className="dashboard-r1-core-link-main">
+                          <span className="dashboard-stream-link-kicker">{item.tag}</span>
+                          <strong className="dashboard-stream-link-title">{item.title}</strong>
+                          <span className="dashboard-stream-link-copy">{item.description}</span>
+                        </div>
+                        <span className="dashboard-stream-link-cta">{item.cta}</span>
+                      </EditorRouteLink>
+                    ) : (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className="dashboard-r1-core-link"
+                        data-reveal
+                        data-reveal-delay={String(90 + index * 30)}
+                      >
+                        <div className="dashboard-r1-core-link-main">
+                          <span className="dashboard-stream-link-kicker">{item.tag}</span>
+                          <strong className="dashboard-stream-link-title">{item.title}</strong>
+                          <span className="dashboard-stream-link-copy">{item.description}</span>
+                        </div>
+                        <span className="dashboard-stream-link-cta">{item.cta}</span>
+                      </Link>
+                    )
+                  )}
+                </div>
+              </section>
+            </div>
+
+            <aside className="dashboard-r1-stage-rail" data-reveal data-reveal-delay="95">
+              <div className="dashboard-r1-context">
+                <div className="dashboard-r1-context-row dashboard-r1-context-row-primary">
+                  <span className="dashboard-overview-label">Conta ativa</span>
+                  <strong>{planLabelDisplay}</strong>
+                  <span>{emailDisplay}</span>
+                </div>
+
+                <div className="dashboard-r1-context-actions">
+                  <button
+                    onClick={async () => {
+                      await onSyncSubscription();
+                      await refresh();
+                      await loadUsage();
+                    }}
+                    disabled={syncingSubscription || loading}
+                    className="btn-ea btn-secondary"
+                  >
+                    {syncingSubscription ? "Sincronizando..." : "Sincronizar assinatura"}
+                  </button>
+                  <button onClick={onLogout} className="btn-ea btn-ghost">
+                    Sair
+                  </button>
+                </div>
+
+                <div className="dashboard-r1-context-grid">
+                  <div className="dashboard-r1-context-card">
+                    <span className="dashboard-overview-label">{CREATOR_COINS_PUBLIC_NAME}</span>
+                    <strong>{walletSummaryDisplay}</strong>
+                    <span>Saldo confirmado e leitura financeira reconciliada.</span>
+                  </div>
+                  <div className="dashboard-r1-context-card">
+                    <span className="dashboard-overview-label">Continuidade</span>
+                    <strong>{continuityValue}</strong>
+                    <span>{continuityDetail}</span>
+                  </div>
+                  <div className="dashboard-r1-context-card">
+                    <span className="dashboard-overview-label">Próximo passo</span>
+                    <strong>{nextActionTitleDisplay}</strong>
+                    <span>{nextActionDescriptionDisplay}</span>
+                    {nextAction.href.startsWith("/editor") ? (
+                      <EditorRouteLink href={nextAction.href} className="dashboard-inline-action">
+                        {nextActionCtaDisplay}
+                      </EditorRouteLink>
+                    ) : (
+                      <Link href={nextAction.href} className="dashboard-inline-action">
+                        {nextActionCtaDisplay}
+                      </Link>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <section className="dashboard-r1-ops" data-reveal data-reveal-delay="165">
+                <div className="dashboard-r1-section-head dashboard-r1-section-head-rail">
+                  <div className="section-header-ea">
+                    <p className="section-kicker">Operação em apoio</p>
+                    <h3 className="heading-reset">Conta, saldo e suporte</h3>
+                    <p className="helper-text-ea">
+                      A rail precisa agir como apoio nobre: leitura financeira, conta ativa e comandos
+                      essenciais sem cara de lateral utilitária.
+                    </p>
+                  </div>
+                  <Link href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
+                    Ver histórico completo
+                  </Link>
+                </div>
+
+                <div className="dashboard-r1-ops-account">
+                  <div className="dashboard-r1-ops-account-main">
+                    <span className="dashboard-stage-stat-label">Conta ativa</span>
+                    <strong>{planLabelDisplay}</strong>
+                    <span>{emailDisplay}</span>
+                  </div>
+                  <Link href="/dashboard/account" className="dashboard-inline-action">
+                    Abrir conta
+                  </Link>
+                </div>
+
+                <div className="dashboard-r1-wallet">
+                  <div className="dashboard-r1-wallet-copy">
+                    <span className="dashboard-stream-link-kicker">{CREATOR_COINS_PUBLIC_NAME}</span>
+                    <strong className="dashboard-stream-link-title">{walletSummaryDisplay}</strong>
+                    <span className="dashboard-stream-link-copy">
+                      O creator estima antes. O histórico confirma depois. A rail precisa sustentar essa leitura
+                      como extensão nobre do fluxo principal.
+                    </span>
+                  </div>
+
+                  <div className="dashboard-r1-wallet-breakdown">
+                    {walletBreakdown.map((item) => (
+                      <div key={item.coinType} className="dashboard-wallet-row">
+                        <div className="dashboard-wallet-row-main">
+                          <strong>{coinTypeLabel(item.coinType)}</strong>
+                          <span>{item.description}</span>
+                        </div>
+                        <span className="dashboard-wallet-row-value">{item.amount.toLocaleString("pt-BR")}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="dashboard-r1-command-head">
+                  <span className="dashboard-stage-stat-label">Comandos de apoio</span>
+                  <strong>Plano, suporte e leitura financeira entram como camada complementar, não como sidebar.</strong>
+                </div>
+
+                <div className="dashboard-r1-ops-grid">
+                  <div className="dashboard-r1-ops-cluster">
+                    <div className="dashboard-r1-ops-cluster-head">
+                      <span className="dashboard-stage-stat-label">Camada principal</span>
+                      <strong>Planos e suporte</strong>
+                    </div>
+                    <div className="dashboard-r1-command-list">
+                      {railPrimaryQuickLinks.map((item, index) => (
                         <Link
                           key={item.href}
                           href={item.href}
-                          className="dashboard-stream-link dashboard-stream-link-core dashboard-benchmark-core-link dashboard-phase-f2-core-link dashboard-phase-f2b-core-link dashboard-phase-f2c-core-link"
+                          className="dashboard-r1-command-link"
                           data-reveal
-                          data-reveal-delay={String(90 + index * 30)}
+                          data-reveal-delay={String(95 + index * 30)}
                         >
-                          <div className="dashboard-stream-link-main">
+                          <div className="dashboard-r1-command-link-main">
                             <span className="dashboard-stream-link-kicker">{item.tag}</span>
                             <strong className="dashboard-stream-link-title">{item.title}</strong>
                             <span className="dashboard-stream-link-copy">{item.description}</span>
                           </div>
                           <span className="dashboard-stream-link-cta">{item.cta}</span>
                         </Link>
-                      )
-                    )}
+                      ))}
+                    </div>
                   </div>
-                </section>
 
-                <section className="dashboard-flow-section dashboard-flow-section-usage dashboard-usage-pane dashboard-benchmark-usage dashboard-foundation-usage dashboard-phase-a2-usage dashboard-phase-a3-usage dashboard-phase-f4-usage">
+                  <div className="dashboard-r1-ops-cluster">
+                    <div className="dashboard-r1-ops-cluster-head">
+                      <span className="dashboard-stage-stat-label">Apoio contínuo</span>
+                      <strong>Financeiro e guia</strong>
+                    </div>
+                    <div className="dashboard-r1-command-list">
+                      {railSecondaryQuickLinks.map((item, index) => (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          className="dashboard-r1-command-link"
+                          data-reveal
+                          data-reveal-delay={String(155 + index * 30)}
+                        >
+                          <div className="dashboard-r1-command-link-main">
+                            <span className="dashboard-stream-link-kicker">{item.tag}</span>
+                            <strong className="dashboard-stream-link-title">{item.title}</strong>
+                            <span className="dashboard-stream-link-copy">{item.description}</span>
+                          </div>
+                          <span className="dashboard-stream-link-cta">{item.cta}</span>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </aside>
+          </div>
+        </section>
+
+        <section className="dashboard-flow-section dashboard-flow-section-usage dashboard-usage-pane dashboard-benchmark-usage dashboard-foundation-usage dashboard-phase-a2-usage dashboard-phase-a3-usage dashboard-phase-f4-usage">
                   <div className="dashboard-usage-pane-grid dashboard-benchmark-usage-grid dashboard-foundation-usage-grid dashboard-phase-a2-usage-grid dashboard-phase-a3-usage-grid dashboard-phase-f4-usage-grid">
                     <div className="dashboard-usage-pane-copy dashboard-benchmark-usage-copy dashboard-foundation-usage-copy dashboard-phase-a2-usage-copy dashboard-phase-a3-usage-copy dashboard-phase-f4-usage-copy">
                       <div className="section-head dashboard-section-head-flat">
@@ -931,131 +1035,8 @@ export default function DashboardPage() {
                       )}
                     </div>
                   </div>
-                </section>
-              </div>
-            </section>
-          </div>
-
-          <aside className="dashboard-workspace-rail dashboard-workspace-rail-flat dashboard-benchmark-rail dashboard-foundation-rail dashboard-phase-a2-rail dashboard-phase-a3-rail dashboard-phase-f3-rail">
-            <section className="dashboard-flow-section dashboard-flow-section-operations dashboard-operations-region dashboard-operations-region-premium dashboard-benchmark-ops dashboard-foundation-region dashboard-foundation-ops dashboard-phase-a2-ops dashboard-phase-a3-ops dashboard-phase-f3-ops" data-reveal data-reveal-delay="170">
-              <div className="section-head dashboard-section-head-flat dashboard-phase-f3-ops-head">
-                <div className="section-header-ea">
-                  <p className="section-kicker">Operação em apoio</p>
-                  <h3 className="heading-reset">Conta, saldo e suporte</h3>
-                  <p className="helper-text-ea">
-                    A rail precisa agir como apoio nobre: leitura financeira, conta ativa e
-                    comandos essenciais sem cara de lateral utilitária.
-                  </p>
-                </div>
-                <Link href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
-                  Ver histórico completo
-                </Link>
-              </div>
-
-              <div className="dashboard-phase-f3-ops-stage">
-                <div className="dashboard-phase-f3-ops-context">
-                  <div className="dashboard-benchmark-ops-account dashboard-foundation-ops-account dashboard-phase-a2-ops-account dashboard-phase-a3-ops-account dashboard-phase-f3-ops-account">
-                    <span className="dashboard-stage-stat-label">Conta ativa</span>
-                    <div className="dashboard-phase-f3-ops-account-main">
-                      <strong>{planLabelDisplay}</strong>
-                      <span>{emailDisplay}</span>
-                    </div>
-                    <Link href="/dashboard/account" className="dashboard-inline-action dashboard-phase-f3-account-link">
-                      Abrir conta
-                    </Link>
-                  </div>
-
-                  <div className="dashboard-benchmark-ops-wallet dashboard-foundation-ops-wallet dashboard-phase-a2-ops-wallet dashboard-phase-a3-ops-wallet dashboard-phase-f3-ops-wallet">
-                    <div className="dashboard-wallet-summary-copy dashboard-phase-f3-ops-wallet-head">
-                      <span className="dashboard-stream-link-kicker">{CREATOR_COINS_PUBLIC_NAME}</span>
-                      <strong className="dashboard-stream-link-title">{walletSummaryDisplay}</strong>
-                      <span className="dashboard-stream-link-copy">
-                        O creator estima antes. O histórico confirma depois. A rail precisa sustentar essa
-                        leitura como extensão nobre do fluxo principal.
-                      </span>
-                    </div>
-
-                    <div className="dashboard-wallet-breakdown dashboard-benchmark-wallet-breakdown dashboard-phase-f3-wallet-breakdown">
-                      {walletBreakdown.map((item) => (
-                        <div key={item.coinType} className="dashboard-wallet-row">
-                          <div className="dashboard-wallet-row-main">
-                            <strong>{coinTypeLabel(item.coinType)}</strong>
-                            <span>{item.description}</span>
-                          </div>
-                          <span className="dashboard-wallet-row-value">{item.amount.toLocaleString("pt-BR")}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="dashboard-phase-f3-ops-command-stage">
-                  <div className="dashboard-ops-actions-head dashboard-phase-f3-command-head">
-                    <span className="dashboard-stage-stat-label">Comandos de apoio</span>
-                    <strong>Plano, suporte e leitura financeira entram como camada complementar, não como sidebar.</strong>
-                  </div>
-
-                  <div className="dashboard-phase-f3-command-grid">
-                    <div className="dashboard-phase-f3-command-cluster dashboard-phase-f3-command-cluster-primary">
-                      <div className="dashboard-phase-f3-command-cluster-head">
-                        <span className="dashboard-stage-stat-label">Camada principal</span>
-                        <strong>Planos e suporte</strong>
-                      </div>
-
-                      <div className="dashboard-support-stream dashboard-support-command-list dashboard-benchmark-rail-links dashboard-foundation-rail-links dashboard-phase-a2-rail-links dashboard-phase-a3-rail-links dashboard-phase-f3-rail-links dashboard-phase-f3-rail-links-primary">
-                        {railPrimaryQuickLinks.map((item, index) => (
-                          <Link
-                            key={item.href}
-                            href={item.href}
-                            className="dashboard-stream-link dashboard-stream-link-support dashboard-stream-link-support-command dashboard-phase-f3-rail-link dashboard-phase-f3-rail-link-primary"
-                            data-reveal
-                            data-reveal-delay={String(95 + index * 30)}
-                          >
-                            <div className="dashboard-stream-link-main">
-                              <span className="dashboard-stream-link-kicker">{item.tag}</span>
-                              <strong className="dashboard-stream-link-title">{item.title}</strong>
-                              <span className="dashboard-stream-link-copy">{item.description}</span>
-                            </div>
-                            <span className="dashboard-stream-link-cta">{item.cta}</span>
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="dashboard-phase-f3-command-cluster dashboard-phase-f3-command-cluster-secondary">
-                      <div className="dashboard-phase-f3-command-cluster-head">
-                        <span className="dashboard-stage-stat-label">Apoio contínuo</span>
-                        <strong>Financeiro e guia</strong>
-                      </div>
-
-                      <div className="dashboard-support-stream dashboard-support-command-list dashboard-benchmark-rail-links dashboard-foundation-rail-links dashboard-phase-a2-rail-links dashboard-phase-a3-rail-links dashboard-phase-f3-rail-links dashboard-phase-f3-rail-links-secondary">
-                        {railSecondaryQuickLinks.map((item, index) => (
-                          <Link
-                            key={item.href}
-                            href={item.href}
-                            className="dashboard-stream-link dashboard-stream-link-support dashboard-stream-link-support-command dashboard-phase-f3-rail-link dashboard-phase-f3-rail-link-secondary"
-                            data-reveal
-                            data-reveal-delay={String(155 + index * 30)}
-                          >
-                            <div className="dashboard-stream-link-main">
-                              <span className="dashboard-stream-link-kicker">{item.tag}</span>
-                              <strong className="dashboard-stream-link-title">{item.title}</strong>
-                              <span className="dashboard-stream-link-copy">{item.description}</span>
-                            </div>
-                            <span className="dashboard-stream-link-cta">{item.cta}</span>
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
-          </aside>
-        </div>
-
+        </section>
         <ApprovedBetaOnboardingCard email={email} wallet={wallet} loading={loading} />
-      </section>
       </div>
     </div>
   );
