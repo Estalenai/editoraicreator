@@ -494,13 +494,13 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="page-shell dashboard-page dashboard-r1-page">
-      <div className="dashboard-page-canvas dashboard-r1-canvas">
-        <section className="dashboard-r1-stage" data-reveal>
-          <div className="dashboard-r1-stage-grid">
-            <div className="dashboard-r1-stage-main">
-              <header className="dashboard-r1-hero" data-reveal data-reveal-delay="35">
-                <div className="dashboard-r1-hero-intro">
+    <div className="page-shell dashboard-surface-page">
+      <div className="dashboard-page-canvas dashboard-surface-canvas">
+        <section className="dashboard-surface-stage" data-reveal>
+          <div className="dashboard-surface-stage-grid">
+            <div className="dashboard-surface-stage-main">
+              <header className="dashboard-surface-hero" data-reveal data-reveal-delay="35">
+                <div className="dashboard-surface-hero-intro">
                   <div className="hero-title-stack">
                     <p className="section-kicker">Painel executivo</p>
                     <h1 className="heading-reset">Dashboard</h1>
@@ -509,7 +509,7 @@ export default function DashboardPage() {
                       em painel administrativo.
                     </p>
                   </div>
-                  <div className="hero-meta-row dashboard-r1-hero-badges">
+                  <div className="hero-meta-row dashboard-surface-hero-badges">
                     <span className="premium-badge premium-badge-phase">Plano: {planLabelDisplay}</span>
                     <span className="premium-badge premium-badge-warning">
                       {loading ? "Conta em sincronização" : "Histórico confirmado no backend"}
@@ -517,8 +517,8 @@ export default function DashboardPage() {
                   </div>
                 </div>
 
-                <div className="dashboard-r1-command" data-reveal data-reveal-delay="70">
-                  <div className="dashboard-r1-command-copy">
+                <div className="dashboard-surface-command" data-reveal data-reveal-delay="70">
+                  <div className="dashboard-surface-command-copy">
                     <span className="dashboard-hero-flow-label">Linha criativa</span>
                     <strong>Creator, editor e saida conduzem o eixo principal do produto.</strong>
                     <p>
@@ -527,26 +527,26 @@ export default function DashboardPage() {
                     </p>
                   </div>
 
-                  <div className="dashboard-r1-command-sequence">
-                    <div className="dashboard-r1-command-step">
-                      <span className="dashboard-benchmark-step-index">01</span>
-                      <div className="dashboard-r1-command-step-copy">
+                  <div className="dashboard-surface-command-sequence">
+                    <div className="dashboard-surface-command-step">
+                      <span className="dashboard-surface-step-index">01</span>
+                      <div className="dashboard-surface-command-step-copy">
                         <span className="dashboard-hero-flow-label">Creators</span>
                         <strong>gera a base</strong>
                         <span>Abra Post, Scripts ou Clips com contexto pronto.</span>
                       </div>
                     </div>
-                    <div className="dashboard-r1-command-step">
-                      <span className="dashboard-benchmark-step-index">02</span>
-                      <div className="dashboard-r1-command-step-copy">
+                    <div className="dashboard-surface-command-step">
+                      <span className="dashboard-surface-step-index">02</span>
+                      <div className="dashboard-surface-command-step-copy">
                         <span className="dashboard-hero-flow-label">Editor</span>
                         <strong>lapida o material</strong>
                         <span>Revise, consolide e preserve a continuidade.</span>
                       </div>
                     </div>
-                    <div className="dashboard-r1-command-step">
-                      <span className="dashboard-benchmark-step-index">03</span>
-                      <div className="dashboard-r1-command-step-copy">
+                    <div className="dashboard-surface-command-step">
+                      <span className="dashboard-surface-step-index">03</span>
+                      <div className="dashboard-surface-command-step-copy">
                         <span className="dashboard-hero-flow-label">Projetos + saída</span>
                         <strong>fecha o ciclo</strong>
                         <span>O que foi salvo e entregue continua no mesmo eixo.</span>
@@ -557,7 +557,7 @@ export default function DashboardPage() {
               </header>
 
               {error || usageError ? (
-                <div className="dashboard-status-stack dashboard-r1-inline-status">
+                <div className="dashboard-status-stack dashboard-surface-inline-status">
                   {error ? (
                     <div className="state-ea state-ea-error">
                       <p className="state-ea-title">Não foi possível carregar painel, plano e saldo agora</p>
@@ -574,8 +574,8 @@ export default function DashboardPage() {
                   ) : null}
 
                   {usageError ? (
-                    <div className="dashboard-benchmark-inline-warning" role="status" aria-live="polite">
-                      <div className="dashboard-benchmark-inline-warning-copy">
+                    <div className="dashboard-surface-inline-warning" role="status" aria-live="polite">
+                      <div className="dashboard-surface-inline-warning-copy">
                         <span className="dashboard-stage-stat-label">Uso do período indisponível</span>
                         <strong>As métricas não responderam agora.</strong>
                         <span>{toUserFacingError(usageError, "Atualize as métricas para tentar novamente.")}</span>
@@ -588,8 +588,8 @@ export default function DashboardPage() {
                 </div>
               ) : null}
 
-              <section className="dashboard-r1-focus" data-reveal data-reveal-delay="140">
-                <div className="dashboard-r1-section-head">
+              <section className="dashboard-surface-focus" data-reveal data-reveal-delay="140">
+                <div className="dashboard-surface-section-head">
                   <div className="section-header-ea">
                     <p className="section-kicker">Continuidade viva</p>
                     <h3 className="heading-reset">Projeto em foco</h3>
@@ -602,16 +602,16 @@ export default function DashboardPage() {
                   </Link>
                 </div>
 
-                <div className="dashboard-r1-focus-grid">
-                  <div className="dashboard-r1-focus-lead-wrap">
+                <div className="dashboard-surface-focus-grid">
+                  <div className="dashboard-surface-focus-lead-wrap">
                     {loading ? (
-                      <div className="dashboard-r1-focus-lead dashboard-r1-focus-skeleton">
+                      <div className="dashboard-surface-focus-lead dashboard-surface-focus-skeleton">
                         <div className="premium-skeleton premium-skeleton-line" style={{ width: "24%" }} />
                         <div className="premium-skeleton premium-skeleton-line" style={{ width: "62%", marginTop: 18 }} />
                         <div className="premium-skeleton premium-skeleton-line" style={{ width: "48%", marginTop: 16 }} />
                       </div>
                     ) : featuredProjectDisplay ? (
-                      <EditorRouteLink href={`/editor/${featuredProjectDisplay.id}`} className="dashboard-r1-focus-lead">
+                      <EditorRouteLink href={`/editor/${featuredProjectDisplay.id}`} className="dashboard-surface-focus-lead">
                         <div className="dashboard-stage-lead-topline">
                           <span className="dashboard-stage-lead-kicker">Projeto em foco</span>
                           <span className="dashboard-stage-lead-pill">{featuredProjectDisplay.stageLabel}</span>
@@ -629,14 +629,14 @@ export default function DashboardPage() {
                         </div>
                       </EditorRouteLink>
                     ) : (
-                      <div className="dashboard-r1-focus-lead dashboard-r1-focus-empty">
+                      <div className="dashboard-surface-focus-lead dashboard-surface-focus-empty">
                         <span className="dashboard-stage-lead-kicker">Projeto em foco</span>
                         <strong>A trilha fica premium quando um Creator vira projeto de verdade.</strong>
                         <p>
                           Abra Creators, salve a primeira saída e use Projetos para continuar no editor
                           sem recomeçar o fluxo.
                         </p>
-                        <div className="dashboard-benchmark-focus-empty-actions">
+                        <div className="dashboard-surface-focus-empty-actions">
                           <Link href="/creators" className="btn-link-ea btn-primary btn-sm">
                             Ir para Creators
                           </Link>
@@ -648,18 +648,18 @@ export default function DashboardPage() {
                     )}
                   </div>
 
-                  <div className="dashboard-r1-focus-side">
-                    <div className="dashboard-r1-stat">
+                  <div className="dashboard-surface-focus-side">
+                    <div className="dashboard-surface-stat">
                       <span className="dashboard-stage-stat-label">Continuidade ativa</span>
                       <strong>{focusContinuationLabel}</strong>
                       <span>{focusContinuationDetail}</span>
                     </div>
-                    <div className="dashboard-r1-stat">
+                    <div className="dashboard-surface-stat">
                       <span className="dashboard-stage-stat-label">Ritmo atual</span>
                       <strong>{continuityValue}</strong>
                       <span>{continuityDetail}</span>
                     </div>
-                    <div className="dashboard-r1-stat dashboard-r1-stat-action">
+                    <div className="dashboard-surface-stat dashboard-surface-stat-action">
                       <span className="dashboard-stage-stat-label">Próximo movimento</span>
                       <strong>{nextActionTitleDisplay}</strong>
                       <span>{nextActionDescriptionDisplay}</span>
@@ -677,22 +677,22 @@ export default function DashboardPage() {
                 </div>
 
                 {loading ? (
-                  <div className="dashboard-r1-ribbon">
+                  <div className="dashboard-surface-ribbon">
                     {Array.from({ length: 3 }).map((_, index) => (
                       <div key={`project-skeleton-${index}`} className="dashboard-project-skeleton-row" />
                     ))}
                   </div>
                 ) : supportingProjectDisplay.length > 0 ? (
-                  <div className="dashboard-r1-ribbon">
+                  <div className="dashboard-surface-ribbon">
                     {supportingProjectDisplay.map((project: any, index: number) => (
                       <EditorRouteLink
                         key={String(project.id || project.project_id || index)}
                         href={`/editor/${project.id}`}
-                        className="dashboard-r1-ribbon-link"
+                        className="dashboard-surface-ribbon-link"
                         data-reveal
                         data-reveal-delay={String(80 + index * 35)}
                       >
-                        <div className="dashboard-r1-ribbon-copy">
+                        <div className="dashboard-surface-ribbon-copy">
                           <span className="dashboard-stream-link-kicker">{project.deliverableLabel}</span>
                           <strong className="dashboard-stream-link-title">{project.displayTitle}</strong>
                           <span className="dashboard-stream-link-copy">{project.statusLabel}</span>
@@ -704,8 +704,8 @@ export default function DashboardPage() {
                 ) : null}
               </section>
 
-              <section className="dashboard-r1-core" data-reveal data-reveal-delay="205">
-                <div className="dashboard-r1-section-head">
+              <section className="dashboard-surface-core" data-reveal data-reveal-delay="205">
+                <div className="dashboard-surface-section-head">
                   <div className="section-header-ea">
                     <p className="section-kicker">Centro da experiência</p>
                     <h3 className="heading-reset">Núcleo em ação</h3>
@@ -714,7 +714,7 @@ export default function DashboardPage() {
                       sem cair em grade utilitária ou catálogo de módulos.
                     </p>
                   </div>
-                  <div className="dashboard-r1-head-note">
+                  <div className="dashboard-surface-head-note">
                     <span className="dashboard-stage-stat-label">Fluxo principal</span>
                     <strong>Creators, editor e saída seguem a mesma trilha principal.</strong>
                     <span>
@@ -724,17 +724,17 @@ export default function DashboardPage() {
                   </div>
                 </div>
 
-                <div className="dashboard-r1-core-grid">
+                <div className="dashboard-surface-core-grid">
                   {coreQuickLinks.map((item, index) =>
                     item.href.startsWith("/editor") ? (
                       <EditorRouteLink
                         key={item.href}
                         href={item.href}
-                        className="dashboard-r1-core-link"
+                        className="dashboard-surface-core-link"
                         data-reveal
                         data-reveal-delay={String(90 + index * 30)}
                       >
-                        <div className="dashboard-r1-core-link-main">
+                        <div className="dashboard-surface-core-link-main">
                           <span className="dashboard-stream-link-kicker">{item.tag}</span>
                           <strong className="dashboard-stream-link-title">{item.title}</strong>
                           <span className="dashboard-stream-link-copy">{item.description}</span>
@@ -745,11 +745,11 @@ export default function DashboardPage() {
                       <Link
                         key={item.href}
                         href={item.href}
-                        className="dashboard-r1-core-link"
+                        className="dashboard-surface-core-link"
                         data-reveal
                         data-reveal-delay={String(90 + index * 30)}
                       >
-                        <div className="dashboard-r1-core-link-main">
+                        <div className="dashboard-surface-core-link-main">
                           <span className="dashboard-stream-link-kicker">{item.tag}</span>
                           <strong className="dashboard-stream-link-title">{item.title}</strong>
                           <span className="dashboard-stream-link-copy">{item.description}</span>
@@ -762,15 +762,15 @@ export default function DashboardPage() {
               </section>
             </div>
 
-            <aside className="dashboard-r1-stage-rail" data-reveal data-reveal-delay="95">
-              <div className="dashboard-r1-context">
-                <div className="dashboard-r1-context-row dashboard-r1-context-row-primary">
+            <aside className="dashboard-surface-stage-rail" data-reveal data-reveal-delay="95">
+              <div className="dashboard-surface-context">
+                <div className="dashboard-surface-context-row dashboard-surface-context-row-primary">
                   <span className="dashboard-overview-label">Conta ativa</span>
                   <strong>{planLabelDisplay}</strong>
                   <span>{emailDisplay}</span>
                 </div>
 
-                <div className="dashboard-r1-context-actions">
+                <div className="dashboard-surface-context-actions">
                   <button
                     onClick={async () => {
                       await onSyncSubscription();
@@ -787,18 +787,18 @@ export default function DashboardPage() {
                   </button>
                 </div>
 
-                <div className="dashboard-r1-context-grid">
-                  <div className="dashboard-r1-context-card">
+                <div className="dashboard-surface-context-grid">
+                  <div className="dashboard-surface-context-card">
                     <span className="dashboard-overview-label">{CREATOR_COINS_PUBLIC_NAME}</span>
                     <strong>{walletSummaryDisplay}</strong>
                     <span>Saldo confirmado e leitura financeira reconciliada.</span>
                   </div>
-                  <div className="dashboard-r1-context-card">
+                  <div className="dashboard-surface-context-card">
                     <span className="dashboard-overview-label">Continuidade</span>
                     <strong>{continuityValue}</strong>
                     <span>{continuityDetail}</span>
                   </div>
-                  <div className="dashboard-r1-context-card">
+                  <div className="dashboard-surface-context-card">
                     <span className="dashboard-overview-label">Próximo passo</span>
                     <strong>{nextActionTitleDisplay}</strong>
                     <span>{nextActionDescriptionDisplay}</span>
@@ -815,8 +815,8 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              <section className="dashboard-r1-ops" data-reveal data-reveal-delay="165">
-                <div className="dashboard-r1-section-head dashboard-r1-section-head-rail">
+              <section className="dashboard-surface-ops" data-reveal data-reveal-delay="165">
+                <div className="dashboard-surface-section-head dashboard-surface-section-head-rail">
                   <div className="section-header-ea">
                     <p className="section-kicker">Operação em apoio</p>
                     <h3 className="heading-reset">Conta, saldo e suporte</h3>
@@ -830,8 +830,8 @@ export default function DashboardPage() {
                   </Link>
                 </div>
 
-                <div className="dashboard-r1-ops-account">
-                  <div className="dashboard-r1-ops-account-main">
+                <div className="dashboard-surface-ops-account">
+                  <div className="dashboard-surface-ops-account-main">
                     <span className="dashboard-stage-stat-label">Conta ativa</span>
                     <strong>{planLabelDisplay}</strong>
                     <span>{emailDisplay}</span>
@@ -841,8 +841,8 @@ export default function DashboardPage() {
                   </Link>
                 </div>
 
-                <div className="dashboard-r1-wallet">
-                  <div className="dashboard-r1-wallet-copy">
+                <div className="dashboard-surface-wallet">
+                  <div className="dashboard-surface-wallet-copy">
                     <span className="dashboard-stream-link-kicker">{CREATOR_COINS_PUBLIC_NAME}</span>
                     <strong className="dashboard-stream-link-title">{walletSummaryDisplay}</strong>
                     <span className="dashboard-stream-link-copy">
@@ -851,7 +851,7 @@ export default function DashboardPage() {
                     </span>
                   </div>
 
-                  <div className="dashboard-r1-wallet-breakdown">
+                  <div className="dashboard-surface-wallet-breakdown">
                     {walletBreakdown.map((item) => (
                       <div key={item.coinType} className="dashboard-wallet-row">
                         <div className="dashboard-wallet-row-main">
@@ -864,27 +864,27 @@ export default function DashboardPage() {
                   </div>
                 </div>
 
-                <div className="dashboard-r1-command-head">
+                <div className="dashboard-surface-command-head">
                   <span className="dashboard-stage-stat-label">Comandos de apoio</span>
                   <strong>Plano, suporte e leitura financeira entram como camada complementar, não como sidebar.</strong>
                 </div>
 
-                <div className="dashboard-r1-ops-grid">
-                  <div className="dashboard-r1-ops-cluster">
-                    <div className="dashboard-r1-ops-cluster-head">
+                <div className="dashboard-surface-ops-grid">
+                  <div className="dashboard-surface-ops-cluster">
+                    <div className="dashboard-surface-ops-cluster-head">
                       <span className="dashboard-stage-stat-label">Camada principal</span>
                       <strong>Planos e suporte</strong>
                     </div>
-                    <div className="dashboard-r1-command-list">
+                    <div className="dashboard-surface-command-list">
                       {railPrimaryQuickLinks.map((item, index) => (
                         <Link
                           key={item.href}
                           href={item.href}
-                          className="dashboard-r1-command-link"
+                          className="dashboard-surface-command-link"
                           data-reveal
                           data-reveal-delay={String(95 + index * 30)}
                         >
-                          <div className="dashboard-r1-command-link-main">
+                          <div className="dashboard-surface-command-link-main">
                             <span className="dashboard-stream-link-kicker">{item.tag}</span>
                             <strong className="dashboard-stream-link-title">{item.title}</strong>
                             <span className="dashboard-stream-link-copy">{item.description}</span>
@@ -895,21 +895,21 @@ export default function DashboardPage() {
                     </div>
                   </div>
 
-                  <div className="dashboard-r1-ops-cluster">
-                    <div className="dashboard-r1-ops-cluster-head">
+                  <div className="dashboard-surface-ops-cluster">
+                    <div className="dashboard-surface-ops-cluster-head">
                       <span className="dashboard-stage-stat-label">Apoio contínuo</span>
                       <strong>Financeiro e guia</strong>
                     </div>
-                    <div className="dashboard-r1-command-list">
+                    <div className="dashboard-surface-command-list">
                       {railSecondaryQuickLinks.map((item, index) => (
                         <Link
                           key={item.href}
                           href={item.href}
-                          className="dashboard-r1-command-link"
+                          className="dashboard-surface-command-link"
                           data-reveal
                           data-reveal-delay={String(155 + index * 30)}
                         >
-                          <div className="dashboard-r1-command-link-main">
+                          <div className="dashboard-surface-command-link-main">
                             <span className="dashboard-stream-link-kicker">{item.tag}</span>
                             <strong className="dashboard-stream-link-title">{item.title}</strong>
                             <span className="dashboard-stream-link-copy">{item.description}</span>
@@ -925,10 +925,10 @@ export default function DashboardPage() {
           </div>
         </section>
 
-        <section className="dashboard-r1-tail" data-reveal data-reveal-delay="110">
-          <section className="dashboard-flow-section dashboard-flow-section-usage dashboard-usage-pane dashboard-benchmark-usage dashboard-foundation-usage dashboard-phase-a2-usage dashboard-phase-a3-usage dashboard-phase-f4-usage dashboard-r1-usage">
-                  <div className="dashboard-usage-pane-grid dashboard-benchmark-usage-grid dashboard-foundation-usage-grid dashboard-phase-a2-usage-grid dashboard-phase-a3-usage-grid dashboard-phase-f4-usage-grid dashboard-r1-usage-grid">
-                    <div className="dashboard-usage-pane-copy dashboard-benchmark-usage-copy dashboard-foundation-usage-copy dashboard-phase-a2-usage-copy dashboard-phase-a3-usage-copy dashboard-phase-f4-usage-copy dashboard-r1-usage-copy">
+        <section className="dashboard-surface-tail" data-reveal data-reveal-delay="110">
+          <section className="dashboard-flow-section dashboard-flow-section-usage dashboard-usage-pane dashboard-surface-usage">
+                  <div className="dashboard-usage-pane-grid dashboard-surface-usage-grid">
+                    <div className="dashboard-usage-pane-copy dashboard-surface-usage-copy">
                       <div className="section-head dashboard-section-head-flat">
                         <div className="section-header-ea">
                           <p className="section-kicker">Uso recente</p>
@@ -939,7 +939,7 @@ export default function DashboardPage() {
                           Ver histórico
                         </Link>
                       </div>
-                      <div className="dashboard-usage-hero dashboard-benchmark-usage-hero">
+                      <div className="dashboard-usage-hero dashboard-surface-usage-hero">
                         <div className="dashboard-usage-hero-main">
                           <span className="dashboard-stage-stat-label">Consumo confirmado</span>
                           <strong>{totalUsageDisplay}</strong>
@@ -947,9 +947,9 @@ export default function DashboardPage() {
                         <p>{usageLeadInsight}</p>
                       </div>
 
-                      <div className="dashboard-phase-f4-usage-signals dashboard-r1-usage-signals">
+                      <div className="dashboard-surface-usage-signals dashboard-surface-usage-signals">
                         {usageSignalItems.map((item) => (
-                          <div key={item.label} className="dashboard-phase-f4-usage-signal dashboard-r1-usage-signal">
+                          <div key={item.label} className="dashboard-surface-usage-signal dashboard-surface-usage-signal">
                             <span className="dashboard-stage-stat-label">{item.label}</span>
                             <strong>{item.value}</strong>
                             <span>{item.note}</span>
@@ -958,25 +958,25 @@ export default function DashboardPage() {
                       </div>
                     </div>
 
-                    <div className="dashboard-usage-pane-list dashboard-benchmark-usage-list dashboard-foundation-usage-list dashboard-phase-a2-usage-list dashboard-phase-a3-usage-list dashboard-phase-f4-usage-list dashboard-r1-usage-list">
+                    <div className="dashboard-usage-pane-list dashboard-surface-usage-list">
                       {loading || usageLoading ? (
-                        <div className="dashboard-usage-grid dashboard-phase-f4-usage-cards dashboard-r1-usage-cards">
+                        <div className="dashboard-usage-grid dashboard-surface-usage-cards">
                           {Array.from({ length: 6 }).map((_, index) => (
-                            <div key={`usage-skeleton-${index}`} className="dashboard-usage-row-skeleton dashboard-phase-f4-usage-card-skeleton">
+                            <div key={`usage-skeleton-${index}`} className="dashboard-usage-row-skeleton dashboard-surface-usage-card-skeleton">
                               <div className="premium-skeleton premium-skeleton-line" style={{ width: "42%" }} />
                               <div className="premium-skeleton premium-skeleton-line" style={{ width: "26%" }} />
                             </div>
                           ))}
                         </div>
                       ) : usageEmptyState ? (
-                        <div className="dashboard-usage-empty dashboard-benchmark-usage-empty dashboard-phase-f4-usage-empty">
-                          <div className="dashboard-phase-f4-usage-empty-story">
-                            <div className="dashboard-usage-empty-copy dashboard-phase-f4-usage-empty-copy">
+                        <div className="dashboard-usage-empty dashboard-surface-usage-empty">
+                          <div className="dashboard-surface-usage-empty-story">
+                            <div className="dashboard-usage-empty-copy dashboard-surface-usage-empty-copy">
                               <span className="dashboard-stage-stat-label">{usageEmptyState.kicker}</span>
                               <strong>{usageEmptyState.title}</strong>
                               <span>{usageEmptyState.description}</span>
                             </div>
-                            <div className="dashboard-phase-f4-usage-empty-actions">
+                            <div className="dashboard-surface-usage-empty-actions">
                               <Link href={usageEmptyState.primaryHref} className="btn-link-ea btn-primary btn-sm">
                                 {usageEmptyState.primaryLabel}
                               </Link>
@@ -986,11 +986,11 @@ export default function DashboardPage() {
                             </div>
                           </div>
 
-                          <div className="dashboard-phase-f4-usage-route">
+                          <div className="dashboard-surface-usage-route">
                             {USAGE_FLOW_MARKERS.map((item, index) => (
-                              <div key={item.title} className="dashboard-phase-f4-usage-route-step">
-                                <span className="dashboard-phase-f4-usage-route-index">{String(index + 1).padStart(2, "0")}</span>
-                                <div className="dashboard-phase-f4-usage-route-copy">
+                              <div key={item.title} className="dashboard-surface-usage-route-step">
+                                <span className="dashboard-surface-usage-route-index">{String(index + 1).padStart(2, "0")}</span>
+                                <div className="dashboard-surface-usage-route-copy">
                                   <strong>{item.title}</strong>
                                   <span>{item.description}</span>
                                 </div>
@@ -1000,15 +1000,15 @@ export default function DashboardPage() {
                         </div>
                       ) : (
                         <>
-                          <div className="dashboard-usage-grid dashboard-phase-f4-usage-cards dashboard-r1-usage-cards">
+                          <div className="dashboard-usage-grid dashboard-surface-usage-cards">
                             {usageDisplayItems.map((item, index) => {
                               const progress = usageProgress(item);
                               return (
                                 <article
                                   key={item.feature}
-                                  className={`dashboard-phase-f4-usage-card dashboard-r1-usage-card ${index === 0 ? "dashboard-phase-f4-usage-card-lead dashboard-r1-usage-card-lead" : ""}`}
+                                  className={`dashboard-surface-usage-card ${index === 0 ? "dashboard-surface-usage-card-lead" : ""}`}
                                 >
-                                  <div className="dashboard-phase-f4-usage-card-copy">
+                                  <div className="dashboard-surface-usage-card-copy">
                                     <span className="dashboard-stage-stat-label">
                                       {index === 0 ? "Feature líder" : "Uso confirmado"}
                                     </span>
@@ -1017,7 +1017,7 @@ export default function DashboardPage() {
                                       {item.used} de {item.limit} consumo(s) no período.
                                     </span>
                                   </div>
-                                  <div className="dashboard-usage-row-meter dashboard-phase-f4-usage-card-meter">
+                                  <div className="dashboard-usage-row-meter dashboard-surface-usage-card-meter">
                                     <strong>{item.used}/{item.limit}</strong>
                                     <div className="dashboard-progress-track">
                                       <div className="dashboard-progress-bar" style={{ width: `${progress}%` }} />
@@ -1028,7 +1028,7 @@ export default function DashboardPage() {
                             })}
                           </div>
                           {usageRemainingCount > 0 ? (
-                            <div className="dashboard-usage-footnote dashboard-phase-f4-usage-footnote">
+                            <div className="dashboard-usage-footnote dashboard-surface-usage-footnote">
                               +{usageRemainingCount} feature(s) adicionais aparecem no histórico completo.
                             </div>
                           ) : null}
@@ -1043,3 +1043,4 @@ export default function DashboardPage() {
     </div>
   );
 }
+

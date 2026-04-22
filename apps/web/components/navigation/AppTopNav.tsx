@@ -227,21 +227,18 @@ export function AppTopNav() {
     return (
       <nav className="app-top-nav app-nav-rail layout-contract-rail app-nav-dashboard-mode" aria-label="Navegação principal">
         <div className="app-top-nav-head app-nav-rail-head layout-contract-rail-head">
-          <p className="app-top-nav-title">Fluxo</p>
+          <span className="app-nav-dashboard-eyebrow">Fluxo principal</span>
           <div className="app-nav-dashboard-context">
-            <span className="app-nav-dashboard-context-label">Em foco</span>
             <strong>{activeNavItem?.label ?? "Dashboard"}</strong>
+            <span className="app-nav-dashboard-context-copy">Creators, editor e saída entram no mesmo campo.</span>
           </div>
         </div>
-        <div className="app-nav-group app-nav-group-core">
-          <p className="app-nav-group-kicker">Núcleo</p>
-          <div className="app-nav-links app-nav-links-core app-nav-rail-links layout-contract-collection">
+        <div className="app-nav-dashboard-stack">
+          <div className="app-nav-links app-nav-dashboard-links app-nav-links-core app-nav-rail-links layout-contract-collection">
             {coreItems.map((item) => renderNavItem(item, { minimal: true }))}
           </div>
-        </div>
-        <div className="app-nav-group app-nav-group-support">
-          <p className="app-nav-group-kicker">Apoio</p>
-          <div className="app-nav-links app-nav-links-support app-nav-rail-links layout-contract-collection">
+          <div className="app-nav-dashboard-divider" aria-hidden="true" />
+          <div className="app-nav-links app-nav-dashboard-links app-nav-dashboard-links-support app-nav-links-support app-nav-rail-links layout-contract-collection">
             {dashboardSupportItems.map((item) => renderNavItem(item, { minimal: true }))}
           </div>
         </div>
