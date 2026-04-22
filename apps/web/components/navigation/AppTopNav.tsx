@@ -116,12 +116,15 @@ export function AppTopNav() {
     () => navItems.filter((item) => item.group === "support"),
     [navItems]
   );
-  const dashboardSupportItems = useMemo(
+  const dashboardPrimaryItems = useMemo(
+    () => [...overviewItems, ...coreItems],
+    [coreItems, overviewItems]
+  );
+  const dashboardUtilityItem = useMemo(
     () =>
-      supportItems.filter((item) => {
-        if (matchesNavPath(pathname, item)) return true;
-        return ["/credits", "/plans", "/dashboard/account", "/support"].includes(item.href);
-      }),
+      supportItems.find((item) => matchesNavPath(pathname, item)) ??
+      supportItems.find((item) => item.href === "/dashboard/account") ??
+      null,
     [pathname, supportItems]
   );
   const compactNavItems = useMemo(() => {
@@ -227,20 +230,23 @@ export function AppTopNav() {
     return (
       <nav className="app-top-nav app-nav-rail layout-contract-rail app-nav-dashboard-mode" aria-label="Navegação principal">
         <div className="app-top-nav-head app-nav-rail-head layout-contract-rail-head">
-          <span className="app-nav-dashboard-eyebrow">Fluxo principal</span>
+          <span className="app-nav-dashboard-eyebrow">Campo principal</span>
           <div className="app-nav-dashboard-context">
             <strong>{activeNavItem?.label ?? "Dashboard"}</strong>
-            <span className="app-nav-dashboard-context-copy">Creators, editor e saída entram no mesmo campo.</span>
           </div>
         </div>
         <div className="app-nav-dashboard-stack">
           <div className="app-nav-links app-nav-dashboard-links app-nav-links-core app-nav-rail-links layout-contract-collection">
-            {coreItems.map((item) => renderNavItem(item, { minimal: true }))}
+            {dashboardPrimaryItems.map((item) => renderNavItem(item, { minimal: true }))}
           </div>
-          <div className="app-nav-dashboard-divider" aria-hidden="true" />
-          <div className="app-nav-links app-nav-dashboard-links app-nav-dashboard-links-support app-nav-links-support app-nav-rail-links layout-contract-collection">
-            {dashboardSupportItems.map((item) => renderNavItem(item, { minimal: true }))}
-          </div>
+          {dashboardUtilityItem ? (
+            <>
+              <div className="app-nav-dashboard-divider" aria-hidden="true" />
+              <div className="app-nav-dashboard-utility">
+                {renderNavItem(dashboardUtilityItem, { minimal: true })}
+              </div>
+            </>
+          ) : null}
         </div>
       </nav>
     );

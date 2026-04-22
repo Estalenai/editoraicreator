@@ -205,10 +205,10 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
           <strong>{CREATOR_COINS_PUBLIC_NAME} no fluxo atual</strong>
           <div className="helper-text-ea">Saldo atual: {summary}. Estimativa antes; débito no histórico.</div>
         </div>
-        <div className="hero-meta-row dashboard-onboarding-summary-badges dashboard-surface-onboarding-summary-badges">
-          <span className="premium-badge premium-badge-warning">{coinTypeLabel("common")}: tarefas de rotina</span>
-          <span className="premium-badge premium-badge-phase">{coinTypeLabel("pro")}: maior qualidade</span>
-          <span className="premium-badge premium-badge-soon">{coinTypeLabel("ultra")}: processamento premium</span>
+        <div className="dashboard-surface-onboarding-summary-note">
+          <span>{coinTypeLabel("common")}: rotina</span>
+          <span>{coinTypeLabel("pro")}: maior qualidade</span>
+          <span>{coinTypeLabel("ultra")}: processamento premium</span>
         </div>
         <div className="dashboard-onboarding-actions dashboard-surface-onboarding-actions">
           <Link href="/creators?tab=post" onClick={dismiss} className="btn-link-ea btn-primary">
