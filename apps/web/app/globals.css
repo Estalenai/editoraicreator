@@ -28698,8 +28698,23 @@ body {
   align-items: start;
 }
 
+.dashboard-surface-section-head > * {
+  min-width: 0;
+}
+
 .dashboard-surface-section-head-rail {
   grid-template-columns: minmax(0, 1fr);
+}
+
+.dashboard-surface-core .dashboard-surface-section-head {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+}
+
+.dashboard-surface-core .dashboard-surface-head-note {
+  max-width: 54ch;
+  padding-top: 8px;
+  border-top: 1px solid rgba(191, 239, 255, 0.045);
 }
 
 .dashboard-surface-focus-grid {
