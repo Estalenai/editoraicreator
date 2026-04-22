@@ -29200,6 +29200,24 @@ body {
   }
 }
 
+@media (max-width: 1200px) and (min-width: 901px) {
+  .app-shell-body:has(.dashboard-surface-page) {
+    grid-template-columns: var(--ea-shell-sidebar-width) minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .app-shell-body:has(.dashboard-surface-page) .app-top-nav {
+    width: 100%;
+    padding: 18px 0 0;
+    border-bottom: 0 !important;
+  }
+
+  .app-shell-body:has(.dashboard-surface-page) .app-nav-links,
+  .app-shell-body:has(.dashboard-surface-page) .app-nav-dashboard-links {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 @media (max-width: 1120px) {
   .dashboard-surface-command-sequence,
   .dashboard-surface-ribbon,
@@ -29265,5 +29283,50 @@ body {
   .dashboard-surface-usage-empty-copy strong,
   .dashboard-usage-hero-main strong {
     font-size: clamp(2.2rem, 9vw, 3rem);
+  }
+}
+
+@media (max-width: 768px) {
+  .app-shell-body:has(.dashboard-surface-page) .app-top-nav {
+    padding: 0 12px 8px;
+  }
+
+  .app-shell-body:has(.dashboard-surface-page) .app-nav-dashboard-divider,
+  .app-shell-body:has(.dashboard-surface-page) .app-nav-dashboard-utility {
+    display: none;
+  }
+
+  .app-shell-body:has(.dashboard-surface-page) .app-nav-dashboard-stack,
+  .app-shell-body:has(.dashboard-surface-page) .app-nav-dashboard-links,
+  .app-shell-body:has(.dashboard-surface-page) .app-nav-links {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: max-content;
+    gap: 6px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+
+  .app-shell-body:has(.dashboard-surface-page) .app-nav-dashboard-stack::-webkit-scrollbar,
+  .app-shell-body:has(.dashboard-surface-page) .app-nav-dashboard-links::-webkit-scrollbar,
+  .app-shell-body:has(.dashboard-surface-page) .app-nav-links::-webkit-scrollbar {
+    display: none;
+  }
+
+  .app-shell-body:has(.dashboard-surface-page) .app-nav-link,
+  .app-shell-body:has(.dashboard-surface-page) .app-nav-link:hover,
+  .app-shell-body:has(.dashboard-surface-page) .app-nav-link:active,
+  .app-shell-body:has(.dashboard-surface-page) .app-nav-link-active {
+    min-height: 38px;
+    padding: 0 14px;
+    border: 1px solid rgba(191, 239, 255, 0.09) !important;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.024) !important;
+    opacity: 1;
+  }
+
+  .app-shell-body:has(.dashboard-surface-page) .app-nav-link::before {
+    display: none;
   }
 }
