@@ -558,6 +558,58 @@ export default function DashboardPage() {
                 </div>
               </header>
 
+              <section className="dashboard-surface-context dashboard-surface-context-band" data-reveal data-reveal-delay="90">
+                <div className="dashboard-surface-context-row dashboard-surface-context-row-primary">
+                  <span className="dashboard-overview-label">Conta ativa</span>
+                  <strong>{planLabelDisplay}</strong>
+                  <span>{emailDisplay}</span>
+                </div>
+
+                <div className="dashboard-surface-context-grid">
+                  <div className="dashboard-surface-context-card">
+                    <span className="dashboard-overview-label">{CREATOR_COINS_PUBLIC_NAME}</span>
+                    <strong>{walletSummaryDisplay}</strong>
+                    <span>Saldo confirmado e leitura financeira reconciliada.</span>
+                  </div>
+                  <div className="dashboard-surface-context-card">
+                    <span className="dashboard-overview-label">Continuidade</span>
+                    <strong>{continuityValue}</strong>
+                    <span>{continuityDetail}</span>
+                  </div>
+                  <div className="dashboard-surface-context-card">
+                    <span className="dashboard-overview-label">Próximo passo</span>
+                    <strong>{nextActionTitleDisplay}</strong>
+                    <span>{nextActionDescriptionDisplay}</span>
+                    {nextAction.href.startsWith("/editor") ? (
+                      <EditorRouteLink href={nextAction.href} className="dashboard-inline-action">
+                        {nextActionCtaDisplay}
+                      </EditorRouteLink>
+                    ) : (
+                      <Link href={nextAction.href} className="dashboard-inline-action">
+                        {nextActionCtaDisplay}
+                      </Link>
+                    )}
+                  </div>
+                </div>
+
+                <div className="dashboard-surface-context-actions">
+                  <button
+                    onClick={async () => {
+                      await onSyncSubscription();
+                      await refresh();
+                      await loadUsage();
+                    }}
+                    disabled={syncingSubscription || loading}
+                    className="btn-ea btn-secondary"
+                  >
+                    {syncingSubscription ? "Sincronizando..." : "Sincronizar assinatura"}
+                  </button>
+                  <button onClick={onLogout} className="btn-ea btn-ghost">
+                    Sair
+                  </button>
+                </div>
+              </section>
+
               {error || usageError ? (
                 <div className="dashboard-status-stack dashboard-surface-inline-status">
                   {error ? (
@@ -764,6 +816,102 @@ export default function DashboardPage() {
                   </div>
                 </section>
 
+                <section className="dashboard-surface-ops dashboard-surface-ops-band" data-reveal data-reveal-delay="165">
+                  <div className="dashboard-surface-section-head dashboard-surface-section-head-rail">
+                    <div className="section-header-ea">
+                      <p className="section-kicker">Operação em apoio</p>
+                      <h3 className="heading-reset">Conta, saldo e suporte</h3>
+                      <p className="helper-text-ea">
+                        Leitura financeira, plano e suporte entram como camada embutida no mesmo campo,
+                        sem se comportar como lateral administrativa.
+                      </p>
+                    </div>
+                    <Link href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
+                      Ver histórico completo
+                    </Link>
+                  </div>
+
+                  <div className="dashboard-surface-wallet">
+                    <div className="dashboard-surface-wallet-copy">
+                      <span className="dashboard-stream-link-kicker">{CREATOR_COINS_PUBLIC_NAME}</span>
+                      <strong className="dashboard-stream-link-title">{walletSummaryDisplay}</strong>
+                      <span className="dashboard-stream-link-copy">
+                        O creator estima antes. O histórico confirma depois. A leitura financeira sustenta
+                        o fluxo principal sem virar painel lateral.
+                      </span>
+                    </div>
+
+                    <div className="dashboard-surface-wallet-breakdown">
+                      {walletBreakdown.map((item) => (
+                        <div key={item.coinType} className="dashboard-wallet-row">
+                          <div className="dashboard-wallet-row-main">
+                            <strong>{coinTypeLabel(item.coinType)}</strong>
+                            <span>{item.description}</span>
+                          </div>
+                          <span className="dashboard-wallet-row-value">{item.amount.toLocaleString("pt-BR")}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="dashboard-surface-command-head">
+                    <span className="dashboard-stage-stat-label">Comandos de apoio</span>
+                    <strong>Plano, suporte e guia aparecem como extensão do workspace, não como sidebar.</strong>
+                  </div>
+
+                  <div className="dashboard-surface-ops-grid">
+                    <div className="dashboard-surface-ops-cluster">
+                      <div className="dashboard-surface-ops-cluster-head">
+                        <span className="dashboard-stage-stat-label">Camada principal</span>
+                        <strong>Planos e suporte</strong>
+                      </div>
+                      <div className="dashboard-surface-command-list">
+                        {railPrimaryQuickLinks.map((item, index) => (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            className="dashboard-surface-command-link"
+                            data-reveal
+                            data-reveal-delay={String(95 + index * 30)}
+                          >
+                            <div className="dashboard-surface-command-link-main">
+                              <span className="dashboard-stream-link-kicker">{item.tag}</span>
+                              <strong className="dashboard-stream-link-title">{item.title}</strong>
+                              <span className="dashboard-stream-link-copy">{item.description}</span>
+                            </div>
+                            <span className="dashboard-stream-link-cta">{item.cta}</span>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="dashboard-surface-ops-cluster">
+                      <div className="dashboard-surface-ops-cluster-head">
+                        <span className="dashboard-stage-stat-label">Apoio contínuo</span>
+                        <strong>Financeiro e guia</strong>
+                      </div>
+                      <div className="dashboard-surface-command-list">
+                        {railSecondaryQuickLinks.map((item, index) => (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            className="dashboard-surface-command-link"
+                            data-reveal
+                            data-reveal-delay={String(155 + index * 30)}
+                          >
+                            <div className="dashboard-surface-command-link-main">
+                              <span className="dashboard-stream-link-kicker">{item.tag}</span>
+                              <strong className="dashboard-stream-link-title">{item.title}</strong>
+                              <span className="dashboard-stream-link-copy">{item.description}</span>
+                            </div>
+                            <span className="dashboard-stream-link-cta">{item.cta}</span>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
                 <section className="dashboard-flow-section dashboard-flow-section-usage dashboard-usage-pane dashboard-surface-usage">
                   <div className="dashboard-usage-pane-grid dashboard-surface-usage-grid">
                     <div className="dashboard-usage-pane-copy dashboard-surface-usage-copy">
@@ -879,156 +1027,6 @@ export default function DashboardPage() {
                 <ApprovedBetaOnboardingCard email={email} wallet={wallet} loading={loading} />
               </div>
             </div>
-
-            <aside className="dashboard-surface-stage-rail" data-reveal data-reveal-delay="95">
-              <div className="dashboard-surface-context">
-                <div className="dashboard-surface-context-row dashboard-surface-context-row-primary">
-                  <span className="dashboard-overview-label">Conta ativa</span>
-                  <strong>{planLabelDisplay}</strong>
-                  <span>{emailDisplay}</span>
-                </div>
-
-                <div className="dashboard-surface-context-actions">
-                  <button
-                    onClick={async () => {
-                      await onSyncSubscription();
-                      await refresh();
-                      await loadUsage();
-                    }}
-                    disabled={syncingSubscription || loading}
-                    className="btn-ea btn-secondary"
-                  >
-                    {syncingSubscription ? "Sincronizando..." : "Sincronizar assinatura"}
-                  </button>
-                  <button onClick={onLogout} className="btn-ea btn-ghost">
-                    Sair
-                  </button>
-                </div>
-
-                <div className="dashboard-surface-context-grid">
-                  <div className="dashboard-surface-context-card">
-                    <span className="dashboard-overview-label">{CREATOR_COINS_PUBLIC_NAME}</span>
-                    <strong>{walletSummaryDisplay}</strong>
-                    <span>Saldo confirmado e leitura financeira reconciliada.</span>
-                  </div>
-                  <div className="dashboard-surface-context-card">
-                    <span className="dashboard-overview-label">Continuidade</span>
-                    <strong>{continuityValue}</strong>
-                    <span>{continuityDetail}</span>
-                  </div>
-                  <div className="dashboard-surface-context-card">
-                    <span className="dashboard-overview-label">Próximo passo</span>
-                    <strong>{nextActionTitleDisplay}</strong>
-                    <span>{nextActionDescriptionDisplay}</span>
-                    {nextAction.href.startsWith("/editor") ? (
-                      <EditorRouteLink href={nextAction.href} className="dashboard-inline-action">
-                        {nextActionCtaDisplay}
-                      </EditorRouteLink>
-                    ) : (
-                      <Link href={nextAction.href} className="dashboard-inline-action">
-                        {nextActionCtaDisplay}
-                      </Link>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              <section className="dashboard-surface-ops" data-reveal data-reveal-delay="165">
-                <div className="dashboard-surface-section-head dashboard-surface-section-head-rail">
-                  <div className="section-header-ea">
-                    <p className="section-kicker">Operação em apoio</p>
-                    <h3 className="heading-reset">Conta, saldo e suporte</h3>
-                    <p className="helper-text-ea">
-                      A rail precisa agir como apoio nobre: leitura financeira, conta ativa e comandos
-                      essenciais sem cara de lateral utilitária.
-                    </p>
-                  </div>
-                  <Link href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
-                    Ver histórico completo
-                  </Link>
-                </div>
-
-                <div className="dashboard-surface-wallet">
-                  <div className="dashboard-surface-wallet-copy">
-                    <span className="dashboard-stream-link-kicker">{CREATOR_COINS_PUBLIC_NAME}</span>
-                    <strong className="dashboard-stream-link-title">{walletSummaryDisplay}</strong>
-                    <span className="dashboard-stream-link-copy">
-                      O creator estima antes. O histórico confirma depois. A rail precisa sustentar essa leitura
-                      como extensão nobre do fluxo principal.
-                    </span>
-                  </div>
-
-                  <div className="dashboard-surface-wallet-breakdown">
-                    {walletBreakdown.map((item) => (
-                      <div key={item.coinType} className="dashboard-wallet-row">
-                        <div className="dashboard-wallet-row-main">
-                          <strong>{coinTypeLabel(item.coinType)}</strong>
-                          <span>{item.description}</span>
-                        </div>
-                        <span className="dashboard-wallet-row-value">{item.amount.toLocaleString("pt-BR")}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="dashboard-surface-command-head">
-                  <span className="dashboard-stage-stat-label">Comandos de apoio</span>
-                  <strong>Plano, suporte e leitura financeira entram como camada complementar, não como sidebar.</strong>
-                </div>
-
-                <div className="dashboard-surface-ops-grid">
-                  <div className="dashboard-surface-ops-cluster">
-                    <div className="dashboard-surface-ops-cluster-head">
-                      <span className="dashboard-stage-stat-label">Camada principal</span>
-                      <strong>Planos e suporte</strong>
-                    </div>
-                    <div className="dashboard-surface-command-list">
-                      {railPrimaryQuickLinks.map((item, index) => (
-                        <Link
-                          key={item.href}
-                          href={item.href}
-                          className="dashboard-surface-command-link"
-                          data-reveal
-                          data-reveal-delay={String(95 + index * 30)}
-                        >
-                          <div className="dashboard-surface-command-link-main">
-                            <span className="dashboard-stream-link-kicker">{item.tag}</span>
-                            <strong className="dashboard-stream-link-title">{item.title}</strong>
-                            <span className="dashboard-stream-link-copy">{item.description}</span>
-                          </div>
-                          <span className="dashboard-stream-link-cta">{item.cta}</span>
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="dashboard-surface-ops-cluster">
-                    <div className="dashboard-surface-ops-cluster-head">
-                      <span className="dashboard-stage-stat-label">Apoio contínuo</span>
-                      <strong>Financeiro e guia</strong>
-                    </div>
-                    <div className="dashboard-surface-command-list">
-                      {railSecondaryQuickLinks.map((item, index) => (
-                        <Link
-                          key={item.href}
-                          href={item.href}
-                          className="dashboard-surface-command-link"
-                          data-reveal
-                          data-reveal-delay={String(155 + index * 30)}
-                        >
-                          <div className="dashboard-surface-command-link-main">
-                            <span className="dashboard-stream-link-kicker">{item.tag}</span>
-                            <strong className="dashboard-stream-link-title">{item.title}</strong>
-                            <span className="dashboard-stream-link-copy">{item.description}</span>
-                          </div>
-                          <span className="dashboard-stream-link-cta">{item.cta}</span>
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </section>
-            </aside>
           </div>
         </section>
       </div>

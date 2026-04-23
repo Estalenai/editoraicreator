@@ -228,26 +228,18 @@ export function AppTopNav() {
 
   if (dashboardShellMode) {
     return (
-      <nav className="app-top-nav app-nav-rail layout-contract-rail app-nav-dashboard-mode" aria-label="Navegação principal">
-        <div className="app-top-nav-head app-nav-rail-head layout-contract-rail-head">
+      <nav className="app-top-nav app-nav-dashboard-mode app-nav-dashboard-field" aria-label="Navegação principal">
+        <div className="app-nav-dashboard-field-line">
           <span className="app-nav-dashboard-eyebrow">Campo principal</span>
-          <div className="app-nav-dashboard-context">
-            <strong>{activeNavItem?.label ?? "Dashboard"}</strong>
+          <div className="app-nav-links app-nav-dashboard-links app-nav-links-core">
+            {dashboardPrimaryItems.map(renderCompactNavItem)}
           </div>
         </div>
-        <div className="app-nav-dashboard-stack">
-          <div className="app-nav-links app-nav-dashboard-links app-nav-links-core app-nav-rail-links layout-contract-collection">
-            {dashboardPrimaryItems.map((item) => renderNavItem(item, { minimal: true }))}
+        {dashboardUtilityItem ? (
+          <div className="app-nav-dashboard-utility">
+            {renderCompactNavItem(dashboardUtilityItem)}
           </div>
-          {dashboardUtilityItem ? (
-            <>
-              <div className="app-nav-dashboard-divider" aria-hidden="true" />
-              <div className="app-nav-dashboard-utility">
-                {renderNavItem(dashboardUtilityItem, { minimal: true })}
-              </div>
-            </>
-          ) : null}
-        </div>
+        ) : null}
       </nav>
     );
   }
