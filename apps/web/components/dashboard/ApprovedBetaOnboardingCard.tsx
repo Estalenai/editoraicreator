@@ -27,28 +27,28 @@ const OBJECTIVE_PATHS = [
   {
     key: "post",
     title: "Publicação rápida",
-    description: "Creator Post abre o fluxo mais direto para gerar e seguir para o editor.",
+    description: "Entrada direta para seguir ao editor.",
     href: "/creators?tab=post",
     cta: "Abrir Creator Post",
   },
   {
     key: "scripts",
     title: "Roteiro e narrativa",
-    description: "Creator Scripts organiza a narrativa antes da gravação.",
+    description: "Narrativa pronta para revisar.",
     href: "/creators?tab=scripts",
     cta: "Abrir Creator Scripts",
   },
   {
     key: "clips",
     title: "Saída visual premium",
-    description: "Creator Clips concentra o fluxo visual com status claro.",
+    description: "Fluxo visual com status claro.",
     href: "/creators?tab=clips",
     cta: "Abrir Creator Clips",
   },
   {
     key: "supporting",
     title: "Campanha complementar",
-    description: "Creator Ads entra como apoio de campanha.",
+    description: "Apoio quando a campanha pedir.",
     href: "/creators?tab=ads",
     cta: "Abrir Creator Ads",
   },
@@ -58,12 +58,12 @@ const ONBOARDING_SIGNAL_ITEMS = [
   {
     label: "Fluxo base",
     title: "Creator -> Projeto -> Editor",
-    description: "A base nasce no creator, ganha continuidade em projetos e fecha no editor.",
+    description: "Entrada, continuidade e edição no mesmo eixo.",
   },
   {
     label: "Confidencialidade",
     title: "Conta isolada",
-    description: "Os dados não entram em treino durante o uso da plataforma.",
+    description: "Dados fora de treino.",
   },
 ];
 
@@ -113,10 +113,10 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
     >
       <div className="dashboard-onboarding-band-head dashboard-surface-onboarding-head">
         <div className="section-stack">
-          <p className="section-kicker">Onboarding</p>
-          <h3 style={{ margin: 0 }}>Primeiros passos no beta</h3>
+          <p className="section-kicker">Fechamento</p>
+          <h3 style={{ margin: 0 }}>Próximo movimento</h3>
           <p className="meta-text-ea">
-            Entre no workspace com um fluxo curto: escolha um creator hero, valide a estimativa e siga para projeto e editor.
+            Escolha a entrada e mantenha o ciclo no mesmo eixo.
           </p>
         </div>
         <button onClick={dismiss} className="btn-ea btn-ghost btn-sm">
@@ -135,7 +135,7 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
         <div className="dashboard-surface-onboarding-signal dashboard-surface-onboarding-signal-wallet">
           <span className="dashboard-stage-stat-label">{CREATOR_COINS_PUBLIC_NAME}</span>
           <strong>{summary}</strong>
-          <span>Estimativa aparece antes do uso; o histórico confirma depois.</span>
+          <span>Estimativa antes, histórico depois.</span>
         </div>
       </div>
 
@@ -145,28 +145,21 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
             <span className="dashboard-surface-onboarding-step-index">01</span>
             <div className="dashboard-surface-onboarding-step-copy">
               <strong>Escolha um Creator</strong>
-              <span>Comece por Post, Scripts ou Clips.</span>
+              <span>Post, Scripts ou Clips.</span>
             </div>
           </li>
           <li className="dashboard-onboarding-step-row dashboard-surface-onboarding-step" data-reveal data-reveal-delay="160">
             <span className="dashboard-surface-onboarding-step-index">02</span>
             <div className="dashboard-surface-onboarding-step-copy">
               <strong>Revise a estimativa</strong>
-              <span>Cada geração mostra a estimativa antes do consumo.</span>
+              <span>Consumo previsto antes da geração.</span>
             </div>
           </li>
           <li className="dashboard-onboarding-step-row dashboard-surface-onboarding-step" data-reveal data-reveal-delay="200">
             <span className="dashboard-surface-onboarding-step-index">03</span>
             <div className="dashboard-surface-onboarding-step-copy">
               <strong>Salve, edite e exporte</strong>
-              <span>Projetos salva a base e o editor fecha a peça.</span>
-            </div>
-          </li>
-          <li className="dashboard-onboarding-step-row dashboard-surface-onboarding-step" data-reveal data-reveal-delay="240">
-            <span className="dashboard-surface-onboarding-step-index">04</span>
-            <div className="dashboard-surface-onboarding-step-copy">
-              <strong>Trabalhe com confidencialidade</strong>
-              <span>Os dados não entram em treino.</span>
+              <span>Projeto guarda; editor finaliza.</span>
             </div>
           </li>
         </ol>
@@ -174,9 +167,9 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
         <div className="dashboard-onboarding-path-list dashboard-surface-onboarding-paths">
           <div className="section-stack">
             <p className="section-kicker">Rotas iniciais recomendadas</p>
-            <h4 style={{ margin: 0 }}>Núcleo principal com um apoio complementar</h4>
+            <h4 style={{ margin: 0 }}>Entrada principal e apoio</h4>
             <p className="helper-text-ea">
-              Comece pelo trio hero e use Ads como apoio.
+              Comece pelo núcleo e use Ads só como complemento.
             </p>
           </div>
 

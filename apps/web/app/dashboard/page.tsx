@@ -369,10 +369,10 @@ export default function DashboardPage() {
   const hasConfirmedUsage = totalUsage > 0;
   const usageLeadInsight =
   loading || usageLoading
-      ? "Sincronizando as features mais usadas no período."
+      ? "Sincronizando a leitura do ciclo."
       : hasConfirmedUsage && usageDisplayItems[0]
-        ? `${usageDisplayItems[0].displayLabel} puxa a atividade confirmada deste ciclo.`
-        : `Quando uma entrega atravessar o fluxo completo, o consumo confirmado aparece aqui e no histórico de ${CREATOR_COINS_PUBLIC_NAME}.`;
+        ? `${usageDisplayItems[0].displayLabel} lidera o ciclo confirmado.`
+        : `A primeira entrega fecha esta leitura em ${CREATOR_COINS_PUBLIC_NAME}.`;
   const nextAction = recentProjects.length > 0
       ? {
         title: "Retomar projeto",
@@ -389,17 +389,17 @@ export default function DashboardPage() {
   const usageSignalItems = useMemo(
     () => [
       {
-        label: "Estado do histórico",
+        label: "Histórico",
         value: loading || usageLoading ? "Sincronizando" : hasConfirmedUsage ? "Reconciliado" : "Em observação",
         note:
           loading || usageLoading
-            ? "Atualizando a leitura completa do ciclo."
+            ? "Atualizando ciclo."
             : hasConfirmedUsage
-              ? `${usageItems.length} feature(s) entram no mesmo histórico confirmado.`
-              : "A base acompanha creators, editor e saída até a primeira entrega fechar.",
+              ? `${usageItems.length} feature(s) confirmadas.`
+              : "Aguardando primeira saída.",
       },
       {
-        label: "Ritmo acompanhado",
+        label: "Ritmo",
         value:
           loading || usageLoading
             ? "Carregando"
@@ -408,17 +408,17 @@ export default function DashboardPage() {
               : "Primeira entrega",
         note:
           loading || usageLoading
-            ? "Sincronizando a feature com mais atividade."
+            ? "Lendo atividade."
             : hasConfirmedUsage && usageDisplayItems[0]
-              ? `${usageDisplayItems[0].used} de ${usageDisplayItems[0].limit} consumo(s) aparecem neste período.`
-              : "Assim que a primeira saída fechar o ciclo, esta camada deixa de ser provisória.",
+              ? `${usageDisplayItems[0].used}/${usageDisplayItems[0].limit} no período.`
+              : "Primeira entrega em aberto.",
       },
       {
         label: "Próximo passo",
         value: loading ? "Preparando" : nextAction.title,
         note:
           loading
-            ? "Estamos sincronizando saldo, plano, projetos e próximos passos do workspace."
+            ? "Preparando workspace."
             : nextAction.description,
       },
     ],
@@ -434,10 +434,10 @@ export default function DashboardPage() {
   );
   const usageEmptyState = !hasConfirmedUsage
     ? {
-        kicker: "Aguardando confirmações",
-        title: "O histórico confirmado entra quando a trilha fecha.",
+        kicker: "Histórico em aberto",
+        title: "Primeira entrega fecha a leitura.",
         description:
-          "Quando creators, editor e saída completarem o mesmo ciclo, esta área deixa de ser provisória e passa a mostrar o consumo reconciliado.",
+          "Creator, editor e saída ocupam o mesmo ciclo antes do histórico reconciliar.",
         primaryHref: "/creators",
         primaryLabel: "Abrir Creators",
         secondaryHref: "/credits#credits-history",
@@ -446,9 +446,9 @@ export default function DashboardPage() {
     : usagePreviewItems.length === 0
       ? {
           kicker: "Sem uso confirmado",
-          title: "A primeira entrega publicada inaugura este histórico.",
+          title: "Publique a primeira entrega.",
           description:
-            `Gere no creators, revise no editor e acompanhe o fechamento completo em ${CREATOR_COINS_PUBLIC_NAME}.`,
+            `A estimativa aparece antes; ${CREATOR_COINS_PUBLIC_NAME} confirma depois.`,
           primaryHref: "/creators",
           primaryLabel: "Gerar agora",
           secondaryHref: "/credits#credits-history",
@@ -456,10 +456,10 @@ export default function DashboardPage() {
         }
       : null;
   const recentUsageText = usageLoading
-    ? "Atualizando métricas do mês."
+    ? "Atualizando ciclo."
     : usageItems.length === 0
-      ? "Sem uso registrado neste mês."
-      : `${usageItems.length} feature(s) ativas e ${totalUsage} consumo(s) no período.`;
+      ? "Sem uso registrado."
+      : `${usageItems.length} feature(s) • ${totalUsage} consumo(s).`;
   const planLabelDisplay = loading ? "Plano em sincronização" : planLabel ?? "—";
   const emailDisplay = loading ? "Sincronizando conta..." : email || "—";
   const walletSummaryDisplay = loading ? "Saldo em sincronização" : walletSummary;
@@ -925,12 +925,15 @@ export default function DashboardPage() {
                           Ver histórico
                         </Link>
                       </div>
-                      <div className="dashboard-usage-hero dashboard-surface-usage-hero">
+                      <div className="dashboard-usage-hero dashboard-surface-usage-hero dashboard-surface-usage-strip">
                         <div className="dashboard-usage-hero-main">
-                          <span className="dashboard-stage-stat-label">Consumo confirmado</span>
+                          <span className="dashboard-stage-stat-label">Confirmado</span>
                           <strong>{totalUsageDisplay}</strong>
                         </div>
                         <p>{usageLeadInsight}</p>
+                        <Link href="/credits#credits-history" className="dashboard-stream-link-cta dashboard-surface-usage-inline-cta">
+                          Histórico completo
+                        </Link>
                       </div>
 
                       <div className="dashboard-surface-usage-signals dashboard-surface-usage-signals">
@@ -999,9 +1002,7 @@ export default function DashboardPage() {
                                       {index === 0 ? "Feature líder" : "Uso confirmado"}
                                     </span>
                                     <strong className="dashboard-stream-link-title">{item.displayLabel}</strong>
-                                    <span className="dashboard-stream-link-copy">
-                                      {item.used} de {item.limit} consumo(s) no período.
-                                    </span>
+                                    <span className="dashboard-stream-link-copy">{item.used}/{item.limit} neste ciclo.</span>
                                   </div>
                                   <div className="dashboard-usage-row-meter dashboard-surface-usage-card-meter">
                                     <strong>{item.used}/{item.limit}</strong>
@@ -1015,7 +1016,7 @@ export default function DashboardPage() {
                           </div>
                           {usageRemainingCount > 0 ? (
                             <div className="dashboard-usage-footnote dashboard-surface-usage-footnote">
-                              +{usageRemainingCount} feature(s) adicionais aparecem no histórico completo.
+                              +{usageRemainingCount} no histórico completo.
                             </div>
                           ) : null}
                         </>
