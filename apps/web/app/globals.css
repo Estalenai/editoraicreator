@@ -29726,6 +29726,12 @@ body {
     gap: 10px;
   }
 
+  .dashboard-surface-core .dashboard-surface-head-note,
+  .dashboard-surface-ops-band .dashboard-surface-command-head,
+  .dashboard-surface-onboarding-paths > .section-stack .helper-text-ea {
+    display: none;
+  }
+
   .dashboard-surface-context-band {
     gap: 14px;
     padding-block: 16px;
@@ -29810,6 +29816,32 @@ body {
 }
 
 @media (max-width: 768px) {
+  .app-shell-frame:has(.dashboard-surface-page) .app-shell-head,
+  .app-shell-frame:has(.dashboard-surface-page) .app-shell-head-region {
+    padding: 12px clamp(14px, 4vw, 22px) 8px !important;
+  }
+
+  .app-shell-frame:has(.dashboard-surface-page) .app-shell-head-actions,
+  .app-shell-frame:has(.dashboard-surface-page) .app-account-controls {
+    width: auto;
+    justify-content: flex-start;
+    gap: 8px;
+  }
+
+  .app-shell-frame:has(.dashboard-surface-page) .app-account-inbox-button,
+  .app-shell-frame:has(.dashboard-surface-page) .app-account-link {
+    flex: 0 1 auto;
+    min-height: 34px;
+    padding: 5px 10px;
+    border-color: rgba(191, 239, 255, 0.07);
+    background: rgba(255, 255, 255, 0.014);
+  }
+
+  .app-shell-frame:has(.dashboard-surface-page) .app-account-inbox-copy span,
+  .app-shell-frame:has(.dashboard-surface-page) .app-account-link-copy span {
+    display: none;
+  }
+
   .app-shell-body:has(.dashboard-surface-page) .app-top-nav {
     margin-inline: clamp(14px, 4vw, 22px);
     padding: 0 0 8px !important;
