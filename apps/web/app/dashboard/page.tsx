@@ -499,66 +499,65 @@ export default function DashboardPage() {
         <section className="dashboard-surface-stage" data-reveal>
           <div className="dashboard-surface-stage-grid">
             <div className="dashboard-surface-stage-main">
-              <header className="dashboard-surface-hero" data-reveal data-reveal-delay="35">
-                <div className="dashboard-surface-hero-grid">
-                  <div className="dashboard-surface-hero-intro">
-                    <div className="hero-title-stack">
-                      <p className="section-kicker">Painel executivo</p>
-                      <h1 className="heading-reset">Dashboard</h1>
-                      <p className="section-header-copy hero-copy-compact">
-                        Criacao, revisao, continuidade e operacao entram na mesma primeira leitura, sem cair
-                        em painel administrativo.
-                      </p>
+              <div className="dashboard-surface-flow">
+                <section className="dashboard-surface-field dashboard-surface-field-primary">
+                  <header className="dashboard-surface-hero" data-reveal data-reveal-delay="35">
+                <div className="dashboard-surface-command" data-reveal data-reveal-delay="70">
+                  <div className="dashboard-surface-command-copy">
+                    <div className="dashboard-surface-hero-intro">
+                      <div className="hero-title-stack">
+                        <p className="section-kicker">Painel executivo</p>
+                        <h1 className="heading-reset">Dashboard</h1>
+                        <p className="section-header-copy hero-copy-compact">
+                          Criacao, revisao, continuidade e operacao entram no mesmo palco, sem cair em painel
+                          administrativo.
+                        </p>
+                      </div>
+                      <div className="hero-meta-row dashboard-surface-hero-badges">
+                        <span className="premium-badge premium-badge-phase">Plano: {planLabelDisplay}</span>
+                        <span className="premium-badge premium-badge-warning">
+                          {loading ? "Conta em sincronizacao" : "Historico confirmado no backend"}
+                        </span>
+                      </div>
                     </div>
-                    <div className="hero-meta-row dashboard-surface-hero-badges">
-                      <span className="premium-badge premium-badge-phase">Plano: {planLabelDisplay}</span>
-                      <span className="premium-badge premium-badge-warning">
-                        {loading ? "Conta em sincronização" : "Histórico confirmado no backend"}
-                      </span>
-                    </div>
+                    <span className="dashboard-hero-flow-label">Linha criativa</span>
+                    <strong>Creator, editor e saida conduzem o mesmo eixo principal do produto.</strong>
+                    <p>
+                      A leitura principal precisa nascer unificada e continuar viva no mesmo campo, sem anunciar
+                      uma troca de painel a cada passo.
+                    </p>
                   </div>
 
-                  <div className="dashboard-surface-command" data-reveal data-reveal-delay="70">
-                    <div className="dashboard-surface-command-copy">
-                      <span className="dashboard-hero-flow-label">Linha criativa</span>
-                      <strong>Creator, editor e saida conduzem o eixo principal do produto.</strong>
-                      <p>
-                        A abertura precisa mostrar criacao, refinamento, continuidade e saida como uma trilha unica,
-                        nao como uma sequencia de paineis tecnicos.
-                      </p>
+                  <div className="dashboard-surface-command-sequence">
+                    <div className="dashboard-surface-command-step">
+                      <span className="dashboard-surface-step-index">01</span>
+                      <div className="dashboard-surface-command-step-copy">
+                        <span className="dashboard-hero-flow-label">Creators</span>
+                        <strong>gera a base</strong>
+                        <span>Abra Post, Scripts ou Clips com contexto pronto.</span>
+                      </div>
                     </div>
-
-                    <div className="dashboard-surface-command-sequence">
-                      <div className="dashboard-surface-command-step">
-                        <span className="dashboard-surface-step-index">01</span>
-                        <div className="dashboard-surface-command-step-copy">
-                          <span className="dashboard-hero-flow-label">Creators</span>
-                          <strong>gera a base</strong>
-                          <span>Abra Post, Scripts ou Clips com contexto pronto.</span>
-                        </div>
+                    <div className="dashboard-surface-command-step">
+                      <span className="dashboard-surface-step-index">02</span>
+                      <div className="dashboard-surface-command-step-copy">
+                        <span className="dashboard-hero-flow-label">Editor</span>
+                        <strong>lapida o material</strong>
+                        <span>Revise, consolide e preserve a continuidade.</span>
                       </div>
-                      <div className="dashboard-surface-command-step">
-                        <span className="dashboard-surface-step-index">02</span>
-                        <div className="dashboard-surface-command-step-copy">
-                          <span className="dashboard-hero-flow-label">Editor</span>
-                          <strong>lapida o material</strong>
-                          <span>Revise, consolide e preserve a continuidade.</span>
-                        </div>
-                      </div>
-                      <div className="dashboard-surface-command-step">
-                        <span className="dashboard-surface-step-index">03</span>
-                        <div className="dashboard-surface-command-step-copy">
-                          <span className="dashboard-hero-flow-label">Projetos + saída</span>
-                          <strong>fecha o ciclo</strong>
-                          <span>O que foi salvo e entregue continua no mesmo eixo.</span>
-                        </div>
+                    </div>
+                    <div className="dashboard-surface-command-step">
+                      <span className="dashboard-surface-step-index">03</span>
+                      <div className="dashboard-surface-command-step-copy">
+                        <span className="dashboard-hero-flow-label">Projetos + saida</span>
+                        <strong>fecha o ciclo</strong>
+                        <span>O que foi salvo e entregue continua no mesmo eixo.</span>
                       </div>
                     </div>
                   </div>
                 </div>
-              </header>
+                  </header>
 
-              <section className="dashboard-surface-context dashboard-surface-context-band" data-reveal data-reveal-delay="90">
+                  <section className="dashboard-surface-context dashboard-surface-context-band" data-reveal data-reveal-delay="90">
                 <div className="dashboard-surface-context-row dashboard-surface-context-row-primary">
                   <span className="dashboard-overview-label">Conta ativa</span>
                   <strong>{planLabelDisplay}</strong>
@@ -608,10 +607,10 @@ export default function DashboardPage() {
                     Sair
                   </button>
                 </div>
-              </section>
+                  </section>
 
-              {error || usageError ? (
-                <div className="dashboard-status-stack dashboard-surface-inline-status">
+                  {error || usageError ? (
+                    <div className="dashboard-status-stack dashboard-surface-inline-status">
                   {error ? (
                     <div className="state-ea state-ea-error">
                       <p className="state-ea-title">Não foi possível carregar painel, plano e saldo agora</p>
@@ -639,23 +638,20 @@ export default function DashboardPage() {
                       </button>
                     </div>
                   ) : null}
-                </div>
-              ) : null}
-
-              <div className="dashboard-surface-flow">
-                <section className="dashboard-surface-focus" data-reveal data-reveal-delay="140">
-                  <div className="dashboard-surface-section-head">
-                    <div className="section-header-ea">
-                      <p className="section-kicker">Continuidade viva</p>
-                      <h3 className="heading-reset">Projeto em foco</h3>
-                      <p className="helper-text-ea">
-                        Uma retomada central: menos painel bruto e mais clareza sobre o que esta vivo agora.
-                      </p>
                     </div>
-                    <Link href="/projects" className="btn-link-ea btn-ghost btn-sm">
-                      Abrir projetos
-                    </Link>
-                  </div>
+                  ) : null}
+
+                  <section className="dashboard-surface-focus" data-reveal data-reveal-delay="140">
+                    <div className="dashboard-surface-field-note">
+                      <div className="dashboard-surface-field-note-copy">
+                        <span className="dashboard-stage-stat-label">Continuidade viva</span>
+                        <strong>Projeto em foco</strong>
+                        <span>O que esta vivo agora precisa puxar o resto da tela.</span>
+                      </div>
+                      <Link href="/projects" className="btn-link-ea btn-ghost btn-sm">
+                        Abrir projetos
+                      </Link>
+                    </div>
 
                   <div className="dashboard-surface-focus-grid">
                     <div className="dashboard-surface-focus-lead-wrap">
@@ -757,27 +753,24 @@ export default function DashboardPage() {
                       ))}
                     </div>
                   ) : null}
+                  </section>
                 </section>
 
-                <section className="dashboard-surface-core" data-reveal data-reveal-delay="205">
-                  <div className="dashboard-surface-section-head">
-                    <div className="section-header-ea">
-                      <p className="section-kicker">Centro da experiência</p>
-                      <h3 className="heading-reset">Núcleo em ação</h3>
-                      <p className="helper-text-ea">
-                        O centro da tela precisa orientar o fluxo inteiro em uma única leitura,
-                        sem cair em grade utilitária ou catálogo de módulos.
-                      </p>
-                    </div>
-                    <div className="dashboard-surface-head-note">
+                <section className="dashboard-surface-field dashboard-surface-field-mainline">
+                  <div className="dashboard-surface-field-note dashboard-surface-field-note-wide">
+                    <div className="dashboard-surface-field-note-copy">
                       <span className="dashboard-stage-stat-label">Fluxo principal</span>
-                      <strong>Creators, editor e saída seguem a mesma trilha principal.</strong>
-                      <span>
-                        Criação, revisão, continuidade e publicação aparecem como uma linha única,
-                        com peso de produto principal em vez de módulos encaixados.
-                      </span>
+                      <strong>Criacao, revisao, conta e suporte seguem dentro do mesmo plano.</strong>
+                      <span>O campo principal continua largo; o apoio entra quieto, sem virar lateral.</span>
                     </div>
                   </div>
+
+                  <section className="dashboard-surface-core" data-reveal data-reveal-delay="205">
+                    <div className="dashboard-surface-head-note dashboard-surface-core-note">
+                      <span className="dashboard-stage-stat-label">Centro da experiencia</span>
+                      <strong>Creators, editor e saida seguem a mesma trilha principal.</strong>
+                      <span>Entradas, revisao e continuidade aparecem como uma faixa unica, sem grade utilitaria.</span>
+                    </div>
 
                   <div className="dashboard-surface-core-grid">
                     {coreQuickLinks.map((item, index) =>
@@ -816,27 +809,24 @@ export default function DashboardPage() {
                   </div>
                 </section>
 
-                <section className="dashboard-surface-ops dashboard-surface-ops-band" data-reveal data-reveal-delay="165">
-                  <div className="dashboard-surface-section-head dashboard-surface-section-head-rail">
-                    <div className="section-header-ea">
-                      <p className="section-kicker">Operação em apoio</p>
-                      <h3 className="heading-reset">Conta, saldo e suporte</h3>
-                      <p className="helper-text-ea">
-                        Leitura financeira, plano e suporte entram como camada embutida no mesmo campo,
-                        sem se comportar como lateral administrativa.
-                      </p>
+                  <section className="dashboard-surface-ops dashboard-surface-ops-band" data-reveal data-reveal-delay="165">
+                    <div className="dashboard-surface-field-note dashboard-surface-field-note-ops">
+                      <div className="dashboard-surface-field-note-copy">
+                        <span className="dashboard-stage-stat-label">Operacao em apoio</span>
+                        <strong>Conta, saldo e suporte continuam dentro do mesmo workspace.</strong>
+                        <span>Plano, leitura financeira e guia entram como apoio embutido, nao como rail.</span>
+                      </div>
+                      <Link href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
+                        Ver historico completo
+                      </Link>
                     </div>
-                    <Link href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
-                      Ver histórico completo
-                    </Link>
-                  </div>
 
                   <div className="dashboard-surface-wallet">
                     <div className="dashboard-surface-wallet-copy">
                       <span className="dashboard-stream-link-kicker">{CREATOR_COINS_PUBLIC_NAME}</span>
                       <strong className="dashboard-stream-link-title">{walletSummaryDisplay}</strong>
                       <span className="dashboard-stream-link-copy">
-                        O creator estima antes. O histórico confirma depois. A leitura financeira sustenta
+                        O creator estima antes. O historico confirma depois. A leitura financeira acompanha
                         o fluxo principal sem virar painel lateral.
                       </span>
                     </div>
@@ -854,10 +844,10 @@ export default function DashboardPage() {
                     </div>
                   </div>
 
-                  <div className="dashboard-surface-command-head">
-                    <span className="dashboard-stage-stat-label">Comandos de apoio</span>
-                    <strong>Plano, suporte e guia aparecem como extensão do workspace, não como sidebar.</strong>
-                  </div>
+                    <div className="dashboard-surface-command-head">
+                      <span className="dashboard-stage-stat-label">Comandos de apoio</span>
+                      <strong>Plano, suporte e guia aparecem como extensao do workspace.</strong>
+                    </div>
 
                   <div className="dashboard-surface-ops-grid">
                     <div className="dashboard-surface-ops-cluster">
@@ -912,19 +902,22 @@ export default function DashboardPage() {
                   </div>
                 </section>
 
-                <section className="dashboard-surface-usage">
-                  <div className="dashboard-surface-usage-grid">
-                    <div className="dashboard-surface-usage-copy">
-                      <div className="dashboard-surface-section-head">
-                        <div className="section-header-ea">
-                          <p className="section-kicker">Uso recente</p>
-                          <h3 className="heading-reset">Leitura do ciclo</h3>
-                          <p className="helper-text-ea">{recentUsageText}</p>
+                </section>
+
+                <section className="dashboard-surface-field dashboard-surface-field-tail">
+                  <section className="dashboard-surface-usage">
+                    <div className="dashboard-surface-usage-grid">
+                      <div className="dashboard-surface-usage-copy">
+                        <div className="dashboard-surface-field-note dashboard-surface-field-note-tail">
+                          <div className="dashboard-surface-field-note-copy">
+                            <span className="dashboard-stage-stat-label">Uso recente</span>
+                            <strong>Leitura do ciclo</strong>
+                            <span>{recentUsageText}</span>
+                          </div>
+                          <Link href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
+                            Ver historico
+                          </Link>
                         </div>
-                        <Link href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
-                          Ver histórico
-                        </Link>
-                      </div>
                       <div className="dashboard-surface-usage-hero dashboard-surface-usage-strip">
                         <div className="dashboard-surface-usage-hero-main">
                           <span className="dashboard-stage-stat-label">Confirmado</span>
@@ -1021,11 +1014,12 @@ export default function DashboardPage() {
                           ) : null}
                         </>
                       )}
+                      </div>
                     </div>
-                  </div>
-                </section>
+                  </section>
 
-                <ApprovedBetaOnboardingCard email={email} wallet={wallet} loading={loading} />
+                  <ApprovedBetaOnboardingCard email={email} wallet={wallet} loading={loading} />
+                </section>
               </div>
             </div>
           </div>

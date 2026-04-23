@@ -234,7 +234,6 @@ export function AppTopNav() {
     return (
       <nav className="app-top-nav app-nav-dashboard-mode" aria-label="Navegação principal">
         <div className="app-nav-dashboard-field-line">
-          <span className="app-nav-dashboard-eyebrow">Campo principal</span>
           <div className="app-nav-links app-nav-dashboard-links app-nav-links-core">
             {dashboardPrimaryItems.map((item) => renderCompactNavItem(item, { dashboardSurface: true }))}
           </div>
