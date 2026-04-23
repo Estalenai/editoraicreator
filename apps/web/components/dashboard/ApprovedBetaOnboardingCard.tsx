@@ -107,11 +107,11 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
 
   return (
     <section
-      className="dashboard-onboarding-band dashboard-surface-onboarding"
+      className="dashboard-surface-onboarding"
       data-reveal
       data-reveal-delay="90"
     >
-      <div className="dashboard-onboarding-band-head dashboard-surface-onboarding-head">
+      <div className="dashboard-surface-onboarding-head">
         <div className="section-stack">
           <p className="section-kicker">Continuidade</p>
           <h3 style={{ margin: 0 }}>Próxima entrada</h3>
@@ -139,23 +139,23 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
         </div>
       </div>
 
-      <div className="dashboard-onboarding-band-grid dashboard-surface-onboarding-grid">
-        <ol className="dashboard-onboarding-step-list dashboard-surface-onboarding-steps">
-          <li className="dashboard-onboarding-step-row dashboard-surface-onboarding-step" data-reveal data-reveal-delay="120">
+      <div className="dashboard-surface-onboarding-grid">
+        <ol className="dashboard-surface-onboarding-steps">
+          <li className="dashboard-surface-onboarding-step" data-reveal data-reveal-delay="120">
             <span className="dashboard-surface-onboarding-step-index">01</span>
             <div className="dashboard-surface-onboarding-step-copy">
               <strong>Escolha</strong>
               <span>Post, Scripts ou Clips.</span>
             </div>
           </li>
-          <li className="dashboard-onboarding-step-row dashboard-surface-onboarding-step" data-reveal data-reveal-delay="160">
+          <li className="dashboard-surface-onboarding-step" data-reveal data-reveal-delay="160">
             <span className="dashboard-surface-onboarding-step-index">02</span>
             <div className="dashboard-surface-onboarding-step-copy">
               <strong>Revise</strong>
               <span>Consumo previsto.</span>
             </div>
           </li>
-          <li className="dashboard-onboarding-step-row dashboard-surface-onboarding-step" data-reveal data-reveal-delay="200">
+          <li className="dashboard-surface-onboarding-step" data-reveal data-reveal-delay="200">
             <span className="dashboard-surface-onboarding-step-index">03</span>
             <div className="dashboard-surface-onboarding-step-copy">
               <strong>Finalize</strong>
@@ -164,7 +164,7 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
           </li>
         </ol>
 
-        <div className="dashboard-onboarding-path-list dashboard-surface-onboarding-paths">
+        <div className="dashboard-surface-onboarding-paths">
           <div className="section-stack">
             <p className="section-kicker">Entradas</p>
             <h4 style={{ margin: 0 }}>Núcleo e apoio</h4>
@@ -177,12 +177,12 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
             <Link
               key={item.key}
               href={item.href}
-              className={`dashboard-onboarding-path-row dashboard-surface-onboarding-path ${index === OBJECTIVE_PATHS.length - 1 ? "dashboard-onboarding-path-row-support" : ""}`}
+              className="dashboard-surface-onboarding-path"
               onClick={dismiss}
               data-reveal
               data-reveal-delay={String(80 + index * 55)}
             >
-              <div className="dashboard-onboarding-path-main">
+              <div className="dashboard-surface-onboarding-path-main">
                 <span className="dashboard-stage-stat-label">{index === OBJECTIVE_PATHS.length - 1 ? "Apoio" : "Principal"}</span>
                 <strong>{item.title}</strong>
                 <span className="helper-text-ea">{item.description}</span>
@@ -193,8 +193,8 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
         </div>
       </div>
 
-      <div className="dashboard-onboarding-summary dashboard-surface-onboarding-summary">
-        <div className="dashboard-onboarding-summary-copy dashboard-surface-onboarding-summary-copy">
+      <div className="dashboard-surface-onboarding-summary">
+        <div className="dashboard-surface-onboarding-summary-copy">
           <strong>{CREATOR_COINS_PUBLIC_NAME}</strong>
           <div className="helper-text-ea">{summary}. Estimativa antes; histórico depois.</div>
         </div>
@@ -203,7 +203,7 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
           <span>{coinTypeLabel("pro")}: maior qualidade</span>
           <span>{coinTypeLabel("ultra")}: processamento premium</span>
         </div>
-        <div className="dashboard-onboarding-actions dashboard-surface-onboarding-actions">
+        <div className="dashboard-surface-onboarding-actions">
           <Link href="/creators?tab=post" onClick={dismiss} className="btn-link-ea btn-primary">
             Iniciar fluxo
           </Link>

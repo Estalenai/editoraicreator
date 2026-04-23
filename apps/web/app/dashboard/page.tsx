@@ -495,7 +495,7 @@ export default function DashboardPage() {
 
   return (
     <div className="page-shell dashboard-surface-page">
-      <div className="dashboard-page-canvas dashboard-surface-canvas">
+      <div className="dashboard-surface-canvas">
         <section className="dashboard-surface-stage" data-reveal>
           <div className="dashboard-surface-stage-grid">
             <div className="dashboard-surface-stage-main">
@@ -912,10 +912,10 @@ export default function DashboardPage() {
                   </div>
                 </section>
 
-                <section className="dashboard-flow-section dashboard-flow-section-usage dashboard-usage-pane dashboard-surface-usage">
-                  <div className="dashboard-usage-pane-grid dashboard-surface-usage-grid">
-                    <div className="dashboard-usage-pane-copy dashboard-surface-usage-copy">
-                      <div className="section-head dashboard-section-head-flat">
+                <section className="dashboard-surface-usage">
+                  <div className="dashboard-surface-usage-grid">
+                    <div className="dashboard-surface-usage-copy">
+                      <div className="dashboard-surface-section-head">
                         <div className="section-header-ea">
                           <p className="section-kicker">Uso recente</p>
                           <h3 className="heading-reset">Leitura do ciclo</h3>
@@ -925,8 +925,8 @@ export default function DashboardPage() {
                           Ver histórico
                         </Link>
                       </div>
-                      <div className="dashboard-usage-hero dashboard-surface-usage-hero dashboard-surface-usage-strip">
-                        <div className="dashboard-usage-hero-main">
+                      <div className="dashboard-surface-usage-hero dashboard-surface-usage-strip">
+                        <div className="dashboard-surface-usage-hero-main">
                           <span className="dashboard-stage-stat-label">Confirmado</span>
                           <strong>{totalUsageDisplay}</strong>
                         </div>
@@ -936,9 +936,9 @@ export default function DashboardPage() {
                         </Link>
                       </div>
 
-                      <div className="dashboard-surface-usage-signals dashboard-surface-usage-signals">
+                      <div className="dashboard-surface-usage-signals">
                         {usageSignalItems.map((item) => (
-                          <div key={item.label} className="dashboard-surface-usage-signal dashboard-surface-usage-signal">
+                          <div key={item.label} className="dashboard-surface-usage-signal">
                             <span className="dashboard-stage-stat-label">{item.label}</span>
                             <strong>{item.value}</strong>
                             <span>{item.note}</span>
@@ -947,20 +947,20 @@ export default function DashboardPage() {
                       </div>
                     </div>
 
-                    <div className="dashboard-usage-pane-list dashboard-surface-usage-list">
+                    <div className="dashboard-surface-usage-list">
                       {loading || usageLoading ? (
-                        <div className="dashboard-usage-grid dashboard-surface-usage-cards">
+                        <div className="dashboard-surface-usage-cards">
                           {Array.from({ length: 6 }).map((_, index) => (
-                            <div key={`usage-skeleton-${index}`} className="dashboard-usage-row-skeleton dashboard-surface-usage-card-skeleton">
+                            <div key={`usage-skeleton-${index}`} className="dashboard-surface-usage-card-skeleton">
                               <div className="premium-skeleton premium-skeleton-line" style={{ width: "42%" }} />
                               <div className="premium-skeleton premium-skeleton-line" style={{ width: "26%" }} />
                             </div>
                           ))}
                         </div>
                       ) : usageEmptyState ? (
-                        <div className="dashboard-usage-empty dashboard-surface-usage-empty">
+                        <div className="dashboard-surface-usage-empty">
                           <div className="dashboard-surface-usage-empty-story">
-                            <div className="dashboard-usage-empty-copy dashboard-surface-usage-empty-copy">
+                            <div className="dashboard-surface-usage-empty-copy">
                               <span className="dashboard-stage-stat-label">{usageEmptyState.kicker}</span>
                               <strong>{usageEmptyState.title}</strong>
                               <span>{usageEmptyState.description}</span>
@@ -989,13 +989,13 @@ export default function DashboardPage() {
                         </div>
                       ) : (
                         <>
-                          <div className="dashboard-usage-grid dashboard-surface-usage-cards">
+                          <div className="dashboard-surface-usage-cards">
                             {usageDisplayItems.map((item, index) => {
                               const progress = usageProgress(item);
                               return (
                                 <article
                                   key={item.feature}
-                                  className={`dashboard-surface-usage-card ${index === 0 ? "dashboard-surface-usage-card-lead" : ""}`}
+                                  className="dashboard-surface-usage-card"
                                 >
                                   <div className="dashboard-surface-usage-card-copy">
                                     <span className="dashboard-stage-stat-label">
@@ -1004,7 +1004,7 @@ export default function DashboardPage() {
                                     <strong className="dashboard-stream-link-title">{item.displayLabel}</strong>
                                     <span className="dashboard-stream-link-copy">{item.used}/{item.limit} neste ciclo.</span>
                                   </div>
-                                  <div className="dashboard-usage-row-meter dashboard-surface-usage-card-meter">
+                                  <div className="dashboard-surface-usage-meter">
                                     <strong>{item.used}/{item.limit}</strong>
                                     <div className="dashboard-progress-track">
                                       <div className="dashboard-progress-bar" style={{ width: `${progress}%` }} />
@@ -1015,7 +1015,7 @@ export default function DashboardPage() {
                             })}
                           </div>
                           {usageRemainingCount > 0 ? (
-                            <div className="dashboard-usage-footnote dashboard-surface-usage-footnote">
+                            <div className="dashboard-surface-usage-footnote">
                               +{usageRemainingCount} no histórico completo.
                             </div>
                           ) : null}

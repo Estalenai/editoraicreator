@@ -147,10 +147,12 @@ export function AppTopNav() {
     [navItems, pathname]
   );
 
-  function renderNavItem(item: NavItem, options?: { minimal?: boolean }) {
+  function renderNavItem(item: NavItem, options?: { minimal?: boolean; dashboardSurface?: boolean }) {
     const active = matchesNavPath(pathname, item);
     const minimal = Boolean(options?.minimal);
-    const className = `app-nav-link layout-contract-item layout-contract-rail-link app-nav-link-${item.group}${minimal ? " app-nav-link-minimal" : ""}${active ? " app-nav-link-active" : ""}`;
+    const dashboardSurface = Boolean(options?.dashboardSurface);
+    const structuralClasses = dashboardSurface ? "" : " layout-contract-item layout-contract-rail-link";
+    const className = `app-nav-link${structuralClasses} app-nav-link-${item.group}${minimal ? " app-nav-link-minimal" : ""}${active ? " app-nav-link-active" : ""}`;
     const content = minimal ? (
       <span className="app-nav-link-label">{item.label}</span>
     ) : (
@@ -190,9 +192,11 @@ export function AppTopNav() {
     );
   }
 
-  function renderCompactNavItem(item: NavItem) {
+  function renderCompactNavItem(item: NavItem, options?: { dashboardSurface?: boolean }) {
     const active = matchesNavPath(pathname, item);
-    const className = `app-nav-link app-nav-compact-link layout-contract-item layout-contract-rail-link app-nav-link-${item.group}${active ? " app-nav-link-active" : ""}`;
+    const dashboardSurface = Boolean(options?.dashboardSurface);
+    const structuralClasses = dashboardSurface ? "" : " layout-contract-item layout-contract-rail-link";
+    const className = `app-nav-link app-nav-compact-link${structuralClasses} app-nav-link-${item.group}${active ? " app-nav-link-active" : ""}`;
 
     if (item.href.startsWith("/editor")) {
       return (
@@ -228,16 +232,16 @@ export function AppTopNav() {
 
   if (dashboardShellMode) {
     return (
-      <nav className="app-top-nav app-nav-dashboard-mode app-nav-dashboard-field" aria-label="Navegação principal">
+      <nav className="app-top-nav app-nav-dashboard-mode" aria-label="Navegação principal">
         <div className="app-nav-dashboard-field-line">
           <span className="app-nav-dashboard-eyebrow">Campo principal</span>
           <div className="app-nav-links app-nav-dashboard-links app-nav-links-core">
-            {dashboardPrimaryItems.map(renderCompactNavItem)}
+            {dashboardPrimaryItems.map((item) => renderCompactNavItem(item, { dashboardSurface: true }))}
           </div>
         </div>
         {dashboardUtilityItem ? (
           <div className="app-nav-dashboard-utility">
-            {renderCompactNavItem(dashboardUtilityItem)}
+            {renderCompactNavItem(dashboardUtilityItem, { dashboardSurface: true })}
           </div>
         ) : null}
       </nav>
@@ -258,7 +262,7 @@ export function AppTopNav() {
         </div>
       </div>
       <div className="app-nav-compact-strip" aria-label="Atalhos do workspace">
-        {compactNavItems.map(renderCompactNavItem)}
+        {compactNavItems.map((item) => renderCompactNavItem(item))}
       </div>
       {overviewItems.length > 0 ? (
         <div className="app-nav-overview">{overviewItems.map((item) => renderNavItem(item))}</div>
