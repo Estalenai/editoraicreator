@@ -21157,18 +21157,18 @@ body {
 
 .dashboard-surface-flow {
   display: grid;
-  gap: clamp(16px, 1.8vw, 28px);
+  gap: clamp(12px, 1.3vw, 20px);
 }
 
 .dashboard-surface-flow > * + * {
-  padding-top: clamp(14px, 1.5vw, 22px);
-  border-top: 1px solid rgba(191, 239, 255, 0.018);
+  padding-top: clamp(8px, 0.9vw, 14px);
+  border-top: 1px solid rgba(191, 239, 255, 0.01);
 }
 
 .dashboard-surface-field {
   display: grid;
   min-width: 0;
-  gap: clamp(14px, 1.5vw, 22px);
+  gap: clamp(10px, 1.1vw, 16px);
 }
 
 .dashboard-surface-field-primary {
@@ -21195,7 +21195,7 @@ body {
 .dashboard-surface-field-mainline,
 .dashboard-surface-field-tail {
   grid-template-columns: minmax(0, 1.16fr) minmax(280px, 0.84fr);
-  gap: clamp(20px, 2vw, 32px);
+  gap: clamp(16px, 1.5vw, 24px);
   align-items: start;
 }
 
@@ -21400,9 +21400,9 @@ body {
 }
 
 .dashboard-surface-focus {
-  gap: clamp(14px, 1.4vw, 20px);
-  padding-top: clamp(10px, 1vw, 16px);
-  border-top: 1px solid rgba(191, 239, 255, 0.03);
+  gap: clamp(10px, 1vw, 16px);
+  padding-top: clamp(6px, 0.7vw, 10px);
+  border-top: 1px solid rgba(191, 239, 255, 0.018);
 }
 
 .dashboard-surface-focus-grid {
@@ -21466,8 +21466,8 @@ body {
 
 .dashboard-surface-ribbon {
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px clamp(14px, 1.2vw, 18px);
-  padding-top: 2px;
+  gap: 8px clamp(12px, 1vw, 16px);
+  padding-top: 0;
   border-top: 0;
 }
 
@@ -21631,12 +21631,12 @@ body {
 
 .dashboard-surface-ops-cluster {
   display: grid;
-  gap: 10px;
+  gap: 8px;
 }
 
 .dashboard-surface-field-mainline .dashboard-surface-ops-band {
   grid-template-columns: minmax(0, 1fr);
-  gap: 12px;
+  gap: 10px;
   align-items: start;
 }
 
@@ -21649,7 +21649,7 @@ body {
 
 .dashboard-surface-field-mainline .dashboard-surface-ops-grid {
   grid-template-columns: minmax(0, 1fr);
-  gap: 14px;
+  gap: 10px;
 }
 
 .dashboard-surface-field-mainline .dashboard-surface-command-list {
@@ -21665,14 +21665,14 @@ body {
 
 .dashboard-surface-usage {
   gap: 0;
-  padding-top: clamp(10px, 1vw, 16px) !important;
-  border-top: 1px solid rgba(191, 239, 255, 0.025) !important;
+  padding-top: clamp(4px, 0.4vw, 8px) !important;
+  border-top: 1px solid rgba(191, 239, 255, 0.012) !important;
 }
 
 .dashboard-surface-usage-grid {
   display: grid;
   grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-  gap: clamp(18px, 1.9vw, 28px);
+  gap: clamp(14px, 1.4vw, 22px);
   align-items: start;
 }
 
@@ -21815,10 +21815,10 @@ body {
 
 .dashboard-surface-onboarding {
   gap: clamp(8px, 0.9vw, 14px);
-  padding: clamp(10px, 1.1vw, 16px) 0 0;
+  padding: clamp(4px, 0.4vw, 8px) 0 0;
   background: transparent !important;
   border: 0 !important;
-  border-top: 1px solid rgba(191, 239, 255, 0.025) !important;
+  border-top: 1px solid rgba(191, 239, 255, 0.012) !important;
   box-shadow: none !important;
 }
 
@@ -21858,7 +21858,7 @@ body {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: start;
-  gap: clamp(10px, 1vw, 16px);
+  gap: clamp(8px, 0.8vw, 12px);
 }
 
 .dashboard-surface-onboarding-signals {
@@ -21925,10 +21925,20 @@ body {
 
 .dashboard-surface-onboarding-summary {
   grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr) auto;
-  gap: clamp(10px, 1.1vw, 16px);
+  gap: clamp(8px, 0.8vw, 12px);
   align-items: start;
-  padding-top: clamp(10px, 1vw, 14px);
-  border-top: 1px solid rgba(191, 239, 255, 0.03);
+  padding-top: clamp(8px, 0.8vw, 10px);
+  border-top: 1px solid rgba(191, 239, 255, 0.02);
+}
+
+.dashboard-surface-core-note .dashboard-stage-stat-label,
+.dashboard-surface-field-note-ops .dashboard-stage-stat-label,
+.dashboard-surface-usage-hero-main .dashboard-stage-stat-label,
+.dashboard-surface-onboarding-head .dashboard-stage-stat-label,
+.dashboard-surface-onboarding-paths > .dashboard-surface-head-note .dashboard-stage-stat-label,
+.dashboard-surface-ops-cluster-head .dashboard-stage-stat-label,
+.dashboard-surface-command-head .dashboard-stage-stat-label {
+  display: none;
 }
 
 .dashboard-surface-onboarding-summary-note {

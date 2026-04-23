@@ -113,7 +113,6 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
     >
       <div className="dashboard-surface-onboarding-head">
         <div className="dashboard-surface-field-note-copy">
-          <span className="dashboard-stage-stat-label">Continuidade</span>
           <strong>Próxima entrada</strong>
           <span>Escolha a entrada e mantenha o ciclo no mesmo plano.</span>
         </div>
@@ -164,7 +163,6 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
 
         <div className="dashboard-surface-onboarding-paths">
           <div className="dashboard-surface-head-note">
-            <span className="dashboard-stage-stat-label">Entradas</span>
             <strong>Nucleo e apoio</strong>
             <span>Nucleo primeiro; Ads como apoio.</span>
           </div>

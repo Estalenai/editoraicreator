@@ -749,7 +749,6 @@ export default function DashboardPage() {
                 <section className="dashboard-surface-field dashboard-surface-field-mainline">
                   <section className="dashboard-surface-core" data-reveal data-reveal-delay="205">
                     <div className="dashboard-surface-head-note dashboard-surface-core-note">
-                      <span className="dashboard-stage-stat-label">Centro da experiencia</span>
                       <strong>Creators, editor e saida seguem a mesma trilha principal.</strong>
                       <span>Entradas, revisao e continuidade aparecem no mesmo plano, sem anunciar uma nova banda.</span>
                     </div>
@@ -794,7 +793,6 @@ export default function DashboardPage() {
                   <section className="dashboard-surface-ops dashboard-surface-ops-band" data-reveal data-reveal-delay="165">
                     <div className="dashboard-surface-field-note dashboard-surface-field-note-ops">
                       <div className="dashboard-surface-field-note-copy">
-                        <span className="dashboard-stage-stat-label">Operacao em apoio</span>
                         <strong>Conta, saldo e suporte continuam dentro do mesmo workspace.</strong>
                         <span>Leitura financeira, plano e guia entram quietos, sem abrir um capitulo lateral.</span>
                       </div>
@@ -826,15 +824,9 @@ export default function DashboardPage() {
                     </div>
                   </div>
 
-                    <div className="dashboard-surface-command-head">
-                      <span className="dashboard-stage-stat-label">Comandos de apoio</span>
-                      <strong>Plano, suporte e guia aparecem como extensao do workspace.</strong>
-                    </div>
-
                   <div className="dashboard-surface-ops-grid">
                     <div className="dashboard-surface-ops-cluster">
                       <div className="dashboard-surface-ops-cluster-head">
-                        <span className="dashboard-stage-stat-label">Camada principal</span>
                         <strong>Planos e suporte</strong>
                       </div>
                       <div className="dashboard-surface-command-list">
@@ -859,7 +851,6 @@ export default function DashboardPage() {
 
                     <div className="dashboard-surface-ops-cluster">
                       <div className="dashboard-surface-ops-cluster-head">
-                        <span className="dashboard-stage-stat-label">Apoio contínuo</span>
                         <strong>Financeiro e guia</strong>
                       </div>
                       <div className="dashboard-surface-command-list">
