@@ -26,29 +26,29 @@ function walletSummary(wallet: any | null, loading = false): string {
 const OBJECTIVE_PATHS = [
   {
     key: "post",
-    title: "Publicação rápida",
-    description: "Entrada direta para seguir ao editor.",
+    title: "Post",
+    description: "Publicação direta.",
     href: "/creators?tab=post",
     cta: "Abrir Creator Post",
   },
   {
     key: "scripts",
-    title: "Roteiro e narrativa",
-    description: "Narrativa pronta para revisar.",
+    title: "Scripts",
+    description: "Narrativa revisável.",
     href: "/creators?tab=scripts",
     cta: "Abrir Creator Scripts",
   },
   {
     key: "clips",
-    title: "Saída visual premium",
-    description: "Fluxo visual com status claro.",
+    title: "Clips",
+    description: "Saída visual.",
     href: "/creators?tab=clips",
     cta: "Abrir Creator Clips",
   },
   {
     key: "supporting",
-    title: "Campanha complementar",
-    description: "Apoio quando a campanha pedir.",
+    title: "Ads",
+    description: "Apoio complementar.",
     href: "/creators?tab=ads",
     cta: "Abrir Creator Ads",
   },
@@ -58,12 +58,12 @@ const ONBOARDING_SIGNAL_ITEMS = [
   {
     label: "Fluxo base",
     title: "Creator -> Projeto -> Editor",
-    description: "Entrada, continuidade e edição no mesmo eixo.",
+    description: "Entrada e edição no mesmo eixo.",
   },
   {
     label: "Confidencialidade",
     title: "Conta isolada",
-    description: "Dados fora de treino.",
+    description: "Fora de treino.",
   },
 ];
 
@@ -113,10 +113,10 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
     >
       <div className="dashboard-onboarding-band-head dashboard-surface-onboarding-head">
         <div className="section-stack">
-          <p className="section-kicker">Fechamento</p>
-          <h3 style={{ margin: 0 }}>Próximo movimento</h3>
+          <p className="section-kicker">Continuidade</p>
+          <h3 style={{ margin: 0 }}>Próxima entrada</h3>
           <p className="meta-text-ea">
-            Escolha a entrada e mantenha o ciclo no mesmo eixo.
+            Escolha a entrada e mantenha o ciclo.
           </p>
         </div>
         <button onClick={dismiss} className="btn-ea btn-ghost btn-sm">
@@ -135,7 +135,7 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
         <div className="dashboard-surface-onboarding-signal dashboard-surface-onboarding-signal-wallet">
           <span className="dashboard-stage-stat-label">{CREATOR_COINS_PUBLIC_NAME}</span>
           <strong>{summary}</strong>
-          <span>Estimativa antes, histórico depois.</span>
+          <span>Estimativa antes; histórico depois.</span>
         </div>
       </div>
 
@@ -144,32 +144,32 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
           <li className="dashboard-onboarding-step-row dashboard-surface-onboarding-step" data-reveal data-reveal-delay="120">
             <span className="dashboard-surface-onboarding-step-index">01</span>
             <div className="dashboard-surface-onboarding-step-copy">
-              <strong>Escolha um Creator</strong>
+              <strong>Escolha</strong>
               <span>Post, Scripts ou Clips.</span>
             </div>
           </li>
           <li className="dashboard-onboarding-step-row dashboard-surface-onboarding-step" data-reveal data-reveal-delay="160">
             <span className="dashboard-surface-onboarding-step-index">02</span>
             <div className="dashboard-surface-onboarding-step-copy">
-              <strong>Revise a estimativa</strong>
-              <span>Consumo previsto antes da geração.</span>
+              <strong>Revise</strong>
+              <span>Consumo previsto.</span>
             </div>
           </li>
           <li className="dashboard-onboarding-step-row dashboard-surface-onboarding-step" data-reveal data-reveal-delay="200">
             <span className="dashboard-surface-onboarding-step-index">03</span>
             <div className="dashboard-surface-onboarding-step-copy">
-              <strong>Salve, edite e exporte</strong>
-              <span>Projeto guarda; editor finaliza.</span>
+              <strong>Finalize</strong>
+              <span>Projeto e editor.</span>
             </div>
           </li>
         </ol>
 
         <div className="dashboard-onboarding-path-list dashboard-surface-onboarding-paths">
           <div className="section-stack">
-            <p className="section-kicker">Rotas iniciais recomendadas</p>
-            <h4 style={{ margin: 0 }}>Entrada principal e apoio</h4>
+            <p className="section-kicker">Entradas</p>
+            <h4 style={{ margin: 0 }}>Núcleo e apoio</h4>
             <p className="helper-text-ea">
-              Comece pelo núcleo e use Ads só como complemento.
+              Núcleo primeiro; Ads como apoio.
             </p>
           </div>
 
@@ -183,7 +183,7 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
               data-reveal-delay={String(80 + index * 55)}
             >
               <div className="dashboard-onboarding-path-main">
-                <span className="dashboard-stage-stat-label">{index === OBJECTIVE_PATHS.length - 1 ? "Apoio complementar" : "Rota principal"}</span>
+                <span className="dashboard-stage-stat-label">{index === OBJECTIVE_PATHS.length - 1 ? "Apoio" : "Principal"}</span>
                 <strong>{item.title}</strong>
                 <span className="helper-text-ea">{item.description}</span>
               </div>
@@ -195,8 +195,8 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
 
       <div className="dashboard-onboarding-summary dashboard-surface-onboarding-summary">
         <div className="dashboard-onboarding-summary-copy dashboard-surface-onboarding-summary-copy">
-          <strong>{CREATOR_COINS_PUBLIC_NAME} no fluxo atual</strong>
-          <div className="helper-text-ea">Saldo atual: {summary}. Estimativa antes; débito no histórico.</div>
+          <strong>{CREATOR_COINS_PUBLIC_NAME}</strong>
+          <div className="helper-text-ea">{summary}. Estimativa antes; histórico depois.</div>
         </div>
         <div className="dashboard-surface-onboarding-summary-note">
           <span>{coinTypeLabel("common")}: rotina</span>

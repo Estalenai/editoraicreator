@@ -368,11 +368,11 @@ export default function DashboardPage() {
   const usageRemainingCount = Math.max(0, usageItems.length - usagePreviewItems.length);
   const hasConfirmedUsage = totalUsage > 0;
   const usageLeadInsight =
-  loading || usageLoading
-      ? "Sincronizando a leitura do ciclo."
+    loading || usageLoading
+      ? "Sincronizando ciclo."
       : hasConfirmedUsage && usageDisplayItems[0]
-        ? `${usageDisplayItems[0].displayLabel} lidera o ciclo confirmado.`
-        : `A primeira entrega fecha esta leitura em ${CREATOR_COINS_PUBLIC_NAME}.`;
+        ? `${usageDisplayItems[0].displayLabel} lidera.`
+        : `Primeira entrega fecha em ${CREATOR_COINS_PUBLIC_NAME}.`;
   const nextAction = recentProjects.length > 0
       ? {
         title: "Retomar projeto",
@@ -390,13 +390,13 @@ export default function DashboardPage() {
     () => [
       {
         label: "Histórico",
-        value: loading || usageLoading ? "Sincronizando" : hasConfirmedUsage ? "Reconciliado" : "Em observação",
+        value: loading || usageLoading ? "Sincronizando" : hasConfirmedUsage ? "Reconciliado" : "Aberto",
         note:
           loading || usageLoading
             ? "Atualizando ciclo."
             : hasConfirmedUsage
-              ? `${usageItems.length} feature(s) confirmadas.`
-              : "Aguardando primeira saída.",
+              ? `${usageItems.length} feature(s).`
+              : "Primeira saída.",
       },
       {
         label: "Ritmo",
@@ -410,8 +410,8 @@ export default function DashboardPage() {
           loading || usageLoading
             ? "Lendo atividade."
             : hasConfirmedUsage && usageDisplayItems[0]
-              ? `${usageDisplayItems[0].used}/${usageDisplayItems[0].limit} no período.`
-              : "Primeira entrega em aberto.",
+              ? `${usageDisplayItems[0].used}/${usageDisplayItems[0].limit}.`
+              : "Entrega em aberto.",
       },
       {
         label: "Próximo passo",
@@ -435,9 +435,9 @@ export default function DashboardPage() {
   const usageEmptyState = !hasConfirmedUsage
     ? {
         kicker: "Histórico em aberto",
-        title: "Primeira entrega fecha a leitura.",
+        title: "Primeira entrega fecha.",
         description:
-          "Creator, editor e saída ocupam o mesmo ciclo antes do histórico reconciliar.",
+          "Creator, editor e saída no mesmo ciclo.",
         primaryHref: "/creators",
         primaryLabel: "Abrir Creators",
         secondaryHref: "/credits#credits-history",
@@ -918,7 +918,7 @@ export default function DashboardPage() {
                       <div className="section-head dashboard-section-head-flat">
                         <div className="section-header-ea">
                           <p className="section-kicker">Uso recente</p>
-                          <h3 className="heading-reset">Uso confirmado</h3>
+                          <h3 className="heading-reset">Leitura do ciclo</h3>
                           <p className="helper-text-ea">{recentUsageText}</p>
                         </div>
                         <Link href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
