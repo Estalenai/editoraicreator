@@ -502,59 +502,162 @@ export default function DashboardPage() {
               <div className="dashboard-surface-flow">
                 <section className="dashboard-surface-field dashboard-surface-field-primary">
                   <header className="dashboard-surface-hero" data-reveal data-reveal-delay="35">
-                <div className="dashboard-surface-command" data-reveal data-reveal-delay="70">
-                  <div className="dashboard-surface-command-copy">
-                    <div className="dashboard-surface-hero-intro">
-                      <div className="hero-title-stack">
-                        <p className="section-kicker">Painel executivo</p>
-                        <h1 className="heading-reset">Dashboard</h1>
-                        <p className="section-header-copy hero-copy-compact">
-                          Criacao, revisao, continuidade e operacao entram no mesmo palco, sem cair em painel
-                          administrativo.
+                    <div className="dashboard-surface-command" data-reveal data-reveal-delay="70">
+                      <div className="dashboard-surface-command-copy">
+                        <div className="dashboard-surface-hero-intro">
+                          <div className="hero-title-stack">
+                            <p className="section-kicker">Painel executivo</p>
+                            <h1 className="heading-reset">Dashboard</h1>
+                            <p className="section-header-copy hero-copy-compact">
+                              Criacao, revisao, continuidade e operacao entram no mesmo palco, sem cair em painel
+                              administrativo.
+                            </p>
+                          </div>
+                          <div className="hero-meta-row dashboard-surface-hero-badges">
+                            <span className="premium-badge premium-badge-phase">Plano: {planLabelDisplay}</span>
+                            <span className="premium-badge premium-badge-warning">
+                              {loading ? "Conta em sincronizacao" : "Historico confirmado no backend"}
+                            </span>
+                          </div>
+                        </div>
+                        <span className="dashboard-hero-flow-label">Linha criativa</span>
+                        <strong>Creator, editor e saida conduzem o mesmo eixo principal do produto.</strong>
+                        <p>
+                          A leitura principal precisa nascer unificada e continuar viva no mesmo campo, sem anunciar
+                          uma troca de painel a cada passo.
                         </p>
                       </div>
-                      <div className="hero-meta-row dashboard-surface-hero-badges">
-                        <span className="premium-badge premium-badge-phase">Plano: {planLabelDisplay}</span>
-                        <span className="premium-badge premium-badge-warning">
-                          {loading ? "Conta em sincronizacao" : "Historico confirmado no backend"}
-                        </span>
-                      </div>
-                    </div>
-                    <span className="dashboard-hero-flow-label">Linha criativa</span>
-                    <strong>Creator, editor e saida conduzem o mesmo eixo principal do produto.</strong>
-                    <p>
-                      A leitura principal precisa nascer unificada e continuar viva no mesmo campo, sem anunciar
-                      uma troca de painel a cada passo.
-                    </p>
-                  </div>
 
-                  <div className="dashboard-surface-command-sequence">
-                    <div className="dashboard-surface-command-step">
-                      <span className="dashboard-surface-step-index">01</span>
-                      <div className="dashboard-surface-command-step-copy">
-                        <span className="dashboard-hero-flow-label">Creators</span>
-                        <strong>gera a base</strong>
-                        <span>Abra Post, Scripts ou Clips com contexto pronto.</span>
+                      <div className="dashboard-surface-command-sequence">
+                        <div className="dashboard-surface-command-step">
+                          <span className="dashboard-surface-step-index">01</span>
+                          <div className="dashboard-surface-command-step-copy">
+                            <span className="dashboard-hero-flow-label">Creators</span>
+                            <strong>gera a base</strong>
+                            <span>Abra Post, Scripts ou Clips com contexto pronto.</span>
+                          </div>
+                        </div>
+                        <div className="dashboard-surface-command-step">
+                          <span className="dashboard-surface-step-index">02</span>
+                          <div className="dashboard-surface-command-step-copy">
+                            <span className="dashboard-hero-flow-label">Editor</span>
+                            <strong>lapida o material</strong>
+                            <span>Revise, consolide e preserve a continuidade.</span>
+                          </div>
+                        </div>
+                        <div className="dashboard-surface-command-step">
+                          <span className="dashboard-surface-step-index">03</span>
+                          <div className="dashboard-surface-command-step-copy">
+                            <span className="dashboard-hero-flow-label">Projetos + saida</span>
+                            <strong>fecha o ciclo</strong>
+                            <span>O que foi salvo e entregue continua no mesmo eixo.</span>
+                          </div>
+                        </div>
                       </div>
+
+                      <section className="dashboard-surface-focus" data-reveal data-reveal-delay="140">
+                        <div className="dashboard-surface-focus-grid">
+                          <div className="dashboard-surface-focus-lead-wrap">
+                            {loading ? (
+                              <div className="dashboard-surface-focus-lead dashboard-surface-focus-skeleton">
+                                <div className="premium-skeleton premium-skeleton-line" style={{ width: "24%" }} />
+                                <div className="premium-skeleton premium-skeleton-line" style={{ width: "62%", marginTop: 18 }} />
+                                <div className="premium-skeleton premium-skeleton-line" style={{ width: "48%", marginTop: 16 }} />
+                              </div>
+                            ) : featuredProjectDisplay ? (
+                              <EditorRouteLink href={`/editor/${featuredProjectDisplay.id}`} className="dashboard-surface-focus-lead">
+                                <div className="dashboard-stage-lead-topline">
+                                  <span className="dashboard-stage-lead-kicker">Continuidade viva</span>
+                                  <span className="dashboard-stage-lead-pill">{featuredProjectDisplay.stageLabel}</span>
+                                </div>
+                                <strong className="dashboard-stage-lead-title">{featuredProjectDisplay.displayTitle}</strong>
+                                <p className="dashboard-stage-lead-copy">{featuredProjectDisplay.narrative}</p>
+                                <div className="dashboard-stage-lead-meta">
+                                  <span>{featuredProjectDisplay.deliverableLabel}</span>
+                                  <span>{featuredProjectDisplay.statusLabel}</span>
+                                  {featuredProjectDisplay.reviewLabel ? <span>{featuredProjectDisplay.reviewLabel}</span> : null}
+                                </div>
+                                <div className="dashboard-stage-lead-footer">
+                                  <span className="dashboard-stage-lead-note">{featuredProjectDisplay.kindLabel}</span>
+                                  <span className="dashboard-stage-lead-action">Abrir projeto</span>
+                                </div>
+                              </EditorRouteLink>
+                            ) : (
+                              <div className="dashboard-surface-focus-lead dashboard-surface-focus-empty">
+                                <span className="dashboard-stage-lead-kicker">Continuidade viva</span>
+                                <strong>A trilha fica premium quando um Creator vira projeto de verdade.</strong>
+                                <p>
+                                  Abra Creators, salve a primeira saída e use Projetos para continuar no editor
+                                  sem recomeçar o fluxo.
+                                </p>
+                                <div className="dashboard-surface-focus-empty-actions">
+                                  <Link href="/creators" className="btn-link-ea btn-primary btn-sm">
+                                    Ir para Creators
+                                  </Link>
+                                  <EditorRouteLink href="/editor/new" className="btn-link-ea btn-ghost btn-sm">
+                                    Criar projeto manual
+                                  </EditorRouteLink>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="dashboard-surface-focus-side">
+                            <div className="dashboard-surface-stat">
+                              <span className="dashboard-stage-stat-label">Projeto em foco</span>
+                              <strong>{focusContinuationLabel}</strong>
+                              <span>{focusContinuationDetail}</span>
+                            </div>
+                            <div className="dashboard-surface-stat">
+                              <span className="dashboard-stage-stat-label">Ritmo atual</span>
+                              <strong>{continuityValue}</strong>
+                              <span>{continuityDetail}</span>
+                            </div>
+                            <div className="dashboard-surface-stat dashboard-surface-stat-action">
+                              <span className="dashboard-stage-stat-label">Proximo movimento</span>
+                              <strong>{nextActionTitleDisplay}</strong>
+                              <span>{nextActionDescriptionDisplay}</span>
+                              {nextAction.href.startsWith("/editor") ? (
+                                <EditorRouteLink href={nextAction.href} className="dashboard-inline-action">
+                                  {nextActionCtaDisplay}
+                                </EditorRouteLink>
+                              ) : (
+                                <Link href={nextAction.href} className="dashboard-inline-action">
+                                  {nextActionCtaDisplay}
+                                </Link>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+
+                        {loading ? (
+                          <div className="dashboard-surface-ribbon">
+                            {Array.from({ length: 3 }).map((_, index) => (
+                              <div key={`project-skeleton-${index}`} className="dashboard-project-skeleton-row" />
+                            ))}
+                          </div>
+                        ) : supportingProjectDisplay.length > 0 ? (
+                          <div className="dashboard-surface-ribbon">
+                            {supportingProjectDisplay.map((project: any, index: number) => (
+                              <EditorRouteLink
+                                key={String(project.id || project.project_id || index)}
+                                href={`/editor/${project.id}`}
+                                className="dashboard-surface-ribbon-link"
+                                data-reveal
+                                data-reveal-delay={String(80 + index * 35)}
+                              >
+                                <div className="dashboard-surface-ribbon-copy">
+                                  <span className="dashboard-stream-link-kicker">{project.deliverableLabel}</span>
+                                  <strong className="dashboard-stream-link-title">{project.displayTitle}</strong>
+                                  <span className="dashboard-stream-link-copy">{project.statusLabel}</span>
+                                </div>
+                                <span className="dashboard-stream-link-cta">{project.stageLabel}</span>
+                              </EditorRouteLink>
+                            ))}
+                          </div>
+                        ) : null}
+                      </section>
                     </div>
-                    <div className="dashboard-surface-command-step">
-                      <span className="dashboard-surface-step-index">02</span>
-                      <div className="dashboard-surface-command-step-copy">
-                        <span className="dashboard-hero-flow-label">Editor</span>
-                        <strong>lapida o material</strong>
-                        <span>Revise, consolide e preserve a continuidade.</span>
-                      </div>
-                    </div>
-                    <div className="dashboard-surface-command-step">
-                      <span className="dashboard-surface-step-index">03</span>
-                      <div className="dashboard-surface-command-step-copy">
-                        <span className="dashboard-hero-flow-label">Projetos + saida</span>
-                        <strong>fecha o ciclo</strong>
-                        <span>O que foi salvo e entregue continua no mesmo eixo.</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
                   </header>
 
                   <section className="dashboard-surface-context dashboard-surface-context-band" data-reveal data-reveal-delay="90">
@@ -641,135 +744,14 @@ export default function DashboardPage() {
                     </div>
                   ) : null}
 
-                  <section className="dashboard-surface-focus" data-reveal data-reveal-delay="140">
-                    <div className="dashboard-surface-field-note">
-                      <div className="dashboard-surface-field-note-copy">
-                        <span className="dashboard-stage-stat-label">Continuidade viva</span>
-                        <strong>Projeto em foco</strong>
-                        <span>O que esta vivo agora precisa puxar o resto da tela.</span>
-                      </div>
-                      <Link href="/projects" className="btn-link-ea btn-ghost btn-sm">
-                        Abrir projetos
-                      </Link>
-                    </div>
-
-                  <div className="dashboard-surface-focus-grid">
-                    <div className="dashboard-surface-focus-lead-wrap">
-                      {loading ? (
-                        <div className="dashboard-surface-focus-lead dashboard-surface-focus-skeleton">
-                          <div className="premium-skeleton premium-skeleton-line" style={{ width: "24%" }} />
-                          <div className="premium-skeleton premium-skeleton-line" style={{ width: "62%", marginTop: 18 }} />
-                          <div className="premium-skeleton premium-skeleton-line" style={{ width: "48%", marginTop: 16 }} />
-                        </div>
-                      ) : featuredProjectDisplay ? (
-                        <EditorRouteLink href={`/editor/${featuredProjectDisplay.id}`} className="dashboard-surface-focus-lead">
-                          <div className="dashboard-stage-lead-topline">
-                            <span className="dashboard-stage-lead-kicker">Projeto em foco</span>
-                            <span className="dashboard-stage-lead-pill">{featuredProjectDisplay.stageLabel}</span>
-                          </div>
-                          <strong className="dashboard-stage-lead-title">{featuredProjectDisplay.displayTitle}</strong>
-                          <p className="dashboard-stage-lead-copy">{featuredProjectDisplay.narrative}</p>
-                          <div className="dashboard-stage-lead-meta">
-                            <span>{featuredProjectDisplay.deliverableLabel}</span>
-                            <span>{featuredProjectDisplay.statusLabel}</span>
-                            {featuredProjectDisplay.reviewLabel ? <span>{featuredProjectDisplay.reviewLabel}</span> : null}
-                          </div>
-                          <div className="dashboard-stage-lead-footer">
-                            <span className="dashboard-stage-lead-note">{featuredProjectDisplay.kindLabel}</span>
-                            <span className="dashboard-stage-lead-action">Abrir projeto</span>
-                          </div>
-                        </EditorRouteLink>
-                      ) : (
-                        <div className="dashboard-surface-focus-lead dashboard-surface-focus-empty">
-                          <span className="dashboard-stage-lead-kicker">Projeto em foco</span>
-                          <strong>A trilha fica premium quando um Creator vira projeto de verdade.</strong>
-                          <p>
-                            Abra Creators, salve a primeira saída e use Projetos para continuar no editor
-                            sem recomeçar o fluxo.
-                          </p>
-                          <div className="dashboard-surface-focus-empty-actions">
-                            <Link href="/creators" className="btn-link-ea btn-primary btn-sm">
-                              Ir para Creators
-                            </Link>
-                            <EditorRouteLink href="/editor/new" className="btn-link-ea btn-ghost btn-sm">
-                              Criar projeto manual
-                            </EditorRouteLink>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="dashboard-surface-focus-side">
-                      <div className="dashboard-surface-stat">
-                        <span className="dashboard-stage-stat-label">Continuidade ativa</span>
-                        <strong>{focusContinuationLabel}</strong>
-                        <span>{focusContinuationDetail}</span>
-                      </div>
-                      <div className="dashboard-surface-stat">
-                        <span className="dashboard-stage-stat-label">Ritmo atual</span>
-                        <strong>{continuityValue}</strong>
-                        <span>{continuityDetail}</span>
-                      </div>
-                      <div className="dashboard-surface-stat dashboard-surface-stat-action">
-                        <span className="dashboard-stage-stat-label">Próximo movimento</span>
-                        <strong>{nextActionTitleDisplay}</strong>
-                        <span>{nextActionDescriptionDisplay}</span>
-                        {nextAction.href.startsWith("/editor") ? (
-                          <EditorRouteLink href={nextAction.href} className="dashboard-inline-action">
-                            {nextActionCtaDisplay}
-                          </EditorRouteLink>
-                        ) : (
-                          <Link href={nextAction.href} className="dashboard-inline-action">
-                            {nextActionCtaDisplay}
-                          </Link>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  {loading ? (
-                    <div className="dashboard-surface-ribbon">
-                      {Array.from({ length: 3 }).map((_, index) => (
-                        <div key={`project-skeleton-${index}`} className="dashboard-project-skeleton-row" />
-                      ))}
-                    </div>
-                  ) : supportingProjectDisplay.length > 0 ? (
-                    <div className="dashboard-surface-ribbon">
-                      {supportingProjectDisplay.map((project: any, index: number) => (
-                        <EditorRouteLink
-                          key={String(project.id || project.project_id || index)}
-                          href={`/editor/${project.id}`}
-                          className="dashboard-surface-ribbon-link"
-                          data-reveal
-                          data-reveal-delay={String(80 + index * 35)}
-                        >
-                          <div className="dashboard-surface-ribbon-copy">
-                            <span className="dashboard-stream-link-kicker">{project.deliverableLabel}</span>
-                            <strong className="dashboard-stream-link-title">{project.displayTitle}</strong>
-                            <span className="dashboard-stream-link-copy">{project.statusLabel}</span>
-                          </div>
-                          <span className="dashboard-stream-link-cta">{project.stageLabel}</span>
-                        </EditorRouteLink>
-                      ))}
-                    </div>
-                  ) : null}
-                  </section>
                 </section>
 
                 <section className="dashboard-surface-field dashboard-surface-field-mainline">
-                  <div className="dashboard-surface-field-note dashboard-surface-field-note-wide">
-                    <div className="dashboard-surface-field-note-copy">
-                      <span className="dashboard-stage-stat-label">Fluxo principal</span>
-                      <strong>Criacao, revisao, conta e suporte seguem dentro do mesmo plano.</strong>
-                      <span>O campo principal continua largo; o apoio entra quieto, sem virar lateral.</span>
-                    </div>
-                  </div>
-
                   <section className="dashboard-surface-core" data-reveal data-reveal-delay="205">
                     <div className="dashboard-surface-head-note dashboard-surface-core-note">
                       <span className="dashboard-stage-stat-label">Centro da experiencia</span>
                       <strong>Creators, editor e saida seguem a mesma trilha principal.</strong>
-                      <span>Entradas, revisao e continuidade aparecem como uma faixa unica, sem grade utilitaria.</span>
+                      <span>Entradas, revisao e continuidade aparecem no mesmo plano, sem anunciar uma nova banda.</span>
                     </div>
 
                   <div className="dashboard-surface-core-grid">
@@ -814,7 +796,7 @@ export default function DashboardPage() {
                       <div className="dashboard-surface-field-note-copy">
                         <span className="dashboard-stage-stat-label">Operacao em apoio</span>
                         <strong>Conta, saldo e suporte continuam dentro do mesmo workspace.</strong>
-                        <span>Plano, leitura financeira e guia entram como apoio embutido, nao como rail.</span>
+                        <span>Leitura financeira, plano e guia entram quietos, sem abrir um capitulo lateral.</span>
                       </div>
                       <Link href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
                         Ver historico completo
@@ -908,19 +890,9 @@ export default function DashboardPage() {
                   <section className="dashboard-surface-usage">
                     <div className="dashboard-surface-usage-grid">
                       <div className="dashboard-surface-usage-copy">
-                        <div className="dashboard-surface-field-note dashboard-surface-field-note-tail">
-                          <div className="dashboard-surface-field-note-copy">
-                            <span className="dashboard-stage-stat-label">Uso recente</span>
-                            <strong>Leitura do ciclo</strong>
-                            <span>{recentUsageText}</span>
-                          </div>
-                          <Link href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
-                            Ver historico
-                          </Link>
-                        </div>
                       <div className="dashboard-surface-usage-hero dashboard-surface-usage-strip">
                         <div className="dashboard-surface-usage-hero-main">
-                          <span className="dashboard-stage-stat-label">Confirmado</span>
+                          <span className="dashboard-stage-stat-label">Leitura do ciclo</span>
                           <strong>{totalUsageDisplay}</strong>
                         </div>
                         <p>{usageLeadInsight}</p>

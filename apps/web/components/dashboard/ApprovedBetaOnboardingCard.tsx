@@ -112,12 +112,10 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
       data-reveal-delay="90"
     >
       <div className="dashboard-surface-onboarding-head">
-        <div className="section-stack">
-          <p className="section-kicker">Continuidade</p>
-          <h3 style={{ margin: 0 }}>Próxima entrada</h3>
-          <p className="meta-text-ea">
-            Escolha a entrada e mantenha o ciclo.
-          </p>
+        <div className="dashboard-surface-field-note-copy">
+          <span className="dashboard-stage-stat-label">Continuidade</span>
+          <strong>Próxima entrada</strong>
+          <span>Escolha a entrada e mantenha o ciclo no mesmo plano.</span>
         </div>
         <button onClick={dismiss} className="btn-ea btn-ghost btn-sm">
           Entendi
@@ -132,7 +130,7 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
             <span>{item.description}</span>
           </div>
         ))}
-        <div className="dashboard-surface-onboarding-signal dashboard-surface-onboarding-signal-wallet">
+          <div className="dashboard-surface-onboarding-signal dashboard-surface-onboarding-signal-wallet">
           <span className="dashboard-stage-stat-label">{CREATOR_COINS_PUBLIC_NAME}</span>
           <strong>{summary}</strong>
           <span>Estimativa antes; histórico depois.</span>
@@ -165,12 +163,10 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
         </ol>
 
         <div className="dashboard-surface-onboarding-paths">
-          <div className="section-stack">
-            <p className="section-kicker">Entradas</p>
-            <h4 style={{ margin: 0 }}>Núcleo e apoio</h4>
-            <p className="helper-text-ea">
-              Núcleo primeiro; Ads como apoio.
-            </p>
+          <div className="dashboard-surface-head-note">
+            <span className="dashboard-stage-stat-label">Entradas</span>
+            <strong>Nucleo e apoio</strong>
+            <span>Nucleo primeiro; Ads como apoio.</span>
           </div>
 
           {OBJECTIVE_PATHS.map((item, index) => (
