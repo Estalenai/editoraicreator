@@ -107,7 +107,7 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
 
   return (
     <section
-      className="dashboard-surface-onboarding"
+      className="dashboard-surface-onboarding dashboard-operating-guide"
       data-reveal
       data-reveal-delay="90"
     >

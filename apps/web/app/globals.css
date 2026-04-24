@@ -21107,7 +21107,6 @@ body {
 }
 
 .dashboard-surface-stage-main,
-.dashboard-surface-stage-rail,
 .dashboard-surface-hero,
 .dashboard-surface-focus,
 .dashboard-surface-core,
@@ -21126,23 +21125,6 @@ body {
 .dashboard-surface-stage-main > * + * {
   padding-top: 0;
   border-top: 0;
-}
-
-.dashboard-surface-stage-rail {
-  position: relative;
-  align-content: start;
-  gap: clamp(20px, 1.9vw, 28px);
-  padding-left: 0;
-  border-left: 0;
-}
-
-.dashboard-surface-stage-rail > * + * {
-  padding-top: clamp(18px, 1.6vw, 24px);
-  border-top: 1px solid rgba(191, 239, 255, 0.036);
-}
-
-.dashboard-surface-stage-rail::before {
-  display: none;
 }
 
 .dashboard-surface-hero,
@@ -21164,99 +21146,51 @@ body {
   border-top: 0;
 }
 
-.dashboard-surface-continuum {
+/* Dashboard contract: operating canvas. Areas describe product roles, not page chapters. */
+.dashboard-operating-grid {
   display: grid;
   grid-template-columns: minmax(0, 0.92fr) minmax(0, 0.78fr) minmax(280px, 0.58fr);
   grid-template-areas:
-    "hero hero context"
-    "hero hero context"
+    "command command account"
+    "command command account"
     "status status status"
-    "focus ops ops"
-    "core usage usage"
-    "core onboarding onboarding";
+    "runway support support"
+    "actions ledger ledger"
+    "actions guide guide";
   gap: clamp(10px, 1vw, 16px) clamp(18px, 1.8vw, 30px);
   align-items: start;
 }
 
-.dashboard-surface-continuum > .dashboard-surface-hero {
-  grid-area: hero;
+.dashboard-operating-grid > .dashboard-operating-command {
+  grid-area: command;
 }
 
-.dashboard-surface-continuum > .dashboard-surface-context {
-  grid-area: context;
+.dashboard-operating-grid > .dashboard-operating-account {
+  grid-area: account;
 }
 
-.dashboard-surface-continuum > .dashboard-surface-focus {
-  grid-area: focus;
+.dashboard-operating-grid > .dashboard-operating-runway {
+  grid-area: runway;
 }
 
-.dashboard-surface-continuum > .dashboard-surface-inline-status {
+.dashboard-operating-grid > .dashboard-surface-inline-status {
   grid-area: status;
 }
 
-.dashboard-surface-continuum > .dashboard-surface-core {
-  grid-area: core;
+.dashboard-operating-grid > .dashboard-operating-actions {
+  grid-area: actions;
 }
 
-.dashboard-surface-continuum > .dashboard-surface-ops {
-  grid-area: ops;
+.dashboard-operating-grid > .dashboard-operating-support {
+  grid-area: support;
 }
 
-.dashboard-surface-continuum > .dashboard-surface-usage {
-  grid-area: usage;
+.dashboard-operating-grid > .dashboard-operating-ledger {
+  grid-area: ledger;
 }
 
-.dashboard-surface-continuum > .dashboard-surface-onboarding {
-  grid-area: onboarding;
-}
-
-.dashboard-surface-field {
-  display: grid;
-  min-width: 0;
-  gap: clamp(10px, 1.1vw, 16px);
-}
-
-.dashboard-surface-field-primary {
-  grid-template-columns: minmax(0, 1.14fr) minmax(300px, 0.86fr);
-  gap: clamp(20px, 2vw, 32px);
-  align-items: start;
-}
-
-.dashboard-surface-field-primary > .dashboard-surface-hero {
-  grid-column: 1;
-  grid-row: 1;
-}
-
-.dashboard-surface-field-primary > .dashboard-surface-context {
-  grid-column: 2;
-  grid-row: 1;
-}
-
-.dashboard-surface-field-primary > .dashboard-surface-inline-status {
-  grid-column: 1 / -1;
-  grid-row: 2;
-}
-
-.dashboard-surface-field-mainline,
-.dashboard-surface-field-tail {
-  grid-template-columns: minmax(0, 1.16fr) minmax(280px, 0.84fr);
-  gap: clamp(16px, 1.5vw, 24px);
-  align-items: start;
-}
-
-.dashboard-surface-field-mainline > .dashboard-surface-field-note,
-.dashboard-surface-field-tail > .dashboard-surface-field-note {
-  grid-column: 1 / -1;
-}
-
-.dashboard-surface-field-mainline > .dashboard-surface-core,
-.dashboard-surface-field-tail > .dashboard-surface-usage {
-  grid-column: 1;
-}
-
-.dashboard-surface-field-mainline > .dashboard-surface-ops,
-.dashboard-surface-field-tail > .dashboard-surface-onboarding {
-  grid-column: 2;
+.dashboard-operating-grid > .dashboard-operating-guide {
+  grid-area: guide;
 }
 
 .dashboard-surface-field-note {
@@ -21307,6 +21241,14 @@ body {
 
 .dashboard-surface-hero-badges {
   gap: 10px;
+}
+
+.dashboard-operating-badge {
+  border-color: rgba(94, 229, 255, 0.42);
+  color: rgba(232, 250, 255, 0.92);
+  background:
+    linear-gradient(180deg, rgba(62, 211, 255, 0.13), rgba(15, 89, 150, 0.12)),
+    rgba(255, 255, 255, 0.018);
 }
 
 .dashboard-surface-command {
@@ -21423,21 +21365,6 @@ body {
   color: var(--ea-text-strong);
 }
 
-.dashboard-surface-section-head {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 18px;
-  align-items: start;
-}
-
-.dashboard-surface-section-head > * {
-  min-width: 0;
-}
-
-.dashboard-surface-section-head-rail {
-  grid-template-columns: minmax(0, 1fr);
-}
-
 .dashboard-surface-core .dashboard-surface-head-note {
   max-width: 48ch;
   padding-top: 0;
@@ -21493,8 +21420,7 @@ body {
 }
 
 .dashboard-surface-stat strong,
-.dashboard-surface-context-card strong,
-.dashboard-surface-ops-account-main strong {
+.dashboard-surface-context-card strong {
   font-size: clamp(1.42rem, 2.1vw, 1.92rem);
   line-height: 1;
   letter-spacing: -0.04em;
@@ -21616,7 +21542,6 @@ body {
   grid-column: 1 / -1;
 }
 
-.dashboard-surface-ops-account-main,
 .dashboard-surface-wallet,
 .dashboard-surface-command-list,
 .dashboard-surface-usage-empty,
@@ -21670,65 +21595,53 @@ body {
   border-top: 1px solid rgba(191, 239, 255, 0.04);
 }
 
-.dashboard-surface-command-head {
-  max-width: none;
-}
-
 .dashboard-surface-ops-cluster {
   display: grid;
   gap: 8px;
 }
 
-.dashboard-surface-field-mainline .dashboard-surface-ops-band,
-.dashboard-surface-continuum > .dashboard-surface-ops-band {
+.dashboard-operating-grid > .dashboard-operating-support {
   grid-template-columns: minmax(0, 1fr);
   gap: 10px;
   align-items: start;
 }
 
-.dashboard-surface-field-mainline .dashboard-surface-ops-band > .dashboard-surface-wallet,
-.dashboard-surface-field-mainline .dashboard-surface-ops-band > .dashboard-surface-command-head,
-.dashboard-surface-field-mainline .dashboard-surface-ops-band > .dashboard-surface-ops-grid,
-.dashboard-surface-continuum > .dashboard-surface-ops-band > .dashboard-surface-wallet,
-.dashboard-surface-continuum > .dashboard-surface-ops-band > .dashboard-surface-command-head,
-.dashboard-surface-continuum > .dashboard-surface-ops-band > .dashboard-surface-ops-grid {
+.dashboard-operating-grid > .dashboard-operating-support > .dashboard-surface-wallet,
+.dashboard-operating-grid > .dashboard-operating-support > .dashboard-surface-ops-grid {
   grid-column: auto;
   grid-row: auto;
 }
 
-.dashboard-surface-field-mainline .dashboard-surface-ops-grid,
-.dashboard-surface-continuum > .dashboard-surface-ops-band .dashboard-surface-ops-grid {
+.dashboard-operating-grid > .dashboard-operating-support .dashboard-surface-ops-grid {
   grid-template-columns: minmax(0, 1fr);
   gap: 10px;
 }
 
-.dashboard-surface-field-mainline .dashboard-surface-command-list,
-.dashboard-surface-continuum > .dashboard-surface-ops-band .dashboard-surface-command-list {
+.dashboard-operating-grid > .dashboard-operating-support .dashboard-surface-command-list {
   grid-template-columns: minmax(0, 1fr);
   gap: 0;
 }
 
-.dashboard-surface-field-mainline .dashboard-surface-command-list > * + *,
-.dashboard-surface-continuum > .dashboard-surface-ops-band .dashboard-surface-command-list > * + * {
+.dashboard-operating-grid > .dashboard-operating-support .dashboard-surface-command-list > * + * {
   border-top: 1px solid rgba(191, 239, 255, 0.034);
   border-left: 0;
   padding-left: 0;
 }
 
-.dashboard-surface-continuum > .dashboard-surface-ops-band {
+.dashboard-operating-grid > .dashboard-operating-support {
   grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
   gap: clamp(12px, 1.2vw, 18px) clamp(16px, 1.6vw, 24px);
 }
 
-.dashboard-surface-continuum > .dashboard-surface-ops-band > .dashboard-surface-field-note {
+.dashboard-operating-grid > .dashboard-operating-support > .dashboard-surface-field-note {
   grid-column: 1 / -1;
 }
 
-.dashboard-surface-continuum > .dashboard-surface-ops-band > .dashboard-surface-wallet {
+.dashboard-operating-grid > .dashboard-operating-support > .dashboard-surface-wallet {
   grid-column: 1;
 }
 
-.dashboard-surface-continuum > .dashboard-surface-ops-band > .dashboard-surface-ops-grid {
+.dashboard-operating-grid > .dashboard-operating-support > .dashboard-surface-ops-grid {
   grid-column: 2;
 }
 
@@ -21891,75 +21804,65 @@ body {
   box-shadow: none !important;
 }
 
-.dashboard-surface-field-tail > .dashboard-surface-usage,
-.dashboard-surface-field-tail > .dashboard-surface-onboarding,
-.dashboard-surface-continuum > .dashboard-surface-usage,
-.dashboard-surface-continuum > .dashboard-surface-onboarding {
+.dashboard-operating-grid > .dashboard-operating-ledger,
+.dashboard-operating-grid > .dashboard-operating-guide {
   padding-top: 0 !important;
   border-top: 0 !important;
 }
 
-.dashboard-surface-field-tail .dashboard-surface-onboarding,
-.dashboard-surface-continuum > .dashboard-surface-onboarding {
+.dashboard-operating-grid > .dashboard-operating-guide {
   gap: 10px;
 }
 
-.dashboard-surface-field-tail .dashboard-surface-onboarding-signals,
-.dashboard-surface-field-tail .dashboard-surface-onboarding-grid,
-.dashboard-surface-field-tail .dashboard-surface-onboarding-paths,
-.dashboard-surface-field-tail .dashboard-surface-onboarding-summary,
-.dashboard-surface-continuum > .dashboard-surface-onboarding .dashboard-surface-onboarding-signals,
-.dashboard-surface-continuum > .dashboard-surface-onboarding .dashboard-surface-onboarding-grid,
-.dashboard-surface-continuum > .dashboard-surface-onboarding .dashboard-surface-onboarding-paths,
-.dashboard-surface-continuum > .dashboard-surface-onboarding .dashboard-surface-onboarding-summary {
+.dashboard-operating-grid > .dashboard-operating-guide .dashboard-surface-onboarding-signals,
+.dashboard-operating-grid > .dashboard-operating-guide .dashboard-surface-onboarding-grid,
+.dashboard-operating-grid > .dashboard-operating-guide .dashboard-surface-onboarding-paths,
+.dashboard-operating-grid > .dashboard-operating-guide .dashboard-surface-onboarding-summary {
   grid-template-columns: minmax(0, 1fr);
 }
 
-.dashboard-surface-field-tail .dashboard-surface-onboarding-signals,
-.dashboard-surface-continuum > .dashboard-surface-onboarding .dashboard-surface-onboarding-signals {
+.dashboard-operating-grid > .dashboard-operating-guide .dashboard-surface-onboarding-signals {
   gap: 0;
 }
 
-.dashboard-surface-field-tail .dashboard-surface-onboarding-signal,
-.dashboard-surface-continuum > .dashboard-surface-onboarding .dashboard-surface-onboarding-signal {
+.dashboard-operating-grid > .dashboard-operating-guide .dashboard-surface-onboarding-signal {
   padding: 8px 0 0;
   border-left: 0;
   border-top: 1px solid rgba(191, 239, 255, 0.034);
 }
 
-.dashboard-surface-field-tail .dashboard-surface-onboarding-signals > *:first-child,
-.dashboard-surface-continuum > .dashboard-surface-onboarding .dashboard-surface-onboarding-signals > *:first-child {
+.dashboard-operating-grid > .dashboard-operating-guide .dashboard-surface-onboarding-signals > *:first-child {
   padding-top: 0;
   border-top: 0;
 }
 
 @media (min-width: 1281px) {
-  .dashboard-surface-continuum > .dashboard-surface-onboarding .dashboard-surface-onboarding-signals {
+  .dashboard-operating-grid > .dashboard-operating-guide .dashboard-surface-onboarding-signals {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0 clamp(12px, 1vw, 16px);
   }
 
-  .dashboard-surface-continuum > .dashboard-surface-onboarding .dashboard-surface-onboarding-signal {
+  .dashboard-operating-grid > .dashboard-operating-guide .dashboard-surface-onboarding-signal {
     padding-top: 0;
     padding-left: clamp(12px, 1vw, 16px);
     border-top: 0;
     border-left: 1px solid rgba(191, 239, 255, 0.034);
   }
 
-  .dashboard-surface-continuum > .dashboard-surface-onboarding .dashboard-surface-onboarding-signals > *:first-child {
+  .dashboard-operating-grid > .dashboard-operating-guide .dashboard-surface-onboarding-signals > *:first-child {
     padding-left: 0;
     border-left: 0;
   }
 
-  .dashboard-surface-continuum > .dashboard-surface-onboarding .dashboard-surface-onboarding-grid {
+  .dashboard-operating-grid > .dashboard-operating-guide .dashboard-surface-onboarding-grid {
     grid-template-columns: minmax(220px, 0.56fr) minmax(0, 1.44fr);
   }
 
-  .dashboard-surface-continuum > .dashboard-surface-onboarding .dashboard-surface-onboarding-paths {
+  .dashboard-operating-grid > .dashboard-operating-guide .dashboard-surface-onboarding-paths {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .dashboard-surface-continuum > .dashboard-surface-onboarding .dashboard-surface-onboarding-summary {
+  .dashboard-operating-grid > .dashboard-operating-guide .dashboard-surface-onboarding-summary {
     grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr) auto;
   }
 }
@@ -22042,12 +21945,11 @@ body {
 }
 
 .dashboard-surface-core-note .dashboard-stage-stat-label,
-.dashboard-surface-field-note-ops .dashboard-stage-stat-label,
+.dashboard-operating-support-note .dashboard-stage-stat-label,
 .dashboard-surface-usage-hero-main .dashboard-stage-stat-label,
 .dashboard-surface-onboarding-head .dashboard-stage-stat-label,
 .dashboard-surface-onboarding-paths > .dashboard-surface-head-note .dashboard-stage-stat-label,
-.dashboard-surface-ops-cluster-head .dashboard-stage-stat-label,
-.dashboard-surface-command-head .dashboard-stage-stat-label {
+.dashboard-surface-ops-cluster-head .dashboard-stage-stat-label {
   display: none;
 }
 
@@ -22103,53 +22005,38 @@ body {
 }
 
 @media (max-width: 1280px) and (min-width: 1261px) {
-  .dashboard-surface-continuum {
+  .dashboard-operating-grid {
     grid-template-columns: minmax(0, 1fr) minmax(300px, 0.68fr);
     grid-template-areas:
-      "hero context"
-      "focus ops"
-      "core usage"
-      "core onboarding";
+      "command account"
+      "runway support"
+      "actions ledger"
+      "actions guide";
     column-gap: clamp(18px, 2vw, 28px);
   }
 }
 
 @media (max-width: 1260px) {
-  .dashboard-surface-continuum {
+  .dashboard-operating-grid {
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
-      "hero"
-      "context"
+      "command"
+      "account"
       "status"
-      "focus"
-      "core"
-      "ops"
-      "usage"
-      "onboarding";
+      "runway"
+      "actions"
+      "support"
+      "ledger"
+      "guide";
     gap: clamp(14px, 2vw, 24px);
   }
 
-  .dashboard-surface-field-primary,
-  .dashboard-surface-field-mainline,
-  .dashboard-surface-field-tail,
   .dashboard-surface-stage-grid,
   .dashboard-surface-usage-grid,
   .dashboard-surface-onboarding-grid {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .dashboard-surface-field-primary > .dashboard-surface-hero,
-  .dashboard-surface-field-primary > .dashboard-surface-context,
-  .dashboard-surface-field-primary > .dashboard-surface-inline-status,
-  .dashboard-surface-field-mainline > .dashboard-surface-core,
-  .dashboard-surface-field-mainline > .dashboard-surface-ops,
-  .dashboard-surface-field-tail > .dashboard-surface-usage,
-  .dashboard-surface-field-tail > .dashboard-surface-onboarding {
-    grid-column: auto;
-    grid-row: auto;
-  }
-
-  .dashboard-surface-stage-rail,
   .dashboard-surface-usage-list {
     padding-left: 0;
     padding-top: 14px;
@@ -22157,9 +22044,6 @@ body {
     border-top: 1px solid rgba(191, 239, 255, 0.04);
   }
 
-  .dashboard-surface-stage-rail::before {
-    display: none;
-  }
 }
 
 @media (max-width: 1200px) {
@@ -22521,13 +22405,8 @@ body {
     padding-top: 18px;
   }
 
-  .dashboard-surface-continuum {
+  .dashboard-operating-grid {
     gap: 18px;
-  }
-
-  .dashboard-surface-section-head {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 10px;
   }
 
   .dashboard-surface-field-note {
@@ -22536,7 +22415,6 @@ body {
   }
 
   .dashboard-surface-core .dashboard-surface-head-note,
-  .dashboard-surface-ops-band .dashboard-surface-command-head,
   .dashboard-surface-onboarding-paths > .section-stack .helper-text-ea {
     display: none;
   }
@@ -22556,7 +22434,6 @@ body {
   }
 
   .dashboard-surface-focus-side,
-  .dashboard-surface-stage-rail,
   .dashboard-surface-usage-list {
     padding-top: 14px;
   }

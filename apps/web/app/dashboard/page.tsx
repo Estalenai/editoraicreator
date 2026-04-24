@@ -494,32 +494,32 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="page-shell dashboard-surface-page">
-      <div className="dashboard-surface-canvas">
-        <section className="dashboard-surface-stage" data-reveal>
+    <div className="page-shell dashboard-surface-page dashboard-operating-page" data-dashboard-contract="operating-canvas">
+      <div className="dashboard-surface-canvas dashboard-operating-canvas">
+        <section className="dashboard-surface-stage dashboard-operating-stage" data-reveal>
           <div className="dashboard-surface-stage-grid">
             <div className="dashboard-surface-stage-main">
-              <div className="dashboard-surface-flow">
-                <section className="dashboard-surface-continuum">
-                  <header className="dashboard-surface-hero" data-reveal data-reveal-delay="35">
+              <div className="dashboard-surface-flow dashboard-operating-flow">
+                <section className="dashboard-operating-grid" aria-label="Superfície operacional do Editor AI Creator">
+                  <header className="dashboard-surface-hero dashboard-operating-command" data-reveal data-reveal-delay="35">
                     <div className="dashboard-surface-command" data-reveal data-reveal-delay="70">
                       <div className="dashboard-surface-command-copy">
                         <div className="dashboard-surface-hero-intro">
                           <div className="hero-title-stack">
-                            <p className="section-kicker">Painel executivo</p>
+                            <p className="section-kicker">Surface operacional</p>
                             <h1 className="heading-reset">Dashboard</h1>
                             <p className="section-header-copy hero-copy-compact">
                               Criacao, revisao e retomada permanecem no mesmo campo operacional.
                             </p>
                           </div>
                           <div className="hero-meta-row dashboard-surface-hero-badges">
-                            <span className="premium-badge premium-badge-phase">Plano: {planLabelDisplay}</span>
+                            <span className="premium-badge dashboard-operating-badge">Plano: {planLabelDisplay}</span>
                             <span className="premium-badge premium-badge-warning">
                               {loading ? "Conta em sincronizacao" : "Historico confirmado no backend"}
                             </span>
                           </div>
                         </div>
-                        <span className="dashboard-hero-flow-label">Linha criativa</span>
+                        <span className="dashboard-hero-flow-label">Ciclo criativo</span>
                         <strong>Creator, editor e saida conduzem o mesmo eixo principal do produto.</strong>
                         <p>
                           Abra, lapide e retome sem perder o contexto que move a proxima entrega.
@@ -555,7 +555,7 @@ export default function DashboardPage() {
                     </div>
                   </header>
 
-                      <section className="dashboard-surface-focus" data-reveal data-reveal-delay="140">
+                      <section className="dashboard-surface-focus dashboard-operating-runway" data-reveal data-reveal-delay="140">
                         <div className="dashboard-surface-focus-grid">
                           <div className="dashboard-surface-focus-lead-wrap">
                             {loading ? (
@@ -658,7 +658,7 @@ export default function DashboardPage() {
                         ) : null}
                       </section>
 
-                  <section className="dashboard-surface-context dashboard-surface-context-band" data-reveal data-reveal-delay="90">
+                  <section className="dashboard-surface-context dashboard-surface-context-band dashboard-operating-account" data-reveal data-reveal-delay="90">
                 <div className="dashboard-surface-context-row dashboard-surface-context-row-primary">
                   <span className="dashboard-overview-label">Conta ativa</span>
                   <strong>{planLabelDisplay}</strong>
@@ -742,7 +742,7 @@ export default function DashboardPage() {
                     </div>
                   ) : null}
 
-                  <section className="dashboard-surface-core" data-reveal data-reveal-delay="205">
+                  <section className="dashboard-surface-core dashboard-operating-actions" data-reveal data-reveal-delay="205">
                     <div className="dashboard-surface-head-note dashboard-surface-core-note">
                       <strong>Creators, editor e saida seguem a mesma trilha principal.</strong>
                       <span>Entrada, revisao e continuidade aparecem no mesmo plano.</span>
@@ -785,8 +785,8 @@ export default function DashboardPage() {
                   </div>
                 </section>
 
-                  <section className="dashboard-surface-ops dashboard-surface-ops-band" data-reveal data-reveal-delay="165">
-                    <div className="dashboard-surface-field-note dashboard-surface-field-note-ops">
+                  <section className="dashboard-surface-ops dashboard-surface-ops-band dashboard-operating-support" data-reveal data-reveal-delay="165">
+                    <div className="dashboard-surface-field-note dashboard-operating-support-note">
                       <div className="dashboard-surface-field-note-copy">
                         <strong>Conta, saldo e suporte continuam dentro do mesmo workspace.</strong>
                         <span>Leitura financeira, plano e guia acompanham a operacao.</span>
@@ -870,7 +870,7 @@ export default function DashboardPage() {
                   </div>
                 </section>
 
-                  <section className="dashboard-surface-usage">
+                  <section className="dashboard-surface-usage dashboard-operating-ledger">
                     <div className="dashboard-surface-usage-grid">
                       <div className="dashboard-surface-usage-copy">
                       <div className="dashboard-surface-usage-hero dashboard-surface-usage-strip">
