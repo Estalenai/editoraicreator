@@ -21156,13 +21156,58 @@ body {
 }
 
 .dashboard-surface-flow {
-  display: grid;
-  gap: clamp(12px, 1.3vw, 20px);
+  display: block;
 }
 
 .dashboard-surface-flow > * + * {
-  padding-top: clamp(8px, 0.9vw, 14px);
-  border-top: 1px solid rgba(191, 239, 255, 0.01);
+  padding-top: 0;
+  border-top: 0;
+}
+
+.dashboard-surface-continuum {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 0.78fr) minmax(280px, 0.58fr);
+  grid-template-areas:
+    "hero hero context"
+    "hero hero context"
+    "status status status"
+    "focus ops ops"
+    "core usage usage"
+    "core onboarding onboarding";
+  gap: clamp(10px, 1vw, 16px) clamp(18px, 1.8vw, 30px);
+  align-items: start;
+}
+
+.dashboard-surface-continuum > .dashboard-surface-hero {
+  grid-area: hero;
+}
+
+.dashboard-surface-continuum > .dashboard-surface-context {
+  grid-area: context;
+}
+
+.dashboard-surface-continuum > .dashboard-surface-focus {
+  grid-area: focus;
+}
+
+.dashboard-surface-continuum > .dashboard-surface-inline-status {
+  grid-area: status;
+}
+
+.dashboard-surface-continuum > .dashboard-surface-core {
+  grid-area: core;
+}
+
+.dashboard-surface-continuum > .dashboard-surface-ops {
+  grid-area: ops;
+}
+
+.dashboard-surface-continuum > .dashboard-surface-usage {
+  grid-area: usage;
+}
+
+.dashboard-surface-continuum > .dashboard-surface-onboarding {
+  grid-area: onboarding;
 }
 
 .dashboard-surface-field {
@@ -21634,7 +21679,8 @@ body {
   gap: 8px;
 }
 
-.dashboard-surface-field-mainline .dashboard-surface-ops-band {
+.dashboard-surface-field-mainline .dashboard-surface-ops-band,
+.dashboard-surface-continuum > .dashboard-surface-ops-band {
   grid-template-columns: minmax(0, 1fr);
   gap: 10px;
   align-items: start;
@@ -21642,25 +21688,48 @@ body {
 
 .dashboard-surface-field-mainline .dashboard-surface-ops-band > .dashboard-surface-wallet,
 .dashboard-surface-field-mainline .dashboard-surface-ops-band > .dashboard-surface-command-head,
-.dashboard-surface-field-mainline .dashboard-surface-ops-band > .dashboard-surface-ops-grid {
+.dashboard-surface-field-mainline .dashboard-surface-ops-band > .dashboard-surface-ops-grid,
+.dashboard-surface-continuum > .dashboard-surface-ops-band > .dashboard-surface-wallet,
+.dashboard-surface-continuum > .dashboard-surface-ops-band > .dashboard-surface-command-head,
+.dashboard-surface-continuum > .dashboard-surface-ops-band > .dashboard-surface-ops-grid {
   grid-column: auto;
   grid-row: auto;
 }
 
-.dashboard-surface-field-mainline .dashboard-surface-ops-grid {
+.dashboard-surface-field-mainline .dashboard-surface-ops-grid,
+.dashboard-surface-continuum > .dashboard-surface-ops-band .dashboard-surface-ops-grid {
   grid-template-columns: minmax(0, 1fr);
   gap: 10px;
 }
 
-.dashboard-surface-field-mainline .dashboard-surface-command-list {
+.dashboard-surface-field-mainline .dashboard-surface-command-list,
+.dashboard-surface-continuum > .dashboard-surface-ops-band .dashboard-surface-command-list {
   grid-template-columns: minmax(0, 1fr);
   gap: 0;
 }
 
-.dashboard-surface-field-mainline .dashboard-surface-command-list > * + * {
+.dashboard-surface-field-mainline .dashboard-surface-command-list > * + *,
+.dashboard-surface-continuum > .dashboard-surface-ops-band .dashboard-surface-command-list > * + * {
   border-top: 1px solid rgba(191, 239, 255, 0.034);
   border-left: 0;
   padding-left: 0;
+}
+
+.dashboard-surface-continuum > .dashboard-surface-ops-band {
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(12px, 1.2vw, 18px) clamp(16px, 1.6vw, 24px);
+}
+
+.dashboard-surface-continuum > .dashboard-surface-ops-band > .dashboard-surface-field-note {
+  grid-column: 1 / -1;
+}
+
+.dashboard-surface-continuum > .dashboard-surface-ops-band > .dashboard-surface-wallet {
+  grid-column: 1;
+}
+
+.dashboard-surface-continuum > .dashboard-surface-ops-band > .dashboard-surface-ops-grid {
+  grid-column: 2;
 }
 
 .dashboard-surface-usage {
@@ -21823,35 +21892,76 @@ body {
 }
 
 .dashboard-surface-field-tail > .dashboard-surface-usage,
-.dashboard-surface-field-tail > .dashboard-surface-onboarding {
+.dashboard-surface-field-tail > .dashboard-surface-onboarding,
+.dashboard-surface-continuum > .dashboard-surface-usage,
+.dashboard-surface-continuum > .dashboard-surface-onboarding {
   padding-top: 0 !important;
   border-top: 0 !important;
 }
 
-.dashboard-surface-field-tail .dashboard-surface-onboarding {
+.dashboard-surface-field-tail .dashboard-surface-onboarding,
+.dashboard-surface-continuum > .dashboard-surface-onboarding {
   gap: 10px;
 }
 
 .dashboard-surface-field-tail .dashboard-surface-onboarding-signals,
 .dashboard-surface-field-tail .dashboard-surface-onboarding-grid,
 .dashboard-surface-field-tail .dashboard-surface-onboarding-paths,
-.dashboard-surface-field-tail .dashboard-surface-onboarding-summary {
+.dashboard-surface-field-tail .dashboard-surface-onboarding-summary,
+.dashboard-surface-continuum > .dashboard-surface-onboarding .dashboard-surface-onboarding-signals,
+.dashboard-surface-continuum > .dashboard-surface-onboarding .dashboard-surface-onboarding-grid,
+.dashboard-surface-continuum > .dashboard-surface-onboarding .dashboard-surface-onboarding-paths,
+.dashboard-surface-continuum > .dashboard-surface-onboarding .dashboard-surface-onboarding-summary {
   grid-template-columns: minmax(0, 1fr);
 }
 
-.dashboard-surface-field-tail .dashboard-surface-onboarding-signals {
+.dashboard-surface-field-tail .dashboard-surface-onboarding-signals,
+.dashboard-surface-continuum > .dashboard-surface-onboarding .dashboard-surface-onboarding-signals {
   gap: 0;
 }
 
-.dashboard-surface-field-tail .dashboard-surface-onboarding-signal {
+.dashboard-surface-field-tail .dashboard-surface-onboarding-signal,
+.dashboard-surface-continuum > .dashboard-surface-onboarding .dashboard-surface-onboarding-signal {
   padding: 8px 0 0;
   border-left: 0;
   border-top: 1px solid rgba(191, 239, 255, 0.034);
 }
 
-.dashboard-surface-field-tail .dashboard-surface-onboarding-signals > *:first-child {
+.dashboard-surface-field-tail .dashboard-surface-onboarding-signals > *:first-child,
+.dashboard-surface-continuum > .dashboard-surface-onboarding .dashboard-surface-onboarding-signals > *:first-child {
   padding-top: 0;
   border-top: 0;
+}
+
+@media (min-width: 1281px) {
+  .dashboard-surface-continuum > .dashboard-surface-onboarding .dashboard-surface-onboarding-signals {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0 clamp(12px, 1vw, 16px);
+  }
+
+  .dashboard-surface-continuum > .dashboard-surface-onboarding .dashboard-surface-onboarding-signal {
+    padding-top: 0;
+    padding-left: clamp(12px, 1vw, 16px);
+    border-top: 0;
+    border-left: 1px solid rgba(191, 239, 255, 0.034);
+  }
+
+  .dashboard-surface-continuum > .dashboard-surface-onboarding .dashboard-surface-onboarding-signals > *:first-child {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .dashboard-surface-continuum > .dashboard-surface-onboarding .dashboard-surface-onboarding-grid {
+    grid-template-columns: minmax(220px, 0.56fr) minmax(0, 1.44fr);
+  }
+
+  .dashboard-surface-continuum > .dashboard-surface-onboarding .dashboard-surface-onboarding-paths {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboard-surface-continuum > .dashboard-surface-onboarding .dashboard-surface-onboarding-summary {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr) auto;
+  }
 }
 
 .dashboard-surface-onboarding-head {
@@ -21905,8 +22015,8 @@ body {
   padding-bottom: 6px;
 }
 
-.dashboard-surface-onboarding-paths > .dashboard-surface-onboarding-path:nth-child(2),
-.dashboard-surface-onboarding-paths > .dashboard-surface-onboarding-path:nth-child(3) {
+.dashboard-surface-onboarding-paths > .dashboard-surface-onboarding-path:nth-child(1),
+.dashboard-surface-onboarding-paths > .dashboard-surface-onboarding-path:nth-child(2) {
   border-top: 0;
 }
 
@@ -21992,7 +22102,33 @@ body {
   }
 }
 
+@media (max-width: 1280px) and (min-width: 1261px) {
+  .dashboard-surface-continuum {
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 0.68fr);
+    grid-template-areas:
+      "hero context"
+      "focus ops"
+      "core usage"
+      "core onboarding";
+    column-gap: clamp(18px, 2vw, 28px);
+  }
+}
+
 @media (max-width: 1260px) {
+  .dashboard-surface-continuum {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "hero"
+      "context"
+      "status"
+      "focus"
+      "core"
+      "ops"
+      "usage"
+      "onboarding";
+    gap: clamp(14px, 2vw, 24px);
+  }
+
   .dashboard-surface-field-primary,
   .dashboard-surface-field-mainline,
   .dashboard-surface-field-tail,
@@ -22385,6 +22521,10 @@ body {
     padding-top: 18px;
   }
 
+  .dashboard-surface-continuum {
+    gap: 18px;
+  }
+
   .dashboard-surface-section-head {
     grid-template-columns: minmax(0, 1fr);
     gap: 10px;
@@ -22477,6 +22617,10 @@ body {
   .dashboard-surface-onboarding-head {
     grid-template-columns: minmax(0, 1fr);
     gap: 10px;
+  }
+
+  .dashboard-surface-onboarding-paths > .dashboard-surface-onboarding-path:nth-child(2) {
+    border-top: 1px solid rgba(191, 239, 255, 0.045);
   }
 
   .dashboard-surface-onboarding-actions .btn-link-ea {

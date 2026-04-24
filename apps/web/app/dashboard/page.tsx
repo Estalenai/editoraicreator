@@ -500,7 +500,7 @@ export default function DashboardPage() {
           <div className="dashboard-surface-stage-grid">
             <div className="dashboard-surface-stage-main">
               <div className="dashboard-surface-flow">
-                <section className="dashboard-surface-field dashboard-surface-field-primary">
+                <section className="dashboard-surface-continuum">
                   <header className="dashboard-surface-hero" data-reveal data-reveal-delay="35">
                     <div className="dashboard-surface-command" data-reveal data-reveal-delay="70">
                       <div className="dashboard-surface-command-copy">
@@ -509,8 +509,7 @@ export default function DashboardPage() {
                             <p className="section-kicker">Painel executivo</p>
                             <h1 className="heading-reset">Dashboard</h1>
                             <p className="section-header-copy hero-copy-compact">
-                              Criacao, revisao, continuidade e operacao entram no mesmo palco, sem cair em painel
-                              administrativo.
+                              Criacao, revisao e retomada permanecem no mesmo campo operacional.
                             </p>
                           </div>
                           <div className="hero-meta-row dashboard-surface-hero-badges">
@@ -523,8 +522,7 @@ export default function DashboardPage() {
                         <span className="dashboard-hero-flow-label">Linha criativa</span>
                         <strong>Creator, editor e saida conduzem o mesmo eixo principal do produto.</strong>
                         <p>
-                          A leitura principal precisa nascer unificada e continuar viva no mesmo campo, sem anunciar
-                          uma troca de painel a cada passo.
+                          Abra, lapide e retome sem perder o contexto que move a proxima entrega.
                         </p>
                       </div>
 
@@ -554,6 +552,8 @@ export default function DashboardPage() {
                           </div>
                         </div>
                       </div>
+                    </div>
+                  </header>
 
                       <section className="dashboard-surface-focus" data-reveal data-reveal-delay="140">
                         <div className="dashboard-surface-focus-grid">
@@ -567,7 +567,7 @@ export default function DashboardPage() {
                             ) : featuredProjectDisplay ? (
                               <EditorRouteLink href={`/editor/${featuredProjectDisplay.id}`} className="dashboard-surface-focus-lead">
                                 <div className="dashboard-stage-lead-topline">
-                                  <span className="dashboard-stage-lead-kicker">Continuidade viva</span>
+                                  <span className="dashboard-stage-lead-kicker">Em continuidade</span>
                                   <span className="dashboard-stage-lead-pill">{featuredProjectDisplay.stageLabel}</span>
                                 </div>
                                 <strong className="dashboard-stage-lead-title">{featuredProjectDisplay.displayTitle}</strong>
@@ -584,8 +584,8 @@ export default function DashboardPage() {
                               </EditorRouteLink>
                             ) : (
                               <div className="dashboard-surface-focus-lead dashboard-surface-focus-empty">
-                                <span className="dashboard-stage-lead-kicker">Continuidade viva</span>
-                                <strong>A trilha fica premium quando um Creator vira projeto de verdade.</strong>
+                                <span className="dashboard-stage-lead-kicker">Em continuidade</span>
+                                <strong>A trilha ganha peso quando um Creator vira projeto real.</strong>
                                 <p>
                                   Abra Creators, salve a primeira saída e use Projetos para continuar no editor
                                   sem recomeçar o fluxo.
@@ -657,8 +657,6 @@ export default function DashboardPage() {
                           </div>
                         ) : null}
                       </section>
-                    </div>
-                  </header>
 
                   <section className="dashboard-surface-context dashboard-surface-context-band" data-reveal data-reveal-delay="90">
                 <div className="dashboard-surface-context-row dashboard-surface-context-row-primary">
@@ -744,13 +742,10 @@ export default function DashboardPage() {
                     </div>
                   ) : null}
 
-                </section>
-
-                <section className="dashboard-surface-field dashboard-surface-field-mainline">
                   <section className="dashboard-surface-core" data-reveal data-reveal-delay="205">
                     <div className="dashboard-surface-head-note dashboard-surface-core-note">
                       <strong>Creators, editor e saida seguem a mesma trilha principal.</strong>
-                      <span>Entradas, revisao e continuidade aparecem no mesmo plano, sem anunciar uma nova banda.</span>
+                      <span>Entrada, revisao e continuidade aparecem no mesmo plano.</span>
                     </div>
 
                   <div className="dashboard-surface-core-grid">
@@ -794,7 +789,7 @@ export default function DashboardPage() {
                     <div className="dashboard-surface-field-note dashboard-surface-field-note-ops">
                       <div className="dashboard-surface-field-note-copy">
                         <strong>Conta, saldo e suporte continuam dentro do mesmo workspace.</strong>
-                        <span>Leitura financeira, plano e guia entram quietos, sem abrir um capitulo lateral.</span>
+                        <span>Leitura financeira, plano e guia acompanham a operacao.</span>
                       </div>
                       <Link href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
                         Ver historico completo
@@ -875,9 +870,6 @@ export default function DashboardPage() {
                   </div>
                 </section>
 
-                </section>
-
-                <section className="dashboard-surface-field dashboard-surface-field-tail">
                   <section className="dashboard-surface-usage">
                     <div className="dashboard-surface-usage-grid">
                       <div className="dashboard-surface-usage-copy">

@@ -113,8 +113,8 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
     >
       <div className="dashboard-surface-onboarding-head">
         <div className="dashboard-surface-field-note-copy">
-          <strong>Próxima entrada</strong>
-          <span>Escolha a entrada e mantenha o ciclo no mesmo plano.</span>
+          <strong>Continue o ciclo</strong>
+          <span>Entrada, revisão e saldo seguem juntos.</span>
         </div>
         <button onClick={dismiss} className="btn-ea btn-ghost btn-sm">
           Entendi
@@ -162,11 +162,6 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
         </ol>
 
         <div className="dashboard-surface-onboarding-paths">
-          <div className="dashboard-surface-head-note">
-            <strong>Nucleo e apoio</strong>
-            <span>Nucleo primeiro; Ads como apoio.</span>
-          </div>
-
           {OBJECTIVE_PATHS.map((item, index) => (
             <Link
               key={item.key}
