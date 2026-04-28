@@ -617,9 +617,9 @@ export default function DashboardPage() {
                     </div>
                   </header>
 
-                      <section className="dashboard-surface-focus dashboard-operating-runway" data-reveal data-reveal-delay="140">
-                        <div className="dashboard-surface-focus-grid">
-                          <div className="dashboard-surface-focus-lead-wrap">
+                      <section className="dashboard-surface-ecosystem dashboard-operating-ecosystem" data-reveal data-reveal-delay="140">
+                        <div className="dashboard-ecosystem-stage">
+                          <div className="dashboard-surface-focus-lead-wrap dashboard-ecosystem-lead">
                             {loading ? (
                               <div className="dashboard-surface-focus-lead dashboard-surface-focus-skeleton">
                                 <div className="premium-skeleton premium-skeleton-line" style={{ width: "24%" }} />
@@ -664,19 +664,19 @@ export default function DashboardPage() {
                             )}
                           </div>
 
-                          <div className="dashboard-surface-focus-side">
+                          <div className="dashboard-ecosystem-state">
                             <div className="dashboard-surface-stat">
-                              <span className="dashboard-stage-stat-label">Projeto em foco</span>
+                              <span className="dashboard-stage-stat-label">Estado</span>
                               <strong>{focusContinuationLabel}</strong>
                               <span>{focusContinuationDetail}</span>
                             </div>
                             <div className="dashboard-surface-stat">
-                              <span className="dashboard-stage-stat-label">Ritmo atual</span>
+                              <span className="dashboard-stage-stat-label">Ritmo</span>
                               <strong>{continuityValue}</strong>
                               <span>{continuityDetail}</span>
                             </div>
                             <div className="dashboard-surface-stat dashboard-surface-stat-action">
-                              <span className="dashboard-stage-stat-label">Proximo movimento</span>
+                              <span className="dashboard-stage-stat-label">Movimento</span>
                               <strong>{nextActionTitleDisplay}</strong>
                               <span>{nextActionDescriptionDisplay}</span>
                               {nextAction.href.startsWith("/editor") ? (
@@ -693,13 +693,13 @@ export default function DashboardPage() {
                         </div>
 
                         {loading ? (
-                          <div className="dashboard-surface-ribbon">
+                          <div className="dashboard-ecosystem-ribbon">
                             {Array.from({ length: 3 }).map((_, index) => (
                               <div key={`project-skeleton-${index}`} className="dashboard-project-skeleton-row" />
                             ))}
                           </div>
                         ) : supportingProjectDisplay.length > 0 ? (
-                          <div className="dashboard-surface-ribbon">
+                          <div className="dashboard-ecosystem-ribbon">
                             {supportingProjectDisplay.map((project: any, index: number) => (
                               <EditorRouteLink
                                 key={String(project.id || project.project_id || index)}
@@ -718,6 +718,104 @@ export default function DashboardPage() {
                             ))}
                           </div>
                         ) : null}
+
+                        <div className="dashboard-ecosystem-flow">
+                          <div className="dashboard-surface-head-note dashboard-ecosystem-flow-note">
+                            <strong>O workspace se move como um ciclo, não como atalhos soltos.</strong>
+                            <span>Creators, editor, projetos e saída permanecem conectados ao mesmo contexto.</span>
+                          </div>
+
+                          <div className="dashboard-ecosystem-lanes">
+                            {coreQuickLinks.map((item, index) =>
+                              item.href.startsWith("/editor") ? (
+                                <EditorRouteLink
+                                  key={item.href}
+                                  href={item.href}
+                                  className="dashboard-ecosystem-lane"
+                                  data-reveal
+                                  data-reveal-delay={String(90 + index * 30)}
+                                >
+                                  <span className="dashboard-surface-step-index">{String(index + 1).padStart(2, "0")}</span>
+                                  <div className="dashboard-surface-core-link-main">
+                                    <span className="dashboard-stream-link-kicker">{item.tag}</span>
+                                    <strong className="dashboard-stream-link-title">{item.title}</strong>
+                                    <span className="dashboard-stream-link-copy">{item.description}</span>
+                                  </div>
+                                  <span className="dashboard-stream-link-cta">{item.cta}</span>
+                                </EditorRouteLink>
+                              ) : (
+                                <Link
+                                  key={item.href}
+                                  href={item.href}
+                                  className="dashboard-ecosystem-lane"
+                                  data-reveal
+                                  data-reveal-delay={String(90 + index * 30)}
+                                >
+                                  <span className="dashboard-surface-step-index">{String(index + 1).padStart(2, "0")}</span>
+                                  <div className="dashboard-surface-core-link-main">
+                                    <span className="dashboard-stream-link-kicker">{item.tag}</span>
+                                    <strong className="dashboard-stream-link-title">{item.title}</strong>
+                                    <span className="dashboard-stream-link-copy">{item.description}</span>
+                                  </div>
+                                  <span className="dashboard-stream-link-cta">{item.cta}</span>
+                                </Link>
+                              )
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="dashboard-ecosystem-support">
+                          <div className="dashboard-surface-field-note dashboard-ecosystem-support-note">
+                            <div className="dashboard-surface-field-note-copy">
+                              <strong>Plano, saldo e suporte acompanham o ciclo sem virar outra camada.</strong>
+                              <span>Conta, guia e créditos entram como infraestrutura silenciosa do workspace.</span>
+                            </div>
+                            <Link href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
+                              Ver historico
+                            </Link>
+                          </div>
+
+                          <div className="dashboard-surface-wallet dashboard-ecosystem-wallet">
+                            <div className="dashboard-surface-wallet-copy">
+                              <span className="dashboard-stream-link-kicker">{CREATOR_COINS_PUBLIC_NAME}</span>
+                              <strong className="dashboard-stream-link-title">{walletSummaryDisplay}</strong>
+                              <span className="dashboard-stream-link-copy">
+                                O saldo acompanha a produção sem transformar o meio em painel financeiro.
+                              </span>
+                            </div>
+
+                            <div className="dashboard-surface-wallet-breakdown">
+                              {walletBreakdown.map((item) => (
+                                <div key={item.coinType} className="dashboard-wallet-row">
+                                  <div className="dashboard-wallet-row-main">
+                                    <strong>{coinTypeLabel(item.coinType)}</strong>
+                                    <span>{item.description}</span>
+                                  </div>
+                                  <span className="dashboard-wallet-row-value">{item.amount.toLocaleString("pt-BR")}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="dashboard-ecosystem-support-links">
+                            {[...railPrimaryQuickLinks, ...railSecondaryQuickLinks].map((item, index) => (
+                              <Link
+                                key={item.href}
+                                href={item.href}
+                                className="dashboard-ecosystem-support-link"
+                                data-reveal
+                                data-reveal-delay={String(120 + index * 25)}
+                              >
+                                <div className="dashboard-surface-command-link-main">
+                                  <span className="dashboard-stream-link-kicker">{item.tag}</span>
+                                  <strong className="dashboard-stream-link-title">{item.title}</strong>
+                                  <span className="dashboard-stream-link-copy">{item.description}</span>
+                                </div>
+                                <span className="dashboard-stream-link-cta">{item.cta}</span>
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
                       </section>
 
                   {error || usageError ? (
@@ -751,134 +849,6 @@ export default function DashboardPage() {
                   ) : null}
                     </div>
                   ) : null}
-
-                  <section className="dashboard-surface-core dashboard-operating-actions" data-reveal data-reveal-delay="205">
-                    <div className="dashboard-surface-head-note dashboard-surface-core-note">
-                      <strong>Creators, editor e saida seguem a mesma trilha principal.</strong>
-                      <span>Entrada, revisao e continuidade aparecem no mesmo plano.</span>
-                    </div>
-
-                  <div className="dashboard-surface-core-grid">
-                    {coreQuickLinks.map((item, index) =>
-                      item.href.startsWith("/editor") ? (
-                        <EditorRouteLink
-                          key={item.href}
-                          href={item.href}
-                          className="dashboard-surface-core-link"
-                          data-reveal
-                          data-reveal-delay={String(90 + index * 30)}
-                        >
-                          <div className="dashboard-surface-core-link-main">
-                            <span className="dashboard-stream-link-kicker">{item.tag}</span>
-                            <strong className="dashboard-stream-link-title">{item.title}</strong>
-                            <span className="dashboard-stream-link-copy">{item.description}</span>
-                          </div>
-                          <span className="dashboard-stream-link-cta">{item.cta}</span>
-                        </EditorRouteLink>
-                      ) : (
-                        <Link
-                          key={item.href}
-                          href={item.href}
-                          className="dashboard-surface-core-link"
-                          data-reveal
-                          data-reveal-delay={String(90 + index * 30)}
-                        >
-                          <div className="dashboard-surface-core-link-main">
-                            <span className="dashboard-stream-link-kicker">{item.tag}</span>
-                            <strong className="dashboard-stream-link-title">{item.title}</strong>
-                            <span className="dashboard-stream-link-copy">{item.description}</span>
-                          </div>
-                          <span className="dashboard-stream-link-cta">{item.cta}</span>
-                        </Link>
-                      )
-                    )}
-                  </div>
-                </section>
-
-                  <section className="dashboard-surface-ops dashboard-surface-ops-band dashboard-operating-support" data-reveal data-reveal-delay="165">
-                    <div className="dashboard-surface-field-note dashboard-operating-support-note">
-                      <div className="dashboard-surface-field-note-copy">
-                        <strong>Conta, saldo e suporte continuam dentro do mesmo workspace.</strong>
-                        <span>Leitura financeira, plano e guia acompanham a operacao.</span>
-                      </div>
-                      <Link href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
-                        Ver historico completo
-                      </Link>
-                    </div>
-
-                  <div className="dashboard-surface-wallet">
-                    <div className="dashboard-surface-wallet-copy">
-                      <span className="dashboard-stream-link-kicker">{CREATOR_COINS_PUBLIC_NAME}</span>
-                      <strong className="dashboard-stream-link-title">{walletSummaryDisplay}</strong>
-                      <span className="dashboard-stream-link-copy">
-                        O creator estima antes. O historico confirma depois. A leitura financeira acompanha
-                        o fluxo principal sem virar painel lateral.
-                      </span>
-                    </div>
-
-                    <div className="dashboard-surface-wallet-breakdown">
-                      {walletBreakdown.map((item) => (
-                        <div key={item.coinType} className="dashboard-wallet-row">
-                          <div className="dashboard-wallet-row-main">
-                            <strong>{coinTypeLabel(item.coinType)}</strong>
-                            <span>{item.description}</span>
-                          </div>
-                          <span className="dashboard-wallet-row-value">{item.amount.toLocaleString("pt-BR")}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="dashboard-surface-ops-grid">
-                    <div className="dashboard-surface-ops-cluster">
-                      <div className="dashboard-surface-ops-cluster-head">
-                        <strong>Planos e suporte</strong>
-                      </div>
-                      <div className="dashboard-surface-command-list">
-                        {railPrimaryQuickLinks.map((item, index) => (
-                          <Link
-                            key={item.href}
-                            href={item.href}
-                            className="dashboard-surface-command-link"
-                            data-reveal
-                            data-reveal-delay={String(95 + index * 30)}
-                          >
-                            <div className="dashboard-surface-command-link-main">
-                              <span className="dashboard-stream-link-kicker">{item.tag}</span>
-                              <strong className="dashboard-stream-link-title">{item.title}</strong>
-                              <span className="dashboard-stream-link-copy">{item.description}</span>
-                            </div>
-                            <span className="dashboard-stream-link-cta">{item.cta}</span>
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="dashboard-surface-ops-cluster">
-                      <div className="dashboard-surface-ops-cluster-head">
-                        <strong>Financeiro e guia</strong>
-                      </div>
-                      <div className="dashboard-surface-command-list">
-                        {railSecondaryQuickLinks.map((item, index) => (
-                          <Link
-                            key={item.href}
-                            href={item.href}
-                            className="dashboard-surface-command-link"
-                            data-reveal
-                            data-reveal-delay={String(155 + index * 30)}
-                          >
-                            <div className="dashboard-surface-command-link-main">
-                              <span className="dashboard-stream-link-kicker">{item.tag}</span>
-                              <strong className="dashboard-stream-link-title">{item.title}</strong>
-                              <span className="dashboard-stream-link-copy">{item.description}</span>
-                            </div>
-                            <span className="dashboard-stream-link-cta">{item.cta}</span>
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </section>
 
                   <section className="dashboard-surface-usage dashboard-operating-ledger">
                     <div className="dashboard-surface-usage-grid">
