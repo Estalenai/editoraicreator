@@ -21151,8 +21151,8 @@ body {
   display: grid;
   grid-template-columns: minmax(0, 0.92fr) minmax(0, 0.78fr) minmax(280px, 0.58fr);
   grid-template-areas:
-    "command command account"
-    "command command account"
+    "command command command"
+    "command command command"
     "status status status"
     "runway support support"
     "actions ledger ledger"
@@ -21163,10 +21163,6 @@ body {
 
 .dashboard-operating-grid > .dashboard-operating-command {
   grid-area: command;
-}
-
-.dashboard-operating-grid > .dashboard-operating-account {
-  grid-area: account;
 }
 
 .dashboard-operating-grid > .dashboard-operating-runway {
@@ -21226,7 +21222,7 @@ body {
 .dashboard-surface-hero-intro {
   display: grid;
   gap: 14px;
-  max-width: min(100%, 35rem);
+  max-width: min(100%, 32rem);
 }
 
 .dashboard-surface-hero .hero-title-stack {
@@ -21235,8 +21231,8 @@ body {
 
 .dashboard-surface-hero h1 {
   max-width: 7.5ch;
-  font-size: clamp(3rem, 4vw, 4.4rem);
-  letter-spacing: -0.062em;
+  font-size: clamp(2.45rem, 3.1vw, 3.55rem);
+  letter-spacing: -0.058em;
 }
 
 .dashboard-surface-hero-badges {
@@ -21253,50 +21249,149 @@ body {
 
 .dashboard-surface-command {
   display: grid;
-  gap: clamp(16px, 1.5vw, 22px);
+  gap: clamp(18px, 1.7vw, 26px);
   padding-top: 0;
   border-top: 0;
 }
 
+.dashboard-command-field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(330px, 0.72fr);
+  gap: clamp(26px, 3.2vw, 58px);
+  align-items: end;
+}
+
 .dashboard-surface-command-copy {
   display: grid;
-  gap: 10px;
-  max-width: 52rem;
+  gap: 12px;
+  max-width: 48rem;
 }
 
 .dashboard-surface-command-copy strong {
-  max-width: 12ch;
-  font-size: clamp(3.35rem, 5.5vw, 6rem);
-  line-height: 0.92;
+  max-width: 15ch;
+  font-size: clamp(3.05rem, 4.85vw, 5.45rem);
+  line-height: 0.9;
   letter-spacing: -0.055em;
   color: var(--ea-text-strong);
 }
 
 .dashboard-surface-command-copy p {
   margin: 0;
-  max-width: 31rem;
+  max-width: 35rem;
   font-size: 15px;
   line-height: 1.68;
   color: var(--ea-text-muted);
 }
 
+.dashboard-command-live-panel {
+  display: grid;
+  gap: clamp(12px, 1.2vw, 18px);
+  min-width: 0;
+  padding: clamp(4px, 0.6vw, 8px) 0 0 clamp(18px, 2vw, 30px);
+  border-left: 1px solid rgba(191, 239, 255, 0.055);
+}
+
+.dashboard-command-live-head {
+  display: grid;
+  gap: 6px;
+}
+
+.dashboard-command-live-head strong {
+  font-size: clamp(1.8rem, 2.3vw, 2.65rem);
+  line-height: 0.94;
+  letter-spacing: -0.052em;
+  color: var(--ea-text-strong);
+}
+
+.dashboard-command-live-head span:last-child,
+.dashboard-command-live-signal span:last-child {
+  color: var(--ea-text-muted);
+}
+
+.dashboard-command-live-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 clamp(14px, 1.35vw, 22px);
+  align-items: start;
+}
+
+.dashboard-command-live-signal {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  padding-top: clamp(11px, 1vw, 14px);
+  border-top: 1px solid rgba(191, 239, 255, 0.045);
+}
+
+.dashboard-command-live-signal strong {
+  font-size: clamp(1.35rem, 1.9vw, 2rem);
+  line-height: 1;
+  letter-spacing: -0.045em;
+  color: var(--ea-text-strong);
+}
+
+.dashboard-command-live-next {
+  grid-column: 1 / -1;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px clamp(14px, 1.3vw, 22px);
+  align-items: end;
+}
+
+.dashboard-command-live-next > span,
+.dashboard-command-live-next > strong {
+  grid-column: 1;
+}
+
+.dashboard-command-live-next .dashboard-inline-action {
+  grid-column: 2;
+  grid-row: 2 / span 2;
+  align-self: end;
+  white-space: nowrap;
+}
+
+.dashboard-command-live-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 2px;
+}
+
+.dashboard-command-live-actions .btn-ea {
+  min-height: 38px;
+  padding-inline: 16px;
+}
+
 .dashboard-surface-command-sequence {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  position: relative;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: clamp(12px, 1.2vw, 18px);
-  padding-top: clamp(8px, 0.8vw, 12px);
+  padding-top: clamp(10px, 1vw, 16px);
   border-top: 0;
+}
+
+.dashboard-surface-command-sequence::before {
+  content: "";
+  position: absolute;
+  top: calc(clamp(10px, 1vw, 16px) + 17px);
+  left: 18px;
+  right: 18px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(94, 229, 255, 0.34), rgba(191, 239, 255, 0.1), rgba(248, 224, 96, 0.22));
+  pointer-events: none;
 }
 
 .dashboard-surface-command-step {
   display: grid;
+  position: relative;
+  z-index: 1;
   gap: 9px;
   min-width: 0;
 }
 
 .dashboard-surface-command-step + .dashboard-surface-command-step {
-  padding-left: clamp(12px, 1.2vw, 16px);
-  border-left: 1px solid rgba(191, 239, 255, 0.045);
+  padding-left: 0;
+  border-left: 0;
 }
 
 .dashboard-surface-step-index,
@@ -22008,11 +22103,17 @@ body {
   .dashboard-operating-grid {
     grid-template-columns: minmax(0, 1fr) minmax(300px, 0.68fr);
     grid-template-areas:
-      "command account"
+      "command command"
+      "status status"
       "runway support"
       "actions ledger"
       "actions guide";
     column-gap: clamp(18px, 2vw, 28px);
+  }
+
+  .dashboard-command-field {
+    grid-template-columns: minmax(0, 0.92fr) minmax(300px, 0.74fr);
+    gap: clamp(22px, 2.4vw, 34px);
   }
 }
 
@@ -22021,7 +22122,6 @@ body {
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
       "command"
-      "account"
       "status"
       "runway"
       "actions"
@@ -22073,6 +22173,8 @@ body {
 }
 
 @media (max-width: 1120px) {
+  .dashboard-command-field,
+  .dashboard-command-live-grid,
   .dashboard-surface-command-sequence,
   .dashboard-surface-ribbon,
   .dashboard-surface-core-grid,
@@ -22083,6 +22185,27 @@ body {
   .dashboard-surface-ops-band > .dashboard-surface-ops-grid,
   .dashboard-surface-ops-band .dashboard-surface-command-list {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dashboard-command-live-panel {
+    padding-left: 0;
+    padding-top: 18px;
+    border-left: 0;
+    border-top: 1px solid rgba(191, 239, 255, 0.045);
+  }
+
+  .dashboard-command-live-next {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dashboard-command-live-next .dashboard-inline-action {
+    grid-column: 1;
+    grid-row: auto;
+    justify-self: start;
+  }
+
+  .dashboard-surface-command-sequence::before {
+    display: none;
   }
 
   .dashboard-surface-command-step + .dashboard-surface-command-step,
@@ -22113,6 +22236,33 @@ body {
   }
 
   .dashboard-surface-context-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1041px) and (max-width: 1120px) {
+  .dashboard-command-field {
+    grid-template-columns: minmax(0, 0.96fr) minmax(300px, 0.68fr);
+    gap: 22px;
+    align-items: end;
+  }
+
+  .dashboard-command-live-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboard-command-live-panel {
+    padding-top: 0;
+    padding-left: 18px;
+    border-top: 0;
+    border-left: 1px solid rgba(191, 239, 255, 0.055);
+  }
+
+  .dashboard-command-live-next {
+    grid-column: 1 / -1;
+  }
+
+  .dashboard-surface-command-sequence {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -22179,8 +22329,8 @@ body {
   }
 
   .dashboard-surface-command-copy strong {
-    max-width: 12.5ch;
-    font-size: clamp(3.05rem, 7vw, 4.45rem);
+    max-width: 14ch;
+    font-size: clamp(2.85rem, 6.6vw, 4.1rem);
     line-height: 0.94;
   }
 
@@ -22190,7 +22340,7 @@ body {
   }
 
   .dashboard-surface-command-sequence {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 0 clamp(12px, 2vw, 18px);
     padding-top: 16px;
   }
@@ -22231,6 +22381,11 @@ body {
 
   .dashboard-surface-context-actions .btn-ea {
     min-height: 40px;
+  }
+
+  .dashboard-command-live-panel {
+    padding-top: 0;
+    border-top: 0;
   }
 
   .dashboard-surface-focus-grid {
@@ -22356,8 +22511,8 @@ body {
   }
 
   .dashboard-surface-command-copy strong {
-    max-width: 12.8ch;
-    font-size: clamp(2.25rem, 10vw, 2.9rem);
+    max-width: 13.8ch;
+    font-size: clamp(2.22rem, 9.4vw, 2.85rem);
     line-height: 0.94;
   }
 
@@ -22387,6 +22542,10 @@ body {
     padding-left: 0;
     border-left: 0;
     border-top: 1px solid rgba(191, 239, 255, 0.045);
+  }
+
+  .dashboard-command-live-actions .btn-ea {
+    flex: 1 1 140px;
   }
 
   .dashboard-surface-step-index,

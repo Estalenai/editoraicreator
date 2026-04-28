@@ -503,27 +503,81 @@ export default function DashboardPage() {
                 <section className="dashboard-operating-grid" aria-label="Superfície operacional do Editor AI Creator">
                   <header className="dashboard-surface-hero dashboard-operating-command" data-reveal data-reveal-delay="35">
                     <div className="dashboard-surface-command" data-reveal data-reveal-delay="70">
-                      <div className="dashboard-surface-command-copy">
-                        <div className="dashboard-surface-hero-intro">
-                          <div className="hero-title-stack">
-                            <p className="section-kicker">Surface operacional</p>
-                            <h1 className="heading-reset">Dashboard</h1>
-                            <p className="section-header-copy hero-copy-compact">
-                              Criacao, revisao e retomada permanecem no mesmo campo operacional.
-                            </p>
+                      <div className="dashboard-command-field">
+                        <div className="dashboard-surface-command-copy">
+                          <div className="dashboard-surface-hero-intro">
+                            <div className="hero-title-stack">
+                              <p className="section-kicker">Surface operacional</p>
+                              <h1 className="heading-reset">Dashboard</h1>
+                              <p className="section-header-copy hero-copy-compact">
+                                Criacao, revisao e retomada permanecem no mesmo campo operacional.
+                              </p>
+                            </div>
+                            <div className="hero-meta-row dashboard-surface-hero-badges">
+                              <span className="premium-badge dashboard-operating-badge">Plano: {planLabelDisplay}</span>
+                              <span className="premium-badge premium-badge-warning">
+                                {loading ? "Conta em sincronizacao" : "Historico confirmado no backend"}
+                              </span>
+                            </div>
                           </div>
-                          <div className="hero-meta-row dashboard-surface-hero-badges">
-                            <span className="premium-badge dashboard-operating-badge">Plano: {planLabelDisplay}</span>
-                            <span className="premium-badge premium-badge-warning">
-                              {loading ? "Conta em sincronizacao" : "Historico confirmado no backend"}
-                            </span>
-                          </div>
+                          <span className="dashboard-hero-flow-label">Command surface</span>
+                          <strong>O ciclo de criacao ja esta em movimento.</strong>
+                          <p>
+                            Creator, Editor, Projetos e Saida aparecem juntos para retomar a proxima entrega sem trocar de contexto.
+                          </p>
                         </div>
-                        <span className="dashboard-hero-flow-label">Ciclo criativo</span>
-                        <strong>Creator, editor e saida conduzem o mesmo eixo principal do produto.</strong>
-                        <p>
-                          Abra, lapide e retome sem perder o contexto que move a proxima entrega.
-                        </p>
+
+                        <aside className="dashboard-command-live-panel dashboard-operating-account" aria-label="Sinais operacionais da conta">
+                          <div className="dashboard-command-live-head">
+                            <span className="dashboard-overview-label">Conta ativa</span>
+                            <strong>{planLabelDisplay}</strong>
+                            <span>{emailDisplay}</span>
+                          </div>
+
+                          <div className="dashboard-command-live-grid">
+                            <div className="dashboard-command-live-signal">
+                              <span className="dashboard-overview-label">{CREATOR_COINS_PUBLIC_NAME}</span>
+                              <strong>{walletSummaryDisplay}</strong>
+                              <span>Saldo reconciliado dentro do fluxo.</span>
+                            </div>
+                            <div className="dashboard-command-live-signal">
+                              <span className="dashboard-overview-label">Continuidade</span>
+                              <strong>{continuityValue}</strong>
+                              <span>{continuityDetail}</span>
+                            </div>
+                            <div className="dashboard-command-live-signal dashboard-command-live-next">
+                              <span className="dashboard-overview-label">Proximo movimento</span>
+                              <strong>{nextActionTitleDisplay}</strong>
+                              <span>{nextActionDescriptionDisplay}</span>
+                              {nextAction.href.startsWith("/editor") ? (
+                                <EditorRouteLink href={nextAction.href} className="dashboard-inline-action">
+                                  {nextActionCtaDisplay}
+                                </EditorRouteLink>
+                              ) : (
+                                <Link href={nextAction.href} className="dashboard-inline-action">
+                                  {nextActionCtaDisplay}
+                                </Link>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="dashboard-command-live-actions">
+                            <button
+                              onClick={async () => {
+                                await onSyncSubscription();
+                                await refresh();
+                                await loadUsage();
+                              }}
+                              disabled={syncingSubscription || loading}
+                              className="btn-ea btn-secondary"
+                            >
+                              {syncingSubscription ? "Sincronizando..." : "Sincronizar"}
+                            </button>
+                            <button onClick={onLogout} className="btn-ea btn-ghost">
+                              Sair
+                            </button>
+                          </div>
+                        </aside>
                       </div>
 
                       <div className="dashboard-surface-command-sequence">
@@ -546,9 +600,17 @@ export default function DashboardPage() {
                         <div className="dashboard-surface-command-step">
                           <span className="dashboard-surface-step-index">03</span>
                           <div className="dashboard-surface-command-step-copy">
-                            <span className="dashboard-hero-flow-label">Projetos + saida</span>
-                            <strong>fecha o ciclo</strong>
-                            <span>O que foi salvo e entregue continua no mesmo eixo.</span>
+                            <span className="dashboard-hero-flow-label">Projetos</span>
+                            <strong>preserva o eixo</strong>
+                            <span>O que foi salvo continua pronto para retomada.</span>
+                          </div>
+                        </div>
+                        <div className="dashboard-surface-command-step">
+                          <span className="dashboard-surface-step-index">04</span>
+                          <div className="dashboard-surface-command-step-copy">
+                            <span className="dashboard-hero-flow-label">Saida</span>
+                            <strong>confirma a entrega</strong>
+                            <span>Publicacao, historico e saldo fecham o mesmo ciclo.</span>
                           </div>
                         </div>
                       </div>
@@ -657,58 +719,6 @@ export default function DashboardPage() {
                           </div>
                         ) : null}
                       </section>
-
-                  <section className="dashboard-surface-context dashboard-surface-context-band dashboard-operating-account" data-reveal data-reveal-delay="90">
-                <div className="dashboard-surface-context-row dashboard-surface-context-row-primary">
-                  <span className="dashboard-overview-label">Conta ativa</span>
-                  <strong>{planLabelDisplay}</strong>
-                  <span>{emailDisplay}</span>
-                </div>
-
-                <div className="dashboard-surface-context-grid">
-                  <div className="dashboard-surface-context-card">
-                    <span className="dashboard-overview-label">{CREATOR_COINS_PUBLIC_NAME}</span>
-                    <strong>{walletSummaryDisplay}</strong>
-                    <span>Saldo confirmado e leitura financeira reconciliada.</span>
-                  </div>
-                  <div className="dashboard-surface-context-card">
-                    <span className="dashboard-overview-label">Continuidade</span>
-                    <strong>{continuityValue}</strong>
-                    <span>{continuityDetail}</span>
-                  </div>
-                  <div className="dashboard-surface-context-card">
-                    <span className="dashboard-overview-label">Próximo passo</span>
-                    <strong>{nextActionTitleDisplay}</strong>
-                    <span>{nextActionDescriptionDisplay}</span>
-                    {nextAction.href.startsWith("/editor") ? (
-                      <EditorRouteLink href={nextAction.href} className="dashboard-inline-action">
-                        {nextActionCtaDisplay}
-                      </EditorRouteLink>
-                    ) : (
-                      <Link href={nextAction.href} className="dashboard-inline-action">
-                        {nextActionCtaDisplay}
-                      </Link>
-                    )}
-                  </div>
-                </div>
-
-                <div className="dashboard-surface-context-actions">
-                  <button
-                    onClick={async () => {
-                      await onSyncSubscription();
-                      await refresh();
-                      await loadUsage();
-                    }}
-                    disabled={syncingSubscription || loading}
-                    className="btn-ea btn-secondary"
-                  >
-                    {syncingSubscription ? "Sincronizando..." : "Sincronizar assinatura"}
-                  </button>
-                  <button onClick={onLogout} className="btn-ea btn-ghost">
-                    Sair
-                  </button>
-                </div>
-                  </section>
 
                   {error || usageError ? (
                     <div className="dashboard-status-stack dashboard-surface-inline-status">
