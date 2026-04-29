@@ -21404,6 +21404,7 @@ body {
 }
 
 .dashboard-command-bridge {
+  grid-column: 1 / -1;
   margin-top: clamp(-6px, -0.4vw, -2px);
   padding-top: clamp(14px, 1.25vw, 20px);
 }
