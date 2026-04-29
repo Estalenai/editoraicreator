@@ -21419,6 +21419,20 @@ body {
   padding-bottom: 0;
 }
 
+@media (max-width: 900px) {
+  .dashboard-operating-command .dashboard-ecosystem-stage {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .dashboard-operating-command .dashboard-ecosystem-state {
+    padding-left: 0;
+    padding-top: 10px;
+    border-left: 0;
+    border-top: 1px solid rgba(191, 239, 255, 0.04);
+  }
+}
+
 .dashboard-surface-step-index,
 .dashboard-surface-usage-route-index,
 .dashboard-surface-onboarding-step-index {
