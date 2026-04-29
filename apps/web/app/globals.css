@@ -21896,9 +21896,9 @@ body {
 .dashboard-surface-continuity {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: clamp(10px, 1vw, 16px);
+  gap: clamp(8px, 0.85vw, 14px);
   align-items: start;
-  margin-top: clamp(-22px, -1.35vw, -10px);
+  margin-top: clamp(-38px, -2.4vw, -20px);
   padding-top: 0;
   border-top: 0;
 }
@@ -21917,13 +21917,13 @@ body {
 .dashboard-surface-usage-grid {
   display: grid;
   grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-  gap: clamp(14px, 1.4vw, 22px);
+  gap: clamp(8px, 0.9vw, 14px) clamp(14px, 1.35vw, 22px);
   align-items: start;
 }
 
 .dashboard-surface-usage-copy {
   display: grid;
-  gap: clamp(8px, 0.8vw, 12px);
+  gap: clamp(6px, 0.65vw, 10px);
   max-width: none;
 }
 
@@ -21935,10 +21935,10 @@ body {
 }
 
 .dashboard-surface-usage-strip {
-  grid-template-columns: minmax(116px, 0.34fr) minmax(0, 1fr) auto;
-  align-items: end;
+  grid-template-columns: minmax(72px, 0.2fr) minmax(0, 1fr) auto;
+  align-items: center;
   gap: clamp(10px, 1.2vw, 16px);
-  padding: 0 0 clamp(8px, 0.8vw, 12px);
+  padding: 0;
 }
 
 .dashboard-surface-usage-hero-main {
@@ -21947,10 +21947,10 @@ body {
 }
 
 .dashboard-surface-usage-hero-main strong {
-  font-size: clamp(1.65rem, 2.1vw, 2.4rem);
-  line-height: 0.9;
-  letter-spacing: -0.06em;
-  color: var(--ea-text-strong);
+  font-size: clamp(1.15rem, 1.35vw, 1.48rem);
+  line-height: 1;
+  letter-spacing: -0.035em;
+  color: rgba(225, 242, 255, 0.82);
 }
 
 .dashboard-surface-usage-strip > p {
