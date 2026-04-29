@@ -107,14 +107,15 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
 
   return (
     <section
-      className="dashboard-surface-onboarding dashboard-operating-guide"
+      className="dashboard-surface-onboarding dashboard-continuity-guide"
+      aria-label="Próxima entrada do ciclo operacional"
       data-reveal
       data-reveal-delay="90"
     >
       <div className="dashboard-surface-onboarding-head">
         <div className="dashboard-surface-field-note-copy">
-          <strong>Continue o ciclo</strong>
-          <span>Entrada, revisão e saldo seguem juntos.</span>
+          <strong>Próxima entrada do mesmo ciclo</strong>
+          <span>Creators, revisão e saldo permanecem no canvas.</span>
         </div>
         <button onClick={dismiss} className="btn-ea btn-ghost btn-sm">
           Entendi
@@ -136,37 +137,37 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
         </div>
       </div>
 
-      <div className="dashboard-surface-onboarding-grid">
-        <ol className="dashboard-surface-onboarding-steps">
-          <li className="dashboard-surface-onboarding-step" data-reveal data-reveal-delay="120">
+      <div className="dashboard-continuity-guide-grid">
+        <div className="dashboard-continuity-route" aria-label="Fluxo contínuo recomendado">
+          <div className="dashboard-continuity-route-step" data-reveal data-reveal-delay="120">
             <span className="dashboard-surface-onboarding-step-index">01</span>
             <div className="dashboard-surface-onboarding-step-copy">
               <strong>Escolha</strong>
               <span>Post, Scripts ou Clips.</span>
             </div>
-          </li>
-          <li className="dashboard-surface-onboarding-step" data-reveal data-reveal-delay="160">
+          </div>
+          <div className="dashboard-continuity-route-step" data-reveal data-reveal-delay="160">
             <span className="dashboard-surface-onboarding-step-index">02</span>
             <div className="dashboard-surface-onboarding-step-copy">
               <strong>Revise</strong>
               <span>Consumo previsto.</span>
             </div>
-          </li>
-          <li className="dashboard-surface-onboarding-step" data-reveal data-reveal-delay="200">
+          </div>
+          <div className="dashboard-continuity-route-step" data-reveal data-reveal-delay="200">
             <span className="dashboard-surface-onboarding-step-index">03</span>
             <div className="dashboard-surface-onboarding-step-copy">
-              <strong>Finalize</strong>
+              <strong>Continue</strong>
               <span>Projeto e editor.</span>
             </div>
-          </li>
-        </ol>
+          </div>
+        </div>
 
-        <div className="dashboard-surface-onboarding-paths">
+        <div className="dashboard-continuity-paths">
           {OBJECTIVE_PATHS.map((item, index) => (
             <Link
               key={item.key}
               href={item.href}
-              className="dashboard-surface-onboarding-path"
+              className="dashboard-continuity-path"
               onClick={dismiss}
               data-reveal
               data-reveal-delay={String(80 + index * 55)}
@@ -182,7 +183,7 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
         </div>
       </div>
 
-      <div className="dashboard-surface-onboarding-summary">
+      <div className="dashboard-continuity-summary">
         <div className="dashboard-surface-onboarding-summary-copy">
           <strong>{CREATOR_COINS_PUBLIC_NAME}</strong>
           <div className="helper-text-ea">{summary}. Estimativa antes; histórico depois.</div>
