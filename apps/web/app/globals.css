@@ -21162,16 +21162,20 @@ body {
     "status status status"
     "ecosystem ecosystem ecosystem"
     "continuity continuity continuity";
-  gap: clamp(10px, 1vw, 16px) clamp(18px, 1.8vw, 30px);
+  gap: clamp(4px, 0.55vw, 8px) clamp(18px, 1.8vw, 30px);
   align-items: start;
 }
 
 .dashboard-operating-grid > .dashboard-operating-command {
   grid-area: command;
+  position: relative;
+  z-index: 2;
 }
 
 .dashboard-operating-grid > .dashboard-operating-ecosystem {
   grid-area: ecosystem;
+  position: relative;
+  z-index: 1;
 }
 
 .dashboard-operating-grid > .dashboard-operating-continuity {
@@ -21254,7 +21258,7 @@ body {
 
 .dashboard-surface-command {
   display: grid;
-  gap: clamp(18px, 1.7vw, 26px);
+  gap: clamp(14px, 1.35vw, 20px);
   padding-top: 0;
   border-top: 0;
 }
@@ -21371,7 +21375,7 @@ body {
   position: relative;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: clamp(12px, 1.2vw, 18px);
-  padding-top: clamp(10px, 1vw, 16px);
+  padding-top: clamp(8px, 0.85vw, 13px);
   border-top: 0;
 }
 
@@ -21397,6 +21401,21 @@ body {
 .dashboard-surface-command-step + .dashboard-surface-command-step {
   padding-left: 0;
   border-left: 0;
+}
+
+.dashboard-command-bridge {
+  margin-top: clamp(-6px, -0.4vw, -2px);
+  padding-top: clamp(14px, 1.25vw, 20px);
+}
+
+.dashboard-operating-command .dashboard-ecosystem-stage {
+  grid-template-columns: minmax(0, 0.94fr) minmax(320px, 0.86fr);
+  align-items: center;
+}
+
+.dashboard-operating-command .dashboard-surface-focus-lead,
+.dashboard-operating-command .dashboard-surface-focus-empty {
+  padding-bottom: 0;
 }
 
 .dashboard-surface-step-index,
@@ -21521,9 +21540,10 @@ body {
 
 .dashboard-surface-ecosystem {
   display: grid;
-  gap: clamp(18px, 2vw, 30px);
-  padding-top: clamp(4px, 0.5vw, 8px);
-  border-top: 1px solid rgba(191, 239, 255, 0.018);
+  gap: clamp(12px, 1.35vw, 20px);
+  margin-top: clamp(-20px, -1.3vw, -10px);
+  padding-top: 0;
+  border-top: 0;
 }
 
 .dashboard-ecosystem-stage {
@@ -21561,8 +21581,8 @@ body {
   grid-template-columns: minmax(210px, 0.34fr) minmax(0, 1fr);
   gap: clamp(18px, 2vw, 30px);
   align-items: start;
-  padding-top: clamp(18px, 1.8vw, 26px);
-  border-top: 1px solid rgba(191, 239, 255, 0.03);
+  padding-top: clamp(8px, 0.9vw, 14px);
+  border-top: 0;
 }
 
 .dashboard-ecosystem-flow-note {
@@ -21608,7 +21628,7 @@ body {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px clamp(12px, 1vw, 16px);
-  padding-top: clamp(2px, 0.4vw, 6px);
+  padding-top: 0;
 }
 
 .dashboard-ecosystem-support {
@@ -21616,8 +21636,8 @@ body {
   grid-template-columns: minmax(220px, 0.55fr) minmax(0, 0.86fr) minmax(0, 1.16fr);
   gap: clamp(18px, 2vw, 30px);
   align-items: start;
-  padding-top: clamp(18px, 1.8vw, 26px);
-  border-top: 1px solid rgba(191, 239, 255, 0.03);
+  padding-top: clamp(8px, 0.9vw, 14px);
+  border-top: 0;
 }
 
 .dashboard-ecosystem-support-note {
@@ -21875,10 +21895,11 @@ body {
 .dashboard-surface-continuity {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: clamp(16px, 1.7vw, 26px);
+  gap: clamp(10px, 1vw, 16px);
   align-items: start;
-  padding-top: clamp(4px, 0.6vw, 10px);
-  border-top: 1px solid rgba(191, 239, 255, 0.018);
+  margin-top: clamp(-22px, -1.35vw, -10px);
+  padding-top: 0;
+  border-top: 0;
 }
 
 .dashboard-continuity-ledger,
@@ -21908,8 +21929,8 @@ body {
 .dashboard-surface-usage-hero {
   display: grid;
   gap: 8px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid rgba(191, 239, 255, 0.03);
+  padding-bottom: 4px;
+  border-bottom: 0;
 }
 
 .dashboard-surface-usage-strip {
@@ -22041,15 +22062,15 @@ body {
   padding: clamp(4px, 0.4vw, 8px) 0 0;
   background: transparent !important;
   border: 0 !important;
-  border-top: 1px solid rgba(191, 239, 255, 0.012) !important;
+  border-top: 0 !important;
   box-shadow: none !important;
 }
 
 .dashboard-continuity-guide {
   display: grid;
   gap: clamp(12px, 1.2vw, 18px);
-  padding-top: clamp(10px, 1vw, 14px) !important;
-  border-top: 1px solid rgba(191, 239, 255, 0.024) !important;
+  padding-top: clamp(4px, 0.5vw, 8px) !important;
+  border-top: 0 !important;
 }
 
 .dashboard-continuity-guide-grid {

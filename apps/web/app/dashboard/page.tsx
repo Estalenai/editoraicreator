@@ -507,7 +507,7 @@ export default function DashboardPage() {
                         <div className="dashboard-surface-command-copy">
                           <div className="dashboard-surface-hero-intro">
                             <div className="hero-title-stack">
-                              <p className="section-kicker">Surface operacional</p>
+                              <p className="section-kicker">Workspace ativo</p>
                               <h1 className="heading-reset">Dashboard</h1>
                               <p className="section-header-copy hero-copy-compact">
                                 Criacao, revisao e retomada permanecem no mesmo campo operacional.
@@ -520,7 +520,7 @@ export default function DashboardPage() {
                               </span>
                             </div>
                           </div>
-                          <span className="dashboard-hero-flow-label">Command surface</span>
+                          <span className="dashboard-hero-flow-label">Ciclo em operacao</span>
                           <strong>O ciclo de criacao ja esta em movimento.</strong>
                           <p>
                             Creator, Editor, Projetos e Saida aparecem juntos para retomar a proxima entrega sem trocar de contexto.
@@ -613,12 +613,8 @@ export default function DashboardPage() {
                             <span>Publicacao, historico e saldo fecham o mesmo ciclo.</span>
                           </div>
                         </div>
-                      </div>
-                    </div>
-                  </header>
 
-                      <section className="dashboard-surface-ecosystem dashboard-operating-ecosystem" data-reveal data-reveal-delay="140">
-                        <div className="dashboard-ecosystem-stage">
+                        <div className="dashboard-command-bridge dashboard-ecosystem-stage">
                           <div className="dashboard-surface-focus-lead-wrap dashboard-ecosystem-lead">
                             {loading ? (
                               <div className="dashboard-surface-focus-lead dashboard-surface-focus-skeleton">
@@ -629,7 +625,7 @@ export default function DashboardPage() {
                             ) : featuredProjectDisplay ? (
                               <EditorRouteLink href={`/editor/${featuredProjectDisplay.id}`} className="dashboard-surface-focus-lead">
                                 <div className="dashboard-stage-lead-topline">
-                                  <span className="dashboard-stage-lead-kicker">Em continuidade</span>
+                                  <span className="dashboard-stage-lead-kicker">Agora no fluxo</span>
                                   <span className="dashboard-stage-lead-pill">{featuredProjectDisplay.stageLabel}</span>
                                 </div>
                                 <strong className="dashboard-stage-lead-title">{featuredProjectDisplay.displayTitle}</strong>
@@ -646,7 +642,7 @@ export default function DashboardPage() {
                               </EditorRouteLink>
                             ) : (
                               <div className="dashboard-surface-focus-lead dashboard-surface-focus-empty">
-                                <span className="dashboard-stage-lead-kicker">Em continuidade</span>
+                                <span className="dashboard-stage-lead-kicker">Agora no fluxo</span>
                                 <strong>A trilha ganha peso quando um Creator vira projeto real.</strong>
                                 <p>
                                   Abra Creators, salve a primeira saída e use Projetos para continuar no editor
@@ -691,7 +687,11 @@ export default function DashboardPage() {
                             </div>
                           </div>
                         </div>
+                      </div>
+                    </div>
+                  </header>
 
+                  <section className="dashboard-surface-ecosystem dashboard-operating-ecosystem" data-reveal data-reveal-delay="140">
                         {loading ? (
                           <div className="dashboard-ecosystem-ribbon">
                             {Array.from({ length: 3 }).map((_, index) => (
@@ -856,7 +856,7 @@ export default function DashboardPage() {
                         <div className="dashboard-surface-usage-copy">
                           <div className="dashboard-surface-usage-hero dashboard-surface-usage-strip">
                             <div className="dashboard-surface-usage-hero-main">
-                              <span className="dashboard-stage-stat-label">Ledger vivo</span>
+                              <span className="dashboard-stage-stat-label">Historico</span>
                               <strong>{totalUsageDisplay}</strong>
                             </div>
                             <p>{usageLeadInsight}</p>
