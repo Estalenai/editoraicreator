@@ -21028,6 +21028,12 @@ body {
   color: rgba(236, 247, 255, 0.88);
 }
 
+.app-shell-frame:has(.dashboard-surface-page) .dashboard-stage-lead-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+}
+
 .app-shell-frame:has(.dashboard-surface-page) .dashboard-stream-link-copy,
 .app-shell-frame:has(.dashboard-surface-page) .dashboard-wallet-row-main span,
 .app-shell-frame:has(.dashboard-surface-page) .dashboard-surface-onboarding-step span,
