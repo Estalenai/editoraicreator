@@ -23055,19 +23055,28 @@ body {
   }
 
   .dashboard-ecosystem-ribbon {
-    display: flex;
-    gap: 12px;
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    scrollbar-width: none;
-  }
-
-  .dashboard-ecosystem-ribbon::-webkit-scrollbar {
-    display: none;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 12px;
+    overflow: visible;
   }
 
   .dashboard-ecosystem-ribbon > * {
-    min-width: min(238px, 78vw);
+    min-width: 0;
+  }
+
+  .dashboard-ecosystem-ribbon > *:nth-child(even) {
+    padding-left: 12px;
+    border-left: 1px solid rgba(191, 239, 255, 0.045);
+  }
+
+  .dashboard-ecosystem-ribbon > *:nth-child(n + 3) {
+    padding-top: 10px;
+    border-top: 1px solid rgba(191, 239, 255, 0.045);
+  }
+
+  .dashboard-ecosystem-ribbon .dashboard-stream-link-copy {
+    display: none;
   }
 
   .dashboard-ecosystem-support {
@@ -23121,10 +23130,14 @@ body {
     justify-self: start;
   }
 
-  .dashboard-surface-usage-signals,
-  .dashboard-continuity-guide .dashboard-surface-onboarding-signals {
+  .dashboard-surface-usage-signals {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0 8px;
+  }
+
+  .dashboard-continuity-guide .dashboard-surface-onboarding-signals {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 10px;
   }
 
   .dashboard-surface-context-card,
@@ -23151,6 +23164,22 @@ body {
   .dashboard-surface-usage-signals > *:first-child,
   .dashboard-surface-onboarding-signals > *:first-child,
   .dashboard-continuity-guide .dashboard-surface-onboarding-signals > *:first-child {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .dashboard-continuity-guide .dashboard-surface-onboarding-signal:nth-child(odd) {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .dashboard-continuity-guide .dashboard-surface-onboarding-signal:nth-child(n + 3) {
+    padding-top: 10px;
+    border-top: 1px solid rgba(191, 239, 255, 0.045);
+  }
+
+  .dashboard-continuity-guide .dashboard-surface-onboarding-signal-wallet {
+    grid-column: 1 / -1;
     padding-left: 0;
     border-left: 0;
   }
