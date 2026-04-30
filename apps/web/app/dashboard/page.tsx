@@ -607,49 +607,79 @@ export default function DashboardPage() {
                         </div>
 
                         <div className="dashboard-command-bridge dashboard-ecosystem-stage dashboard-studio-artifact">
-                          <div className="dashboard-surface-focus-lead-wrap dashboard-ecosystem-lead">
-                            {loading ? (
-                              <div className="dashboard-surface-focus-lead dashboard-surface-focus-skeleton">
-                                <div className="premium-skeleton premium-skeleton-line" style={{ width: "24%" }} />
-                                <div className="premium-skeleton premium-skeleton-line" style={{ width: "62%", marginTop: 18 }} />
-                                <div className="premium-skeleton premium-skeleton-line" style={{ width: "48%", marginTop: 16 }} />
+                          <div className="dashboard-surface-focus-lead-wrap dashboard-ecosystem-lead dashboard-studio-preview-shell">
+                            <div className="dashboard-studio-preview-topbar" aria-label="Camadas do artefato">
+                              <span>Brief</span>
+                              <span>Creator</span>
+                              <span>Editor</span>
+                              <span>Output</span>
+                            </div>
+
+                            <div className="dashboard-studio-preview-canvas">
+                              <div className="dashboard-studio-preview-beam" aria-hidden="true" />
+                              {loading ? (
+                                <div className="dashboard-surface-focus-lead dashboard-surface-focus-skeleton dashboard-studio-preview-brief">
+                                  <div className="premium-skeleton premium-skeleton-line" style={{ width: "24%" }} />
+                                  <div className="premium-skeleton premium-skeleton-line" style={{ width: "62%", marginTop: 18 }} />
+                                  <div className="premium-skeleton premium-skeleton-line" style={{ width: "48%", marginTop: 16 }} />
+                                </div>
+                              ) : featuredProjectDisplay ? (
+                                <EditorRouteLink href={`/editor/${featuredProjectDisplay.id}`} className="dashboard-surface-focus-lead dashboard-studio-preview-brief">
+                                  <div className="dashboard-stage-lead-topline">
+                                    <span className="dashboard-stage-lead-kicker">Artefato ativo</span>
+                                    <span className="dashboard-stage-lead-pill">{featuredProjectDisplay.stageLabel}</span>
+                                  </div>
+                                  <strong className="dashboard-stage-lead-title">{featuredProjectDisplay.displayTitle}</strong>
+                                  <p className="dashboard-stage-lead-copy">{featuredProjectDisplay.narrative}</p>
+                                  <div className="dashboard-stage-lead-meta">
+                                    <span>{featuredProjectDisplay.deliverableLabel}</span>
+                                    <span>{featuredProjectDisplay.statusLabel}</span>
+                                    {featuredProjectDisplay.reviewLabel ? <span>{featuredProjectDisplay.reviewLabel}</span> : null}
+                                  </div>
+                                  <div className="dashboard-stage-lead-footer">
+                                    <span className="dashboard-stage-lead-note">{featuredProjectDisplay.kindLabel}</span>
+                                    <span className="dashboard-stage-lead-action">Abrir no editor</span>
+                                  </div>
+                                </EditorRouteLink>
+                              ) : (
+                                <div className="dashboard-surface-focus-lead dashboard-surface-focus-empty dashboard-studio-preview-brief">
+                                  <span className="dashboard-stage-lead-kicker">Artefato inicial</span>
+                                  <strong>Creator vira projeto real.</strong>
+                                  <p>
+                                    Abra Creators, salve a primeira saída e continue no editor sem reiniciar o contexto.
+                                  </p>
+                                  <div className="dashboard-surface-focus-empty-actions">
+                                    <Link href="/creators" className="btn-link-ea btn-primary btn-sm">
+                                      Ir para Creators
+                                    </Link>
+                                    <EditorRouteLink href="/editor/new" className="btn-link-ea btn-ghost btn-sm">
+                                      Criar projeto manual
+                                    </EditorRouteLink>
+                                  </div>
+                                </div>
+                              )}
+
+                              <div className="dashboard-studio-preview-output" aria-label="Preview da entrega do estúdio">
+                                <div className="dashboard-studio-output-frame">
+                                  <span className="dashboard-studio-output-pulse" />
+                                  <div>
+                                    <span className="dashboard-stage-stat-label">Preview</span>
+                                    <strong>{featuredProjectDisplay?.deliverableLabel || "Primeira entrega"}</strong>
+                                  </div>
+                                </div>
+                                <div className="dashboard-studio-output-strips" aria-hidden="true">
+                                  <span />
+                                  <span />
+                                  <span />
+                                </div>
                               </div>
-                            ) : featuredProjectDisplay ? (
-                              <EditorRouteLink href={`/editor/${featuredProjectDisplay.id}`} className="dashboard-surface-focus-lead">
-                                <div className="dashboard-stage-lead-topline">
-                                  <span className="dashboard-stage-lead-kicker">Artefato ativo</span>
-                                  <span className="dashboard-stage-lead-pill">{featuredProjectDisplay.stageLabel}</span>
-                                </div>
-                                <strong className="dashboard-stage-lead-title">{featuredProjectDisplay.displayTitle}</strong>
-                                <p className="dashboard-stage-lead-copy">{featuredProjectDisplay.narrative}</p>
-                                <div className="dashboard-stage-lead-meta">
-                                  <span>{featuredProjectDisplay.deliverableLabel}</span>
-                                  <span>{featuredProjectDisplay.statusLabel}</span>
-                                  {featuredProjectDisplay.reviewLabel ? <span>{featuredProjectDisplay.reviewLabel}</span> : null}
-                                </div>
-                                <div className="dashboard-stage-lead-footer">
-                                  <span className="dashboard-stage-lead-note">{featuredProjectDisplay.kindLabel}</span>
-                                  <span className="dashboard-stage-lead-action">Abrir no editor</span>
-                                </div>
-                              </EditorRouteLink>
-                            ) : (
-                              <div className="dashboard-surface-focus-lead dashboard-surface-focus-empty">
-                                <span className="dashboard-stage-lead-kicker">Artefato inicial</span>
-                                <strong>O estúdio ganha forma quando um Creator vira projeto real.</strong>
-                                <p>
-                                  Abra Creators, salve a primeira saída e use Projetos para continuar no editor
-                                  sem recomeçar o fluxo.
-                                </p>
-                                <div className="dashboard-surface-focus-empty-actions">
-                                  <Link href="/creators" className="btn-link-ea btn-primary btn-sm">
-                                    Ir para Creators
-                                  </Link>
-                                  <EditorRouteLink href="/editor/new" className="btn-link-ea btn-ghost btn-sm">
-                                    Criar projeto manual
-                                  </EditorRouteLink>
-                                </div>
+
+                              <div className="dashboard-studio-preview-stream" aria-label="Estado do fluxo criativo">
+                                <span>Input sincronizado</span>
+                                <span>Revisão pronta</span>
+                                <span>{walletSummaryDisplay}</span>
                               </div>
-                            )}
+                            </div>
                           </div>
 
                           <div className="dashboard-ecosystem-state">
@@ -713,8 +743,8 @@ export default function DashboardPage() {
 
                         <div className="dashboard-ecosystem-flow">
                           <div className="dashboard-surface-head-note dashboard-ecosystem-flow-note dashboard-studio-section-note">
-                            <strong>Ferramentas orbitam o artefato, não a navegação.</strong>
-                            <span>Criação, revisão, projeto e saída ficam presos ao mesmo contexto.</span>
+                            <strong>Estúdio conectado.</strong>
+                            <span>Creators, editor, projetos e saída operam no mesmo artefato.</span>
                             <div className="dashboard-ecosystem-flow-note-links">
                               <Link href="/credits#credits-history" className="dashboard-stream-link-cta">
                                 Histórico no fluxo
@@ -767,15 +797,21 @@ export default function DashboardPage() {
                         <div className="dashboard-ecosystem-infrastructure dashboard-studio-infrastructure">
                           <div className="dashboard-ecosystem-account-column dashboard-studio-capacity-column">
                             <div className="dashboard-surface-wallet dashboard-ecosystem-wallet dashboard-studio-capacity">
-                              <div className="dashboard-surface-wallet-copy">
+                              <div className="dashboard-surface-wallet-copy dashboard-studio-capacity-head">
                                 <span className="dashboard-stream-link-kicker">{CREATOR_COINS_PUBLIC_NAME}</span>
                                 <strong className="dashboard-stream-link-title">{walletSummaryDisplay}</strong>
                                 <span className="dashboard-stream-link-copy">
-                                  O saldo acompanha a produção sem transformar o meio em painel financeiro.
+                                  Capacidade disponível para o próximo ciclo criativo.
                                 </span>
                               </div>
 
-                              <div className="dashboard-surface-wallet-breakdown">
+                              <div className="dashboard-studio-capacity-gauge" aria-hidden="true">
+                                <span />
+                                <span />
+                                <span />
+                              </div>
+
+                              <div className="dashboard-surface-wallet-breakdown dashboard-studio-capacity-breakdown">
                                 {walletBreakdown.map((item) => (
                                   <div key={item.coinType} className="dashboard-wallet-row">
                                     <div className="dashboard-wallet-row-main">

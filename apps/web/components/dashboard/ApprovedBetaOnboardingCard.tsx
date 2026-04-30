@@ -115,11 +115,17 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
       <div className="dashboard-surface-onboarding-head">
         <div className="dashboard-surface-field-note-copy">
           <strong>Próxima entrada do estúdio</strong>
-          <span>Escolha o formato e mantenha revisão, projeto e capacidade no mesmo canvas.</span>
+          <span>Formato, revisão e capacidade entram no mesmo pulso criativo.</span>
         </div>
         <button onClick={dismiss} className="btn-ea btn-ghost btn-sm">
           Entendi
         </button>
+      </div>
+
+      <div className="dashboard-studio-onboarding-radar" aria-hidden="true">
+        <span />
+        <span />
+        <span />
       </div>
 
       <div className="dashboard-surface-onboarding-signals">
