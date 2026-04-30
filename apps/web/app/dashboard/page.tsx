@@ -765,160 +765,166 @@ export default function DashboardPage() {
                         </div>
 
                         <div className="dashboard-ecosystem-infrastructure">
-                          <div className="dashboard-surface-field-note dashboard-ecosystem-support-note">
-                            <div className="dashboard-surface-field-note-copy">
-                              <strong>Plano, saldo e suporte acompanham o ciclo sem virar outra camada.</strong>
-                              <span>Conta, guia e créditos entram como infraestrutura silenciosa do workspace.</span>
-                            </div>
-                            <Link href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
-                              Ver historico
-                            </Link>
-                          </div>
-
-                          <div className="dashboard-surface-wallet dashboard-ecosystem-wallet">
-                            <div className="dashboard-surface-wallet-copy">
-                              <span className="dashboard-stream-link-kicker">{CREATOR_COINS_PUBLIC_NAME}</span>
-                              <strong className="dashboard-stream-link-title">{walletSummaryDisplay}</strong>
-                              <span className="dashboard-stream-link-copy">
-                                O saldo acompanha a produção sem transformar o meio em painel financeiro.
-                              </span>
+                          <div className="dashboard-ecosystem-account-column">
+                            <div className="dashboard-surface-field-note dashboard-ecosystem-support-note">
+                              <div className="dashboard-surface-field-note-copy">
+                                <strong>Plano, saldo e suporte acompanham o ciclo sem virar outra camada.</strong>
+                                <span>Conta, guia e créditos entram como infraestrutura silenciosa do workspace.</span>
+                              </div>
+                              <Link href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
+                                Ver historico
+                              </Link>
                             </div>
 
-                            <div className="dashboard-surface-wallet-breakdown">
-                              {walletBreakdown.map((item) => (
-                                <div key={item.coinType} className="dashboard-wallet-row">
-                                  <div className="dashboard-wallet-row-main">
-                                    <strong>{coinTypeLabel(item.coinType)}</strong>
-                                    <span>{item.description}</span>
-                                  </div>
-                                  <span className="dashboard-wallet-row-value">{item.amount.toLocaleString("pt-BR")}</span>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-
-                          <div className="dashboard-continuity-ledger dashboard-surface-usage dashboard-ecosystem-ledger">
-                            <div className="dashboard-surface-usage-grid">
-                              <div className="dashboard-surface-usage-copy">
-                                <div className="dashboard-surface-usage-hero dashboard-surface-usage-strip">
-                                  <div className="dashboard-surface-usage-hero-main">
-                                    <span className="dashboard-stage-stat-label">Historico</span>
-                                    <strong>{totalUsageDisplay}</strong>
-                                  </div>
-                                  <p>{usageLeadInsight}</p>
-                                  <Link href="/credits#credits-history" className="dashboard-stream-link-cta dashboard-surface-usage-inline-cta">
-                                    Histórico completo
-                                  </Link>
-                                </div>
-
-                                <div className="dashboard-surface-usage-signals">
-                                  {usageSignalItems.map((item) => (
-                                    <div key={item.label} className="dashboard-surface-usage-signal">
-                                      <span className="dashboard-stage-stat-label">{item.label}</span>
-                                      <strong>{item.value}</strong>
-                                      <span>{item.note}</span>
-                                    </div>
-                                  ))}
-                                </div>
+                            <div className="dashboard-surface-wallet dashboard-ecosystem-wallet">
+                              <div className="dashboard-surface-wallet-copy">
+                                <span className="dashboard-stream-link-kicker">{CREATOR_COINS_PUBLIC_NAME}</span>
+                                <strong className="dashboard-stream-link-title">{walletSummaryDisplay}</strong>
+                                <span className="dashboard-stream-link-copy">
+                                  O saldo acompanha a produção sem transformar o meio em painel financeiro.
+                                </span>
                               </div>
 
-                              <div className="dashboard-surface-usage-list">
-                                {loading || usageLoading ? (
-                                  <div className="dashboard-surface-usage-cards">
-                                    {Array.from({ length: 6 }).map((_, index) => (
-                                      <div key={`usage-skeleton-${index}`} className="dashboard-surface-usage-card-skeleton">
-                                        <div className="premium-skeleton premium-skeleton-line" style={{ width: "42%" }} />
-                                        <div className="premium-skeleton premium-skeleton-line" style={{ width: "26%" }} />
+                              <div className="dashboard-surface-wallet-breakdown">
+                                {walletBreakdown.map((item) => (
+                                  <div key={item.coinType} className="dashboard-wallet-row">
+                                    <div className="dashboard-wallet-row-main">
+                                      <strong>{coinTypeLabel(item.coinType)}</strong>
+                                      <span>{item.description}</span>
+                                    </div>
+                                    <span className="dashboard-wallet-row-value">{item.amount.toLocaleString("pt-BR")}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="dashboard-ecosystem-continuity-column">
+                            <div className="dashboard-continuity-ledger dashboard-surface-usage dashboard-ecosystem-ledger">
+                              <div className="dashboard-surface-usage-grid">
+                                <div className="dashboard-surface-usage-copy">
+                                  <div className="dashboard-surface-usage-hero dashboard-surface-usage-strip">
+                                    <div className="dashboard-surface-usage-hero-main">
+                                      <span className="dashboard-stage-stat-label">Historico</span>
+                                      <strong>{totalUsageDisplay}</strong>
+                                    </div>
+                                    <p>{usageLeadInsight}</p>
+                                    <Link href="/credits#credits-history" className="dashboard-stream-link-cta dashboard-surface-usage-inline-cta">
+                                      Histórico completo
+                                    </Link>
+                                  </div>
+
+                                  <div className="dashboard-surface-usage-signals">
+                                    {usageSignalItems.map((item) => (
+                                      <div key={item.label} className="dashboard-surface-usage-signal">
+                                        <span className="dashboard-stage-stat-label">{item.label}</span>
+                                        <strong>{item.value}</strong>
+                                        <span>{item.note}</span>
                                       </div>
                                     ))}
                                   </div>
-                                ) : usageEmptyState ? (
-                                  <div className="dashboard-surface-usage-empty">
-                                    <div className="dashboard-surface-usage-empty-story">
-                                      <div className="dashboard-surface-usage-empty-copy">
-                                        <span className="dashboard-stage-stat-label">{usageEmptyState.kicker}</span>
-                                        <strong>{usageEmptyState.title}</strong>
-                                        <span>{usageEmptyState.description}</span>
-                                      </div>
-                                      <div className="dashboard-surface-usage-empty-actions">
-                                        <Link href={usageEmptyState.primaryHref} className="btn-link-ea btn-primary btn-sm">
-                                          {usageEmptyState.primaryLabel}
-                                        </Link>
-                                        <Link href={usageEmptyState.secondaryHref} className="btn-link-ea btn-ghost btn-sm">
-                                          {usageEmptyState.secondaryLabel}
-                                        </Link>
-                                      </div>
-                                    </div>
+                                </div>
 
-                                    <div className="dashboard-surface-usage-route">
-                                      {USAGE_FLOW_MARKERS.map((item, index) => (
-                                        <div key={item.title} className="dashboard-surface-usage-route-step">
-                                          <span className="dashboard-surface-usage-route-index">{String(index + 1).padStart(2, "0")}</span>
-                                          <div className="dashboard-surface-usage-route-copy">
-                                            <strong>{item.title}</strong>
-                                            <span>{item.description}</span>
-                                          </div>
+                                <div className="dashboard-surface-usage-list">
+                                  {loading || usageLoading ? (
+                                    <div className="dashboard-surface-usage-cards">
+                                      {Array.from({ length: 6 }).map((_, index) => (
+                                        <div key={`usage-skeleton-${index}`} className="dashboard-surface-usage-card-skeleton">
+                                          <div className="premium-skeleton premium-skeleton-line" style={{ width: "42%" }} />
+                                          <div className="premium-skeleton premium-skeleton-line" style={{ width: "26%" }} />
                                         </div>
                                       ))}
                                     </div>
-                                  </div>
-                                ) : (
-                                  <>
-                                    <div className="dashboard-surface-usage-cards">
-                                      {usageDisplayItems.map((item, index) => {
-                                        const progress = usageProgress(item);
-                                        return (
-                                          <article
-                                            key={item.feature}
-                                            className="dashboard-surface-usage-card"
-                                          >
-                                            <div className="dashboard-surface-usage-card-copy">
-                                              <span className="dashboard-stage-stat-label">
-                                                {index === 0 ? "Feature líder" : "Uso confirmado"}
-                                              </span>
-                                              <strong className="dashboard-stream-link-title">{item.displayLabel}</strong>
-                                              <span className="dashboard-stream-link-copy">{item.used}/{item.limit} neste ciclo.</span>
-                                            </div>
-                                            <div className="dashboard-surface-usage-meter">
-                                              <strong>{item.used}/{item.limit}</strong>
-                                              <div className="dashboard-progress-track">
-                                                <div className="dashboard-progress-bar" style={{ width: `${progress}%` }} />
-                                              </div>
-                                            </div>
-                                          </article>
-                                        );
-                                      })}
-                                    </div>
-                                    {usageRemainingCount > 0 ? (
-                                      <div className="dashboard-surface-usage-footnote">
-                                        +{usageRemainingCount} no histórico completo.
+                                  ) : usageEmptyState ? (
+                                    <div className="dashboard-surface-usage-empty">
+                                      <div className="dashboard-surface-usage-empty-story">
+                                        <div className="dashboard-surface-usage-empty-copy">
+                                          <span className="dashboard-stage-stat-label">{usageEmptyState.kicker}</span>
+                                          <strong>{usageEmptyState.title}</strong>
+                                          <span>{usageEmptyState.description}</span>
+                                        </div>
+                                        <div className="dashboard-surface-usage-empty-actions">
+                                          <Link href={usageEmptyState.primaryHref} className="btn-link-ea btn-primary btn-sm">
+                                            {usageEmptyState.primaryLabel}
+                                          </Link>
+                                          <Link href={usageEmptyState.secondaryHref} className="btn-link-ea btn-ghost btn-sm">
+                                            {usageEmptyState.secondaryLabel}
+                                          </Link>
+                                        </div>
                                       </div>
-                                    ) : null}
-                                  </>
-                                )}
+
+                                      <div className="dashboard-surface-usage-route">
+                                        {USAGE_FLOW_MARKERS.map((item, index) => (
+                                          <div key={item.title} className="dashboard-surface-usage-route-step">
+                                            <span className="dashboard-surface-usage-route-index">{String(index + 1).padStart(2, "0")}</span>
+                                            <div className="dashboard-surface-usage-route-copy">
+                                              <strong>{item.title}</strong>
+                                              <span>{item.description}</span>
+                                            </div>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <>
+                                      <div className="dashboard-surface-usage-cards">
+                                        {usageDisplayItems.map((item, index) => {
+                                          const progress = usageProgress(item);
+                                          return (
+                                            <article
+                                              key={item.feature}
+                                              className="dashboard-surface-usage-card"
+                                            >
+                                              <div className="dashboard-surface-usage-card-copy">
+                                                <span className="dashboard-stage-stat-label">
+                                                  {index === 0 ? "Feature líder" : "Uso confirmado"}
+                                                </span>
+                                                <strong className="dashboard-stream-link-title">{item.displayLabel}</strong>
+                                                <span className="dashboard-stream-link-copy">{item.used}/{item.limit} neste ciclo.</span>
+                                              </div>
+                                              <div className="dashboard-surface-usage-meter">
+                                                <strong>{item.used}/{item.limit}</strong>
+                                                <div className="dashboard-progress-track">
+                                                  <div className="dashboard-progress-bar" style={{ width: `${progress}%` }} />
+                                                </div>
+                                              </div>
+                                            </article>
+                                          );
+                                        })}
+                                      </div>
+                                      {usageRemainingCount > 0 ? (
+                                        <div className="dashboard-surface-usage-footnote">
+                                          +{usageRemainingCount} no histórico completo.
+                                        </div>
+                                      ) : null}
+                                    </>
+                                  )}
+                                </div>
                               </div>
                             </div>
-                          </div>
 
-                          <ApprovedBetaOnboardingCard email={email} wallet={wallet} loading={loading} />
+                            <div className="dashboard-ecosystem-route-column">
+                              <ApprovedBetaOnboardingCard email={email} wallet={wallet} loading={loading} />
 
-                          <div className="dashboard-ecosystem-support-links">
-                            {[...railPrimaryQuickLinks, ...railSecondaryQuickLinks].map((item, index) => (
-                              <Link
-                                key={item.href}
-                                href={item.href}
-                                className="dashboard-ecosystem-support-link"
-                                data-reveal
-                                data-reveal-delay={String(120 + index * 25)}
-                              >
-                                <div className="dashboard-surface-command-link-main">
-                                  <span className="dashboard-stream-link-kicker">{item.tag}</span>
-                                  <strong className="dashboard-stream-link-title">{item.title}</strong>
-                                  <span className="dashboard-stream-link-copy">{item.description}</span>
-                                </div>
-                                <span className="dashboard-stream-link-cta">{item.cta}</span>
-                              </Link>
-                            ))}
+                              <div className="dashboard-ecosystem-support-links">
+                                {[...railPrimaryQuickLinks, ...railSecondaryQuickLinks].map((item, index) => (
+                                  <Link
+                                    key={item.href}
+                                    href={item.href}
+                                    className="dashboard-ecosystem-support-link"
+                                    data-reveal
+                                    data-reveal-delay={String(120 + index * 25)}
+                                  >
+                                    <div className="dashboard-surface-command-link-main">
+                                      <span className="dashboard-stream-link-kicker">{item.tag}</span>
+                                      <strong className="dashboard-stream-link-title">{item.title}</strong>
+                                      <span className="dashboard-stream-link-copy">{item.description}</span>
+                                    </div>
+                                    <span className="dashboard-stream-link-cta">{item.cta}</span>
+                                  </Link>
+                                ))}
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </section>

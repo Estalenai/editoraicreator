@@ -21646,42 +21646,55 @@ body {
 
 .dashboard-ecosystem-infrastructure {
   display: grid;
-  grid-template-columns: minmax(220px, 0.46fr) minmax(0, 0.92fr) minmax(0, 1.08fr);
-  grid-template-areas:
-    "note ledger guide"
-    "wallet ledger links";
+  grid-template-columns: minmax(220px, 0.42fr) minmax(0, 1.58fr);
   gap: clamp(14px, 1.5vw, 22px) clamp(18px, 2vw, 32px);
   align-items: start;
   padding-top: clamp(8px, 0.9vw, 14px);
   border-top: 1px solid rgba(191, 239, 255, 0.024);
 }
 
+.dashboard-ecosystem-account-column,
+.dashboard-ecosystem-continuity-column,
+.dashboard-ecosystem-route-column {
+  display: grid;
+  min-width: 0;
+}
+
+.dashboard-ecosystem-account-column {
+  gap: clamp(14px, 1.35vw, 20px);
+}
+
+.dashboard-ecosystem-continuity-column {
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+  gap: clamp(16px, 1.6vw, 26px);
+  align-items: start;
+}
+
+.dashboard-ecosystem-route-column {
+  gap: clamp(12px, 1.2vw, 18px);
+}
+
 .dashboard-ecosystem-support-note {
-  grid-area: note;
   grid-template-columns: minmax(0, 1fr);
   align-items: start;
   max-width: 30ch;
 }
 
 .dashboard-ecosystem-wallet {
-  grid-area: wallet;
   min-width: 0;
 }
 
 .dashboard-ecosystem-ledger {
-  grid-area: ledger;
   min-width: 0;
 }
 
-.dashboard-ecosystem-infrastructure > .dashboard-continuity-guide {
-  grid-area: guide;
+.dashboard-ecosystem-route-column > .dashboard-continuity-guide {
   min-width: 0;
   padding-top: 0 !important;
 }
 
 .dashboard-ecosystem-support-links {
   display: grid;
-  grid-area: links;
   grid-template-columns: minmax(0, 1fr);
   gap: 0 clamp(14px, 1.3vw, 20px);
   min-width: 0;
@@ -21968,6 +21981,39 @@ body {
 .dashboard-ecosystem-ledger .dashboard-surface-usage-list {
   padding-left: 0;
   border-left: 0;
+}
+
+.dashboard-ecosystem-route-column .dashboard-continuity-guide-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(10px, 1vw, 14px);
+}
+
+.dashboard-ecosystem-route-column .dashboard-continuity-route {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0 clamp(10px, 1vw, 14px);
+}
+
+.dashboard-ecosystem-route-column .dashboard-continuity-route-step {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.dashboard-ecosystem-route-column .dashboard-continuity-route-step + .dashboard-continuity-route-step {
+  padding-left: clamp(10px, 1vw, 14px);
+  border-left: 1px solid rgba(191, 239, 255, 0.034);
+}
+
+.dashboard-ecosystem-route-column .dashboard-continuity-path {
+  display: grid;
+  gap: 5px;
+}
+
+.dashboard-ecosystem-route-column .dashboard-continuity-path .helper-text-ea {
+  display: none;
+}
+
+.dashboard-ecosystem-route-column .dashboard-continuity-summary {
+  grid-template-columns: minmax(0, 1fr) auto;
 }
 
 .dashboard-surface-usage-copy {
@@ -22334,20 +22380,6 @@ body {
 
   .dashboard-ecosystem-infrastructure {
     grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.28fr);
-    grid-template-areas:
-      "note ledger"
-      "wallet ledger"
-      "guide links";
-  }
-
-  .dashboard-ecosystem-support-note,
-  .dashboard-ecosystem-wallet {
-    grid-column: 1;
-  }
-
-  .dashboard-ecosystem-support-links {
-    grid-column: 2;
-    grid-row: auto;
   }
 }
 
@@ -22396,12 +22428,11 @@ body {
   }
 
   .dashboard-ecosystem-infrastructure {
-    grid-template-areas:
-      "note"
-      "wallet"
-      "ledger"
-      "guide"
-      "links";
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dashboard-ecosystem-continuity-column {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .dashboard-command-live-panel {
@@ -22459,7 +22490,7 @@ body {
   .dashboard-ecosystem-support-note,
   .dashboard-ecosystem-wallet,
   .dashboard-ecosystem-ledger,
-  .dashboard-ecosystem-infrastructure > .dashboard-continuity-guide,
+  .dashboard-ecosystem-route-column,
   .dashboard-ecosystem-support-links {
     grid-column: auto;
     grid-row: auto;
@@ -22551,20 +22582,9 @@ body {
 
   .dashboard-ecosystem-infrastructure {
     grid-template-columns: minmax(220px, 0.58fr) minmax(0, 1.42fr);
-    grid-template-areas:
-      "note ledger"
-      "wallet ledger"
-      "guide links";
-  }
-
-  .dashboard-ecosystem-support-note,
-  .dashboard-ecosystem-wallet {
-    grid-column: 1;
   }
 
   .dashboard-ecosystem-support-links {
-    grid-column: auto;
-    grid-row: auto;
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -22786,20 +22806,9 @@ body {
 
   .dashboard-ecosystem-infrastructure {
     grid-template-columns: minmax(0, 0.42fr) minmax(0, 0.58fr);
-    grid-template-areas:
-      "note ledger"
-      "wallet ledger"
-      "guide links";
-  }
-
-  .dashboard-ecosystem-support-note,
-  .dashboard-ecosystem-wallet {
-    grid-column: 1;
   }
 
   .dashboard-ecosystem-support-links {
-    grid-column: auto;
-    grid-row: auto;
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
