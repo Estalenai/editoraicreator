@@ -107,15 +107,15 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
 
   return (
     <section
-      className="dashboard-surface-onboarding dashboard-continuity-guide"
-      aria-label="Próxima entrada do ciclo operacional"
+      className="dashboard-surface-onboarding dashboard-continuity-guide dashboard-studio-onboarding"
+      aria-label="Próxima entrada do Creator Operating Studio"
       data-reveal
       data-reveal-delay="90"
     >
       <div className="dashboard-surface-onboarding-head">
         <div className="dashboard-surface-field-note-copy">
-          <strong>Próxima entrada do mesmo ciclo</strong>
-          <span>Creators, revisão e saldo permanecem no canvas.</span>
+          <strong>Próxima entrada do estúdio</strong>
+          <span>Escolha o formato e mantenha revisão, projeto e capacidade no mesmo canvas.</span>
         </div>
         <button onClick={dismiss} className="btn-ea btn-ghost btn-sm">
           Entendi
@@ -133,7 +133,7 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
           <div className="dashboard-surface-onboarding-signal dashboard-surface-onboarding-signal-wallet">
           <span className="dashboard-stage-stat-label">{CREATOR_COINS_PUBLIC_NAME}</span>
           <strong>{summary}</strong>
-          <span>Estimativa antes; histórico depois.</span>
+          <span>Capacidade disponível para a próxima criação.</span>
         </div>
       </div>
 
@@ -183,10 +183,10 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
         </div>
       </div>
 
-      <div className="dashboard-continuity-summary">
+      <div className="dashboard-continuity-summary dashboard-studio-onboarding-summary">
         <div className="dashboard-surface-onboarding-summary-copy">
           <strong>{CREATOR_COINS_PUBLIC_NAME}</strong>
-          <div className="helper-text-ea">{summary}. Estimativa antes; histórico depois.</div>
+          <div className="helper-text-ea">{summary}. Uso previsto antes da entrega; histórico depois.</div>
         </div>
         <div className="dashboard-surface-onboarding-summary-note">
           <span>{coinTypeLabel("common")}: rotina</span>

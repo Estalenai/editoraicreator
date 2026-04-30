@@ -281,14 +281,6 @@ export default function DashboardPage() {
     () => QUICK_LINKS.filter((item) => item.group === "support"),
     []
   );
-  const railPrimaryQuickLinks = useMemo(
-    () => supportQuickLinks.filter((item) => item.href === "/plans" || item.href === "/support"),
-    [supportQuickLinks]
-  );
-  const railSecondaryQuickLinks = useMemo(
-    () => supportQuickLinks.filter((item) => item.href !== "/plans" && item.href !== "/support"),
-    [supportQuickLinks]
-  );
   const walletBreakdown = useMemo(
     () =>
       CREDIT_GUIDE_ITEMS.map((item) => ({
@@ -494,23 +486,23 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="page-shell dashboard-surface-page dashboard-operating-page" data-dashboard-contract="operating-canvas">
-      <div className="dashboard-surface-canvas dashboard-operating-canvas">
-        <section className="dashboard-surface-stage dashboard-operating-stage" data-reveal>
+    <div className="page-shell dashboard-surface-page dashboard-operating-page dashboard-studio-page" data-dashboard-contract="studio-canvas">
+      <div className="dashboard-surface-canvas dashboard-operating-canvas dashboard-studio-canvas">
+        <section className="dashboard-surface-stage dashboard-operating-stage dashboard-studio-stage" data-reveal>
           <div className="dashboard-surface-stage-grid">
             <div className="dashboard-surface-stage-main">
               <div className="dashboard-surface-flow dashboard-operating-flow">
-                <section className="dashboard-operating-grid" aria-label="Superfície operacional do Editor AI Creator">
-                  <header className="dashboard-surface-hero dashboard-operating-command" data-reveal data-reveal-delay="35">
+                <section className="dashboard-operating-grid dashboard-studio-grid" aria-label="Creator Operating Studio do Editor AI Creator">
+                  <header className="dashboard-surface-hero dashboard-operating-command dashboard-studio-hero" data-reveal data-reveal-delay="35">
                     <div className="dashboard-surface-command" data-reveal data-reveal-delay="70">
-                      <div className="dashboard-command-field">
+                      <div className="dashboard-command-field dashboard-studio-field">
                         <div className="dashboard-surface-command-copy">
                           <div className="dashboard-surface-hero-intro">
                             <div className="hero-title-stack">
-                              <p className="section-kicker">Workspace ativo</p>
-                              <h1 className="heading-reset">Dashboard</h1>
+                              <p className="section-kicker">Creator Operating Studio</p>
+                              <h1 className="heading-reset">Studio Canvas</h1>
                               <p className="section-header-copy hero-copy-compact">
-                                Criacao, revisao e retomada permanecem no mesmo campo operacional.
+                                O cockpit criativo do Editor AI Creator.
                               </p>
                             </div>
                             <div className="hero-meta-row dashboard-surface-hero-badges">
@@ -520,14 +512,14 @@ export default function DashboardPage() {
                               </span>
                             </div>
                           </div>
-                          <span className="dashboard-hero-flow-label">Ciclo em operacao</span>
-                          <strong>O ciclo de criacao ja esta em movimento.</strong>
+                          <span className="dashboard-hero-flow-label">Produto vivo</span>
+                          <strong>A entrega ativa comanda o estúdio.</strong>
                           <p>
-                            Creator, Editor, Projetos e Saida aparecem juntos para retomar a proxima entrega sem trocar de contexto.
+                            Projeto, criação, revisão, saída e capacidade aparecem como partes do mesmo artefato.
                           </p>
                         </div>
 
-                        <aside className="dashboard-command-live-panel dashboard-operating-account" aria-label="Sinais operacionais da conta">
+                        <aside className="dashboard-command-live-panel dashboard-operating-account dashboard-studio-signal-panel" aria-label="Sinais operacionais do estúdio">
                           <div className="dashboard-command-live-head">
                             <span className="dashboard-overview-label">Conta ativa</span>
                             <strong>{planLabelDisplay}</strong>
@@ -580,7 +572,7 @@ export default function DashboardPage() {
                         </aside>
                       </div>
 
-                      <div className="dashboard-surface-command-sequence">
+                      <div className="dashboard-surface-command-sequence dashboard-studio-orbit">
                         <div className="dashboard-surface-command-step">
                           <span className="dashboard-surface-step-index">01</span>
                           <div className="dashboard-surface-command-step-copy">
@@ -614,7 +606,7 @@ export default function DashboardPage() {
                           </div>
                         </div>
 
-                        <div className="dashboard-command-bridge dashboard-ecosystem-stage">
+                        <div className="dashboard-command-bridge dashboard-ecosystem-stage dashboard-studio-artifact">
                           <div className="dashboard-surface-focus-lead-wrap dashboard-ecosystem-lead">
                             {loading ? (
                               <div className="dashboard-surface-focus-lead dashboard-surface-focus-skeleton">
@@ -625,7 +617,7 @@ export default function DashboardPage() {
                             ) : featuredProjectDisplay ? (
                               <EditorRouteLink href={`/editor/${featuredProjectDisplay.id}`} className="dashboard-surface-focus-lead">
                                 <div className="dashboard-stage-lead-topline">
-                                  <span className="dashboard-stage-lead-kicker">Agora no fluxo</span>
+                                  <span className="dashboard-stage-lead-kicker">Artefato ativo</span>
                                   <span className="dashboard-stage-lead-pill">{featuredProjectDisplay.stageLabel}</span>
                                 </div>
                                 <strong className="dashboard-stage-lead-title">{featuredProjectDisplay.displayTitle}</strong>
@@ -637,13 +629,13 @@ export default function DashboardPage() {
                                 </div>
                                 <div className="dashboard-stage-lead-footer">
                                   <span className="dashboard-stage-lead-note">{featuredProjectDisplay.kindLabel}</span>
-                                  <span className="dashboard-stage-lead-action">Abrir projeto</span>
+                                  <span className="dashboard-stage-lead-action">Abrir no editor</span>
                                 </div>
                               </EditorRouteLink>
                             ) : (
                               <div className="dashboard-surface-focus-lead dashboard-surface-focus-empty">
-                                <span className="dashboard-stage-lead-kicker">Agora no fluxo</span>
-                                <strong>A trilha ganha peso quando um Creator vira projeto real.</strong>
+                                <span className="dashboard-stage-lead-kicker">Artefato inicial</span>
+                                <strong>O estúdio ganha forma quando um Creator vira projeto real.</strong>
                                 <p>
                                   Abra Creators, salve a primeira saída e use Projetos para continuar no editor
                                   sem recomeçar o fluxo.
@@ -691,7 +683,7 @@ export default function DashboardPage() {
                     </div>
                   </header>
 
-                  <section className="dashboard-surface-ecosystem dashboard-operating-ecosystem" data-reveal data-reveal-delay="140">
+                  <section className="dashboard-surface-ecosystem dashboard-operating-ecosystem dashboard-studio-body" data-reveal data-reveal-delay="140">
                         {loading ? (
                           <div className="dashboard-ecosystem-ribbon">
                             {Array.from({ length: 3 }).map((_, index) => (
@@ -720,9 +712,9 @@ export default function DashboardPage() {
                         ) : null}
 
                         <div className="dashboard-ecosystem-flow">
-                          <div className="dashboard-surface-head-note dashboard-ecosystem-flow-note">
-                            <strong>O workspace se move como um ciclo, não como atalhos soltos.</strong>
-                            <span>Creators, editor, projetos e saída permanecem conectados ao mesmo contexto.</span>
+                          <div className="dashboard-surface-head-note dashboard-ecosystem-flow-note dashboard-studio-section-note">
+                            <strong>Ferramentas orbitam o artefato, não a navegação.</strong>
+                            <span>Criação, revisão, projeto e saída ficam presos ao mesmo contexto.</span>
                             <div className="dashboard-ecosystem-flow-note-links">
                               <Link href="/credits#credits-history" className="dashboard-stream-link-cta">
                                 Histórico no fluxo
@@ -733,13 +725,13 @@ export default function DashboardPage() {
                             </div>
                           </div>
 
-                          <div className="dashboard-ecosystem-lanes">
+                          <div className="dashboard-ecosystem-lanes dashboard-studio-tool-orbit">
                             {coreQuickLinks.map((item, index) =>
                               item.href.startsWith("/editor") ? (
                                 <EditorRouteLink
                                   key={item.href}
                                   href={item.href}
-                                  className="dashboard-ecosystem-lane"
+                                  className="dashboard-ecosystem-lane dashboard-studio-tool-node"
                                   data-reveal
                                   data-reveal-delay={String(90 + index * 30)}
                                 >
@@ -755,7 +747,7 @@ export default function DashboardPage() {
                                 <Link
                                   key={item.href}
                                   href={item.href}
-                                  className="dashboard-ecosystem-lane"
+                                  className="dashboard-ecosystem-lane dashboard-studio-tool-node"
                                   data-reveal
                                   data-reveal-delay={String(90 + index * 30)}
                                 >
@@ -772,9 +764,9 @@ export default function DashboardPage() {
                           </div>
                         </div>
 
-                        <div className="dashboard-ecosystem-infrastructure">
-                          <div className="dashboard-ecosystem-account-column">
-                            <div className="dashboard-surface-wallet dashboard-ecosystem-wallet">
+                        <div className="dashboard-ecosystem-infrastructure dashboard-studio-infrastructure">
+                          <div className="dashboard-ecosystem-account-column dashboard-studio-capacity-column">
+                            <div className="dashboard-surface-wallet dashboard-ecosystem-wallet dashboard-studio-capacity">
                               <div className="dashboard-surface-wallet-copy">
                                 <span className="dashboard-stream-link-kicker">{CREATOR_COINS_PUBLIC_NAME}</span>
                                 <strong className="dashboard-stream-link-title">{walletSummaryDisplay}</strong>
@@ -798,7 +790,7 @@ export default function DashboardPage() {
                           </div>
 
                           <div className="dashboard-ecosystem-continuity-column">
-                            <div className="dashboard-continuity-ledger dashboard-surface-usage dashboard-ecosystem-ledger">
+                            <div className="dashboard-continuity-ledger dashboard-surface-usage dashboard-ecosystem-ledger dashboard-studio-ledger">
                               <div className="dashboard-surface-usage-grid">
                                 <div className="dashboard-surface-usage-copy">
                                   <div className="dashboard-surface-usage-hero dashboard-surface-usage-strip">
@@ -901,13 +893,13 @@ export default function DashboardPage() {
                               </div>
                             </div>
 
-                            <div className="dashboard-ecosystem-route-column">
-                              <div className="dashboard-ecosystem-support-links">
-                                {[...railPrimaryQuickLinks, ...railSecondaryQuickLinks].map((item, index) => (
+                            <div className="dashboard-ecosystem-route-column dashboard-studio-route-column">
+                              <div className="dashboard-ecosystem-support-links dashboard-studio-trust-links">
+                                {supportQuickLinks.map((item, index) => (
                                   <Link
                                     key={item.href}
                                     href={item.href}
-                                    className="dashboard-ecosystem-support-link"
+                                    className="dashboard-ecosystem-support-link dashboard-studio-trust-link"
                                     data-reveal
                                     data-reveal-delay={String(120 + index * 25)}
                                   >
