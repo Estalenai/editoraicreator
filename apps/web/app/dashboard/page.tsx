@@ -59,25 +59,25 @@ const QUICK_LINKS: QuickLinkItem[] = [
   {
     href: "/credits",
     group: "support",
-    tag: "Financeiro",
+    tag: "Capacidade",
     title: "Creator Coins",
-    description: "Veja saldo, conversão e compra.",
+    description: "Saldo e ritmo do próximo ciclo.",
     cta: "Abrir Creator Coins",
   },
   {
     href: "/plans",
     group: "support",
-    tag: "Assinatura",
+    tag: "Acesso",
     title: "Planos",
-    description: "Compare níveis e checkout.",
+    description: "Nível ativo e upgrade.",
     cta: "Revisar planos",
   },
   {
     href: "/support",
     group: "support",
-    tag: "Suporte",
+    tag: "Confiança",
     title: "Suporte",
-    description: "Acione ajuda quando precisar.",
+    description: "Ajuda contextual.",
     cta: "Falar com suporte",
   },
   {
@@ -85,7 +85,7 @@ const QUICK_LINKS: QuickLinkItem[] = [
     group: "support",
     tag: "Guia",
     title: "Como funciona",
-    description: "Revise o fluxo principal.",
+    description: "Rota curta do estúdio.",
     cta: "Ler guia",
   },
 ];
@@ -794,9 +794,9 @@ export default function DashboardPage() {
                           </div>
                         </div>
 
-                        <div className="dashboard-ecosystem-infrastructure dashboard-studio-infrastructure dashboard-field-thread">
-                          <div className="dashboard-ecosystem-account-column dashboard-studio-capacity-column">
-                            <div className="dashboard-surface-wallet dashboard-ecosystem-wallet dashboard-studio-capacity dashboard-field-signal">
+                        <div className="dashboard-ecosystem-infrastructure dashboard-studio-infrastructure dashboard-studio-signal-mesh dashboard-field-thread">
+                          <div className="dashboard-ecosystem-account-column dashboard-studio-capacity-column dashboard-studio-capacity-band">
+                            <div className="dashboard-surface-wallet dashboard-ecosystem-wallet dashboard-studio-capacity dashboard-studio-capacity-signal dashboard-field-signal">
                               <div className="dashboard-surface-wallet-copy dashboard-studio-capacity-head">
                                 <span className="dashboard-stream-link-kicker">{CREATOR_COINS_PUBLIC_NAME}</span>
                                 <strong className="dashboard-stream-link-title">{walletSummaryDisplay}</strong>
@@ -811,7 +811,7 @@ export default function DashboardPage() {
                                 <span />
                               </div>
 
-                              <div className="dashboard-surface-wallet-breakdown dashboard-studio-capacity-breakdown">
+                              <div className="dashboard-surface-wallet-breakdown dashboard-studio-capacity-breakdown dashboard-studio-capacity-chips">
                                 {walletBreakdown.map((item) => (
                                   <div key={item.coinType} className="dashboard-wallet-row">
                                     <div className="dashboard-wallet-row-main">
@@ -825,8 +825,8 @@ export default function DashboardPage() {
                             </div>
                           </div>
 
-                          <div className="dashboard-ecosystem-continuity-column">
-                            <div className="dashboard-continuity-ledger dashboard-surface-usage dashboard-ecosystem-ledger dashboard-studio-ledger dashboard-field-signal">
+                          <div className="dashboard-ecosystem-continuity-column dashboard-studio-context-band">
+                            <div className="dashboard-continuity-ledger dashboard-surface-usage dashboard-ecosystem-ledger dashboard-studio-ledger dashboard-studio-signal-log dashboard-field-signal">
                               <div className="dashboard-surface-usage-grid">
                                 <div className="dashboard-surface-usage-copy">
                                   <div className="dashboard-surface-usage-hero dashboard-surface-usage-strip">
@@ -929,8 +929,8 @@ export default function DashboardPage() {
                               </div>
                             </div>
 
-                            <div className="dashboard-ecosystem-route-column dashboard-studio-route-column">
-                              <div className="dashboard-ecosystem-support-links dashboard-studio-trust-links">
+                            <div className="dashboard-ecosystem-route-column dashboard-studio-route-column dashboard-studio-support-mesh">
+                              <div className="dashboard-ecosystem-support-links dashboard-studio-trust-links dashboard-studio-trust-chips">
                                 {supportQuickLinks.map((item, index) => (
                                   <Link
                                     key={item.href}
