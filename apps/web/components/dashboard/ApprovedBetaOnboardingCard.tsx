@@ -107,7 +107,7 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
 
   return (
     <section
-      className="dashboard-surface-onboarding dashboard-continuity-guide dashboard-studio-onboarding"
+      className="dashboard-surface-onboarding dashboard-continuity-guide dashboard-studio-onboarding dashboard-field-signal"
       aria-label="Próxima entrada do Creator Operating Studio"
       data-reveal
       data-reveal-delay="90"

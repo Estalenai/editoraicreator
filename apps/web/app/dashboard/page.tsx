@@ -486,8 +486,8 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="page-shell dashboard-surface-page dashboard-operating-page dashboard-studio-page" data-dashboard-contract="studio-canvas">
-      <div className="dashboard-surface-canvas dashboard-operating-canvas dashboard-studio-canvas">
+    <div className="page-shell dashboard-surface-page dashboard-operating-page dashboard-studio-page" data-dashboard-contract="studio-canvas" data-dashboard-composition="ecosystem-field">
+      <div className="dashboard-surface-canvas dashboard-operating-canvas dashboard-studio-canvas dashboard-ecosystem-field">
         <section className="dashboard-surface-stage dashboard-operating-stage dashboard-studio-stage" data-reveal>
           <div className="dashboard-surface-stage-grid">
             <div className="dashboard-surface-stage-main">
@@ -572,7 +572,7 @@ export default function DashboardPage() {
                         </aside>
                       </div>
 
-                      <div className="dashboard-surface-command-sequence dashboard-studio-orbit">
+                      <div className="dashboard-surface-command-sequence dashboard-studio-orbit dashboard-field-map">
                         <div className="dashboard-surface-command-step">
                           <span className="dashboard-surface-step-index">01</span>
                           <div className="dashboard-surface-command-step-copy">
@@ -606,7 +606,7 @@ export default function DashboardPage() {
                           </div>
                         </div>
 
-                        <div className="dashboard-command-bridge dashboard-ecosystem-stage dashboard-studio-artifact">
+                        <div className="dashboard-command-bridge dashboard-ecosystem-stage dashboard-studio-artifact dashboard-field-surface">
                           <div className="dashboard-surface-focus-lead-wrap dashboard-ecosystem-lead dashboard-studio-preview-shell">
                             <div className="dashboard-studio-preview-topbar" aria-label="Camadas do artefato">
                               <span>Brief</span>
@@ -794,9 +794,9 @@ export default function DashboardPage() {
                           </div>
                         </div>
 
-                        <div className="dashboard-ecosystem-infrastructure dashboard-studio-infrastructure">
+                        <div className="dashboard-ecosystem-infrastructure dashboard-studio-infrastructure dashboard-field-thread">
                           <div className="dashboard-ecosystem-account-column dashboard-studio-capacity-column">
-                            <div className="dashboard-surface-wallet dashboard-ecosystem-wallet dashboard-studio-capacity">
+                            <div className="dashboard-surface-wallet dashboard-ecosystem-wallet dashboard-studio-capacity dashboard-field-signal">
                               <div className="dashboard-surface-wallet-copy dashboard-studio-capacity-head">
                                 <span className="dashboard-stream-link-kicker">{CREATOR_COINS_PUBLIC_NAME}</span>
                                 <strong className="dashboard-stream-link-title">{walletSummaryDisplay}</strong>
@@ -826,7 +826,7 @@ export default function DashboardPage() {
                           </div>
 
                           <div className="dashboard-ecosystem-continuity-column">
-                            <div className="dashboard-continuity-ledger dashboard-surface-usage dashboard-ecosystem-ledger dashboard-studio-ledger">
+                            <div className="dashboard-continuity-ledger dashboard-surface-usage dashboard-ecosystem-ledger dashboard-studio-ledger dashboard-field-signal">
                               <div className="dashboard-surface-usage-grid">
                                 <div className="dashboard-surface-usage-copy">
                                   <div className="dashboard-surface-usage-hero dashboard-surface-usage-strip">
@@ -935,7 +935,7 @@ export default function DashboardPage() {
                                   <Link
                                     key={item.href}
                                     href={item.href}
-                                    className="dashboard-ecosystem-support-link dashboard-studio-trust-link"
+                                    className="dashboard-ecosystem-support-link dashboard-studio-trust-link dashboard-field-signal"
                                     data-reveal
                                     data-reveal-delay={String(120 + index * 25)}
                                   >
