@@ -902,8 +902,6 @@ export default function DashboardPage() {
                             </div>
 
                             <div className="dashboard-ecosystem-route-column">
-                              <ApprovedBetaOnboardingCard email={email} wallet={wallet} loading={loading} />
-
                               <div className="dashboard-ecosystem-support-links">
                                 {[...railPrimaryQuickLinks, ...railSecondaryQuickLinks].map((item, index) => (
                                   <Link
@@ -922,6 +920,8 @@ export default function DashboardPage() {
                                   </Link>
                                 ))}
                               </div>
+
+                              <ApprovedBetaOnboardingCard email={email} wallet={wallet} loading={loading} />
                             </div>
                           </div>
                         </div>
