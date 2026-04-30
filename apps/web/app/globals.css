@@ -10227,7 +10227,7 @@ body {
 
 .dashboard-studio-hero .dashboard-surface-command {
   display: grid;
-  grid-template-columns: minmax(260px, 0.56fr) minmax(620px, 1.36fr);
+  grid-template-columns: minmax(320px, 0.52fr) minmax(620px, 1.48fr);
   grid-template-areas: "intro artifact";
   gap: clamp(30px, 4.3vw, 82px);
   align-items: center;
@@ -10238,6 +10238,12 @@ body {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: clamp(22px, 2.4vw, 34px);
+  align-items: start;
+}
+
+.dashboard-studio-field.dashboard-command-field {
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(18px, 2vw, 28px);
   align-items: start;
 }
 
@@ -10259,10 +10265,12 @@ body {
 }
 
 .dashboard-studio-field .dashboard-surface-command-copy > strong {
-  max-width: 9.5ch;
-  font-size: clamp(3.3rem, 5.55vw, 6.8rem);
-  line-height: 0.83;
-  letter-spacing: -0.07em;
+  display: block;
+  max-width: min(100%, 12ch);
+  font-size: clamp(2.85rem, 3.85vw, 4.65rem);
+  line-height: 0.92;
+  letter-spacing: -0.062em;
+  text-wrap: balance;
 }
 
 .dashboard-studio-field .dashboard-surface-command-copy > p {
@@ -10279,6 +10287,14 @@ body {
 .dashboard-studio-signal-panel {
   display: grid;
   gap: 16px;
+  padding: 0;
+  border-left: 0;
+  margin-top: clamp(4px, 0.8vw, 12px);
+}
+
+.dashboard-studio-field .dashboard-command-live-panel.dashboard-studio-signal-panel {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
   padding: 0;
   border-left: 0;
 }
@@ -10557,12 +10573,12 @@ body {
 
 @media (max-width: 1380px) {
   .dashboard-studio-hero .dashboard-surface-command {
-    grid-template-columns: minmax(250px, 0.54fr) minmax(560px, 1.28fr);
+    grid-template-columns: minmax(300px, 0.5fr) minmax(560px, 1.5fr);
     gap: clamp(24px, 3vw, 46px);
   }
 
   .dashboard-studio-field .dashboard-surface-command-copy > strong {
-    font-size: clamp(3rem, 5.2vw, 5.6rem);
+    font-size: clamp(2.65rem, 3.65vw, 4rem);
   }
 }
 
@@ -10600,6 +10616,17 @@ body {
     padding-inline: clamp(14px, 4vw, 28px);
   }
 
+  .dashboard-studio-hero .dashboard-surface-command {
+    grid-template-areas:
+      "intro"
+      "artifact";
+    gap: clamp(20px, 5vw, 32px);
+  }
+
+  .dashboard-studio-field.dashboard-command-field {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .dashboard-studio-orbit,
   .dashboard-studio-body .dashboard-ecosystem-ribbon,
   .dashboard-studio-tool-orbit,
@@ -10617,6 +10644,7 @@ body {
   .dashboard-studio-artifact {
     grid-row: auto;
     grid-column: auto;
+    order: -1;
     padding: clamp(14px, 4vw, 22px);
   }
 
@@ -10633,7 +10661,9 @@ body {
   }
 
   .dashboard-studio-field .dashboard-surface-command-copy > strong {
-    font-size: clamp(2.75rem, 14vw, 4.2rem);
+    max-width: 13ch;
+    font-size: clamp(2.35rem, 10.5vw, 3.65rem);
+    line-height: 0.95;
   }
 
   .dashboard-studio-artifact .dashboard-surface-focus-lead,
@@ -10644,6 +10674,56 @@ body {
   .dashboard-studio-artifact .dashboard-surface-focus-lead::after,
   .dashboard-studio-artifact .dashboard-surface-focus-empty::after {
     opacity: 0.36;
+  }
+}
+
+@media (max-width: 640px) {
+  .dashboard-studio-hero {
+    padding-top: 18px;
+  }
+
+  .dashboard-studio-field .dashboard-command-live-panel.dashboard-studio-signal-panel {
+    order: 0;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+    padding: 0;
+    border-top: 0;
+  }
+
+  .dashboard-studio-signal-panel .dashboard-command-live-head,
+  .dashboard-studio-signal-panel .dashboard-command-live-grid,
+  .dashboard-studio-signal-panel .dashboard-command-live-actions {
+    grid-column: auto;
+    grid-row: auto;
+    order: initial;
+  }
+
+  .dashboard-studio-signal-panel .dashboard-command-live-head {
+    grid-template-columns: minmax(0, 1fr);
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .dashboard-studio-signal-panel .dashboard-command-live-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .dashboard-studio-signal-panel .dashboard-command-live-next {
+    order: -1;
+  }
+
+  .dashboard-studio-signal-panel .dashboard-command-live-signal {
+    padding-top: 10px;
+  }
+
+  .dashboard-studio-orbit {
+    gap: 14px;
+    border-radius: 26px;
+  }
+
+  .dashboard-studio-artifact .dashboard-ecosystem-state {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
