@@ -723,6 +723,14 @@ export default function DashboardPage() {
                           <div className="dashboard-surface-head-note dashboard-ecosystem-flow-note">
                             <strong>O workspace se move como um ciclo, não como atalhos soltos.</strong>
                             <span>Creators, editor, projetos e saída permanecem conectados ao mesmo contexto.</span>
+                            <div className="dashboard-ecosystem-flow-note-links">
+                              <Link href="/credits#credits-history" className="dashboard-stream-link-cta">
+                                Histórico no fluxo
+                              </Link>
+                              <Link href="/support" className="dashboard-stream-link-cta">
+                                Suporte acompanha
+                              </Link>
+                            </div>
                           </div>
 
                           <div className="dashboard-ecosystem-lanes">
@@ -766,16 +774,6 @@ export default function DashboardPage() {
 
                         <div className="dashboard-ecosystem-infrastructure">
                           <div className="dashboard-ecosystem-account-column">
-                            <div className="dashboard-surface-field-note dashboard-ecosystem-support-note">
-                              <div className="dashboard-surface-field-note-copy">
-                                <strong>Plano, saldo e suporte acompanham o ciclo sem virar outra camada.</strong>
-                                <span>Conta, guia e créditos entram como infraestrutura silenciosa do workspace.</span>
-                              </div>
-                              <Link href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
-                                Ver historico
-                              </Link>
-                            </div>
-
                             <div className="dashboard-surface-wallet dashboard-ecosystem-wallet">
                               <div className="dashboard-surface-wallet-copy">
                                 <span className="dashboard-stream-link-kicker">{CREATOR_COINS_PUBLIC_NAME}</span>

@@ -21600,6 +21600,14 @@ body {
 
 .dashboard-ecosystem-flow-note {
   max-width: 29ch;
+  gap: 8px;
+}
+
+.dashboard-ecosystem-flow-note-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  padding-top: 2px;
 }
 
 .dashboard-ecosystem-lanes {
@@ -21649,8 +21657,9 @@ body {
   grid-template-columns: minmax(220px, 0.42fr) minmax(0, 1.58fr);
   gap: clamp(14px, 1.5vw, 22px) clamp(18px, 2vw, 32px);
   align-items: start;
-  padding-top: clamp(8px, 0.9vw, 14px);
-  border-top: 1px solid rgba(191, 239, 255, 0.024);
+  margin-top: clamp(-22px, -1.4vw, -12px);
+  padding-top: 0;
+  border-top: 0;
 }
 
 .dashboard-ecosystem-account-column,
@@ -21662,6 +21671,7 @@ body {
 
 .dashboard-ecosystem-account-column {
   gap: clamp(14px, 1.35vw, 20px);
+  padding-top: clamp(2px, 0.35vw, 6px);
 }
 
 .dashboard-ecosystem-continuity-column {
@@ -21981,6 +21991,17 @@ body {
 .dashboard-ecosystem-ledger .dashboard-surface-usage-list {
   padding-left: 0;
   border-left: 0;
+}
+
+.dashboard-ecosystem-ledger .dashboard-surface-usage-empty {
+  grid-template-columns: minmax(0, 0.68fr) minmax(0, 1.32fr);
+  gap: clamp(12px, 1.15vw, 18px);
+}
+
+.dashboard-ecosystem-ledger .dashboard-surface-usage-empty-copy strong {
+  font-size: clamp(1.18rem, 1.45vw, 1.55rem);
+  line-height: 1.03;
+  max-width: 12ch;
 }
 
 .dashboard-ecosystem-route-column .dashboard-continuity-guide-grid {
@@ -22614,6 +22635,10 @@ body {
     padding-top: 12px;
     border-left: 0;
     border-top: 1px solid rgba(191, 239, 255, 0.034);
+  }
+
+  .dashboard-ecosystem-infrastructure {
+    margin-top: 0;
   }
 
   .dashboard-continuity-paths > .dashboard-continuity-path:nth-child(2) {
