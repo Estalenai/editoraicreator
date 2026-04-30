@@ -10752,10 +10752,15 @@ body {
   display: grid;
   grid-template-columns: minmax(180px, 0.28fr) minmax(0, 1fr) auto;
   max-width: none;
+  width: 100%;
   align-items: end;
   gap: clamp(12px, 1.2vw, 18px);
   padding: 0 0 clamp(8px, 0.9vw, 12px);
   border-bottom: 1px solid rgba(191, 239, 255, 0.018);
+}
+
+.dashboard-studio-section-note.dashboard-ecosystem-flow-note {
+  max-width: none;
 }
 
 .dashboard-studio-section-note strong {
@@ -10764,6 +10769,7 @@ body {
 }
 
 .dashboard-studio-section-note > span {
+  min-width: 0;
   max-width: 42rem;
   color: rgba(213, 235, 255, 0.5);
 }
