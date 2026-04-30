@@ -22624,6 +22624,14 @@ body {
     align-items: start;
   }
 
+  .dashboard-ecosystem-route-column .dashboard-continuity-summary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dashboard-ecosystem-route-column .dashboard-surface-onboarding-actions {
+    grid-column: 1 / -1;
+  }
+
   .dashboard-surface-usage-signal,
   .dashboard-surface-onboarding-signal {
     padding-left: 0;
@@ -23267,6 +23275,18 @@ body {
   .dashboard-continuity-guide .dashboard-surface-onboarding-signals > *:first-child {
     padding-left: 0;
     border-left: 0;
+  }
+
+  .dashboard-ecosystem-route-column .dashboard-continuity-route {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .dashboard-ecosystem-route-column .dashboard-continuity-route-step + .dashboard-continuity-route-step {
+    padding-left: 0;
+    padding-top: 10px;
+    border-left: 0;
+    border-top: 1px solid rgba(191, 239, 255, 0.045);
   }
 
   .dashboard-continuity-guide .dashboard-surface-onboarding-signal:nth-child(odd) {
