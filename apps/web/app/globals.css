@@ -21158,10 +21158,8 @@ body {
   grid-template-columns: minmax(0, 0.92fr) minmax(0, 0.78fr) minmax(280px, 0.58fr);
   grid-template-areas:
     "command command command"
-    "command command command"
     "status status status"
-    "ecosystem ecosystem ecosystem"
-    "continuity continuity continuity";
+    "ecosystem ecosystem ecosystem";
   gap: clamp(4px, 0.55vw, 8px) clamp(18px, 1.8vw, 30px);
   align-items: start;
 }
@@ -21646,28 +21644,45 @@ body {
   padding-top: 0;
 }
 
-.dashboard-ecosystem-support {
+.dashboard-ecosystem-infrastructure {
   display: grid;
-  grid-template-columns: minmax(220px, 0.55fr) minmax(0, 0.86fr) minmax(0, 1.16fr);
-  gap: clamp(18px, 2vw, 30px);
+  grid-template-columns: minmax(220px, 0.46fr) minmax(0, 0.92fr) minmax(0, 1.08fr);
+  grid-template-areas:
+    "note ledger guide"
+    "wallet ledger links";
+  gap: clamp(14px, 1.5vw, 22px) clamp(18px, 2vw, 32px);
   align-items: start;
   padding-top: clamp(8px, 0.9vw, 14px);
-  border-top: 0;
+  border-top: 1px solid rgba(191, 239, 255, 0.024);
 }
 
 .dashboard-ecosystem-support-note {
+  grid-area: note;
   grid-template-columns: minmax(0, 1fr);
   align-items: start;
   max-width: 30ch;
 }
 
 .dashboard-ecosystem-wallet {
+  grid-area: wallet;
   min-width: 0;
+}
+
+.dashboard-ecosystem-ledger {
+  grid-area: ledger;
+  min-width: 0;
+}
+
+.dashboard-ecosystem-infrastructure > .dashboard-continuity-guide {
+  grid-area: guide;
+  min-width: 0;
+  padding-top: 0 !important;
 }
 
 .dashboard-ecosystem-support-links {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-area: links;
+  grid-template-columns: minmax(0, 1fr);
   gap: 0 clamp(14px, 1.3vw, 20px);
   min-width: 0;
 }
@@ -21683,7 +21698,7 @@ body {
   text-decoration: none;
 }
 
-.dashboard-ecosystem-support-links > *:nth-child(n + 3) {
+.dashboard-ecosystem-support-links > * + * {
   padding-top: 13px;
   border-top: 1px solid rgba(191, 239, 255, 0.034);
 }
@@ -21933,6 +21948,26 @@ body {
   grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
   gap: clamp(8px, 0.9vw, 14px) clamp(14px, 1.35vw, 22px);
   align-items: start;
+}
+
+.dashboard-ecosystem-ledger .dashboard-surface-usage-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(8px, 0.75vw, 12px);
+}
+
+.dashboard-ecosystem-ledger .dashboard-surface-usage-strip {
+  grid-template-columns: minmax(76px, 0.24fr) minmax(0, 1fr);
+  align-items: end;
+}
+
+.dashboard-ecosystem-ledger .dashboard-surface-usage-inline-cta {
+  grid-column: 1 / -1;
+  justify-self: start;
+}
+
+.dashboard-ecosystem-ledger .dashboard-surface-usage-list {
+  padding-left: 0;
+  border-left: 0;
 }
 
 .dashboard-surface-usage-copy {
@@ -22263,8 +22298,7 @@ body {
     grid-template-areas:
       "command command"
       "status status"
-      "ecosystem ecosystem"
-      "continuity continuity";
+      "ecosystem ecosystem";
     column-gap: clamp(18px, 2vw, 28px);
   }
 
@@ -22280,8 +22314,7 @@ body {
     grid-template-areas:
       "command"
       "status"
-      "ecosystem"
-      "continuity";
+      "ecosystem";
     gap: clamp(14px, 2vw, 24px);
   }
 
@@ -22299,8 +22332,12 @@ body {
     border-top: 1px solid rgba(191, 239, 255, 0.04);
   }
 
-  .dashboard-ecosystem-support {
+  .dashboard-ecosystem-infrastructure {
     grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.28fr);
+    grid-template-areas:
+      "note ledger"
+      "wallet ledger"
+      "guide links";
   }
 
   .dashboard-ecosystem-support-note,
@@ -22310,7 +22347,7 @@ body {
 
   .dashboard-ecosystem-support-links {
     grid-column: 2;
-    grid-row: 1 / span 2;
+    grid-row: auto;
   }
 }
 
@@ -22345,7 +22382,7 @@ body {
   .dashboard-command-live-grid,
   .dashboard-ecosystem-stage,
   .dashboard-ecosystem-flow,
-  .dashboard-ecosystem-support,
+  .dashboard-ecosystem-infrastructure,
   .dashboard-surface-command-sequence,
   .dashboard-surface-ribbon,
   .dashboard-surface-core-grid,
@@ -22356,6 +22393,15 @@ body {
   .dashboard-surface-ops-band > .dashboard-surface-ops-grid,
   .dashboard-surface-ops-band .dashboard-surface-command-list {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dashboard-ecosystem-infrastructure {
+    grid-template-areas:
+      "note"
+      "wallet"
+      "ledger"
+      "guide"
+      "links";
   }
 
   .dashboard-command-live-panel {
@@ -22412,6 +22458,8 @@ body {
 
   .dashboard-ecosystem-support-note,
   .dashboard-ecosystem-wallet,
+  .dashboard-ecosystem-ledger,
+  .dashboard-ecosystem-infrastructure > .dashboard-continuity-guide,
   .dashboard-ecosystem-support-links {
     grid-column: auto;
     grid-row: auto;
@@ -22501,8 +22549,12 @@ body {
     grid-template-columns: minmax(180px, 0.28fr) minmax(0, 1fr);
   }
 
-  .dashboard-ecosystem-support {
+  .dashboard-ecosystem-infrastructure {
     grid-template-columns: minmax(220px, 0.58fr) minmax(0, 1.42fr);
+    grid-template-areas:
+      "note ledger"
+      "wallet ledger"
+      "guide links";
   }
 
   .dashboard-ecosystem-support-note,
@@ -22511,8 +22563,8 @@ body {
   }
 
   .dashboard-ecosystem-support-links {
-    grid-column: 2;
-    grid-row: 1 / span 2;
+    grid-column: auto;
+    grid-row: auto;
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -22732,8 +22784,12 @@ body {
     min-width: min(260px, 42vw);
   }
 
-  .dashboard-ecosystem-support {
+  .dashboard-ecosystem-infrastructure {
     grid-template-columns: minmax(0, 0.42fr) minmax(0, 0.58fr);
+    grid-template-areas:
+      "note ledger"
+      "wallet ledger"
+      "guide links";
   }
 
   .dashboard-ecosystem-support-note,
@@ -22742,8 +22798,8 @@ body {
   }
 
   .dashboard-ecosystem-support-links {
-    grid-column: 2;
-    grid-row: 1 / span 2;
+    grid-column: auto;
+    grid-row: auto;
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -23115,7 +23171,7 @@ body {
     display: none;
   }
 
-  .dashboard-ecosystem-support {
+  .dashboard-ecosystem-infrastructure {
     gap: 12px;
     padding-top: 14px;
   }
