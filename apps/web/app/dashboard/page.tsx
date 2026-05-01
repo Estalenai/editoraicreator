@@ -475,6 +475,18 @@ export default function DashboardPage() {
     : featuredProjectDisplay
       ? `${featuredProjectDisplay.deliverableLabel} • ${featuredProjectDisplay.kindLabel}`
       : "Abra um Creator e registre a primeira saída para ocupar esta trilha.";
+  const studioFlowNodes = QUICK_LINKS.filter((item) => item.group === "core").map((item, index) => ({
+    ...item,
+    index: String(index + 1).padStart(2, "0"),
+    status:
+      index === 0
+        ? "Entrada"
+        : index === 1
+          ? "Revisão"
+          : index === 2
+            ? continuityValue
+            : focusContinuationLabel,
+  }));
   if (betaBlocked) {
     return (
       <BetaAccessBlockedView
@@ -573,40 +585,41 @@ export default function DashboardPage() {
                       </div>
 
                       <div className="dashboard-surface-command-sequence dashboard-studio-orbit dashboard-field-map">
-                        <div className="dashboard-surface-command-step">
-                          <span className="dashboard-surface-step-index">01</span>
-                          <div className="dashboard-surface-command-step-copy">
-                            <span className="dashboard-hero-flow-label">Creators</span>
-                            <strong>gera a base</strong>
-                            <span>Abra Post, Scripts ou Clips com contexto pronto.</span>
-                          </div>
-                        </div>
-                        <div className="dashboard-surface-command-step">
-                          <span className="dashboard-surface-step-index">02</span>
-                          <div className="dashboard-surface-command-step-copy">
-                            <span className="dashboard-hero-flow-label">Editor</span>
-                            <strong>lapida o material</strong>
-                            <span>Revise, consolide e preserve a continuidade.</span>
-                          </div>
-                        </div>
-                        <div className="dashboard-surface-command-step">
-                          <span className="dashboard-surface-step-index">03</span>
-                          <div className="dashboard-surface-command-step-copy">
-                            <span className="dashboard-hero-flow-label">Projetos</span>
-                            <strong>preserva o eixo</strong>
-                            <span>O que foi salvo continua pronto para retomada.</span>
-                          </div>
-                        </div>
-                        <div className="dashboard-surface-command-step">
-                          <span className="dashboard-surface-step-index">04</span>
-                          <div className="dashboard-surface-command-step-copy">
-                            <span className="dashboard-hero-flow-label">Saida</span>
-                            <strong>confirma a entrega</strong>
-                            <span>Publicacao, historico e saldo fecham o mesmo ciclo.</span>
-                          </div>
-                        </div>
-
                         <div className="dashboard-command-bridge dashboard-ecosystem-stage dashboard-studio-artifact dashboard-field-surface">
+                          <div className="dashboard-studio-artifact-thread" aria-label="Fluxo acoplado ao artefato">
+                            {studioFlowNodes.map((flowNode) => {
+                              const node = (
+                                <>
+                                  <span className="dashboard-surface-step-index">{flowNode.index}</span>
+                                  <span className="dashboard-studio-node-status">{flowNode.status}</span>
+                                  <div className="dashboard-surface-command-step-copy">
+                                    <span className="dashboard-hero-flow-label">{flowNode.tag}</span>
+                                    <strong>{flowNode.title}</strong>
+                                    <span>{flowNode.description}</span>
+                                  </div>
+                                </>
+                              );
+
+                              return flowNode.href.startsWith("/editor") ? (
+                                <EditorRouteLink
+                                  key={flowNode.href}
+                                  href={flowNode.href}
+                                  className="dashboard-surface-command-step dashboard-studio-artifact-node"
+                                >
+                                  {node}
+                                </EditorRouteLink>
+                              ) : (
+                                <Link
+                                  key={flowNode.href}
+                                  href={flowNode.href}
+                                  className="dashboard-surface-command-step dashboard-studio-artifact-node"
+                                >
+                                  {node}
+                                </Link>
+                              );
+                            })}
+                          </div>
+
                           <div className="dashboard-surface-focus-lead-wrap dashboard-ecosystem-lead dashboard-studio-preview-shell">
                             <div className="dashboard-studio-preview-topbar" aria-label="Camadas do artefato">
                               <span>Brief</span>
@@ -630,7 +643,7 @@ export default function DashboardPage() {
                                     <span className="dashboard-stage-lead-pill">{featuredProjectDisplay.stageLabel}</span>
                                   </div>
                                   <strong className="dashboard-stage-lead-title">{featuredProjectDisplay.displayTitle}</strong>
-                                  <p className="dashboard-stage-lead-copy">{featuredProjectDisplay.narrative}</p>
+                                  <p className="dashboard-stage-lead-copy">{featuredProjectDisplay.deliverableLabel} em continuidade.</p>
                                   <div className="dashboard-stage-lead-meta">
                                     <span>{featuredProjectDisplay.deliverableLabel}</span>
                                     <span>{featuredProjectDisplay.statusLabel}</span>
@@ -644,10 +657,8 @@ export default function DashboardPage() {
                               ) : (
                                 <div className="dashboard-surface-focus-lead dashboard-surface-focus-empty dashboard-studio-preview-brief">
                                   <span className="dashboard-stage-lead-kicker">Artefato inicial</span>
-                                  <strong>Creator vira projeto real.</strong>
-                                  <p>
-                                    Abra Creators, salve a primeira saída e continue no editor sem reiniciar o contexto.
-                                  </p>
+                                  <strong>Primeira entrega pronta para nascer.</strong>
+                                  <p>Brief, Creator, editor e saída entram no mesmo canvas.</p>
                                   <div className="dashboard-surface-focus-empty-actions">
                                     <Link href="/creators" className="btn-link-ea btn-primary btn-sm">
                                       Ir para Creators
@@ -678,6 +689,7 @@ export default function DashboardPage() {
                                 <span>Input sincronizado</span>
                                 <span>Revisão pronta</span>
                                 <span>{walletSummaryDisplay}</span>
+                                <span>{focusContinuationLabel}</span>
                               </div>
                             </div>
                           </div>
