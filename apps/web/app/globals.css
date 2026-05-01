@@ -10812,71 +10812,80 @@ body {
   border-top: 1px solid rgba(191, 239, 255, 0.022);
 }
 
-.dashboard-studio-body .dashboard-ecosystem-flow {
-  grid-template-columns: minmax(0, 1fr);
-  padding: clamp(6px, 0.85vw, 12px) clamp(2px, 0.6vw, 8px) 0;
-  align-items: start;
-}
-
-.dashboard-studio-section-note {
+.dashboard-studio-continuum {
   position: relative;
-  top: auto;
   display: grid;
-  grid-template-columns: minmax(180px, 0.28fr) minmax(0, 1fr) auto;
-  max-width: none;
-  width: 100%;
-  align-items: end;
-  gap: clamp(12px, 1.2vw, 18px);
-  padding: 0 0 clamp(8px, 0.9vw, 12px);
-  border-bottom: 1px solid rgba(191, 239, 255, 0.018);
+  gap: clamp(8px, 0.95vw, 14px);
+  padding: clamp(2px, 0.4vw, 6px) clamp(2px, 0.6vw, 8px) 0;
 }
 
-.dashboard-studio-section-note.dashboard-ecosystem-flow-note {
-  max-width: none;
-}
-
-.dashboard-studio-section-note strong {
-  font-size: clamp(0.88rem, 0.94vw, 1rem);
-  letter-spacing: -0.04em;
-}
-
-.dashboard-studio-section-note > span {
-  min-width: 0;
-  max-width: 42rem;
-  color: rgba(213, 235, 255, 0.5);
-}
-
-.dashboard-studio-section-note .dashboard-ecosystem-flow-note-links {
-  justify-content: flex-end;
-}
-
-.dashboard-studio-tool-orbit {
-  position: relative;
-  gap: clamp(14px, 1.4vw, 22px);
-}
-
-.dashboard-studio-tool-orbit::before {
+.dashboard-studio-continuum::before {
   content: "";
   position: absolute;
-  top: 24px;
-  left: 2%;
-  right: 2%;
+  left: 3%;
+  right: 3%;
+  top: clamp(18px, 2vw, 30px);
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(78, 226, 255, 0.24), rgba(246, 219, 104, 0.12), transparent);
+  background: linear-gradient(90deg, transparent, rgba(78, 226, 255, 0.18), rgba(191, 239, 255, 0.048), transparent);
+  opacity: 0.72;
   pointer-events: none;
 }
 
-.dashboard-studio-tool-node {
-  min-height: 116px;
-  padding: 0 0 14px;
-  border-bottom: 1px solid rgba(191, 239, 255, 0.02);
+.dashboard-studio-continuum .dashboard-ecosystem-ribbon {
+  position: relative;
+  z-index: 1;
+}
+
+.dashboard-studio-continuum-row {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(120px, 0.65fr) minmax(120px, 0.65fr) minmax(150px, 1fr) auto;
+  align-items: end;
+  gap: clamp(10px, 1.1vw, 18px);
+  padding: clamp(10px, 1vw, 16px) clamp(8px, 1.2vw, 18px) clamp(4px, 0.5vw, 8px);
+  border-top: 1px solid rgba(191, 239, 255, 0.022);
+  background: linear-gradient(90deg, rgba(78, 226, 255, 0.028), transparent 26%, rgba(191, 239, 255, 0.018), transparent 78%);
+}
+
+.dashboard-studio-continuum-signal {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+  padding-left: 12px;
+  border-left: 1px solid rgba(191, 239, 255, 0.03);
+}
+
+.dashboard-studio-continuum-signal span {
+  color: rgba(191, 239, 255, 0.46);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.dashboard-studio-continuum-signal strong {
+  overflow: hidden;
+  color: rgba(239, 248, 255, 0.88);
+  font-size: clamp(0.84rem, 0.9vw, 0.98rem);
+  letter-spacing: -0.035em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard-studio-continuum-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px 14px;
+  min-width: max-content;
 }
 
 .dashboard-studio-infrastructure {
   grid-template-columns: minmax(0, 1fr);
-  gap: clamp(8px, 1vw, 16px);
-  margin-top: clamp(-30px, -1.8vw, -14px);
-  padding: clamp(4px, 0.7vw, 10px) clamp(2px, 0.6vw, 8px) clamp(12px, 1.35vw, 22px);
+  gap: clamp(6px, 0.85vw, 14px);
+  margin-top: clamp(-20px, -1.2vw, -8px);
+  padding: clamp(2px, 0.55vw, 8px) clamp(2px, 0.6vw, 8px) clamp(12px, 1.35vw, 22px);
   border: 0;
   border-radius: 0;
   background:
@@ -11227,8 +11236,7 @@ body {
   .dashboard-studio-hero .dashboard-surface-command,
   .dashboard-studio-artifact,
   .dashboard-studio-preview-canvas,
-  .dashboard-studio-infrastructure,
-  .dashboard-studio-body .dashboard-ecosystem-flow {
+  .dashboard-studio-infrastructure {
     grid-template-columns: minmax(0, 1fr);
   }
 
@@ -11268,10 +11276,13 @@ body {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .dashboard-studio-section-note {
-    position: static;
-    grid-template-columns: minmax(0, 1fr);
-    align-items: start;
+  .dashboard-studio-continuum-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboard-studio-continuum-actions {
+    justify-content: flex-start;
+    min-width: 0;
   }
 }
 
@@ -11293,7 +11304,6 @@ body {
 
   .dashboard-studio-orbit,
   .dashboard-studio-body .dashboard-ecosystem-ribbon,
-  .dashboard-studio-tool-orbit,
   .dashboard-studio-trust-links,
   .dashboard-studio-onboarding .dashboard-continuity-route,
   .dashboard-studio-onboarding .dashboard-continuity-summary {
@@ -11357,8 +11367,7 @@ body {
     opacity: 0.36;
   }
 
-  .dashboard-studio-body::before,
-  .dashboard-studio-tool-orbit::before {
+  .dashboard-studio-body::before {
     display: none;
   }
 
@@ -11431,6 +11440,16 @@ body {
 
   .dashboard-studio-artifact .dashboard-ecosystem-state {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dashboard-studio-continuum-row {
+    grid-template-columns: minmax(0, 1fr);
+    padding-inline: 2px;
+    background: transparent;
+  }
+
+  .dashboard-studio-continuum-actions {
+    gap: 8px 12px;
   }
 }
 

@@ -110,16 +110,16 @@ const CREDIT_GUIDE_ITEMS = [
 
 const USAGE_FLOW_MARKERS = [
   {
-    title: "Creators abre a base",
-    description: "A primeira geração organiza a entrada do fluxo.",
+    title: "Entrada criada",
+    description: "Base pronta.",
   },
   {
-    title: "Editor consolida a peça",
-    description: "Revisão e acabamento transformam o rascunho em entrega.",
+    title: "Revisão pronta",
+    description: "Acabamento preservado.",
   },
   {
-    title: "Saída fecha o ciclo",
-    description: `O histórico confirmado aparece quando a trilha chega em ${CREATOR_COINS_PUBLIC_NAME}.`,
+    title: "Entrega registrada",
+    description: "Histórico confirma.",
   },
 ];
 
@@ -273,10 +273,6 @@ export default function DashboardPage() {
     [projects]
   );
   const walletSummary = useMemo(() => formatCreatorCoinsWalletSummary(wallet), [wallet]);
-  const coreQuickLinks = useMemo(
-    () => QUICK_LINKS.filter((item) => item.group === "core"),
-    []
-  );
   const supportQuickLinks = useMemo(
     () => QUICK_LINKS.filter((item) => item.group === "support"),
     []
@@ -428,8 +424,7 @@ export default function DashboardPage() {
     ? {
         kicker: "Histórico em aberto",
         title: "Primeira entrega fecha.",
-        description:
-          "Creator, editor e saída no mesmo ciclo.",
+        description: "Saída aguardando registro.",
         primaryHref: "/creators",
         primaryLabel: "Abrir Creators",
         secondaryHref: "/credits#credits-history",
@@ -726,83 +721,55 @@ export default function DashboardPage() {
                   </header>
 
                   <section className="dashboard-surface-ecosystem dashboard-operating-ecosystem dashboard-studio-body" data-reveal data-reveal-delay="140">
-                        {loading ? (
-                          <div className="dashboard-ecosystem-ribbon">
-                            {Array.from({ length: 3 }).map((_, index) => (
-                              <div key={`project-skeleton-${index}`} className="dashboard-project-skeleton-row" />
-                            ))}
-                          </div>
-                        ) : supportingProjectDisplay.length > 0 ? (
-                          <div className="dashboard-ecosystem-ribbon">
-                            {supportingProjectDisplay.map((project: any, index: number) => (
-                              <EditorRouteLink
-                                key={String(project.id || project.project_id || index)}
-                                href={`/editor/${project.id}`}
-                                className="dashboard-surface-ribbon-link"
-                                data-reveal
-                                data-reveal-delay={String(80 + index * 35)}
-                              >
-                                <div className="dashboard-surface-ribbon-copy">
-                                  <span className="dashboard-stream-link-kicker">{project.deliverableLabel}</span>
-                                  <strong className="dashboard-stream-link-title">{project.displayTitle}</strong>
-                                  <span className="dashboard-stream-link-copy">{project.statusLabel}</span>
-                                </div>
-                                <span className="dashboard-stream-link-cta">{project.stageLabel}</span>
-                              </EditorRouteLink>
-                            ))}
-                          </div>
-                        ) : null}
+                        <div className="dashboard-studio-continuum" aria-label="Sinais contínuos do estúdio">
+                          {loading ? (
+                            <div className="dashboard-ecosystem-ribbon">
+                              {Array.from({ length: 3 }).map((_, index) => (
+                                <div key={`project-skeleton-${index}`} className="dashboard-project-skeleton-row" />
+                              ))}
+                            </div>
+                          ) : supportingProjectDisplay.length > 0 ? (
+                            <div className="dashboard-ecosystem-ribbon">
+                              {supportingProjectDisplay.map((project: any, index: number) => (
+                                <EditorRouteLink
+                                  key={String(project.id || project.project_id || index)}
+                                  href={`/editor/${project.id}`}
+                                  className="dashboard-surface-ribbon-link"
+                                  data-reveal
+                                  data-reveal-delay={String(80 + index * 35)}
+                                >
+                                  <div className="dashboard-surface-ribbon-copy">
+                                    <span className="dashboard-stream-link-kicker">{project.deliverableLabel}</span>
+                                    <strong className="dashboard-stream-link-title">{project.displayTitle}</strong>
+                                    <span className="dashboard-stream-link-copy">{project.statusLabel}</span>
+                                  </div>
+                                  <span className="dashboard-stream-link-cta">{project.stageLabel}</span>
+                                </EditorRouteLink>
+                              ))}
+                            </div>
+                          ) : null}
 
-                        <div className="dashboard-ecosystem-flow">
-                          <div className="dashboard-surface-head-note dashboard-ecosystem-flow-note dashboard-studio-section-note">
-                            <strong>Estúdio conectado.</strong>
-                            <span>Creators, editor, projetos e saída operam no mesmo artefato.</span>
-                            <div className="dashboard-ecosystem-flow-note-links">
+                          <div className="dashboard-studio-continuum-row" data-reveal data-reveal-delay="210">
+                            <div className="dashboard-studio-continuum-signal">
+                              <span>Projeto</span>
+                              <strong>{recentProjects.length > 0 ? `${recentProjects.length} ativo(s)` : "Entrada inicial"}</strong>
+                            </div>
+                            <div className="dashboard-studio-continuum-signal">
+                              <span>Capacidade</span>
+                              <strong>{walletSummaryDisplay}</strong>
+                            </div>
+                            <div className="dashboard-studio-continuum-signal">
+                              <span>Uso</span>
+                              <strong>{usageLeadInsight}</strong>
+                            </div>
+                            <div className="dashboard-studio-continuum-actions">
                               <Link href="/credits#credits-history" className="dashboard-stream-link-cta">
-                                Histórico no fluxo
+                                Histórico
                               </Link>
                               <Link href="/support" className="dashboard-stream-link-cta">
-                                Suporte acompanha
+                                Suporte
                               </Link>
                             </div>
-                          </div>
-
-                          <div className="dashboard-ecosystem-lanes dashboard-studio-tool-orbit">
-                            {coreQuickLinks.map((item, index) =>
-                              item.href.startsWith("/editor") ? (
-                                <EditorRouteLink
-                                  key={item.href}
-                                  href={item.href}
-                                  className="dashboard-ecosystem-lane dashboard-studio-tool-node"
-                                  data-reveal
-                                  data-reveal-delay={String(90 + index * 30)}
-                                >
-                                  <span className="dashboard-surface-step-index">{String(index + 1).padStart(2, "0")}</span>
-                                  <div className="dashboard-surface-core-link-main">
-                                    <span className="dashboard-stream-link-kicker">{item.tag}</span>
-                                    <strong className="dashboard-stream-link-title">{item.title}</strong>
-                                    <span className="dashboard-stream-link-copy">{item.description}</span>
-                                  </div>
-                                  <span className="dashboard-stream-link-cta">{item.cta}</span>
-                                </EditorRouteLink>
-                              ) : (
-                                <Link
-                                  key={item.href}
-                                  href={item.href}
-                                  className="dashboard-ecosystem-lane dashboard-studio-tool-node"
-                                  data-reveal
-                                  data-reveal-delay={String(90 + index * 30)}
-                                >
-                                  <span className="dashboard-surface-step-index">{String(index + 1).padStart(2, "0")}</span>
-                                  <div className="dashboard-surface-core-link-main">
-                                    <span className="dashboard-stream-link-kicker">{item.tag}</span>
-                                    <strong className="dashboard-stream-link-title">{item.title}</strong>
-                                    <span className="dashboard-stream-link-copy">{item.description}</span>
-                                  </div>
-                                  <span className="dashboard-stream-link-cta">{item.cta}</span>
-                                </Link>
-                              )
-                            )}
                           </div>
                         </div>
 
@@ -813,7 +780,7 @@ export default function DashboardPage() {
                                 <span className="dashboard-stream-link-kicker">{CREATOR_COINS_PUBLIC_NAME}</span>
                                 <strong className="dashboard-stream-link-title">{walletSummaryDisplay}</strong>
                                 <span className="dashboard-stream-link-copy">
-                                  Capacidade disponível para o próximo ciclo criativo.
+                                  Capacidade do próximo ciclo.
                                 </span>
                               </div>
 
