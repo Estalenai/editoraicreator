@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { coinTypeLabel } from "../../lib/coinTypeLabel";
-import { CREATOR_COINS_PUBLIC_NAME, formatCreatorCoinsWalletSummary } from "../../lib/creatorCoins";
+import { formatCreatorCoinsWalletSummary } from "../../lib/creatorCoins";
 
 type Props = {
   email: string;
@@ -54,19 +54,6 @@ const OBJECTIVE_PATHS = [
   },
 ];
 
-const ONBOARDING_SIGNAL_ITEMS = [
-  {
-    label: "Fluxo base",
-    title: "Creator -> Projeto -> Editor",
-    description: "Entrada e edição no mesmo eixo.",
-  },
-  {
-    label: "Confidencialidade",
-    title: "Conta isolada",
-    description: "Fora de treino.",
-  },
-];
-
 export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: Props) {
   const [ready, setReady] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -114,8 +101,8 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
     >
       <div className="dashboard-surface-onboarding-head">
         <div className="dashboard-surface-field-note-copy">
-          <strong>Próxima entrada do estúdio</strong>
-          <span>Formato, revisão e capacidade entram no mesmo pulso criativo.</span>
+          <strong>Entrada rápida</strong>
+          <span>Escolha o formato e continue pelo mesmo projeto.</span>
         </div>
         <button onClick={dismiss} className="btn-ea btn-ghost btn-sm">
           Entendi
@@ -128,46 +115,7 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
         <span />
       </div>
 
-      <div className="dashboard-surface-onboarding-signals">
-        {ONBOARDING_SIGNAL_ITEMS.map((item) => (
-          <div key={item.label} className="dashboard-surface-onboarding-signal">
-            <span className="dashboard-stage-stat-label">{item.label}</span>
-            <strong>{item.title}</strong>
-            <span>{item.description}</span>
-          </div>
-        ))}
-          <div className="dashboard-surface-onboarding-signal dashboard-surface-onboarding-signal-wallet">
-          <span className="dashboard-stage-stat-label">{CREATOR_COINS_PUBLIC_NAME}</span>
-          <strong>{summary}</strong>
-          <span>Capacidade disponível para a próxima criação.</span>
-        </div>
-      </div>
-
-      <div className="dashboard-continuity-guide-grid">
-        <div className="dashboard-continuity-route" aria-label="Fluxo contínuo recomendado">
-          <div className="dashboard-continuity-route-step" data-reveal data-reveal-delay="120">
-            <span className="dashboard-surface-onboarding-step-index">01</span>
-            <div className="dashboard-surface-onboarding-step-copy">
-              <strong>Escolha</strong>
-              <span>Post, Scripts ou Clips.</span>
-            </div>
-          </div>
-          <div className="dashboard-continuity-route-step" data-reveal data-reveal-delay="160">
-            <span className="dashboard-surface-onboarding-step-index">02</span>
-            <div className="dashboard-surface-onboarding-step-copy">
-              <strong>Revise</strong>
-              <span>Consumo previsto.</span>
-            </div>
-          </div>
-          <div className="dashboard-continuity-route-step" data-reveal data-reveal-delay="200">
-            <span className="dashboard-surface-onboarding-step-index">03</span>
-            <div className="dashboard-surface-onboarding-step-copy">
-              <strong>Continue</strong>
-              <span>Projeto e editor.</span>
-            </div>
-          </div>
-        </div>
-
+      <div className="dashboard-continuity-guide-grid dashboard-studio-onboarding-compact">
         <div className="dashboard-continuity-paths">
           {OBJECTIVE_PATHS.map((item, index) => (
             <Link
@@ -187,25 +135,26 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
             </Link>
           ))}
         </div>
-      </div>
 
-      <div className="dashboard-continuity-summary dashboard-studio-onboarding-summary">
-        <div className="dashboard-surface-onboarding-summary-copy">
-          <strong>{CREATOR_COINS_PUBLIC_NAME}</strong>
-          <div className="helper-text-ea">{summary}. Uso previsto antes da entrega; histórico depois.</div>
-        </div>
-        <div className="dashboard-surface-onboarding-summary-note">
-          <span>{coinTypeLabel("common")}: rotina</span>
-          <span>{coinTypeLabel("pro")}: maior qualidade</span>
-          <span>{coinTypeLabel("ultra")}: processamento premium</span>
-        </div>
-        <div className="dashboard-surface-onboarding-actions">
-          <Link href="/creators?tab=post" onClick={dismiss} className="btn-link-ea btn-primary">
-            Iniciar fluxo
-          </Link>
-          <Link href="/credits" onClick={dismiss} className="btn-link-ea btn-secondary">
-            Entender {CREATOR_COINS_PUBLIC_NAME}
-          </Link>
+        <div className="dashboard-continuity-summary dashboard-studio-onboarding-summary">
+          <div className="dashboard-surface-onboarding-summary-copy">
+            <span className="dashboard-stage-stat-label">Capacidade</span>
+            <strong>{summary}</strong>
+            <div className="helper-text-ea">Saldo disponível antes da entrega.</div>
+          </div>
+          <div className="dashboard-surface-onboarding-summary-note">
+            <span>{coinTypeLabel("common")}: rotina</span>
+            <span>{coinTypeLabel("pro")}: maior qualidade</span>
+            <span>{coinTypeLabel("ultra")}: premium</span>
+          </div>
+          <div className="dashboard-surface-onboarding-actions">
+            <Link href="/creators?tab=post" onClick={dismiss} className="btn-link-ea btn-primary">
+              Iniciar fluxo
+            </Link>
+            <Link href="/credits" onClick={dismiss} className="btn-link-ea btn-secondary">
+              Ver capacidade
+            </Link>
+          </div>
         </div>
       </div>
     </section>

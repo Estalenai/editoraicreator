@@ -11142,6 +11142,11 @@ body {
   gap: clamp(12px, 1.2vw, 20px);
 }
 
+.dashboard-studio-onboarding .dashboard-studio-onboarding-compact {
+  grid-template-columns: minmax(0, 1.25fr) minmax(260px, 0.72fr);
+  align-items: end;
+}
+
 .dashboard-studio-onboarding .dashboard-surface-onboarding-signals {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: clamp(8px, 0.85vw, 14px);
@@ -11156,6 +11161,11 @@ body {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0 clamp(12px, 1.1vw, 18px);
+}
+
+.dashboard-studio-onboarding .dashboard-studio-onboarding-compact .dashboard-continuity-paths {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: end;
 }
 
 .dashboard-studio-onboarding .dashboard-continuity-path {
@@ -11179,6 +11189,15 @@ body {
 
 .dashboard-studio-onboarding .dashboard-continuity-summary {
   grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.dashboard-studio-onboarding .dashboard-studio-onboarding-compact .dashboard-continuity-summary {
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+}
+
+.dashboard-studio-onboarding .dashboard-studio-onboarding-compact .dashboard-surface-onboarding-actions {
+  justify-content: flex-start;
 }
 
 .dashboard-studio-status {
@@ -11305,6 +11324,7 @@ body {
   .dashboard-studio-orbit,
   .dashboard-studio-body .dashboard-ecosystem-ribbon,
   .dashboard-studio-trust-links,
+  .dashboard-studio-onboarding .dashboard-studio-onboarding-compact,
   .dashboard-studio-onboarding .dashboard-continuity-route,
   .dashboard-studio-onboarding .dashboard-continuity-summary {
     grid-template-columns: minmax(0, 1fr);
@@ -11450,6 +11470,10 @@ body {
 
   .dashboard-studio-continuum-actions {
     gap: 8px 12px;
+  }
+
+  .dashboard-studio-onboarding .dashboard-studio-onboarding-compact .dashboard-continuity-paths {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
