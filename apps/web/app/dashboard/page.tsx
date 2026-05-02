@@ -29,7 +29,7 @@ const QUICK_LINKS: QuickLinkItem[] = [
     group: "core",
     tag: "Creators",
     title: "Creators",
-    description: "Abra Post, Scripts ou Clips com contexto pronto.",
+    description: "Entrada pronta.",
     cta: "Abrir workspace",
   },
   {
@@ -37,7 +37,7 @@ const QUICK_LINKS: QuickLinkItem[] = [
     group: "core",
     tag: "Editor",
     title: "Editor",
-    description: "Entre direto no núcleo de revisão.",
+    description: "Revisão direta.",
     cta: "Abrir editor",
   },
   {
@@ -45,7 +45,7 @@ const QUICK_LINKS: QuickLinkItem[] = [
     group: "core",
     tag: "Projetos",
     title: "Projetos",
-    description: "Retome continuidade e saída no mesmo fluxo.",
+    description: "Retorno salvo.",
     cta: "Ver projetos",
   },
   {
@@ -53,7 +53,7 @@ const QUICK_LINKS: QuickLinkItem[] = [
     group: "core",
     tag: "Saída",
     title: "Output",
-    description: "Veja o que saiu e o próximo passo.",
+    description: "Entrega visível.",
     cta: "Ver saída",
   },
   {
@@ -61,7 +61,7 @@ const QUICK_LINKS: QuickLinkItem[] = [
     group: "support",
     tag: "Capacidade",
     title: "Creator Coins",
-    description: "Saldo e ritmo do próximo ciclo.",
+    description: "Energia do ciclo.",
     cta: "Abrir Creator Coins",
   },
   {
@@ -69,7 +69,7 @@ const QUICK_LINKS: QuickLinkItem[] = [
     group: "support",
     tag: "Acesso",
     title: "Planos",
-    description: "Nível ativo e upgrade.",
+    description: "Nível ativo.",
     cta: "Revisar planos",
   },
   {
@@ -77,7 +77,7 @@ const QUICK_LINKS: QuickLinkItem[] = [
     group: "support",
     tag: "Confiança",
     title: "Suporte",
-    description: "Ajuda contextual.",
+    description: "Ajuda pronta.",
     cta: "Falar com suporte",
   },
   {
@@ -85,7 +85,7 @@ const QUICK_LINKS: QuickLinkItem[] = [
     group: "support",
     tag: "Guia",
     title: "Como funciona",
-    description: "Rota curta do estúdio.",
+    description: "Rota curta.",
     cta: "Ler guia",
   },
 ];
@@ -94,32 +94,32 @@ const CREDIT_GUIDE_ITEMS = [
   {
     coinType: "common" as const,
     title: "Comum",
-    description: "Fluxos de rotina e volume diário.",
+    description: "Rotina.",
   },
   {
     coinType: "pro" as const,
     title: "Pro",
-    description: "Gerações estratégicas com mais qualidade.",
+    description: "Qualidade.",
   },
   {
     coinType: "ultra" as const,
     title: "Ultra",
-    description: "Processamento premium para cenários pesados.",
+    description: "Premium.",
   },
 ];
 
 const USAGE_FLOW_MARKERS = [
   {
-    title: "Entrada criada",
-    description: "Base pronta.",
+    title: "Entrada",
+    description: "Base.",
   },
   {
-    title: "Revisão pronta",
-    description: "Acabamento preservado.",
+    title: "Revisão",
+    description: "Acabamento.",
   },
   {
-    title: "Entrega registrada",
-    description: "Histórico confirma.",
+    title: "Registro",
+    description: "Histórico.",
   },
 ];
 
@@ -360,7 +360,7 @@ export default function DashboardPage() {
       ? "Sincronizando ciclo."
       : hasConfirmedUsage && usageDisplayItems[0]
         ? `${usageDisplayItems[0].displayLabel} lidera.`
-        : `Primeira entrega fecha em ${CREATOR_COINS_PUBLIC_NAME}.`;
+        : "Entrega em aberto.";
   const nextAction = recentProjects.length > 0
       ? {
         title: "Retomar projeto",
@@ -369,8 +369,8 @@ export default function DashboardPage() {
         cta: recentProjects[0]?.id ? "Abrir último projeto" : "Abrir projetos",
       }
     : {
-        title: "Gerar primeira entrega",
-        description: "Abra um Creator e salve a primeira saída.",
+        title: "Primeira entrega",
+        description: "Abrir Creator.",
         href: "/creators",
         cta: "Abrir Creators",
       };
@@ -381,10 +381,10 @@ export default function DashboardPage() {
         value: loading || usageLoading ? "Sincronizando" : hasConfirmedUsage ? "Reconciliado" : "Aberto",
         note:
           loading || usageLoading
-            ? "Atualizando ciclo."
+            ? "Sincronizando."
             : hasConfirmedUsage
-              ? `${usageItems.length} feature(s).`
-              : "Primeira saída.",
+              ? `${usageItems.length} recurso(s).`
+              : "Sem saída.",
       },
       {
         label: "Ritmo",
@@ -393,20 +393,20 @@ export default function DashboardPage() {
             ? "Carregando"
             : hasConfirmedUsage && usageDisplayItems[0]
               ? usageDisplayItems[0].displayLabel
-              : "Primeira entrega",
+              : "Em aberto",
         note:
           loading || usageLoading
-            ? "Lendo atividade."
+            ? "Atividade."
             : hasConfirmedUsage && usageDisplayItems[0]
               ? `${usageDisplayItems[0].used}/${usageDisplayItems[0].limit}.`
-              : "Entrega em aberto.",
+              : "Aguardando.",
       },
       {
         label: "Próximo passo",
         value: loading ? "Preparando" : nextAction.title,
         note:
           loading
-            ? "Preparando workspace."
+            ? "Workspace."
             : nextAction.description,
       },
     ],
@@ -423,8 +423,8 @@ export default function DashboardPage() {
   const usageEmptyState = !hasConfirmedUsage
     ? {
         kicker: "Histórico em aberto",
-        title: "Primeira entrega fecha.",
-        description: "Saída aguardando registro.",
+        title: "Entrega em aberto.",
+        description: "Aguardando saída.",
         primaryHref: "/creators",
         primaryLabel: "Abrir Creators",
         secondaryHref: "/credits#credits-history",
@@ -433,9 +433,8 @@ export default function DashboardPage() {
     : usagePreviewItems.length === 0
       ? {
           kicker: "Sem uso confirmado",
-          title: "Publique a primeira entrega.",
-          description:
-            `A estimativa aparece antes; ${CREATOR_COINS_PUBLIC_NAME} confirma depois.`,
+          title: "Saída inicial.",
+          description: `${CREATOR_COINS_PUBLIC_NAME} confirma depois.`,
           primaryHref: "/creators",
           primaryLabel: "Gerar agora",
           secondaryHref: "/credits#credits-history",
@@ -445,8 +444,8 @@ export default function DashboardPage() {
   const recentUsageText = usageLoading
     ? "Atualizando ciclo."
     : usageItems.length === 0
-      ? "Sem uso registrado."
-      : `${usageItems.length} feature(s) • ${totalUsage} consumo(s).`;
+      ? "Sem uso."
+      : `${usageItems.length} recurso(s) • ${totalUsage} uso(s).`;
   const planLabelDisplay = loading ? "Plano em sincronização" : planLabel ?? "—";
   const emailDisplay = loading ? "Sincronizando conta..." : email || "—";
   const walletSummaryDisplay = loading ? "Saldo em sincronização" : walletSummary;
@@ -454,25 +453,33 @@ export default function DashboardPage() {
   const nextActionTitleDisplay = loading ? "Preparando seu próximo passo" : nextAction.title;
   const nextActionCtaDisplay = loading ? "Aguarde a sincronização" : nextAction.cta;
   const nextActionDescriptionDisplay = loading
-    ? "Estamos sincronizando saldo, plano, projetos e próximos passos do workspace."
+    ? "Sincronizando workspace."
     : nextAction.description;
   const continuityValue = loading ? "Projetos em sincronização" : `${recentProjects.length} projeto(s)`;
   const continuityDetail = loading
-    ? "A trilha criativa entra completa quando a conta terminar de sincronizar."
+    ? "Sincronizando trilha."
     : featuredProjectDisplay
       ? `${featuredProjectDisplay.statusLabel} • ${featuredProjectDisplay.displayTitle}`
-      : "Crie o primeiro projeto.";
+      : "Entrada inicial.";
   const focusContinuationLabel = loading
     ? "Trilha em sincronização"
     : featuredProjectDisplay?.stageLabel || "Trilha inicial";
   const focusContinuationDetail = loading
-    ? "Sincronizando a etapa principal do projeto."
+    ? "Etapa principal."
     : featuredProjectDisplay
       ? `${featuredProjectDisplay.deliverableLabel} • ${featuredProjectDisplay.kindLabel}`
-      : "Abra um Creator e registre a primeira saída para ocupar esta trilha.";
+      : "Trilha vazia.";
   const studioFlowNodes = QUICK_LINKS.filter((item) => item.group === "core").map((item, index) => ({
     ...item,
     index: String(index + 1).padStart(2, "0"),
+    cue:
+      index === 0
+        ? "Entrada"
+        : index === 1
+          ? "Revisão"
+          : index === 2
+            ? "Retorno"
+            : "Entrega",
     status:
       index === 0
         ? "Entrada"
@@ -520,10 +527,13 @@ export default function DashboardPage() {
                             </div>
                           </div>
                           <span className="dashboard-hero-flow-label">Produto vivo</span>
-                          <strong>A entrega ativa comanda o estúdio.</strong>
-                          <p>
-                            Projeto, criação, revisão, saída e capacidade aparecem como partes do mesmo artefato.
-                          </p>
+                          <strong>Entrega ativa.</strong>
+                          <div className="dashboard-studio-hero-metadata" aria-label="Camadas visuais do estúdio">
+                            <span>Projeto</span>
+                            <span>Revisão</span>
+                            <span>Saída</span>
+                            <span>Capacidade</span>
+                          </div>
                         </div>
 
                         <aside className="dashboard-command-live-panel dashboard-operating-account dashboard-studio-signal-panel" aria-label="Sinais operacionais do estúdio">
@@ -537,7 +547,7 @@ export default function DashboardPage() {
                             <div className="dashboard-command-live-signal">
                               <span className="dashboard-overview-label">{CREATOR_COINS_PUBLIC_NAME}</span>
                               <strong>{walletSummaryDisplay}</strong>
-                              <span>Saldo reconciliado dentro do fluxo.</span>
+                              <span>Capacidade ativa.</span>
                             </div>
                             <div className="dashboard-command-live-signal">
                               <span className="dashboard-overview-label">Continuidade</span>
@@ -590,7 +600,7 @@ export default function DashboardPage() {
                                   <div className="dashboard-surface-command-step-copy">
                                     <span className="dashboard-hero-flow-label">{flowNode.tag}</span>
                                     <strong>{flowNode.title}</strong>
-                                    <span>{flowNode.description}</span>
+                                    <span>{flowNode.cue}</span>
                                   </div>
                                 </>
                               );
@@ -652,8 +662,8 @@ export default function DashboardPage() {
                               ) : (
                                 <div className="dashboard-surface-focus-lead dashboard-surface-focus-empty dashboard-studio-preview-brief">
                                   <span className="dashboard-stage-lead-kicker">Artefato inicial</span>
-                                  <strong>Primeira entrega pronta para nascer.</strong>
-                                  <p>Brief, Creator, editor e saída entram no mesmo canvas.</p>
+                                  <strong>Primeira entrega.</strong>
+                                  <p>Brief, Creator e saída no mesmo canvas.</p>
                                   <div className="dashboard-surface-focus-empty-actions">
                                     <Link href="/creators" className="btn-link-ea btn-primary btn-sm">
                                       Ir para Creators
@@ -780,7 +790,7 @@ export default function DashboardPage() {
                                 <span className="dashboard-stream-link-kicker">{CREATOR_COINS_PUBLIC_NAME}</span>
                                 <strong className="dashboard-stream-link-title">{walletSummaryDisplay}</strong>
                                 <span className="dashboard-stream-link-copy">
-                                  Capacidade do próximo ciclo.
+                                  Próximo ciclo.
                                 </span>
                               </div>
 

@@ -27,30 +27,30 @@ const OBJECTIVE_PATHS = [
   {
     key: "post",
     title: "Post",
-    description: "Publicação direta.",
+    description: "Publicação.",
     href: "/creators?tab=post",
-    cta: "Abrir Creator Post",
+    cta: "Abrir Post",
   },
   {
     key: "scripts",
     title: "Scripts",
-    description: "Narrativa revisável.",
+    description: "Narrativa.",
     href: "/creators?tab=scripts",
-    cta: "Abrir Creator Scripts",
+    cta: "Abrir Scripts",
   },
   {
     key: "clips",
     title: "Clips",
     description: "Saída visual.",
     href: "/creators?tab=clips",
-    cta: "Abrir Creator Clips",
+    cta: "Abrir Clips",
   },
   {
     key: "supporting",
     title: "Ads",
-    description: "Apoio complementar.",
+    description: "Apoio.",
     href: "/creators?tab=ads",
-    cta: "Abrir Creator Ads",
+    cta: "Abrir Ads",
   },
 ];
 
@@ -102,7 +102,7 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
       <div className="dashboard-surface-onboarding-head">
         <div className="dashboard-surface-field-note-copy">
           <strong>Entrada rápida</strong>
-          <span>Escolha o formato e continue pelo mesmo projeto.</span>
+          <span>Formato e projeto no mesmo eixo.</span>
         </div>
         <button onClick={dismiss} className="btn-ea btn-ghost btn-sm">
           Entendi
@@ -140,7 +140,7 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
           <div className="dashboard-surface-onboarding-summary-copy">
             <span className="dashboard-stage-stat-label">Capacidade</span>
             <strong>{summary}</strong>
-            <div className="helper-text-ea">Saldo disponível antes da entrega.</div>
+            <div className="helper-text-ea">Antes da entrega.</div>
           </div>
           <div className="dashboard-surface-onboarding-summary-note">
             <span>{coinTypeLabel("common")}: rotina</span>
