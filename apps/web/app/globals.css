@@ -24293,6 +24293,38 @@ body {
   }
 }
 
+@media (min-width: 641px) and (max-width: 1040px) {
+  .dashboard-studio-field .dashboard-command-live-panel.dashboard-studio-signal-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+    padding: 0;
+    border: 0;
+  }
+
+  .dashboard-studio-signal-panel .dashboard-command-live-head,
+  .dashboard-studio-signal-panel .dashboard-command-live-grid,
+  .dashboard-studio-signal-panel .dashboard-command-live-actions {
+    grid-column: auto;
+    grid-row: auto;
+    order: initial;
+  }
+
+  .dashboard-studio-signal-panel .dashboard-command-live-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+  }
+
+  .dashboard-studio-signal-panel .dashboard-command-live-signal {
+    flex: 1 1 180px;
+  }
+
+  .dashboard-studio-signal-panel .dashboard-command-live-next {
+    flex-basis: 100%;
+  }
+}
+
 @media (max-width: 640px) {
   .app-shell-frame:has(.dashboard-surface-page) {
     --ea-shell-sidebar-width: 100%;
