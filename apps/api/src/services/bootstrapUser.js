@@ -27,15 +27,27 @@ export async function bootstrapUser({ userId, email }) {
     await insertIfMissing(
       "profiles",
       {
-        id: userId,
+        user_id: userId,
         email: email || null,
-        display_name: null,
-        plan_code: "FREE",
+        role: "user",
       },
-      "id"
+      "user_id"
     );
   } catch {
-    // ignore
+    try {
+      await insertIfMissing(
+        "profiles",
+        {
+          id: userId,
+          email: email || null,
+          display_name: null,
+          plan_code: "FREE",
+        },
+        "id"
+      );
+    } catch {
+      // ignore
+    }
   }
 
   try {
