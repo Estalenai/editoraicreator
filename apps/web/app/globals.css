@@ -10250,24 +10250,22 @@ body {
   display: grid;
   min-height: min(820px, calc(100svh - 88px));
   align-content: start;
-  padding: clamp(30px, 3.6vw, 56px) 0 clamp(14px, 1.8vw, 30px);
+  padding: clamp(24px, 3vw, 46px) 0 clamp(14px, 1.8vw, 30px);
 }
 
 .dashboard-studio-hero .dashboard-surface-command {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-areas:
-    "intro"
-    "artifact";
-  gap: clamp(8px, 1.4vw, 18px);
-  align-items: start;
+  grid-template-columns: minmax(236px, 0.34fr) minmax(680px, 1.66fr);
+  grid-template-areas: "intro artifact";
+  gap: clamp(16px, 2.2vw, 34px);
+  align-items: center;
   position: relative;
 }
 
 .dashboard-studio-hero .dashboard-surface-command::before {
   content: "";
   position: absolute;
-  inset: 4% -4% -18%;
+  inset: 4% -4% -18% 8%;
   z-index: -1;
   pointer-events: none;
   background:
@@ -10286,9 +10284,9 @@ body {
 }
 
 .dashboard-studio-field.dashboard-command-field {
-  grid-template-columns: minmax(260px, 0.34fr) minmax(0, 0.9fr);
-  gap: clamp(16px, 2.2vw, 34px);
-  align-items: end;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(10px, 1.35vw, 18px);
+  align-items: start;
 }
 
 .dashboard-studio-field .dashboard-surface-command-copy {
@@ -10310,8 +10308,8 @@ body {
 
 .dashboard-studio-field .dashboard-surface-command-copy > strong {
   display: block;
-  max-width: min(100%, 13ch);
-  font-size: clamp(2.15rem, 2.75vw, 3.45rem);
+  max-width: min(100%, 11ch);
+  font-size: clamp(2.15rem, 2.8vw, 3.5rem);
   line-height: 0.94;
   letter-spacing: -0.058em;
   text-wrap: balance;
@@ -10367,12 +10365,7 @@ body {
 }
 
 .dashboard-studio-signal-panel .dashboard-command-live-head {
-  grid-template-columns: repeat(3, minmax(0, auto));
-  align-items: end;
-  justify-content: start;
-  gap: 4px 12px;
-  padding: 0 0 6px;
-  border-bottom: 0;
+  display: none;
 }
 
 .dashboard-studio-signal-panel .dashboard-command-live-head strong {
@@ -10381,14 +10374,14 @@ body {
 
 .dashboard-studio-signal-panel .dashboard-command-live-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px 12px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 5px;
 }
 
 .dashboard-studio-signal-panel .dashboard-command-live-signal {
   min-width: 0;
-  padding: 8px 0 0;
-  border-top: 1px solid rgba(191, 239, 255, 0.018);
+  padding: 6px 0 0;
+  border-top: 1px solid rgba(191, 239, 255, 0.012);
 }
 
 .dashboard-studio-signal-panel .dashboard-command-live-signal strong {
@@ -11290,8 +11283,8 @@ body {
 
 @media (max-width: 1380px) {
   .dashboard-studio-hero .dashboard-surface-command {
-    grid-template-columns: minmax(0, 1fr);
-    gap: clamp(8px, 1.4vw, 18px);
+    grid-template-columns: minmax(220px, 0.32fr) minmax(610px, 1.68fr);
+    gap: clamp(14px, 2vw, 30px);
   }
 
   .dashboard-studio-field .dashboard-surface-command-copy > strong {
