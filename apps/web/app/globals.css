@@ -10248,18 +10248,19 @@ body {
 
 .dashboard-studio-hero {
   display: grid;
-  min-height: min(820px, calc(100svh - 88px));
+  min-height: min(760px, calc(100svh - 88px));
   align-content: start;
-  padding: clamp(24px, 3vw, 46px) 0 clamp(14px, 1.8vw, 30px);
+  padding: clamp(18px, 2.4vw, 38px) 0 clamp(10px, 1.5vw, 24px);
 }
 
 .dashboard-studio-hero .dashboard-surface-command {
   display: grid;
-  grid-template-columns: minmax(236px, 0.34fr) minmax(680px, 1.66fr);
-  grid-template-areas: "intro artifact";
-  gap: clamp(16px, 2.2vw, 34px);
-  align-items: center;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "artifact";
+  gap: 0;
+  align-items: start;
   position: relative;
+  padding-top: clamp(8px, 1.2vw, 18px);
 }
 
 .dashboard-studio-hero .dashboard-surface-command::before {
@@ -10276,21 +10277,28 @@ body {
 }
 
 .dashboard-studio-field {
-  grid-area: intro;
+  grid-area: artifact;
+  position: relative;
+  z-index: 5;
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: clamp(22px, 2.4vw, 34px);
-  align-items: start;
+  grid-template-columns: minmax(190px, 0.34fr) minmax(0, 1fr);
+  gap: clamp(14px, 2vw, 32px);
+  align-items: end;
+  width: min(100%, 1260px);
+  margin: 0 auto clamp(-108px, -7vw, -72px);
+  padding: 0 clamp(8px, 1vw, 16px);
+  pointer-events: auto;
 }
 
 .dashboard-studio-field.dashboard-command-field {
-  grid-template-columns: minmax(0, 1fr);
-  gap: clamp(10px, 1.35vw, 18px);
-  align-items: start;
+  grid-template-columns: minmax(190px, 0.34fr) minmax(0, 1fr);
+  gap: clamp(14px, 2vw, 32px);
+  align-items: end;
 }
 
 .dashboard-studio-field .dashboard-surface-command-copy {
   max-width: none;
+  align-self: end;
 }
 
 .dashboard-studio-field .dashboard-surface-hero-intro {
@@ -10299,7 +10307,7 @@ body {
 
 .dashboard-studio-field h1 {
   max-width: none;
-  font-size: clamp(1rem, 1.05vw, 1.16rem);
+  font-size: clamp(0.9rem, 0.95vw, 1.06rem);
   line-height: 1;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -10308,16 +10316,16 @@ body {
 
 .dashboard-studio-field .dashboard-surface-command-copy > strong {
   display: block;
-  max-width: min(100%, 11ch);
-  font-size: clamp(2.15rem, 2.8vw, 3.5rem);
-  line-height: 0.94;
+  max-width: min(100%, 12ch);
+  font-size: clamp(1.62rem, 2.15vw, 2.85rem);
+  line-height: 0.92;
   letter-spacing: -0.058em;
   text-wrap: balance;
 }
 
 .dashboard-studio-field .dashboard-surface-command-copy > p {
   max-width: 30rem;
-  font-size: clamp(0.96rem, 1.05vw, 1.08rem);
+  font-size: clamp(0.86rem, 0.92vw, 0.98rem);
   color: var(--ea-studio-text-soft);
 }
 
@@ -10358,8 +10366,10 @@ body {
 }
 
 .dashboard-studio-field .dashboard-command-live-panel.dashboard-studio-signal-panel {
-  grid-template-columns: minmax(0, 1fr);
-  gap: 10px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: clamp(10px, 1.2vw, 18px);
+  align-items: end;
   padding: 0;
   border-left: 0;
 }
@@ -10374,14 +10384,16 @@ body {
 
 .dashboard-studio-signal-panel .dashboard-command-live-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 5px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(8px, 1vw, 14px);
 }
 
 .dashboard-studio-signal-panel .dashboard-command-live-signal {
   min-width: 0;
-  padding: 6px 0 0;
-  border-top: 1px solid rgba(191, 239, 255, 0.012);
+  padding: 0 0 0 clamp(8px, 0.9vw, 14px);
+  border-top: 0;
+  border-left: 1px solid rgba(191, 239, 255, 0.018);
+  background: linear-gradient(90deg, rgba(78, 226, 255, 0.018), transparent 74%);
 }
 
 .dashboard-studio-signal-panel .dashboard-command-live-signal strong {
@@ -10398,6 +10410,11 @@ body {
   justify-self: start;
 }
 
+.dashboard-studio-signal-panel .dashboard-command-live-actions {
+  justify-content: flex-end;
+  min-width: max-content;
+}
+
 .dashboard-studio-orbit {
   grid-area: artifact;
   position: relative;
@@ -10405,7 +10422,7 @@ body {
   display: block;
   width: 100%;
   margin-left: 0;
-  padding: clamp(2px, 0.7vw, 10px) 0 0;
+  padding: clamp(96px, 7.4vw, 132px) 0 0;
   border: 0;
   border-radius: 0;
   background: transparent;
@@ -11283,12 +11300,12 @@ body {
 
 @media (max-width: 1380px) {
   .dashboard-studio-hero .dashboard-surface-command {
-    grid-template-columns: minmax(220px, 0.32fr) minmax(610px, 1.68fr);
-    gap: clamp(14px, 2vw, 30px);
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
   }
 
   .dashboard-studio-field .dashboard-surface-command-copy > strong {
-    font-size: clamp(2.08rem, 2.65vw, 3.25rem);
+    font-size: clamp(1.58rem, 2.05vw, 2.72rem);
   }
 }
 
@@ -11361,10 +11378,15 @@ body {
       "intro"
       "artifact";
     gap: clamp(20px, 5vw, 32px);
+    padding-top: 0;
   }
 
   .dashboard-studio-field.dashboard-command-field {
     grid-template-columns: minmax(0, 1fr);
+    grid-area: intro;
+    width: 100%;
+    margin: 0;
+    padding: 0;
   }
 
   .dashboard-studio-orbit,
@@ -11378,7 +11400,7 @@ body {
 
   .dashboard-studio-orbit {
     grid-template-rows: auto;
-    padding: clamp(14px, 4vw, 22px);
+    padding: clamp(14px, 4vw, 22px) 0 0;
   }
 
   .dashboard-studio-artifact {
