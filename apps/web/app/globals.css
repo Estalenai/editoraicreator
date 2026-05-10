@@ -10248,24 +10248,26 @@ body {
 
 .dashboard-studio-hero {
   display: grid;
-  min-height: min(880px, calc(100svh - 94px));
+  min-height: min(820px, calc(100svh - 88px));
   align-content: start;
-  padding: clamp(34px, 4.2vw, 66px) 0 clamp(18px, 2.2vw, 38px);
+  padding: clamp(30px, 3.6vw, 56px) 0 clamp(14px, 1.8vw, 30px);
 }
 
 .dashboard-studio-hero .dashboard-surface-command {
   display: grid;
-  grid-template-columns: minmax(292px, 0.45fr) minmax(650px, 1.55fr);
-  grid-template-areas: "intro artifact";
-  gap: clamp(20px, 3.2vw, 58px);
-  align-items: center;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    "intro"
+    "artifact";
+  gap: clamp(8px, 1.4vw, 18px);
+  align-items: start;
   position: relative;
 }
 
 .dashboard-studio-hero .dashboard-surface-command::before {
   content: "";
   position: absolute;
-  inset: 6% -3% -18% 13%;
+  inset: 4% -4% -18%;
   z-index: -1;
   pointer-events: none;
   background:
@@ -10284,13 +10286,13 @@ body {
 }
 
 .dashboard-studio-field.dashboard-command-field {
-  grid-template-columns: minmax(0, 1fr);
-  gap: clamp(18px, 2vw, 28px);
-  align-items: start;
+  grid-template-columns: minmax(260px, 0.34fr) minmax(0, 0.9fr);
+  gap: clamp(16px, 2.2vw, 34px);
+  align-items: end;
 }
 
 .dashboard-studio-field .dashboard-surface-command-copy {
-  max-width: 27rem;
+  max-width: none;
 }
 
 .dashboard-studio-field .dashboard-surface-hero-intro {
@@ -10308,10 +10310,10 @@ body {
 
 .dashboard-studio-field .dashboard-surface-command-copy > strong {
   display: block;
-  max-width: min(100%, 11ch);
-  font-size: clamp(2.55rem, 3.35vw, 4.1rem);
-  line-height: 0.92;
-  letter-spacing: -0.062em;
+  max-width: min(100%, 13ch);
+  font-size: clamp(2.15rem, 2.75vw, 3.45rem);
+  line-height: 0.94;
+  letter-spacing: -0.058em;
   text-wrap: balance;
 }
 
@@ -10325,8 +10327,8 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 7px;
-  max-width: 26rem;
-  margin-top: clamp(12px, 1.2vw, 18px);
+  max-width: none;
+  margin-top: clamp(9px, 0.9vw, 14px);
 }
 
 .dashboard-studio-hero-metadata span {
@@ -10351,10 +10353,10 @@ body {
 
 .dashboard-studio-signal-panel {
   display: grid;
-  gap: 16px;
+  gap: 10px;
   padding: 0;
   border-left: 0;
-  margin-top: clamp(4px, 0.8vw, 12px);
+  margin-top: 0;
 }
 
 .dashboard-studio-field .dashboard-command-live-panel.dashboard-studio-signal-panel {
@@ -10365,22 +10367,25 @@ body {
 }
 
 .dashboard-studio-signal-panel .dashboard-command-live-head {
-  padding: 0;
+  grid-template-columns: repeat(3, minmax(0, auto));
+  align-items: end;
+  justify-content: start;
+  gap: 4px 12px;
+  padding: 0 0 6px;
   border-bottom: 0;
 }
 
 .dashboard-studio-signal-panel .dashboard-command-live-head strong {
-  font-size: clamp(1.08rem, 1.35vw, 1.38rem);
+  font-size: clamp(0.92rem, 1vw, 1.04rem);
 }
 
 .dashboard-studio-signal-panel .dashboard-command-live-grid {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px 12px;
 }
 
 .dashboard-studio-signal-panel .dashboard-command-live-signal {
-  flex: 1 1 132px;
   min-width: 0;
   padding: 8px 0 0;
   border-top: 1px solid rgba(191, 239, 255, 0.018);
@@ -10391,7 +10396,7 @@ body {
 }
 
 .dashboard-studio-signal-panel .dashboard-command-live-next {
-  flex-basis: 100%;
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .dashboard-studio-signal-panel .dashboard-command-live-next .dashboard-inline-action {
@@ -10405,8 +10410,8 @@ body {
   position: relative;
   isolation: isolate;
   display: block;
-  width: calc(100% + clamp(28px, 4vw, 72px));
-  margin-left: clamp(-52px, -3vw, -24px);
+  width: 100%;
+  margin-left: 0;
   padding: clamp(2px, 0.7vw, 10px) 0 0;
   border: 0;
   border-radius: 0;
@@ -11285,12 +11290,12 @@ body {
 
 @media (max-width: 1380px) {
   .dashboard-studio-hero .dashboard-surface-command {
-    grid-template-columns: minmax(300px, 0.5fr) minmax(560px, 1.5fr);
-    gap: clamp(24px, 3vw, 46px);
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(8px, 1.4vw, 18px);
   }
 
   .dashboard-studio-field .dashboard-surface-command-copy > strong {
-    font-size: clamp(2.65rem, 3.65vw, 4rem);
+    font-size: clamp(2.08rem, 2.65vw, 3.25rem);
   }
 }
 
