@@ -10146,15 +10146,15 @@ body {
 
 /* Dashboard Studio Canvas rebase */
 .dashboard-studio-page {
-  --ea-studio-line: rgba(191, 239, 255, 0.07);
-  --ea-studio-line-soft: rgba(191, 239, 255, 0.026);
+  --ea-studio-line: rgba(191, 239, 255, 0.058);
+  --ea-studio-line-soft: rgba(191, 239, 255, 0.021);
   --ea-studio-text-soft: rgba(213, 235, 255, 0.68);
   --ea-studio-cyan: rgba(78, 226, 255, 0.94);
   --ea-studio-warm: rgba(246, 219, 104, 0.72);
-  --ea-studio-panel: rgba(8, 25, 58, 0.18);
-  --ea-studio-panel-strong: rgba(10, 34, 78, 0.26);
-  --ea-field-thread: rgba(140, 235, 255, 0.08);
-  --ea-field-surface: rgba(255, 255, 255, 0.018);
+  --ea-studio-panel: rgba(8, 25, 58, 0.1);
+  --ea-studio-panel-strong: rgba(10, 34, 78, 0.16);
+  --ea-field-thread: rgba(140, 235, 255, 0.062);
+  --ea-field-surface: rgba(255, 255, 255, 0.012);
 }
 
 .app-shell-frame:has(.dashboard-studio-page) .app-shell-main {
@@ -10165,13 +10165,13 @@ body {
   position: relative;
   isolation: isolate;
   overflow: clip;
-  padding: clamp(20px, 2.4vw, 36px) clamp(22px, 3.5vw, 64px) clamp(44px, 5vw, 84px);
+  padding: clamp(14px, 1.8vw, 28px) clamp(22px, 3.5vw, 64px) clamp(40px, 4.5vw, 76px);
   background:
-    radial-gradient(960px 560px at 14% 8%, rgba(75, 232, 255, 0.16), transparent 72%),
-    radial-gradient(900px 520px at 72% 20%, rgba(57, 112, 255, 0.15), transparent 76%),
-    radial-gradient(980px 580px at 44% 58%, rgba(78, 226, 255, 0.105), transparent 78%),
-    radial-gradient(940px 620px at 78% 92%, rgba(0, 75, 163, 0.2), transparent 74%),
-    linear-gradient(180deg, rgba(5, 17, 42, 0.22), rgba(4, 13, 34, 0.94));
+    radial-gradient(980px 520px at 12% 6%, rgba(75, 232, 255, 0.14), transparent 74%),
+    radial-gradient(940px 520px at 72% 16%, rgba(57, 112, 255, 0.13), transparent 78%),
+    radial-gradient(1180px 620px at 44% 48%, rgba(78, 226, 255, 0.105), transparent 80%),
+    radial-gradient(1040px 620px at 78% 88%, rgba(0, 75, 163, 0.17), transparent 76%),
+    linear-gradient(180deg, rgba(5, 17, 42, 0.12), rgba(4, 13, 34, 0.91));
 }
 
 .dashboard-studio-canvas::before,
@@ -10185,15 +10185,15 @@ body {
 .dashboard-studio-canvas::before {
   inset: 0;
   background:
-    linear-gradient(90deg, rgba(191, 239, 255, 0.035) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(191, 239, 255, 0.028) 1px, transparent 1px),
-    linear-gradient(115deg, transparent 0 31%, rgba(78, 226, 255, 0.034) 31.1% 31.34%, transparent 31.5% 100%),
-    linear-gradient(64deg, transparent 0 58%, rgba(191, 239, 255, 0.02) 58.1% 58.32%, transparent 58.5% 100%);
-  background-size: 112px 112px, 112px 112px, 100% 820px, 100% 980px;
+    linear-gradient(90deg, rgba(191, 239, 255, 0.031) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(191, 239, 255, 0.024) 1px, transparent 1px),
+    linear-gradient(115deg, transparent 0 31%, rgba(78, 226, 255, 0.028) 31.1% 31.28%, transparent 31.42% 100%),
+    linear-gradient(64deg, transparent 0 58%, rgba(191, 239, 255, 0.017) 58.1% 58.26%, transparent 58.42% 100%);
+  background-size: 104px 104px, 104px 104px, 100% 860px, 100% 1040px;
   mask-image:
-    radial-gradient(circle at 52% 18%, #000 0%, transparent 68%),
-    linear-gradient(180deg, #000, rgba(0, 0, 0, 0.25));
-  opacity: 0.58;
+    radial-gradient(circle at 52% 22%, #000 0%, transparent 72%),
+    linear-gradient(180deg, #000, rgba(0, 0, 0, 0.42));
+  opacity: 0.7;
 }
 
 .dashboard-studio-canvas::after {
@@ -10207,7 +10207,7 @@ body {
     radial-gradient(circle at 50% 72%, rgba(78, 226, 255, 0.09), transparent 62%);
   transform: rotate(29deg);
   filter: blur(1px);
-  opacity: 0.74;
+  opacity: 0.62;
 }
 
 .dashboard-studio-stage {
@@ -10248,17 +10248,31 @@ body {
 
 .dashboard-studio-hero {
   display: grid;
-  min-height: min(980px, calc(100svh - 116px));
+  min-height: min(880px, calc(100svh - 94px));
   align-content: start;
-  padding: clamp(42px, 5vw, 78px) 0 clamp(20px, 2.6vw, 44px);
+  padding: clamp(34px, 4.2vw, 66px) 0 clamp(18px, 2.2vw, 38px);
 }
 
 .dashboard-studio-hero .dashboard-surface-command {
   display: grid;
-  grid-template-columns: minmax(320px, 0.52fr) minmax(620px, 1.48fr);
+  grid-template-columns: minmax(292px, 0.45fr) minmax(650px, 1.55fr);
   grid-template-areas: "intro artifact";
-  gap: clamp(30px, 4.3vw, 82px);
+  gap: clamp(20px, 3.2vw, 58px);
   align-items: center;
+  position: relative;
+}
+
+.dashboard-studio-hero .dashboard-surface-command::before {
+  content: "";
+  position: absolute;
+  inset: 6% -3% -18% 13%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent, rgba(78, 226, 255, 0.055), rgba(191, 239, 255, 0.018), transparent 82%),
+    radial-gradient(880px 260px at 55% 28%, rgba(78, 226, 255, 0.08), transparent 78%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 12%, #000 88%, transparent 100%);
+  opacity: 0.88;
 }
 
 .dashboard-studio-field {
@@ -10276,7 +10290,7 @@ body {
 }
 
 .dashboard-studio-field .dashboard-surface-command-copy {
-  max-width: 31rem;
+  max-width: 27rem;
 }
 
 .dashboard-studio-field .dashboard-surface-hero-intro {
@@ -10294,8 +10308,8 @@ body {
 
 .dashboard-studio-field .dashboard-surface-command-copy > strong {
   display: block;
-  max-width: min(100%, 12ch);
-  font-size: clamp(2.85rem, 3.85vw, 4.65rem);
+  max-width: min(100%, 11ch);
+  font-size: clamp(2.55rem, 3.35vw, 4.1rem);
   line-height: 0.92;
   letter-spacing: -0.062em;
   text-wrap: balance;
@@ -10391,6 +10405,8 @@ body {
   position: relative;
   isolation: isolate;
   display: block;
+  width: calc(100% + clamp(28px, 4vw, 72px));
+  margin-left: clamp(-52px, -3vw, -24px);
   padding: clamp(2px, 0.7vw, 10px) 0 0;
   border: 0;
   border-radius: 0;
@@ -10402,16 +10418,16 @@ body {
 .dashboard-studio-orbit::before {
   content: "";
   position: absolute;
-  inset: 4% -3% 7% 2%;
+  inset: 0% -6% 3% -2%;
   z-index: -1;
   pointer-events: none;
-  border-radius: 48px;
+  border-radius: 0;
   background:
-    linear-gradient(90deg, rgba(73, 225, 255, 0.13), rgba(191, 239, 255, 0.028), transparent 78%),
-    radial-gradient(760px 260px at 34% 18%, rgba(78, 226, 255, 0.14), transparent 76%),
-    radial-gradient(460px 280px at 82% 78%, rgba(245, 219, 103, 0.04), transparent 78%);
-  mask-image: linear-gradient(90deg, transparent 0%, #000 9%, #000 88%, transparent 100%);
-  opacity: 0.72;
+    linear-gradient(90deg, rgba(73, 225, 255, 0.09), rgba(191, 239, 255, 0.022), transparent 78%),
+    radial-gradient(800px 260px at 34% 18%, rgba(78, 226, 255, 0.115), transparent 78%),
+    radial-gradient(540px 300px at 82% 78%, rgba(245, 219, 103, 0.03), transparent 80%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 7%, #000 91%, transparent 100%);
+  opacity: 0.64;
 }
 
 .dashboard-studio-orbit::after {
@@ -10459,14 +10475,14 @@ body {
 }
 
 .dashboard-studio-artifact::before {
-  inset: 6% 5% 8% 10%;
+  inset: 4% 2% 6% 6%;
   z-index: -1;
-  border-top: 1px solid rgba(83, 228, 255, 0.055);
+  border-top: 1px solid rgba(83, 228, 255, 0.038);
   background:
-    linear-gradient(90deg, rgba(83, 228, 255, 0.07), rgba(191, 239, 255, 0.018), transparent 76%),
-    radial-gradient(660px 260px at 24% 18%, rgba(75, 232, 255, 0.11), transparent 76%),
-    radial-gradient(440px 280px at 92% 72%, rgba(255, 229, 116, 0.038), transparent 76%);
-  opacity: 0.68;
+    linear-gradient(90deg, rgba(83, 228, 255, 0.045), rgba(191, 239, 255, 0.014), transparent 80%),
+    radial-gradient(700px 260px at 24% 18%, rgba(75, 232, 255, 0.086), transparent 78%),
+    radial-gradient(500px 280px at 92% 72%, rgba(255, 229, 116, 0.026), transparent 78%);
+  opacity: 0.56;
   mask-image: linear-gradient(90deg, transparent 0%, #000 12%, #000 82%, transparent 100%);
 }
 
@@ -10476,10 +10492,10 @@ body {
   width: 34%;
   aspect-ratio: 1;
   z-index: -1;
-  border: 1px solid rgba(78, 226, 255, 0.052);
+  border: 1px solid rgba(78, 226, 255, 0.038);
   border-radius: 999px;
   background: radial-gradient(circle, rgba(78, 226, 255, 0.06), transparent 64%);
-  opacity: 0.58;
+  opacity: 0.46;
 }
 
 .dashboard-studio-artifact-thread {
@@ -10539,15 +10555,15 @@ body {
   z-index: 1;
   min-height: 224px;
   padding: clamp(18px, 1.8vw, 28px);
-  border: 1px solid rgba(191, 239, 255, 0.032);
-  border-radius: 26px;
+  border: 1px solid rgba(191, 239, 255, 0.024);
+  border-radius: 22px;
   background:
-    linear-gradient(90deg, rgba(75, 232, 255, 0.055) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(75, 232, 255, 0.042) 1px, transparent 1px),
-    radial-gradient(360px 170px at 28% 8%, rgba(78, 226, 255, 0.105), transparent 72%),
-    linear-gradient(145deg, rgba(10, 38, 84, 0.2), rgba(3, 12, 31, 0.035));
+    linear-gradient(90deg, rgba(75, 232, 255, 0.043) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(75, 232, 255, 0.032) 1px, transparent 1px),
+    radial-gradient(380px 170px at 28% 8%, rgba(78, 226, 255, 0.085), transparent 74%),
+    linear-gradient(145deg, rgba(10, 38, 84, 0.13), rgba(3, 12, 31, 0.018));
   background-size: 46px 46px, 46px 46px, auto;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.024);
   overflow: clip;
 }
 
@@ -10595,15 +10611,15 @@ body {
   grid-template-columns: minmax(0, 1fr) minmax(124px, 0.26fr);
   grid-template-rows: 1fr auto;
   gap: clamp(8px, 1vw, 14px);
-  min-height: 318px;
-  padding: clamp(8px, 1vw, 14px);
+  min-height: 304px;
+  padding: clamp(6px, 0.86vw, 12px);
   border: 0;
   border-radius: 0;
   background:
     linear-gradient(90deg, rgba(90, 227, 255, 0.035) 1px, transparent 1px),
     linear-gradient(180deg, rgba(90, 227, 255, 0.026) 1px, transparent 1px),
-    radial-gradient(500px 240px at 34% 24%, rgba(78, 226, 255, 0.15), transparent 72%),
-    linear-gradient(145deg, rgba(5, 20, 48, 0.08), rgba(8, 31, 74, 0.025));
+    radial-gradient(560px 240px at 34% 24%, rgba(78, 226, 255, 0.12), transparent 76%),
+    linear-gradient(145deg, rgba(5, 20, 48, 0.045), rgba(8, 31, 74, 0.012));
   background-size: 56px 56px, 56px 56px, auto, auto;
   overflow: visible;
 }
@@ -10658,12 +10674,12 @@ body {
   min-height: 88%;
   max-width: 150px;
   padding: clamp(10px, 1vw, 16px);
-  border: 1px solid rgba(191, 239, 255, 0.038);
-  border-radius: 24px;
+  border: 1px solid rgba(191, 239, 255, 0.026);
+  border-radius: 20px;
   background:
-    radial-gradient(180px 120px at 34% 10%, rgba(78, 226, 255, 0.105), transparent 74%),
-    linear-gradient(160deg, rgba(255, 255, 255, 0.032), rgba(255, 255, 255, 0.004));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+    radial-gradient(180px 120px at 34% 10%, rgba(78, 226, 255, 0.082), transparent 76%),
+    linear-gradient(160deg, rgba(255, 255, 255, 0.022), rgba(255, 255, 255, 0.002));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.024);
 }
 
 .dashboard-studio-output-frame {
@@ -10807,21 +10823,22 @@ body {
   position: relative;
   display: grid;
   gap: clamp(6px, 0.9vw, 12px);
-  margin-top: clamp(-54px, -3.2vw, -30px);
+  margin-top: clamp(-92px, -5.8vw, -58px);
   padding: clamp(6px, 0.8vw, 12px) 0 0;
 }
 
 .dashboard-studio-body::before {
   content: "";
   position: absolute;
-  inset: -94px -1% auto;
-  height: 310px;
+  inset: -168px -5% auto;
+  height: clamp(440px, 34vw, 620px);
   border-left: 0;
   border-right: 0;
   background:
-    linear-gradient(90deg, transparent, rgba(78, 226, 255, 0.08), rgba(191, 239, 255, 0.025), transparent),
-    radial-gradient(620px 180px at 58% 4%, rgba(78, 226, 255, 0.075), transparent 76%);
-  opacity: 0.76;
+    linear-gradient(90deg, transparent, rgba(78, 226, 255, 0.045), rgba(191, 239, 255, 0.014), transparent),
+    radial-gradient(720px 220px at 48% 10%, rgba(78, 226, 255, 0.062), transparent 78%),
+    radial-gradient(560px 220px at 82% 34%, rgba(64, 112, 255, 0.045), transparent 78%);
+  opacity: 0.66;
   pointer-events: none;
 }
 
@@ -10849,8 +10866,8 @@ body {
   right: 3%;
   top: clamp(18px, 2vw, 30px);
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(78, 226, 255, 0.18), rgba(191, 239, 255, 0.048), transparent);
-  opacity: 0.72;
+  background: linear-gradient(90deg, transparent, rgba(78, 226, 255, 0.12), rgba(191, 239, 255, 0.032), transparent);
+  opacity: 0.58;
   pointer-events: none;
 }
 
@@ -10867,8 +10884,10 @@ body {
   align-items: end;
   gap: clamp(8px, 0.9vw, 14px);
   padding: clamp(8px, 0.8vw, 12px) clamp(6px, 1vw, 14px) clamp(2px, 0.4vw, 6px);
-  border-top: 1px solid rgba(191, 239, 255, 0.022);
-  background: linear-gradient(90deg, rgba(78, 226, 255, 0.028), transparent 26%, rgba(191, 239, 255, 0.018), transparent 78%);
+  border-top: 1px solid rgba(191, 239, 255, 0.012);
+  background:
+    radial-gradient(540px 120px at 28% 0%, rgba(78, 226, 255, 0.03), transparent 76%),
+    linear-gradient(90deg, rgba(78, 226, 255, 0.014), transparent 32%, rgba(191, 239, 255, 0.01), transparent 82%);
 }
 
 .dashboard-studio-continuum-signal {
@@ -10907,14 +10926,14 @@ body {
 .dashboard-studio-infrastructure {
   grid-template-columns: minmax(0, 1fr);
   gap: clamp(4px, 0.65vw, 10px);
-  margin-top: clamp(-28px, -1.7vw, -14px);
-  padding: clamp(2px, 0.45vw, 6px) clamp(2px, 0.6vw, 8px) clamp(8px, 1vw, 16px);
+  margin-top: clamp(-48px, -3vw, -26px);
+  padding: clamp(2px, 0.45vw, 6px) clamp(2px, 0.6vw, 8px) clamp(6px, 0.8vw, 12px);
   border: 0;
   border-radius: 0;
   background:
-    radial-gradient(760px 260px at 20% 0%, rgba(78, 226, 255, 0.052), transparent 78%),
-    radial-gradient(640px 240px at 84% 24%, rgba(75, 120, 255, 0.046), transparent 78%),
-    linear-gradient(90deg, rgba(191, 239, 255, 0.03), transparent 42%, rgba(78, 226, 255, 0.028), transparent 72%);
+    radial-gradient(860px 280px at 20% 0%, rgba(78, 226, 255, 0.035), transparent 80%),
+    radial-gradient(720px 260px at 84% 24%, rgba(75, 120, 255, 0.034), transparent 80%),
+    linear-gradient(90deg, rgba(191, 239, 255, 0.016), transparent 42%, rgba(78, 226, 255, 0.016), transparent 72%);
   background-size: auto, auto, 100% 1px;
   background-repeat: no-repeat;
 }
@@ -10931,14 +10950,14 @@ body {
 .dashboard-studio-signal-mesh::before {
   content: "";
   position: absolute;
-  inset: -44px -1% auto;
-  height: clamp(280px, 24vw, 390px);
+  inset: -96px -4% auto;
+  height: clamp(360px, 30vw, 520px);
   z-index: -1;
   pointer-events: none;
   background:
-    linear-gradient(115deg, transparent 0 24%, rgba(78, 226, 255, 0.035) 24.1% 24.28%, transparent 24.4% 100%),
-    radial-gradient(580px 190px at 50% 18%, rgba(78, 226, 255, 0.065), transparent 76%);
-  opacity: 0.72;
+    linear-gradient(115deg, transparent 0 24%, rgba(78, 226, 255, 0.026) 24.1% 24.22%, transparent 24.34% 100%),
+    radial-gradient(680px 220px at 50% 18%, rgba(78, 226, 255, 0.045), transparent 78%);
+  opacity: 0.62;
 }
 
 .dashboard-studio-capacity,
@@ -10956,7 +10975,7 @@ body {
   gap: clamp(10px, 1vw, 16px);
   padding: clamp(6px, 0.72vw, 10px) 0 clamp(7px, 0.85vw, 12px);
   border-right: 0 !important;
-  border-top: 1px solid rgba(191, 239, 255, 0.02) !important;
+  border-top: 1px solid rgba(191, 239, 255, 0.012) !important;
 }
 
 .dashboard-studio-capacity-head {
@@ -22143,11 +22162,12 @@ body {
 
 .app-shell-frame:has(.dashboard-surface-page) {
   --ea-shell-sidebar-width: clamp(92px, 7vw, 108px);
-  border-color: rgba(190, 230, 255, 0.1);
+  border-color: rgba(190, 230, 255, 0.06);
   background:
-    radial-gradient(1240px 420px at 14% 0%, rgba(52, 245, 255, 0.082), transparent 70%),
-    radial-gradient(1080px 460px at 100% 0%, rgba(95, 118, 255, 0.072), transparent 76%),
-    linear-gradient(180deg, rgba(8, 16, 38, 0.96), rgba(6, 14, 34, 0.985));
+    radial-gradient(1320px 440px at 14% 0%, rgba(52, 245, 255, 0.074), transparent 72%),
+    radial-gradient(1120px 480px at 100% 0%, rgba(95, 118, 255, 0.064), transparent 78%),
+    radial-gradient(1240px 520px at 48% 44%, rgba(69, 218, 255, 0.035), transparent 80%),
+    linear-gradient(180deg, rgba(8, 16, 38, 0.93), rgba(6, 14, 34, 0.98));
 }
 
 .app-shell-wrapper:has(.dashboard-surface-page) {
@@ -22157,10 +22177,17 @@ body {
 .app-shell-frame:has(.dashboard-surface-page) .app-shell-head,
 .app-shell-frame:has(.dashboard-surface-page) .app-shell-head-region {
   padding: 14px clamp(18px, 2vw, 28px);
-  border-bottom-color: rgba(191, 239, 255, 0.045);
+  border-bottom-color: rgba(191, 239, 255, 0.018);
   background:
-    linear-gradient(180deg, rgba(9, 18, 42, 0.56), rgba(7, 14, 31, 0.14)),
-    rgba(255, 255, 255, 0.008);
+    linear-gradient(180deg, rgba(9, 18, 42, 0.34), rgba(7, 14, 31, 0.04)),
+    rgba(255, 255, 255, 0.003);
+  box-shadow: none;
+}
+
+.app-shell-frame:has(.dashboard-surface-page) .app-shell-head::after,
+.app-shell-frame:has(.dashboard-surface-page) .app-shell-head-region::after {
+  opacity: 0.28;
+  background: linear-gradient(90deg, transparent, rgba(191, 239, 255, 0.04), transparent);
 }
 
 .app-shell-frame:has(.dashboard-surface-page) .app-shell-head-note {
@@ -22182,11 +22209,11 @@ body {
   max-width: none !important;
   position: relative;
   top: auto;
-  margin: 0 clamp(18px, 1.9vw, 28px);
-  padding: 10px 0 12px !important;
+  margin: 0 clamp(18px, 1.9vw, 28px) -6px;
+  padding: 8px 0 6px !important;
   background: transparent !important;
   border: 0 !important;
-  border-bottom: 1px solid rgba(191, 239, 255, 0.045) !important;
+  border-bottom: 0 !important;
   box-shadow: none !important;
 }
 
@@ -22299,7 +22326,7 @@ body {
   border-radius: 999px;
   background: transparent !important;
   box-shadow: none !important;
-  opacity: 0.62;
+  opacity: 0.54;
   white-space: nowrap;
   writing-mode: horizontal-tb !important;
 }
@@ -22328,8 +22355,8 @@ body {
 .app-shell-body:has(.dashboard-surface-page) .app-nav-link[data-active='true'] {
   opacity: 1;
   color: var(--ea-text-strong);
-  border-color: rgba(191, 239, 255, 0.095) !important;
-  background: rgba(255, 255, 255, 0.026) !important;
+  border-color: rgba(191, 239, 255, 0.07) !important;
+  background: rgba(255, 255, 255, 0.018) !important;
 }
 
 .app-shell-body:has(.dashboard-surface-page) .app-nav-link-active::before,
@@ -22450,10 +22477,10 @@ body {
 .dashboard-surface-canvas {
   display: grid;
   gap: 0;
-  padding: clamp(8px, 1.1vw, 16px) clamp(18px, 2.4vw, 42px) clamp(30px, 3vw, 52px);
+  padding: clamp(4px, 0.8vw, 12px) clamp(18px, 2.4vw, 42px) clamp(26px, 2.8vw, 48px);
   border-color: transparent;
   background:
-    radial-gradient(1180px 420px at 46% -6%, rgba(75, 232, 255, 0.034), transparent 76%),
+    radial-gradient(1260px 440px at 46% -6%, rgba(75, 232, 255, 0.03), transparent 78%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.006), rgba(255, 255, 255, 0));
 }
 
@@ -22467,15 +22494,12 @@ body {
   background: transparent;
 }
 
+.dashboard-surface-stage.dashboard-studio-stage {
+  padding: clamp(22px, 2.8vw, 44px) clamp(14px, 1.6vw, 28px) clamp(24px, 2.6vw, 46px);
+}
+
 .dashboard-surface-stage::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto;
-  height: 1px;
-  border-radius: 0;
-  border: 0;
-  background: linear-gradient(90deg, transparent, rgba(191, 239, 255, 0.055), transparent);
-  pointer-events: none;
+  display: none;
 }
 
 .dashboard-surface-stage-grid {
