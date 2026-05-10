@@ -10256,8 +10256,10 @@ body {
 .dashboard-studio-hero .dashboard-surface-command {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-areas: "artifact";
-  gap: 0;
+  grid-template-areas:
+    "intro"
+    "artifact";
+  gap: clamp(4px, 0.8vw, 12px);
   align-items: start;
   position: relative;
   padding-top: clamp(8px, 1.2vw, 18px);
@@ -10277,7 +10279,7 @@ body {
 }
 
 .dashboard-studio-field {
-  grid-area: artifact;
+  grid-area: intro;
   position: relative;
   z-index: 5;
   display: grid;
@@ -10285,7 +10287,7 @@ body {
   gap: clamp(14px, 2vw, 32px);
   align-items: end;
   width: min(100%, 1260px);
-  margin: 0 auto clamp(-108px, -7vw, -72px);
+  margin: 0 auto clamp(-8px, -0.55vw, -3px);
   padding: 0 clamp(8px, 1vw, 16px);
   pointer-events: auto;
 }
@@ -10422,7 +10424,7 @@ body {
   display: block;
   width: 100%;
   margin-left: 0;
-  padding: clamp(96px, 7.4vw, 132px) 0 0;
+  padding: 0;
   border: 0;
   border-radius: 0;
   background: transparent;
@@ -11301,7 +11303,7 @@ body {
 @media (max-width: 1380px) {
   .dashboard-studio-hero .dashboard-surface-command {
     grid-template-columns: minmax(0, 1fr);
-    gap: 0;
+    gap: clamp(4px, 0.8vw, 12px);
   }
 
   .dashboard-studio-field .dashboard-surface-command-copy > strong {
