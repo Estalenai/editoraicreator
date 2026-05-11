@@ -108,26 +108,6 @@ const CREDIT_GUIDE_ITEMS = [
   },
 ];
 
-const USAGE_FLOW_MARKERS = [
-  {
-    title: "Entrada",
-    description: "Base.",
-  },
-  {
-    title: "Revisão",
-    description: "Acabamento.",
-  },
-  {
-    title: "Registro",
-    description: "Histórico.",
-  },
-];
-
-function usageProgress(item: UsageItem): number {
-  if (!item.limit || item.limit <= 0) return 0;
-  return Math.min(100, Math.max(0, Math.round((item.used / item.limit) * 100)));
-}
-
 function formatDashboardProjectTitle(rawTitle: string | null | undefined, fallback: string): string {
   const source = String(rawTitle || "").trim();
   if (!source) return fallback;
@@ -317,27 +297,6 @@ export default function DashboardPage() {
       rawTitle,
     };
   }, [featuredProject]);
-  const supportingProjects = useMemo(
-    () => recentProjects.slice(featuredProject ? 1 : 0, 5),
-    [recentProjects, featuredProject]
-  );
-  const supportingProjectDisplay = useMemo(
-    () =>
-      supportingProjects.slice(0, 4).map((project: any) => {
-        const deliverableLabel = String(
-          project.summary?.deliverable?.label || formatDashboardKindLabel(project.kind, "Projeto")
-        ).trim();
-        return {
-          ...project,
-          kindLabel: formatDashboardKindLabel(project.kind, deliverableLabel),
-          displayTitle: formatDashboardProjectTitle(project.title, deliverableLabel),
-          deliverableLabel,
-          stageLabel: project.summary?.outputStageLabel || project.summary?.continuityStatusLabel,
-          statusLabel: project.summary?.continuityStatusLabel || "Em andamento",
-        };
-      }),
-    [supportingProjects]
-  );
   const usagePreviewItems = useMemo(
     () =>
       [...usageItems]
@@ -353,7 +312,6 @@ export default function DashboardPage() {
       })),
     [usagePreviewItems]
   );
-  const usageRemainingCount = Math.max(0, usageItems.length - usagePreviewItems.length);
   const hasConfirmedUsage = totalUsage > 0;
   const usageLeadInsight =
     loading || usageLoading
@@ -374,73 +332,6 @@ export default function DashboardPage() {
         href: "/creators",
         cta: "Abrir Creators",
       };
-  const usageSignalItems = useMemo(
-    () => [
-      {
-        label: "Histórico",
-        value: loading || usageLoading ? "Sincronizando" : hasConfirmedUsage ? "Reconciliado" : "Aberto",
-        note:
-          loading || usageLoading
-            ? "Sincronizando."
-            : hasConfirmedUsage
-              ? `${usageItems.length} recurso(s).`
-              : "Sem saída.",
-      },
-      {
-        label: "Ritmo",
-        value:
-          loading || usageLoading
-            ? "Carregando"
-            : hasConfirmedUsage && usageDisplayItems[0]
-              ? usageDisplayItems[0].displayLabel
-              : "Em aberto",
-        note:
-          loading || usageLoading
-            ? "Atividade."
-            : hasConfirmedUsage && usageDisplayItems[0]
-              ? `${usageDisplayItems[0].used}/${usageDisplayItems[0].limit}.`
-              : "Aguardando.",
-      },
-      {
-        label: "Próximo passo",
-        value: loading ? "Preparando" : nextAction.title,
-        note:
-          loading
-            ? "Workspace."
-            : nextAction.description,
-      },
-    ],
-    [
-      hasConfirmedUsage,
-      loading,
-      usageDisplayItems,
-      usageItems.length,
-      usageLoading,
-      nextAction.description,
-      nextAction.title,
-    ]
-  );
-  const usageEmptyState = !hasConfirmedUsage
-    ? {
-        kicker: "Histórico em aberto",
-        title: "Entrega em aberto.",
-        description: "Aguardando saída.",
-        primaryHref: "/creators",
-        primaryLabel: "Abrir Creators",
-        secondaryHref: "/credits#credits-history",
-        secondaryLabel: `Abrir ${CREATOR_COINS_PUBLIC_NAME}`,
-      }
-    : usagePreviewItems.length === 0
-      ? {
-          kicker: "Sem uso confirmado",
-          title: "Saída inicial.",
-          description: `${CREATOR_COINS_PUBLIC_NAME} confirma depois.`,
-          primaryHref: "/creators",
-          primaryLabel: "Gerar agora",
-          secondaryHref: "/credits#credits-history",
-          secondaryLabel: "Ver histórico",
-        }
-      : null;
   const recentUsageText = usageLoading
     ? "Atualizando ciclo."
     : usageItems.length === 0
@@ -716,166 +607,45 @@ export default function DashboardPage() {
                               )}
                             </div>
                           </div>
-                        </div>
-                      </div>
 
-                      <div className="dashboard-surface-ecosystem dashboard-operating-ecosystem dashboard-studio-body dashboard-unified-ecosystem dashboard-unified-lower-field" data-reveal data-reveal-delay="140">
-                        <div className="dashboard-unified-continuum-plane">
-                        <div className="dashboard-ecosystem-infrastructure dashboard-studio-infrastructure dashboard-studio-signal-mesh dashboard-field-thread dashboard-unified-signal-grid dashboard-unified-lower-constellation">
-                            <div className="dashboard-surface-wallet dashboard-ecosystem-wallet dashboard-studio-capacity dashboard-studio-capacity-signal dashboard-field-signal dashboard-unified-capacity">
-                              <div className="dashboard-surface-wallet-copy dashboard-studio-capacity-head">
-                                <span className="dashboard-stream-link-kicker">{CREATOR_COINS_PUBLIC_NAME}</span>
-                                <strong className="dashboard-stream-link-title">{walletSummaryDisplay}</strong>
-                                <span className="dashboard-stream-link-copy">
-                                  Próximo ciclo.
-                                </span>
-                              </div>
-
-                              <div className="dashboard-studio-capacity-gauge" aria-hidden="true">
-                                <span />
-                                <span />
-                                <span />
-                              </div>
-
-                              <div className="dashboard-surface-wallet-breakdown dashboard-studio-capacity-breakdown dashboard-studio-capacity-chips">
+                          <div className="dashboard-context-dock dashboard-field-thread" aria-label="Sinais contextuais do estúdio">
+                            <Link
+                              href="/credits"
+                              className="dashboard-context-signal dashboard-context-capacity dashboard-field-signal"
+                            >
+                              <span className="dashboard-stream-link-kicker">{CREATOR_COINS_PUBLIC_NAME}</span>
+                              <strong>{walletSummaryDisplay}</strong>
+                              <span>Energia acoplada ao ciclo.</span>
+                              <span className="dashboard-context-chipline" aria-label="Saldos por camada">
                                 {walletBreakdown.map((item) => (
-                                  <div key={item.coinType} className="dashboard-wallet-row">
-                                    <div className="dashboard-wallet-row-main">
-                                      <strong>{coinTypeLabel(item.coinType)}</strong>
-                                      <span>{item.description}</span>
-                                    </div>
-                                    <span className="dashboard-wallet-row-value">{item.amount.toLocaleString("pt-BR")}</span>
-                                  </div>
+                                  <span key={item.coinType}>
+                                    {coinTypeLabel(item.coinType)} {item.amount.toLocaleString("pt-BR")}
+                                  </span>
                                 ))}
-                              </div>
+                              </span>
+                            </Link>
+
+                            <Link
+                              href="/credits#credits-history"
+                              className="dashboard-context-signal dashboard-context-log dashboard-field-signal"
+                            >
+                              <span className="dashboard-stream-link-kicker">Histórico</span>
+                              <strong>{totalUsageDisplay}</strong>
+                              <span>{usageLeadInsight}</span>
+                              <span className="dashboard-context-meta">{recentUsageText}</span>
+                            </Link>
+
+                            <div className="dashboard-context-signal dashboard-context-support dashboard-field-signal" aria-label="Infraestrutura do estúdio">
+                              {supportQuickLinks.map((item) => (
+                                <Link key={item.href} href={item.href} className="dashboard-context-support-link">
+                                  <span>{item.tag}</span>
+                                  <strong>{item.title}</strong>
+                                </Link>
+                              ))}
                             </div>
 
-                            <div className="dashboard-continuity-ledger dashboard-surface-usage dashboard-ecosystem-ledger dashboard-studio-ledger dashboard-studio-signal-log dashboard-field-signal dashboard-unified-ledger">
-                              <div className="dashboard-surface-usage-grid">
-                                <div className="dashboard-surface-usage-copy">
-                                  <div className="dashboard-surface-usage-hero dashboard-surface-usage-strip">
-                                    <div className="dashboard-surface-usage-hero-main">
-                                      <span className="dashboard-stage-stat-label">Historico</span>
-                                      <strong>{totalUsageDisplay}</strong>
-                                    </div>
-                                    <p>{usageLeadInsight}</p>
-                                    <Link href="/credits#credits-history" className="dashboard-stream-link-cta dashboard-surface-usage-inline-cta">
-                                      Histórico completo
-                                    </Link>
-                                  </div>
-
-                                  <div className="dashboard-surface-usage-signals">
-                                    {usageSignalItems.map((item) => (
-                                      <div key={item.label} className="dashboard-surface-usage-signal">
-                                        <span className="dashboard-stage-stat-label">{item.label}</span>
-                                        <strong>{item.value}</strong>
-                                        <span>{item.note}</span>
-                                      </div>
-                                    ))}
-                                  </div>
-                                </div>
-
-                                <div className="dashboard-surface-usage-list">
-                                  {loading || usageLoading ? (
-                                    <div className="dashboard-surface-usage-cards">
-                                      {Array.from({ length: 6 }).map((_, index) => (
-                                        <div key={`usage-skeleton-${index}`} className="dashboard-surface-usage-card-skeleton">
-                                          <div className="premium-skeleton premium-skeleton-line" style={{ width: "42%" }} />
-                                          <div className="premium-skeleton premium-skeleton-line" style={{ width: "26%" }} />
-                                        </div>
-                                      ))}
-                                    </div>
-                                  ) : usageEmptyState ? (
-                                    <div className="dashboard-surface-usage-empty">
-                                      <div className="dashboard-surface-usage-empty-story">
-                                        <div className="dashboard-surface-usage-empty-copy">
-                                          <span className="dashboard-stage-stat-label">{usageEmptyState.kicker}</span>
-                                          <strong>{usageEmptyState.title}</strong>
-                                          <span>{usageEmptyState.description}</span>
-                                        </div>
-                                        <div className="dashboard-surface-usage-empty-actions">
-                                          <Link href={usageEmptyState.primaryHref} className="btn-link-ea btn-primary btn-sm">
-                                            {usageEmptyState.primaryLabel}
-                                          </Link>
-                                          <Link href={usageEmptyState.secondaryHref} className="btn-link-ea btn-ghost btn-sm">
-                                            {usageEmptyState.secondaryLabel}
-                                          </Link>
-                                        </div>
-                                      </div>
-
-                                      <div className="dashboard-surface-usage-route">
-                                        {USAGE_FLOW_MARKERS.map((item, index) => (
-                                          <div key={item.title} className="dashboard-surface-usage-route-step">
-                                            <span className="dashboard-surface-usage-route-index">{String(index + 1).padStart(2, "0")}</span>
-                                            <div className="dashboard-surface-usage-route-copy">
-                                              <strong>{item.title}</strong>
-                                              <span>{item.description}</span>
-                                            </div>
-                                          </div>
-                                        ))}
-                                      </div>
-                                    </div>
-                                  ) : (
-                                    <>
-                                      <div className="dashboard-surface-usage-cards">
-                                        {usageDisplayItems.map((item, index) => {
-                                          const progress = usageProgress(item);
-                                          return (
-                                            <article
-                                              key={item.feature}
-                                              className="dashboard-surface-usage-card"
-                                            >
-                                              <div className="dashboard-surface-usage-card-copy">
-                                                <span className="dashboard-stage-stat-label">
-                                                  {index === 0 ? "Feature líder" : "Uso confirmado"}
-                                                </span>
-                                                <strong className="dashboard-stream-link-title">{item.displayLabel}</strong>
-                                                <span className="dashboard-stream-link-copy">{item.used}/{item.limit} neste ciclo.</span>
-                                              </div>
-                                              <div className="dashboard-surface-usage-meter">
-                                                <strong>{item.used}/{item.limit}</strong>
-                                                <div className="dashboard-progress-track">
-                                                  <div className="dashboard-progress-bar" style={{ width: `${progress}%` }} />
-                                                </div>
-                                              </div>
-                                            </article>
-                                          );
-                                        })}
-                                      </div>
-                                      {usageRemainingCount > 0 ? (
-                                        <div className="dashboard-surface-usage-footnote">
-                                          +{usageRemainingCount} no histórico completo.
-                                        </div>
-                                      ) : null}
-                                    </>
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-
-                            <div className="dashboard-ecosystem-route-column dashboard-studio-route-column dashboard-studio-support-mesh dashboard-unified-support dashboard-unified-support-constellation">
-                              <div className="dashboard-ecosystem-support-links dashboard-studio-trust-links dashboard-studio-trust-chips dashboard-unified-support-links">
-                                {supportQuickLinks.map((item, index) => (
-                                  <Link
-                                    key={item.href}
-                                    href={item.href}
-                                    className="dashboard-ecosystem-support-link dashboard-studio-trust-link dashboard-field-signal"
-                                    data-reveal
-                                    data-reveal-delay={String(120 + index * 25)}
-                                  >
-                                    <div className="dashboard-surface-command-link-main">
-                                      <span className="dashboard-stream-link-kicker">{item.tag}</span>
-                                      <strong className="dashboard-stream-link-title">{item.title}</strong>
-                                      <span className="dashboard-stream-link-copy">{item.description}</span>
-                                    </div>
-                                    <span className="dashboard-stream-link-cta">{item.cta}</span>
-                                  </Link>
-                                ))}
-                              </div>
-
-                              <ApprovedBetaOnboardingCard email={email} wallet={wallet} loading={loading} />
-                            </div>
-                        </div>
+                            <ApprovedBetaOnboardingCard email={email} wallet={wallet} loading={loading} />
+                          </div>
                         </div>
                       </div>
                       </div>

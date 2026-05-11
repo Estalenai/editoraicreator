@@ -27,30 +27,26 @@ const OBJECTIVE_PATHS = [
   {
     key: "post",
     title: "Post",
-    description: "Publicação.",
+    description: "Publicação",
     href: "/creators?tab=post",
-    cta: "Abrir Post",
   },
   {
     key: "scripts",
     title: "Scripts",
-    description: "Narrativa.",
+    description: "Narrativa",
     href: "/creators?tab=scripts",
-    cta: "Abrir Scripts",
   },
   {
     key: "clips",
     title: "Clips",
-    description: "Saída visual.",
+    description: "Saída",
     href: "/creators?tab=clips",
-    cta: "Abrir Clips",
   },
   {
     key: "supporting",
     title: "Ads",
-    description: "Apoio.",
+    description: "Apoio",
     href: "/creators?tab=ads",
-    cta: "Abrir Ads",
   },
 ];
 
@@ -94,68 +90,37 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
 
   return (
     <section
-      className="dashboard-surface-onboarding dashboard-continuity-guide dashboard-studio-onboarding dashboard-studio-onboarding-inline dashboard-field-signal"
+      className="dashboard-context-signal dashboard-context-onboarding dashboard-field-signal"
       aria-label="Próxima entrada do Creator Operating Studio"
       data-reveal
       data-reveal-delay="90"
     >
-      <div className="dashboard-surface-onboarding-head">
-        <div className="dashboard-surface-field-note-copy">
+      <div className="dashboard-context-onboarding-head">
+        <div className="dashboard-context-onboarding-copy">
+          <span className="dashboard-stream-link-kicker">Entrada</span>
           <strong>Entrada rápida</strong>
-          <span>Formato e projeto no mesmo eixo.</span>
+          <span>Formato, capacidade e projeto no mesmo eixo.</span>
         </div>
-        <button onClick={dismiss} className="btn-ea btn-ghost btn-sm">
-          Entendi
+      </div>
+
+      <div className="dashboard-context-onboarding-paths">
+        {OBJECTIVE_PATHS.map((item) => (
+          <Link key={item.key} href={item.href} className="dashboard-context-onboarding-path" onClick={dismiss}>
+            <strong>{item.title}</strong>
+            <span>{item.description}</span>
+          </Link>
+        ))}
+      </div>
+
+      <div className="dashboard-context-onboarding-footer">
+        <span>{coinTypeLabel("common")} / {coinTypeLabel("pro")} / {coinTypeLabel("ultra")}</span>
+        <strong>{summary}</strong>
+        <Link href="/creators?tab=post" onClick={dismiss} className="dashboard-stream-link-cta">
+          Iniciar
+        </Link>
+        <button onClick={dismiss} className="dashboard-context-dismiss" aria-label="Ocultar entrada rápida">
+          OK
         </button>
-      </div>
-
-      <div className="dashboard-studio-onboarding-radar" aria-hidden="true">
-        <span />
-        <span />
-        <span />
-      </div>
-
-      <div className="dashboard-continuity-guide-grid dashboard-studio-onboarding-compact dashboard-studio-onboarding-constellation">
-        <div className="dashboard-continuity-paths">
-          {OBJECTIVE_PATHS.map((item, index) => (
-            <Link
-              key={item.key}
-              href={item.href}
-              className="dashboard-continuity-path"
-              onClick={dismiss}
-              data-reveal
-              data-reveal-delay={String(80 + index * 55)}
-            >
-              <div className="dashboard-surface-onboarding-path-main">
-                <span className="dashboard-stage-stat-label">{index === OBJECTIVE_PATHS.length - 1 ? "Apoio" : "Principal"}</span>
-                <strong>{item.title}</strong>
-                <span className="helper-text-ea">{item.description}</span>
-              </div>
-              <span className="dashboard-stream-link-cta">{item.cta}</span>
-            </Link>
-          ))}
-        </div>
-
-        <div className="dashboard-continuity-summary dashboard-studio-onboarding-summary">
-          <div className="dashboard-surface-onboarding-summary-copy">
-            <span className="dashboard-stage-stat-label">Capacidade</span>
-            <strong>{summary}</strong>
-            <div className="helper-text-ea">Antes da entrega.</div>
-          </div>
-          <div className="dashboard-surface-onboarding-summary-note">
-            <span>{coinTypeLabel("common")}: rotina</span>
-            <span>{coinTypeLabel("pro")}: maior qualidade</span>
-            <span>{coinTypeLabel("ultra")}: premium</span>
-          </div>
-          <div className="dashboard-surface-onboarding-actions">
-            <Link href="/creators?tab=post" onClick={dismiss} className="btn-link-ea btn-primary">
-              Iniciar fluxo
-            </Link>
-            <Link href="/credits" onClick={dismiss} className="btn-link-ea btn-secondary">
-              Ver capacidade
-            </Link>
-          </div>
-        </div>
       </div>
     </section>
   );
