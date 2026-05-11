@@ -509,14 +509,34 @@ export default function DashboardPage() {
 
                           <div className="dashboard-surface-focus-lead-wrap dashboard-ecosystem-lead dashboard-studio-preview-shell">
                             <div className="dashboard-studio-preview-topbar" aria-label="Camadas do artefato">
-                              <span>Brief</span>
-                              <span>Creator</span>
-                              <span>Editor</span>
-                              <span>Output</span>
+                              <span>Prompt</span>
+                              <span>IA</span>
+                              <span>Revisão</span>
+                              <span>Saída</span>
                             </div>
 
                             <div className="dashboard-studio-preview-canvas">
                               <div className="dashboard-studio-preview-beam" aria-hidden="true" />
+                              <div className="dashboard-studio-demo-prompt" aria-label="Entrada ativa do estúdio">
+                                <span className="dashboard-stage-stat-label">Entrada ativa</span>
+                                <strong>
+                                  {featuredProjectDisplay
+                                    ? featuredProjectDisplay.displayTitle
+                                    : "Criar primeira entrega"}
+                                </strong>
+                                <span>
+                                  {featuredProjectDisplay
+                                    ? `${featuredProjectDisplay.deliverableLabel} em ${featuredProjectDisplay.statusLabel.toLowerCase()}.`
+                                    : "Brief, contexto e saída conectados."}
+                                </span>
+                              </div>
+
+                              <div className="dashboard-studio-demo-engine" aria-hidden="true">
+                                <span className="dashboard-studio-demo-engine-core">EA</span>
+                                <span className="dashboard-studio-demo-orbit dashboard-studio-demo-orbit-a" />
+                                <span className="dashboard-studio-demo-orbit dashboard-studio-demo-orbit-b" />
+                              </div>
+
                               {loading ? (
                                 <div className="dashboard-surface-focus-lead dashboard-surface-focus-skeleton dashboard-studio-preview-brief">
                                   <div className="premium-skeleton premium-skeleton-line" style={{ width: "24%" }} />
@@ -557,6 +577,21 @@ export default function DashboardPage() {
                                 </div>
                               )}
 
+                              <div className="dashboard-studio-demo-review" aria-label="Camada de revisão do estúdio">
+                                <span>
+                                  <strong>Creator</strong>
+                                  <em>{featuredProjectDisplay ? "Base preservada" : "Entrada pronta"}</em>
+                                </span>
+                                <span>
+                                  <strong>Editor</strong>
+                                  <em>{featuredProjectDisplay?.reviewLabel || "Revisão aplicável"}</em>
+                                </span>
+                                <span>
+                                  <strong>Projeto</strong>
+                                  <em>{continuityValue}</em>
+                                </span>
+                              </div>
+
                               <div className="dashboard-studio-preview-output" aria-label="Preview da entrega do estúdio">
                                 <div className="dashboard-studio-output-frame">
                                   <span className="dashboard-studio-output-pulse" />
@@ -573,8 +608,8 @@ export default function DashboardPage() {
                               </div>
 
                               <div className="dashboard-studio-preview-stream" aria-label="Estado do fluxo criativo">
-                                <span>Input sincronizado</span>
-                                <span>Revisão pronta</span>
+                                <span>Prompt sincronizado</span>
+                                <span>IA em contexto</span>
                                 <span>{walletSummaryDisplay}</span>
                                 <span>{focusContinuationLabel}</span>
                               </div>

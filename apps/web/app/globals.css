@@ -26217,3 +26217,238 @@ body {
     align-items: flex-start;
   }
 }
+
+/* Dashboard R2 product-demo layer.
+   The artifact now behaves like a live studio preview: prompt, AI engine,
+   review lane, output and capacity signals are visible inside one field. */
+.dashboard-studio-page .dashboard-studio-preview-canvas {
+  grid-template-columns: minmax(0, 0.98fr) minmax(160px, 0.34fr) minmax(136px, 0.24fr);
+  grid-template-rows: auto minmax(230px, 1fr) auto;
+  grid-template-areas:
+    "prompt prompt output"
+    "brief review output"
+    "stream stream stream";
+  min-height: clamp(382px, 33vw, 470px);
+  gap: clamp(10px, 1vw, 16px);
+  padding: clamp(8px, 0.95vw, 14px);
+  background:
+    linear-gradient(90deg, rgba(90, 227, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(90, 227, 255, 0.03) 1px, transparent 1px),
+    radial-gradient(520px 220px at 42% 48%, rgba(78, 226, 255, 0.18), transparent 72%),
+    radial-gradient(340px 180px at 83% 16%, rgba(246, 219, 104, 0.045), transparent 74%),
+    linear-gradient(145deg, rgba(5, 20, 48, 0.05), rgba(8, 31, 74, 0.014));
+}
+
+.dashboard-studio-page .dashboard-studio-demo-prompt {
+  grid-area: prompt;
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 6px 12px;
+  align-items: center;
+  padding: 9px 12px;
+  border: 1px solid rgba(191, 239, 255, 0.055);
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.035), rgba(78, 226, 255, 0.02), transparent);
+}
+
+.dashboard-studio-page .dashboard-studio-demo-prompt strong {
+  overflow: hidden;
+  color: var(--ea-text-strong);
+  font-size: clamp(0.94rem, 1vw, 1.08rem);
+  letter-spacing: -0.03em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard-studio-page .dashboard-studio-demo-prompt > span:last-child {
+  color: rgba(198, 225, 248, 0.68);
+  font-size: 0.76rem;
+  white-space: nowrap;
+}
+
+.dashboard-studio-page .dashboard-studio-preview-brief {
+  grid-area: brief;
+  min-height: 100%;
+}
+
+.dashboard-studio-page .dashboard-studio-preview-brief::before {
+  content: "";
+  position: absolute;
+  inset: 16px 18px auto auto;
+  width: 36%;
+  height: 34%;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 20% 50%, rgba(78, 226, 255, 0.22), transparent 42%),
+    linear-gradient(90deg, rgba(78, 226, 255, 0.1), transparent);
+  filter: blur(7px);
+  opacity: 0.62;
+  pointer-events: none;
+}
+
+.dashboard-studio-page .dashboard-studio-demo-engine {
+  position: absolute;
+  left: 48%;
+  top: 49%;
+  z-index: 3;
+  width: clamp(82px, 7vw, 112px);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.dashboard-studio-page .dashboard-studio-demo-engine-core {
+  position: absolute;
+  inset: 27%;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(191, 239, 255, 0.12);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 42% 34%, rgba(255, 255, 255, 0.72), transparent 12%),
+    radial-gradient(circle, rgba(78, 226, 255, 0.55), rgba(78, 226, 255, 0.08) 58%, transparent 72%);
+  color: rgba(231, 248, 255, 0.9);
+  font-size: 0.72rem;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  box-shadow: 0 0 42px rgba(78, 226, 255, 0.28);
+}
+
+.dashboard-studio-page .dashboard-studio-demo-orbit {
+  position: absolute;
+  inset: 8%;
+  border: 1px solid rgba(78, 226, 255, 0.13);
+  border-radius: 999px;
+}
+
+.dashboard-studio-page .dashboard-studio-demo-orbit-b {
+  inset: 0;
+  border-color: rgba(246, 219, 104, 0.095);
+  transform: rotate(22deg) scaleX(0.72);
+}
+
+.dashboard-studio-page .dashboard-studio-demo-review {
+  grid-area: review;
+  position: relative;
+  z-index: 2;
+  display: grid;
+  align-content: center;
+  gap: 9px;
+  min-width: 0;
+}
+
+.dashboard-studio-page .dashboard-studio-demo-review span {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  padding: 9px 10px 9px 12px;
+  border-left: 1px solid rgba(78, 226, 255, 0.13);
+  background: linear-gradient(90deg, rgba(78, 226, 255, 0.04), transparent);
+}
+
+.dashboard-studio-page .dashboard-studio-demo-review strong {
+  color: var(--ea-text-strong);
+  font-size: 0.82rem;
+  letter-spacing: -0.02em;
+}
+
+.dashboard-studio-page .dashboard-studio-demo-review em {
+  overflow: hidden;
+  color: rgba(198, 225, 248, 0.66);
+  font-size: 0.72rem;
+  font-style: normal;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard-studio-page .dashboard-studio-preview-output {
+  grid-area: output;
+  min-height: 100%;
+  max-width: none;
+}
+
+.dashboard-studio-page .dashboard-studio-preview-stream {
+  grid-area: stream;
+}
+
+.dashboard-studio-page .dashboard-studio-artifact-thread {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.dashboard-studio-page .dashboard-studio-artifact-node {
+  align-items: center;
+}
+
+.dashboard-studio-page .dashboard-studio-artifact-node::after {
+  content: "";
+  position: absolute;
+  left: clamp(14px, 1.4vw, 24px);
+  right: -14px;
+  bottom: -6px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(78, 226, 255, 0.16), transparent);
+  opacity: 0.62;
+}
+
+@media (max-width: 1180px) {
+  .dashboard-studio-page .dashboard-studio-preview-canvas {
+    grid-template-columns: minmax(0, 1fr) minmax(150px, 0.32fr);
+    grid-template-areas:
+      "prompt prompt"
+      "brief output"
+      "review output"
+      "stream stream";
+    min-height: auto;
+  }
+
+  .dashboard-studio-page .dashboard-studio-demo-engine {
+    left: 58%;
+    top: 46%;
+  }
+}
+
+@media (max-width: 900px) {
+  .dashboard-studio-page .dashboard-studio-preview-canvas {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "prompt"
+      "brief"
+      "review"
+      "output"
+      "stream";
+  }
+
+  .dashboard-studio-page .dashboard-studio-demo-prompt {
+    grid-template-columns: minmax(0, 1fr);
+    border-radius: 18px;
+  }
+
+  .dashboard-studio-page .dashboard-studio-demo-prompt > span:last-child {
+    white-space: normal;
+  }
+
+  .dashboard-studio-page .dashboard-studio-preview-brief {
+    display: grid !important;
+    min-height: 240px;
+  }
+
+  .dashboard-studio-page .dashboard-studio-demo-engine {
+    display: none;
+  }
+
+  .dashboard-studio-page .dashboard-studio-demo-review {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .dashboard-studio-page .dashboard-studio-demo-review {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dashboard-studio-page .dashboard-studio-preview-brief {
+    min-height: 220px;
+  }
+}
