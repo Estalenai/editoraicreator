@@ -22708,6 +22708,59 @@ body {
   color: var(--ea-text-muted);
 }
 
+@media (min-width: 901px) {
+  .dashboard-studio-page .dashboard-studio-field.dashboard-command-field {
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(8px, 0.9vw, 14px);
+  }
+
+  .dashboard-studio-page .dashboard-studio-field .dashboard-surface-command-copy {
+    display: grid;
+    grid-template-columns: minmax(150px, 0.34fr) auto minmax(280px, 1fr);
+    gap: clamp(10px, 1.25vw, 18px);
+    align-items: end;
+    max-width: none;
+  }
+
+  .dashboard-studio-page .dashboard-studio-field .dashboard-surface-hero-intro {
+    max-width: 17rem;
+    gap: 7px;
+  }
+
+  .dashboard-studio-page .dashboard-studio-field .dashboard-surface-hero-intro .hero-title-stack {
+    gap: 5px;
+  }
+
+  .dashboard-studio-page .dashboard-studio-field h1 {
+    max-width: none;
+    font-size: clamp(1.32rem, 1.8vw, 2.12rem);
+    line-height: 0.94;
+    letter-spacing: -0.048em;
+  }
+
+  .dashboard-studio-page .dashboard-studio-field .dashboard-surface-command-copy > p {
+    max-width: 17rem;
+    font-size: 0.82rem;
+    line-height: 1.42;
+  }
+
+  .dashboard-studio-page .dashboard-studio-field .dashboard-surface-command-copy > .dashboard-hero-flow-label {
+    display: none;
+  }
+
+  .dashboard-studio-page .dashboard-studio-field .dashboard-surface-command-copy > strong {
+    max-width: none;
+    font-size: clamp(1.32rem, 1.78vw, 2.2rem);
+    line-height: 0.92;
+    white-space: nowrap;
+  }
+
+  .dashboard-studio-page .dashboard-studio-hero-metadata {
+    align-self: end;
+    margin-top: 0;
+  }
+}
+
 .dashboard-command-live-panel {
   display: grid;
   gap: clamp(12px, 1.2vw, 18px);
