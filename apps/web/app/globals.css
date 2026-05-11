@@ -26131,7 +26131,7 @@ body {
   font-weight: 900;
 }
 
-@media (max-width: 1180px) {
+@media (max-width: 760px) {
   .dashboard-studio-page .dashboard-unified-artifact .dashboard-command-bridge.dashboard-studio-artifact {
     grid-template-columns: minmax(0, 1fr) !important;
     grid-template-areas:
@@ -26157,8 +26157,8 @@ body {
 
 @media (max-width: 700px) {
   .dashboard-studio-page .dashboard-context-dock {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 12px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px 12px;
   }
 
   .dashboard-studio-page .dashboard-context-signal {
@@ -26166,8 +26166,36 @@ body {
   }
 
   .dashboard-studio-page .dashboard-context-support,
+  .dashboard-studio-page .dashboard-context-onboarding {
+    grid-column: 1 / -1;
+  }
+
+  .dashboard-studio-page .dashboard-context-support,
   .dashboard-studio-page .dashboard-context-onboarding-paths {
     gap: 6px;
+  }
+
+  .dashboard-studio-page .dashboard-context-signal > span:not(.dashboard-stream-link-kicker):not(.dashboard-context-chipline),
+  .dashboard-studio-page .dashboard-context-meta,
+  .dashboard-studio-page .dashboard-context-onboarding-copy span:last-child,
+  .dashboard-studio-page .dashboard-context-onboarding-footer > span {
+    display: none;
+  }
+
+  .dashboard-studio-page .dashboard-context-signal strong {
+    font-size: 0.9rem;
+  }
+
+  .dashboard-studio-page .dashboard-context-support-link,
+  .dashboard-studio-page .dashboard-context-onboarding-path {
+    min-height: 27px;
+    padding: 4px 7px;
+  }
+
+  .dashboard-studio-page .dashboard-context-chipline span {
+    min-height: 22px;
+    padding-inline: 6px;
+    font-size: 0.64rem;
   }
 
   .dashboard-studio-page .dashboard-context-onboarding-footer {
