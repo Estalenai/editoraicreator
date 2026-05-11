@@ -25810,7 +25810,7 @@ body {
 
 /* R1D correction: compress the former footer into one field band. */
 .dashboard-studio-page .dashboard-unified-lower-field.dashboard-unified-ecosystem {
-  margin-top: clamp(-40px, -2.4vw, -18px);
+  margin-top: clamp(-24px, -1.45vw, -10px);
 }
 
 .dashboard-studio-page .dashboard-unified-continuum-plane {
@@ -25827,6 +25827,7 @@ body {
   grid-template-areas: "capacity ledger support";
   align-items: start;
   gap: clamp(14px, 1.45vw, 24px);
+  padding-top: clamp(4px, 0.6vw, 10px);
   padding-bottom: clamp(18px, 2vw, 32px);
 }
 
@@ -25877,17 +25878,6 @@ body {
 }
 
 .dashboard-studio-page .dashboard-unified-ledger .dashboard-surface-usage-signals {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 14px;
-}
-
-.dashboard-studio-page .dashboard-unified-ledger .dashboard-surface-usage-signal {
-  padding: 0 0 0 10px;
-  border-left: 1px solid rgba(191, 239, 255, 0.02);
-}
-
-.dashboard-studio-page .dashboard-unified-ledger .dashboard-surface-usage-signal span:last-child {
   display: none;
 }
 
@@ -25963,4 +25953,3 @@ body {
     justify-content: flex-start;
   }
 }
-

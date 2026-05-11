@@ -721,31 +721,6 @@ export default function DashboardPage() {
 
                       <div className="dashboard-surface-ecosystem dashboard-operating-ecosystem dashboard-studio-body dashboard-unified-ecosystem dashboard-unified-lower-field" data-reveal data-reveal-delay="140">
                         <div className="dashboard-unified-continuum-plane">
-                        <div className="dashboard-studio-continuum dashboard-unified-stream" aria-label="Sinais contínuos do estúdio">
-                          <div className="dashboard-studio-continuum-row" data-reveal data-reveal-delay="210">
-                            <div className="dashboard-studio-continuum-signal">
-                              <span>Projeto</span>
-                              <strong>{recentProjects.length > 0 ? `${recentProjects.length} ativo(s)` : "Entrada inicial"}</strong>
-                            </div>
-                            <div className="dashboard-studio-continuum-signal">
-                              <span>Capacidade</span>
-                              <strong>{walletSummaryDisplay}</strong>
-                            </div>
-                            <div className="dashboard-studio-continuum-signal">
-                              <span>Uso</span>
-                              <strong>{usageLeadInsight}</strong>
-                            </div>
-                            <div className="dashboard-studio-continuum-actions">
-                              <Link href="/credits#credits-history" className="dashboard-stream-link-cta">
-                                Histórico
-                              </Link>
-                              <Link href="/support" className="dashboard-stream-link-cta">
-                                Suporte
-                              </Link>
-                            </div>
-                          </div>
-                        </div>
-
                         <div className="dashboard-ecosystem-infrastructure dashboard-studio-infrastructure dashboard-studio-signal-mesh dashboard-field-thread dashboard-unified-signal-grid dashboard-unified-lower-constellation">
                             <div className="dashboard-surface-wallet dashboard-ecosystem-wallet dashboard-studio-capacity dashboard-studio-capacity-signal dashboard-field-signal dashboard-unified-capacity">
                               <div className="dashboard-surface-wallet-copy dashboard-studio-capacity-head">
