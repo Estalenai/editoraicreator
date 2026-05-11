@@ -26452,3 +26452,303 @@ body {
     min-height: 220px;
   }
 }
+
+/* Dashboard R3: proprietary studio signature.
+   Adds product-demo detail without reintroducing a sidebar, lower band or
+   sovereign artifact card. */
+.dashboard-studio-page .dashboard-studio-preview-shell {
+  filter: saturate(1.08);
+}
+
+.dashboard-studio-page .dashboard-studio-preview-topbar {
+  gap: 7px;
+}
+
+.dashboard-studio-page .dashboard-studio-preview-topbar span,
+.dashboard-studio-page .dashboard-studio-preview-stream span {
+  border-color: rgba(191, 239, 255, 0.07);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.046), rgba(83, 228, 255, 0.024)),
+    rgba(5, 20, 48, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.055);
+}
+
+.dashboard-studio-page .dashboard-studio-preview-canvas {
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    linear-gradient(115deg, rgba(83, 228, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(90, 227, 255, 0.042) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(90, 227, 255, 0.032) 1px, transparent 1px),
+    radial-gradient(620px 280px at 43% 46%, rgba(78, 226, 255, 0.2), transparent 72%),
+    radial-gradient(420px 190px at 84% 17%, rgba(246, 219, 104, 0.058), transparent 72%),
+    radial-gradient(500px 260px at 11% 92%, rgba(74, 137, 255, 0.09), transparent 74%),
+    linear-gradient(145deg, rgba(5, 20, 48, 0.052), rgba(8, 31, 74, 0.014));
+  background-size: 82px 82px, 54px 54px, 54px 54px, auto, auto, auto, auto;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    inset 0 -1px 0 rgba(83, 228, 255, 0.035);
+}
+
+.dashboard-studio-page .dashboard-studio-preview-canvas::before {
+  top: 10px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(83, 228, 255, 0.3), rgba(191, 239, 255, 0.042), transparent);
+}
+
+.dashboard-studio-page .dashboard-studio-preview-canvas::after {
+  bottom: 22px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(246, 219, 104, 0.09), rgba(83, 228, 255, 0.16), transparent);
+}
+
+.dashboard-studio-page .dashboard-studio-signature-field {
+  position: absolute;
+  inset: clamp(14px, 1.2vw, 20px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.dashboard-studio-page .dashboard-studio-signature-node {
+  position: absolute;
+  width: 8px;
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background: rgba(205, 249, 255, 0.84);
+  box-shadow:
+    0 0 0 5px rgba(83, 228, 255, 0.035),
+    0 0 28px rgba(83, 228, 255, 0.32);
+}
+
+.dashboard-studio-page .dashboard-studio-signature-node-a {
+  left: 39%;
+  top: 18%;
+}
+
+.dashboard-studio-page .dashboard-studio-signature-node-b {
+  right: 13%;
+  bottom: 20%;
+  background: rgba(255, 234, 151, 0.82);
+  box-shadow:
+    0 0 0 5px rgba(246, 219, 104, 0.03),
+    0 0 28px rgba(246, 219, 104, 0.2);
+}
+
+.dashboard-studio-page .dashboard-studio-signature-thread {
+  position: absolute;
+  height: 1px;
+  transform-origin: left center;
+  background: linear-gradient(90deg, transparent, rgba(83, 228, 255, 0.24), rgba(255, 255, 255, 0.04), transparent);
+}
+
+.dashboard-studio-page .dashboard-studio-signature-thread-a {
+  left: 13%;
+  right: 22%;
+  top: 36%;
+  transform: rotate(-7deg);
+}
+
+.dashboard-studio-page .dashboard-studio-signature-thread-b {
+  left: 43%;
+  right: 5%;
+  bottom: 29%;
+  background: linear-gradient(90deg, transparent, rgba(246, 219, 104, 0.12), rgba(83, 228, 255, 0.18), transparent);
+  transform: rotate(8deg);
+}
+
+.dashboard-studio-page .dashboard-studio-demo-prompt {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  border-color: rgba(191, 239, 255, 0.075);
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.052), rgba(78, 226, 255, 0.028), rgba(5, 20, 48, 0.02)),
+    rgba(3, 17, 43, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.dashboard-studio-page .dashboard-studio-demo-prompt .dashboard-stage-stat-label {
+  grid-row: 1 / span 2;
+}
+
+.dashboard-studio-page .dashboard-studio-demo-prompt strong {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.dashboard-studio-page .dashboard-studio-demo-frequency {
+  grid-column: 3;
+  grid-row: 1;
+  justify-self: end;
+  border: 1px solid rgba(83, 228, 255, 0.09);
+  border-radius: 999px;
+  padding: 3px 8px;
+  background: rgba(83, 228, 255, 0.035);
+  color: rgba(155, 241, 255, 0.78);
+  font-size: 0.63rem;
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.dashboard-studio-page .dashboard-studio-demo-prompt > span:last-child {
+  grid-column: 2 / -1;
+  grid-row: 2;
+  color: rgba(207, 235, 255, 0.7);
+  white-space: normal;
+}
+
+.dashboard-studio-page .dashboard-studio-demo-axis {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 122%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(83, 228, 255, 0.28), transparent);
+  transform: translate(-50%, -50%);
+}
+
+.dashboard-studio-page .dashboard-studio-demo-axis-y {
+  transform: translate(-50%, -50%) rotate(90deg);
+  background: linear-gradient(90deg, transparent, rgba(246, 219, 104, 0.14), transparent);
+}
+
+.dashboard-studio-page .dashboard-studio-demo-engine-core {
+  background:
+    radial-gradient(circle at 40% 32%, rgba(255, 255, 255, 0.82), transparent 12%),
+    conic-gradient(from 130deg, rgba(83, 228, 255, 0.18), rgba(246, 219, 104, 0.16), rgba(83, 228, 255, 0.34), rgba(83, 228, 255, 0.18)),
+    radial-gradient(circle, rgba(78, 226, 255, 0.56), rgba(78, 226, 255, 0.08) 58%, transparent 72%);
+  box-shadow:
+    0 0 0 6px rgba(83, 228, 255, 0.028),
+    0 0 48px rgba(78, 226, 255, 0.32);
+}
+
+.dashboard-studio-page .dashboard-studio-demo-orbit-a {
+  border-color: rgba(83, 228, 255, 0.18);
+  box-shadow: inset 0 0 22px rgba(83, 228, 255, 0.03);
+  transform: rotate(-11deg) scaleX(0.86);
+}
+
+.dashboard-studio-page .dashboard-studio-demo-review span,
+.dashboard-studio-page .dashboard-studio-preview-output,
+.dashboard-studio-page .dashboard-surface-focus-lead.dashboard-studio-preview-brief {
+  border-color: rgba(191, 239, 255, 0.065);
+}
+
+.dashboard-studio-page .dashboard-studio-demo-review span {
+  background:
+    linear-gradient(90deg, rgba(78, 226, 255, 0.055), rgba(255, 255, 255, 0.018), transparent),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.014), transparent);
+}
+
+.dashboard-studio-page .dashboard-studio-output-frame {
+  align-items: center;
+}
+
+.dashboard-studio-page .dashboard-studio-output-proof {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.dashboard-studio-page .dashboard-studio-output-proof span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  border: 1px solid rgba(191, 239, 255, 0.06);
+  border-radius: 999px;
+  padding: 3px 8px;
+  background: rgba(255, 255, 255, 0.026);
+  color: rgba(213, 238, 255, 0.74);
+  font-size: 0.67rem;
+  font-weight: 850;
+}
+
+.dashboard-studio-page .dashboard-context-energy-meter {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+  max-width: 132px;
+  margin: 1px 0 0;
+}
+
+.dashboard-studio-page .dashboard-context-energy-meter span {
+  height: 5px;
+  border-radius: 999px;
+  background:
+    linear-gradient(90deg, rgba(83, 228, 255, 0.16), rgba(83, 228, 255, 0.72)),
+    rgba(255, 255, 255, 0.04);
+  box-shadow: 0 0 18px rgba(83, 228, 255, 0.12);
+}
+
+.dashboard-studio-page .dashboard-context-energy-meter span:nth-child(2) {
+  background: linear-gradient(90deg, rgba(83, 228, 255, 0.1), rgba(255, 234, 151, 0.62));
+}
+
+.dashboard-studio-page .dashboard-context-energy-meter span:nth-child(3) {
+  opacity: 0.58;
+}
+
+.dashboard-studio-page .dashboard-context-activity-pulse {
+  display: block !important;
+  width: min(118px, 100%);
+  height: 1px;
+  margin: 1px 0;
+  background: linear-gradient(90deg, rgba(83, 228, 255, 0.62), rgba(255, 255, 255, 0.06), transparent);
+  box-shadow: 0 0 18px rgba(83, 228, 255, 0.14);
+}
+
+.dashboard-studio-page .dashboard-context-support {
+  position: relative;
+}
+
+.dashboard-studio-page .dashboard-context-support-orbit {
+  position: absolute;
+  left: -3px;
+  top: 8px;
+  display: block !important;
+  width: 34px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(246, 219, 104, 0.34), transparent);
+  pointer-events: none;
+}
+
+.dashboard-studio-page .dashboard-context-support-link,
+.dashboard-studio-page .dashboard-context-onboarding-path,
+.dashboard-studio-page .dashboard-context-dismiss {
+  border-color: rgba(191, 239, 255, 0.065);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(83, 228, 255, 0.018)),
+    rgba(5, 20, 48, 0.04);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.dashboard-studio-page .dashboard-context-chipline span {
+  border-color: rgba(191, 239, 255, 0.065);
+  background:
+    linear-gradient(135deg, rgba(83, 228, 255, 0.045), rgba(255, 255, 255, 0.022)),
+    rgba(4, 19, 45, 0.045);
+}
+
+@media (max-width: 900px) {
+  .dashboard-studio-page .dashboard-studio-signature-field,
+  .dashboard-studio-page .dashboard-studio-demo-frequency {
+    display: none;
+  }
+
+  .dashboard-studio-page .dashboard-studio-demo-prompt .dashboard-stage-stat-label,
+  .dashboard-studio-page .dashboard-studio-demo-prompt strong,
+  .dashboard-studio-page .dashboard-studio-demo-prompt > span:last-child {
+    grid-column: 1;
+    grid-row: auto;
+  }
+}
+
+@media (max-width: 700px) {
+  .dashboard-studio-page .dashboard-context-energy-meter,
+  .dashboard-studio-page .dashboard-context-activity-pulse,
+  .dashboard-studio-page .dashboard-context-support-orbit,
+  .dashboard-studio-page .dashboard-studio-output-proof {
+    display: none !important;
+  }
+}

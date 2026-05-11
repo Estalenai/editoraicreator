@@ -517,6 +517,12 @@ export default function DashboardPage() {
 
                             <div className="dashboard-studio-preview-canvas">
                               <div className="dashboard-studio-preview-beam" aria-hidden="true" />
+                              <div className="dashboard-studio-signature-field" aria-hidden="true">
+                                <span className="dashboard-studio-signature-node dashboard-studio-signature-node-a" />
+                                <span className="dashboard-studio-signature-node dashboard-studio-signature-node-b" />
+                                <span className="dashboard-studio-signature-thread dashboard-studio-signature-thread-a" />
+                                <span className="dashboard-studio-signature-thread dashboard-studio-signature-thread-b" />
+                              </div>
                               <div className="dashboard-studio-demo-prompt" aria-label="Entrada ativa do estúdio">
                                 <span className="dashboard-stage-stat-label">Entrada ativa</span>
                                 <strong>
@@ -524,6 +530,7 @@ export default function DashboardPage() {
                                     ? featuredProjectDisplay.displayTitle
                                     : "Criar primeira entrega"}
                                 </strong>
+                                <span className="dashboard-studio-demo-frequency">Studio field</span>
                                 <span>
                                   {featuredProjectDisplay
                                     ? `${featuredProjectDisplay.deliverableLabel} em ${featuredProjectDisplay.statusLabel.toLowerCase()}.`
@@ -532,6 +539,8 @@ export default function DashboardPage() {
                               </div>
 
                               <div className="dashboard-studio-demo-engine" aria-hidden="true">
+                                <span className="dashboard-studio-demo-axis dashboard-studio-demo-axis-x" />
+                                <span className="dashboard-studio-demo-axis dashboard-studio-demo-axis-y" />
                                 <span className="dashboard-studio-demo-engine-core">EA</span>
                                 <span className="dashboard-studio-demo-orbit dashboard-studio-demo-orbit-a" />
                                 <span className="dashboard-studio-demo-orbit dashboard-studio-demo-orbit-b" />
@@ -605,6 +614,10 @@ export default function DashboardPage() {
                                   <span />
                                   <span />
                                 </div>
+                                <div className="dashboard-studio-output-proof">
+                                  <span>{featuredProjectDisplay?.statusLabel || "Canvas pronto"}</span>
+                                  <span>{focusContinuationLabel}</span>
+                                </div>
                               </div>
 
                               <div className="dashboard-studio-preview-stream" aria-label="Estado do fluxo criativo">
@@ -650,6 +663,11 @@ export default function DashboardPage() {
                             >
                               <span className="dashboard-stream-link-kicker">{CREATOR_COINS_PUBLIC_NAME}</span>
                               <strong>{walletSummaryDisplay}</strong>
+                              <span className="dashboard-context-energy-meter" aria-hidden="true">
+                                <span />
+                                <span />
+                                <span />
+                              </span>
                               <span>Energia acoplada ao ciclo.</span>
                               <span className="dashboard-context-chipline" aria-label="Saldos por camada">
                                 {walletBreakdown.map((item) => (
@@ -666,11 +684,13 @@ export default function DashboardPage() {
                             >
                               <span className="dashboard-stream-link-kicker">Histórico</span>
                               <strong>{totalUsageDisplay}</strong>
+                              <span className="dashboard-context-activity-pulse" aria-hidden="true" />
                               <span>{usageLeadInsight}</span>
                               <span className="dashboard-context-meta">{recentUsageText}</span>
                             </Link>
 
                             <div className="dashboard-context-signal dashboard-context-support dashboard-field-signal" aria-label="Infraestrutura do estúdio">
+                              <span className="dashboard-context-support-orbit" aria-hidden="true" />
                               {supportQuickLinks.map((item) => (
                                 <Link key={item.href} href={item.href} className="dashboard-context-support-link">
                                   <span>{item.tag}</span>
