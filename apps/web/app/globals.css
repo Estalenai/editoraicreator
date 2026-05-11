@@ -25975,16 +25975,11 @@ body {
   gap: clamp(12px, 1.15vw, 18px);
   min-width: 0;
   padding: clamp(8px, 0.85vw, 12px) 0 0 clamp(12px, 1vw, 18px);
-  border-left: 1px solid rgba(191, 239, 255, 0.035);
+  border-left: 0;
 }
 
 .dashboard-studio-page .dashboard-context-dock::before {
-  content: "";
-  position: absolute;
-  inset: 0 auto 10% 0;
-  width: 1px;
-  background: linear-gradient(180deg, transparent, rgba(78, 226, 255, 0.2), rgba(191, 239, 255, 0.04), transparent);
-  pointer-events: none;
+  display: none;
 }
 
 .dashboard-studio-page .dashboard-context-signal {
@@ -26012,6 +26007,22 @@ body {
   border-radius: 999px;
   background: rgba(83, 228, 255, 0.72);
   box-shadow: 0 0 20px rgba(83, 228, 255, 0.22);
+}
+
+.dashboard-studio-page .dashboard-context-capacity {
+  margin-left: clamp(0px, 1.3vw, 18px);
+}
+
+.dashboard-studio-page .dashboard-context-log {
+  margin-left: clamp(14px, 2.2vw, 32px);
+}
+
+.dashboard-studio-page .dashboard-context-support {
+  margin-left: clamp(0px, 0.8vw, 12px);
+}
+
+.dashboard-studio-page .dashboard-context-onboarding {
+  margin-left: clamp(18px, 2.6vw, 38px);
 }
 
 .dashboard-studio-page .dashboard-context-signal strong {
@@ -26148,10 +26159,7 @@ body {
   }
 
   .dashboard-studio-page .dashboard-context-dock::before {
-    inset: 0 clamp(4px, 0.8vw, 10px) auto;
-    width: auto;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(78, 226, 255, 0.2), rgba(191, 239, 255, 0.04), transparent);
+    display: none;
   }
 }
 
@@ -26168,6 +26176,13 @@ body {
   .dashboard-studio-page .dashboard-context-support,
   .dashboard-studio-page .dashboard-context-onboarding {
     grid-column: 1 / -1;
+  }
+
+  .dashboard-studio-page .dashboard-context-capacity,
+  .dashboard-studio-page .dashboard-context-log,
+  .dashboard-studio-page .dashboard-context-support,
+  .dashboard-studio-page .dashboard-context-onboarding {
+    margin-left: 0;
   }
 
   .dashboard-studio-page .dashboard-context-support,
