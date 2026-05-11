@@ -94,7 +94,7 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
 
   return (
     <section
-      className="dashboard-surface-onboarding dashboard-continuity-guide dashboard-studio-onboarding dashboard-field-signal"
+      className="dashboard-surface-onboarding dashboard-continuity-guide dashboard-studio-onboarding dashboard-studio-onboarding-inline dashboard-field-signal"
       aria-label="Próxima entrada do Creator Operating Studio"
       data-reveal
       data-reveal-delay="90"
@@ -115,7 +115,7 @@ export function ApprovedBetaOnboardingCard({ email, wallet, loading = false }: P
         <span />
       </div>
 
-      <div className="dashboard-continuity-guide-grid dashboard-studio-onboarding-compact">
+      <div className="dashboard-continuity-guide-grid dashboard-studio-onboarding-compact dashboard-studio-onboarding-constellation">
         <div className="dashboard-continuity-paths">
           {OBJECTIVE_PATHS.map((item, index) => (
             <Link

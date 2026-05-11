@@ -25500,4 +25500,312 @@ body {
   }
 }
 
+/* Dashboard R1D lower continuum.
+   The lower signals remain real links/data, but they now read as the tail of
+   the same studio field instead of a detached operational footer. */
+.dashboard-studio-page .dashboard-unified-lower-field.dashboard-unified-ecosystem {
+  position: relative;
+  z-index: 3;
+  margin-top: clamp(-56px, -3.7vw, -28px);
+  padding-top: 0;
+}
+
+.dashboard-studio-page .dashboard-unified-lower-field::before {
+  inset: -150px -4% auto;
+  height: clamp(600px, 45vw, 860px);
+  background:
+    linear-gradient(90deg, transparent, rgba(78, 226, 255, 0.048), rgba(191, 239, 255, 0.016), transparent),
+    radial-gradient(780px 250px at 39% 7%, rgba(78, 226, 255, 0.06), transparent 78%),
+    radial-gradient(620px 330px at 79% 32%, rgba(64, 112, 255, 0.044), transparent 78%);
+  opacity: 0.68;
+}
+
+.dashboard-studio-page .dashboard-unified-continuum-plane {
+  position: relative;
+  display: grid;
+  gap: clamp(5px, 0.6vw, 10px);
+  min-width: 0;
+}
+
+.dashboard-studio-page .dashboard-unified-continuum-plane::before {
+  content: "";
+  position: absolute;
+  inset: -28px 2% auto;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(78, 226, 255, 0.14), rgba(191, 239, 255, 0.03), transparent);
+  opacity: 0.5;
+}
+
+.dashboard-studio-page .dashboard-unified-stream {
+  display: grid;
+  gap: clamp(5px, 0.5vw, 8px);
+  padding: 0;
+}
+
+.dashboard-studio-page .dashboard-unified-stream::before {
+  display: none;
+}
+
+.dashboard-studio-page .dashboard-unified-stream .dashboard-ecosystem-ribbon {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(10px, 1vw, 18px);
+  padding: 0 clamp(6px, 0.8vw, 12px);
+}
+
+.dashboard-studio-page .dashboard-unified-stream .dashboard-surface-ribbon-link {
+  padding: 0 0 7px 12px;
+  border-top: 0;
+  border-left: 1px solid rgba(191, 239, 255, 0.02);
+  background: transparent;
+}
+
+.dashboard-studio-page .dashboard-unified-stream .dashboard-studio-continuum-row {
+  grid-template-columns: minmax(150px, 0.45fr) minmax(170px, 0.52fr) minmax(210px, 0.74fr) auto;
+  align-items: end;
+  margin-top: 0;
+  padding: clamp(4px, 0.5vw, 8px) clamp(6px, 0.8vw, 12px) 0;
+  border-top: 0;
+  background: transparent;
+}
+
+.dashboard-studio-page .dashboard-unified-stream .dashboard-studio-continuum-signal {
+  padding-left: 10px;
+  border-left-color: rgba(191, 239, 255, 0.022);
+}
+
+.dashboard-studio-page .dashboard-unified-lower-constellation {
+  display: grid !important;
+  grid-template-columns: minmax(0, 0.68fr) minmax(300px, 0.32fr);
+  grid-template-areas:
+    "capacity capacity"
+    "ledger support";
+  gap: clamp(8px, 0.9vw, 14px) clamp(18px, 1.8vw, 30px);
+  margin-top: 0;
+  padding: 0 clamp(6px, 0.8vw, 12px) clamp(8px, 0.9vw, 14px);
+  background: transparent;
+}
+
+.dashboard-studio-page .dashboard-unified-lower-constellation::before {
+  inset: -64px -2% auto;
+  height: clamp(500px, 36vw, 700px);
+  opacity: 0.38;
+}
+
+.dashboard-studio-page .dashboard-unified-capacity.dashboard-studio-capacity-signal {
+  grid-area: capacity;
+  grid-template-columns: minmax(190px, 0.26fr) minmax(0, 1fr) minmax(130px, 0.18fr);
+  align-items: end;
+  gap: clamp(12px, 1.2vw, 22px);
+  padding: clamp(3px, 0.45vw, 7px) 0 clamp(3px, 0.5vw, 7px);
+  border-top: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.dashboard-studio-page .dashboard-unified-capacity .dashboard-studio-capacity-head {
+  align-self: end;
+}
+
+.dashboard-studio-page .dashboard-unified-capacity .dashboard-studio-capacity-chips {
+  grid-column: auto;
+}
+
+.dashboard-studio-page .dashboard-unified-capacity .dashboard-studio-capacity-gauge {
+  justify-self: end;
+  width: min(100%, 250px);
+  min-height: 24px;
+  opacity: 0.62;
+}
+
+.dashboard-studio-page .dashboard-unified-capacity .dashboard-studio-capacity-gauge span:nth-child(1) {
+  height: 26px;
+}
+
+.dashboard-studio-page .dashboard-unified-capacity .dashboard-studio-capacity-gauge span:nth-child(2) {
+  height: 20px;
+}
+
+.dashboard-studio-page .dashboard-unified-capacity .dashboard-studio-capacity-gauge span:nth-child(3) {
+  height: 14px;
+}
+
+.dashboard-studio-page .dashboard-unified-ledger {
+  grid-area: ledger;
+  align-self: start;
+  margin-top: 0;
+  padding: 0 !important;
+}
+
+.dashboard-studio-page .dashboard-unified-ledger .dashboard-surface-usage-grid {
+  grid-template-columns: minmax(176px, 0.3fr) minmax(0, 1fr);
+  gap: clamp(10px, 1.1vw, 18px);
+}
+
+.dashboard-studio-page .dashboard-unified-ledger .dashboard-surface-usage-strip,
+.dashboard-studio-page .dashboard-unified-ledger .dashboard-surface-usage-signal,
+.dashboard-studio-page .dashboard-unified-ledger .dashboard-surface-usage-card,
+.dashboard-studio-page .dashboard-unified-ledger .dashboard-surface-usage-empty,
+.dashboard-studio-page .dashboard-unified-ledger .dashboard-surface-usage-empty-story,
+.dashboard-studio-page .dashboard-unified-ledger .dashboard-surface-usage-route {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.dashboard-studio-page .dashboard-unified-ledger .dashboard-surface-usage-cards {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 clamp(12px, 1.2vw, 20px);
+}
+
+.dashboard-studio-page .dashboard-unified-ledger .dashboard-surface-usage-card {
+  padding: 0 0 7px 10px;
+  border-top: 0;
+  border-left: 1px solid rgba(191, 239, 255, 0.018);
+}
+
+.dashboard-studio-page .dashboard-unified-ledger .dashboard-surface-usage-empty {
+  grid-template-columns: minmax(190px, 0.35fr) minmax(0, 1fr);
+}
+
+.dashboard-studio-page .dashboard-unified-ledger .dashboard-surface-usage-empty-story {
+  padding: 0 0 0 10px;
+}
+
+.dashboard-studio-page .dashboard-unified-ledger .dashboard-surface-usage-route {
+  align-self: start;
+}
+
+.dashboard-studio-page .dashboard-unified-support-constellation {
+  grid-area: support;
+  align-self: start;
+  display: grid;
+  gap: clamp(10px, 1vw, 16px);
+  margin-top: 0;
+}
+
+.dashboard-studio-page .dashboard-unified-support-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+
+.dashboard-studio-page .dashboard-unified-support-links .dashboard-studio-trust-link {
+  flex: 1 1 min(160px, 100%);
+  padding: 0 0 0 10px;
+  border-top: 0;
+  border-left: 1px solid rgba(191, 239, 255, 0.02);
+}
+
+.dashboard-studio-page .dashboard-unified-support-links .dashboard-stream-link-copy {
+  display: none;
+}
+
+.dashboard-studio-page .dashboard-studio-onboarding-inline {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(10px, 1vw, 16px);
+  align-items: start;
+  margin-top: 0;
+  padding-top: 0 !important;
+  border-top: 0 !important;
+}
+
+.dashboard-studio-page .dashboard-studio-onboarding-inline .dashboard-surface-onboarding-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: end;
+}
+
+.dashboard-studio-page .dashboard-studio-onboarding-inline .dashboard-surface-field-note-copy {
+  grid-column: auto;
+}
+
+.dashboard-studio-page .dashboard-studio-onboarding-inline .dashboard-surface-onboarding-head > .btn-ea {
+  justify-self: end;
+}
+
+.dashboard-studio-page .dashboard-studio-onboarding-inline .dashboard-studio-onboarding-radar {
+  max-width: 220px;
+  margin: 0;
+}
+
+.dashboard-studio-page .dashboard-studio-onboarding-inline .dashboard-studio-onboarding-constellation {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(10px, 1vw, 16px);
+  align-items: start;
+}
+
+.dashboard-studio-page .dashboard-studio-onboarding-inline .dashboard-studio-onboarding-compact .dashboard-continuity-paths {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.dashboard-studio-page .dashboard-studio-onboarding-inline .dashboard-continuity-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+}
+
+.dashboard-studio-page .dashboard-studio-onboarding-inline .dashboard-surface-onboarding-summary-note {
+  display: none;
+}
+
+.dashboard-studio-page .dashboard-studio-onboarding-inline .dashboard-surface-onboarding-actions {
+  justify-content: flex-start;
+}
+
+@media (max-width: 1180px) {
+  .dashboard-studio-page .dashboard-unified-lower-field.dashboard-unified-ecosystem {
+    margin-top: clamp(-34px, -3.4vw, -16px);
+  }
+
+  .dashboard-studio-page .dashboard-unified-stream .dashboard-ecosystem-ribbon {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboard-studio-page .dashboard-unified-stream .dashboard-studio-continuum-row,
+  .dashboard-studio-page .dashboard-unified-lower-constellation,
+  .dashboard-studio-page .dashboard-unified-capacity.dashboard-studio-capacity-signal,
+  .dashboard-studio-page .dashboard-unified-ledger .dashboard-surface-usage-grid,
+  .dashboard-studio-page .dashboard-unified-ledger .dashboard-surface-usage-empty,
+  .dashboard-studio-page .dashboard-studio-onboarding-inline .dashboard-surface-onboarding-head {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: none;
+  }
+
+  .dashboard-studio-page .dashboard-unified-capacity,
+  .dashboard-studio-page .dashboard-unified-ledger,
+  .dashboard-studio-page .dashboard-unified-support-constellation {
+    grid-area: auto;
+  }
+
+  .dashboard-studio-page .dashboard-unified-support-constellation {
+    margin-top: 0;
+  }
+
+  .dashboard-studio-page .dashboard-studio-onboarding-inline .dashboard-surface-onboarding-head > .btn-ea {
+    justify-self: start;
+  }
+}
+
+@media (max-width: 640px) {
+  .dashboard-studio-page .dashboard-unified-stream .dashboard-ecosystem-ribbon,
+  .dashboard-studio-page .dashboard-unified-support-links,
+  .dashboard-studio-page .dashboard-studio-onboarding-inline .dashboard-studio-onboarding-compact .dashboard-continuity-paths,
+  .dashboard-studio-page .dashboard-unified-ledger .dashboard-surface-usage-cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dashboard-studio-page .dashboard-unified-support-links {
+    display: grid;
+  }
+
+  .dashboard-studio-page .dashboard-unified-capacity .dashboard-studio-capacity-gauge {
+    justify-self: stretch;
+    width: 100%;
+  }
+}
+
 

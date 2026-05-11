@@ -719,8 +719,9 @@ export default function DashboardPage() {
                         </div>
                       </div>
 
-                      <div className="dashboard-surface-ecosystem dashboard-operating-ecosystem dashboard-studio-body dashboard-unified-ecosystem" data-reveal data-reveal-delay="140">
-                        <div className="dashboard-studio-continuum" aria-label="Sinais contínuos do estúdio">
+                      <div className="dashboard-surface-ecosystem dashboard-operating-ecosystem dashboard-studio-body dashboard-unified-ecosystem dashboard-unified-lower-field" data-reveal data-reveal-delay="140">
+                        <div className="dashboard-unified-continuum-plane">
+                        <div className="dashboard-studio-continuum dashboard-unified-stream" aria-label="Sinais contínuos do estúdio">
                           {loading ? (
                             <div className="dashboard-ecosystem-ribbon">
                               {Array.from({ length: 3 }).map((_, index) => (
@@ -772,7 +773,7 @@ export default function DashboardPage() {
                           </div>
                         </div>
 
-                        <div className="dashboard-ecosystem-infrastructure dashboard-studio-infrastructure dashboard-studio-signal-mesh dashboard-field-thread dashboard-unified-signal-grid">
+                        <div className="dashboard-ecosystem-infrastructure dashboard-studio-infrastructure dashboard-studio-signal-mesh dashboard-field-thread dashboard-unified-signal-grid dashboard-unified-lower-constellation">
                             <div className="dashboard-surface-wallet dashboard-ecosystem-wallet dashboard-studio-capacity dashboard-studio-capacity-signal dashboard-field-signal dashboard-unified-capacity">
                               <div className="dashboard-surface-wallet-copy dashboard-studio-capacity-head">
                                 <span className="dashboard-stream-link-kicker">{CREATOR_COINS_PUBLIC_NAME}</span>
@@ -904,8 +905,8 @@ export default function DashboardPage() {
                               </div>
                             </div>
 
-                            <div className="dashboard-ecosystem-route-column dashboard-studio-route-column dashboard-studio-support-mesh dashboard-unified-support">
-                              <div className="dashboard-ecosystem-support-links dashboard-studio-trust-links dashboard-studio-trust-chips">
+                            <div className="dashboard-ecosystem-route-column dashboard-studio-route-column dashboard-studio-support-mesh dashboard-unified-support dashboard-unified-support-constellation">
+                              <div className="dashboard-ecosystem-support-links dashboard-studio-trust-links dashboard-studio-trust-chips dashboard-unified-support-links">
                                 {supportQuickLinks.map((item, index) => (
                                   <Link
                                     key={item.href}
@@ -926,6 +927,7 @@ export default function DashboardPage() {
 
                               <ApprovedBetaOnboardingCard email={email} wallet={wallet} loading={loading} />
                             </div>
+                        </div>
                         </div>
                       </div>
                       </div>
