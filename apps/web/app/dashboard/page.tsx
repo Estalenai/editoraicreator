@@ -411,10 +411,10 @@ export default function DashboardPage() {
                             <p className="section-header-copy hero-copy-compact">
                               Produto vivo, projeto e saída no mesmo campo.
                             </p>
-                            <div className="hero-meta-row dashboard-unified-badges">
+                            <div className="hero-meta-row dashboard-unified-badges dashboard-studio-chrome-badges">
                               <span className="premium-badge dashboard-operating-badge">Plano: {planLabelDisplay}</span>
                               <span className="premium-badge premium-badge-warning">
-                                {loading ? "Conta em sincronizacao" : "Historico confirmado no backend"}
+                                {loading ? "Sincronizando" : "Continuidade ativa"}
                               </span>
                             </div>
                           </div>
@@ -717,14 +717,14 @@ export default function DashboardPage() {
                   </header>
 
                   {error || usageError ? (
-                    <div className="dashboard-status-stack dashboard-surface-inline-status">
+                    <div className="dashboard-status-stack dashboard-surface-inline-status dashboard-studio-quiet-status">
                   {error ? (
-                    <div className="state-ea state-ea-error">
-                      <p className="state-ea-title">Não foi possível carregar painel, plano e saldo agora</p>
-                      <div className="state-ea-text">{toUserFacingError(error, "Atualize a página e tente novamente.")}</div>
+                    <div className="state-ea state-ea-error dashboard-studio-quiet-error">
+                      <p className="state-ea-title">Painel em revalidação</p>
+                      <div className="state-ea-text">{toUserFacingError(error, "Atualize a leitura para tentar novamente.")}</div>
                       <div className="state-ea-actions">
                         <button onClick={refresh} className="btn-ea btn-secondary btn-sm">
-                          Atualizar dashboard
+                          Revalidar
                         </button>
                         <Link href="/support" className="btn-link-ea btn-ghost btn-sm">
                           Pedir ajuda
@@ -734,14 +734,14 @@ export default function DashboardPage() {
                   ) : null}
 
                   {usageError ? (
-                    <div className="dashboard-surface-inline-warning" role="status" aria-live="polite">
+                    <div className="dashboard-surface-inline-warning dashboard-studio-usage-signal" role="status" aria-live="polite">
                       <div className="dashboard-surface-inline-warning-copy">
-                        <span className="dashboard-stage-stat-label">Uso do período indisponível</span>
-                        <strong>As métricas não responderam agora.</strong>
-                        <span>{toUserFacingError(usageError, "Atualize as métricas para tentar novamente.")}</span>
+                        <span className="dashboard-stage-stat-label">Uso sincronizando</span>
+                        <strong>Leitura de uso em segundo plano.</strong>
+                        <span>{toUserFacingError(usageError, "Sem leitura recente.")}</span>
                       </div>
                       <button onClick={loadUsage} className="btn-ea btn-secondary btn-sm">
-                        Atualizar uso
+                        Revalidar
                       </button>
                     </div>
                   ) : null}

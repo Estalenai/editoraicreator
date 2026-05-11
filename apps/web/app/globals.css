@@ -27058,3 +27058,287 @@ body {
     gap: 14px 18px;
   }
 }
+
+/* Round 5: reduce dashboard operational chrome and let the product demo lead. */
+.app-shell-frame:has(.dashboard-surface-page) .app-shell-head,
+.app-shell-frame:has(.dashboard-surface-page) .app-shell-head-region {
+  padding-block: clamp(8px, 0.72vw, 12px);
+  border-bottom-color: rgba(191, 239, 255, 0.01);
+  background:
+    linear-gradient(180deg, rgba(9, 18, 42, 0.18), rgba(7, 14, 31, 0)),
+    rgba(255, 255, 255, 0.001);
+}
+
+.app-shell-frame:has(.dashboard-surface-page) .app-shell-head-note,
+.app-shell-frame:has(.dashboard-surface-page) .app-account-label,
+.app-shell-frame:has(.dashboard-surface-page) .app-account-plan {
+  opacity: 0.58;
+}
+
+.app-shell-frame:has(.dashboard-surface-page) .app-account-card,
+.app-shell-frame:has(.dashboard-surface-page) .app-account-inbox-button,
+.app-shell-frame:has(.dashboard-surface-page) .app-account-link {
+  border-color: rgba(191, 239, 255, 0.045);
+  background: rgba(255, 255, 255, 0.008);
+  box-shadow: none;
+}
+
+.app-shell-body:has(.dashboard-surface-page) .app-top-nav {
+  margin-bottom: clamp(-16px, -0.9vw, -8px);
+  padding-block: 5px 2px !important;
+}
+
+.app-shell-body:has(.dashboard-surface-page) .app-nav-dashboard-eyebrow,
+.app-shell-body:has(.dashboard-surface-page) .app-nav-dashboard-utility {
+  opacity: 0.36;
+}
+
+.app-shell-body:has(.dashboard-surface-page) .app-nav-link,
+.app-shell-body:has(.dashboard-surface-page) .app-nav-link:hover,
+.app-shell-body:has(.dashboard-surface-page) .app-nav-link:active {
+  min-height: 30px;
+  padding-inline: 10px;
+  opacity: 0.42;
+}
+
+.app-shell-body:has(.dashboard-surface-page) .app-nav-link-active,
+.app-shell-body:has(.dashboard-surface-page) .app-nav-link[aria-current='page'],
+.app-shell-body:has(.dashboard-surface-page) .app-nav-link[data-active='true'] {
+  opacity: 0.84;
+  border-color: rgba(191, 239, 255, 0.04) !important;
+  background: rgba(255, 255, 255, 0.012) !important;
+}
+
+.dashboard-studio-page .dashboard-studio-chrome-badges {
+  opacity: 0.68;
+}
+
+.dashboard-studio-page .dashboard-studio-chrome-badges .premium-badge {
+  min-height: 22px;
+  padding-inline: 9px;
+  border-color: rgba(191, 239, 255, 0.055);
+  background: rgba(255, 255, 255, 0.012);
+  box-shadow: none;
+}
+
+.dashboard-studio-page .dashboard-unified-signals {
+  opacity: 0.76;
+}
+
+.dashboard-studio-page .dashboard-unified-signals .dashboard-unified-signal {
+  border-left-color: rgba(83, 228, 255, 0.07);
+  background: linear-gradient(90deg, rgba(83, 228, 255, 0.022), transparent 72%);
+  box-shadow: none;
+}
+
+.dashboard-studio-page .dashboard-unified-next {
+  opacity: 0.74;
+}
+
+.dashboard-studio-page .dashboard-unified-actions {
+  opacity: 0.44;
+  filter: saturate(0.82);
+}
+
+.dashboard-studio-page .dashboard-unified-actions:hover,
+.dashboard-studio-page .dashboard-unified-actions:focus-within {
+  opacity: 0.78;
+  filter: none;
+}
+
+.dashboard-studio-page .dashboard-studio-primary-cta {
+  box-shadow:
+    0 18px 44px rgba(44, 214, 255, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.dashboard-studio-page .dashboard-studio-artifact-thread {
+  opacity: 0.7;
+}
+
+.dashboard-studio-page .dashboard-studio-quiet-status {
+  width: min(100%, 1180px);
+  margin: clamp(-64px, -3.2vw, -30px) auto 0;
+  padding-inline: clamp(18px, 3vw, 56px);
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.dashboard-studio-page .dashboard-studio-quiet-status > * {
+  pointer-events: auto;
+}
+
+.dashboard-studio-page .dashboard-studio-quiet-error,
+.dashboard-studio-page .dashboard-studio-usage-signal {
+  width: auto;
+  max-width: min(760px, 100%);
+  min-height: 34px;
+  padding: 5px 7px 5px 11px;
+  border: 1px solid rgba(246, 219, 104, 0.08);
+  border-radius: 999px;
+  background:
+    linear-gradient(90deg, rgba(246, 219, 104, 0.035), rgba(83, 228, 255, 0.015), transparent),
+    rgba(255, 255, 255, 0.008);
+  box-shadow: none;
+  opacity: 0.64;
+}
+
+.dashboard-studio-page .dashboard-studio-quiet-error:hover,
+.dashboard-studio-page .dashboard-studio-quiet-error:focus-within,
+.dashboard-studio-page .dashboard-studio-usage-signal:hover,
+.dashboard-studio-page .dashboard-studio-usage-signal:focus-within {
+  opacity: 0.88;
+}
+
+.dashboard-studio-page .dashboard-studio-quiet-error {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.dashboard-studio-page .dashboard-studio-quiet-error .state-ea-title,
+.dashboard-studio-page .dashboard-studio-quiet-error .state-ea-text,
+.dashboard-studio-page .dashboard-studio-usage-signal .dashboard-surface-inline-warning-copy {
+  margin: 0;
+}
+
+.dashboard-studio-page .dashboard-studio-quiet-error .state-ea-title,
+.dashboard-studio-page .dashboard-studio-usage-signal strong {
+  color: rgba(235, 247, 255, 0.76);
+  font-size: 0.72rem;
+  font-weight: 850;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.dashboard-studio-page .dashboard-studio-quiet-error .state-ea-text,
+.dashboard-studio-page .dashboard-studio-usage-signal .dashboard-surface-inline-warning-copy > span:last-child {
+  max-width: 230px;
+  overflow: hidden;
+  color: rgba(215, 235, 248, 0.46);
+  font-size: 0.68rem;
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard-studio-page .dashboard-studio-usage-signal {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.dashboard-studio-page .dashboard-studio-usage-signal .dashboard-surface-inline-warning-copy {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dashboard-studio-page .dashboard-studio-usage-signal .dashboard-stage-stat-label {
+  color: rgba(246, 219, 104, 0.58);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+}
+
+.dashboard-studio-page .dashboard-studio-quiet-status .btn-ea,
+.dashboard-studio-page .dashboard-studio-quiet-status .btn-link-ea {
+  min-height: 26px;
+  padding-inline: 9px;
+  border-color: rgba(191, 239, 255, 0.055);
+  background: rgba(255, 255, 255, 0.012);
+  color: rgba(220, 242, 255, 0.7);
+  font-size: 0.68rem;
+  box-shadow: none;
+}
+
+@media (max-width: 900px) {
+  .app-shell-frame:has(.dashboard-surface-page) .app-shell-head,
+  .app-shell-frame:has(.dashboard-surface-page) .app-shell-head-region {
+    padding-block: 7px;
+  }
+
+  .app-shell-frame:has(.dashboard-surface-page) .app-shell-head-note {
+    display: none;
+  }
+
+  .app-shell-body:has(.dashboard-surface-page) .app-nav-dashboard-utility {
+    display: none;
+  }
+
+  .dashboard-studio-page .dashboard-studio-quiet-status {
+    margin-top: 8px;
+    justify-content: flex-start;
+  }
+
+  .dashboard-studio-page .dashboard-studio-quiet-error,
+  .dashboard-studio-page .dashboard-studio-usage-signal {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 760px) {
+  .dashboard-studio-page .dashboard-studio-chrome-badges {
+    opacity: 0.56;
+  }
+
+  .dashboard-studio-page .dashboard-unified-signals {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "next";
+    opacity: 0.88;
+  }
+
+  .dashboard-studio-page .dashboard-unified-signals .dashboard-unified-signal:nth-child(1),
+  .dashboard-studio-page .dashboard-unified-signals .dashboard-unified-signal:nth-child(2) {
+    display: none;
+  }
+
+  .dashboard-studio-page .dashboard-unified-next {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+    padding-block: 8px;
+    opacity: 0.88;
+  }
+
+  .dashboard-studio-page .dashboard-studio-artifact-thread {
+    opacity: 0.58;
+  }
+
+  .dashboard-studio-page .dashboard-context-dock {
+    gap: 10px;
+  }
+
+  .dashboard-studio-page .dashboard-context-signal {
+    min-height: auto;
+    padding-block: 9px;
+  }
+
+  .dashboard-studio-page .dashboard-context-log .dashboard-context-meta,
+  .dashboard-studio-page .dashboard-context-support p,
+  .dashboard-studio-page .dashboard-context-onboarding p {
+    display: none;
+  }
+
+  .dashboard-studio-page .dashboard-studio-quiet-status {
+    padding-inline: clamp(14px, 5vw, 24px);
+  }
+
+  .dashboard-studio-page .dashboard-studio-quiet-error,
+  .dashboard-studio-page .dashboard-studio-usage-signal {
+    align-items: flex-start;
+    border-radius: 18px;
+    opacity: 0.7;
+  }
+
+  .dashboard-studio-page .dashboard-studio-usage-signal .dashboard-surface-inline-warning-copy {
+    flex-wrap: wrap;
+    gap: 5px 8px;
+  }
+
+  .dashboard-studio-page .dashboard-studio-quiet-error .state-ea-text,
+  .dashboard-studio-page .dashboard-studio-usage-signal .dashboard-surface-inline-warning-copy > span:last-child {
+    display: none;
+  }
+}
