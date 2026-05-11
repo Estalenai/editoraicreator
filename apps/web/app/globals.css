@@ -27342,3 +27342,147 @@ body {
     display: none;
   }
 }
+
+/* Round 5 hardening: make the Dashboard shell behave like product chrome, not app chrome. */
+.app-shell-frame:has(.dashboard-surface-page) {
+  position: relative;
+}
+
+.app-shell-frame:has(.dashboard-surface-page) .app-shell-head,
+.app-shell-frame:has(.dashboard-surface-page) .app-shell-head-region {
+  position: absolute;
+  top: clamp(14px, 1.3vw, 22px);
+  left: clamp(20px, 2.2vw, 34px);
+  z-index: 16;
+  width: auto;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  pointer-events: none;
+}
+
+.app-shell-frame:has(.dashboard-surface-page) .app-brand-mark-group {
+  gap: 8px;
+  opacity: 0.76;
+}
+
+.app-shell-frame:has(.dashboard-surface-page) .app-brand-mark {
+  width: 22px;
+  height: 22px;
+  box-shadow:
+    0 0 0 1px rgba(191, 239, 255, 0.16),
+    0 0 24px rgba(83, 228, 255, 0.22);
+}
+
+.app-shell-frame:has(.dashboard-surface-page) .app-shell-head-copy strong {
+  color: rgba(235, 248, 255, 0.78);
+  font-size: 0.82rem;
+  letter-spacing: -0.03em;
+}
+
+.app-shell-frame:has(.dashboard-surface-page) .app-shell-head-note,
+.app-shell-frame:has(.dashboard-surface-page) .app-shell-head-actions {
+  display: none;
+}
+
+.app-shell-body:has(.dashboard-surface-page) {
+  position: relative;
+}
+
+.app-shell-body:has(.dashboard-surface-page) .app-top-nav {
+  position: absolute;
+  top: clamp(47px, 3.5vw, 60px);
+  left: clamp(22px, 2.3vw, 36px);
+  right: auto;
+  z-index: 16;
+  width: min(520px, calc(100vw - 72px)) !important;
+  margin: 0;
+  padding: 0 !important;
+  opacity: 0.6;
+  transition: opacity 160ms ease;
+}
+
+.app-shell-body:has(.dashboard-surface-page) .app-top-nav:hover,
+.app-shell-body:has(.dashboard-surface-page) .app-top-nav:focus-within {
+  opacity: 0.92;
+}
+
+.app-shell-body:has(.dashboard-surface-page) .app-nav-dashboard-mode {
+  justify-content: flex-start;
+  width: auto;
+}
+
+.app-shell-body:has(.dashboard-surface-page) .app-nav-dashboard-field-line {
+  gap: 0;
+}
+
+.app-shell-body:has(.dashboard-surface-page) .app-nav-dashboard-stack,
+.app-shell-body:has(.dashboard-surface-page) .app-nav-dashboard-divider,
+.app-shell-body:has(.dashboard-surface-page) .app-nav-dashboard-context,
+.app-shell-body:has(.dashboard-surface-page) .app-nav-dashboard-utility,
+.app-shell-body:has(.dashboard-surface-page) .app-nav-dashboard-links-support {
+  display: none;
+}
+
+.app-shell-body:has(.dashboard-surface-page) .app-nav-dashboard-links,
+.app-shell-body:has(.dashboard-surface-page) .app-nav-links {
+  flex: 0 1 auto;
+  gap: 4px;
+  padding: 2px;
+  border: 1px solid rgba(191, 239, 255, 0.028);
+  border-radius: 999px;
+  background: rgba(4, 17, 42, 0.12);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.app-shell-body:has(.dashboard-surface-page) .app-nav-link,
+.app-shell-body:has(.dashboard-surface-page) .app-nav-link:hover,
+.app-shell-body:has(.dashboard-surface-page) .app-nav-link:active {
+  min-height: 26px;
+  padding-inline: 9px;
+  opacity: 0.46;
+}
+
+.app-shell-body:has(.dashboard-surface-page) .app-nav-link-minimal .app-nav-link-label {
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.app-shell-body:has(.dashboard-surface-page) .app-nav-link-active,
+.app-shell-body:has(.dashboard-surface-page) .app-nav-link[aria-current='page'],
+.app-shell-body:has(.dashboard-surface-page) .app-nav-link[data-active='true'] {
+  opacity: 0.86;
+  background: rgba(255, 255, 255, 0.018) !important;
+}
+
+@media (max-width: 760px) {
+  .app-shell-frame:has(.dashboard-surface-page) .app-shell-head,
+  .app-shell-frame:has(.dashboard-surface-page) .app-shell-head-region {
+    top: 14px;
+    left: 16px;
+  }
+
+  .app-shell-frame:has(.dashboard-surface-page) .app-brand-mark {
+    width: 20px;
+    height: 20px;
+  }
+
+  .app-shell-frame:has(.dashboard-surface-page) .app-shell-head-copy strong {
+    font-size: 0.76rem;
+  }
+
+  .app-shell-body:has(.dashboard-surface-page) .app-top-nav {
+    top: 46px;
+    left: 15px;
+    width: calc(100vw - 30px) !important;
+    opacity: 0.68;
+  }
+
+  .app-shell-body:has(.dashboard-surface-page) .app-nav-dashboard-links,
+  .app-shell-body:has(.dashboard-surface-page) .app-nav-links {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+}
