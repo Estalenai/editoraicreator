@@ -26752,3 +26752,309 @@ body {
     display: none !important;
   }
 }
+
+/* Dashboard R4: first-viewport impact and global rhythm.
+   Rebalances the top fold as a premium product surface without changing the
+   unified-field architecture from R1E/R2/R3. */
+.dashboard-studio-page .dashboard-studio-hero .dashboard-surface-command.dashboard-unified-command {
+  padding-top: clamp(20px, 2.45vw, 44px);
+}
+
+.dashboard-studio-page .dashboard-unified-field {
+  gap: clamp(4px, 0.65vw, 12px);
+}
+
+.dashboard-studio-page .dashboard-unified-field::before {
+  inset: 1% -1% 36% -1%;
+  background:
+    radial-gradient(980px 380px at 40% 34%, rgba(78, 226, 255, 0.13), transparent 74%),
+    radial-gradient(720px 320px at 75% 62%, rgba(74, 137, 255, 0.085), transparent 74%),
+    linear-gradient(90deg, rgba(78, 226, 255, 0.072), rgba(191, 239, 255, 0.02), transparent 86%);
+  opacity: 0.9;
+}
+
+.dashboard-studio-page .dashboard-unified-context {
+  grid-template-columns: minmax(300px, 0.5fr) minmax(240px, 0.28fr) minmax(360px, 0.62fr);
+  gap: clamp(20px, 2.35vw, 42px);
+  align-items: end;
+  width: min(100%, 1280px);
+  margin-bottom: clamp(-10px, -0.72vw, -4px);
+  padding-inline: clamp(4px, 0.8vw, 12px);
+}
+
+.dashboard-studio-page .dashboard-unified-mark {
+  display: grid;
+  gap: clamp(8px, 0.9vw, 13px);
+  align-items: end;
+}
+
+.dashboard-studio-page .dashboard-unified-mark .section-kicker {
+  width: max-content;
+  max-width: 100%;
+  color: rgba(137, 245, 255, 0.92);
+  font-size: clamp(0.68rem, 0.72vw, 0.78rem);
+  letter-spacing: 0.095em;
+}
+
+.dashboard-studio-page .dashboard-unified-mark h1 {
+  display: grid;
+  gap: 0;
+  max-width: 7.4ch;
+  color: rgba(231, 246, 255, 0.72);
+  font-size: clamp(4.6rem, 6.55vw, 7.9rem);
+  line-height: 0.72;
+  letter-spacing: -0.082em;
+  text-shadow:
+    0 0 34px rgba(78, 226, 255, 0.13),
+    0 28px 70px rgba(4, 16, 40, 0.16);
+}
+
+.dashboard-studio-page .dashboard-unified-mark h1 span:last-child {
+  color: rgba(244, 250, 255, 0.66);
+  transform: translateX(0.2ch);
+}
+
+.dashboard-studio-page .dashboard-unified-mark .section-header-copy {
+  max-width: 20rem;
+  color: rgba(216, 238, 255, 0.7);
+  font-size: clamp(0.82rem, 0.82vw, 0.9rem);
+}
+
+.dashboard-studio-page .dashboard-unified-badges {
+  margin-top: 2px;
+}
+
+.dashboard-studio-page .dashboard-unified-intent {
+  display: grid;
+  gap: clamp(8px, 0.82vw, 12px);
+  align-content: end;
+  align-self: end;
+  padding-bottom: clamp(6px, 0.8vw, 13px);
+}
+
+.dashboard-studio-page .dashboard-unified-intent > strong {
+  max-width: 9ch;
+  color: rgba(249, 253, 255, 0.96);
+  font-size: clamp(2.05rem, 3.1vw, 4rem);
+  line-height: 0.84;
+  letter-spacing: -0.07em;
+  white-space: normal;
+}
+
+.dashboard-studio-page .dashboard-unified-intent .dashboard-studio-hero-metadata {
+  gap: 6px;
+}
+
+.dashboard-studio-page .dashboard-studio-primary-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-top: 2px;
+}
+
+.dashboard-studio-page .dashboard-studio-primary-cta {
+  min-height: 42px;
+  border-color: rgba(116, 237, 255, 0.46);
+  padding-inline: 17px;
+  box-shadow:
+    0 18px 42px rgba(78, 226, 255, 0.13),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+.dashboard-studio-page .dashboard-studio-secondary-cta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  border: 1px solid rgba(191, 239, 255, 0.07);
+  border-radius: 999px;
+  padding: 0 13px;
+  background: rgba(255, 255, 255, 0.018);
+  color: rgba(219, 240, 255, 0.78);
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.dashboard-studio-page .dashboard-unified-signals {
+  grid-template-columns: minmax(0, 0.62fr) minmax(0, 0.62fr) auto;
+  grid-template-areas:
+    "coins continuity actions"
+    "next next actions";
+  gap: clamp(8px, 0.9vw, 14px) clamp(12px, 1.15vw, 20px);
+  align-items: end;
+}
+
+.dashboard-studio-page .dashboard-unified-signals .dashboard-unified-signal:nth-child(1) {
+  grid-area: coins;
+}
+
+.dashboard-studio-page .dashboard-unified-signals .dashboard-unified-signal:nth-child(2) {
+  grid-area: continuity;
+}
+
+.dashboard-studio-page .dashboard-unified-next {
+  grid-area: next;
+  grid-template-columns: minmax(0, 0.72fr) minmax(0, 1fr) auto;
+  gap: 4px 12px;
+  align-items: end;
+}
+
+.dashboard-studio-page .dashboard-unified-next .dashboard-overview-label {
+  grid-column: 1 / -1;
+}
+
+.dashboard-studio-page .dashboard-unified-next strong,
+.dashboard-studio-page .dashboard-unified-next > span:not(.dashboard-overview-label):not(.dashboard-unified-action-cue) {
+  align-self: end;
+}
+
+.dashboard-studio-page .dashboard-unified-action-cue {
+  align-self: end;
+  color: rgba(121, 245, 255, 0.88) !important;
+  font-size: 0.72rem;
+  font-weight: 950;
+}
+
+.dashboard-studio-page .dashboard-unified-actions {
+  grid-area: actions;
+  flex-direction: column;
+  align-self: end;
+  gap: 7px;
+  min-width: 110px;
+  opacity: 0.82;
+}
+
+.dashboard-studio-page .dashboard-unified-actions .btn-ea {
+  min-height: 34px;
+  padding-inline: 12px;
+}
+
+.dashboard-studio-page .dashboard-unified-artifact {
+  padding-top: clamp(2px, 0.42vw, 8px);
+}
+
+.dashboard-studio-page .dashboard-unified-artifact .dashboard-command-bridge.dashboard-studio-artifact {
+  gap: clamp(8px, 0.92vw, 15px) clamp(18px, 1.9vw, 32px);
+}
+
+.dashboard-studio-page .dashboard-studio-artifact-thread {
+  opacity: 0.92;
+}
+
+.dashboard-studio-page .dashboard-studio-preview-canvas {
+  min-height: clamp(410px, 35vw, 500px);
+}
+
+.dashboard-studio-page .dashboard-studio-artifact .dashboard-ecosystem-state {
+  grid-template-columns: minmax(0, 0.24fr) minmax(0, 0.25fr) minmax(0, 0.44fr);
+  gap: clamp(18px, 2.4vw, 40px);
+  margin-top: clamp(-3px, -0.22vw, 0px);
+  padding: clamp(12px, 1vw, 16px) 0 0;
+  background: transparent;
+}
+
+.dashboard-studio-page .dashboard-studio-artifact .dashboard-ecosystem-state::before {
+  left: 0;
+  right: 0;
+  background: linear-gradient(90deg, rgba(78, 226, 255, 0.2), rgba(191, 239, 255, 0.032), transparent 70%);
+}
+
+.dashboard-studio-page .dashboard-studio-artifact .dashboard-ecosystem-state .dashboard-surface-stat {
+  padding-top: 0;
+}
+
+@media (max-width: 1180px) {
+  .dashboard-studio-page .dashboard-unified-context {
+    grid-template-columns: minmax(0, 0.78fr) minmax(250px, 0.44fr);
+    grid-template-areas:
+      "mark intent"
+      "signals signals";
+    align-items: end;
+  }
+
+  .dashboard-studio-page .dashboard-unified-mark {
+    grid-area: mark;
+  }
+
+  .dashboard-studio-page .dashboard-unified-intent {
+    grid-area: intent;
+  }
+
+  .dashboard-studio-page .dashboard-unified-signals {
+    grid-area: signals;
+  }
+
+  .dashboard-studio-page .dashboard-unified-mark h1 {
+    font-size: clamp(4rem, 8.5vw, 6.4rem);
+  }
+}
+
+@media (max-width: 760px) {
+  .dashboard-studio-page .dashboard-studio-hero .dashboard-surface-command.dashboard-unified-command {
+    padding-top: clamp(18px, 5vw, 32px);
+  }
+
+  .dashboard-studio-page .dashboard-unified-context {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "mark"
+      "intent"
+      "signals";
+    gap: 14px;
+  }
+
+  .dashboard-studio-page .dashboard-unified-mark h1 {
+    max-width: 6.6ch;
+    font-size: clamp(3.7rem, 17vw, 5.4rem);
+  }
+
+  .dashboard-studio-page .dashboard-unified-intent {
+    padding-bottom: 0;
+  }
+
+  .dashboard-studio-page .dashboard-unified-intent > strong {
+    max-width: none;
+    font-size: clamp(1.8rem, 8vw, 2.7rem);
+  }
+
+  .dashboard-studio-page .dashboard-studio-primary-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboard-studio-page .dashboard-studio-primary-cta,
+  .dashboard-studio-page .dashboard-studio-secondary-cta {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .dashboard-studio-page .dashboard-unified-signals {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "coins continuity"
+      "next next"
+      "actions actions";
+  }
+
+  .dashboard-studio-page .dashboard-unified-actions {
+    display: none;
+  }
+
+  .dashboard-studio-page .dashboard-unified-next {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dashboard-studio-page .dashboard-unified-action-cue {
+    display: none;
+  }
+
+  .dashboard-studio-page .dashboard-studio-preview-canvas {
+    min-height: auto;
+  }
+
+  .dashboard-studio-page .dashboard-studio-artifact .dashboard-ecosystem-state {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px 18px;
+  }
+}

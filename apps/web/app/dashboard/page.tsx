@@ -404,9 +404,12 @@ export default function DashboardPage() {
                         <div className="dashboard-unified-context" aria-label="Sinais do Creator Operating Studio">
                           <div className="dashboard-unified-mark">
                             <p className="section-kicker">Creator Operating Studio</p>
-                            <h1 className="heading-reset">Studio Canvas</h1>
+                            <h1 className="heading-reset">
+                              <span>Studio</span>
+                              <span>Canvas</span>
+                            </h1>
                             <p className="section-header-copy hero-copy-compact">
-                              O cockpit criativo do Editor AI Creator.
+                              Produto vivo, projeto e saída no mesmo campo.
                             </p>
                             <div className="hero-meta-row dashboard-unified-badges">
                               <span className="premium-badge dashboard-operating-badge">Plano: {planLabelDisplay}</span>
@@ -425,6 +428,20 @@ export default function DashboardPage() {
                               <span>Saída</span>
                               <span>Capacidade</span>
                             </div>
+                            <div className="dashboard-studio-primary-actions" aria-label="Ações principais do Studio Canvas">
+                              {nextAction.href.startsWith("/editor") ? (
+                                <EditorRouteLink href={nextAction.href} className="btn-link-ea btn-primary dashboard-studio-primary-cta">
+                                  {nextActionCtaDisplay}
+                                </EditorRouteLink>
+                              ) : (
+                                <Link href={nextAction.href} className="btn-link-ea btn-primary dashboard-studio-primary-cta">
+                                  {nextActionCtaDisplay}
+                                </Link>
+                              )}
+                              <Link href="/projects" className="dashboard-studio-secondary-cta">
+                                Ver projetos
+                              </Link>
+                            </div>
                           </div>
 
                           <div className="dashboard-unified-signals">
@@ -442,15 +459,7 @@ export default function DashboardPage() {
                               <span className="dashboard-overview-label">Proximo movimento</span>
                               <strong>{nextActionTitleDisplay}</strong>
                               <span>{nextActionDescriptionDisplay}</span>
-                              {nextAction.href.startsWith("/editor") ? (
-                                <EditorRouteLink href={nextAction.href} className="dashboard-inline-action">
-                                  {nextActionCtaDisplay}
-                                </EditorRouteLink>
-                              ) : (
-                                <Link href={nextAction.href} className="dashboard-inline-action">
-                                  {nextActionCtaDisplay}
-                                </Link>
-                              )}
+                              <span className="dashboard-unified-action-cue">{nextActionCtaDisplay}</span>
                             </div>
                             <div className="dashboard-unified-actions" aria-label="Ações da conta">
                               <button
