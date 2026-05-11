@@ -25808,4 +25808,159 @@ body {
   }
 }
 
+/* R1D correction: compress the former footer into one field band. */
+.dashboard-studio-page .dashboard-unified-lower-field.dashboard-unified-ecosystem {
+  margin-top: clamp(-40px, -2.4vw, -18px);
+}
+
+.dashboard-studio-page .dashboard-unified-continuum-plane {
+  gap: clamp(4px, 0.42vw, 8px);
+}
+
+.dashboard-studio-page .dashboard-unified-stream .dashboard-studio-continuum-row {
+  grid-template-columns: minmax(130px, 0.22fr) minmax(150px, 0.24fr) minmax(180px, 0.36fr) auto;
+  padding-top: 0;
+}
+
+.dashboard-studio-page .dashboard-unified-lower-constellation {
+  grid-template-columns: minmax(180px, 0.2fr) minmax(0, 0.48fr) minmax(280px, 0.32fr);
+  grid-template-areas: "capacity ledger support";
+  align-items: start;
+  gap: clamp(14px, 1.45vw, 24px);
+  padding-bottom: clamp(18px, 2vw, 32px);
+}
+
+.dashboard-studio-page .dashboard-unified-capacity.dashboard-studio-capacity-signal {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+  align-self: start;
+  padding-top: 0;
+}
+
+.dashboard-studio-page .dashboard-unified-capacity .dashboard-studio-capacity-gauge {
+  display: none;
+}
+
+.dashboard-studio-page .dashboard-unified-capacity .dashboard-studio-capacity-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+}
+
+.dashboard-studio-page .dashboard-unified-capacity .dashboard-wallet-row {
+  display: inline-flex;
+  gap: 6px;
+  align-items: baseline;
+  padding: 0;
+}
+
+.dashboard-studio-page .dashboard-unified-capacity .dashboard-wallet-row-main {
+  display: contents;
+}
+
+.dashboard-studio-page .dashboard-unified-capacity .dashboard-wallet-row-main span {
+  display: none;
+}
+
+.dashboard-studio-page .dashboard-unified-ledger .dashboard-surface-usage-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+}
+
+.dashboard-studio-page .dashboard-unified-ledger .dashboard-surface-usage-strip {
+  grid-template-columns: minmax(95px, 0.24fr) minmax(0, 1fr) auto;
+  align-items: end;
+}
+
+.dashboard-studio-page .dashboard-unified-ledger .dashboard-surface-usage-list {
+  display: none;
+}
+
+.dashboard-studio-page .dashboard-unified-ledger .dashboard-surface-usage-signals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+}
+
+.dashboard-studio-page .dashboard-unified-ledger .dashboard-surface-usage-signal {
+  padding: 0 0 0 10px;
+  border-left: 1px solid rgba(191, 239, 255, 0.02);
+}
+
+.dashboard-studio-page .dashboard-unified-ledger .dashboard-surface-usage-signal span:last-child {
+  display: none;
+}
+
+.dashboard-studio-page .dashboard-unified-support-constellation {
+  gap: 10px;
+}
+
+.dashboard-studio-page .dashboard-unified-support-links {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px 12px;
+}
+
+.dashboard-studio-page .dashboard-unified-support-links .dashboard-studio-trust-link {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  padding: 0 0 0 9px;
+}
+
+.dashboard-studio-page .dashboard-unified-support-links .dashboard-stream-link-title {
+  font-size: clamp(0.92rem, 0.98vw, 1.04rem);
+}
+
+.dashboard-studio-page .dashboard-studio-onboarding-inline {
+  gap: 8px;
+}
+
+.dashboard-studio-page .dashboard-studio-onboarding-inline .dashboard-studio-onboarding-radar,
+.dashboard-studio-page .dashboard-studio-onboarding-inline .dashboard-continuity-paths,
+.dashboard-studio-page .dashboard-studio-onboarding-inline .dashboard-surface-onboarding-summary-note {
+  display: none;
+}
+
+.dashboard-studio-page .dashboard-studio-onboarding-inline .dashboard-continuity-summary {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+}
+
+.dashboard-studio-page .dashboard-studio-onboarding-inline .dashboard-surface-onboarding-summary-copy .helper-text-ea {
+  display: none;
+}
+
+.dashboard-studio-page .dashboard-studio-onboarding-inline .dashboard-surface-onboarding-actions {
+  justify-content: flex-end;
+}
+
+.dashboard-studio-page .dashboard-studio-onboarding-inline .dashboard-surface-onboarding-actions .btn-link-ea {
+  min-height: 36px;
+  padding-inline: 13px;
+}
+
+@media (max-width: 1180px) {
+  .dashboard-studio-page .dashboard-unified-lower-constellation,
+  .dashboard-studio-page .dashboard-studio-onboarding-inline .dashboard-continuity-summary {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .dashboard-studio-page .dashboard-unified-stream .dashboard-studio-continuum-row,
+  .dashboard-studio-page .dashboard-unified-ledger .dashboard-surface-usage-strip,
+  .dashboard-studio-page .dashboard-unified-support-links {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dashboard-studio-page .dashboard-unified-ledger .dashboard-surface-usage-list {
+    display: grid;
+  }
+
+  .dashboard-studio-page .dashboard-studio-onboarding-inline .dashboard-surface-onboarding-actions {
+    justify-content: flex-start;
+  }
+}
 

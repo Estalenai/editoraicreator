@@ -722,33 +722,6 @@ export default function DashboardPage() {
                       <div className="dashboard-surface-ecosystem dashboard-operating-ecosystem dashboard-studio-body dashboard-unified-ecosystem dashboard-unified-lower-field" data-reveal data-reveal-delay="140">
                         <div className="dashboard-unified-continuum-plane">
                         <div className="dashboard-studio-continuum dashboard-unified-stream" aria-label="Sinais contínuos do estúdio">
-                          {loading ? (
-                            <div className="dashboard-ecosystem-ribbon">
-                              {Array.from({ length: 3 }).map((_, index) => (
-                                <div key={`project-skeleton-${index}`} className="dashboard-project-skeleton-row" />
-                              ))}
-                            </div>
-                          ) : supportingProjectDisplay.length > 0 ? (
-                            <div className="dashboard-ecosystem-ribbon">
-                              {supportingProjectDisplay.map((project: any, index: number) => (
-                                <EditorRouteLink
-                                  key={String(project.id || project.project_id || index)}
-                                  href={`/editor/${project.id}`}
-                                  className="dashboard-surface-ribbon-link"
-                                  data-reveal
-                                  data-reveal-delay={String(80 + index * 35)}
-                                >
-                                  <div className="dashboard-surface-ribbon-copy">
-                                    <span className="dashboard-stream-link-kicker">{project.deliverableLabel}</span>
-                                    <strong className="dashboard-stream-link-title">{project.displayTitle}</strong>
-                                    <span className="dashboard-stream-link-copy">{project.statusLabel}</span>
-                                  </div>
-                                  <span className="dashboard-stream-link-cta">{project.stageLabel}</span>
-                                </EditorRouteLink>
-                              ))}
-                            </div>
-                          ) : null}
-
                           <div className="dashboard-studio-continuum-row" data-reveal data-reveal-delay="210">
                             <div className="dashboard-studio-continuum-signal">
                               <span>Projeto</span>
