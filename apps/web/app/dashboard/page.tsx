@@ -508,53 +508,46 @@ export default function DashboardPage() {
               <div className="dashboard-surface-flow dashboard-operating-flow">
                 <section className="dashboard-operating-grid dashboard-studio-grid" aria-label="Creator Operating Studio do Editor AI Creator">
                   <header className="dashboard-surface-hero dashboard-operating-command dashboard-studio-hero" data-reveal data-reveal-delay="35">
-                    <div className="dashboard-surface-command" data-reveal data-reveal-delay="70">
-                      <div className="dashboard-command-field dashboard-studio-field">
-                        <div className="dashboard-surface-command-copy">
-                          <div className="dashboard-surface-hero-intro">
-                            <div className="hero-title-stack">
-                              <p className="section-kicker">Creator Operating Studio</p>
-                              <h1 className="heading-reset">Studio Canvas</h1>
-                              <p className="section-header-copy hero-copy-compact">
-                                O cockpit criativo do Editor AI Creator.
-                              </p>
-                            </div>
-                            <div className="hero-meta-row dashboard-surface-hero-badges">
+                    <div className="dashboard-surface-command dashboard-unified-command" data-reveal data-reveal-delay="70">
+                      <div className="dashboard-unified-field dashboard-field-thread">
+                        <div className="dashboard-unified-context" aria-label="Sinais do Creator Operating Studio">
+                          <div className="dashboard-unified-mark">
+                            <p className="section-kicker">Creator Operating Studio</p>
+                            <h1 className="heading-reset">Studio Canvas</h1>
+                            <p className="section-header-copy hero-copy-compact">
+                              O cockpit criativo do Editor AI Creator.
+                            </p>
+                            <div className="hero-meta-row dashboard-unified-badges">
                               <span className="premium-badge dashboard-operating-badge">Plano: {planLabelDisplay}</span>
                               <span className="premium-badge premium-badge-warning">
                                 {loading ? "Conta em sincronizacao" : "Historico confirmado no backend"}
                               </span>
                             </div>
                           </div>
-                          <span className="dashboard-hero-flow-label">Produto vivo</span>
-                          <strong>Entrega ativa.</strong>
-                          <div className="dashboard-studio-hero-metadata" aria-label="Camadas visuais do estúdio">
-                            <span>Projeto</span>
-                            <span>Revisão</span>
-                            <span>Saída</span>
-                            <span>Capacidade</span>
-                          </div>
-                        </div>
 
-                        <aside className="dashboard-command-live-panel dashboard-operating-account dashboard-studio-signal-panel" aria-label="Sinais operacionais do estúdio">
-                          <div className="dashboard-command-live-head">
-                            <span className="dashboard-overview-label">Conta ativa</span>
-                            <strong>{planLabelDisplay}</strong>
-                            <span>{emailDisplay}</span>
+                          <div className="dashboard-unified-intent">
+                            <span className="dashboard-hero-flow-label">Produto vivo</span>
+                            <strong>Entrega ativa.</strong>
+                            <div className="dashboard-studio-hero-metadata" aria-label="Camadas visuais do estúdio">
+                              <span>Projeto</span>
+                              <span>Revisão</span>
+                              <span>Saída</span>
+                              <span>Capacidade</span>
+                            </div>
                           </div>
 
-                          <div className="dashboard-command-live-grid">
-                            <div className="dashboard-command-live-signal">
+                          <div className="dashboard-unified-signals">
+                            <div className="dashboard-unified-signal">
                               <span className="dashboard-overview-label">{CREATOR_COINS_PUBLIC_NAME}</span>
                               <strong>{walletSummaryDisplay}</strong>
                               <span>Capacidade ativa.</span>
                             </div>
-                            <div className="dashboard-command-live-signal">
+                            <div className="dashboard-unified-signal">
                               <span className="dashboard-overview-label">Continuidade</span>
                               <strong>{continuityValue}</strong>
                               <span>{continuityDetail}</span>
                             </div>
-                            <div className="dashboard-command-live-signal dashboard-command-live-next">
+                            <div className="dashboard-unified-signal dashboard-unified-next">
                               <span className="dashboard-overview-label">Proximo movimento</span>
                               <strong>{nextActionTitleDisplay}</strong>
                               <span>{nextActionDescriptionDisplay}</span>
@@ -568,28 +561,26 @@ export default function DashboardPage() {
                                 </Link>
                               )}
                             </div>
+                            <div className="dashboard-unified-actions" aria-label="Ações da conta">
+                              <button
+                                onClick={async () => {
+                                  await onSyncSubscription();
+                                  await refresh();
+                                  await loadUsage();
+                                }}
+                                disabled={syncingSubscription || loading}
+                                className="btn-ea btn-secondary"
+                              >
+                                {syncingSubscription ? "Sincronizando..." : "Sincronizar"}
+                              </button>
+                              <button onClick={onLogout} className="btn-ea btn-ghost">
+                                Sair
+                              </button>
+                            </div>
                           </div>
+                        </div>
 
-                          <div className="dashboard-command-live-actions">
-                            <button
-                              onClick={async () => {
-                                await onSyncSubscription();
-                                await refresh();
-                                await loadUsage();
-                              }}
-                              disabled={syncingSubscription || loading}
-                              className="btn-ea btn-secondary"
-                            >
-                              {syncingSubscription ? "Sincronizando..." : "Sincronizar"}
-                            </button>
-                            <button onClick={onLogout} className="btn-ea btn-ghost">
-                              Sair
-                            </button>
-                          </div>
-                        </aside>
-                      </div>
-
-                      <div className="dashboard-surface-command-sequence dashboard-studio-orbit dashboard-field-map">
+                        <div className="dashboard-surface-command-sequence dashboard-studio-orbit dashboard-field-map dashboard-unified-artifact">
                         <div className="dashboard-command-bridge dashboard-ecosystem-stage dashboard-studio-artifact dashboard-field-surface">
                           <div className="dashboard-studio-artifact-thread" aria-label="Fluxo acoplado ao artefato">
                             {studioFlowNodes.map((flowNode) => {
@@ -727,10 +718,8 @@ export default function DashboardPage() {
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </header>
 
-                  <section className="dashboard-surface-ecosystem dashboard-operating-ecosystem dashboard-studio-body" data-reveal data-reveal-delay="140">
+                      <div className="dashboard-surface-ecosystem dashboard-operating-ecosystem dashboard-studio-body dashboard-unified-ecosystem" data-reveal data-reveal-delay="140">
                         <div className="dashboard-studio-continuum" aria-label="Sinais contínuos do estúdio">
                           {loading ? (
                             <div className="dashboard-ecosystem-ribbon">
@@ -783,9 +772,8 @@ export default function DashboardPage() {
                           </div>
                         </div>
 
-                        <div className="dashboard-ecosystem-infrastructure dashboard-studio-infrastructure dashboard-studio-signal-mesh dashboard-field-thread">
-                          <div className="dashboard-ecosystem-account-column dashboard-studio-capacity-column dashboard-studio-capacity-band">
-                            <div className="dashboard-surface-wallet dashboard-ecosystem-wallet dashboard-studio-capacity dashboard-studio-capacity-signal dashboard-field-signal">
+                        <div className="dashboard-ecosystem-infrastructure dashboard-studio-infrastructure dashboard-studio-signal-mesh dashboard-field-thread dashboard-unified-signal-grid">
+                            <div className="dashboard-surface-wallet dashboard-ecosystem-wallet dashboard-studio-capacity dashboard-studio-capacity-signal dashboard-field-signal dashboard-unified-capacity">
                               <div className="dashboard-surface-wallet-copy dashboard-studio-capacity-head">
                                 <span className="dashboard-stream-link-kicker">{CREATOR_COINS_PUBLIC_NAME}</span>
                                 <strong className="dashboard-stream-link-title">{walletSummaryDisplay}</strong>
@@ -812,10 +800,8 @@ export default function DashboardPage() {
                                 ))}
                               </div>
                             </div>
-                          </div>
 
-                          <div className="dashboard-ecosystem-continuity-column dashboard-studio-context-band">
-                            <div className="dashboard-continuity-ledger dashboard-surface-usage dashboard-ecosystem-ledger dashboard-studio-ledger dashboard-studio-signal-log dashboard-field-signal">
+                            <div className="dashboard-continuity-ledger dashboard-surface-usage dashboard-ecosystem-ledger dashboard-studio-ledger dashboard-studio-signal-log dashboard-field-signal dashboard-unified-ledger">
                               <div className="dashboard-surface-usage-grid">
                                 <div className="dashboard-surface-usage-copy">
                                   <div className="dashboard-surface-usage-hero dashboard-surface-usage-strip">
@@ -918,7 +904,7 @@ export default function DashboardPage() {
                               </div>
                             </div>
 
-                            <div className="dashboard-ecosystem-route-column dashboard-studio-route-column dashboard-studio-support-mesh">
+                            <div className="dashboard-ecosystem-route-column dashboard-studio-route-column dashboard-studio-support-mesh dashboard-unified-support">
                               <div className="dashboard-ecosystem-support-links dashboard-studio-trust-links dashboard-studio-trust-chips">
                                 {supportQuickLinks.map((item, index) => (
                                   <Link
@@ -940,9 +926,11 @@ export default function DashboardPage() {
 
                               <ApprovedBetaOnboardingCard email={email} wallet={wallet} loading={loading} />
                             </div>
-                          </div>
                         </div>
-                      </section>
+                      </div>
+                      </div>
+                    </div>
+                  </header>
 
                   {error || usageError ? (
                     <div className="dashboard-status-stack dashboard-surface-inline-status">

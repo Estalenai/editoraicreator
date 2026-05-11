@@ -22761,6 +22761,253 @@ body {
   }
 }
 
+.dashboard-studio-hero .dashboard-surface-command.dashboard-unified-command {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "field";
+  gap: 0;
+  align-items: start;
+  padding-top: clamp(8px, 1.1vw, 18px);
+}
+
+.dashboard-unified-field {
+  grid-area: field;
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    "context"
+    "artifact";
+  gap: clamp(8px, 1vw, 16px);
+  min-width: 0;
+}
+
+.dashboard-unified-field::before,
+.dashboard-unified-field::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.dashboard-unified-field::before {
+  inset: 8% 1% 42% 2%;
+  background:
+    linear-gradient(90deg, rgba(78, 226, 255, 0.06), rgba(191, 239, 255, 0.018), transparent 84%),
+    radial-gradient(820px 260px at 48% 40%, rgba(78, 226, 255, 0.08), transparent 76%);
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  opacity: 0.78;
+}
+
+.dashboard-unified-field::after {
+  inset: 34% -4% auto 8%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(78, 226, 255, 0.2), rgba(191, 239, 255, 0.04), transparent);
+  opacity: 0.74;
+}
+
+.dashboard-unified-context {
+  grid-area: context;
+  position: relative;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: minmax(230px, 0.42fr) minmax(180px, 0.22fr) minmax(0, 0.92fr);
+  gap: clamp(14px, 1.8vw, 28px);
+  align-items: center;
+  width: min(100%, 1260px);
+  margin: 0 auto clamp(-4px, -0.32vw, -2px);
+  padding: 0 clamp(8px, 1vw, 16px);
+}
+
+.dashboard-unified-mark {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  align-items: center;
+  min-width: 0;
+}
+
+.dashboard-unified-mark .section-kicker {
+  margin: 0;
+  color: rgba(136, 238, 255, 0.86);
+  font-size: clamp(0.68rem, 0.72vw, 0.78rem);
+  line-height: 1.24;
+}
+
+.dashboard-unified-mark h1 {
+  max-width: none;
+  color: rgba(220, 239, 255, 0.62);
+  font-size: clamp(1.02rem, 1.14vw, 1.34rem);
+  line-height: 0.95;
+  letter-spacing: -0.052em;
+}
+
+.dashboard-unified-mark .section-header-copy {
+  flex-basis: 100%;
+  max-width: 22rem;
+  font-size: 0.76rem;
+  line-height: 1.32;
+  color: rgba(213, 235, 255, 0.64);
+}
+
+.dashboard-unified-badges {
+  flex-basis: 100%;
+  gap: 6px;
+}
+
+.dashboard-unified-badges .premium-badge {
+  min-height: 24px;
+  padding: 0 9px;
+  font-size: 0.66rem;
+}
+
+.dashboard-unified-intent {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  align-items: center;
+  min-width: 0;
+}
+
+.dashboard-unified-intent > .dashboard-hero-flow-label {
+  display: none;
+}
+
+.dashboard-unified-intent > strong {
+  color: var(--ea-text-strong);
+  font-size: clamp(1.25rem, 1.68vw, 2.08rem);
+  line-height: 0.92;
+  letter-spacing: -0.052em;
+  white-space: nowrap;
+}
+
+.dashboard-unified-intent .dashboard-studio-hero-metadata {
+  margin-top: 0;
+}
+
+.dashboard-unified-signals {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+  gap: clamp(8px, 1vw, 14px);
+  align-items: end;
+  min-width: 0;
+}
+
+.dashboard-unified-signal {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+  padding: 0 0 0 clamp(9px, 0.9vw, 14px);
+  border-left: 1px solid rgba(191, 239, 255, 0.024);
+  background: linear-gradient(90deg, rgba(78, 226, 255, 0.02), transparent 78%);
+}
+
+.dashboard-unified-signal strong {
+  overflow: hidden;
+  color: rgba(242, 250, 255, 0.9);
+  font-size: clamp(0.86rem, 0.94vw, 1.02rem);
+  line-height: 1.14;
+  letter-spacing: -0.035em;
+  text-overflow: ellipsis;
+}
+
+.dashboard-unified-signal span:last-child {
+  color: rgba(213, 235, 255, 0.62);
+  line-height: 1.35;
+}
+
+.dashboard-unified-actions {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+  justify-content: flex-end;
+  min-width: max-content;
+}
+
+.dashboard-unified-actions .btn-ea {
+  min-height: 40px;
+  padding-inline: 16px;
+}
+
+.dashboard-unified-artifact {
+  grid-area: artifact;
+  padding-top: clamp(8px, 1vw, 16px);
+}
+
+.dashboard-unified-ecosystem {
+  margin-top: clamp(-106px, -6.6vw, -62px);
+}
+
+.dashboard-unified-signal-grid {
+  display: grid !important;
+  grid-template-columns: minmax(210px, 0.34fr) minmax(0, 0.78fr) minmax(250px, 0.42fr);
+  gap: clamp(14px, 1.6vw, 26px);
+  align-items: start;
+}
+
+.dashboard-unified-capacity.dashboard-studio-capacity-signal {
+  grid-template-columns: minmax(0, 0.78fr) minmax(84px, 0.22fr);
+  gap: clamp(10px, 1vw, 16px);
+}
+
+.dashboard-unified-capacity .dashboard-studio-capacity-chips {
+  grid-column: 1 / -1;
+}
+
+.dashboard-unified-ledger .dashboard-surface-usage-grid {
+  grid-template-columns: minmax(190px, 0.34fr) minmax(0, 1fr);
+}
+
+.dashboard-unified-support {
+  align-self: stretch;
+}
+
+@media (max-width: 1180px) {
+  .dashboard-unified-context {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .dashboard-unified-intent > strong {
+    white-space: normal;
+  }
+
+  .dashboard-unified-signals {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboard-unified-actions {
+    justify-content: flex-start;
+    min-width: 0;
+  }
+
+  .dashboard-unified-signal-grid,
+  .dashboard-unified-capacity.dashboard-studio-capacity-signal,
+  .dashboard-unified-ledger .dashboard-surface-usage-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .dashboard-unified-context {
+    padding-inline: 0;
+  }
+
+  .dashboard-unified-signals {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dashboard-unified-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboard-unified-actions .btn-ea {
+    width: 100%;
+  }
+}
+
 .dashboard-command-live-panel {
   display: grid;
   gap: clamp(12px, 1.2vw, 18px);
@@ -25207,6 +25454,49 @@ body {
 
   .app-shell-body:has(.dashboard-surface-page) .app-nav-link::before {
     display: none;
+  }
+}
+
+/* Dashboard R1C final unified field overrides.
+   These live at the end because older dashboard rules still define the command
+   sequence as a two-column region; the 1C structure needs the artifact to stay
+   inside one continuous field instead of becoming the old central block. */
+.dashboard-studio-page .dashboard-unified-artifact.dashboard-surface-command-sequence {
+  display: block;
+  grid-template-columns: none;
+  gap: 0;
+  width: 100%;
+  padding-top: clamp(8px, 1vw, 16px);
+  border-top: 0;
+}
+
+.dashboard-studio-page .dashboard-unified-artifact.dashboard-surface-command-sequence::before {
+  display: none;
+  content: none;
+}
+
+.dashboard-studio-page .dashboard-unified-artifact .dashboard-command-bridge {
+  grid-column: auto;
+  width: min(100%, 1220px);
+  margin: 0 auto;
+  padding-top: 0;
+}
+
+.dashboard-studio-page .dashboard-unified-artifact .dashboard-command-bridge.dashboard-studio-artifact {
+  grid-template-columns: minmax(0, 1fr) !important;
+  grid-template-areas:
+    "thread"
+    "canvas"
+    "state";
+}
+
+.dashboard-studio-page .dashboard-unified-artifact .dashboard-studio-artifact-thread {
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .dashboard-studio-page .dashboard-unified-artifact .dashboard-command-bridge {
+    width: 100%;
   }
 }
 
