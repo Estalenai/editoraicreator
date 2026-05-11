@@ -27474,15 +27474,6 @@ body {
   }
 
   .app-shell-body:has(.dashboard-surface-page) .app-top-nav {
-    top: 46px;
-    left: 15px;
-    width: calc(100vw - 30px) !important;
-    opacity: 0.68;
-  }
-
-  .app-shell-body:has(.dashboard-surface-page) .app-nav-dashboard-links,
-  .app-shell-body:has(.dashboard-surface-page) .app-nav-links {
-    max-width: 100%;
-    overflow-x: auto;
+    display: none;
   }
 }
