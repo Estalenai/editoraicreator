@@ -27477,3 +27477,203 @@ body {
     display: none;
   }
 }
+
+/* Round 6: reduce full-page signal density while preserving the product demo. */
+.dashboard-studio-page .dashboard-unified-signals-compact {
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: "next actions";
+  gap: clamp(10px, 1vw, 16px);
+  align-items: end;
+  max-width: min(100%, 780px);
+  margin-left: auto;
+  opacity: 0.82;
+}
+
+.dashboard-studio-page .dashboard-unified-signals-compact .dashboard-unified-signal:nth-child(1),
+.dashboard-studio-page .dashboard-unified-signals-compact .dashboard-unified-next {
+  display: grid;
+  grid-area: next;
+}
+
+.dashboard-studio-page .dashboard-unified-signals-compact .dashboard-unified-actions {
+  grid-area: actions;
+}
+
+.dashboard-studio-page .dashboard-unified-signals-compact .dashboard-unified-next {
+  grid-template-columns: minmax(0, 0.72fr) minmax(0, 1fr) auto;
+  border-left-color: rgba(83, 228, 255, 0.048);
+  background: linear-gradient(90deg, rgba(83, 228, 255, 0.016), transparent 74%);
+}
+
+.dashboard-studio-page .dashboard-studio-hero-metadata span:nth-child(n + 3) {
+  display: none;
+}
+
+.dashboard-studio-page .dashboard-unified-artifact .dashboard-command-bridge.dashboard-studio-artifact {
+  grid-template-areas:
+    "thread thread"
+    "canvas dock";
+}
+
+.dashboard-studio-page .dashboard-studio-artifact-thread {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  opacity: 0.62;
+}
+
+.dashboard-studio-page .dashboard-studio-artifact-node {
+  min-height: 58px;
+}
+
+.dashboard-studio-page .dashboard-studio-artifact-node .dashboard-surface-command-step-copy > span:last-child {
+  display: none;
+}
+
+.dashboard-studio-page .dashboard-context-dock {
+  gap: clamp(8px, 0.8vw, 12px);
+  padding-left: clamp(8px, 0.82vw, 14px);
+  opacity: 0.76;
+}
+
+.dashboard-studio-page .dashboard-context-signal {
+  gap: 4px;
+  padding-left: clamp(8px, 0.7vw, 12px);
+}
+
+.dashboard-studio-page .dashboard-context-signal::before {
+  top: 8px;
+  width: 5px;
+  opacity: 0.72;
+}
+
+.dashboard-studio-page .dashboard-context-signal strong {
+  font-size: clamp(0.9rem, 0.92vw, 1.02rem);
+}
+
+.dashboard-studio-page .dashboard-context-signal > span:not(.dashboard-stream-link-kicker):not(.dashboard-context-energy-meter),
+.dashboard-studio-page .dashboard-context-meta {
+  font-size: 0.7rem;
+  line-height: 1.25;
+}
+
+.dashboard-studio-page .dashboard-context-capacity,
+.dashboard-studio-page .dashboard-context-log,
+.dashboard-studio-page .dashboard-context-support,
+.dashboard-studio-page .dashboard-context-onboarding {
+  margin-left: 0;
+}
+
+.dashboard-studio-page .dashboard-context-capacity > span:last-child,
+.dashboard-studio-page .dashboard-context-log .dashboard-context-meta,
+.dashboard-studio-page .dashboard-context-onboarding-copy span:last-child,
+.dashboard-studio-page .dashboard-context-onboarding-footer > span {
+  display: none;
+}
+
+.dashboard-studio-page .dashboard-context-support {
+  gap: 5px;
+}
+
+.dashboard-studio-page .dashboard-context-support-link,
+.dashboard-studio-page .dashboard-context-onboarding-path,
+.dashboard-studio-page .dashboard-context-dismiss {
+  min-height: 24px;
+  padding: 3px 7px;
+  border-color: rgba(191, 239, 255, 0.045);
+  background: rgba(255, 255, 255, 0.012);
+}
+
+.dashboard-studio-page .dashboard-context-support-link span {
+  display: none;
+}
+
+.dashboard-studio-page .dashboard-context-support-link strong,
+.dashboard-studio-page .dashboard-context-onboarding-path strong {
+  font-size: 0.72rem;
+}
+
+.dashboard-studio-page .dashboard-context-onboarding-path:nth-child(n + 3) {
+  display: none;
+}
+
+.dashboard-studio-page .dashboard-context-onboarding-head,
+.dashboard-studio-page .dashboard-context-onboarding-footer {
+  gap: 5px 8px;
+}
+
+.dashboard-studio-page .dashboard-context-onboarding-paths {
+  gap: 5px;
+}
+
+@media (max-width: 900px) {
+  .dashboard-studio-page .dashboard-unified-artifact .dashboard-command-bridge.dashboard-studio-artifact {
+    grid-template-areas:
+      "thread thread"
+      "canvas dock";
+  }
+
+  .dashboard-studio-page .dashboard-context-dock {
+    opacity: 0.82;
+  }
+}
+
+@media (max-width: 760px) {
+  .dashboard-studio-page .dashboard-unified-signals-compact {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "next";
+    max-width: none;
+    margin-left: 0;
+  }
+
+  .dashboard-studio-page .dashboard-unified-signals-compact .dashboard-unified-signal:nth-child(1) {
+    display: grid;
+  }
+
+  .dashboard-studio-page .dashboard-unified-signals-compact .dashboard-unified-actions {
+    display: none;
+  }
+
+  .dashboard-studio-page .dashboard-unified-artifact .dashboard-command-bridge.dashboard-studio-artifact {
+    grid-template-areas:
+      "thread"
+      "canvas"
+      "dock";
+  }
+
+  .dashboard-studio-page .dashboard-studio-artifact-thread {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(132px, 1fr));
+    overflow: visible;
+    opacity: 0.56;
+  }
+
+  .dashboard-studio-page .dashboard-context-dock {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+    padding-inline: clamp(6px, 1.6vw, 10px);
+  }
+
+  .dashboard-studio-page .dashboard-context-log {
+    display: none;
+  }
+
+  .dashboard-studio-page .dashboard-context-support,
+  .dashboard-studio-page .dashboard-context-onboarding {
+    grid-column: auto;
+  }
+
+  .dashboard-studio-page .dashboard-context-support {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .dashboard-studio-page .dashboard-context-support::-webkit-scrollbar {
+    display: none;
+  }
+
+  .dashboard-studio-page .dashboard-context-onboarding-path:nth-child(n + 2),
+  .dashboard-studio-page .dashboard-context-onboarding-footer strong {
+    display: none;
+  }
+}

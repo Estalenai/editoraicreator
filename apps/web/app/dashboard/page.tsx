@@ -6,7 +6,6 @@ import { useDashboardBootstrap } from "../../hooks/useDashboardBootstrap";
 import { BetaAccessBlockedView } from "../../components/waitlist/BetaAccessBlockedView";
 import { ApprovedBetaOnboardingCard } from "../../components/dashboard/ApprovedBetaOnboardingCard";
 import { EditorRouteLink } from "../../components/ui/EditorRouteLink";
-import { coinTypeLabel } from "../../lib/coinTypeLabel";
 import { api } from "../../lib/api";
 import { CREATOR_COINS_PUBLIC_NAME, formatCreatorCoinsWalletSummary } from "../../lib/creatorCoins";
 import { ensureCanonicalProjectData, getCanonicalProjectSummary } from "../../lib/projectModel";
@@ -90,24 +89,6 @@ const QUICK_LINKS: QuickLinkItem[] = [
   },
 ];
 
-const CREDIT_GUIDE_ITEMS = [
-  {
-    coinType: "common" as const,
-    title: "Comum",
-    description: "Rotina.",
-  },
-  {
-    coinType: "pro" as const,
-    title: "Pro",
-    description: "Qualidade.",
-  },
-  {
-    coinType: "ultra" as const,
-    title: "Ultra",
-    description: "Premium.",
-  },
-];
-
 function formatDashboardProjectTitle(rawTitle: string | null | undefined, fallback: string): string {
   const source = String(rawTitle || "").trim();
   if (!source) return fallback;
@@ -147,32 +128,6 @@ function formatDashboardKindLabel(value: string | null | undefined, fallback: st
   if (normalized === "script") return "Roteiro";
   if (normalized === "clip") return "Clipe";
   return normalized.charAt(0).toUpperCase() + normalized.slice(1);
-}
-
-function formatDashboardUsageFeatureLabel(value: string | null | undefined): string {
-  const normalized = String(value || "").trim().toLowerCase();
-  if (!normalized) return "Feature";
-
-  const presets: Record<string, string> = {
-    text_generate: "Peca textual",
-    image_generate: "Imagem",
-    video_generate: "Video",
-    voice_generate: "Voz",
-    music_generate: "Musica",
-    publish: "Publicacao",
-    project_sync: "Continuidade",
-    creator_post: "Creator Post",
-    creator_scripts: "Creator Scripts",
-    creator_clips: "Creator Clips",
-  };
-
-  if (presets[normalized]) return presets[normalized];
-
-  return normalized
-    .replace(/[_-]+/g, " ")
-    .replace(/\s{2,}/g, " ")
-    .trim()
-    .replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
 export default function DashboardPage() {
@@ -254,16 +209,8 @@ export default function DashboardPage() {
   );
   const walletSummary = useMemo(() => formatCreatorCoinsWalletSummary(wallet), [wallet]);
   const supportQuickLinks = useMemo(
-    () => QUICK_LINKS.filter((item) => item.group === "support"),
+    () => QUICK_LINKS.filter((item) => item.group === "support" && item.href !== "/credits"),
     []
-  );
-  const walletBreakdown = useMemo(
-    () =>
-      CREDIT_GUIDE_ITEMS.map((item) => ({
-        ...item,
-        amount: Number(wallet?.[item.coinType] ?? 0),
-      })),
-    [wallet]
   );
   const totalUsage = useMemo(
     () => usageItems.reduce((sum, item) => sum + Number(item.used || 0), 0),
@@ -297,28 +244,7 @@ export default function DashboardPage() {
       rawTitle,
     };
   }, [featuredProject]);
-  const usagePreviewItems = useMemo(
-    () =>
-      [...usageItems]
-        .sort((a, b) => Number(b.used || 0) - Number(a.used || 0) || Number(b.limit || 0) - Number(a.limit || 0))
-        .slice(0, 4),
-    [usageItems]
-  );
-  const usageDisplayItems = useMemo(
-    () =>
-      usagePreviewItems.map((item) => ({
-        ...item,
-        displayLabel: formatDashboardUsageFeatureLabel(item.feature),
-      })),
-    [usagePreviewItems]
-  );
   const hasConfirmedUsage = totalUsage > 0;
-  const usageLeadInsight =
-    loading || usageLoading
-      ? "Sincronizando ciclo."
-      : hasConfirmedUsage && usageDisplayItems[0]
-        ? `${usageDisplayItems[0].displayLabel} lidera.`
-        : "Entrega em aberto.";
   const nextAction = recentProjects.length > 0
       ? {
         title: "Retomar projeto",
@@ -360,26 +286,14 @@ export default function DashboardPage() {
     : featuredProjectDisplay
       ? `${featuredProjectDisplay.deliverableLabel} • ${featuredProjectDisplay.kindLabel}`
       : "Trilha vazia.";
-  const studioFlowNodes = QUICK_LINKS.filter((item) => item.group === "core").map((item, index) => ({
-    ...item,
-    index: String(index + 1).padStart(2, "0"),
-    cue:
-      index === 0
-        ? "Entrada"
-        : index === 1
-          ? "Revisão"
-          : index === 2
-            ? "Retorno"
-            : "Entrega",
-    status:
-      index === 0
-        ? "Entrada"
-        : index === 1
-          ? "Revisão"
-          : index === 2
-            ? continuityValue
-            : focusContinuationLabel,
-  }));
+  const studioFlowNodes = QUICK_LINKS.filter((item) => item.group === "core" && item.href !== "/projects#publish").map(
+    (item, index) => ({
+      ...item,
+      index: String(index + 1).padStart(2, "0"),
+      cue: index === 0 ? "Entrada" : index === 1 ? "Revisão" : "Retorno",
+      status: index === 0 ? "Entrada" : index === 1 ? "Revisão" : continuityValue,
+    })
+  );
   if (betaBlocked) {
     return (
       <BetaAccessBlockedView
@@ -424,9 +338,7 @@ export default function DashboardPage() {
                             <strong>Entrega ativa.</strong>
                             <div className="dashboard-studio-hero-metadata" aria-label="Camadas visuais do estúdio">
                               <span>Projeto</span>
-                              <span>Revisão</span>
                               <span>Saída</span>
-                              <span>Capacidade</span>
                             </div>
                             <div className="dashboard-studio-primary-actions" aria-label="Ações principais do Studio Canvas">
                               {nextAction.href.startsWith("/editor") ? (
@@ -444,17 +356,7 @@ export default function DashboardPage() {
                             </div>
                           </div>
 
-                          <div className="dashboard-unified-signals">
-                            <div className="dashboard-unified-signal">
-                              <span className="dashboard-overview-label">{CREATOR_COINS_PUBLIC_NAME}</span>
-                              <strong>{walletSummaryDisplay}</strong>
-                              <span>Capacidade ativa.</span>
-                            </div>
-                            <div className="dashboard-unified-signal">
-                              <span className="dashboard-overview-label">Continuidade</span>
-                              <strong>{continuityValue}</strong>
-                              <span>{continuityDetail}</span>
-                            </div>
+                          <div className="dashboard-unified-signals dashboard-unified-signals-compact">
                             <div className="dashboard-unified-signal dashboard-unified-next">
                               <span className="dashboard-overview-label">Proximo movimento</span>
                               <strong>{nextActionTitleDisplay}</strong>
@@ -633,35 +535,7 @@ export default function DashboardPage() {
                                 <span>Prompt sincronizado</span>
                                 <span>IA em contexto</span>
                                 <span>{walletSummaryDisplay}</span>
-                                <span>{focusContinuationLabel}</span>
                               </div>
-                            </div>
-                          </div>
-
-                          <div className="dashboard-ecosystem-state">
-                            <div className="dashboard-surface-stat">
-                              <span className="dashboard-stage-stat-label">Estado</span>
-                              <strong>{focusContinuationLabel}</strong>
-                              <span>{focusContinuationDetail}</span>
-                            </div>
-                            <div className="dashboard-surface-stat">
-                              <span className="dashboard-stage-stat-label">Ritmo</span>
-                              <strong>{continuityValue}</strong>
-                              <span>{continuityDetail}</span>
-                            </div>
-                            <div className="dashboard-surface-stat dashboard-surface-stat-action">
-                              <span className="dashboard-stage-stat-label">Movimento</span>
-                              <strong>{nextActionTitleDisplay}</strong>
-                              <span>{nextActionDescriptionDisplay}</span>
-                              {nextAction.href.startsWith("/editor") ? (
-                                <EditorRouteLink href={nextAction.href} className="dashboard-inline-action">
-                                  {nextActionCtaDisplay}
-                                </EditorRouteLink>
-                              ) : (
-                                <Link href={nextAction.href} className="dashboard-inline-action">
-                                  {nextActionCtaDisplay}
-                                </Link>
-                              )}
                             </div>
                           </div>
 
@@ -677,14 +551,7 @@ export default function DashboardPage() {
                                 <span />
                                 <span />
                               </span>
-                              <span>Energia acoplada ao ciclo.</span>
-                              <span className="dashboard-context-chipline" aria-label="Saldos por camada">
-                                {walletBreakdown.map((item) => (
-                                  <span key={item.coinType}>
-                                    {coinTypeLabel(item.coinType)} {item.amount.toLocaleString("pt-BR")}
-                                  </span>
-                                ))}
-                              </span>
+                              <span>Capacidade do estúdio.</span>
                             </Link>
 
                             <Link
@@ -694,7 +561,6 @@ export default function DashboardPage() {
                               <span className="dashboard-stream-link-kicker">Histórico</span>
                               <strong>{totalUsageDisplay}</strong>
                               <span className="dashboard-context-activity-pulse" aria-hidden="true" />
-                              <span>{usageLeadInsight}</span>
                               <span className="dashboard-context-meta">{recentUsageText}</span>
                             </Link>
 
