@@ -27565,7 +27565,8 @@ body {
 .dashboard-studio-page .dashboard-context-capacity > span:last-child,
 .dashboard-studio-page .dashboard-context-log .dashboard-context-meta,
 .dashboard-studio-page .dashboard-context-onboarding-copy span:last-child,
-.dashboard-studio-page .dashboard-context-onboarding-footer > span {
+.dashboard-studio-page .dashboard-context-onboarding-footer > span,
+.dashboard-studio-page .dashboard-context-onboarding-footer strong {
   display: none;
 }
 
@@ -27591,7 +27592,7 @@ body {
   font-size: 0.72rem;
 }
 
-.dashboard-studio-page .dashboard-context-onboarding-path:nth-child(n + 3) {
+.dashboard-studio-page .dashboard-context-onboarding-path:nth-child(n + 2) {
   display: none;
 }
 
@@ -27641,9 +27642,13 @@ body {
 
   .dashboard-studio-page .dashboard-studio-artifact-thread {
     display: grid;
-    grid-template-columns: repeat(3, minmax(132px, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     overflow: visible;
     opacity: 0.56;
+  }
+
+  .dashboard-studio-page .dashboard-studio-artifact-node:nth-child(n + 3) {
+    display: none;
   }
 
   .dashboard-studio-page .dashboard-context-dock {
