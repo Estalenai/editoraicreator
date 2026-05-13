@@ -27682,3 +27682,170 @@ body {
     display: none;
   }
 }
+
+/* Round 7: visual breathing. The field keeps the same architecture, but
+   secondary system signals recede so the canvas reads less like internal UI. */
+.dashboard-studio-page[data-dashboard-rhythm="breathing"] .dashboard-unified-field {
+  gap: clamp(18px, 2.2vw, 44px);
+}
+
+.dashboard-studio-page[data-dashboard-rhythm="breathing"] .dashboard-unified-context {
+  grid-template-columns: minmax(320px, 0.54fr) minmax(250px, 0.3fr) minmax(104px, 0.13fr);
+  gap: clamp(30px, 3.8vw, 76px);
+}
+
+.dashboard-studio-page .dashboard-unified-signals-quiet {
+  display: grid;
+  grid-template-columns: auto;
+  justify-self: end;
+  align-self: center;
+  width: max-content;
+  max-width: 140px;
+  margin-left: auto;
+  opacity: 0.24;
+  transform: translateY(clamp(26px, 3.8vw, 64px));
+  transition: opacity 160ms ease, filter 160ms ease;
+}
+
+.dashboard-studio-page .dashboard-unified-signals-quiet:hover,
+.dashboard-studio-page .dashboard-unified-signals-quiet:focus-within {
+  opacity: 0.72;
+}
+
+.dashboard-studio-page .dashboard-unified-actions-quiet {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  filter: saturate(0.58);
+}
+
+.dashboard-studio-page .dashboard-unified-actions-quiet .btn-ea {
+  min-height: 29px;
+  border-color: rgba(191, 239, 255, 0.035);
+  background: rgba(255, 255, 255, 0.006);
+  color: rgba(213, 235, 248, 0.62);
+  box-shadow: none;
+  font-size: 0.68rem;
+}
+
+.dashboard-studio-page[data-dashboard-rhythm="breathing"] .dashboard-unified-artifact {
+  padding-top: clamp(18px, 2.35vw, 42px);
+}
+
+.dashboard-studio-page[data-dashboard-rhythm="breathing"] .dashboard-unified-artifact .dashboard-command-bridge.dashboard-studio-artifact {
+  gap: clamp(22px, 2.45vw, 42px) clamp(36px, 4vw, 76px);
+}
+
+.dashboard-studio-page[data-dashboard-rhythm="breathing"] .dashboard-studio-artifact-thread {
+  margin-block: clamp(8px, 1.4vw, 24px) clamp(6px, 1vw, 18px);
+  opacity: 0.42;
+}
+
+.dashboard-studio-page[data-dashboard-rhythm="breathing"] .dashboard-studio-artifact-node {
+  border-color: rgba(191, 239, 255, 0.035);
+  background: rgba(255, 255, 255, 0.006);
+  box-shadow: none;
+}
+
+.dashboard-studio-page[data-dashboard-rhythm="breathing"] .dashboard-surface-command-step-copy .dashboard-hero-flow-label,
+.dashboard-studio-page[data-dashboard-rhythm="breathing"] .dashboard-studio-node-status {
+  color: rgba(137, 245, 255, 0.46);
+}
+
+.dashboard-studio-page[data-dashboard-rhythm="breathing"] .dashboard-studio-demo-review span,
+.dashboard-studio-page[data-dashboard-rhythm="breathing"] .dashboard-studio-output-proof,
+.dashboard-studio-page[data-dashboard-rhythm="breathing"] .dashboard-studio-preview-stream {
+  opacity: 0.58;
+}
+
+.dashboard-studio-page[data-dashboard-rhythm="breathing"] .dashboard-studio-preview-stream {
+  transform: translateY(8px);
+}
+
+.dashboard-studio-page .dashboard-context-dock-quiet {
+  gap: clamp(16px, 1.8vw, 28px);
+  padding-left: clamp(4px, 0.5vw, 10px);
+  opacity: 0.5;
+  transform: translateY(clamp(30px, 4.8vw, 82px));
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.dashboard-studio-page .dashboard-context-dock-quiet:hover,
+.dashboard-studio-page .dashboard-context-dock-quiet:focus-within {
+  opacity: 0.78;
+}
+
+.dashboard-studio-page .dashboard-context-dock-quiet .dashboard-context-signal::before {
+  background: rgba(83, 228, 255, 0.44);
+  box-shadow: none;
+}
+
+.dashboard-studio-page .dashboard-context-dock-quiet .dashboard-context-log,
+.dashboard-studio-page .dashboard-context-dock-quiet .dashboard-context-support,
+.dashboard-studio-page .dashboard-context-dock-quiet .dashboard-context-onboarding {
+  opacity: 0.64;
+}
+
+.dashboard-studio-page .dashboard-context-dock-quiet .dashboard-context-support-link,
+.dashboard-studio-page .dashboard-context-dock-quiet .dashboard-context-onboarding-path,
+.dashboard-studio-page .dashboard-context-dock-quiet .dashboard-context-dismiss {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+}
+
+.dashboard-studio-page .dashboard-context-dock-quiet .dashboard-context-dismiss {
+  color: rgba(213, 235, 248, 0.46);
+}
+
+.dashboard-studio-page .dashboard-studio-quiet-status {
+  opacity: 0.48;
+}
+
+@media (max-width: 1180px) {
+  .dashboard-studio-page[data-dashboard-rhythm="breathing"] .dashboard-unified-context {
+    grid-template-columns: minmax(0, 0.72fr) minmax(230px, 0.38fr);
+    gap: clamp(20px, 3vw, 44px);
+  }
+
+  .dashboard-studio-page .dashboard-unified-signals-quiet {
+    grid-area: signals;
+    justify-self: end;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 760px) {
+  .dashboard-studio-page[data-dashboard-rhythm="breathing"] .dashboard-unified-field {
+    gap: clamp(22px, 7vw, 38px);
+  }
+
+  .dashboard-studio-page[data-dashboard-rhythm="breathing"] .dashboard-unified-context {
+    gap: clamp(18px, 5.6vw, 30px);
+  }
+
+  .dashboard-studio-page .dashboard-unified-signals-quiet {
+    display: none;
+  }
+
+  .dashboard-studio-page[data-dashboard-rhythm="breathing"] .dashboard-unified-artifact {
+    padding-top: clamp(20px, 7vw, 36px);
+  }
+
+  .dashboard-studio-page[data-dashboard-rhythm="breathing"] .dashboard-studio-artifact-thread {
+    margin-block: 0 clamp(12px, 4vw, 18px);
+    opacity: 0.4;
+  }
+
+  .dashboard-studio-page .dashboard-context-dock-quiet {
+    margin-top: clamp(28px, 9vw, 48px);
+    opacity: 0.62;
+    transform: none;
+  }
+
+  .dashboard-studio-page .dashboard-context-dock-quiet .dashboard-context-log,
+  .dashboard-studio-page .dashboard-context-dock-quiet .dashboard-context-support,
+  .dashboard-studio-page .dashboard-context-dock-quiet .dashboard-context-onboarding {
+    opacity: 0.56;
+  }
+}

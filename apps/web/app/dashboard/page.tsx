@@ -267,11 +267,7 @@ export default function DashboardPage() {
   const emailDisplay = loading ? "Sincronizando conta..." : email || "—";
   const walletSummaryDisplay = loading ? "Saldo em sincronização" : walletSummary;
   const totalUsageDisplay = loading || usageLoading ? "Uso em sincronização" : totalUsage.toLocaleString("pt-BR");
-  const nextActionTitleDisplay = loading ? "Preparando seu próximo passo" : nextAction.title;
   const nextActionCtaDisplay = loading ? "Aguarde a sincronização" : nextAction.cta;
-  const nextActionDescriptionDisplay = loading
-    ? "Sincronizando workspace."
-    : nextAction.description;
   const continuityValue = loading ? "Projetos em sincronização" : `${recentProjects.length} projeto(s)`;
   const continuityDetail = loading
     ? "Sincronizando trilha."
@@ -305,7 +301,12 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="page-shell dashboard-surface-page dashboard-operating-page dashboard-studio-page" data-dashboard-contract="studio-canvas" data-dashboard-composition="ecosystem-field">
+    <div
+      className="page-shell dashboard-surface-page dashboard-operating-page dashboard-studio-page"
+      data-dashboard-contract="studio-canvas"
+      data-dashboard-composition="ecosystem-field"
+      data-dashboard-rhythm="breathing"
+    >
       <div className="dashboard-surface-canvas dashboard-operating-canvas dashboard-studio-canvas dashboard-ecosystem-field">
         <section className="dashboard-surface-stage dashboard-operating-stage dashboard-studio-stage" data-reveal>
           <div className="dashboard-surface-stage-grid">
@@ -327,14 +328,10 @@ export default function DashboardPage() {
                             </p>
                             <div className="hero-meta-row dashboard-unified-badges dashboard-studio-chrome-badges">
                               <span className="premium-badge dashboard-operating-badge">Plano: {planLabelDisplay}</span>
-                              <span className="premium-badge premium-badge-warning">
-                                {loading ? "Sincronizando" : "Continuidade ativa"}
-                              </span>
                             </div>
                           </div>
 
                           <div className="dashboard-unified-intent">
-                            <span className="dashboard-hero-flow-label">Produto vivo</span>
                             <strong>Entrega ativa.</strong>
                             <div className="dashboard-studio-hero-metadata" aria-label="Camadas visuais do estúdio">
                               <span>Projeto</span>
@@ -356,14 +353,8 @@ export default function DashboardPage() {
                             </div>
                           </div>
 
-                          <div className="dashboard-unified-signals dashboard-unified-signals-compact">
-                            <div className="dashboard-unified-signal dashboard-unified-next">
-                              <span className="dashboard-overview-label">Proximo movimento</span>
-                              <strong>{nextActionTitleDisplay}</strong>
-                              <span>{nextActionDescriptionDisplay}</span>
-                              <span className="dashboard-unified-action-cue">{nextActionCtaDisplay}</span>
-                            </div>
-                            <div className="dashboard-unified-actions" aria-label="Ações da conta">
+                          <div className="dashboard-unified-signals dashboard-unified-signals-quiet">
+                            <div className="dashboard-unified-actions dashboard-unified-actions-quiet" aria-label="Ações da conta">
                               <button
                                 onClick={async () => {
                                   await onSyncSubscription();
@@ -534,12 +525,11 @@ export default function DashboardPage() {
                               <div className="dashboard-studio-preview-stream" aria-label="Estado do fluxo criativo">
                                 <span>Prompt sincronizado</span>
                                 <span>IA em contexto</span>
-                                <span>{walletSummaryDisplay}</span>
                               </div>
                             </div>
                           </div>
 
-                          <div className="dashboard-context-dock dashboard-field-thread" aria-label="Sinais contextuais do estúdio">
+                          <div className="dashboard-context-dock dashboard-context-dock-quiet dashboard-field-thread" aria-label="Sinais contextuais do estúdio">
                             <Link
                               href="/credits"
                               className="dashboard-context-signal dashboard-context-capacity dashboard-field-signal"
