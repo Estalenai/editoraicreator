@@ -306,6 +306,7 @@ export default function DashboardPage() {
       data-dashboard-contract="studio-canvas"
       data-dashboard-composition="ecosystem-field"
       data-dashboard-rhythm="breathing"
+      data-dashboard-proof="selective"
     >
       <div className="dashboard-surface-canvas dashboard-operating-canvas dashboard-studio-canvas dashboard-ecosystem-field">
         <section className="dashboard-surface-stage dashboard-operating-stage dashboard-studio-stage" data-reveal>
@@ -350,6 +351,11 @@ export default function DashboardPage() {
                               <Link href="/projects" className="dashboard-studio-secondary-cta">
                                 Ver projetos
                               </Link>
+                            </div>
+                            <div className="dashboard-unified-proofline" aria-label="Prova rápida do Studio Canvas">
+                              <span>{featuredProjectDisplay?.deliverableLabel || "Canvas pronto"}</span>
+                              <strong>{featuredProjectDisplay?.statusLabel || "Pronto para criar"}</strong>
+                              <span>{walletSummaryDisplay}</span>
                             </div>
                           </div>
 
@@ -529,7 +535,7 @@ export default function DashboardPage() {
                             </div>
                           </div>
 
-                          <div className="dashboard-context-dock dashboard-context-dock-quiet dashboard-field-thread" aria-label="Sinais contextuais do estúdio">
+                          <div className="dashboard-context-dock dashboard-context-dock-quiet dashboard-context-dock-proof dashboard-field-thread" aria-label="Sinais contextuais do estúdio">
                             <Link
                               href="/credits"
                               className="dashboard-context-signal dashboard-context-capacity dashboard-field-signal"

@@ -27849,3 +27849,171 @@ body {
     opacity: 0.56;
   }
 }
+
+/* Round 8: selective clarity. The product proof moves closer to the hero while
+   secondary signals regain legibility without returning to dashboard chrome. */
+.dashboard-studio-page[data-dashboard-proof="selective"] .dashboard-unified-field {
+  gap: clamp(10px, 1.35vw, 24px);
+}
+
+.dashboard-studio-page[data-dashboard-proof="selective"] .dashboard-unified-field::before {
+  inset: -2% -1% 41% -1%;
+  background:
+    radial-gradient(880px 330px at 43% 38%, rgba(78, 226, 255, 0.105), transparent 72%),
+    radial-gradient(620px 290px at 76% 59%, rgba(74, 137, 255, 0.072), transparent 72%),
+    linear-gradient(90deg, rgba(78, 226, 255, 0.064), rgba(191, 239, 255, 0.018), transparent 86%);
+  opacity: 0.78;
+}
+
+.dashboard-studio-page[data-dashboard-proof="selective"] .dashboard-unified-context {
+  gap: clamp(24px, 2.8vw, 54px);
+  margin-bottom: clamp(-18px, -1.2vw, -8px);
+}
+
+.dashboard-studio-page[data-dashboard-proof="selective"] .dashboard-unified-proofline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  align-items: center;
+  max-width: 28rem;
+  margin-top: 2px;
+  color: rgba(214, 238, 255, 0.68);
+  font-size: clamp(0.68rem, 0.72vw, 0.76rem);
+  font-weight: 850;
+  letter-spacing: -0.015em;
+}
+
+.dashboard-studio-page[data-dashboard-proof="selective"] .dashboard-unified-proofline span,
+.dashboard-studio-page[data-dashboard-proof="selective"] .dashboard-unified-proofline strong {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  border: 1px solid rgba(191, 239, 255, 0.062);
+  border-radius: 999px;
+  padding: 0 8px;
+  background: rgba(255, 255, 255, 0.012);
+}
+
+.dashboard-studio-page[data-dashboard-proof="selective"] .dashboard-unified-proofline strong {
+  color: rgba(233, 250, 255, 0.82);
+  background: linear-gradient(90deg, rgba(83, 228, 255, 0.06), rgba(255, 255, 255, 0.012));
+}
+
+.dashboard-studio-page[data-dashboard-proof="selective"] .dashboard-unified-artifact {
+  padding-top: clamp(2px, 0.7vw, 14px);
+}
+
+.dashboard-studio-page[data-dashboard-proof="selective"] .dashboard-unified-artifact .dashboard-command-bridge.dashboard-studio-artifact {
+  gap: clamp(14px, 1.6vw, 28px) clamp(28px, 3vw, 56px);
+}
+
+.dashboard-studio-page[data-dashboard-proof="selective"] .dashboard-studio-artifact-thread {
+  margin-block: clamp(0px, 0.4vw, 8px) clamp(4px, 0.7vw, 12px);
+  opacity: 0.56;
+}
+
+.dashboard-studio-page[data-dashboard-proof="selective"] .dashboard-studio-artifact-node {
+  border-color: rgba(191, 239, 255, 0.052);
+  background: rgba(255, 255, 255, 0.01);
+}
+
+.dashboard-studio-page[data-dashboard-proof="selective"] .dashboard-surface-command-step-copy .dashboard-hero-flow-label,
+.dashboard-studio-page[data-dashboard-proof="selective"] .dashboard-studio-node-status {
+  color: rgba(137, 245, 255, 0.58);
+}
+
+.dashboard-studio-page[data-dashboard-proof="selective"] .dashboard-studio-demo-review span,
+.dashboard-studio-page[data-dashboard-proof="selective"] .dashboard-studio-output-proof,
+.dashboard-studio-page[data-dashboard-proof="selective"] .dashboard-studio-preview-stream {
+  opacity: 0.72;
+}
+
+.dashboard-studio-page[data-dashboard-proof="selective"] .dashboard-studio-preview-stream {
+  transform: translateY(3px);
+}
+
+.dashboard-studio-page .dashboard-context-dock-proof {
+  opacity: 0.66;
+  transform: translateY(clamp(10px, 2vw, 36px));
+}
+
+.dashboard-studio-page .dashboard-context-dock-proof:hover,
+.dashboard-studio-page .dashboard-context-dock-proof:focus-within {
+  opacity: 0.86;
+}
+
+.dashboard-studio-page .dashboard-context-dock-proof .dashboard-context-signal::before {
+  background: rgba(83, 228, 255, 0.62);
+}
+
+.dashboard-studio-page .dashboard-context-dock-proof .dashboard-context-signal strong {
+  color: rgba(226, 244, 255, 0.76);
+}
+
+.dashboard-studio-page .dashboard-context-dock-proof .dashboard-context-log,
+.dashboard-studio-page .dashboard-context-dock-proof .dashboard-context-support,
+.dashboard-studio-page .dashboard-context-dock-proof .dashboard-context-onboarding {
+  opacity: 0.78;
+}
+
+.dashboard-studio-page .dashboard-context-dock-proof .dashboard-context-support-link,
+.dashboard-studio-page .dashboard-context-dock-proof .dashboard-context-onboarding-path,
+.dashboard-studio-page .dashboard-context-dock-proof .dashboard-context-dismiss {
+  border-color: rgba(191, 239, 255, 0.036);
+  background: rgba(255, 255, 255, 0.008);
+}
+
+@media (max-width: 1180px) {
+  .dashboard-studio-page[data-dashboard-proof="selective"] .dashboard-unified-context {
+    gap: clamp(18px, 2.6vw, 36px);
+  }
+}
+
+@media (max-width: 760px) {
+  .dashboard-studio-page[data-dashboard-proof="selective"] .dashboard-unified-field {
+    gap: clamp(14px, 4.8vw, 24px);
+  }
+
+  .dashboard-studio-page[data-dashboard-proof="selective"] .dashboard-unified-context {
+    gap: clamp(12px, 4vw, 20px);
+    margin-bottom: 0;
+  }
+
+  .dashboard-studio-page[data-dashboard-proof="selective"] .dashboard-unified-mark h1 {
+    font-size: clamp(3.05rem, 14.8vw, 4.55rem);
+  }
+
+  .dashboard-studio-page[data-dashboard-proof="selective"] .dashboard-unified-mark .section-header-copy {
+    max-width: 18rem;
+  }
+
+  .dashboard-studio-page[data-dashboard-proof="selective"] .dashboard-unified-proofline {
+    gap: 5px;
+    max-width: none;
+    font-size: 0.66rem;
+  }
+
+  .dashboard-studio-page[data-dashboard-proof="selective"] .dashboard-unified-proofline span:nth-child(3) {
+    display: none;
+  }
+
+  .dashboard-studio-page[data-dashboard-proof="selective"] .dashboard-unified-artifact {
+    padding-top: clamp(4px, 2vw, 10px);
+  }
+
+  .dashboard-studio-page[data-dashboard-proof="selective"] .dashboard-studio-artifact-thread {
+    opacity: 0.52;
+  }
+
+  .dashboard-studio-page .dashboard-context-dock-proof {
+    margin-top: clamp(14px, 5vw, 26px);
+    opacity: 0.72;
+    transform: none;
+  }
+
+  .dashboard-studio-page .dashboard-context-dock-proof .dashboard-context-log,
+  .dashboard-studio-page .dashboard-context-dock-proof .dashboard-context-support,
+  .dashboard-studio-page .dashboard-context-dock-proof .dashboard-context-onboarding {
+    opacity: 0.68;
+  }
+}
