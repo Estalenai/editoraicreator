@@ -309,6 +309,7 @@ export default function DashboardPage() {
       data-dashboard-thesis-clarity="concrete"
       data-dashboard-demo-proof="single"
       data-dashboard-shell="editorial"
+      data-dashboard-final-rhythm="editorial"
     >
       <div className="dashboard-surface-canvas dashboard-operating-canvas dashboard-studio-canvas dashboard-ecosystem-field">
         <section className="dashboard-surface-stage dashboard-operating-stage dashboard-studio-stage" data-reveal>
