@@ -355,7 +355,7 @@ export default function DashboardPage() {
                             <div className="dashboard-unified-proofline" aria-label="Prova rápida do Studio Canvas">
                               <span>{featuredProjectDisplay?.deliverableLabel || "Canvas pronto"}</span>
                               <strong>{featuredProjectDisplay?.statusLabel || "Pronto para criar"}</strong>
-                              <span>{walletSummaryDisplay}</span>
+                              {walletSummaryDisplay !== "—" ? <span>{walletSummaryDisplay}</span> : null}
                             </div>
                           </div>
 
