@@ -28017,3 +28017,199 @@ body {
     opacity: 0.68;
   }
 }
+
+/* Round 9: close the Lasy gap by reducing internal UI vocabulary instead of
+   adding more product signals. */
+.dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-unified-context {
+  grid-template-columns: minmax(300px, 0.5fr) minmax(230px, 0.26fr) minmax(120px, 0.12fr);
+  align-items: end;
+}
+
+.dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-unified-mark h1 {
+  max-width: 7ch;
+  font-size: clamp(4.25rem, 5.7vw, 6.85rem);
+  line-height: 0.75;
+  letter-spacing: -0.078em;
+}
+
+.dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-unified-intent > strong {
+  max-width: 8.5ch;
+  font-size: clamp(1.85rem, 2.55vw, 3.35rem);
+  line-height: 0.86;
+}
+
+.dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-studio-primary-cta {
+  min-height: 48px;
+  padding-inline: 22px;
+}
+
+.dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-studio-secondary-cta {
+  min-height: 36px;
+  opacity: 0.72;
+}
+
+.dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-unified-artifact {
+  padding-top: 0;
+}
+
+.dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-studio-artifact-thread {
+  margin-block: 0 clamp(2px, 0.45vw, 8px);
+  opacity: 0.34;
+}
+
+.dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-studio-artifact-node {
+  min-height: 44px;
+  border-color: transparent;
+  background: transparent;
+}
+
+.dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-studio-artifact-node .dashboard-surface-step-index {
+  border-color: rgba(191, 239, 255, 0.035);
+  background: rgba(255, 255, 255, 0.006);
+}
+
+.dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-studio-node-status,
+.dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-studio-artifact-node .dashboard-hero-flow-label {
+  display: none;
+}
+
+.dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-studio-artifact-node .dashboard-surface-command-step-copy strong {
+  color: rgba(224, 243, 255, 0.64);
+  font-size: clamp(0.82rem, 0.78vw, 0.9rem);
+}
+
+.dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-studio-preview-topbar {
+  justify-content: flex-start;
+  max-width: max-content;
+  gap: 5px;
+  margin-bottom: -2px;
+  opacity: 0.56;
+}
+
+.dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-studio-preview-topbar span {
+  min-height: 22px;
+  padding-inline: 8px;
+  border-color: rgba(191, 239, 255, 0.045);
+  background: rgba(255, 255, 255, 0.008);
+  font-size: 0.66rem;
+}
+
+.dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-studio-preview-canvas {
+  min-height: clamp(390px, 31.5vw, 455px);
+}
+
+.dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-studio-preview-canvas::before {
+  opacity: 0.46;
+}
+
+.dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-studio-preview-canvas::after {
+  opacity: 0.34;
+}
+
+.dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-studio-demo-prompt {
+  border-color: rgba(191, 239, 255, 0.052);
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.032), rgba(255, 255, 255, 0.008), transparent);
+}
+
+.dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-studio-demo-prompt .dashboard-stage-stat-label,
+.dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-studio-preview-brief .dashboard-stage-lead-kicker,
+.dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-studio-output-frame .dashboard-stage-stat-label {
+  color: rgba(198, 226, 242, 0.48);
+  letter-spacing: 0.055em;
+}
+
+.dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-studio-preview-brief {
+  border-color: rgba(191, 239, 255, 0.06);
+  background: rgba(6, 24, 54, 0.34);
+}
+
+.dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-studio-preview-brief .dashboard-stage-lead-title {
+  max-width: 11ch;
+  font-size: clamp(1.35rem, 2.4vw, 2.55rem);
+  letter-spacing: -0.065em;
+}
+
+.dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-stage-lead-meta {
+  gap: 8px;
+  color: rgba(223, 242, 255, 0.72);
+}
+
+.dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-studio-demo-review {
+  opacity: 0.72;
+}
+
+.dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-studio-demo-review span {
+  background: rgba(255, 255, 255, 0.008);
+}
+
+.dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-context-dock-proof {
+  opacity: 0.58;
+  transform: translateY(clamp(16px, 2.6vw, 46px));
+}
+
+.dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-context-dock-proof .dashboard-context-signal strong {
+  font-size: clamp(0.82rem, 0.82vw, 0.92rem);
+}
+
+.dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-context-dock-proof .dashboard-context-support-link,
+.dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-context-dock-proof .dashboard-context-onboarding-path,
+.dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-context-dock-proof .dashboard-context-dismiss {
+  border-color: transparent;
+  background: transparent;
+}
+
+@media (max-width: 1180px) {
+  .dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-unified-context {
+    grid-template-columns: minmax(0, 0.7fr) minmax(230px, 0.35fr);
+  }
+
+  .dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-unified-mark h1 {
+    font-size: clamp(3.9rem, 7.5vw, 5.9rem);
+  }
+}
+
+@media (max-width: 760px) {
+  .dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-unified-field {
+    gap: clamp(10px, 3.8vw, 18px);
+  }
+
+  .dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-unified-mark h1 {
+    max-width: 6.2ch;
+    font-size: clamp(2.75rem, 13vw, 4rem);
+  }
+
+  .dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-unified-intent > strong {
+    font-size: clamp(1.55rem, 6.8vw, 2.25rem);
+  }
+
+  .dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-studio-primary-actions {
+    grid-template-columns: minmax(0, 0.78fr) minmax(0, 1fr);
+  }
+
+  .dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-studio-primary-cta {
+    min-height: 44px;
+    padding-inline: 13px;
+  }
+
+  .dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-unified-proofline {
+    max-width: 14rem;
+  }
+
+  .dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-studio-artifact-thread {
+    opacity: 0.38;
+  }
+
+  .dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-studio-preview-topbar {
+    opacity: 0.5;
+  }
+
+  .dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-studio-preview-canvas {
+    min-height: auto;
+  }
+
+  .dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-context-dock-proof {
+    margin-top: clamp(10px, 4vw, 20px);
+    opacity: 0.66;
+    transform: none;
+  }
+}
