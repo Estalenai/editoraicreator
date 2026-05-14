@@ -7,7 +7,7 @@ import { BetaAccessBlockedView } from "../../components/waitlist/BetaAccessBlock
 import { ApprovedBetaOnboardingCard } from "../../components/dashboard/ApprovedBetaOnboardingCard";
 import { EditorRouteLink } from "../../components/ui/EditorRouteLink";
 import { api } from "../../lib/api";
-import { CREATOR_COINS_PUBLIC_NAME, formatCreatorCoinsWalletSummary } from "../../lib/creatorCoins";
+import { formatCreatorCoinsWalletSummary } from "../../lib/creatorCoins";
 import { ensureCanonicalProjectData, getCanonicalProjectSummary } from "../../lib/projectModel";
 import { toUserFacingError } from "../../lib/uiFeedback";
 
@@ -259,12 +259,11 @@ export default function DashboardPage() {
         cta: "Abrir Creators",
       };
   const recentUsageText = usageLoading
-    ? "Atualizando ciclo."
+    ? "Ciclo em leitura."
     : usageItems.length === 0
-      ? "Sem uso."
-      : `${usageItems.length} recurso(s) • ${totalUsage} uso(s).`;
+      ? "Sem leitura recente."
+      : `${totalUsage} uso(s).`;
   const planLabelDisplay = loading ? "Plano em sincronização" : planLabel ?? "—";
-  const emailDisplay = loading ? "Sincronizando conta..." : email || "—";
   const walletSummaryDisplay = loading ? "Saldo em sincronização" : walletSummary;
   const totalUsageDisplay = loading || usageLoading ? "Uso em sincronização" : totalUsage.toLocaleString("pt-BR");
   const nextActionCtaDisplay = loading ? "Aguarde a sincronização" : nextAction.cta;
@@ -285,9 +284,7 @@ export default function DashboardPage() {
   const studioFlowNodes = QUICK_LINKS.filter((item) => item.group === "core" && item.href !== "/projects#publish").map(
     (item, index) => ({
       ...item,
-      index: String(index + 1).padStart(2, "0"),
-      cue: index === 0 ? "Entrada" : index === 1 ? "Revisão" : "Retorno",
-      status: index === 0 ? "Entrada" : index === 1 ? "Revisão" : continuityValue,
+      cue: index === 0 ? "Ideia" : index === 1 ? "Refino" : "Continuidade",
     })
   );
   if (betaBlocked) {
@@ -309,28 +306,29 @@ export default function DashboardPage() {
       data-dashboard-proof="selective"
       data-dashboard-gap="lasy-bridge"
       data-dashboard-thesis="editorial-demo"
+      data-dashboard-shell="editorial"
     >
       <div className="dashboard-surface-canvas dashboard-operating-canvas dashboard-studio-canvas dashboard-ecosystem-field">
         <section className="dashboard-surface-stage dashboard-operating-stage dashboard-studio-stage" data-reveal>
           <div className="dashboard-surface-stage-grid">
             <div className="dashboard-surface-stage-main">
               <div className="dashboard-surface-flow dashboard-operating-flow">
-                <section className="dashboard-operating-grid dashboard-studio-grid" aria-label="Creator Operating Studio do Editor AI Creator">
+                <section className="dashboard-operating-grid dashboard-studio-grid" aria-label="Studio Canvas do Editor AI Creator">
                   <header className="dashboard-surface-hero dashboard-operating-command dashboard-studio-hero" data-reveal data-reveal-delay="35">
                     <div className="dashboard-surface-command dashboard-unified-command" data-reveal data-reveal-delay="70">
                       <div className="dashboard-unified-field dashboard-field-thread">
-                        <div className="dashboard-unified-context" aria-label="Sinais do Creator Operating Studio">
+                        <div className="dashboard-unified-context" aria-label="Tese editorial do Studio Canvas">
                           <div className="dashboard-unified-mark">
-                            <p className="section-kicker">Creator Operating Studio</p>
+                            <p className="section-kicker">Editor AI Creator Studio</p>
                             <h1 className="heading-reset">
                               <span>Studio</span>
                               <span>Canvas vivo.</span>
                             </h1>
                             <p className="section-header-copy hero-copy-compact">
-                              Uma entrada, um projeto e uma saída trabalhando no mesmo produto-demo.
+                              Da ideia à saída em um produto-demo vivo.
                             </p>
                             <div className="hero-meta-row dashboard-unified-badges dashboard-studio-chrome-badges">
-                              <span className="premium-badge dashboard-operating-badge">Plano: {planLabelDisplay}</span>
+                              <span className="premium-badge dashboard-operating-badge">{planLabelDisplay}</span>
                             </div>
                           </div>
 
@@ -350,29 +348,9 @@ export default function DashboardPage() {
                               </Link>
                             </div>
                             <div className="dashboard-unified-proofline" aria-label="Prova rápida do Studio Canvas">
-                              <span>Entrega ativa</span>
+                              <span>Projeto vivo</span>
                               <span>{featuredProjectDisplay?.deliverableLabel || "Canvas pronto"}</span>
                               <strong>{featuredProjectDisplay?.statusLabel || "Pronto para criar"}</strong>
-                              {walletSummaryDisplay !== "—" ? <span>{walletSummaryDisplay}</span> : null}
-                            </div>
-                          </div>
-
-                          <div className="dashboard-unified-signals dashboard-unified-signals-quiet">
-                            <div className="dashboard-unified-actions dashboard-unified-actions-quiet" aria-label="Ações da conta">
-                              <button
-                                onClick={async () => {
-                                  await onSyncSubscription();
-                                  await refresh();
-                                  await loadUsage();
-                                }}
-                                disabled={syncingSubscription || loading}
-                                className="btn-ea btn-secondary"
-                              >
-                                {syncingSubscription ? "Sincronizando..." : "Sincronizar"}
-                              </button>
-                              <button onClick={onLogout} className="btn-ea btn-ghost">
-                                Sair
-                              </button>
                             </div>
                           </div>
                         </div>
@@ -383,8 +361,6 @@ export default function DashboardPage() {
                             {studioFlowNodes.map((flowNode) => {
                               const node = (
                                 <>
-                                  <span className="dashboard-surface-step-index">{flowNode.index}</span>
-                                  <span className="dashboard-studio-node-status">{flowNode.status}</span>
                                   <div className="dashboard-surface-command-step-copy">
                                     <span className="dashboard-hero-flow-label">{flowNode.tag}</span>
                                     <strong>{flowNode.title}</strong>
@@ -415,9 +391,9 @@ export default function DashboardPage() {
 
                           <div className="dashboard-surface-focus-lead-wrap dashboard-ecosystem-lead dashboard-studio-preview-shell">
                             <div className="dashboard-studio-preview-topbar" aria-label="Camadas do artefato">
-                              <span>Entrada</span>
-                              <span>Produto-demo</span>
-                              <span>Saída</span>
+                              <span>Ideia</span>
+                              <span>Canvas</span>
+                              <span>Entrega</span>
                             </div>
 
                             <div className="dashboard-studio-preview-canvas">
@@ -429,17 +405,17 @@ export default function DashboardPage() {
                                 <span className="dashboard-studio-signature-thread dashboard-studio-signature-thread-b" />
                               </div>
                               <div className="dashboard-studio-demo-prompt" aria-label="Entrada ativa do estúdio">
-                                <span className="dashboard-stage-stat-label">Entrada ativa</span>
+                                <span className="dashboard-stage-stat-label">Agora</span>
                                 <strong>
                                   {featuredProjectDisplay
                                     ? featuredProjectDisplay.displayTitle
                                     : "Criar primeira entrega"}
                                 </strong>
-                                <span className="dashboard-studio-demo-frequency">Studio field</span>
+                                <span className="dashboard-studio-demo-frequency">Em cena</span>
                                 <span>
                                   {featuredProjectDisplay
-                                    ? `${featuredProjectDisplay.deliverableLabel} em ${featuredProjectDisplay.statusLabel.toLowerCase()}.`
-                                    : "Brief, contexto e saída conectados."}
+                                    ? `${featuredProjectDisplay.deliverableLabel} ${featuredProjectDisplay.statusLabel.toLowerCase()}.`
+                                    : "Brief e saída no mesmo canvas."}
                                 </span>
                               </div>
 
@@ -460,11 +436,11 @@ export default function DashboardPage() {
                               ) : featuredProjectDisplay ? (
                                 <EditorRouteLink href={`/editor/${featuredProjectDisplay.id}`} className="dashboard-surface-focus-lead dashboard-studio-preview-brief">
                                   <div className="dashboard-stage-lead-topline">
-                                    <span className="dashboard-stage-lead-kicker">Artefato ativo</span>
+                                    <span className="dashboard-stage-lead-kicker">Demo ativo</span>
                                     <span className="dashboard-stage-lead-pill">{featuredProjectDisplay.stageLabel}</span>
                                   </div>
                                   <strong className="dashboard-stage-lead-title">{featuredProjectDisplay.displayTitle}</strong>
-                                  <p className="dashboard-stage-lead-copy">{featuredProjectDisplay.deliverableLabel} em continuidade.</p>
+                                  <p className="dashboard-stage-lead-copy">{featuredProjectDisplay.deliverableLabel} em cena.</p>
                                   <div className="dashboard-stage-lead-meta">
                                     <span>{featuredProjectDisplay.deliverableLabel}</span>
                                     <span>{featuredProjectDisplay.statusLabel}</span>
@@ -477,9 +453,9 @@ export default function DashboardPage() {
                                 </EditorRouteLink>
                               ) : (
                                 <div className="dashboard-surface-focus-lead dashboard-surface-focus-empty dashboard-studio-preview-brief">
-                                  <span className="dashboard-stage-lead-kicker">Artefato inicial</span>
+                                  <span className="dashboard-stage-lead-kicker">Demo inicial</span>
                                   <strong>Primeira entrega.</strong>
-                                  <p>Brief, Creator e saída no mesmo canvas.</p>
+                                  <p>Brief e saída no mesmo canvas.</p>
                                   <div className="dashboard-surface-focus-empty-actions">
                                     <Link href="/creators" className="btn-link-ea btn-primary btn-sm">
                                       Ir para Creators
@@ -492,13 +468,13 @@ export default function DashboardPage() {
                               )}
 
                               <div className="dashboard-studio-demo-review" aria-label="Camada de revisão do estúdio">
-                                <span>
-                                  <strong>Creator</strong>
-                                  <em>{featuredProjectDisplay ? "Base preservada" : "Entrada pronta"}</em>
+                                  <span>
+                                    <strong>Creator</strong>
+                                  <em>{featuredProjectDisplay ? "Base viva" : "Ideia pronta"}</em>
                                 </span>
                                 <span>
                                   <strong>Editor</strong>
-                                  <em>{featuredProjectDisplay?.reviewLabel || "Revisão aplicável"}</em>
+                                  <em>{featuredProjectDisplay?.reviewLabel || "Refino pronto"}</em>
                                 </span>
                                 <span>
                                   <strong>Projeto</strong>
@@ -510,7 +486,7 @@ export default function DashboardPage() {
                                 <div className="dashboard-studio-output-frame">
                                   <span className="dashboard-studio-output-pulse" />
                                   <div>
-                                    <span className="dashboard-stage-stat-label">Preview</span>
+                                    <span className="dashboard-stage-stat-label">Entrega</span>
                                     <strong>{featuredProjectDisplay?.deliverableLabel || "Primeira entrega"}</strong>
                                   </div>
                                 </div>
@@ -526,8 +502,8 @@ export default function DashboardPage() {
                               </div>
 
                               <div className="dashboard-studio-preview-stream" aria-label="Estado do fluxo criativo">
-                                <span>Prompt sincronizado</span>
-                                <span>IA em contexto</span>
+                                <span>Brief conectado</span>
+                                <span>IA pronta</span>
                               </div>
                             </div>
                           </div>
@@ -537,7 +513,7 @@ export default function DashboardPage() {
                               href="/credits"
                               className="dashboard-context-signal dashboard-context-capacity dashboard-field-signal"
                             >
-                              <span className="dashboard-stream-link-kicker">{CREATOR_COINS_PUBLIC_NAME}</span>
+                              <span className="dashboard-stream-link-kicker">Energia</span>
                               <strong>{walletSummaryDisplay}</strong>
                               <span className="dashboard-context-energy-meter" aria-hidden="true">
                                 <span />
@@ -551,7 +527,7 @@ export default function DashboardPage() {
                               href="/credits#credits-history"
                               className="dashboard-context-signal dashboard-context-log dashboard-field-signal"
                             >
-                              <span className="dashboard-stream-link-kicker">Histórico</span>
+                              <span className="dashboard-stream-link-kicker">Atividade</span>
                               <strong>{totalUsageDisplay}</strong>
                               <span className="dashboard-context-activity-pulse" aria-hidden="true" />
                               <span className="dashboard-context-meta">{recentUsageText}</span>
@@ -561,13 +537,29 @@ export default function DashboardPage() {
                               <span className="dashboard-context-support-orbit" aria-hidden="true" />
                               {supportQuickLinks.map((item) => (
                                 <Link key={item.href} href={item.href} className="dashboard-context-support-link">
-                                  <span>{item.tag}</span>
+                                  <span>Base</span>
                                   <strong>{item.title}</strong>
                                 </Link>
                               ))}
                             </div>
 
                             <ApprovedBetaOnboardingCard email={email} wallet={wallet} loading={loading} />
+                            <div className="dashboard-context-utility-actions" aria-label="Ações discretas da conta">
+                              <button
+                                onClick={async () => {
+                                  await onSyncSubscription();
+                                  await refresh();
+                                  await loadUsage();
+                                }}
+                                disabled={syncingSubscription || loading}
+                                className="btn-ea btn-secondary btn-sm"
+                              >
+                                {syncingSubscription ? "Atualizando" : "Atualizar leitura"}
+                              </button>
+                              <button onClick={onLogout} className="btn-ea btn-ghost btn-sm">
+                                Sair
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -595,8 +587,8 @@ export default function DashboardPage() {
                   {usageError ? (
                     <div className="dashboard-surface-inline-warning dashboard-studio-usage-signal" role="status" aria-live="polite">
                       <div className="dashboard-surface-inline-warning-copy">
-                        <span className="dashboard-stage-stat-label">Uso sincronizando</span>
-                        <strong>Leitura de uso em segundo plano.</strong>
+                        <span className="dashboard-stage-stat-label">Leitura em segundo plano</span>
+                        <strong>Uso será atualizado sem interromper o canvas.</strong>
                         <span>{toUserFacingError(usageError, "Sem leitura recente.")}</span>
                       </div>
                       <button onClick={loadUsage} className="btn-ea btn-secondary btn-sm">

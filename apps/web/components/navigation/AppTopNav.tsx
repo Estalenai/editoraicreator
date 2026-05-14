@@ -117,8 +117,8 @@ export function AppTopNav() {
     [navItems]
   );
   const dashboardPrimaryItems = useMemo(
-    () => [...overviewItems, ...coreItems],
-    [coreItems, overviewItems]
+    () => coreItems,
+    [coreItems]
   );
   const dashboardUtilityItem = useMemo(
     () =>
@@ -232,8 +232,11 @@ export function AppTopNav() {
 
   if (dashboardShellMode) {
     return (
-      <nav className="app-top-nav app-nav-dashboard-mode" aria-label="Navegação principal">
+      <nav className="app-top-nav app-nav-dashboard-mode app-nav-dashboard-editorial" aria-label="Navegação principal do Studio Canvas">
         <div className="app-nav-dashboard-field-line">
+          <Link href="/dashboard" prefetch={false} className="app-nav-dashboard-thesis" aria-current="page">
+            Studio
+          </Link>
           <div className="app-nav-links app-nav-dashboard-links app-nav-links-core">
             {dashboardPrimaryItems.map((item) => renderCompactNavItem(item, { dashboardSurface: true }))}
           </div>

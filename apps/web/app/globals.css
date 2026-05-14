@@ -28518,3 +28518,218 @@ body {
     display: none;
   }
 }
+
+/* Round 11: editorial shell + demo simplification. Keep the logged-in
+   functions available, but make the first perception read as product proof. */
+.app-shell-body:has(.dashboard-surface-page[data-dashboard-shell="editorial"]) .app-top-nav {
+  top: clamp(50px, 3.7vw, 68px);
+  width: auto !important;
+  opacity: 0.34;
+}
+
+.app-shell-body:has(.dashboard-surface-page[data-dashboard-shell="editorial"]) .app-top-nav:hover,
+.app-shell-body:has(.dashboard-surface-page[data-dashboard-shell="editorial"]) .app-top-nav:focus-within {
+  opacity: 0.72;
+}
+
+.app-shell-body:has(.dashboard-surface-page[data-dashboard-shell="editorial"]) .app-nav-dashboard-editorial .app-nav-dashboard-field-line {
+  align-items: center;
+  gap: 7px;
+}
+
+.app-shell-body:has(.dashboard-surface-page[data-dashboard-shell="editorial"]) .app-nav-dashboard-thesis {
+  display: inline-flex;
+  min-height: 22px;
+  align-items: center;
+  border: 1px solid rgba(191, 239, 255, 0.08);
+  border-radius: 999px;
+  padding: 0 9px;
+  color: rgba(223, 244, 255, 0.64);
+  font-size: 0.64rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  background: rgba(6, 24, 54, 0.1);
+}
+
+.app-shell-body:has(.dashboard-surface-page[data-dashboard-shell="editorial"]) .app-nav-dashboard-editorial .app-nav-dashboard-links {
+  gap: 2px;
+  border-color: transparent;
+  background: transparent;
+  opacity: 0.42;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.app-shell-body:has(.dashboard-surface-page[data-dashboard-shell="editorial"]) .app-nav-dashboard-editorial .app-nav-link,
+.app-shell-body:has(.dashboard-surface-page[data-dashboard-shell="editorial"]) .app-nav-dashboard-editorial .app-nav-link:hover,
+.app-shell-body:has(.dashboard-surface-page[data-dashboard-shell="editorial"]) .app-nav-dashboard-editorial .app-nav-link:active {
+  min-height: 22px;
+  border-color: transparent;
+  padding-inline: 6px;
+  color: rgba(219, 240, 255, 0.58);
+  background: transparent !important;
+  box-shadow: none;
+  opacity: 0.66;
+}
+
+.app-shell-body:has(.dashboard-surface-page[data-dashboard-shell="editorial"]) .app-nav-dashboard-editorial .app-nav-link-label {
+  font-size: 0.64rem;
+  font-weight: 760;
+  letter-spacing: -0.01em;
+}
+
+.dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-unified-mark {
+  transform: translateY(-4px);
+}
+
+.dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-unified-mark .section-kicker {
+  color: rgba(145, 238, 255, 0.72);
+  letter-spacing: 0.075em;
+}
+
+.dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-unified-mark .section-header-copy {
+  max-width: 30rem;
+  color: rgba(226, 243, 255, 0.82);
+}
+
+.dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-studio-chrome-badges {
+  opacity: 0.46;
+}
+
+.dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-operating-badge {
+  border-color: rgba(191, 239, 255, 0.032);
+  background: rgba(255, 255, 255, 0.01);
+  color: rgba(221, 242, 255, 0.62);
+}
+
+.dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-unified-proofline {
+  opacity: 0.66;
+}
+
+.dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-unified-proofline span,
+.dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-unified-proofline strong {
+  border-color: rgba(191, 239, 255, 0.052);
+  background: rgba(255, 255, 255, 0.012);
+}
+
+.dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-studio-preview-topbar {
+  opacity: 0.2;
+}
+
+.dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-studio-preview-topbar span {
+  border-color: transparent;
+  color: rgba(226, 244, 255, 0.58);
+}
+
+.dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-studio-demo-prompt,
+.dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-studio-preview-brief,
+.dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-studio-preview-output {
+  border-color: rgba(191, 239, 255, 0.052);
+}
+
+.dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-stage-stat-label,
+.dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-stage-lead-kicker,
+.dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-stream-link-kicker {
+  color: rgba(190, 224, 242, 0.5);
+  letter-spacing: 0.045em;
+}
+
+.dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-studio-demo-frequency,
+.dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-stage-lead-pill,
+.dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-stage-lead-meta,
+.dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-stage-lead-footer {
+  opacity: 0.52;
+}
+
+.dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-studio-demo-review,
+.dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-studio-output-proof,
+.dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-studio-preview-stream {
+  opacity: 0.44;
+}
+
+.dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-studio-demo-review span,
+.dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-studio-preview-stream span,
+.dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-studio-output-proof span {
+  border-color: rgba(191, 239, 255, 0.035);
+  background: rgba(255, 255, 255, 0.006);
+}
+
+.dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-context-dock-proof {
+  opacity: 0.38;
+  transform: translateY(clamp(34px, 4.2vw, 72px));
+}
+
+.dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-context-dock-proof:hover,
+.dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-context-dock-proof:focus-within {
+  opacity: 0.66;
+}
+
+.dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-context-dock-proof .dashboard-context-signal {
+  border-color: rgba(191, 239, 255, 0.03);
+  background: rgba(255, 255, 255, 0.006);
+}
+
+.dashboard-context-utility-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-3px);
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.dashboard-context-dock-proof:hover .dashboard-context-utility-actions,
+.dashboard-context-dock-proof:focus-within .dashboard-context-utility-actions {
+  opacity: 0.56;
+  pointer-events: auto;
+  transform: none;
+}
+
+.dashboard-context-utility-actions .btn-ea {
+  min-height: 26px;
+  padding: 0 9px;
+  font-size: 0.64rem;
+}
+
+@media (max-width: 1180px) {
+  .dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-context-dock-proof {
+    transform: translateY(clamp(20px, 3.2vw, 46px));
+  }
+}
+
+@media (max-width: 760px) {
+  .dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-unified-mark {
+    transform: none;
+  }
+
+  .dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-studio-chrome-badges {
+    opacity: 0.5;
+  }
+
+  .dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-unified-proofline {
+    opacity: 0.72;
+  }
+
+  .dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-studio-demo-review {
+    display: none;
+  }
+
+  .dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-studio-preview-stream {
+    opacity: 0.5;
+  }
+
+  .dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-context-dock-proof {
+    opacity: 0.56;
+    transform: none;
+  }
+
+  .dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-context-dock-proof .dashboard-context-log,
+  .dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-context-dock-proof .dashboard-context-support,
+  .dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-context-dock-proof .dashboard-context-onboarding,
+  .dashboard-studio-page[data-dashboard-shell="editorial"] .dashboard-context-utility-actions {
+    display: none;
+  }
+}
