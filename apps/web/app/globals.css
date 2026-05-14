@@ -28224,3 +28224,297 @@ body {
     transform: none;
   }
 }
+
+/* Round 10: one editorial thesis. The hero, action and demo read as one
+   product proof instead of separate authenticated-dashboard regions. */
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-unified-context {
+  grid-template-columns: minmax(460px, 0.68fr) minmax(250px, 0.25fr) minmax(70px, 0.07fr);
+  align-items: center;
+  gap: clamp(30px, 5vw, 96px);
+}
+
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-unified-mark {
+  max-width: 720px;
+}
+
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-unified-mark h1 {
+  max-width: 9.8ch;
+  font-size: clamp(4.65rem, 6.2vw, 7.35rem);
+  line-height: 0.78;
+  letter-spacing: -0.082em;
+}
+
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-unified-mark h1 span:last-child {
+  color: rgba(211, 239, 255, 0.82);
+}
+
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-unified-mark .section-header-copy {
+  max-width: 32rem;
+  margin-top: clamp(10px, 1.1vw, 16px);
+  color: rgba(222, 241, 255, 0.76);
+  font-size: clamp(0.98rem, 1.02vw, 1.18rem);
+  line-height: 1.42;
+}
+
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-editorial-intent {
+  align-content: center;
+  justify-items: start;
+  gap: 12px;
+  padding-top: clamp(34px, 4.1vw, 76px);
+}
+
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-studio-primary-actions {
+  gap: 10px;
+}
+
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-studio-primary-cta {
+  min-height: 58px;
+  padding-inline: clamp(22px, 2.1vw, 34px);
+  border-color: rgba(191, 239, 255, 0.44);
+  box-shadow:
+    0 24px 58px rgba(60, 216, 255, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.34);
+}
+
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-studio-secondary-cta {
+  opacity: 0.52;
+  min-height: 34px;
+}
+
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-unified-proofline {
+  max-width: 24rem;
+  gap: 6px;
+  opacity: 0.82;
+}
+
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-unified-proofline span,
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-unified-proofline strong {
+  min-height: 21px;
+  padding-inline: 7px;
+}
+
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-unified-proofline span:nth-child(n + 4) {
+  opacity: 0.5;
+}
+
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-unified-signals {
+  opacity: 0.12;
+  transform: translateY(30px);
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-unified-signals:hover,
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-unified-signals:focus-within {
+  opacity: 0.52;
+  transform: translateY(18px);
+}
+
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-unified-artifact {
+  margin-top: clamp(-58px, -4vw, -22px);
+}
+
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-studio-artifact-thread {
+  opacity: 0.18;
+  transform: translateY(-6px);
+}
+
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-studio-preview-topbar {
+  opacity: 0.34;
+}
+
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-studio-preview-topbar span {
+  background: transparent;
+}
+
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-studio-preview-canvas {
+  min-height: clamp(405px, 32vw, 470px);
+  border-color: rgba(191, 239, 255, 0.072);
+}
+
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-studio-demo-prompt {
+  border-color: rgba(191, 239, 255, 0.064);
+  background:
+    radial-gradient(220px 84px at 20% 50%, rgba(80, 225, 255, 0.052), transparent 78%),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01), transparent);
+}
+
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-studio-preview-brief {
+  background:
+    radial-gradient(360px 220px at 70% 54%, rgba(80, 225, 255, 0.108), transparent 76%),
+    rgba(5, 22, 52, 0.26);
+}
+
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-studio-preview-brief .dashboard-stage-lead-title {
+  max-width: 13ch;
+}
+
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-studio-demo-review,
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-studio-output-proof,
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-studio-preview-stream {
+  opacity: 0.58;
+}
+
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-context-dock-proof {
+  opacity: 0.48;
+  transform: translateY(clamp(24px, 3.5vw, 58px));
+}
+
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-context-dock-proof:hover,
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-context-dock-proof:focus-within {
+  opacity: 0.72;
+}
+
+@media (max-width: 1180px) {
+  .dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-unified-context {
+    grid-template-columns: minmax(0, 0.66fr) minmax(230px, 0.34fr);
+    gap: clamp(22px, 4vw, 54px);
+  }
+
+  .dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-unified-mark h1 {
+    font-size: clamp(3.7rem, 7vw, 5.7rem);
+  }
+
+  .dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-unified-signals {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-unified-context {
+    gap: clamp(14px, 4.4vw, 22px);
+  }
+
+  .dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-unified-mark h1 {
+    max-width: 7.7ch;
+    font-size: clamp(2.75rem, 11.6vw, 3.85rem);
+    line-height: 0.82;
+  }
+
+  .dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-unified-mark .section-header-copy {
+    max-width: 20rem;
+    font-size: 0.92rem;
+  }
+
+  .dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-editorial-intent {
+    padding-top: 0;
+    gap: 10px;
+  }
+
+  .dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-studio-primary-cta {
+    min-height: 52px;
+    padding-inline: 18px;
+  }
+
+  .dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-unified-proofline span:nth-child(n + 3) {
+    display: none;
+  }
+
+  .dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-unified-artifact {
+    margin-top: 0;
+  }
+
+  .dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-studio-artifact-thread {
+    display: none;
+  }
+
+  .dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-studio-preview-topbar {
+    display: none;
+  }
+
+  .dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-studio-preview-canvas {
+    min-height: auto;
+  }
+
+  .dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-studio-demo-review,
+  .dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-studio-output-proof,
+  .dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-studio-preview-stream {
+    opacity: 0.64;
+  }
+
+  .dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-context-dock-proof {
+    opacity: 0.58;
+    transform: none;
+  }
+}
+
+/* Round 10 tightening: collapse the remaining two-pole hero into one thesis. */
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-unified-context {
+  position: relative;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  max-width: 960px;
+  margin-inline: auto;
+  text-align: center;
+  gap: clamp(12px, 1.7vw, 22px);
+}
+
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-unified-mark,
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-editorial-intent {
+  justify-items: center;
+  text-align: center;
+}
+
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-unified-mark h1 {
+  max-width: 10.2ch;
+}
+
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-unified-mark .section-header-copy {
+  max-width: 38rem;
+  margin-inline: auto;
+}
+
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-unified-badges,
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-studio-primary-actions,
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-unified-proofline {
+  justify-content: center;
+}
+
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-editorial-intent {
+  padding-top: 0;
+}
+
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-unified-signals {
+  position: absolute;
+  right: clamp(-190px, -12vw, -72px);
+  top: clamp(120px, 12vw, 190px);
+  width: max-content;
+  opacity: 0.1;
+}
+
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-studio-artifact-thread {
+  display: none;
+}
+
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-unified-artifact {
+  margin-top: clamp(-18px, -1.1vw, -6px);
+}
+
+.dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-studio-orbit::before {
+  opacity: 0.38;
+}
+
+@media (max-width: 1180px) {
+  .dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-unified-context {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 820px;
+  }
+}
+
+@media (max-width: 760px) {
+  .dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-unified-context,
+  .dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-unified-mark,
+  .dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-editorial-intent {
+    justify-items: start;
+    text-align: left;
+  }
+
+  .dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-unified-badges,
+  .dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-studio-primary-actions,
+  .dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-unified-proofline {
+    justify-content: flex-start;
+  }
+
+  .dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-unified-signals {
+    display: none;
+  }
+}

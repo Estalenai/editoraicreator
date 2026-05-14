@@ -308,6 +308,7 @@ export default function DashboardPage() {
       data-dashboard-rhythm="breathing"
       data-dashboard-proof="selective"
       data-dashboard-gap="lasy-bridge"
+      data-dashboard-thesis="editorial-demo"
     >
       <div className="dashboard-surface-canvas dashboard-operating-canvas dashboard-studio-canvas dashboard-ecosystem-field">
         <section className="dashboard-surface-stage dashboard-operating-stage dashboard-studio-stage" data-reveal>
@@ -323,22 +324,17 @@ export default function DashboardPage() {
                             <p className="section-kicker">Creator Operating Studio</p>
                             <h1 className="heading-reset">
                               <span>Studio</span>
-                              <span>Canvas</span>
+                              <span>Canvas vivo.</span>
                             </h1>
                             <p className="section-header-copy hero-copy-compact">
-                              Produto vivo, projeto e saída no mesmo campo.
+                              Uma entrada, um projeto e uma saída trabalhando no mesmo produto-demo.
                             </p>
                             <div className="hero-meta-row dashboard-unified-badges dashboard-studio-chrome-badges">
                               <span className="premium-badge dashboard-operating-badge">Plano: {planLabelDisplay}</span>
                             </div>
                           </div>
 
-                          <div className="dashboard-unified-intent">
-                            <strong>Entrega ativa.</strong>
-                            <div className="dashboard-studio-hero-metadata" aria-label="Camadas visuais do estúdio">
-                              <span>Projeto</span>
-                              <span>Saída</span>
-                            </div>
+                          <div className="dashboard-unified-intent dashboard-editorial-intent" aria-label="Ação principal do Studio Canvas">
                             <div className="dashboard-studio-primary-actions" aria-label="Ações principais do Studio Canvas">
                               {nextAction.href.startsWith("/editor") ? (
                                 <EditorRouteLink href={nextAction.href} className="btn-link-ea btn-primary dashboard-studio-primary-cta">
@@ -354,6 +350,7 @@ export default function DashboardPage() {
                               </Link>
                             </div>
                             <div className="dashboard-unified-proofline" aria-label="Prova rápida do Studio Canvas">
+                              <span>Entrega ativa</span>
                               <span>{featuredProjectDisplay?.deliverableLabel || "Canvas pronto"}</span>
                               <strong>{featuredProjectDisplay?.statusLabel || "Pronto para criar"}</strong>
                               {walletSummaryDisplay !== "—" ? <span>{walletSummaryDisplay}</span> : null}
@@ -418,9 +415,8 @@ export default function DashboardPage() {
 
                           <div className="dashboard-surface-focus-lead-wrap dashboard-ecosystem-lead dashboard-studio-preview-shell">
                             <div className="dashboard-studio-preview-topbar" aria-label="Camadas do artefato">
-                              <span>Prompt</span>
-                              <span>IA</span>
-                              <span>Revisão</span>
+                              <span>Entrada</span>
+                              <span>Produto-demo</span>
                               <span>Saída</span>
                             </div>
 
