@@ -28753,6 +28753,123 @@ body {
   border-color: rgba(191, 239, 255, 0.024);
 }
 
+/* Round B: the artifact becomes one product proof. Internal labels stay
+   available as context, but they no longer organize the first reading. */
+.dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-unified-artifact {
+  margin-top: clamp(-10px, -0.8vw, -4px);
+}
+
+.dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-studio-preview-topbar {
+  height: 0;
+  margin: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-studio-preview-canvas {
+  min-height: clamp(420px, 31vw, 500px);
+  border-color: rgba(191, 239, 255, 0.052);
+  background:
+    radial-gradient(520px 360px at 48% 58%, rgba(70, 219, 255, 0.16), transparent 74%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.024), rgba(255, 255, 255, 0.006) 48%, transparent 74%),
+    rgba(5, 22, 52, 0.18);
+}
+
+.dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-studio-demo-prompt {
+  border-color: rgba(191, 239, 255, 0.032);
+  background:
+    radial-gradient(260px 90px at 20% 50%, rgba(78, 224, 255, 0.06), transparent 78%),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.026), rgba(255, 255, 255, 0.006), transparent);
+}
+
+.dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-studio-demo-frequency {
+  opacity: 0.34;
+}
+
+.dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-studio-preview-brief {
+  width: min(58%, 560px);
+  border-color: rgba(191, 239, 255, 0.046);
+  background:
+    radial-gradient(380px 260px at 72% 52%, rgba(78, 224, 255, 0.14), transparent 74%),
+    rgba(5, 22, 52, 0.2);
+  box-shadow: none;
+}
+
+.dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-studio-preview-brief .dashboard-stage-lead-kicker,
+.dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-studio-preview-brief .dashboard-stage-lead-pill,
+.dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-studio-preview-brief .dashboard-stage-lead-meta,
+.dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-studio-preview-brief .dashboard-stage-lead-note {
+  opacity: 0.34;
+}
+
+.dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-studio-preview-brief .dashboard-stage-lead-title {
+  max-width: 14ch;
+}
+
+.dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-stage-lead-action {
+  color: rgba(166, 244, 255, 0.9);
+}
+
+.dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-studio-demo-review {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-studio-preview-output {
+  border-color: rgba(191, 239, 255, 0.032);
+  background: rgba(255, 255, 255, 0.006);
+  opacity: 0.54;
+}
+
+.dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-studio-output-proof,
+.dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-studio-preview-stream {
+  opacity: 0.28;
+}
+
+.dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-context-dock-proof {
+  opacity: 0.22;
+  transform: translateY(clamp(60px, 5.4vw, 96px));
+}
+
+.dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-context-dock-proof:hover,
+.dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-context-dock-proof:focus-within {
+  opacity: 0.58;
+}
+
+.dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-context-dock-proof .dashboard-stream-link-kicker,
+.dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-context-dock-proof .dashboard-context-meta,
+.dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-context-dock-proof .dashboard-context-signal > span:last-child {
+  opacity: 0.5;
+}
+
+@media (max-width: 760px) {
+  .dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-studio-preview-canvas {
+    min-height: auto;
+    padding: 8px;
+  }
+
+  .dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-studio-demo-prompt,
+  .dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-studio-preview-output,
+  .dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-studio-preview-stream {
+    display: none;
+  }
+
+  .dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-studio-preview-brief {
+    width: 100%;
+    min-height: clamp(250px, 62vw, 320px);
+  }
+
+  .dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-studio-preview-brief .dashboard-stage-lead-meta {
+    display: none;
+  }
+
+  .dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-context-dock-proof {
+    opacity: 0.44;
+    transform: none;
+  }
+}
+
 @media (max-width: 760px) {
   .dashboard-studio-page[data-dashboard-thesis-clarity="concrete"] .dashboard-unified-mark h1 {
     max-width: 8.8ch;
