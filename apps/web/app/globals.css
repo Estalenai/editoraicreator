@@ -29167,6 +29167,7 @@ body {
     linear-gradient(90deg, transparent, rgba(83, 228, 255, 0.024), transparent 86%);
   background-size: auto, auto, auto;
   box-shadow: none;
+  overflow: visible;
 }
 
 .dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-studio-preview-canvas::before,
@@ -29203,12 +29204,12 @@ body {
 .dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-unified-proofline,
 .dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-context-dock-proof,
 .dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-studio-quiet-status {
-  opacity: 0.3;
+  opacity: 0.46;
 }
 
 .dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-context-dock-proof:hover,
 .dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-context-dock-proof:focus-within {
-  opacity: 0.62;
+  opacity: 0.74;
 }
 
 .dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-context-dock-proof .dashboard-context-signal strong {
@@ -29243,19 +29244,25 @@ body {
 
   .dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-studio-preview-canvas {
     background:
-      radial-gradient(260px 220px at 54% 48%, rgba(78, 224, 255, 0.13), transparent 72%),
-      linear-gradient(90deg, transparent, rgba(83, 228, 255, 0.018), transparent 86%);
+      radial-gradient(260px 220px at 56% 46%, rgba(78, 224, 255, 0.105), transparent 74%),
+      linear-gradient(90deg, transparent, rgba(83, 228, 255, 0.012), transparent 88%);
     background-size: auto, auto;
   }
 
   .dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-surface-focus-lead.dashboard-studio-preview-brief {
     border-color: rgba(191, 239, 255, 0.014);
     background:
-      radial-gradient(260px 210px at 70% 54%, rgba(78, 224, 255, 0.14), transparent 72%),
-      linear-gradient(90deg, rgba(78, 226, 255, 0.016), transparent 84%);
+      radial-gradient(260px 210px at 70% 54%, rgba(78, 224, 255, 0.115), transparent 74%),
+      linear-gradient(90deg, rgba(78, 226, 255, 0.01), transparent 86%);
   }
 
   .dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-stage-lead-footer {
-    opacity: 0.68;
+    opacity: 0.76;
+  }
+
+  .dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-unified-proofline,
+  .dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-context-dock-proof,
+  .dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-studio-quiet-status {
+    opacity: 0.52;
   }
 }
