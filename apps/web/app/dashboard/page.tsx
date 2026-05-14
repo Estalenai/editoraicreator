@@ -247,16 +247,16 @@ export default function DashboardPage() {
   const hasConfirmedUsage = totalUsage > 0;
   const nextAction = recentProjects.length > 0
       ? {
-        title: "Retomar projeto",
-        description: "Continue no editor.",
+        title: "Continuar no canvas",
+        description: "Retome a criação sem trocar de contexto.",
         href: recentProjects[0]?.id ? `/editor/${recentProjects[0].id}` : "/projects",
-        cta: recentProjects[0]?.id ? "Abrir último projeto" : "Abrir projetos",
+        cta: recentProjects[0]?.id ? "Continuar no canvas" : "Abrir projetos",
       }
     : {
-        title: "Primeira entrega",
-        description: "Abrir Creator.",
+        title: "Criar primeira entrega",
+        description: "Comece pelo canvas criativo.",
         href: "/creators",
-        cta: "Abrir Creators",
+        cta: "Criar primeira entrega",
       };
   const recentUsageText = usageLoading
     ? "Ciclo em leitura."
@@ -266,7 +266,7 @@ export default function DashboardPage() {
   const planLabelDisplay = loading ? "Plano em sincronização" : planLabel ?? "—";
   const walletSummaryDisplay = loading ? "Saldo em sincronização" : walletSummary;
   const totalUsageDisplay = loading || usageLoading ? "Uso em sincronização" : totalUsage.toLocaleString("pt-BR");
-  const nextActionCtaDisplay = loading ? "Aguarde a sincronização" : nextAction.cta;
+  const nextActionCtaDisplay = loading ? "Preparando canvas" : nextAction.cta;
   const continuityValue = loading ? "Projetos em sincronização" : `${recentProjects.length} projeto(s)`;
   const continuityDetail = loading
     ? "Sincronizando trilha."
@@ -306,6 +306,7 @@ export default function DashboardPage() {
       data-dashboard-proof="selective"
       data-dashboard-gap="lasy-bridge"
       data-dashboard-thesis="editorial-demo"
+      data-dashboard-thesis-clarity="concrete"
       data-dashboard-shell="editorial"
     >
       <div className="dashboard-surface-canvas dashboard-operating-canvas dashboard-studio-canvas dashboard-ecosystem-field">
@@ -319,17 +320,14 @@ export default function DashboardPage() {
                       <div className="dashboard-unified-field dashboard-field-thread">
                         <div className="dashboard-unified-context" aria-label="Tese editorial do Studio Canvas">
                           <div className="dashboard-unified-mark">
-                            <p className="section-kicker">Editor AI Creator Studio</p>
+                            <p className="section-kicker">Studio Canvas vivo</p>
                             <h1 className="heading-reset">
-                              <span>Studio</span>
-                              <span>Canvas vivo.</span>
+                              <span>Crie, edite</span>
+                              <span>e entregue no mesmo canvas.</span>
                             </h1>
                             <p className="section-header-copy hero-copy-compact">
-                              Da ideia à saída em um produto-demo vivo.
+                              Do primeiro brief à saída final, avance sem perder o contexto criativo.
                             </p>
-                            <div className="hero-meta-row dashboard-unified-badges dashboard-studio-chrome-badges">
-                              <span className="premium-badge dashboard-operating-badge">{planLabelDisplay}</span>
-                            </div>
                           </div>
 
                           <div className="dashboard-unified-intent dashboard-editorial-intent" aria-label="Ação principal do Studio Canvas">
@@ -348,9 +346,8 @@ export default function DashboardPage() {
                               </Link>
                             </div>
                             <div className="dashboard-unified-proofline" aria-label="Prova rápida do Studio Canvas">
-                              <span>Projeto vivo</span>
-                              <span>{featuredProjectDisplay?.deliverableLabel || "Canvas pronto"}</span>
-                              <strong>{featuredProjectDisplay?.statusLabel || "Pronto para criar"}</strong>
+                              <span>{featuredProjectDisplay ? `${featuredProjectDisplay.deliverableLabel} em continuidade` : "Brief e entrega no mesmo lugar"}</span>
+                              <strong>{featuredProjectDisplay?.statusLabel || "Comece pelo canvas"}</strong>
                             </div>
                           </div>
                         </div>
@@ -538,7 +535,7 @@ export default function DashboardPage() {
                               {supportQuickLinks.map((item) => (
                                 <Link key={item.href} href={item.href} className="dashboard-context-support-link">
                                   <span>Base</span>
-                                  <strong>{item.title}</strong>
+                                  <strong>{item.href === "/plans" ? planLabelDisplay : item.title}</strong>
                                 </Link>
                               ))}
                             </div>

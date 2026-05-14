@@ -28671,6 +28671,119 @@ body {
   background: rgba(255, 255, 255, 0.006);
 }
 
+/* Round A: make the opening thesis concrete. The first fold should read as
+   one editorial product promise before the authenticated shell is noticed. */
+.app-shell-body:has(.dashboard-surface-page[data-dashboard-thesis-clarity="concrete"]) .app-top-nav {
+  opacity: 0.24;
+  transform: translateY(-2px) scale(0.985);
+}
+
+.app-shell-body:has(.dashboard-surface-page[data-dashboard-thesis-clarity="concrete"]) .app-top-nav:hover,
+.app-shell-body:has(.dashboard-surface-page[data-dashboard-thesis-clarity="concrete"]) .app-top-nav:focus-within {
+  opacity: 0.64;
+  transform: none;
+}
+
+.dashboard-studio-page[data-dashboard-thesis-clarity="concrete"] .dashboard-unified-context {
+  gap: clamp(14px, 1.9vw, 26px);
+}
+
+.dashboard-studio-page[data-dashboard-thesis-clarity="concrete"] .dashboard-unified-mark {
+  max-width: 1040px;
+}
+
+.dashboard-studio-page[data-dashboard-thesis-clarity="concrete"] .dashboard-unified-mark .section-kicker {
+  color: rgba(147, 239, 255, 0.78);
+  font-size: 0.72rem;
+  letter-spacing: 0.11em;
+}
+
+.dashboard-studio-page[data-dashboard-thesis-clarity="concrete"] .dashboard-unified-mark h1 {
+  max-width: 12.4ch;
+  font-size: clamp(4.15rem, 5.45vw, 6.55rem);
+  line-height: 0.86;
+  letter-spacing: -0.078em;
+}
+
+.dashboard-studio-page[data-dashboard-thesis-clarity="concrete"] .dashboard-unified-mark h1 span:last-child {
+  color: rgba(213, 241, 255, 0.9);
+}
+
+.dashboard-studio-page[data-dashboard-thesis-clarity="concrete"] .dashboard-unified-mark .section-header-copy {
+  max-width: 43rem;
+  color: rgba(231, 246, 255, 0.84);
+}
+
+.dashboard-studio-page[data-dashboard-thesis-clarity="concrete"] .dashboard-studio-primary-actions {
+  margin-top: 2px;
+}
+
+.dashboard-studio-page[data-dashboard-thesis-clarity="concrete"] .dashboard-studio-primary-cta {
+  min-height: 62px;
+  padding-inline: clamp(24px, 2.45vw, 40px);
+}
+
+.dashboard-studio-page[data-dashboard-thesis-clarity="concrete"] .dashboard-studio-secondary-cta {
+  opacity: 0.42;
+}
+
+.dashboard-studio-page[data-dashboard-thesis-clarity="concrete"] .dashboard-unified-proofline {
+  max-width: 32rem;
+  opacity: 0.56;
+}
+
+.dashboard-studio-page[data-dashboard-thesis-clarity="concrete"] .dashboard-unified-proofline span,
+.dashboard-studio-page[data-dashboard-thesis-clarity="concrete"] .dashboard-unified-proofline strong {
+  border-color: rgba(191, 239, 255, 0.036);
+  background: rgba(255, 255, 255, 0.006);
+  color: rgba(221, 242, 255, 0.7);
+}
+
+.dashboard-studio-page[data-dashboard-thesis-clarity="concrete"] .dashboard-context-dock-proof {
+  opacity: 0.3;
+  transform: translateY(clamp(48px, 5vw, 86px));
+}
+
+.dashboard-studio-page[data-dashboard-thesis-clarity="concrete"] .dashboard-context-dock-proof:hover,
+.dashboard-studio-page[data-dashboard-thesis-clarity="concrete"] .dashboard-context-dock-proof:focus-within {
+  opacity: 0.64;
+}
+
+.dashboard-studio-page[data-dashboard-thesis-clarity="concrete"] .dashboard-context-dock-proof .dashboard-context-signal {
+  border-color: rgba(191, 239, 255, 0.024);
+}
+
+@media (max-width: 760px) {
+  .dashboard-studio-page[data-dashboard-thesis-clarity="concrete"] .dashboard-unified-mark h1 {
+    max-width: 8.8ch;
+    font-size: clamp(2.65rem, 10.7vw, 3.55rem);
+    line-height: 0.88;
+    letter-spacing: -0.07em;
+  }
+
+  .dashboard-studio-page[data-dashboard-thesis-clarity="concrete"] .dashboard-unified-mark .section-header-copy {
+    max-width: 21.5rem;
+    font-size: 0.95rem;
+  }
+
+  .dashboard-studio-page[data-dashboard-thesis-clarity="concrete"] .dashboard-studio-primary-actions {
+    width: 100%;
+  }
+
+  .dashboard-studio-page[data-dashboard-thesis-clarity="concrete"] .dashboard-studio-primary-cta {
+    min-height: 56px;
+  }
+
+  .dashboard-studio-page[data-dashboard-thesis-clarity="concrete"] .dashboard-unified-proofline {
+    opacity: 0.62;
+  }
+
+  .dashboard-studio-page[data-dashboard-thesis-clarity="concrete"] .dashboard-context-dock-proof {
+    opacity: 0.5;
+    transform: none;
+  }
+}
+
 .dashboard-context-utility-actions {
   display: flex;
   flex-wrap: wrap;
