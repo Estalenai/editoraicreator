@@ -10435,29 +10435,27 @@ body {
 .dashboard-studio-orbit::before {
   content: "";
   position: absolute;
-  inset: 0% -6% 3% -2%;
+  inset: -10% -10% -14% -8%;
   z-index: -1;
   pointer-events: none;
   border-radius: 0;
   background:
-    linear-gradient(90deg, rgba(73, 225, 255, 0.09), rgba(191, 239, 255, 0.022), transparent 78%),
-    radial-gradient(800px 260px at 34% 18%, rgba(78, 226, 255, 0.115), transparent 78%),
-    radial-gradient(540px 300px at 82% 78%, rgba(245, 219, 103, 0.03), transparent 80%);
-  mask-image: linear-gradient(90deg, transparent 0%, #000 7%, #000 91%, transparent 100%);
-  opacity: 0.64;
+    radial-gradient(900px 360px at 34% 18%, rgba(78, 226, 255, 0.12), transparent 78%),
+    radial-gradient(640px 340px at 78% 74%, rgba(57, 112, 255, 0.065), transparent 80%);
+  mask-image: radial-gradient(ellipse at 42% 42%, #000 0%, rgba(0, 0, 0, 0.62) 38%, transparent 76%);
+  opacity: 0.42;
 }
 
 .dashboard-studio-orbit::after {
   content: "";
   position: absolute;
-  inset: -18% -7% -20%;
+  inset: -24% -12% -28%;
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(680px 260px at 52% 22%, rgba(82, 229, 255, 0.105), transparent 72%),
-    radial-gradient(560px 280px at 10% 84%, rgba(43, 102, 255, 0.075), transparent 75%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.012), transparent 70%);
-  opacity: 0.82;
+    radial-gradient(720px 260px at 50% 28%, rgba(82, 229, 255, 0.075), transparent 74%),
+    radial-gradient(560px 300px at 12% 86%, rgba(43, 102, 255, 0.055), transparent 76%);
+  opacity: 0.36;
 }
 
 .dashboard-studio-artifact {
@@ -10486,7 +10484,8 @@ body {
 
 .dashboard-studio-artifact::before,
 .dashboard-studio-artifact::after {
-  content: "";
+  content: none;
+  display: none;
   position: absolute;
   pointer-events: none;
 }
@@ -10572,16 +10571,12 @@ body {
   z-index: 1;
   min-height: 224px;
   padding: clamp(18px, 1.8vw, 28px);
-  border: 1px solid rgba(191, 239, 255, 0.024);
-  border-radius: 22px;
-  background:
-    linear-gradient(90deg, rgba(75, 232, 255, 0.043) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(75, 232, 255, 0.032) 1px, transparent 1px),
-    radial-gradient(380px 170px at 28% 8%, rgba(78, 226, 255, 0.085), transparent 74%),
-    linear-gradient(145deg, rgba(10, 38, 84, 0.13), rgba(3, 12, 31, 0.018));
-  background-size: 46px 46px, 46px 46px, auto;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.024);
-  overflow: clip;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  background-size: auto;
+  box-shadow: none;
+  overflow: visible;
 }
 
 .dashboard-studio-artifact .dashboard-surface-focus-lead::after,
@@ -10632,18 +10627,15 @@ body {
   padding: clamp(6px, 0.86vw, 12px);
   border: 0;
   border-radius: 0;
-  background:
-    linear-gradient(90deg, rgba(90, 227, 255, 0.035) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(90, 227, 255, 0.026) 1px, transparent 1px),
-    radial-gradient(560px 240px at 34% 24%, rgba(78, 226, 255, 0.12), transparent 76%),
-    linear-gradient(145deg, rgba(5, 20, 48, 0.045), rgba(8, 31, 74, 0.012));
-  background-size: 56px 56px, 56px 56px, auto, auto;
+  background: transparent;
+  background-size: auto;
   overflow: visible;
 }
 
 .dashboard-studio-preview-canvas::before,
 .dashboard-studio-preview-canvas::after {
-  content: "";
+  content: none;
+  display: none;
   position: absolute;
   left: 0;
   right: 0;
@@ -10785,14 +10777,13 @@ body {
   padding: 0 clamp(4px, 0.8vw, 12px);
   border: 0;
   border-radius: 0;
-  background:
-    linear-gradient(90deg, rgba(78, 226, 255, 0.06), rgba(191, 239, 255, 0.018), transparent 82%),
-    rgba(255, 255, 255, 0);
+  background: transparent;
   overflow-wrap: anywhere;
 }
 
 .dashboard-studio-artifact .dashboard-ecosystem-state::before {
-  content: "";
+  content: none;
+  display: none;
   position: absolute;
   top: 0;
   left: clamp(4px, 0.8vw, 12px);
@@ -26231,12 +26222,9 @@ body {
   min-height: clamp(382px, 33vw, 470px);
   gap: clamp(10px, 1vw, 16px);
   padding: clamp(8px, 0.95vw, 14px);
-  background:
-    linear-gradient(90deg, rgba(90, 227, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(90, 227, 255, 0.03) 1px, transparent 1px),
-    radial-gradient(520px 220px at 42% 48%, rgba(78, 226, 255, 0.18), transparent 72%),
-    radial-gradient(340px 180px at 83% 16%, rgba(246, 219, 104, 0.045), transparent 74%),
-    linear-gradient(145deg, rgba(5, 20, 48, 0.05), rgba(8, 31, 74, 0.014));
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
 }
 
 .dashboard-studio-page .dashboard-studio-demo-prompt {
@@ -26274,7 +26262,8 @@ body {
 }
 
 .dashboard-studio-page .dashboard-studio-preview-brief::before {
-  content: "";
+  content: none;
+  display: none;
   position: absolute;
   inset: 16px 18px auto auto;
   width: 36%;
@@ -26475,31 +26464,20 @@ body {
 
 .dashboard-studio-page .dashboard-studio-preview-canvas {
   isolation: isolate;
-  overflow: hidden;
-  background:
-    linear-gradient(115deg, rgba(83, 228, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(90, 227, 255, 0.042) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(90, 227, 255, 0.032) 1px, transparent 1px),
-    radial-gradient(620px 280px at 43% 46%, rgba(78, 226, 255, 0.2), transparent 72%),
-    radial-gradient(420px 190px at 84% 17%, rgba(246, 219, 104, 0.058), transparent 72%),
-    radial-gradient(500px 260px at 11% 92%, rgba(74, 137, 255, 0.09), transparent 74%),
-    linear-gradient(145deg, rgba(5, 20, 48, 0.052), rgba(8, 31, 74, 0.014));
-  background-size: 82px 82px, 54px 54px, 54px 54px, auto, auto, auto, auto;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.04),
-    inset 0 -1px 0 rgba(83, 228, 255, 0.035);
+  overflow: visible;
+  background: transparent;
+  background-size: auto;
+  box-shadow: none;
 }
 
 .dashboard-studio-page .dashboard-studio-preview-canvas::before {
-  top: 10px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(83, 228, 255, 0.3), rgba(191, 239, 255, 0.042), transparent);
+  content: none;
+  display: none;
 }
 
 .dashboard-studio-page .dashboard-studio-preview-canvas::after {
-  bottom: 22px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(246, 219, 104, 0.09), rgba(83, 228, 255, 0.16), transparent);
+  content: none;
+  display: none;
 }
 
 .dashboard-studio-page .dashboard-studio-signature-field {
@@ -26957,7 +26935,7 @@ body {
 .dashboard-studio-page .dashboard-studio-artifact .dashboard-ecosystem-state::before {
   left: 0;
   right: 0;
-  background: linear-gradient(90deg, rgba(78, 226, 255, 0.2), rgba(191, 239, 255, 0.032), transparent 70%);
+  background: transparent;
 }
 
 .dashboard-studio-page .dashboard-studio-artifact .dashboard-ecosystem-state .dashboard-surface-stat {
@@ -28099,11 +28077,13 @@ body {
 }
 
 .dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-studio-preview-canvas::before {
-  opacity: 0.46;
+  content: none;
+  display: none;
 }
 
 .dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-studio-preview-canvas::after {
-  opacity: 0.34;
+  content: none;
+  display: none;
 }
 
 .dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-studio-demo-prompt {
@@ -28119,8 +28099,8 @@ body {
 }
 
 .dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-studio-preview-brief {
-  border-color: rgba(191, 239, 255, 0.06);
-  background: rgba(6, 24, 54, 0.34);
+  border-color: transparent;
+  background: transparent;
 }
 
 .dashboard-studio-page[data-dashboard-gap="lasy-bridge"] .dashboard-studio-preview-brief .dashboard-stage-lead-title {
@@ -28328,7 +28308,9 @@ body {
 
 .dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-studio-preview-canvas {
   min-height: clamp(405px, 32vw, 470px);
-  border-color: rgba(191, 239, 255, 0.072);
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
 }
 
 .dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-studio-demo-prompt {
@@ -28339,9 +28321,9 @@ body {
 }
 
 .dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-studio-preview-brief {
-  background:
-    radial-gradient(360px 220px at 70% 54%, rgba(80, 225, 255, 0.108), transparent 76%),
-    rgba(5, 22, 52, 0.26);
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
 }
 
 .dashboard-studio-page[data-dashboard-thesis="editorial-demo"] .dashboard-studio-preview-brief .dashboard-stage-lead-title {
@@ -28769,11 +28751,10 @@ body {
 
 .dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-studio-preview-canvas {
   min-height: clamp(420px, 31vw, 500px);
-  border-color: rgba(191, 239, 255, 0.052);
-  background:
-    radial-gradient(520px 360px at 48% 58%, rgba(70, 219, 255, 0.16), transparent 74%),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.024), rgba(255, 255, 255, 0.006) 48%, transparent 74%),
-    rgba(5, 22, 52, 0.18);
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
 }
 
 .dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-studio-demo-prompt {
@@ -28789,10 +28770,8 @@ body {
 
 .dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-studio-preview-brief {
   width: min(58%, 560px);
-  border-color: rgba(191, 239, 255, 0.046);
-  background:
-    radial-gradient(380px 260px at 72% 52%, rgba(78, 224, 255, 0.14), transparent 74%),
-    rgba(5, 22, 52, 0.2);
+  border-color: transparent;
+  background: transparent;
   box-shadow: none;
 }
 
@@ -28800,7 +28779,7 @@ body {
 .dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-studio-preview-brief .dashboard-stage-lead-pill,
 .dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-studio-preview-brief .dashboard-stage-lead-meta,
 .dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-studio-preview-brief .dashboard-stage-lead-note {
-  opacity: 0.34;
+  opacity: 0.62;
 }
 
 .dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-studio-preview-brief .dashboard-stage-lead-title {
@@ -28817,24 +28796,24 @@ body {
 }
 
 .dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-studio-preview-output {
-  border-color: rgba(191, 239, 255, 0.032);
-  background: rgba(255, 255, 255, 0.006);
-  opacity: 0.54;
+  border-color: transparent;
+  background: transparent;
+  opacity: 0.82;
 }
 
 .dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-studio-output-proof,
 .dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-studio-preview-stream {
-  opacity: 0.28;
+  opacity: 0.58;
 }
 
 .dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-context-dock-proof {
-  opacity: 0.22;
-  transform: translateY(clamp(60px, 5.4vw, 96px));
+  opacity: 0.62;
+  transform: translateY(clamp(42px, 4.2vw, 72px));
 }
 
 .dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-context-dock-proof:hover,
 .dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-context-dock-proof:focus-within {
-  opacity: 0.58;
+  opacity: 0.86;
 }
 
 .dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-context-dock-proof .dashboard-stream-link-kicker,
@@ -28857,7 +28836,7 @@ body {
 
   .dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-studio-preview-brief {
     width: 100%;
-    min-height: clamp(250px, 62vw, 320px);
+    min-height: clamp(210px, 54vw, 280px);
   }
 
   .dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-studio-preview-brief .dashboard-stage-lead-meta {
@@ -28865,7 +28844,7 @@ body {
   }
 
   .dashboard-studio-page[data-dashboard-demo-proof="single"] .dashboard-context-dock-proof {
-    opacity: 0.44;
+    opacity: 0.62;
     transform: none;
   }
 }
@@ -28973,32 +28952,32 @@ body {
 }
 
 .dashboard-studio-page[data-dashboard-final-rhythm="editorial"] .dashboard-unified-proofline {
-  opacity: 0.42;
+  opacity: 0.68;
   transform: translateY(4px);
 }
 
 .dashboard-studio-page[data-dashboard-final-rhythm="editorial"] .dashboard-studio-secondary-cta {
-  opacity: 0.28;
+  opacity: 0.54;
 }
 
 .dashboard-studio-page[data-dashboard-final-rhythm="editorial"] .dashboard-context-dock-proof {
-  opacity: 0.16;
-  transform: translateY(clamp(82px, 7.8vw, 142px));
+  opacity: 0.58;
+  transform: translateY(clamp(36px, 4.6vw, 78px));
 }
 
 .dashboard-studio-page[data-dashboard-final-rhythm="editorial"] .dashboard-context-dock-proof:hover,
 .dashboard-studio-page[data-dashboard-final-rhythm="editorial"] .dashboard-context-dock-proof:focus-within {
-  opacity: 0.5;
+  opacity: 0.84;
 }
 
 .dashboard-studio-page[data-dashboard-final-rhythm="editorial"] .dashboard-context-dock-proof .dashboard-context-log,
 .dashboard-studio-page[data-dashboard-final-rhythm="editorial"] .dashboard-context-dock-proof .dashboard-context-support,
 .dashboard-studio-page[data-dashboard-final-rhythm="editorial"] .dashboard-context-dock-proof .dashboard-context-onboarding {
-  opacity: 0.42;
+  opacity: 0.72;
 }
 
 .dashboard-studio-page[data-dashboard-final-rhythm="editorial"] .dashboard-studio-quiet-status {
-  opacity: 0.36;
+  opacity: 0.62;
   transform: translateY(clamp(22px, 3vw, 44px));
 }
 
@@ -29008,12 +28987,12 @@ body {
   }
 
   .dashboard-studio-page[data-dashboard-final-rhythm="editorial"] .dashboard-unified-proofline {
-    opacity: 0.34;
+    opacity: 0.62;
   }
 
   .dashboard-studio-page[data-dashboard-final-rhythm="editorial"] .dashboard-context-dock-proof {
-    opacity: 0.2;
-    transform: translateY(clamp(58px, 6vw, 84px));
+    opacity: 0.54;
+    transform: translateY(clamp(34px, 4.2vw, 66px));
   }
 
   .dashboard-studio-page[data-dashboard-final-rhythm="editorial"] .dashboard-studio-preview-canvas {
@@ -29027,13 +29006,13 @@ body {
   }
 
   .dashboard-studio-page[data-dashboard-final-rhythm="editorial"] .dashboard-context-dock-proof {
-    opacity: 0.14;
-    transform: translateY(34px);
+    opacity: 0.48;
+    transform: translateY(24px);
   }
 
   .dashboard-studio-page[data-dashboard-final-rhythm="editorial"] .dashboard-context-dock-proof:hover,
   .dashboard-studio-page[data-dashboard-final-rhythm="editorial"] .dashboard-context-dock-proof:focus-within {
-    opacity: 0.36;
+    opacity: 0.76;
   }
 }
 
@@ -29071,11 +29050,9 @@ body {
 
   .dashboard-studio-page[data-dashboard-final-rhythm="editorial"] .dashboard-studio-preview-canvas {
     padding: 7px;
-    border-color: rgba(191, 239, 255, 0.034);
-    background:
-      radial-gradient(260px 220px at 54% 48%, rgba(78, 224, 255, 0.13), transparent 72%),
-      linear-gradient(135deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.004) 58%, transparent 78%),
-      rgba(5, 22, 52, 0.12);
+    border-color: transparent;
+    background: transparent;
+    box-shadow: none;
   }
 
   .dashboard-studio-page[data-dashboard-final-rhythm="editorial"] .dashboard-studio-preview-brief {
@@ -29102,7 +29079,7 @@ body {
 
   .dashboard-studio-page[data-dashboard-final-rhythm="editorial"] .dashboard-stage-lead-footer {
     margin-top: auto;
-    opacity: 0.5;
+    opacity: 0.76;
   }
 
   .dashboard-studio-page[data-dashboard-final-rhythm="editorial"] .dashboard-context-dock-proof {
@@ -29111,158 +29088,5 @@ body {
 
   .dashboard-studio-page[data-dashboard-final-rhythm="editorial"] .dashboard-studio-usage-signal {
     display: none;
-  }
-}
-
-/* Final field lock: remove residual panel ghosts. Surfaces stay useful, but
-   the Studio Canvas reads as one open field instead of stacked containers. */
-.dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-studio-orbit::before {
-  inset: -6% -8% -12% -6%;
-  background:
-    radial-gradient(820px 340px at 34% 12%, rgba(78, 226, 255, 0.1), transparent 74%),
-    radial-gradient(720px 320px at 66% 70%, rgba(57, 112, 255, 0.08), transparent 78%),
-    linear-gradient(90deg, transparent, rgba(78, 226, 255, 0.05), transparent 82%);
-  mask-image: radial-gradient(ellipse at 48% 42%, #000 0%, rgba(0, 0, 0, 0.72) 42%, transparent 78%);
-  opacity: 0.55;
-}
-
-.dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-studio-orbit::after {
-  inset: -22% -10% -28%;
-  background:
-    radial-gradient(700px 280px at 50% 34%, rgba(82, 229, 255, 0.08), transparent 72%),
-    radial-gradient(560px 300px at 15% 86%, rgba(43, 102, 255, 0.06), transparent 76%);
-  opacity: 0.44;
-}
-
-.dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-unified-artifact .dashboard-command-bridge.dashboard-studio-artifact {
-  background: transparent;
-  box-shadow: none;
-}
-
-.dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-studio-artifact::before {
-  inset: -2% -2% -4%;
-  border-top: 0;
-  background:
-    radial-gradient(720px 310px at 34% 26%, rgba(75, 232, 255, 0.09), transparent 72%),
-    radial-gradient(680px 320px at 82% 64%, rgba(74, 137, 255, 0.055), transparent 76%),
-    linear-gradient(90deg, transparent, rgba(83, 228, 255, 0.05), rgba(191, 239, 255, 0.012), transparent);
-  mask-image: radial-gradient(ellipse at 47% 45%, #000 0%, rgba(0, 0, 0, 0.72) 44%, transparent 78%);
-  opacity: 0.62;
-}
-
-.dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-studio-artifact::after {
-  opacity: 0.18;
-  border-color: rgba(78, 226, 255, 0.02);
-}
-
-.dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-studio-preview-shell {
-  filter: saturate(1.03);
-}
-
-.dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-studio-preview-canvas {
-  border: 0;
-  background:
-    radial-gradient(600px 280px at 44% 48%, rgba(78, 226, 255, 0.18), transparent 70%),
-    radial-gradient(500px 260px at 8% 92%, rgba(74, 137, 255, 0.07), transparent 74%),
-    linear-gradient(90deg, transparent, rgba(83, 228, 255, 0.024), transparent 86%);
-  background-size: auto, auto, auto;
-  box-shadow: none;
-  overflow: visible;
-}
-
-.dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-studio-preview-canvas::before,
-.dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-studio-preview-canvas::after {
-  left: 16%;
-  right: 16%;
-  opacity: 0.16;
-}
-
-.dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-surface-focus-lead.dashboard-studio-preview-brief {
-  border-color: rgba(191, 239, 255, 0.014);
-  background:
-    radial-gradient(360px 250px at 72% 52%, rgba(78, 224, 255, 0.13), transparent 72%),
-    linear-gradient(90deg, rgba(78, 226, 255, 0.018), transparent 86%);
-  box-shadow: none;
-}
-
-.dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-studio-preview-output {
-  border-color: rgba(191, 239, 255, 0.014);
-  background:
-    radial-gradient(180px 120px at 34% 10%, rgba(78, 226, 255, 0.07), transparent 76%),
-    linear-gradient(160deg, rgba(255, 255, 255, 0.006), transparent 72%);
-  box-shadow: none;
-  opacity: 0.68;
-}
-
-.dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-stage-lead-action,
-.dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-studio-secondary-cta,
-.dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-context-dock-proof .dashboard-context-support-link,
-.dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-context-dock-proof .dashboard-context-onboarding-path {
-  color: rgba(198, 247, 255, 0.78);
-}
-
-.dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-unified-proofline,
-.dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-context-dock-proof,
-.dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-studio-quiet-status {
-  opacity: 0.46;
-}
-
-.dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-context-dock-proof:hover,
-.dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-context-dock-proof:focus-within {
-  opacity: 0.74;
-}
-
-.dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-context-dock-proof .dashboard-context-signal strong {
-  color: rgba(218, 242, 255, 0.72);
-}
-
-@media (max-width: 1180px) {
-  .dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-studio-artifact::before {
-    inset: -3% -4% -6%;
-    opacity: 0.5;
-  }
-
-  .dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-studio-preview-canvas {
-    background:
-      radial-gradient(520px 260px at 45% 50%, rgba(78, 226, 255, 0.16), transparent 72%),
-      radial-gradient(420px 240px at 12% 86%, rgba(74, 137, 255, 0.058), transparent 74%),
-      linear-gradient(90deg, transparent, rgba(83, 228, 255, 0.018), transparent 86%);
-    background-size: auto, auto, auto;
-  }
-}
-
-@media (max-width: 760px) {
-  .dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-studio-orbit::before,
-  .dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-studio-orbit::after {
-    opacity: 0.34;
-  }
-
-  .dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-studio-artifact::before {
-    inset: -5% -8% -8%;
-    opacity: 0.42;
-  }
-
-  .dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-studio-preview-canvas {
-    background:
-      radial-gradient(260px 220px at 56% 46%, rgba(78, 224, 255, 0.105), transparent 74%),
-      linear-gradient(90deg, transparent, rgba(83, 228, 255, 0.012), transparent 88%);
-    background-size: auto, auto;
-  }
-
-  .dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-surface-focus-lead.dashboard-studio-preview-brief {
-    border-color: rgba(191, 239, 255, 0.014);
-    background:
-      radial-gradient(260px 210px at 70% 54%, rgba(78, 224, 255, 0.115), transparent 74%),
-      linear-gradient(90deg, rgba(78, 226, 255, 0.01), transparent 86%);
-  }
-
-  .dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-stage-lead-footer {
-    opacity: 0.76;
-  }
-
-  .dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-unified-proofline,
-  .dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-context-dock-proof,
-  .dashboard-studio-page[data-dashboard-field-lock="open"] .dashboard-studio-quiet-status {
-    opacity: 0.52;
   }
 }
