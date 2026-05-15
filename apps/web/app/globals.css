@@ -29236,3 +29236,169 @@ body {
     margin-top: clamp(8px, 3.5vw, 18px);
   }
 }
+
+/* Demo proof clarity: use the existing prompt, canvas engine and output as a
+   readable transformation path instead of another status cockpit. */
+.dashboard-studio-page[data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-canvas {
+  grid-template-columns: minmax(0, 0.92fr) minmax(150px, 0.26fr) minmax(188px, 0.36fr);
+  column-gap: clamp(14px, 1.25vw, 22px);
+}
+
+.dashboard-studio-page[data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-prompt {
+  border-color: rgba(191, 239, 255, 0.082);
+  background:
+    radial-gradient(280px 86px at 20% 50%, rgba(78, 226, 255, 0.074), transparent 78%),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.048), rgba(255, 255, 255, 0.012), transparent);
+}
+
+.dashboard-studio-page[data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-prompt .dashboard-stage-stat-label,
+.dashboard-studio-page[data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-output-frame .dashboard-stage-stat-label {
+  color: rgba(184, 235, 250, 0.72);
+}
+
+.dashboard-studio-page[data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-prompt strong {
+  color: rgba(241, 250, 255, 0.94);
+}
+
+.dashboard-studio-page[data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-frequency {
+  color: rgba(174, 232, 246, 0.78);
+  opacity: 0.78;
+}
+
+.dashboard-studio-page[data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-signature-thread-a {
+  top: 34%;
+  opacity: 0.82;
+  background: linear-gradient(90deg, transparent, rgba(83, 228, 255, 0.32), rgba(255, 255, 255, 0.055), transparent);
+}
+
+.dashboard-studio-page[data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-signature-thread-b {
+  bottom: 27%;
+  opacity: 0.74;
+  background: linear-gradient(90deg, transparent, rgba(246, 219, 104, 0.18), rgba(83, 228, 255, 0.24), transparent);
+}
+
+.dashboard-studio-page[data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-engine {
+  left: 50%;
+  top: 50%;
+  opacity: 0.94;
+}
+
+.dashboard-studio-page[data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-engine-core {
+  color: rgba(244, 252, 255, 0.96);
+}
+
+.dashboard-studio-page[data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-review {
+  gap: 8px;
+  opacity: 0.72;
+  pointer-events: none;
+}
+
+.dashboard-studio-page[data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-review span {
+  padding: 8px 0 8px 12px;
+  border-left-color: rgba(83, 228, 255, 0.18);
+  background: linear-gradient(90deg, rgba(78, 226, 255, 0.036), transparent 82%);
+}
+
+.dashboard-studio-page[data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-review strong {
+  color: rgba(231, 248, 255, 0.82);
+  font-size: 0.76rem;
+}
+
+.dashboard-studio-page[data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-review em {
+  color: rgba(202, 232, 248, 0.7);
+}
+
+.dashboard-studio-page[data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-brief {
+  align-content: center;
+  gap: clamp(14px, 1.3vw, 20px);
+}
+
+.dashboard-studio-page[data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-brief .dashboard-stage-lead-title,
+.dashboard-studio-page[data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-brief > strong {
+  max-width: 13.5ch;
+  color: rgba(241, 250, 255, 0.94);
+  font-size: clamp(1.62rem, 2.28vw, 2.46rem);
+}
+
+.dashboard-studio-page[data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-stage-lead-copy,
+.dashboard-studio-page[data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-brief > p {
+  max-width: 18rem;
+  color: rgba(220, 240, 252, 0.82);
+}
+
+.dashboard-studio-page[data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-stage-lead-meta {
+  opacity: 0.42;
+}
+
+.dashboard-studio-page[data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-stage-lead-footer {
+  opacity: 0.74;
+}
+
+.dashboard-studio-page[data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-output {
+  opacity: 0.96;
+}
+
+.dashboard-studio-page[data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-output-frame {
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.dashboard-studio-page[data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-output-frame strong {
+  color: rgba(241, 250, 255, 0.96);
+  font-size: clamp(1.08rem, 1.22vw, 1.4rem);
+  line-height: 1.08;
+}
+
+.dashboard-studio-page[data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-output-proof {
+  opacity: 0.76;
+}
+
+.dashboard-studio-page[data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-output-proof span,
+.dashboard-studio-page[data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-stream span {
+  color: rgba(212, 238, 252, 0.72);
+}
+
+@media (max-width: 900px) {
+  .dashboard-studio-page[data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-canvas {
+    grid-template-columns: minmax(0, 1fr) minmax(166px, 0.42fr);
+    grid-template-areas:
+      "prompt prompt"
+      "brief output"
+      "stream stream";
+  }
+
+  .dashboard-studio-page[data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-review {
+    display: none;
+  }
+
+  .dashboard-studio-page[data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-engine {
+    left: 61%;
+    opacity: 0.72;
+  }
+
+  .dashboard-studio-page[data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-output {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 760px) {
+  .dashboard-studio-page[data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-brief {
+    align-content: start;
+    min-height: clamp(188px, 48vw, 238px);
+  }
+
+  .dashboard-studio-page[data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-brief .dashboard-stage-lead-title,
+  .dashboard-studio-page[data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-brief > strong {
+    max-width: 10.5ch;
+    font-size: clamp(1.58rem, 7vw, 2.04rem);
+  }
+
+  .dashboard-studio-page[data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-stage-lead-copy,
+  .dashboard-studio-page[data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-brief > p {
+    max-width: 15rem;
+  }
+
+  .dashboard-studio-page[data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-review {
+    display: none;
+  }
+}
