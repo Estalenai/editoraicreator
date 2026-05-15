@@ -29090,3 +29090,149 @@ body {
     display: none;
   }
 }
+
+/* Optical-center pass: keep the editorial thesis, CTA and proof in one visual
+   field so the product appears before the first fold starts to read as empty. */
+.dashboard-studio-page[data-dashboard-optical-center="hero-demo"] .dashboard-unified-field {
+  row-gap: clamp(4px, 1.05vw, 16px);
+  padding-bottom: clamp(44px, 6.2vw, 96px);
+}
+
+.dashboard-studio-page[data-dashboard-optical-center="hero-demo"] .dashboard-unified-context {
+  gap: clamp(10px, 1.45vw, 20px);
+  margin-bottom: clamp(-20px, -1.55vw, -10px);
+}
+
+.dashboard-studio-page[data-dashboard-optical-center="hero-demo"] .dashboard-unified-mark {
+  transform: translateY(clamp(-10px, -0.7vw, -4px));
+}
+
+.dashboard-studio-page[data-dashboard-optical-center="hero-demo"] .dashboard-unified-mark h1 {
+  font-size: clamp(4rem, 5.18vw, 6.18rem);
+}
+
+.dashboard-studio-page[data-dashboard-optical-center="hero-demo"] .dashboard-unified-intent {
+  transform: translateY(clamp(-4px, -0.35vw, -2px));
+}
+
+.dashboard-studio-page[data-dashboard-optical-center="hero-demo"] .dashboard-studio-primary-actions {
+  margin-top: 0;
+  margin-bottom: clamp(2px, 0.4vw, 8px);
+}
+
+.dashboard-studio-page[data-dashboard-optical-center="hero-demo"] .dashboard-unified-proofline {
+  opacity: 0.7;
+  transform: translateY(0);
+}
+
+.dashboard-studio-page[data-dashboard-optical-center="hero-demo"] .dashboard-unified-artifact {
+  margin-top: clamp(-74px, -4.85vw, -46px);
+  padding-top: 0;
+}
+
+.dashboard-studio-page[data-dashboard-optical-center="hero-demo"] .dashboard-studio-preview-shell {
+  margin-top: clamp(-8px, -0.55vw, -2px);
+}
+
+.dashboard-studio-page[data-dashboard-optical-center="hero-demo"] .dashboard-studio-preview-canvas {
+  min-height: clamp(386px, 28.6vw, 452px);
+}
+
+@media (max-width: 1180px) {
+  .dashboard-studio-page[data-dashboard-optical-center="hero-demo"] .dashboard-unified-field {
+    row-gap: clamp(6px, 1.8vw, 22px);
+    padding-bottom: clamp(42px, 6vw, 82px);
+  }
+
+  .dashboard-studio-page[data-dashboard-optical-center="hero-demo"] .dashboard-unified-context {
+    margin-bottom: clamp(-16px, -1.8vw, -8px);
+  }
+
+  .dashboard-studio-page[data-dashboard-optical-center="hero-demo"] .dashboard-unified-mark h1 {
+    font-size: clamp(3.55rem, 6.4vw, 5.5rem);
+  }
+
+  .dashboard-studio-page[data-dashboard-optical-center="hero-demo"] .dashboard-unified-artifact {
+    margin-top: clamp(-54px, -4.25vw, -30px);
+  }
+
+  .dashboard-studio-page[data-dashboard-optical-center="hero-demo"] .dashboard-studio-preview-canvas {
+    min-height: clamp(360px, 42vw, 428px);
+  }
+}
+
+@media (max-width: 900px) {
+  .dashboard-studio-page[data-dashboard-optical-center="hero-demo"] .dashboard-unified-context {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "mark"
+      "intent"
+      "signals";
+    gap: clamp(14px, 3vw, 24px);
+    margin-bottom: clamp(-12px, -1.6vw, -4px);
+    text-align: center;
+  }
+
+  .dashboard-studio-page[data-dashboard-optical-center="hero-demo"] .dashboard-unified-mark {
+    justify-content: center;
+    transform: translateY(0);
+  }
+
+  .dashboard-studio-page[data-dashboard-optical-center="hero-demo"] .dashboard-unified-mark .section-header-copy {
+    margin-inline: auto;
+  }
+
+  .dashboard-studio-page[data-dashboard-optical-center="hero-demo"] .dashboard-unified-intent,
+  .dashboard-studio-page[data-dashboard-optical-center="hero-demo"] .dashboard-studio-primary-actions,
+  .dashboard-studio-page[data-dashboard-optical-center="hero-demo"] .dashboard-unified-proofline {
+    justify-content: center;
+  }
+
+  .dashboard-studio-page[data-dashboard-optical-center="hero-demo"] .dashboard-unified-mark h1 {
+    max-width: 8.6ch;
+    font-size: clamp(3.05rem, 8.25vw, 4.35rem);
+  }
+
+  .dashboard-studio-page[data-dashboard-optical-center="hero-demo"] .dashboard-unified-artifact {
+    margin-top: clamp(-24px, -2.6vw, -10px);
+  }
+}
+
+@media (max-width: 760px) {
+  .dashboard-studio-page[data-dashboard-optical-center="hero-demo"] .dashboard-unified-field {
+    gap: 14px;
+    padding-bottom: 50px;
+  }
+
+  .dashboard-studio-page[data-dashboard-optical-center="hero-demo"] .dashboard-unified-context {
+    margin-bottom: 0;
+  }
+
+  .dashboard-studio-page[data-dashboard-optical-center="hero-demo"] .dashboard-unified-mark h1 {
+    max-width: 8.3ch;
+    font-size: clamp(2.48rem, 9.65vw, 3.22rem);
+  }
+
+  .dashboard-studio-page[data-dashboard-optical-center="hero-demo"] .dashboard-studio-primary-actions {
+    margin-bottom: 0;
+  }
+
+  .dashboard-studio-page[data-dashboard-optical-center="hero-demo"] .dashboard-unified-artifact {
+    margin-top: 0;
+  }
+
+  .dashboard-studio-page[data-dashboard-optical-center="hero-demo"] .dashboard-studio-preview-brief {
+    align-content: start;
+    gap: 12px;
+    min-height: clamp(190px, 48vw, 244px);
+    padding-top: clamp(14px, 4vw, 20px);
+  }
+
+  .dashboard-studio-page[data-dashboard-optical-center="hero-demo"] .dashboard-stage-lead-topline {
+    display: none;
+  }
+
+  .dashboard-studio-page[data-dashboard-optical-center="hero-demo"] .dashboard-stage-lead-footer {
+    margin-top: clamp(8px, 3.5vw, 18px);
+  }
+}
