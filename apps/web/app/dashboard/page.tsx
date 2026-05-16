@@ -350,8 +350,8 @@ export default function DashboardPage() {
                               </Link>
                             </div>
                             <div className="dashboard-unified-proofline" aria-label="Prova rápida do Studio Canvas">
-                              <span>{featuredProjectDisplay ? `${featuredProjectDisplay.deliverableLabel} em continuidade` : "Brief e entrega no mesmo lugar"}</span>
-                              <strong>{featuredProjectDisplay?.statusLabel || "Comece pelo canvas"}</strong>
+                              <span>{featuredProjectDisplay ? `${featuredProjectDisplay.deliverableLabel} no canvas` : "Ideia e entrega no mesmo lugar"}</span>
+                              <strong>{featuredProjectDisplay ? "Contexto preservado" : "Comece pelo canvas"}</strong>
                             </div>
                           </div>
                         </div>

@@ -29656,6 +29656,10 @@ body {
   opacity: 0.55;
 }
 
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-context-onboarding {
+  display: none;
+}
+
 @media (max-width: 760px) {
   .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-topbar,
   .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-prompt,
