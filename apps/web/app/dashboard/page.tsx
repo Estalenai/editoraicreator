@@ -258,6 +258,22 @@ export default function DashboardPage() {
         href: "/creators",
         cta: "Criar primeira entrega",
       };
+  const demoDeliverableLabel = featuredProjectDisplay?.deliverableLabel || "Entrega";
+  const demoDeliverableLower = demoDeliverableLabel.toLocaleLowerCase("pt-BR");
+  const demoKindLower = (featuredProjectDisplay?.kindLabel || "ideia").toLocaleLowerCase("pt-BR");
+  const demoSourceLabel = featuredProjectDisplay && demoKindLower !== demoDeliverableLower ? demoKindLower : "ideia";
+  const demoIdeaTitle = featuredProjectDisplay
+    ? `Transformar ${demoSourceLabel} em ${demoDeliverableLower} pronto`
+    : "Transformar uma ideia em entrega pronta";
+  const demoIdeaCopy = featuredProjectDisplay
+    ? `${featuredProjectDisplay.displayTitle} entra com objetivo, formato e contexto.`
+    : "Descreva o pedido; o canvas organiza formato, revisão e saída.";
+  const demoCanvasCopy = featuredProjectDisplay
+    ? `Contexto, revisão e formato seguem ligados ao ${demoDeliverableLower}.`
+    : "Contexto, revisão e formato seguem ligados à saída final.";
+  const demoOutputTitle = featuredProjectDisplay ? `${demoDeliverableLabel} pronto` : "Entrega pronta";
+  const demoOutputStatus = featuredProjectDisplay ? "Pronto para publicar" : "Pronto para criar";
+  const demoOutputContext = featuredProjectDisplay ? "Contexto aplicado" : "Contexto preservado";
   const recentUsageText = usageLoading
     ? "Ciclo em leitura."
     : usageItems.length === 0
@@ -392,9 +408,9 @@ export default function DashboardPage() {
 
                           <div className="dashboard-surface-focus-lead-wrap dashboard-ecosystem-lead dashboard-studio-preview-shell">
                             <div className="dashboard-studio-preview-topbar" aria-label="Prova visual do canvas">
-                              <span>Ideia</span>
-                              <span>Canvas vivo</span>
-                              <span>Entrega</span>
+                              <span>Pedido real</span>
+                              <span>Canvas organiza</span>
+                              <span>Resultado pronto</span>
                             </div>
 
                             <div className="dashboard-studio-preview-canvas">
@@ -406,18 +422,10 @@ export default function DashboardPage() {
                                 <span className="dashboard-studio-signature-thread dashboard-studio-signature-thread-b" />
                               </div>
                               <div className="dashboard-studio-demo-prompt" aria-label="Ideia criativa no canvas">
-                                <span className="dashboard-stage-stat-label">Ideia</span>
-                                <strong>
-                                  {featuredProjectDisplay
-                                    ? featuredProjectDisplay.displayTitle
-                                    : "Criar primeira entrega"}
-                                </strong>
-                                <span className="dashboard-studio-demo-frequency">Entra no canvas</span>
-                                <span>
-                                  {featuredProjectDisplay
-                                    ? "O contexto segue com a criação até a entrega."
-                                    : "Descreva a ideia; o canvas conduz a entrega."}
-                                </span>
+                                <span className="dashboard-stage-stat-label">Pedido</span>
+                                <strong>{demoIdeaTitle}</strong>
+                                <span className="dashboard-studio-demo-frequency">Brief com contexto</span>
+                                <span>{demoIdeaCopy}</span>
                               </div>
 
                               <div className="dashboard-studio-demo-engine" aria-hidden="true">
@@ -437,14 +445,14 @@ export default function DashboardPage() {
                               ) : featuredProjectDisplay ? (
                                 <EditorRouteLink href={`/editor/${featuredProjectDisplay.id}`} className="dashboard-surface-focus-lead dashboard-studio-preview-brief">
                                   <div className="dashboard-stage-lead-topline">
-                                    <span className="dashboard-stage-lead-kicker">Canvas vivo</span>
-                                    <span className="dashboard-stage-lead-pill" title={featuredProjectDisplay.stageLabel || undefined}>Em criação</span>
+                                    <span className="dashboard-stage-lead-kicker">Canvas organiza</span>
+                                    <span className="dashboard-stage-lead-pill" title={featuredProjectDisplay.stageLabel || undefined}>IA + editor</span>
                                   </div>
-                                  <strong className="dashboard-stage-lead-title">{featuredProjectDisplay.displayTitle}</strong>
-                                  <p className="dashboard-stage-lead-copy">A ideia vira {featuredProjectDisplay.deliverableLabel.toLowerCase()} com o contexto preservado.</p>
+                                  <strong className="dashboard-stage-lead-title">{demoIdeaTitle}</strong>
+                                  <p className="dashboard-stage-lead-copy">{demoCanvasCopy}</p>
                                   <div className="dashboard-stage-lead-meta">
-                                    <span>{featuredProjectDisplay.deliverableLabel}</span>
-                                    <span>{featuredProjectDisplay.statusLabel}</span>
+                                    <span>{featuredProjectDisplay.displayTitle}</span>
+                                    <span>{demoDeliverableLabel}</span>
                                     {featuredProjectDisplay.reviewLabel ? <span>{featuredProjectDisplay.reviewLabel}</span> : null}
                                   </div>
                                   <div className="dashboard-stage-lead-footer">
@@ -470,16 +478,16 @@ export default function DashboardPage() {
 
                               <div className="dashboard-studio-demo-review" aria-label="Camada de revisão do estúdio">
                                   <span>
-                                    <strong>Ideia</strong>
-                                  <em>{featuredProjectDisplay ? "entra com contexto" : "pronta para criar"}</em>
+                                    <strong>Pedido</strong>
+                                  <em>{featuredProjectDisplay ? "objetivo claro" : "brief pronto"}</em>
                                 </span>
                                 <span>
                                   <strong>Canvas</strong>
-                                  <em>{featuredProjectDisplay?.reviewLabel || "transforma"}</em>
+                                  <em>organiza formato</em>
                                 </span>
                                 <span>
-                                  <strong>Entrega</strong>
-                                  <em>{featuredProjectDisplay?.deliverableLabel || "resultado pronto"}</em>
+                                  <strong>Saída</strong>
+                                  <em>{demoOutputTitle}</em>
                                 </span>
                               </div>
 
@@ -487,8 +495,8 @@ export default function DashboardPage() {
                                 <div className="dashboard-studio-output-frame">
                                   <span className="dashboard-studio-output-pulse" />
                                   <div>
-                                    <span className="dashboard-stage-stat-label">Resultado</span>
-                                    <strong>{featuredProjectDisplay?.deliverableLabel || "Primeira entrega"}</strong>
+                                    <span className="dashboard-stage-stat-label">Entrega</span>
+                                    <strong>{demoOutputTitle}</strong>
                                   </div>
                                 </div>
                                 <div className="dashboard-studio-output-strips" aria-hidden="true">
@@ -497,13 +505,13 @@ export default function DashboardPage() {
                                   <span />
                                 </div>
                                 <div className="dashboard-studio-output-proof">
-                                  <span>{featuredProjectDisplay ? "Pronto para abrir" : "Pronto para criar"}</span>
-                                  <span title={featuredProjectDisplay?.statusLabel || undefined}>Contexto preservado</span>
+                                  <span>{demoOutputStatus}</span>
+                                  <span title={featuredProjectDisplay?.statusLabel || undefined}>{demoOutputContext}</span>
                                 </div>
                               </div>
 
                               <div className="dashboard-studio-preview-stream" aria-label="Síntese do fluxo criativo">
-                                <span>Ideia no canvas</span>
+                                <span>Pedido claro</span>
                                 <span>Entrega pronta</span>
                               </div>
                             </div>
