@@ -266,6 +266,9 @@ export default function DashboardPage() {
   const demoIdeaTitle = featuredProjectDisplay
     ? `Transformar ${demoSourceLabel} em ${demoDeliverableLower} pronto`
     : "Transformar uma ideia em entrega pronta";
+  const demoPromptTitle = featuredProjectDisplay && demoKindLower !== demoDeliverableLower
+    ? `${featuredProjectDisplay.kindLabel} em ${demoDeliverableLower} pronto`
+    : demoIdeaTitle;
   const demoIdeaCopy = featuredProjectDisplay
     ? `${featuredProjectDisplay.displayTitle} entra com objetivo, formato e contexto.`
     : "Descreva o pedido; o canvas organiza formato, revisão e saída.";
@@ -424,7 +427,7 @@ export default function DashboardPage() {
                               </div>
                               <div className="dashboard-studio-demo-prompt" aria-label="Ideia criativa no canvas">
                                 <span className="dashboard-stage-stat-label">Pedido</span>
-                                <strong>{demoIdeaTitle}</strong>
+                                <strong>{demoPromptTitle}</strong>
                                 <span className="dashboard-studio-demo-frequency">Pedido com contexto</span>
                                 <span>{demoIdeaCopy}</span>
                               </div>
