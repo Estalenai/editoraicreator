@@ -29402,3 +29402,143 @@ body {
     display: none;
   }
 }
+
+/* Round 3: lock the final rhythm without reopening the hero or the demo
+   proof. The desktop trims dead air after the product proof, tablet keeps a
+   native two-step proof, and mobile shows a compact delivery result instead
+   of reducing the artifact to a single project state. */
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-hero {
+  min-height: min(710px, calc(100svh - 72px));
+  padding-bottom: clamp(2px, 0.6vw, 10px);
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-unified-field {
+  padding-bottom: clamp(20px, 3vw, 54px);
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-canvas {
+  padding-bottom: clamp(24px, 3vw, 52px);
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-context-dock-proof {
+  opacity: 0.5;
+  transform: translateY(clamp(24px, 3.4vw, 58px));
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-context-dock-proof:hover,
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-context-dock-proof:focus-within {
+  opacity: 0.78;
+}
+
+@media (min-width: 761px) and (max-width: 900px) {
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-canvas {
+    grid-template-areas:
+      "prompt prompt"
+      "brief output";
+    grid-template-rows: auto auto;
+    align-content: start;
+    align-items: start;
+    min-height: clamp(340px, 46vw, 430px);
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-stream {
+    display: none;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-brief {
+    align-self: start;
+    min-height: clamp(300px, 42vw, 380px);
+    height: clamp(300px, 42vw, 380px);
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-output {
+    align-self: start;
+    min-height: clamp(300px, 42vw, 380px);
+    height: clamp(300px, 42vw, 380px);
+  }
+}
+
+@media (max-width: 760px) {
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-unified-field {
+    gap: 12px;
+    padding-bottom: 34px;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-shell {
+    align-content: start;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-canvas {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    grid-template-areas:
+      "brief"
+      "output";
+    gap: 10px;
+    align-content: start;
+    grid-auto-rows: auto;
+    min-height: auto;
+    height: auto;
+    padding: 4px 2px 0;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-brief {
+    justify-self: stretch;
+    width: auto;
+    max-width: none;
+    box-sizing: border-box;
+    min-height: clamp(168px, 43vw, 212px);
+    padding: clamp(15px, 4.3vw, 20px);
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-stage-lead-title {
+    max-width: 11ch;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-stage-lead-copy {
+    max-width: 14.5rem;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-output {
+    display: grid;
+    align-self: start;
+    align-content: center;
+    min-height: 82px;
+    height: auto;
+    max-width: none;
+    box-sizing: border-box;
+    padding: 12px 14px;
+    border: 0;
+    border-radius: 0;
+    background:
+      linear-gradient(90deg, rgba(78, 226, 255, 0.055), rgba(255, 255, 255, 0.012), transparent 84%);
+    box-shadow: none;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-output-frame {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 10px;
+    align-items: center;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-output-pulse {
+    width: 28px;
+    border-radius: 12px;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-output-frame strong {
+    font-size: 1rem;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-output-strips {
+    display: none;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-output-proof {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    opacity: 0.74;
+  }
+}
