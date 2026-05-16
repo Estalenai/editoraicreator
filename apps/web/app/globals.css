@@ -29542,3 +29542,134 @@ body {
     opacity: 0.74;
   }
 }
+
+/* Final demo vocabulary collapse: keep the approved optical center, but make
+   the artifact read as idea -> canvas -> delivery instead of status cockpit. */
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-topbar {
+  opacity: 0.46;
+  transform: translateY(2px);
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-topbar span {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: rgba(198, 237, 252, 0.58);
+  font-size: 0.58rem;
+  letter-spacing: 0.17em;
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-prompt {
+  background:
+    radial-gradient(300px 92px at 16% 50%, rgba(78, 226, 255, 0.052), transparent 78%),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.036), rgba(255, 255, 255, 0.008), transparent);
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-prompt .dashboard-stage-stat-label,
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-frequency {
+  color: rgba(185, 236, 250, 0.64);
+  letter-spacing: 0.11em;
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-stage-lead-kicker {
+  color: rgba(176, 236, 252, 0.66);
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-stage-lead-pill {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: rgba(220, 244, 255, 0.48);
+  box-shadow: none;
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-stage-lead-meta {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-stage-lead-footer {
+  opacity: 0.68;
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-review {
+  opacity: 0.48;
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-review strong {
+  color: rgba(218, 244, 254, 0.7);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-review em {
+  color: rgba(202, 232, 248, 0.58);
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-output {
+  max-width: 182px;
+  background:
+    radial-gradient(180px 100px at 28% 18%, rgba(78, 226, 255, 0.066), transparent 76%),
+    linear-gradient(150deg, rgba(255, 255, 255, 0.016), rgba(255, 255, 255, 0.002));
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-output-frame .dashboard-stage-stat-label {
+  color: rgba(178, 235, 250, 0.72);
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-output-frame strong {
+  font-size: clamp(1.18rem, 1.34vw, 1.52rem);
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-output-proof {
+  opacity: 0.62;
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-stream {
+  opacity: 0.38;
+  transform: translateY(3px);
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-context-dock-proof {
+  opacity: 0.34;
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-context-dock-proof:hover,
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-context-dock-proof:focus-within {
+  opacity: 0.72;
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-context-dock-proof .dashboard-stream-link-kicker,
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-context-dock-proof .dashboard-context-meta {
+  color: rgba(190, 231, 248, 0.48);
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-context-dock-proof .dashboard-context-signal > strong,
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-context-support-link strong {
+  color: rgba(225, 246, 255, 0.56);
+  font-size: 0.78rem;
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-context-log,
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-context-support {
+  opacity: 0.55;
+}
+
+@media (max-width: 760px) {
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-topbar,
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-prompt,
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-stream {
+    display: none;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-stage-lead-footer {
+    opacity: 0.82;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-output {
+    max-width: none;
+    background:
+      linear-gradient(90deg, rgba(78, 226, 255, 0.066), rgba(255, 255, 255, 0.014), transparent 84%);
+  }
+}
