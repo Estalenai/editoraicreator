@@ -127,6 +127,7 @@ function formatDashboardKindLabel(value: string | null | undefined, fallback: st
   if (normalized === "text") return "Peca";
   if (normalized === "script") return "Roteiro";
   if (normalized === "clip") return "Clipe";
+  if (normalized === "video") return "Vídeo";
   return normalized.charAt(0).toUpperCase() + normalized.slice(1);
 }
 
@@ -424,7 +425,7 @@ export default function DashboardPage() {
                               <div className="dashboard-studio-demo-prompt" aria-label="Ideia criativa no canvas">
                                 <span className="dashboard-stage-stat-label">Pedido</span>
                                 <strong>{demoIdeaTitle}</strong>
-                                <span className="dashboard-studio-demo-frequency">Brief com contexto</span>
+                                <span className="dashboard-studio-demo-frequency">Pedido com contexto</span>
                                 <span>{demoIdeaCopy}</span>
                               </div>
 
