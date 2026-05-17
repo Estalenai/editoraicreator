@@ -29813,3 +29813,166 @@ body {
     min-height: clamp(138px, 39vw, 182px);
   }
 }
+
+/* Definitive Round 2: make the artifact read as pedido -> canvas -> entrega
+   without changing the approved hero position or rebuilding the demo. */
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-topbar {
+  color: rgba(201, 241, 255, 0.72);
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-prompt {
+  grid-template-columns: auto minmax(250px, 1fr) auto minmax(0, 0.86fr);
+  column-gap: clamp(10px, 1vw, 15px);
+  padding: clamp(9px, 0.8vw, 12px) clamp(12px, 1vw, 16px);
+  border-color: rgba(191, 239, 255, 0.13);
+  background:
+    radial-gradient(360px 118px at 18% 50%, rgba(78, 226, 255, 0.105), transparent 78%),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.066), rgba(255, 255, 255, 0.018), transparent);
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-prompt strong {
+  color: rgba(249, 253, 255, 0.99);
+  font-size: clamp(1.02rem, 1.18vw, 1.24rem);
+  line-height: 1.02;
+  text-wrap: balance;
+  white-space: normal;
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-prompt > span:last-child {
+  max-width: 36ch;
+  color: rgba(225, 244, 253, 0.84);
+  line-height: 1.28;
+  white-space: normal;
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-stage-lead-kicker {
+  color: rgba(202, 243, 255, 0.82);
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-stage-lead-pill {
+  color: rgba(221, 246, 255, 0.72);
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-stage-lead-title {
+  max-width: 12ch;
+  color: rgba(249, 253, 255, 0.99);
+  text-wrap: balance;
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-stage-lead-copy {
+  max-width: 34ch;
+  color: rgba(224, 244, 253, 0.84);
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-engine {
+  left: 50.5%;
+  top: 51%;
+  width: clamp(88px, 7.35vw, 118px);
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-engine-core {
+  color: rgba(246, 253, 255, 0.96);
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-signature-thread {
+  opacity: 0.88;
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-review {
+  opacity: 0.5;
+  transform: translateX(-3px);
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-review span {
+  padding: 8px 8px 8px 10px;
+  border-left-color: rgba(78, 226, 255, 0.1);
+  background: linear-gradient(90deg, rgba(78, 226, 255, 0.026), transparent 72%);
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-review strong {
+  color: rgba(225, 248, 255, 0.78);
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-review em {
+  color: rgba(205, 237, 251, 0.62);
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-output {
+  max-width: 264px;
+  border-color: rgba(191, 239, 255, 0.088);
+  background:
+    radial-gradient(240px 138px at 32% 12%, rgba(78, 226, 255, 0.135), transparent 74%),
+    linear-gradient(150deg, rgba(255, 255, 255, 0.046), rgba(255, 255, 255, 0.012));
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-output-frame {
+  align-items: flex-start;
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-output-frame .dashboard-stage-stat-label {
+  color: rgba(207, 246, 255, 0.86);
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-output-frame strong {
+  max-width: 13ch;
+  font-size: clamp(1.18rem, 1.32vw, 1.54rem);
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-output-proof {
+  opacity: 0.9;
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-output-proof span {
+  color: rgba(222, 245, 255, 0.82);
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-stream {
+  opacity: 0.62;
+}
+
+@media (max-width: 900px) {
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-prompt {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 5px;
+    border-radius: 22px;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-prompt .dashboard-stage-stat-label,
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-frequency {
+    display: none;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-output {
+    max-width: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-prompt {
+    display: grid;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-canvas {
+    grid-template-areas:
+      "prompt"
+      "brief"
+      "output";
+    gap: 10px;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-brief {
+    min-height: clamp(134px, 36vw, 170px);
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-stage-lead-title {
+    max-width: 11ch;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-output-frame strong {
+    max-width: 14ch;
+    font-size: clamp(1.06rem, 5.8vw, 1.34rem);
+  }
+}

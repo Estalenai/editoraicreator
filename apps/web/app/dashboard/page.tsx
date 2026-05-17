@@ -263,21 +263,21 @@ export default function DashboardPage() {
   const demoDeliverableLower = demoDeliverableLabel.toLocaleLowerCase("pt-BR");
   const demoKindLower = (featuredProjectDisplay?.kindLabel || "ideia").toLocaleLowerCase("pt-BR");
   const demoSourceLabel = featuredProjectDisplay && demoKindLower !== demoDeliverableLower ? demoKindLower : "ideia";
-  const demoIdeaTitle = featuredProjectDisplay
-    ? `Transformar ${demoSourceLabel} em ${demoDeliverableLower} pronto`
-    : "Transformar uma ideia em entrega pronta";
+  const demoIdeaTitle = featuredProjectDisplay ? "Canvas transforma o pedido" : "Pedido vira entrega";
   const demoPromptTitle = featuredProjectDisplay && demoKindLower !== demoDeliverableLower
-    ? `${featuredProjectDisplay.kindLabel} em ${demoDeliverableLower} pronto`
-    : demoIdeaTitle;
+    ? `Quero transformar ${demoSourceLabel} em ${demoDeliverableLower} pronto`
+    : featuredProjectDisplay
+      ? `Quero finalizar ${demoDeliverableLower} pronto`
+      : "Quero criar uma entrega pronta";
   const demoIdeaCopy = featuredProjectDisplay
-    ? `${featuredProjectDisplay.displayTitle} entra com objetivo, formato e contexto.`
+    ? `${featuredProjectDisplay.displayTitle} chega com objetivo, formato e contexto.`
     : "Descreva o pedido; o canvas organiza formato, revisão e saída.";
   const demoCanvasCopy = featuredProjectDisplay
-    ? `Contexto, revisão e formato seguem ligados ao ${demoDeliverableLower}.`
+    ? "IA organiza formato, revisão e saída até a entrega final."
     : "Contexto, revisão e formato seguem ligados à saída final.";
-  const demoOutputTitle = featuredProjectDisplay ? `${demoDeliverableLabel} pronto` : "Entrega pronta";
-  const demoOutputStatus = featuredProjectDisplay ? "Pronto para publicar" : "Pronto para criar";
-  const demoOutputContext = featuredProjectDisplay ? "Contexto aplicado" : "Contexto preservado";
+  const demoOutputTitle = featuredProjectDisplay ? `${demoDeliverableLabel} pronto para publicar` : "Entrega pronta";
+  const demoOutputStatus = featuredProjectDisplay ? "Resultado final" : "Resultado criado";
+  const demoOutputContext = featuredProjectDisplay ? "Formato e contexto aplicados" : "Contexto preservado";
   const recentUsageText = usageLoading
     ? "Ciclo em leitura."
     : usageItems.length === 0
@@ -413,7 +413,7 @@ export default function DashboardPage() {
                           <div className="dashboard-surface-focus-lead-wrap dashboard-ecosystem-lead dashboard-studio-preview-shell">
                             <div className="dashboard-studio-preview-topbar" aria-label="Prova visual do canvas">
                               <span>Pedido real</span>
-                              <span>Canvas organiza</span>
+                              <span>Canvas transforma</span>
                               <span>Resultado pronto</span>
                             </div>
 
@@ -425,10 +425,10 @@ export default function DashboardPage() {
                                 <span className="dashboard-studio-signature-thread dashboard-studio-signature-thread-a" />
                                 <span className="dashboard-studio-signature-thread dashboard-studio-signature-thread-b" />
                               </div>
-                              <div className="dashboard-studio-demo-prompt" aria-label="Ideia criativa no canvas">
+                              <div className="dashboard-studio-demo-prompt" aria-label="Pedido do usuário no canvas">
                                 <span className="dashboard-stage-stat-label">Pedido</span>
                                 <strong>{demoPromptTitle}</strong>
-                                <span className="dashboard-studio-demo-frequency">Pedido com contexto</span>
+                                <span className="dashboard-studio-demo-frequency">Pedido humano</span>
                                 <span>{demoIdeaCopy}</span>
                               </div>
 
@@ -449,8 +449,8 @@ export default function DashboardPage() {
                               ) : featuredProjectDisplay ? (
                                 <EditorRouteLink href={`/editor/${featuredProjectDisplay.id}`} className="dashboard-surface-focus-lead dashboard-studio-preview-brief">
                                   <div className="dashboard-stage-lead-topline">
-                                    <span className="dashboard-stage-lead-kicker">Canvas organiza</span>
-                                    <span className="dashboard-stage-lead-pill" title={featuredProjectDisplay.stageLabel || undefined}>IA + editor</span>
+                                    <span className="dashboard-stage-lead-kicker">Canvas transforma</span>
+                                    <span className="dashboard-stage-lead-pill" title={featuredProjectDisplay.stageLabel || undefined}>IA aplica contexto</span>
                                   </div>
                                   <strong className="dashboard-stage-lead-title">{demoIdeaTitle}</strong>
                                   <p className="dashboard-stage-lead-copy">{demoCanvasCopy}</p>
@@ -483,23 +483,23 @@ export default function DashboardPage() {
                               <div className="dashboard-studio-demo-review" aria-label="Camada de revisão do estúdio">
                                   <span>
                                     <strong>Pedido</strong>
-                                  <em>{featuredProjectDisplay ? "objetivo claro" : "brief pronto"}</em>
+                                  <em>{featuredProjectDisplay ? "entra claro" : "brief pronto"}</em>
                                 </span>
                                 <span>
                                   <strong>Canvas</strong>
-                                  <em>organiza formato</em>
+                                  <em>transforma</em>
                                 </span>
                                 <span>
-                                  <strong>Saída</strong>
-                                  <em>{demoOutputTitle}</em>
+                                  <strong>Entrega</strong>
+                                  <em>resultado pronto</em>
                                 </span>
                               </div>
 
-                              <div className="dashboard-studio-preview-output" aria-label="Preview da entrega do estúdio">
+                              <div className="dashboard-studio-preview-output" aria-label="Entrega final do estúdio">
                                 <div className="dashboard-studio-output-frame">
                                   <span className="dashboard-studio-output-pulse" />
                                   <div>
-                                    <span className="dashboard-stage-stat-label">Entrega</span>
+                                    <span className="dashboard-stage-stat-label">Entrega pronta</span>
                                     <strong>{demoOutputTitle}</strong>
                                   </div>
                                 </div>
@@ -515,8 +515,8 @@ export default function DashboardPage() {
                               </div>
 
                               <div className="dashboard-studio-preview-stream" aria-label="Síntese do fluxo criativo">
-                                <span>Pedido claro</span>
-                                <span>Entrega pronta</span>
+                                <span>Pedido entra</span>
+                                <span>Entrega sai</span>
                               </div>
                             </div>
                           </div>
