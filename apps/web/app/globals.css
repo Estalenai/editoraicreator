@@ -30067,3 +30067,128 @@ body {
     display: none;
   }
 }
+
+/* Definitive Round 4: give each viewport its own rhythm instead of scaling the
+   same hero/demo stack. The CTA stays connected to the proof, but no longer
+   collides with the artifact or turns mobile/tablet into a compressed desktop. */
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-primary-actions {
+  margin-bottom: 0;
+  transform: translateY(clamp(-18px, -1.18vw, -10px));
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-primary-cta {
+  min-height: clamp(60px, 4vw, 66px);
+  height: clamp(60px, 4vw, 66px);
+  padding-block: 0;
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-unified-artifact {
+  margin-top: clamp(-70px, -4.55vw, -48px);
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-canvas {
+  min-height: clamp(348px, 25.4vw, 404px);
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-canvas {
+  padding-bottom: clamp(8px, 1.3vw, 24px);
+}
+
+@media (max-width: 1320px) {
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-primary-actions {
+    transform: translateY(clamp(-16px, -1.05vw, -8px));
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-primary-cta {
+    min-height: clamp(58px, 4.2vw, 64px);
+    height: clamp(58px, 4.2vw, 64px);
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-unified-artifact {
+    margin-top: clamp(-58px, -4.35vw, -38px);
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-canvas {
+    min-height: clamp(336px, 32vw, 388px);
+  }
+}
+
+@media (min-width: 761px) and (max-width: 900px) {
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-unified-field {
+    gap: clamp(12px, 2.2vw, 20px);
+    padding-bottom: clamp(18px, 3vw, 34px);
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-primary-actions {
+    transform: none;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-primary-cta {
+    min-height: 62px;
+    height: 62px;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-secondary-cta {
+    display: none;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-unified-artifact {
+    margin-top: clamp(-18px, -2vw, -8px);
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-shell {
+    width: min(100%, 640px);
+    margin-inline: auto;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-brief {
+    min-height: clamp(158px, 24vw, 190px);
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-output {
+    min-height: clamp(142px, 20vw, 178px);
+  }
+}
+
+@media (max-width: 760px) {
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-unified-field {
+    gap: 8px;
+    padding-bottom: 22px;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-unified-context {
+    gap: 10px;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-primary-actions {
+    justify-content: flex-start;
+    transform: none;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-primary-cta {
+    min-height: 58px;
+    height: 58px;
+    padding-inline: 16px;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-secondary-cta {
+    display: none;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-unified-artifact {
+    margin-top: -2px;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-canvas {
+    gap: 8px;
+    min-height: auto;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-brief {
+    min-height: clamp(126px, 32vw, 156px);
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-output {
+    min-height: 124px;
+  }
+}
