@@ -30073,7 +30073,7 @@ body {
    collides with the artifact or turns mobile/tablet into a compressed desktop. */
 .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-primary-actions {
   margin-bottom: 0;
-  transform: translateY(clamp(-18px, -1.18vw, -10px));
+  transform: translateY(clamp(-28px, -1.85vw, -18px));
 }
 
 .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-primary-cta {
@@ -30097,7 +30097,7 @@ body {
 
 @media (max-width: 1320px) {
   .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-primary-actions {
-    transform: translateY(clamp(-16px, -1.05vw, -8px));
+    transform: translateY(clamp(-26px, -1.85vw, -18px));
   }
 
   .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-primary-cta {
