@@ -30077,9 +30077,10 @@ body {
 }
 
 .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-primary-cta {
+  box-sizing: border-box;
   min-height: clamp(60px, 4vw, 66px);
   height: clamp(60px, 4vw, 66px);
-  padding-block: 0;
+  padding-block: 0 !important;
 }
 
 .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-unified-artifact {
