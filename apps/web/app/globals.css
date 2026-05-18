@@ -30569,3 +30569,44 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
     min-height: clamp(326px, 23.2vw, 364px);
   }
 }
+
+/* Dashboard nav legibility lock: secondary routes must feel quiet, not disabled. */
+.app-shell-body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) .app-top-nav.app-nav-dashboard-editorial {
+  opacity: 0.88;
+  transform: none;
+}
+
+.app-shell-body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) .app-top-nav.app-nav-dashboard-editorial:hover,
+.app-shell-body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) .app-top-nav.app-nav-dashboard-editorial:focus-within {
+  opacity: 0.98;
+}
+
+.app-shell-body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) .app-nav-dashboard-editorial .app-nav-dashboard-thesis {
+  color: rgba(238, 251, 255, 0.94);
+  border-color: rgba(191, 239, 255, 0.18);
+  background: rgba(75, 232, 255, 0.09);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 0 20px rgba(75, 232, 255, 0.08);
+}
+
+.app-shell-body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) .app-nav-dashboard-editorial .app-nav-dashboard-links {
+  gap: 4px;
+  opacity: 1;
+}
+
+.app-shell-body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) .app-nav-dashboard-editorial .app-nav-link,
+.app-shell-body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) .app-nav-dashboard-editorial .app-nav-link:active {
+  color: rgba(224, 244, 255, 0.78);
+  opacity: 1;
+}
+
+.app-shell-body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) .app-nav-dashboard-editorial .app-nav-link:hover,
+.app-shell-body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) .app-nav-dashboard-editorial .app-nav-link:focus-visible {
+  color: rgba(248, 253, 255, 0.97);
+  background: rgba(191, 239, 255, 0.055) !important;
+  box-shadow: inset 0 0 0 1px rgba(191, 239, 255, 0.12);
+}
+
+.app-shell-body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) .app-nav-dashboard-editorial .app-nav-link:focus-visible {
+  outline: 2px solid rgba(75, 232, 255, 0.52);
+  outline-offset: 3px;
+}
