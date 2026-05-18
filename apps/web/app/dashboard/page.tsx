@@ -259,25 +259,25 @@ export default function DashboardPage() {
         href: "/creators",
         cta: "Criar primeira entrega",
       };
-  const demoDeliverableLabel = featuredProjectDisplay?.deliverableLabel || "Entrega";
+  const demoDeliverableLabel = featuredProjectDisplay?.deliverableLabel || "Clipe";
   const demoDeliverableLower = demoDeliverableLabel.toLocaleLowerCase("pt-BR");
-  const demoKindLower = (featuredProjectDisplay?.kindLabel || "ideia").toLocaleLowerCase("pt-BR");
+  const demoKindLower = (featuredProjectDisplay?.kindLabel || "vídeo").toLocaleLowerCase("pt-BR");
   const demoSourceLabel = featuredProjectDisplay && demoKindLower !== demoDeliverableLower ? demoKindLower : "ideia";
   const demoIdeaTitle = featuredProjectDisplay ? "Canvas transforma o pedido" : "Pedido vira entrega";
   const demoPromptTitle = featuredProjectDisplay && demoKindLower !== demoDeliverableLower
     ? `Quero transformar ${demoSourceLabel} em ${demoDeliverableLower} pronto`
     : featuredProjectDisplay
       ? `Quero finalizar ${demoDeliverableLower} pronto`
-      : "Quero criar uma entrega pronta";
+      : "Quero transformar vídeo em clipe pronto";
   const demoIdeaCopy = featuredProjectDisplay
     ? `${featuredProjectDisplay.displayTitle} chega com objetivo, formato e contexto.`
-    : "Descreva o pedido; o canvas organiza formato, revisão e saída.";
+    : "Um pedido de vídeo chega com objetivo, formato e contexto.";
   const demoCanvasCopy = featuredProjectDisplay
     ? "IA organiza formato, revisão e saída até a entrega final."
-    : "Contexto, revisão e formato seguem ligados à saída final.";
-  const demoOutputTitle = featuredProjectDisplay ? `${demoDeliverableLabel} pronto para publicar` : "Entrega pronta para publicar";
-  const demoOutputStatus = featuredProjectDisplay ? "Resultado final" : "Resultado pronto";
-  const demoOutputContext = featuredProjectDisplay ? "Formato e contexto aplicados" : "Contexto aplicado";
+    : "IA organiza cenas, ritmo e texto até a entrega final.";
+  const demoOutputTitle = featuredProjectDisplay ? `${demoDeliverableLabel} pronto para publicar` : "Clipe pronto para publicar";
+  const demoOutputStatus = "Resultado final";
+  const demoOutputContext = "Formato e contexto aplicados";
   const recentUsageText = usageLoading
     ? "Ciclo em leitura."
     : usageItems.length === 0
