@@ -275,9 +275,9 @@ export default function DashboardPage() {
   const demoCanvasCopy = featuredProjectDisplay
     ? "IA organiza formato, revisão e saída até a entrega final."
     : "Contexto, revisão e formato seguem ligados à saída final.";
-  const demoOutputTitle = featuredProjectDisplay ? `${demoDeliverableLabel} pronto para publicar` : "Entrega pronta";
-  const demoOutputStatus = featuredProjectDisplay ? "Resultado final" : "Resultado criado";
-  const demoOutputContext = featuredProjectDisplay ? "Formato e contexto aplicados" : "Contexto preservado";
+  const demoOutputTitle = featuredProjectDisplay ? `${demoDeliverableLabel} pronto para publicar` : "Entrega pronta para publicar";
+  const demoOutputStatus = featuredProjectDisplay ? "Resultado final" : "Resultado pronto";
+  const demoOutputContext = featuredProjectDisplay ? "Formato e contexto aplicados" : "Contexto aplicado";
   const recentUsageText = usageLoading
     ? "Ciclo em leitura."
     : usageItems.length === 0
