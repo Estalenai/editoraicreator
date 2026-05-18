@@ -30193,3 +30193,33 @@ body {
     min-height: 124px;
   }
 }
+
+/* Corrective seam lock: remove the output surface and bottom stream that were
+   closing the product proof as a dark base instead of letting the field pass
+   through the demo. */
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-canvas {
+  background:
+    radial-gradient(980px 520px at 12% 6%, rgba(75, 232, 255, 0.14), transparent 74%),
+    radial-gradient(940px 520px at 72% 16%, rgba(57, 112, 255, 0.13), transparent 78%),
+    radial-gradient(1180px 620px at 44% 48%, rgba(78, 226, 255, 0.105), transparent 80%),
+    radial-gradient(1040px 620px at 78% 88%, rgba(0, 75, 163, 0.08), transparent 78%),
+    linear-gradient(180deg, rgba(5, 17, 42, 0.08), rgba(4, 13, 34, 0.42));
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-output {
+  border-color: transparent;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-output-proof span {
+  min-height: auto;
+  padding-inline: 0;
+  border-color: transparent;
+  background: transparent;
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-stream {
+  display: none;
+}
