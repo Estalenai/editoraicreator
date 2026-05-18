@@ -30452,6 +30452,10 @@ body {
   max-width: 100vw;
 }
 
+.app-shell-frame:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) .app-shell-main {
+  padding-inline: 0;
+}
+
 .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-canvas {
   background:
     radial-gradient(980px 520px at 14% 5%, rgba(75, 232, 255, 0.15), transparent 74%),
