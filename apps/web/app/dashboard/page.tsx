@@ -13,6 +13,37 @@ import { toUserFacingError } from "../../lib/uiFeedback";
 
 type UsageItem = { feature: string; used: number; limit: number };
 
+type AccountOverview = {
+  plan?: {
+    plan_code?: string | null;
+    status?: string | null;
+  } | null;
+  wallet?: {
+    common?: number | null;
+    pro?: number | null;
+    ultra?: number | null;
+    total?: number | null;
+    updated_at?: string | null;
+  } | null;
+  financial?: {
+    recent?: Array<Record<string, any>>;
+  } | null;
+  projects?: {
+    recent?: Array<Record<string, any>>;
+  } | null;
+  notifications?: {
+    items?: Array<{
+      id?: string;
+      title?: string;
+      message?: string;
+      created_at?: string;
+      status_code?: string;
+      href?: string;
+      meta?: Record<string, any>;
+    }>;
+  } | null;
+};
+
 type QuickLinkItem = {
   href: string;
   group: "core" | "support";
@@ -131,6 +162,44 @@ function formatDashboardKindLabel(value: string | null | undefined, fallback: st
   return normalized.charAt(0).toUpperCase() + normalized.slice(1);
 }
 
+function formatDashboardNumber(value: number | null | undefined): string {
+  const safeValue = Number.isFinite(Number(value)) ? Number(value) : 0;
+  return safeValue.toLocaleString("pt-BR");
+}
+
+function formatDashboardDate(value: string | null | undefined): string {
+  if (!value) return "Data em sincronização";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Data em sincronização";
+  return new Intl.DateTimeFormat("pt-BR", {
+    day: "2-digit",
+    month: "short",
+  }).format(date);
+}
+
+function formatDashboardStatus(value: string | null | undefined, fallback = "Ativo"): string {
+  const normalized = String(value || "").trim().toLowerCase();
+  if (!normalized) return fallback;
+  if (normalized === "active" || normalized === "trialing" || normalized === "approved") return "Ativo";
+  if (normalized === "inactive") return "Inativo";
+  if (normalized === "past_due") return "Pendente";
+  if (normalized === "canceled" || normalized === "cancelled") return "Cancelado";
+  if (normalized === "confirmed") return "Confirmado";
+  if (normalized === "running" || normalized === "queued") return "Em andamento";
+  if (normalized === "needs_attention") return "Revisar";
+  return normalized.charAt(0).toUpperCase() + normalized.slice(1).replace(/_/g, " ");
+}
+
+function getTransactionAmount(transaction: Record<string, any>): number {
+  const amount = Number(transaction?.amount ?? transaction?.meta?.amount ?? 0);
+  return Number.isFinite(amount) ? amount : 0;
+}
+
+function getTransactionLabel(transaction: Record<string, any>): string {
+  const source = String(transaction?.feature || transaction?.reason || transaction?.ref_kind || "Movimentação").trim();
+  return source || "Movimentação";
+}
+
 export default function DashboardPage() {
   const {
     loading,
@@ -151,6 +220,9 @@ export default function DashboardPage() {
   const [usageItems, setUsageItems] = useState<UsageItem[]>([]);
   const [usageLoading, setUsageLoading] = useState(false);
   const [usageError, setUsageError] = useState<string | null>(null);
+  const [accountOverview, setAccountOverview] = useState<AccountOverview | null>(null);
+  const [accountOverviewLoading, setAccountOverviewLoading] = useState(false);
+  const [accountOverviewError, setAccountOverviewError] = useState<string | null>(null);
 
   const loadUsage = useCallback(async () => {
     setUsageLoading(true);
@@ -166,11 +238,26 @@ export default function DashboardPage() {
     }
   }, []);
 
+  const loadAccountOverview = useCallback(async () => {
+    setAccountOverviewLoading(true);
+    setAccountOverviewError(null);
+    try {
+      const overview = await api.accountOverview();
+      setAccountOverview(overview || null);
+    } catch (loadError: any) {
+      setAccountOverview(null);
+      setAccountOverviewError(loadError?.message || "Falha ao carregar visão da conta.");
+    } finally {
+      setAccountOverviewLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     if (accessReady) {
       loadUsage();
+      loadAccountOverview();
     }
-  }, [accessReady, loadUsage]);
+  }, [accessReady, loadAccountOverview, loadUsage]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -216,6 +303,41 @@ export default function DashboardPage() {
   const totalUsage = useMemo(
     () => usageItems.reduce((sum, item) => sum + Number(item.used || 0), 0),
     [usageItems]
+  );
+  const operatingWallet = accountOverview?.wallet ?? wallet;
+  const walletCommon = Number(operatingWallet?.common ?? 0);
+  const walletPro = Number(operatingWallet?.pro ?? 0);
+  const walletUltra = Number(operatingWallet?.ultra ?? 0);
+  const walletTotal = Number.isFinite(Number(operatingWallet?.total))
+    ? Number(operatingWallet?.total)
+    : walletCommon + walletPro + walletUltra;
+  const walletRows = [
+    { key: "common", label: "Common", value: walletCommon },
+    { key: "pro", label: "Pro", value: walletPro },
+    { key: "ultra", label: "Ultra", value: walletUltra },
+  ];
+  const walletPeak = Math.max(walletCommon, walletPro, walletUltra, 1);
+  const financialTransactions = useMemo(
+    () => (Array.isArray(accountOverview?.financial?.recent) ? accountOverview.financial.recent : []),
+    [accountOverview]
+  );
+  const creditsSpent = useMemo(
+    () => financialTransactions.reduce((sum, item) => {
+      const amount = getTransactionAmount(item);
+      return amount < 0 ? sum + Math.abs(amount) : sum;
+    }, 0),
+    [financialTransactions]
+  );
+  const creditsReceived = useMemo(
+    () => financialTransactions.reduce((sum, item) => {
+      const amount = getTransactionAmount(item);
+      return amount > 0 ? sum + amount : sum;
+    }, 0),
+    [financialTransactions]
+  );
+  const accountActivityItems = useMemo(
+    () => (Array.isArray(accountOverview?.notifications?.items) ? accountOverview.notifications.items.slice(0, 4) : []),
+    [accountOverview]
   );
   const leadProject = recentProjects[0] ?? null;
   const featuredProject = leadProject;
@@ -284,8 +406,15 @@ export default function DashboardPage() {
       ? "Sem leitura recente."
       : `${totalUsage} uso(s).`;
   const planLabelDisplay = loading ? "Plano em sincronização" : planLabel ?? "—";
+  const planStatusDisplay = accountOverviewLoading
+    ? "Sincronizando"
+    : formatDashboardStatus(accountOverview?.plan?.status, planLabel ? "Ativo" : "Plano em sincronização");
   const walletSummaryDisplay = loading ? "Saldo em sincronização" : walletSummary;
   const totalUsageDisplay = loading || usageLoading ? "Uso em sincronização" : totalUsage.toLocaleString("pt-BR");
+  const periodUsageDisplay = usageLoading ? "Uso em sincronização" : `${formatDashboardNumber(totalUsage)} créditos usados`;
+  const periodUsageDetail = usageItems.length > 0
+    ? `${usageItems.length} trilha(s) com leitura no período`
+    : "Histórico será exibido após a primeira entrega.";
   const nextActionCtaDisplay = loading ? "Preparando canvas" : nextAction.cta;
   const continuityValue = loading ? "Projetos em sincronização" : `${recentProjects.length} projeto(s)`;
   const continuityDetail = loading
@@ -565,6 +694,7 @@ export default function DashboardPage() {
                                   await onSyncSubscription();
                                   await refresh();
                                   await loadUsage();
+                                  await loadAccountOverview();
                                 }}
                                 disabled={syncingSubscription || loading}
                                 className="btn-ea btn-secondary btn-sm"
@@ -613,6 +743,122 @@ export default function DashboardPage() {
                   ) : null}
                     </div>
                   ) : null}
+
+                  <section className="dashboard-intelligence-field" aria-label="Estado da conta, Creator Coins e continuidade">
+                    <div className="dashboard-intelligence-heading">
+                      <div>
+                        <span className="dashboard-intelligence-kicker">Conta em tempo real</span>
+                        <strong>Dashboard operacional</strong>
+                      </div>
+                      <p>Plano, Creator Coins, uso, projetos e histórico sem sair do campo criativo.</p>
+                    </div>
+
+                    <div className="dashboard-intelligence-primary" aria-label="Carteira, plano e uso do período">
+                      <Link href="/credits" className="dashboard-intelligence-surface dashboard-intelligence-wallet">
+                        <span className="dashboard-intelligence-kicker">Creator Coins</span>
+                        <strong>{accountOverviewLoading || loading ? "Saldo em sincronização" : formatDashboardNumber(walletTotal)}</strong>
+                        <span className="dashboard-intelligence-muted">Total disponível</span>
+                        <div className="dashboard-intelligence-wallet-lines" aria-label="Créditos por tipo">
+                          {walletRows.map((row) => (
+                            <span key={row.key} className={`dashboard-intelligence-wallet-row dashboard-intelligence-wallet-row-${row.key}`}>
+                              <span>{row.label}</span>
+                              <i aria-hidden="true">
+                                <b style={{ width: `${Math.max(8, Math.round((row.value / walletPeak) * 100))}%` }} />
+                              </i>
+                              <strong>{formatDashboardNumber(row.value)}</strong>
+                            </span>
+                          ))}
+                        </div>
+                        <span className="dashboard-intelligence-action">Comprar créditos</span>
+                      </Link>
+
+                      <Link href="/plans" className="dashboard-intelligence-surface dashboard-intelligence-plan">
+                        <span className="dashboard-intelligence-kicker">Plano atual</span>
+                        <strong>{planLabelDisplay}</strong>
+                        <span>{planStatusDisplay} · modelos do plano preservados</span>
+                        <span className="dashboard-intelligence-action">Gerenciar plano</span>
+                      </Link>
+
+                      <div className="dashboard-intelligence-surface dashboard-intelligence-usage">
+                        <span className="dashboard-intelligence-kicker">Uso do período</span>
+                        <strong>{periodUsageDisplay}</strong>
+                        <span>{periodUsageDetail}</span>
+                        <div className="dashboard-intelligence-usage-pair">
+                          <span>
+                            <em>Gastos</em>
+                            <strong>{financialTransactions.length > 0 ? formatDashboardNumber(creditsSpent) : "Sem gasto registrado"}</strong>
+                          </span>
+                          <span>
+                            <em>Comprados/recebidos</em>
+                            <strong>{financialTransactions.length > 0 ? formatDashboardNumber(creditsReceived) : "Sem entrada registrada"}</strong>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="dashboard-intelligence-continuity" aria-label="Projetos recentes, histórico e próxima ação">
+                      <div className="dashboard-intelligence-surface dashboard-intelligence-projects">
+                        <div className="dashboard-intelligence-section-head">
+                          <span className="dashboard-intelligence-kicker">Projetos recentes</span>
+                          <Link href="/projects">Ver todos</Link>
+                        </div>
+                        <div className="dashboard-intelligence-list">
+                          {recentProjects.length > 0 ? recentProjects.slice(0, 3).map((project: any) => (
+                            <EditorRouteLink key={project.id || project.title} href={project.id ? `/editor/${project.id}` : "/projects"} className="dashboard-intelligence-row">
+                              <span>
+                                <strong>{formatDashboardProjectTitle(project.title, "Projeto sem título")}</strong>
+                                <em>{formatDashboardKindLabel(project.kind, "Projeto")} · {project.summary?.continuityStatusLabel || "Em continuidade"}</em>
+                              </span>
+                              <small>{formatDashboardDate(project.updated_at || project.created_at)}</small>
+                            </EditorRouteLink>
+                          )) : (
+                            <div className="dashboard-intelligence-empty">
+                              <strong>Nenhum projeto recente</strong>
+                              <span>Projetos criados no canvas aparecem aqui.</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="dashboard-intelligence-surface dashboard-intelligence-activity">
+                        <div className="dashboard-intelligence-section-head">
+                          <span className="dashboard-intelligence-kicker">Histórico / atividade</span>
+                          <Link href="/credits#credits-history">Abrir ledger</Link>
+                        </div>
+                        <div className="dashboard-intelligence-list">
+                          {accountActivityItems.length > 0 ? accountActivityItems.map((item) => (
+                            <Link key={item.id || item.title} href={item.href || "/dashboard/account"} className="dashboard-intelligence-row">
+                              <span>
+                                <strong>{item.title || "Atividade registrada"}</strong>
+                                <em>{item.message || "Evento confirmado na conta."}</em>
+                              </span>
+                              <small>{formatDashboardStatus(item.status_code, "Registrado")}</small>
+                            </Link>
+                          )) : (
+                            <div className="dashboard-intelligence-empty">
+                              <strong>Histórico em sincronização</strong>
+                              <span>{accountOverviewError ? toUserFacingError(accountOverviewError, "Sem histórico recente.") : "Histórico será exibido após a primeira entrega."}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="dashboard-intelligence-surface dashboard-intelligence-next">
+                        <span className="dashboard-intelligence-kicker">Próxima ação</span>
+                        <strong>{nextAction.title}</strong>
+                        <span>{nextAction.description}</span>
+                        {nextAction.href.startsWith("/editor") ? (
+                          <EditorRouteLink href={nextAction.href} className="dashboard-intelligence-action">
+                            {nextActionCtaDisplay}
+                          </EditorRouteLink>
+                        ) : (
+                          <Link href={nextAction.href} className="dashboard-intelligence-action">
+                            {nextActionCtaDisplay}
+                          </Link>
+                        )}
+                      </div>
+                    </div>
+                  </section>
 
                 </section>
               </div>
