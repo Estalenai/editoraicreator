@@ -30940,13 +30940,20 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
 }
 
 .dashboard-intelligence-primary {
-  grid-template-columns: minmax(260px, 1.12fr) minmax(200px, 0.72fr) minmax(240px, 0.94fr);
-  align-items: stretch;
+  grid-template-areas:
+    "wallet plan"
+    "wallet usage";
+  grid-template-columns: minmax(360px, 1.2fr) minmax(300px, 0.86fr);
+  align-items: start;
 }
 
 .dashboard-intelligence-continuity {
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr) minmax(220px, 0.58fr);
-  align-items: stretch;
+  grid-template-areas:
+    "projects activity"
+    "projects next";
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(12px, 1.25vw, 18px);
 }
 
 .dashboard-intelligence-surface {
@@ -30955,7 +30962,7 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
   display: grid;
   gap: 9px;
   align-content: start;
-  min-height: 132px;
+  min-height: 0;
   padding: clamp(14px, 1.35vw, 18px) clamp(14px, 1.45vw, 20px);
   overflow: visible;
   border: 0;
@@ -30987,6 +30994,31 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
   letter-spacing: -0.05em;
 }
 
+.dashboard-intelligence-wallet {
+  grid-area: wallet;
+  min-height: clamp(238px, 17vw, 292px);
+}
+
+.dashboard-intelligence-plan {
+  grid-area: plan;
+}
+
+.dashboard-intelligence-usage {
+  grid-area: usage;
+}
+
+.dashboard-intelligence-projects {
+  grid-area: projects;
+}
+
+.dashboard-intelligence-activity {
+  grid-area: activity;
+}
+
+.dashboard-intelligence-next {
+  grid-area: next;
+}
+
 .dashboard-intelligence-surface > span:not(.dashboard-intelligence-kicker):not(.dashboard-intelligence-action),
 .dashboard-intelligence-muted {
   color: rgba(220, 242, 255, 0.72);
@@ -30996,17 +31028,36 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
 
 .dashboard-intelligence-wallet-lines {
   display: grid;
-  gap: 8px;
-  margin-top: 4px;
+  gap: 11px;
+  margin-top: 10px;
 }
 
 .dashboard-intelligence-wallet-row {
   display: grid;
-  grid-template-columns: 66px minmax(70px, 1fr) minmax(68px, auto);
+  grid-template-columns: minmax(104px, 0.38fr) minmax(110px, 1fr) minmax(68px, auto);
   align-items: center;
   gap: 10px;
   color: rgba(231, 247, 255, 0.86);
   font-size: 0.78rem;
+}
+
+.dashboard-intelligence-wallet-label {
+  display: grid;
+  gap: 2px;
+}
+
+.dashboard-intelligence-wallet-label strong {
+  color: rgba(241, 251, 255, 0.94);
+  font-size: 0.78rem;
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+}
+
+.dashboard-intelligence-wallet-label em {
+  color: rgba(203, 231, 246, 0.62);
+  font-size: 0.69rem;
+  font-style: normal;
+  line-height: 1.1;
 }
 
 .dashboard-intelligence-wallet-row i {
@@ -31113,6 +31164,44 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
   text-decoration: none;
 }
 
+.dashboard-intelligence-project-row,
+.dashboard-intelligence-activity-row {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  align-items: start;
+}
+
+.dashboard-intelligence-row-mark {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin-top: 1px;
+  border-radius: 999px;
+  border: 1px solid rgba(154, 235, 255, 0.12);
+  background: rgba(78, 226, 255, 0.055);
+  color: rgba(161, 241, 255, 0.86);
+  font-size: 0.66rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+}
+
+.dashboard-intelligence-row-mark-video {
+  color: rgba(159, 239, 255, 0.92);
+  background: rgba(78, 226, 255, 0.075);
+}
+
+.dashboard-intelligence-row-mark-text,
+.dashboard-intelligence-row-mark-peca {
+  color: rgba(246, 219, 104, 0.9);
+  background: rgba(246, 219, 104, 0.065);
+}
+
+.dashboard-intelligence-row-mark-activity {
+  color: rgba(143, 164, 255, 0.88);
+  background: rgba(128, 164, 255, 0.06);
+}
+
 .dashboard-intelligence-row:first-child {
   border-top-color: rgba(191, 239, 255, 0.08);
 }
@@ -31157,11 +31246,18 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
 }
 
 .dashboard-intelligence-next {
-  align-content: center;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  min-height: 0;
+  gap: 8px 16px;
 }
 
 .dashboard-intelligence-next .dashboard-intelligence-action {
-  margin-top: 6px;
+  grid-row: 1 / span 3;
+  grid-column: 2;
+  align-self: center;
+  margin-top: 0;
 }
 
 @media (max-width: 1180px) {
@@ -31170,14 +31266,17 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
   }
 
   .dashboard-intelligence-primary {
+    grid-template-areas:
+      "wallet wallet"
+      "plan usage";
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   }
 
-  .dashboard-intelligence-wallet {
-    grid-column: 1 / -1;
-  }
-
   .dashboard-intelligence-continuity {
+    grid-template-areas:
+      "projects"
+      "activity"
+      "next";
     grid-template-columns: minmax(0, 1fr);
   }
 }
@@ -31193,11 +31292,15 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
   }
 
   .dashboard-intelligence-primary {
+    grid-template-areas:
+      "wallet"
+      "plan"
+      "usage";
     grid-template-columns: minmax(0, 1fr);
   }
 
   .dashboard-intelligence-wallet {
-    grid-column: auto;
+    min-height: 0;
   }
 }
 
@@ -31224,6 +31327,20 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
     grid-template-columns: minmax(0, 1fr);
   }
 
+  .dashboard-intelligence-primary {
+    grid-template-areas:
+      "wallet"
+      "plan"
+      "usage";
+  }
+
+  .dashboard-intelligence-continuity {
+    grid-template-areas:
+      "projects"
+      "activity"
+      "next";
+  }
+
   .dashboard-intelligence-surface {
     min-height: 0;
     padding: 14px;
@@ -31231,7 +31348,7 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
   }
 
   .dashboard-intelligence-wallet-row {
-    grid-template-columns: 58px minmax(58px, 1fr) minmax(58px, auto);
+    grid-template-columns: minmax(86px, 0.54fr) minmax(72px, 1fr) minmax(58px, auto);
     gap: 8px;
   }
 
@@ -31244,7 +31361,22 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
     gap: 6px;
   }
 
+  .dashboard-intelligence-project-row,
+  .dashboard-intelligence-activity-row {
+    grid-template-columns: 26px minmax(0, 1fr);
+  }
+
   .dashboard-intelligence-row small {
     justify-self: start;
+  }
+
+  .dashboard-intelligence-next {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dashboard-intelligence-next .dashboard-intelligence-action {
+    grid-row: auto;
+    grid-column: auto;
+    margin-top: 4px;
   }
 }

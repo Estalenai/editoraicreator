@@ -214,11 +214,17 @@ function formatDashboardActivityTitle(value: string | null | undefined): string 
 
 function formatDashboardActivityMessage(item: { title?: string; message?: string }): string {
   const normalizedTitle = String(item.title || "").trim().toLowerCase();
-  if (normalizedTitle === "coins_convert") return "Saldo convertido entre tipos de Creator Coins.";
+  if (normalizedTitle === "coins_convert") return "Créditos movimentados entre categorias da carteira.";
   const message = String(item.message || "").trim();
   if (!message) return "Evento confirmado na conta.";
-  if (message.toLowerCase().includes("ledger")) return "Movimentação registrada na carteira.";
+  if (message.toLowerCase().includes("ledger")) return "Movimentação registrada na carteira de créditos.";
   return message;
+}
+
+function formatDashboardActivityGroupTitle(title: string, count: number): string {
+  if (count <= 1) return title;
+  if (title === "Conversão de créditos") return `${count} conversões de créditos`;
+  return `${count} atividades: ${title.toLocaleLowerCase("pt-BR")}`;
 }
 
 export default function DashboardPage() {
@@ -333,9 +339,9 @@ export default function DashboardPage() {
     ? Number(operatingWallet?.total)
     : walletCommon + walletPro + walletUltra;
   const walletRows = [
-    { key: "common", label: "Common", value: walletCommon },
-    { key: "pro", label: "Pro", value: walletPro },
-    { key: "ultra", label: "Ultra", value: walletUltra },
+    { key: "common", label: "Common", description: "uso leve", value: walletCommon },
+    { key: "pro", label: "Pro", description: "recursos avançados", value: walletPro },
+    { key: "ultra", label: "Ultra", description: "geração premium", value: walletUltra },
   ];
   const walletPeak = Math.max(walletCommon, walletPro, walletUltra, 1);
   const financialTransactions = useMemo(
@@ -357,9 +363,41 @@ export default function DashboardPage() {
     [financialTransactions]
   );
   const accountActivityItems = useMemo(
-    () => (Array.isArray(accountOverview?.notifications?.items) ? accountOverview.notifications.items.slice(0, 4) : []),
+    () => (Array.isArray(accountOverview?.notifications?.items) ? accountOverview.notifications.items.slice(0, 8) : []),
     [accountOverview]
   );
+  const groupedActivityItems = useMemo(() => {
+    const groups = new Map<string, {
+      id?: string;
+      href?: string;
+      title: string;
+      message: string;
+      status: string;
+      count: number;
+    }>();
+
+    for (const item of accountActivityItems) {
+      const title = formatDashboardActivityTitle(item.title);
+      const message = formatDashboardActivityMessage(item);
+      const status = formatDashboardStatus(item.status_code, "Registrado");
+      const key = `${title}|${message}|${status}|${item.href || "/dashboard/account"}`;
+      const existing = groups.get(key);
+      if (existing) {
+        existing.count += 1;
+      } else {
+        groups.set(key, {
+          id: item.id,
+          href: item.href || "/dashboard/account",
+          title,
+          message,
+          status,
+          count: 1,
+        });
+      }
+    }
+
+    return Array.from(groups.values()).slice(0, 3);
+  }, [accountActivityItems]);
   const leadProject = recentProjects[0] ?? null;
   const featuredProject = leadProject;
   const featuredProjectDisplay = useMemo(() => {
@@ -391,8 +429,8 @@ export default function DashboardPage() {
   const hasConfirmedUsage = totalUsage > 0;
   const nextAction = recentProjects.length > 0
       ? {
-        title: "Continuar no canvas",
-        description: "Retome a criação sem trocar de contexto.",
+        title: `Retomar ${formatDashboardProjectTitle(recentProjects[0]?.title, "último projeto")}`,
+        description: `${formatDashboardKindLabel(recentProjects[0]?.kind, "Projeto")} · ${formatDashboardStatus(recentProjects[0]?.summary?.continuityStatusLabel, "Em continuidade")}. Continue do ponto salvo.`,
         href: recentProjects[0]?.id ? `/editor/${recentProjects[0].id}` : "/projects",
         cta: recentProjects[0]?.id ? "Continuar no canvas" : "Abrir projetos",
       }
@@ -422,9 +460,9 @@ export default function DashboardPage() {
   const demoOutputStatus = "Resultado final";
   const demoOutputContext = "Formato e contexto aplicados";
   const recentUsageText = usageLoading
-    ? "Ciclo em leitura."
+    ? "Uso em atualização."
     : usageItems.length === 0
-      ? "Sem leitura recente."
+      ? "Sem uso recente."
       : `${totalUsage} uso(s).`;
   const planLabelDisplay = loading ? "Plano em sincronização" : planLabel ?? "—";
   const planStatusDisplay = accountOverviewLoading
@@ -434,23 +472,28 @@ export default function DashboardPage() {
   const totalUsageDisplay = loading || usageLoading ? "Uso em sincronização" : totalUsage.toLocaleString("pt-BR");
   const periodUsageDisplay = usageLoading ? "Uso em sincronização" : `${formatDashboardNumber(totalUsage)} créditos usados`;
   const periodUsageDetail = usageItems.length > 0
-    ? `${usageItems.length} trilha(s) com leitura no período`
+    ? `${usageItems.length} ${usageItems.length === 1 ? "registro" : "registros"} de uso no período`
     : "Histórico será exibido após a primeira entrega.";
   const nextActionCtaDisplay = loading ? "Preparando canvas" : nextAction.cta;
+  const nextActionPanelCtaDisplay = loading
+    ? "Preparando canvas"
+    : recentProjects[0]?.id
+      ? "Abrir última entrega"
+      : nextAction.cta;
   const continuityValue = loading ? "Projetos em sincronização" : `${recentProjects.length} projeto(s)`;
   const continuityDetail = loading
-    ? "Sincronizando trilha."
+    ? "Sincronizando dados."
     : featuredProjectDisplay
       ? `${featuredProjectDisplay.statusLabel} • ${featuredProjectDisplay.displayTitle}`
       : "Entrada inicial.";
   const focusContinuationLabel = loading
-    ? "Trilha em sincronização"
-    : featuredProjectDisplay?.stageLabel || "Trilha inicial";
+    ? "Fluxo em sincronização"
+    : featuredProjectDisplay?.stageLabel || "Fluxo inicial";
   const focusContinuationDetail = loading
     ? "Etapa principal."
     : featuredProjectDisplay
       ? `${featuredProjectDisplay.deliverableLabel} • ${featuredProjectDisplay.kindLabel}`
-      : "Trilha vazia.";
+      : "Fluxo vazio.";
   const studioFlowNodes = QUICK_LINKS.filter((item) => item.group === "core" && item.href !== "/projects#publish").map(
     (item, index) => ({
       ...item,
@@ -720,7 +763,7 @@ export default function DashboardPage() {
                                 disabled={syncingSubscription || loading}
                                 className="btn-ea btn-secondary btn-sm"
                               >
-                                {syncingSubscription ? "Atualizando" : "Atualizar leitura"}
+                                {syncingSubscription ? "Atualizando" : "Atualizar dados"}
                               </button>
                               <button onClick={onLogout} className="btn-ea btn-ghost btn-sm">
                                 Sair
@@ -738,7 +781,7 @@ export default function DashboardPage() {
                   {error ? (
                     <div className="state-ea state-ea-error dashboard-studio-quiet-error">
                       <p className="state-ea-title">Painel em revalidação</p>
-                      <div className="state-ea-text">{toUserFacingError(error, "Atualize a leitura para tentar novamente.")}</div>
+                      <div className="state-ea-text">{toUserFacingError(error, "Atualize os dados para tentar novamente.")}</div>
                       <div className="state-ea-actions">
                         <button onClick={refresh} className="btn-ea btn-secondary btn-sm">
                           Revalidar
@@ -755,7 +798,7 @@ export default function DashboardPage() {
                       <div className="dashboard-surface-inline-warning-copy">
                         <span className="dashboard-stage-stat-label">Leitura em segundo plano</span>
                         <strong>Uso será atualizado sem interromper o canvas.</strong>
-                        <span>{toUserFacingError(usageError, "Sem leitura recente.")}</span>
+                        <span>{toUserFacingError(usageError, "Sem uso recente.")}</span>
                       </div>
                       <button onClick={loadUsage} className="btn-ea btn-secondary btn-sm">
                         Revalidar
@@ -768,10 +811,10 @@ export default function DashboardPage() {
                   <section className="dashboard-intelligence-field" aria-label="Estado da conta, Creator Coins e continuidade">
                     <div className="dashboard-intelligence-heading">
                       <div>
-                        <span className="dashboard-intelligence-kicker">Conta em tempo real</span>
-                        <strong>Dashboard operacional</strong>
+                        <span className="dashboard-intelligence-kicker">Seu estúdio em números</span>
+                        <strong>Conta, créditos e continuidade</strong>
                       </div>
-                      <p>Plano, Creator Coins, uso, projetos e histórico sem sair do campo criativo.</p>
+                      <p>Do canvas para a operação: saldo, plano, uso e projetos seguem no mesmo campo.</p>
                     </div>
 
                     <div className="dashboard-intelligence-primary" aria-label="Carteira, plano e uso do período">
@@ -782,7 +825,10 @@ export default function DashboardPage() {
                         <div className="dashboard-intelligence-wallet-lines" aria-label="Créditos por tipo">
                           {walletRows.map((row) => (
                             <span key={row.key} className={`dashboard-intelligence-wallet-row dashboard-intelligence-wallet-row-${row.key}`}>
-                              <span>{row.label}</span>
+                              <span className="dashboard-intelligence-wallet-label">
+                                <strong>{row.label}</strong>
+                                <em>{row.description}</em>
+                              </span>
                               <i aria-hidden="true">
                                 <b style={{ width: `${Math.max(8, Math.round((row.value / walletPeak) * 100))}%` }} />
                               </i>
@@ -796,7 +842,7 @@ export default function DashboardPage() {
                       <Link href="/plans" className="dashboard-intelligence-surface dashboard-intelligence-plan">
                         <span className="dashboard-intelligence-kicker">Plano atual</span>
                         <strong>{planLabelDisplay}</strong>
-                        <span>{planStatusDisplay} · modelos do plano preservados</span>
+                        <span>{planStatusDisplay} · recursos do plano liberados para o canvas</span>
                         <span className="dashboard-intelligence-action">Gerenciar plano</span>
                       </Link>
 
@@ -806,11 +852,11 @@ export default function DashboardPage() {
                         <span>{periodUsageDetail}</span>
                         <div className="dashboard-intelligence-usage-pair">
                           <span>
-                            <em>Gastos</em>
+                            <em>Débitos de créditos</em>
                             <strong>{financialTransactions.length > 0 ? formatDashboardNumber(creditsSpent) : "Sem gasto registrado"}</strong>
                           </span>
                           <span>
-                            <em>Comprados/recebidos</em>
+                            <em>Créditos recebidos</em>
                             <strong>{financialTransactions.length > 0 ? formatDashboardNumber(creditsReceived) : "Sem entrada registrada"}</strong>
                           </span>
                         </div>
@@ -825,7 +871,10 @@ export default function DashboardPage() {
                         </div>
                         <div className="dashboard-intelligence-list">
                           {recentProjects.length > 0 ? recentProjects.slice(0, 3).map((project: any) => (
-                            <EditorRouteLink key={project.id || project.title} href={project.id ? `/editor/${project.id}` : "/projects"} className="dashboard-intelligence-row">
+                            <EditorRouteLink key={project.id || project.title} href={project.id ? `/editor/${project.id}` : "/projects"} className="dashboard-intelligence-row dashboard-intelligence-project-row">
+                              <span className={`dashboard-intelligence-row-mark dashboard-intelligence-row-mark-${String(project.kind || "project").toLowerCase()}`} aria-hidden="true">
+                                {formatDashboardKindLabel(project.kind, "P").charAt(0)}
+                              </span>
                               <span>
                                 <strong>{formatDashboardProjectTitle(project.title, "Projeto sem título")}</strong>
                                 <em>{formatDashboardKindLabel(project.kind, "Projeto")} · {formatDashboardStatus(project.summary?.continuityStatusLabel, "Em continuidade")}</em>
@@ -847,13 +896,14 @@ export default function DashboardPage() {
                           <Link href="/credits#credits-history">Ver histórico</Link>
                         </div>
                         <div className="dashboard-intelligence-list">
-                          {accountActivityItems.length > 0 ? accountActivityItems.map((item) => (
-                            <Link key={item.id || item.title} href={item.href || "/dashboard/account"} className="dashboard-intelligence-row">
+                          {groupedActivityItems.length > 0 ? groupedActivityItems.map((item) => (
+                            <Link key={item.id || item.title} href={item.href || "/dashboard/account"} className="dashboard-intelligence-row dashboard-intelligence-activity-row">
+                              <span className="dashboard-intelligence-row-mark dashboard-intelligence-row-mark-activity" aria-hidden="true">•</span>
                               <span>
-                                <strong>{formatDashboardActivityTitle(item.title)}</strong>
-                                <em>{formatDashboardActivityMessage(item)}</em>
+                                <strong>{formatDashboardActivityGroupTitle(item.title, item.count)}</strong>
+                                <em>{item.count > 1 ? "Movimentações confirmadas na carteira de créditos." : item.message}</em>
                               </span>
-                              <small>{formatDashboardStatus(item.status_code, "Registrado")}</small>
+                              <small>{item.status}</small>
                             </Link>
                           )) : (
                             <div className="dashboard-intelligence-empty">
@@ -870,11 +920,11 @@ export default function DashboardPage() {
                         <span>{nextAction.description}</span>
                         {nextAction.href.startsWith("/editor") ? (
                           <EditorRouteLink href={nextAction.href} className="dashboard-intelligence-action">
-                            {nextActionCtaDisplay}
+                            {nextActionPanelCtaDisplay}
                           </EditorRouteLink>
                         ) : (
                           <Link href={nextAction.href} className="dashboard-intelligence-action">
-                            {nextActionCtaDisplay}
+                            {nextActionPanelCtaDisplay}
                           </Link>
                         )}
                       </div>
