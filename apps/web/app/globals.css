@@ -30801,3 +30801,81 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
     font-size: clamp(1.34rem, 3.3vw, 1.68rem);
   }
 }
+
+/* Etapa 3: microcontrast pass. Useful secondary text should read as
+   available and intentional, while remaining below the headline, CTA and demo. */
+.app-shell-body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) .app-top-nav.app-nav-dashboard-editorial {
+  opacity: 0.92;
+}
+
+.app-shell-body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) .app-nav-dashboard-editorial .app-nav-link:not(.app-nav-link-active),
+.app-shell-body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) .app-nav-dashboard-editorial .app-nav-link:not(.app-nav-link-active) .app-nav-link-label {
+  color: rgba(229, 247, 255, 0.84);
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-secondary-cta {
+  opacity: 0.72;
+  color: rgba(232, 247, 255, 0.88);
+  border-color: rgba(191, 239, 255, 0.13);
+  background: rgba(255, 255, 255, 0.032);
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-secondary-cta:hover,
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-secondary-cta:focus-visible {
+  opacity: 0.9;
+  color: rgba(248, 253, 255, 0.96);
+  border-color: rgba(191, 239, 255, 0.2);
+  background: rgba(255, 255, 255, 0.052);
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-prompt .dashboard-stage-stat-label,
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-frequency,
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-brief .dashboard-stage-lead-kicker,
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-output-frame .dashboard-stage-stat-label {
+  opacity: 1;
+  color: rgba(207, 246, 255, 0.88);
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-stage-lead-pill {
+  opacity: 0.82;
+  color: rgba(226, 248, 255, 0.8);
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-review {
+  opacity: 0.76;
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-review strong {
+  color: rgba(234, 250, 255, 0.94);
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-review em {
+  color: rgba(218, 244, 253, 0.82);
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-context-dock-proof {
+  opacity: 0.88;
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-context-capacity .dashboard-stream-link-kicker {
+  color: rgba(198, 243, 255, 0.8);
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-context-capacity > strong {
+  color: rgba(248, 253, 255, 0.96);
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-context-capacity .dashboard-context-energy-meter {
+  opacity: 0.72;
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-stage-lead-footer,
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-stage-lead-footer span {
+  opacity: 0.86;
+  color: rgba(231, 247, 255, 0.8);
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-surface-focus-empty-actions .btn-ghost {
+  color: rgba(232, 248, 255, 0.84);
+  border-color: rgba(191, 239, 255, 0.16);
+}
