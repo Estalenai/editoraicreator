@@ -155,7 +155,7 @@ function formatDashboardProjectTitle(rawTitle: string | null | undefined, fallba
 function formatDashboardKindLabel(value: string | null | undefined, fallback: string): string {
   const normalized = String(value || "").trim().toLowerCase();
   if (!normalized) return fallback;
-  if (normalized === "text") return "Peca";
+  if (normalized === "text" || normalized === "peca" || normalized === "peça") return "Peça";
   if (normalized === "script") return "Roteiro";
   if (normalized === "clip") return "Clipe";
   if (normalized === "video") return "Vídeo";
@@ -198,6 +198,25 @@ function getTransactionAmount(transaction: Record<string, any>): number {
 function getTransactionLabel(transaction: Record<string, any>): string {
   const source = String(transaction?.feature || transaction?.reason || transaction?.ref_kind || "Movimentação").trim();
   return source || "Movimentação";
+}
+
+function formatDashboardActivityTitle(value: string | null | undefined): string {
+  const normalized = String(value || "").trim().toLowerCase();
+  if (!normalized) return "Atividade registrada";
+  if (normalized === "coins_convert") return "Conversão de créditos";
+  if (normalized.includes("coin") || normalized.includes("credit")) return "Movimentação de Creator Coins";
+  if (normalized.includes("project")) return "Projeto atualizado";
+  if (normalized.includes("subscription") || normalized.includes("plan")) return "Plano atualizado";
+  return formatDashboardStatus(normalized, "Atividade registrada");
+}
+
+function formatDashboardActivityMessage(item: { title?: string; message?: string }): string {
+  const normalizedTitle = String(item.title || "").trim().toLowerCase();
+  if (normalizedTitle === "coins_convert") return "Saldo convertido entre tipos de Creator Coins.";
+  const message = String(item.message || "").trim();
+  if (!message) return "Evento confirmado na conta.";
+  if (message.toLowerCase().includes("ledger")) return "Movimentação registrada na carteira.";
+  return message;
 }
 
 export default function DashboardPage() {
@@ -829,8 +848,8 @@ export default function DashboardPage() {
                           {accountActivityItems.length > 0 ? accountActivityItems.map((item) => (
                             <Link key={item.id || item.title} href={item.href || "/dashboard/account"} className="dashboard-intelligence-row">
                               <span>
-                                <strong>{item.title || "Atividade registrada"}</strong>
-                                <em>{item.message || "Evento confirmado na conta."}</em>
+                                <strong>{formatDashboardActivityTitle(item.title)}</strong>
+                                <em>{formatDashboardActivityMessage(item)}</em>
                               </span>
                               <small>{formatDashboardStatus(item.status_code, "Registrado")}</small>
                             </Link>
