@@ -187,6 +187,8 @@ function formatDashboardStatus(value: string | null | undefined, fallback = "Ati
   if (normalized === "confirmed") return "Confirmado";
   if (normalized === "running" || normalized === "queued") return "Em andamento";
   if (normalized === "needs_attention") return "Revisar";
+  if (normalized === "em edicao" || normalized === "em edição") return "Em edição";
+  if (normalized === "published" || normalized === "publicado") return "Publicado";
   return normalized.charAt(0).toUpperCase() + normalized.slice(1).replace(/_/g, " ");
 }
 
@@ -826,7 +828,7 @@ export default function DashboardPage() {
                             <EditorRouteLink key={project.id || project.title} href={project.id ? `/editor/${project.id}` : "/projects"} className="dashboard-intelligence-row">
                               <span>
                                 <strong>{formatDashboardProjectTitle(project.title, "Projeto sem título")}</strong>
-                                <em>{formatDashboardKindLabel(project.kind, "Projeto")} · {project.summary?.continuityStatusLabel || "Em continuidade"}</em>
+                                <em>{formatDashboardKindLabel(project.kind, "Projeto")} · {formatDashboardStatus(project.summary?.continuityStatusLabel, "Em continuidade")}</em>
                               </span>
                               <small>{formatDashboardDate(project.updated_at || project.created_at)}</small>
                             </EditorRouteLink>
@@ -842,7 +844,7 @@ export default function DashboardPage() {
                       <div className="dashboard-intelligence-surface dashboard-intelligence-activity">
                         <div className="dashboard-intelligence-section-head">
                           <span className="dashboard-intelligence-kicker">Histórico / atividade</span>
-                          <Link href="/credits#credits-history">Abrir ledger</Link>
+                          <Link href="/credits#credits-history">Ver histórico</Link>
                         </div>
                         <div className="dashboard-intelligence-list">
                           {accountActivityItems.length > 0 ? accountActivityItems.map((item) => (
