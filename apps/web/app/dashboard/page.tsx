@@ -228,6 +228,9 @@ function formatDashboardActivityMessage(item: { title?: string; message?: string
 function formatDashboardActivityGroupTitle(title: string, count: number): string {
   if (count <= 1) return title;
   if (title === "Conversão de créditos") return `${count} conversões de créditos`;
+  if (title === "Geração de texto") return `${count} gerações de texto`;
+  if (title === "Geração de imagem") return `${count} gerações de imagem`;
+  if (title === "Geração de vídeo") return `${count} gerações de vídeo`;
   return `${count} atividades: ${title.toLocaleLowerCase("pt-BR")}`;
 }
 
