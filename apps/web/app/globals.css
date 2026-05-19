@@ -30701,3 +30701,103 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
     height: 4px;
   }
 }
+
+/* Etapa 2: tablet flow lock. Keep 768px tablets as a native
+   pedido -> canvas -> entrega composition instead of hiding the request. */
+@media (min-width: 761px) and (max-width: 900px) {
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-shell {
+    width: min(100%, 640px);
+    margin-inline: auto;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-canvas {
+    width: min(100%, 640px);
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto auto;
+    grid-template-areas:
+      "prompt"
+      "brief"
+      "output";
+    gap: clamp(10px, 1.8vw, 14px);
+    min-height: clamp(492px, 65vw, 540px);
+    align-items: start;
+    padding: 6px clamp(12px, 2vw, 18px) 0;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-prompt {
+    display: grid;
+    grid-area: prompt;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      "label title frequency"
+      "label copy copy";
+    align-items: center;
+    gap: 5px clamp(10px, 1.8vw, 14px);
+    width: 100%;
+    min-height: clamp(78px, 11vw, 92px);
+    padding: clamp(12px, 1.7vw, 15px) clamp(16px, 2.1vw, 20px);
+    border-radius: 32px;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-prompt .dashboard-stage-stat-label {
+    grid-area: label;
+    display: block;
+    align-self: center;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-prompt strong {
+    grid-area: title;
+    display: block;
+    max-width: none;
+    font-size: clamp(1.02rem, 2.35vw, 1.18rem);
+    line-height: 1.02;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-frequency {
+    grid-area: frequency;
+    display: inline-flex;
+    justify-self: end;
+    max-width: 18ch;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-prompt > span:last-child {
+    grid-area: copy;
+    display: block;
+    color: rgba(228, 246, 255, 0.84);
+    font-size: clamp(0.76rem, 1.65vw, 0.84rem);
+    line-height: 1.36;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-brief {
+    align-self: start;
+    height: auto;
+    width: 100%;
+    min-height: clamp(148px, 20vw, 172px);
+    align-content: start;
+    gap: clamp(9px, 1.45vw, 12px);
+    padding: clamp(14px, 2vw, 18px);
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-stage-lead-title {
+    max-width: 16ch;
+    font-size: clamp(1.54rem, 4vw, 2rem);
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-stage-lead-copy {
+    max-width: 28ch;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-output {
+    align-self: start;
+    height: auto;
+    width: min(100%, 344px);
+    min-height: clamp(158px, 21vw, 178px);
+    align-content: center;
+    padding-block: 8px;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-output-frame strong {
+    max-width: 13ch;
+    font-size: clamp(1.34rem, 3.3vw, 1.68rem);
+  }
+}
