@@ -31047,6 +31047,7 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
 }
 
 .dashboard-intelligence-wallet-label strong {
+  justify-self: start;
   color: rgba(241, 251, 255, 0.94);
   font-size: 0.78rem;
   line-height: 1.1;
@@ -31367,6 +31368,7 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
   }
 
   .dashboard-intelligence-row small {
+    grid-column: 2;
     justify-self: start;
   }
 

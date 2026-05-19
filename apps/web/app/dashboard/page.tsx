@@ -206,6 +206,10 @@ function formatDashboardActivityTitle(value: string | null | undefined): string 
   const normalized = String(value || "").trim().toLowerCase();
   if (!normalized) return "Atividade registrada";
   if (normalized === "coins_convert") return "Conversão de créditos";
+  if (normalized.includes("text") && normalized.includes("generate")) return "Geração de texto";
+  if (normalized.includes("image") && normalized.includes("generate")) return "Geração de imagem";
+  if (normalized.includes("video") && normalized.includes("generate")) return "Geração de vídeo";
+  if (normalized.includes("generate")) return "Geração registrada";
   if (normalized.includes("coin") || normalized.includes("credit")) return "Movimentação de Creator Coins";
   if (normalized.includes("project")) return "Projeto atualizado";
   if (normalized.includes("subscription") || normalized.includes("plan")) return "Plano atualizado";
