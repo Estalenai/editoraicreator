@@ -30886,15 +30886,20 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
   position: relative;
   z-index: 2;
   display: grid;
-  gap: clamp(14px, 1.5vw, 22px);
-  width: min(1180px, calc(100vw - clamp(48px, 9vw, 150px)));
-  margin: clamp(16px, 2.2vw, 32px) auto 0;
+  gap: clamp(18px, 1.9vw, 30px);
+  width: min(1200px, calc(100vw - clamp(48px, 9vw, 150px)));
+  margin: clamp(18px, 2.4vw, 36px) auto 0;
   padding: clamp(2px, 0.4vw, 6px) 0 clamp(36px, 5vw, 72px);
   color: rgb(234, 247, 255);
 }
 
 .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-intelligence-field::before {
-  display: none;
+  content: "";
+  position: absolute;
+  inset: clamp(46px, 5vw, 70px) auto clamp(34px, 5vw, 68px) clamp(6px, 0.8vw, 12px);
+  width: 1px;
+  background: linear-gradient(180deg, transparent, rgba(77, 222, 255, 0.22) 16%, rgba(77, 222, 255, 0.07) 70%, transparent);
+  pointer-events: none;
 }
 
 .dashboard-intelligence-heading {
@@ -30943,17 +30948,19 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
   grid-template-areas:
     "wallet plan"
     "wallet usage";
-  grid-template-columns: minmax(360px, 1.2fr) minmax(300px, 0.86fr);
+  grid-template-columns: minmax(450px, 1.42fr) minmax(286px, 0.7fr);
   align-items: start;
+  gap: clamp(16px, 1.6vw, 24px);
 }
 
 .dashboard-intelligence-continuity {
   grid-template-areas:
     "projects activity"
-    "projects next";
+    "next next";
   grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr);
   align-items: start;
-  gap: clamp(12px, 1.25vw, 18px);
+  gap: clamp(14px, 1.45vw, 22px);
+  padding-top: clamp(2px, 0.7vw, 10px);
 }
 
 .dashboard-intelligence-surface {
@@ -30963,15 +30970,15 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
   gap: 9px;
   align-content: start;
   min-height: 0;
-  padding: clamp(14px, 1.35vw, 18px) clamp(14px, 1.45vw, 20px);
+  padding: clamp(14px, 1.35vw, 20px) clamp(15px, 1.55vw, 22px);
   overflow: visible;
   border: 0;
-  border-top: 1px solid rgba(191, 239, 255, 0.07);
-  border-left: 1px solid rgba(78, 226, 255, 0.14);
-  border-radius: clamp(20px, 1.8vw, 28px);
+  border-top: 1px solid rgba(191, 239, 255, 0.075);
+  border-left: 1px solid rgba(78, 226, 255, 0.12);
+  border-radius: 0;
   background:
-    linear-gradient(140deg, rgba(255, 255, 255, 0.025), transparent 50%),
-    radial-gradient(420px 150px at 10% 0%, rgba(78, 226, 255, 0.038), transparent 78%);
+    linear-gradient(115deg, rgba(255, 255, 255, 0.022), transparent 58%),
+    linear-gradient(90deg, rgba(78, 226, 255, 0.036), transparent 76%);
   color: inherit;
   text-decoration: none;
   box-shadow: none;
@@ -30996,11 +31003,22 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
 
 .dashboard-intelligence-wallet {
   grid-area: wallet;
-  min-height: clamp(238px, 17vw, 292px);
+  min-height: clamp(266px, 20vw, 336px);
+  padding: clamp(20px, 2.1vw, 30px) clamp(18px, 2.2vw, 32px);
+  border-left-color: rgba(78, 226, 255, 0.28);
+  background:
+    radial-gradient(520px 210px at 0% 0%, rgba(77, 222, 255, 0.09), transparent 72%),
+    linear-gradient(112deg, rgba(255, 255, 255, 0.028), transparent 62%);
+}
+
+.dashboard-intelligence-wallet > strong {
+  font-size: clamp(2.25rem, 4.4vw, 4.2rem);
+  letter-spacing: -0.075em;
 }
 
 .dashboard-intelligence-plan {
   grid-area: plan;
+  align-self: end;
 }
 
 .dashboard-intelligence-usage {
@@ -31009,14 +31027,19 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
 
 .dashboard-intelligence-projects {
   grid-area: projects;
+  border-left-color: rgba(78, 226, 255, 0.09);
 }
 
 .dashboard-intelligence-activity {
   grid-area: activity;
+  border-left-color: rgba(78, 226, 255, 0.09);
 }
 
 .dashboard-intelligence-next {
   grid-area: next;
+  border-left: 0;
+  background:
+    linear-gradient(90deg, rgba(78, 226, 255, 0.055), rgba(255, 255, 255, 0.018) 45%, transparent 82%);
 }
 
 .dashboard-intelligence-surface > span:not(.dashboard-intelligence-kicker):not(.dashboard-intelligence-action),
@@ -31251,7 +31274,8 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   min-height: 0;
-  gap: 8px 16px;
+  gap: 7px clamp(16px, 2vw, 28px);
+  padding-block: clamp(12px, 1.3vw, 18px);
 }
 
 .dashboard-intelligence-next .dashboard-intelligence-action {
