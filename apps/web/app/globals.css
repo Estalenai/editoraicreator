@@ -31049,6 +31049,14 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
   line-height: 1.38;
 }
 
+.dashboard-intelligence-source-note {
+  width: fit-content;
+  color: rgba(154, 235, 255, 0.72);
+  font-size: 0.74rem;
+  font-weight: 760;
+  letter-spacing: -0.01em;
+}
+
 .dashboard-intelligence-wallet-lines {
   display: grid;
   gap: 11px;
@@ -31111,6 +31119,30 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
   justify-self: end;
   font-size: 0.82rem;
   letter-spacing: -0.02em;
+}
+
+.dashboard-intelligence-wallet-value {
+  justify-self: end;
+  display: grid;
+  gap: 1px;
+  text-align: right;
+}
+
+.dashboard-intelligence-wallet-value em {
+  color: rgba(203, 231, 246, 0.58);
+  font-size: 0.62rem;
+  font-style: normal;
+  font-weight: 760;
+  letter-spacing: 0.02em;
+}
+
+.dashboard-intelligence-wallet-value strong {
+  justify-self: end;
+}
+
+.dashboard-intelligence-wallet-lines[data-account-state="syncing"] .dashboard-intelligence-wallet-row i,
+.dashboard-intelligence-wallet-lines[data-account-state="error"] .dashboard-intelligence-wallet-row i {
+  background: linear-gradient(90deg, rgba(191, 239, 255, 0.07), rgba(78, 226, 255, 0.03));
 }
 
 .dashboard-intelligence-action {

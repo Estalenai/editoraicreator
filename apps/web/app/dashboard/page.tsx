@@ -8,6 +8,7 @@ import { ApprovedBetaOnboardingCard } from "../../components/dashboard/ApprovedB
 import { EditorRouteLink } from "../../components/ui/EditorRouteLink";
 import { api } from "../../lib/api";
 import { formatCreatorCoinsWalletSummary } from "../../lib/creatorCoins";
+import { resolvePlanLabel } from "../../lib/planLabel";
 import { ensureCanonicalProjectData, getCanonicalProjectSummary } from "../../lib/projectModel";
 import { toUserFacingError } from "../../lib/uiFeedback";
 
@@ -338,19 +339,37 @@ export default function DashboardPage() {
     () => usageItems.reduce((sum, item) => sum + Number(item.used || 0), 0),
     [usageItems]
   );
-  const operatingWallet = accountOverview?.wallet ?? wallet;
-  const walletCommon = Number(operatingWallet?.common ?? 0);
-  const walletPro = Number(operatingWallet?.pro ?? 0);
-  const walletUltra = Number(operatingWallet?.ultra ?? 0);
-  const walletTotal = Number.isFinite(Number(operatingWallet?.total))
+  const accountDataState = accountOverviewLoading || loading
+    ? "syncing"
+    : accountOverview
+      ? "real"
+      : accountOverviewError
+        ? "error"
+        : "fallback";
+  const operatingWallet = accountOverview?.wallet ?? (accountDataState === "error" ? null : wallet);
+  const walletHasSource = Boolean(operatingWallet);
+  const walletCommon = walletHasSource ? Number(operatingWallet?.common ?? 0) : 0;
+  const walletPro = walletHasSource ? Number(operatingWallet?.pro ?? 0) : 0;
+  const walletUltra = walletHasSource ? Number(operatingWallet?.ultra ?? 0) : 0;
+  const walletTotal = walletHasSource && Number.isFinite(Number(operatingWallet?.total))
     ? Number(operatingWallet?.total)
     : walletCommon + walletPro + walletUltra;
   const walletRows = [
-    { key: "common", label: "Common", description: "uso leve", value: walletCommon },
-    { key: "pro", label: "Pro", description: "recursos avançados", value: walletPro },
+    { key: "common", label: "Common", description: "tarefas leves", value: walletCommon },
+    { key: "pro", label: "Pro", description: "modelos avançados", value: walletPro },
     { key: "ultra", label: "Ultra", description: "geração premium", value: walletUltra },
   ];
   const walletPeak = Math.max(walletCommon, walletPro, walletUltra, 1);
+  const walletTotalDisplay = accountDataState === "syncing"
+    ? "Sincronizando saldo"
+    : walletHasSource
+      ? formatDashboardNumber(walletTotal)
+      : "Conta em sincronização";
+  const walletSourceLabel = accountDataState === "real"
+    ? "Saldos disponíveis por tipo"
+    : accountDataState === "error"
+      ? "Não foi possível confirmar os saldos agora"
+      : "Aguardando saldos da conta";
   const financialTransactions = useMemo(
     () => (Array.isArray(accountOverview?.financial?.recent) ? accountOverview.financial.recent : []),
     [accountOverview]
@@ -475,16 +494,43 @@ export default function DashboardPage() {
     : usageItems.length === 0
       ? "Sem uso recente."
       : `${totalUsage} uso(s).`;
-  const planLabelDisplay = loading ? "Plano em sincronização" : planLabel ?? "—";
-  const planStatusDisplay = accountOverviewLoading
-    ? "Sincronizando"
-    : formatDashboardStatus(accountOverview?.plan?.status, planLabel ? "Ativo" : "Plano em sincronização");
+  const overviewPlanLabel = accountOverview?.plan?.plan_code ? resolvePlanLabel(accountOverview.plan.plan_code) : null;
+  const bootstrapPlanLooksFallback = !accountOverview && String(planLabel || "").trim().toLowerCase() === "gratuito";
+  const planLabelDisplay = accountDataState === "syncing"
+    ? "Plano em sincronização"
+    : overviewPlanLabel ?? (accountOverviewError || bootstrapPlanLooksFallback ? "Conta em sincronização" : planLabel ?? "Conta em sincronização");
+  const planStatusDisplay = accountDataState === "syncing"
+    ? "Sincronizando conta"
+    : accountOverview
+      ? formatDashboardStatus(accountOverview?.plan?.status, "Status em sincronização")
+      : accountOverviewError
+        ? "Não confirmado agora"
+        : "Aguardando confirmação";
+  const planBenefitDisplay = accountDataState === "syncing"
+    ? "Confirmando plano e recursos do canvas"
+    : accountOverviewError || planLabelDisplay === "Conta em sincronização"
+      ? "Aguarde a conta responder para confirmar plano e recursos"
+      : "Recursos do plano liberados para o canvas";
   const walletSummaryDisplay = loading ? "Saldo em sincronização" : walletSummary;
   const totalUsageDisplay = loading || usageLoading ? "Uso em sincronização" : totalUsage.toLocaleString("pt-BR");
-  const periodUsageDisplay = usageLoading ? "Uso em sincronização" : `${formatDashboardNumber(totalUsage)} créditos usados`;
-  const periodUsageDetail = usageItems.length > 0
-    ? `${usageItems.length} ${usageItems.length === 1 ? "registro" : "registros"} de uso no período`
-    : "Histórico será exibido após a primeira entrega.";
+  const periodUsageDisplay = usageLoading ? "Uso em sincronização" : `${formatDashboardNumber(totalUsage)} créditos usados no período`;
+  const periodUsageDetail = usageLoading
+    ? "Confirmando eventos recentes."
+    : usageError
+      ? "Uso será exibido assim que a conta responder."
+      : usageItems.length > 0
+        ? `${usageItems.length} ${usageItems.length === 1 ? "evento" : "eventos"} de uso no período`
+        : "Sem eventos de uso neste período.";
+  const creditsSpentDisplay = accountDataState === "error"
+    ? "Em sincronização"
+    : financialTransactions.length > 0
+      ? formatDashboardNumber(creditsSpent)
+      : "Sem saída no período";
+  const creditsReceivedDisplay = accountDataState === "error"
+    ? "Em sincronização"
+    : financialTransactions.length > 0
+      ? formatDashboardNumber(creditsReceived)
+      : "Sem entrada no período";
   const heroActionCtaDisplay = loading ? "Preparando canvas" : heroAction.cta;
   const nextActionPanelCtaDisplay = loading
     ? "Preparando canvas"
@@ -836,7 +882,7 @@ export default function DashboardPage() {
                     </div>
                   ) : null}
 
-                  <section className="dashboard-intelligence-field" aria-label="Estado da conta, Creator Coins e continuidade">
+                  <section className="dashboard-intelligence-field" aria-label="Estado da conta, Creator Coins e continuidade" data-account-state={accountDataState}>
                     <div className="dashboard-intelligence-heading">
                       <div>
                         <span className="dashboard-intelligence-kicker">Seu estúdio em números</span>
@@ -846,11 +892,12 @@ export default function DashboardPage() {
                     </div>
 
                     <div className="dashboard-intelligence-primary" aria-label="Carteira, plano e uso do período">
-                      <Link href="/credits" className="dashboard-intelligence-surface dashboard-intelligence-wallet">
+                      <Link href="/credits" className="dashboard-intelligence-surface dashboard-intelligence-wallet" data-account-state={accountDataState}>
                         <span className="dashboard-intelligence-kicker">Creator Coins</span>
-                        <strong>{accountOverviewLoading || loading ? "Saldo em sincronização" : formatDashboardNumber(walletTotal)}</strong>
-                        <span className="dashboard-intelligence-muted">Total disponível</span>
-                        <div className="dashboard-intelligence-wallet-lines" aria-label="Créditos por tipo">
+                        <strong>{walletTotalDisplay}</strong>
+                        <span className="dashboard-intelligence-muted">Saldo disponível</span>
+                        <span className="dashboard-intelligence-source-note">{walletSourceLabel}</span>
+                        <div className="dashboard-intelligence-wallet-lines" aria-label="Saldos por tipo de Creator Coins" data-account-state={accountDataState}>
                           {walletRows.map((row) => (
                             <span key={row.key} className={`dashboard-intelligence-wallet-row dashboard-intelligence-wallet-row-${row.key}`}>
                               <span className="dashboard-intelligence-wallet-label">
@@ -858,9 +905,12 @@ export default function DashboardPage() {
                                 <em>{row.description}</em>
                               </span>
                               <i aria-hidden="true">
-                                <b style={{ width: `${Math.max(8, Math.round((row.value / walletPeak) * 100))}%` }} />
+                                <b style={{ width: `${walletHasSource ? Math.max(8, Math.round((row.value / walletPeak) * 100)) : 0}%` }} />
                               </i>
-                              <strong>{formatDashboardNumber(row.value)}</strong>
+                              <span className="dashboard-intelligence-wallet-value">
+                                <em>saldo</em>
+                                <strong>{walletHasSource ? formatDashboardNumber(row.value) : "Sincronizando"}</strong>
+                              </span>
                             </span>
                           ))}
                         </div>
@@ -870,7 +920,7 @@ export default function DashboardPage() {
                       <Link href="/plans" className="dashboard-intelligence-surface dashboard-intelligence-plan">
                         <span className="dashboard-intelligence-kicker">Plano atual</span>
                         <strong>{planLabelDisplay}</strong>
-                        <span>{planStatusDisplay} · recursos do plano liberados para o canvas</span>
+                        <span>{planStatusDisplay} · {planBenefitDisplay}</span>
                         <span className="dashboard-intelligence-action">Gerenciar plano</span>
                       </Link>
 
@@ -880,12 +930,12 @@ export default function DashboardPage() {
                         <span>{periodUsageDetail}</span>
                         <div className="dashboard-intelligence-usage-pair">
                           <span>
-                            <em>Débitos de créditos</em>
-                            <strong>{financialTransactions.length > 0 ? formatDashboardNumber(creditsSpent) : "Sem gasto registrado"}</strong>
+                            <em>Créditos movimentados</em>
+                            <strong>{creditsSpentDisplay}</strong>
                           </span>
                           <span>
                             <em>Créditos recebidos</em>
-                            <strong>{financialTransactions.length > 0 ? formatDashboardNumber(creditsReceived) : "Sem entrada registrada"}</strong>
+                            <strong>{creditsReceivedDisplay}</strong>
                           </span>
                         </div>
                       </div>
@@ -935,8 +985,8 @@ export default function DashboardPage() {
                             </Link>
                           )) : (
                             <div className="dashboard-intelligence-empty">
-                              <strong>Histórico em sincronização</strong>
-                              <span>{accountOverviewError ? toUserFacingError(accountOverviewError, "Sem histórico recente.") : "Histórico será exibido após a primeira entrega."}</span>
+                              <strong>{accountOverviewError ? "Conta em sincronização" : "Histórico ainda vazio"}</strong>
+                              <span>{accountOverviewError ? "Atividade será exibida assim que a conta responder." : "O histórico aparece após a primeira movimentação."}</span>
                             </div>
                           )}
                         </div>
