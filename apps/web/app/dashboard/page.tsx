@@ -447,6 +447,10 @@ export default function DashboardPage() {
         href: "/creators",
         cta: "Criar primeira entrega",
       };
+  const heroAction = {
+    href: "/creators",
+    cta: recentProjects.length > 0 ? "Criar nova entrega" : "Criar primeira entrega",
+  };
   const demoDeliverableLabel = featuredProjectDisplay?.deliverableLabel || "Clipe";
   const demoDeliverableLower = demoDeliverableLabel.toLocaleLowerCase("pt-BR");
   const demoKindLower = (featuredProjectDisplay?.kindLabel || "vídeo").toLocaleLowerCase("pt-BR");
@@ -481,12 +485,10 @@ export default function DashboardPage() {
   const periodUsageDetail = usageItems.length > 0
     ? `${usageItems.length} ${usageItems.length === 1 ? "registro" : "registros"} de uso no período`
     : "Histórico será exibido após a primeira entrega.";
-  const nextActionCtaDisplay = loading ? "Preparando canvas" : nextAction.cta;
+  const heroActionCtaDisplay = loading ? "Preparando canvas" : heroAction.cta;
   const nextActionPanelCtaDisplay = loading
     ? "Preparando canvas"
-    : recentProjects[0]?.id
-      ? "Abrir última entrega"
-      : nextAction.cta;
+    : nextAction.cta;
   const continuityValue = loading ? "Projetos em sincronização" : `${recentProjects.length} projeto(s)`;
   const continuityDetail = loading
     ? "Sincronizando dados."
@@ -550,21 +552,15 @@ export default function DashboardPage() {
                               <span>e entregue no mesmo canvas.</span>
                             </h1>
                             <p className="section-header-copy hero-copy-compact">
-                              Do primeiro brief à saída final, avance sem perder o contexto criativo.
+                              Peça uma entrega, veja o canvas transformar e acompanhe créditos, plano e projetos no mesmo estúdio.
                             </p>
                           </div>
 
                           <div className="dashboard-unified-intent dashboard-editorial-intent" aria-label="Ação principal do Studio Canvas">
                             <div className="dashboard-studio-primary-actions" aria-label="Ações principais do Studio Canvas">
-                              {nextAction.href.startsWith("/editor") ? (
-                                <EditorRouteLink href={nextAction.href} className="btn-link-ea btn-primary dashboard-studio-primary-cta">
-                                  {nextActionCtaDisplay}
-                                </EditorRouteLink>
-                              ) : (
-                                <Link href={nextAction.href} className="btn-link-ea btn-primary dashboard-studio-primary-cta">
-                                  {nextActionCtaDisplay}
-                                </Link>
-                              )}
+                              <Link href={heroAction.href} className="btn-link-ea btn-primary dashboard-studio-primary-cta">
+                                {heroActionCtaDisplay}
+                              </Link>
                               <Link href="/projects" className="dashboard-studio-secondary-cta">
                                 Ver projetos
                               </Link>
