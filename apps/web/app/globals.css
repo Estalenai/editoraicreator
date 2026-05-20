@@ -31577,6 +31577,10 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
     grid-template-columns: 26px minmax(0, 1fr);
   }
 
+  .dashboard-intelligence-projects .dashboard-intelligence-project-row:nth-of-type(n+3) {
+    display: none;
+  }
+
   .dashboard-intelligence-row small {
     grid-column: 2;
     justify-self: start;
