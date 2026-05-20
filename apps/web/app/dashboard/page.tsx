@@ -669,7 +669,7 @@ export default function DashboardPage() {
                               <span>e entregue no mesmo canvas.</span>
                             </h1>
                             <p className="section-header-copy hero-copy-compact">
-                              Peça uma entrega, veja o canvas transformar e acompanhe créditos, plano e projetos no mesmo estúdio.
+                              Transforme pedidos em entregas prontas, acompanhe créditos, plano e projetos no mesmo estúdio.
                             </p>
                           </div>
 
@@ -775,6 +775,12 @@ export default function DashboardPage() {
                                       <i />
                                     </span>
                                   </div>
+                                  <span className="dashboard-cover-product-particles" aria-hidden="true">
+                                    <i />
+                                    <i />
+                                    <i />
+                                    <i />
+                                  </span>
                                 </div>
                               </div>
 
@@ -954,12 +960,19 @@ export default function DashboardPage() {
                   ) : null}
 
                   <section className="dashboard-intelligence-field" aria-label="Estado da conta, Creator Coins e continuidade" data-account-state={accountDataState}>
+                    <div className="dashboard-cover-transition" aria-hidden="true">
+                      <span />
+                      <span />
+                      <span />
+                      <span />
+                      <span />
+                    </div>
                     <div className="dashboard-intelligence-heading">
                       <div>
                         <span className="dashboard-intelligence-kicker">Seu estúdio em números</span>
                         <strong>Conta, créditos e continuidade</strong>
                       </div>
-                      <p>Do canvas para a operação: saldo, plano, uso e projetos seguem no mesmo campo.</p>
+                      <p>O que nasce no canvas continua aqui: saldos, plano, uso e próximos projetos sem perder contexto.</p>
                     </div>
 
                     <div className="dashboard-intelligence-primary" aria-label="Carteira, plano e uso do período">
@@ -1083,7 +1096,7 @@ export default function DashboardPage() {
 
                       <div className="dashboard-intelligence-surface dashboard-intelligence-next">
                         <span className="dashboard-intelligence-next-mark" aria-hidden="true">{nextAction.marker}</span>
-                        <span className="dashboard-intelligence-kicker">Próxima ação</span>
+                        <span className="dashboard-intelligence-kicker">Próxima ação recomendada</span>
                         <strong>{nextAction.title}</strong>
                         <span>{nextAction.meta}</span>
                         <p>{nextAction.description}</p>
