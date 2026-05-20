@@ -31382,3 +31382,327 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
     margin-top: 4px;
   }
 }
+
+/* Etapa 1: demo real product proof lock.
+   Replace the abstract EA-orbit center with a small editing surface so the
+   artifact reads as a working product: prompt -> edit canvas -> final clip. */
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-signature-field {
+  opacity: 0.46;
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-beam {
+  inset: 24% 27% auto auto;
+  width: 34%;
+  height: 38%;
+  opacity: 0.42;
+  filter: blur(1.5px);
+}
+
+.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-engine {
+  left: 50.5%;
+  top: 54%;
+  z-index: 2;
+  width: clamp(236px, 18.5vw, 304px);
+  aspect-ratio: auto;
+  transform: translate(-50%, -50%);
+}
+
+.dashboard-studio-product-workbench {
+  position: relative;
+  display: grid;
+  gap: 9px;
+  min-height: clamp(150px, 11vw, 176px);
+  padding: clamp(10px, 0.9vw, 13px);
+  border: 1px solid rgba(191, 239, 255, 0.09);
+  border-radius: 22px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.065), rgba(78, 226, 255, 0.026) 42%, rgba(5, 20, 48, 0.02)),
+    radial-gradient(220px 110px at 78% 16%, rgba(246, 219, 104, 0.08), transparent 72%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 18px 48px rgba(0, 26, 70, 0.08);
+}
+
+.dashboard-studio-product-workbench::before,
+.dashboard-studio-product-workbench::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: clamp(34px, 3vw, 54px);
+  height: 1px;
+  pointer-events: none;
+}
+
+.dashboard-studio-product-workbench::before {
+  right: 100%;
+  background: linear-gradient(90deg, transparent, rgba(78, 226, 255, 0.28));
+}
+
+.dashboard-studio-product-workbench::after {
+  left: 100%;
+  background: linear-gradient(90deg, rgba(246, 219, 104, 0.22), transparent);
+}
+
+.dashboard-studio-product-toolbar {
+  display: grid;
+  grid-template-columns: 7px 7px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px;
+  color: rgba(218, 244, 255, 0.78);
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dashboard-studio-product-toolbar span {
+  width: 7px;
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background: rgba(78, 226, 255, 0.64);
+  box-shadow: 0 0 14px rgba(78, 226, 255, 0.28);
+}
+
+.dashboard-studio-product-toolbar span:nth-child(2) {
+  background: rgba(246, 219, 104, 0.66);
+  box-shadow: 0 0 14px rgba(246, 219, 104, 0.2);
+}
+
+.dashboard-studio-product-toolbar strong,
+.dashboard-studio-product-toolbar em {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard-studio-product-toolbar em {
+  color: rgba(196, 229, 248, 0.62);
+  font-style: normal;
+}
+
+.dashboard-studio-product-preview {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(38px, 0.38fr);
+  gap: 7px;
+  min-height: clamp(62px, 4.8vw, 82px);
+}
+
+.dashboard-studio-product-frame {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(191, 239, 255, 0.105);
+  border-radius: 15px;
+  background:
+    linear-gradient(145deg, rgba(78, 226, 255, 0.18), rgba(255, 255, 255, 0.04) 44%, rgba(5, 20, 48, 0.05)),
+    radial-gradient(circle at 74% 28%, rgba(246, 219, 104, 0.18), transparent 26%);
+}
+
+.dashboard-studio-product-frame::before,
+.dashboard-studio-product-frame::after {
+  content: "";
+  position: absolute;
+  left: 11%;
+  right: 12%;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(239, 252, 255, 0.42), transparent);
+}
+
+.dashboard-studio-product-frame::before {
+  top: 36%;
+}
+
+.dashboard-studio-product-frame::after {
+  top: 58%;
+  width: 52%;
+}
+
+.dashboard-studio-product-frame-b {
+  opacity: 0.74;
+  background:
+    linear-gradient(145deg, rgba(246, 219, 104, 0.12), rgba(78, 226, 255, 0.07) 46%, rgba(5, 20, 48, 0.04));
+}
+
+.dashboard-studio-product-play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 34px;
+  aspect-ratio: 1;
+  border: 1px solid rgba(191, 239, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(5, 22, 52, 0.24);
+  transform: translate(-50%, -50%);
+}
+
+.dashboard-studio-product-play::before {
+  content: "";
+  position: absolute;
+  left: 13px;
+  top: 10px;
+  width: 0;
+  height: 0;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-left: 10px solid rgba(245, 253, 255, 0.9);
+}
+
+.dashboard-studio-product-timeline {
+  display: grid;
+  gap: 6px;
+}
+
+.dashboard-studio-product-track {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 4px;
+  min-height: 9px;
+}
+
+.dashboard-studio-product-track i {
+  display: block;
+  min-height: 9px;
+  border-radius: 999px;
+  background: rgba(78, 226, 255, 0.32);
+}
+
+.dashboard-studio-product-track-main i:first-child {
+  grid-column: 1 / span 5;
+}
+
+.dashboard-studio-product-track-main i:nth-child(2) {
+  grid-column: 6 / span 3;
+  background: rgba(246, 219, 104, 0.42);
+}
+
+.dashboard-studio-product-track-main i:nth-child(3) {
+  grid-column: 9 / span 4;
+}
+
+.dashboard-studio-product-track-caption i:first-child {
+  grid-column: 2 / span 4;
+  background: rgba(213, 239, 255, 0.22);
+}
+
+.dashboard-studio-product-track-caption i:nth-child(2) {
+  grid-column: 7 / span 5;
+  background: rgba(213, 239, 255, 0.2);
+}
+
+.dashboard-studio-product-track-audio i {
+  min-height: 5px;
+  background: rgba(119, 166, 255, 0.3);
+}
+
+.dashboard-studio-product-track-audio i:first-child {
+  grid-column: 1 / span 2;
+}
+
+.dashboard-studio-product-track-audio i:nth-child(2) {
+  grid-column: 3 / span 3;
+}
+
+.dashboard-studio-product-track-audio i:nth-child(3) {
+  grid-column: 6 / span 2;
+}
+
+.dashboard-studio-product-track-audio i:nth-child(4) {
+  grid-column: 8 / span 5;
+}
+
+@media (max-width: 1320px) {
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-engine {
+    left: 51.5%;
+    width: clamp(224px, 19vw, 278px);
+  }
+}
+
+@media (min-width: 761px) and (max-width: 900px) {
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-canvas {
+    grid-template-areas:
+      "prompt"
+      "engine"
+      "brief"
+      "output";
+    width: min(100%, 560px);
+    gap: clamp(12px, 2vw, 18px);
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-prompt {
+    grid-area: prompt;
+    display: grid;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-engine {
+    grid-area: engine;
+    position: relative;
+    display: block;
+    left: auto;
+    top: auto;
+    width: 360px;
+    max-width: 100%;
+    margin-inline: auto;
+    transform: none;
+  }
+
+  .dashboard-studio-product-workbench {
+    min-height: 150px;
+  }
+
+  .dashboard-studio-product-workbench::before,
+  .dashboard-studio-product-workbench::after {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-canvas {
+    grid-template-areas:
+      "prompt"
+      "engine"
+      "brief"
+      "output";
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-prompt {
+    grid-area: prompt;
+    display: grid;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-engine {
+    grid-area: engine;
+    position: relative;
+    display: block;
+    left: auto;
+    top: auto;
+    width: 288px;
+    max-width: 100%;
+    margin-inline: 0 auto;
+    transform: none;
+  }
+
+  .dashboard-studio-product-workbench {
+    gap: 7px;
+    min-height: 132px;
+    padding: 10px;
+    border-radius: 18px;
+  }
+
+  .dashboard-studio-product-preview {
+    min-height: 58px;
+  }
+
+  .dashboard-studio-product-workbench::before,
+  .dashboard-studio-product-workbench::after {
+    display: none;
+  }
+
+  .dashboard-studio-product-track {
+    gap: 3px;
+    min-height: 7px;
+  }
+
+  .dashboard-studio-product-track i {
+    min-height: 7px;
+  }
+}

@@ -632,12 +632,37 @@ export default function DashboardPage() {
                                 <span>{demoIdeaCopy}</span>
                               </div>
 
-                              <div className="dashboard-studio-demo-engine" aria-hidden="true">
-                                <span className="dashboard-studio-demo-axis dashboard-studio-demo-axis-x" />
-                                <span className="dashboard-studio-demo-axis dashboard-studio-demo-axis-y" />
-                                <span className="dashboard-studio-demo-engine-core">EA</span>
-                                <span className="dashboard-studio-demo-orbit dashboard-studio-demo-orbit-a" />
-                                <span className="dashboard-studio-demo-orbit dashboard-studio-demo-orbit-b" />
+                              <div className="dashboard-studio-demo-engine" aria-label="Mini interface de edição do Studio Canvas">
+                                <div className="dashboard-studio-product-workbench" aria-hidden="true">
+                                  <div className="dashboard-studio-product-toolbar">
+                                    <span />
+                                    <span />
+                                    <strong>Canvas</strong>
+                                    <em>00:17</em>
+                                  </div>
+                                  <div className="dashboard-studio-product-preview">
+                                    <span className="dashboard-studio-product-frame dashboard-studio-product-frame-a" />
+                                    <span className="dashboard-studio-product-frame dashboard-studio-product-frame-b" />
+                                    <span className="dashboard-studio-product-play" />
+                                  </div>
+                                  <div className="dashboard-studio-product-timeline">
+                                    <span className="dashboard-studio-product-track dashboard-studio-product-track-main">
+                                      <i />
+                                      <i />
+                                      <i />
+                                    </span>
+                                    <span className="dashboard-studio-product-track dashboard-studio-product-track-caption">
+                                      <i />
+                                      <i />
+                                    </span>
+                                    <span className="dashboard-studio-product-track dashboard-studio-product-track-audio">
+                                      <i />
+                                      <i />
+                                      <i />
+                                      <i />
+                                    </span>
+                                  </div>
+                                </div>
                               </div>
 
                               {loading ? (
