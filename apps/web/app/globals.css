@@ -31205,7 +31205,84 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
 
 .dashboard-intelligence-list {
   display: grid;
-  gap: 7px;
+  gap: 9px;
+}
+
+.dashboard-intelligence-project-feature {
+  position: relative;
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 12px;
+  min-width: 0;
+  padding: 12px 0 13px;
+  color: inherit;
+  text-decoration: none;
+  border-top: 1px solid rgba(191, 239, 255, 0.085);
+}
+
+.dashboard-intelligence-project-feature::after {
+  content: "";
+  position: absolute;
+  inset: 12px auto 12px 18px;
+  width: 1px;
+  background: linear-gradient(180deg, rgba(78, 226, 255, 0.24), transparent);
+  opacity: 0.7;
+}
+
+.dashboard-intelligence-project-token,
+.dashboard-intelligence-next-mark {
+  position: relative;
+  z-index: 1;
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  border: 1px solid rgba(154, 235, 255, 0.16);
+  background:
+    radial-gradient(circle at 38% 32%, rgba(154, 235, 255, 0.24), transparent 54%),
+    rgba(78, 226, 255, 0.065);
+  color: rgba(229, 251, 255, 0.94);
+  font-size: 0.72rem;
+  font-weight: 950;
+  letter-spacing: -0.04em;
+}
+
+.dashboard-intelligence-project-feature-copy {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.dashboard-intelligence-project-feature-copy em {
+  color: rgba(154, 235, 255, 0.72);
+  font-size: 0.68rem;
+  font-style: normal;
+  font-weight: 840;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dashboard-intelligence-project-feature-copy strong {
+  overflow: hidden;
+  font-size: clamp(1rem, 1.1vw, 1.18rem);
+  line-height: 1.05;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard-intelligence-project-feature-copy span,
+.dashboard-intelligence-project-feature small {
+  color: rgba(217, 240, 255, 0.72);
+  font-size: 0.76rem;
+  line-height: 1.3;
+}
+
+.dashboard-intelligence-project-feature small {
+  justify-self: end;
+  color: rgba(154, 235, 255, 0.76);
+  font-weight: 850;
 }
 
 .dashboard-intelligence-row {
@@ -31253,6 +31330,23 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
   background: rgba(246, 219, 104, 0.065);
 }
 
+.dashboard-intelligence-row-mark-conversion {
+  color: rgba(246, 219, 104, 0.92);
+  background: rgba(246, 219, 104, 0.07);
+}
+
+.dashboard-intelligence-row-mark-text,
+.dashboard-intelligence-row-mark-image,
+.dashboard-intelligence-row-mark-video {
+  border-color: rgba(154, 235, 255, 0.16);
+}
+
+.dashboard-intelligence-row-mark-plan,
+.dashboard-intelligence-row-mark-project {
+  color: rgba(151, 239, 255, 0.92);
+  background: rgba(78, 226, 255, 0.065);
+}
+
 .dashboard-intelligence-row-mark-activity {
   color: rgba(143, 164, 255, 0.88);
   background: rgba(128, 164, 255, 0.06);
@@ -31290,6 +31384,29 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
   font-weight: 800;
 }
 
+.dashboard-intelligence-activity-row small {
+  display: grid;
+  justify-items: end;
+  gap: 2px;
+  min-width: max-content;
+}
+
+.dashboard-intelligence-activity-row small b,
+.dashboard-intelligence-activity-row small em {
+  font-size: 0.72rem;
+  font-style: normal;
+  line-height: 1.08;
+}
+
+.dashboard-intelligence-activity-row small b {
+  color: rgba(154, 235, 255, 0.82);
+}
+
+.dashboard-intelligence-activity-row small em {
+  color: rgba(217, 240, 255, 0.54);
+  font-weight: 760;
+}
+
 .dashboard-intelligence-empty {
   display: grid;
   gap: 4px;
@@ -31303,18 +31420,41 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
 
 .dashboard-intelligence-next {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
   align-items: center;
   min-height: 0;
-  gap: 7px clamp(16px, 2vw, 28px);
+  gap: 6px clamp(14px, 1.8vw, 26px);
   padding-block: clamp(12px, 1.3vw, 18px);
 }
 
-.dashboard-intelligence-next .dashboard-intelligence-action {
-  grid-row: 1 / span 3;
+.dashboard-intelligence-next .dashboard-intelligence-next-mark {
+  grid-row: 1 / span 4;
+  align-self: center;
+}
+
+.dashboard-intelligence-next > .dashboard-intelligence-kicker,
+.dashboard-intelligence-next > strong,
+.dashboard-intelligence-next > span:not(.dashboard-intelligence-next-mark):not(.dashboard-intelligence-action),
+.dashboard-intelligence-next > p {
   grid-column: 2;
+}
+
+.dashboard-intelligence-next > p {
+  margin: 0;
+  color: rgba(220, 242, 255, 0.72);
+  font-size: 0.84rem;
+  line-height: 1.38;
+}
+
+.dashboard-intelligence-next .dashboard-intelligence-action {
+  grid-row: 1 / span 4;
+  grid-column: 3;
   align-self: center;
   margin-top: 0;
+  padding: 7px 10px;
+  border: 1px solid rgba(154, 235, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(78, 226, 255, 0.035);
 }
 
 @media (max-width: 1180px) {
@@ -31418,6 +31558,20 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
     gap: 6px;
   }
 
+  .dashboard-intelligence-project-feature {
+    grid-template-columns: 30px minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .dashboard-intelligence-project-feature small {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .dashboard-intelligence-project-feature-copy strong {
+    white-space: normal;
+  }
+
   .dashboard-intelligence-project-row,
   .dashboard-intelligence-activity-row {
     grid-template-columns: 26px minmax(0, 1fr);
@@ -31428,13 +31582,35 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
     justify-self: start;
   }
 
+  .dashboard-intelligence-activity-row-extra {
+    display: none;
+  }
+
+  .dashboard-intelligence-activity-row small {
+    justify-items: start;
+  }
+
   .dashboard-intelligence-next {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: 30px minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .dashboard-intelligence-next .dashboard-intelligence-next-mark {
+    grid-row: 1 / span 4;
+    align-self: start;
+  }
+
+  .dashboard-intelligence-next > .dashboard-intelligence-kicker,
+  .dashboard-intelligence-next > strong,
+  .dashboard-intelligence-next > span:not(.dashboard-intelligence-next-mark):not(.dashboard-intelligence-action),
+  .dashboard-intelligence-next > p {
+    grid-column: 2;
   }
 
   .dashboard-intelligence-next .dashboard-intelligence-action {
     grid-row: auto;
-    grid-column: auto;
+    grid-column: 2;
+    justify-self: start;
     margin-top: 4px;
   }
 }

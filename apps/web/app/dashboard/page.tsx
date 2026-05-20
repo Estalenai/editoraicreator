@@ -235,6 +235,37 @@ function formatDashboardActivityGroupTitle(title: string, count: number): string
   return `${count} atividades: ${title.toLocaleLowerCase("pt-BR")}`;
 }
 
+function getDashboardProjectMarker(value: string | null | undefined): string {
+  const normalized = String(value || "").trim().toLowerCase();
+  if (normalized === "video") return "V";
+  if (normalized === "text" || normalized === "peca" || normalized === "peça") return "P";
+  if (normalized === "script") return "R";
+  if (normalized === "clip") return "C";
+  return "P";
+}
+
+function getDashboardActivityTone(title: string): string {
+  const normalized = title.toLocaleLowerCase("pt-BR");
+  if (normalized.includes("convers")) return "conversion";
+  if (normalized.includes("texto")) return "text";
+  if (normalized.includes("imagem")) return "image";
+  if (normalized.includes("video") || normalized.includes("vídeo")) return "video";
+  if (normalized.includes("plano")) return "plan";
+  if (normalized.includes("projeto")) return "project";
+  return "activity";
+}
+
+function getDashboardActivityMarker(title: string): string {
+  const tone = getDashboardActivityTone(title);
+  if (tone === "conversion") return "C";
+  if (tone === "text") return "T";
+  if (tone === "image") return "I";
+  if (tone === "video") return "V";
+  if (tone === "plan") return "P";
+  if (tone === "project") return "P";
+  return "•";
+}
+
 export default function DashboardPage() {
   const {
     loading,
@@ -330,6 +361,31 @@ export default function DashboardPage() {
       }),
     [projects]
   );
+  const recentProjectCards = useMemo(
+    () =>
+      recentProjects.slice(0, 3).map((project: any) => {
+        const kindLabel = formatDashboardKindLabel(project.kind, "Projeto");
+        const statusLabel = formatDashboardStatus(
+          project.summary?.continuityStatusLabel || project.summary?.outputStageLabel,
+          "Em continuidade"
+        );
+        const route = project.id ? `/editor/${project.id}` : "/projects";
+        return {
+          ...project,
+          route,
+          marker: getDashboardProjectMarker(project.kind),
+          tone: String(project.kind || "project").trim().toLowerCase() || "project",
+          titleLabel: formatDashboardProjectTitle(project.title, "Projeto sem título"),
+          kindLabel,
+          statusLabel,
+          dateLabel: formatDashboardDate(project.updated_at || project.created_at),
+          metaLabel: `${kindLabel} · ${statusLabel}`,
+        };
+      }),
+    [recentProjects]
+  );
+  const featuredRecentProject = recentProjectCards[0] ?? null;
+  const supportingRecentProjects = recentProjectCards.slice(1);
   const walletSummary = useMemo(() => formatCreatorCoinsWalletSummary(wallet), [wallet]);
   const supportQuickLinks = useMemo(
     () => QUICK_LINKS.filter((item) => item.group === "support" && item.href !== "/credits"),
@@ -400,16 +456,24 @@ export default function DashboardPage() {
       message: string;
       status: string;
       count: number;
+      latestAt?: string;
+      tone: string;
+      marker: string;
     }>();
 
     for (const item of accountActivityItems) {
       const title = formatDashboardActivityTitle(item.title);
       const message = formatDashboardActivityMessage(item);
       const status = formatDashboardStatus(item.status_code, "Registrado");
+      const tone = getDashboardActivityTone(title);
+      const marker = getDashboardActivityMarker(title);
       const key = `${title}|${message}|${status}|${item.href || "/dashboard/account"}`;
       const existing = groups.get(key);
       if (existing) {
         existing.count += 1;
+        if (item.created_at && (!existing.latestAt || new Date(item.created_at).getTime() > new Date(existing.latestAt).getTime())) {
+          existing.latestAt = item.created_at;
+        }
       } else {
         groups.set(key, {
           id: item.id,
@@ -418,6 +482,9 @@ export default function DashboardPage() {
           message,
           status,
           count: 1,
+          latestAt: item.created_at,
+          tone,
+          marker,
         });
       }
     }
@@ -456,15 +523,19 @@ export default function DashboardPage() {
   const nextAction = recentProjects.length > 0
       ? {
         title: `Retomar ${formatDashboardProjectTitle(recentProjects[0]?.title, "último projeto")}`,
-        description: `${formatDashboardKindLabel(recentProjects[0]?.kind, "Projeto")} · ${formatDashboardStatus(recentProjects[0]?.summary?.continuityStatusLabel, "Em continuidade")}. Continue do ponto salvo.`,
+        meta: `${formatDashboardKindLabel(recentProjects[0]?.kind, "Projeto")} · ${formatDashboardStatus(recentProjects[0]?.summary?.continuityStatusLabel, "Em continuidade")} · ${formatDashboardDate(recentProjects[0]?.updated_at || recentProjects[0]?.created_at)}`,
+        description: "Último trabalho pronto para retomar com contexto e saída preservados.",
         href: recentProjects[0]?.id ? `/editor/${recentProjects[0].id}` : "/projects",
-        cta: recentProjects[0]?.id ? "Continuar no canvas" : "Abrir projetos",
+        cta: recentProjects[0]?.id ? "Abrir última entrega" : "Abrir projetos",
+        marker: getDashboardProjectMarker(recentProjects[0]?.kind),
       }
     : {
         title: "Criar primeira entrega",
+        meta: "Canvas criativo",
         description: "Comece pelo canvas criativo.",
         href: "/creators",
         cta: "Criar primeira entrega",
+        marker: "+",
       };
   const heroAction = {
     href: "/creators",
@@ -948,18 +1019,33 @@ export default function DashboardPage() {
                           <Link href="/projects">Ver todos</Link>
                         </div>
                         <div className="dashboard-intelligence-list">
-                          {recentProjects.length > 0 ? recentProjects.slice(0, 3).map((project: any) => (
-                            <EditorRouteLink key={project.id || project.title} href={project.id ? `/editor/${project.id}` : "/projects"} className="dashboard-intelligence-row dashboard-intelligence-project-row">
-                              <span className={`dashboard-intelligence-row-mark dashboard-intelligence-row-mark-${String(project.kind || "project").toLowerCase()}`} aria-hidden="true">
-                                {formatDashboardKindLabel(project.kind, "P").charAt(0)}
-                              </span>
-                              <span>
-                                <strong>{formatDashboardProjectTitle(project.title, "Projeto sem título")}</strong>
-                                <em>{formatDashboardKindLabel(project.kind, "Projeto")} · {formatDashboardStatus(project.summary?.continuityStatusLabel, "Em continuidade")}</em>
-                              </span>
-                              <small>{formatDashboardDate(project.updated_at || project.created_at)}</small>
-                            </EditorRouteLink>
-                          )) : (
+                          {featuredRecentProject ? (
+                            <>
+                              <EditorRouteLink href={featuredRecentProject.route} className="dashboard-intelligence-project-feature">
+                                <span className={`dashboard-intelligence-project-token dashboard-intelligence-row-mark-${featuredRecentProject.tone}`} aria-hidden="true">
+                                  {featuredRecentProject.marker}
+                                </span>
+                                <span className="dashboard-intelligence-project-feature-copy">
+                                  <em>Último projeto</em>
+                                  <strong>{featuredRecentProject.titleLabel}</strong>
+                                  <span>{featuredRecentProject.metaLabel}</span>
+                                </span>
+                                <small>{featuredRecentProject.dateLabel}</small>
+                              </EditorRouteLink>
+                              {supportingRecentProjects.map((project: any) => (
+                                <EditorRouteLink key={project.id || project.title} href={project.route} className="dashboard-intelligence-row dashboard-intelligence-project-row">
+                                  <span className={`dashboard-intelligence-row-mark dashboard-intelligence-row-mark-${project.tone}`} aria-hidden="true">
+                                    {project.marker}
+                                  </span>
+                                  <span>
+                                    <strong>{project.titleLabel}</strong>
+                                    <em>{project.metaLabel}</em>
+                                  </span>
+                                  <small>{project.dateLabel}</small>
+                                </EditorRouteLink>
+                              ))}
+                            </>
+                          ) : (
                             <div className="dashboard-intelligence-empty">
                               <strong>Nenhum projeto recente</strong>
                               <span>Projetos criados no canvas aparecem aqui.</span>
@@ -974,14 +1060,17 @@ export default function DashboardPage() {
                           <Link href="/credits#credits-history">Ver histórico</Link>
                         </div>
                         <div className="dashboard-intelligence-list">
-                          {groupedActivityItems.length > 0 ? groupedActivityItems.map((item) => (
-                            <Link key={item.id || item.title} href={item.href || "/dashboard/account"} className="dashboard-intelligence-row dashboard-intelligence-activity-row">
-                              <span className="dashboard-intelligence-row-mark dashboard-intelligence-row-mark-activity" aria-hidden="true">•</span>
+                          {groupedActivityItems.length > 0 ? groupedActivityItems.map((item, index) => (
+                            <Link key={item.id || item.title} href={item.href || "/dashboard/account"} className={`dashboard-intelligence-row dashboard-intelligence-activity-row ${index >= 2 ? "dashboard-intelligence-activity-row-extra" : ""}`}>
+                              <span className={`dashboard-intelligence-row-mark dashboard-intelligence-row-mark-${item.tone}`} aria-hidden="true">{item.marker}</span>
                               <span>
                                 <strong>{formatDashboardActivityGroupTitle(item.title, item.count)}</strong>
                                 <em>{item.count > 1 ? "Movimentações confirmadas na carteira de créditos." : item.message}</em>
                               </span>
-                              <small>{item.status}</small>
+                              <small>
+                                <b>{item.status}</b>
+                                {item.latestAt ? <em>{formatDashboardDate(item.latestAt)}</em> : null}
+                              </small>
                             </Link>
                           )) : (
                             <div className="dashboard-intelligence-empty">
@@ -993,9 +1082,11 @@ export default function DashboardPage() {
                       </div>
 
                       <div className="dashboard-intelligence-surface dashboard-intelligence-next">
+                        <span className="dashboard-intelligence-next-mark" aria-hidden="true">{nextAction.marker}</span>
                         <span className="dashboard-intelligence-kicker">Próxima ação</span>
                         <strong>{nextAction.title}</strong>
-                        <span>{nextAction.description}</span>
+                        <span>{nextAction.meta}</span>
+                        <p>{nextAction.description}</p>
                         {nextAction.href.startsWith("/editor") ? (
                           <EditorRouteLink href={nextAction.href} className="dashboard-intelligence-action">
                             {nextActionPanelCtaDisplay}
