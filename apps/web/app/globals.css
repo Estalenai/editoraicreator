@@ -32401,18 +32401,18 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
 @media (min-width: 761px) and (max-width: 900px) {
   .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-canvas::before {
     background-position: center top, 50% 0, 0 0, 0 0, center top, center top;
-    background-size: cover, auto 118vh, 104px 104px, 104px 104px, 100% 860px, 100% 1040px;
-    opacity: 0.58;
+    background-size: cover, cover, 104px 104px, 104px 104px, 100% 860px, 100% 1040px;
+    opacity: 0.5;
   }
 }
 
 @media (max-width: 760px) {
   .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-canvas::before {
     background-position: center top, 48% 0, 0 0, 0 0, center top, center top;
-    background-size: cover, auto 128vh, 104px 104px, 104px 104px, 100% 860px, 100% 1040px;
+    background-size: cover, cover, 104px 104px, 104px 104px, 100% 860px, 100% 1040px;
     mask-image:
       linear-gradient(180deg, rgba(0, 0, 0, 0.74), rgba(0, 0, 0, 0.62) 48%, rgba(0, 0, 0, 0.44)),
       radial-gradient(circle at 50% 18%, #000 0%, transparent 72%);
-    opacity: 0.44;
+    opacity: 0.38;
   }
 }
