@@ -10165,6 +10165,8 @@ body {
   position: relative;
   isolation: isolate;
   overflow: clip;
+  min-height: 100%;
+  box-sizing: border-box;
   padding: clamp(14px, 1.8vw, 28px) clamp(22px, 3.5vw, 64px) clamp(40px, 4.5vw, 76px);
   background:
     radial-gradient(980px 520px at 12% 6%, rgba(75, 232, 255, 0.14), transparent 74%),
@@ -30971,17 +30973,19 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
   align-content: start;
   min-height: 0;
   padding: clamp(14px, 1.35vw, 20px) clamp(15px, 1.55vw, 22px);
-  overflow: visible;
-  border: 0;
-  border-top: 1px solid rgba(191, 239, 255, 0.105);
-  border-left: 1px solid rgba(78, 226, 255, 0.145);
-  border-radius: 0;
+  overflow: hidden;
+  border: 1px solid rgba(191, 239, 255, 0.105);
+  border-left-color: rgba(78, 226, 255, 0.18);
+  border-radius: clamp(18px, 1.9vw, 26px);
   background:
-    linear-gradient(115deg, rgba(255, 255, 255, 0.026), transparent 58%),
-    linear-gradient(90deg, rgba(4, 25, 62, 0.075), rgba(78, 226, 255, 0.036) 42%, transparent 78%);
+    radial-gradient(420px 180px at 6% 0%, rgba(78, 226, 255, 0.062), transparent 74%),
+    linear-gradient(115deg, rgba(255, 255, 255, 0.032), transparent 58%),
+    linear-gradient(90deg, rgba(4, 25, 62, 0.13), rgba(78, 226, 255, 0.042) 42%, rgba(5, 20, 52, 0.04) 78%);
   color: inherit;
   text-decoration: none;
-  box-shadow: none;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.035),
+    0 20px 48px rgba(1, 12, 34, 0.075);
 }
 
 .dashboard-intelligence-surface::after {
@@ -31005,10 +31009,11 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
   grid-area: wallet;
   min-height: clamp(266px, 20vw, 336px);
   padding: clamp(20px, 2.1vw, 30px) clamp(18px, 2.2vw, 32px);
+  border-color: rgba(191, 239, 255, 0.12);
   border-left-color: rgba(78, 226, 255, 0.28);
   background:
-    radial-gradient(520px 210px at 0% 0%, rgba(77, 222, 255, 0.09), transparent 72%),
-    linear-gradient(112deg, rgba(255, 255, 255, 0.028), transparent 62%);
+    radial-gradient(520px 210px at 0% 0%, rgba(77, 222, 255, 0.105), transparent 72%),
+    linear-gradient(112deg, rgba(255, 255, 255, 0.035), rgba(4, 24, 61, 0.045) 62%, transparent 86%);
 }
 
 .dashboard-intelligence-wallet > strong {
@@ -31027,12 +31032,12 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
 
 .dashboard-intelligence-projects {
   grid-area: projects;
-  border-left-color: rgba(78, 226, 255, 0.09);
+  border-left-color: rgba(78, 226, 255, 0.12);
 }
 
 .dashboard-intelligence-activity {
   grid-area: activity;
-  border-left-color: rgba(78, 226, 255, 0.09);
+  border-left-color: rgba(78, 226, 255, 0.12);
 }
 
 .dashboard-intelligence-next {
@@ -31228,16 +31233,18 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
   align-items: start;
   gap: 12px;
   min-width: 0;
-  padding: 12px 0 13px;
+  margin-inline: -8px;
+  padding: 12px 10px 13px;
   color: inherit;
   text-decoration: none;
   border-top: 1px solid rgba(191, 239, 255, 0.085);
+  border-radius: 18px;
 }
 
 .dashboard-intelligence-project-feature::after {
   content: "";
   position: absolute;
-  inset: 12px auto 12px 18px;
+  inset: 12px auto 12px 28px;
   width: 1px;
   background: linear-gradient(180deg, rgba(78, 226, 255, 0.24), transparent);
   opacity: 0.7;
@@ -31304,8 +31311,10 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
   justify-content: space-between;
   gap: 12px;
   min-width: 0;
-  padding: 8px 0 9px;
+  margin-inline: -8px;
+  padding: 9px 10px 10px;
   border-top: 1px solid rgba(191, 239, 255, 0.045);
+  border-radius: 14px;
   color: inherit;
   text-decoration: none;
 }
@@ -31378,7 +31387,7 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
 .dashboard-intelligence-row strong {
   overflow: hidden;
   font-size: 0.9rem;
-  line-height: 1.12;
+  line-height: 1.16;
   letter-spacing: -0.03em;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -31621,7 +31630,8 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
   .dashboard-intelligence-project-feature {
     grid-template-columns: 30px minmax(0, 1fr);
     gap: 10px;
-    padding: 9px 0 10px;
+    margin-inline: -4px;
+    padding: 9px 7px 10px;
   }
 
   .dashboard-intelligence-project-feature small {
@@ -31650,7 +31660,8 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
   }
 
   .dashboard-intelligence-row {
-    padding: 6px 0;
+    margin-inline: -4px;
+    padding: 7px 7px 8px;
   }
 
   .dashboard-intelligence-row strong {
@@ -32229,7 +32240,7 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
 .dashboard-intelligence-project-feature::before {
   content: "";
   position: absolute;
-  inset: 8px 0 8px 48px;
+  inset: 8px 8px 8px 48px;
   border-radius: 18px;
   background:
     radial-gradient(120px 54px at 8% 42%, rgba(78, 226, 255, 0.08), transparent 76%),
@@ -32268,12 +32279,12 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
 }
 
 .dashboard-intelligence-row {
-  border-top-color: rgba(191, 239, 255, 0.06);
+  border-top-color: rgba(191, 239, 255, 0.07);
 }
 
 .dashboard-intelligence-project-row,
 .dashboard-intelligence-activity-row {
-  border-radius: 14px;
+  border-radius: 16px;
 }
 
 .dashboard-intelligence-project-row:hover,
@@ -32283,7 +32294,9 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
 
 .dashboard-intelligence-next {
   padding: clamp(16px, 1.8vw, 24px) clamp(16px, 1.7vw, 22px);
-  border-top-color: rgba(78, 226, 255, 0.24);
+  border-color: rgba(191, 239, 255, 0.12);
+  border-top-color: rgba(78, 226, 255, 0.26);
+  border-left-color: rgba(78, 226, 255, 0.22);
   background:
     radial-gradient(320px 92px at 6% 48%, rgba(78, 226, 255, 0.15), transparent 76%),
     linear-gradient(90deg, rgba(78, 226, 255, 0.098), rgba(255, 255, 255, 0.026) 44%, transparent 82%);
@@ -32360,7 +32373,7 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
   }
 
   .dashboard-intelligence-project-feature::before {
-    inset: 8px 0 8px 38px;
+    inset: 8px 6px 8px 38px;
     border-radius: 14px;
   }
 
@@ -32380,15 +32393,35 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
 
 /* Brand Background Integration Lock: use the clean circuit cover as a subtle
    page fabric only on Dashboard, preserving the existing gradient/grid system. */
+html:has(.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"]),
+body:has(.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"]) {
+  background: rgb(4, 16, 40);
+}
+
+.app-shell-body:has(.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"]),
+.app-shell-frame:has(.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"]) {
+  background:
+    linear-gradient(180deg, rgba(3, 13, 35, 0.48), rgba(3, 13, 35, 0.34) 44%, rgba(3, 13, 35, 0.52) 100%),
+    url("/brand/editor-ai-circuit-background.png"),
+    radial-gradient(1200px 620px at 20% 4%, rgba(78, 226, 255, 0.09), transparent 74%),
+    radial-gradient(1200px 720px at 70% 72%, rgba(31, 120, 230, 0.105), transparent 78%),
+    linear-gradient(180deg, rgb(5, 24, 58), rgb(3, 16, 42));
+  background-blend-mode: normal, soft-light, normal, normal, normal;
+  background-position: center top, center top, center top, center bottom, center top;
+  background-repeat: no-repeat;
+  background-size: cover, cover, auto, auto, cover;
+}
+
 .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-canvas {
   --dashboard-brand-circuit-background: url("/brand/editor-ai-circuit-background.png");
+  min-height: max(100%, calc(100svh - (var(--ea-page-padding-y, 0px) * 2)));
   background:
     radial-gradient(980px 520px at 12% 6%, rgba(75, 232, 255, 0.14), transparent 74%),
     radial-gradient(940px 520px at 72% 16%, rgba(57, 112, 255, 0.13), transparent 78%),
     radial-gradient(1180px 620px at 44% 48%, rgba(78, 226, 255, 0.1), transparent 80%),
     radial-gradient(1040px 620px at 78% 88%, rgba(0, 75, 163, 0.16), transparent 76%),
     radial-gradient(860px 720px at 50% 64%, rgba(46, 176, 255, 0.11), transparent 78%),
-    linear-gradient(180deg, rgba(4, 17, 45, 0.24), rgba(4, 13, 34, 0.58));
+    linear-gradient(180deg, rgba(4, 17, 45, 0.24), rgba(4, 13, 34, 0.64) 72%, rgba(4, 15, 38, 0.74));
 }
 
 .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-canvas::before {
@@ -32404,7 +32437,7 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
   background-repeat: no-repeat, no-repeat, repeat, repeat, no-repeat, no-repeat;
   background-size: cover, cover, 104px 104px, 104px 104px, 100% 860px, 100% 1040px;
   mask-image:
-    linear-gradient(180deg, rgba(0, 0, 0, 0.86), rgba(0, 0, 0, 0.7) 52%, rgba(0, 0, 0, 0.26)),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.72) 52%, rgba(0, 0, 0, 0.48)),
     radial-gradient(circle at 50% 26%, #000 0%, transparent 74%);
   opacity: 0.72;
 }
