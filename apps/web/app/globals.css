@@ -32370,7 +32370,8 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
     radial-gradient(940px 520px at 72% 16%, rgba(57, 112, 255, 0.13), transparent 78%),
     radial-gradient(1180px 620px at 44% 48%, rgba(78, 226, 255, 0.1), transparent 80%),
     radial-gradient(1040px 620px at 78% 88%, rgba(0, 75, 163, 0.16), transparent 76%),
-    linear-gradient(180deg, rgba(4, 17, 45, 0.24), rgba(4, 13, 34, 0.9));
+    radial-gradient(860px 720px at 50% 64%, rgba(46, 176, 255, 0.075), transparent 78%),
+    linear-gradient(180deg, rgba(4, 17, 45, 0.24), rgba(4, 13, 34, 0.82));
 }
 
 .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-canvas::before {
@@ -32400,7 +32401,7 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
 @media (min-width: 761px) and (max-width: 900px) {
   .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-canvas::before {
     background-position: center top, 50% 0, 0 0, 0 0, center top, center top;
-    background-size: cover, auto 100vh, 104px 104px, 104px 104px, 100% 860px, 100% 1040px;
+    background-size: cover, auto 118vh, 104px 104px, 104px 104px, 100% 860px, 100% 1040px;
     opacity: 0.58;
   }
 }
@@ -32408,9 +32409,9 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
 @media (max-width: 760px) {
   .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-canvas::before {
     background-position: center top, 48% 0, 0 0, 0 0, center top, center top;
-    background-size: cover, auto 96vh, 104px 104px, 104px 104px, 100% 860px, 100% 1040px;
+    background-size: cover, auto 128vh, 104px 104px, 104px 104px, 100% 860px, 100% 1040px;
     mask-image:
-      linear-gradient(180deg, rgba(0, 0, 0, 0.74), rgba(0, 0, 0, 0.58) 48%, rgba(0, 0, 0, 0.28)),
+      linear-gradient(180deg, rgba(0, 0, 0, 0.74), rgba(0, 0, 0, 0.62) 48%, rgba(0, 0, 0, 0.44)),
       radial-gradient(circle at 50% 18%, #000 0%, transparent 72%);
     opacity: 0.44;
   }
