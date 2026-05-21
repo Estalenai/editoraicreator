@@ -32370,8 +32370,8 @@ body:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) {
     radial-gradient(940px 520px at 72% 16%, rgba(57, 112, 255, 0.13), transparent 78%),
     radial-gradient(1180px 620px at 44% 48%, rgba(78, 226, 255, 0.1), transparent 80%),
     radial-gradient(1040px 620px at 78% 88%, rgba(0, 75, 163, 0.16), transparent 76%),
-    radial-gradient(860px 720px at 50% 64%, rgba(46, 176, 255, 0.075), transparent 78%),
-    linear-gradient(180deg, rgba(4, 17, 45, 0.24), rgba(4, 13, 34, 0.82));
+    radial-gradient(860px 720px at 50% 64%, rgba(46, 176, 255, 0.11), transparent 78%),
+    linear-gradient(180deg, rgba(4, 17, 45, 0.24), rgba(4, 13, 34, 0.68));
 }
 
 .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-canvas::before {
