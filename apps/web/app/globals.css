@@ -33178,3 +33178,352 @@ body:has(.creators-page) {
     scroll-snap-align: start;
   }
 }
+
+/* Creators Composition Lock: open studio field, no admin-card stack. */
+.app-shell-frame:has(.creators-page) .app-nav-rail {
+  background:
+    linear-gradient(180deg, rgba(3, 15, 43, 0.58), rgba(3, 15, 43, 0.18) 62%, rgba(3, 15, 43, 0.36)),
+    rgba(2, 10, 30, 0.22) !important;
+  border-right: 1px solid rgba(174, 232, 255, 0.045);
+  box-shadow: none;
+}
+
+.app-shell-frame:has(.creators-page) .app-nav-rail::before {
+  opacity: 0.22;
+}
+
+.app-shell-frame:has(.creators-page) .app-nav-rail-head,
+.app-shell-frame:has(.creators-page) .app-nav-group {
+  border-color: rgba(174, 232, 255, 0.055);
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.app-shell-frame:has(.creators-page) .app-nav-link {
+  border-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.app-shell-frame:has(.creators-page) .app-nav-link:hover,
+.app-shell-frame:has(.creators-page) .app-nav-link-active {
+  border-color: rgba(88, 242, 255, 0.16) !important;
+  background:
+    linear-gradient(90deg, rgba(88, 242, 255, 0.09), rgba(255, 255, 255, 0.012) 58%, transparent) !important;
+}
+
+.creators-page {
+  --creator-open-border: rgba(184, 236, 255, 0.07);
+  --creator-open-border-strong: rgba(184, 236, 255, 0.13);
+  --creator-open-surface: rgba(5, 20, 52, 0.16);
+  --creator-open-surface-strong: rgba(6, 22, 56, 0.26);
+  --creator-open-glow: rgba(88, 242, 255, 0.08);
+}
+
+.creators-page .creators-hero-open {
+  padding-block: clamp(34px, 5vw, 68px) clamp(24px, 3.5vw, 48px);
+}
+
+.creators-page .creators-hero-shell {
+  align-items: center;
+  gap: clamp(34px, 5.5vw, 92px);
+}
+
+.creators-page .creators-entry-command {
+  position: relative;
+  overflow: hidden;
+  border-color: var(--creator-open-border-strong) !important;
+  background:
+    radial-gradient(520px 220px at 0% 0%, rgba(88, 242, 255, 0.11), transparent 72%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.006)),
+    rgba(3, 15, 40, 0.34) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.045), 0 24px 80px rgba(0, 0, 0, 0.1);
+}
+
+.creators-page .creators-entry-prompt-shell {
+  border-color: rgba(187, 241, 255, 0.15);
+  background:
+    linear-gradient(90deg, rgba(88, 242, 255, 0.075), transparent 46%),
+    rgba(2, 12, 34, 0.26);
+  box-shadow: none;
+}
+
+.creators-page .creators-entry-type-strip button,
+.creators-page .creators-entry-account-actions .btn-ea {
+  background: rgba(255, 255, 255, 0.028) !important;
+  border-color: rgba(190, 240, 255, 0.115) !important;
+  box-shadow: none !important;
+}
+
+.creators-page .creators-core-canvas,
+.creators-page .creator-workspace-shell {
+  position: relative;
+  overflow: hidden;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background:
+    linear-gradient(180deg, rgba(88, 242, 255, 0.032), transparent 18%, rgba(88, 242, 255, 0.018) 58%, transparent),
+    transparent !important;
+  box-shadow: none !important;
+}
+
+.creators-page .creators-core-canvas::before,
+.creators-page .creator-workspace-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent, rgba(88, 242, 255, 0.12), transparent),
+    linear-gradient(180deg, rgba(184, 236, 255, 0.07), transparent 9%);
+  opacity: 0.36;
+  mask-image: linear-gradient(180deg, transparent, #000 10%, #000 86%, transparent);
+}
+
+.creators-page .creators-core-canvas > *,
+.creators-page .creator-workspace-shell > * {
+  position: relative;
+  z-index: 1;
+}
+
+.creators-page .creators-core-canvas > .creators-flow-section,
+.creators-page .creator-workspace-shell {
+  margin-inline: 0;
+  padding: clamp(22px, 3.2vw, 42px) 0;
+  border-top: 1px solid rgba(184, 236, 255, 0.075) !important;
+  border-bottom: 0 !important;
+  border-left: 0 !important;
+  border-right: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.creators-page .creators-core-canvas > .creators-flow-section::before,
+.creators-page .creators-core-canvas > .creators-flow-section::after,
+.creators-page .creators-hero-open::before,
+.creators-page .creators-hero-open::after {
+  opacity: 0.22;
+}
+
+.creators-page .proof-value-header,
+.creators-page .focus-shell-head,
+.creators-page .creator-active-panel-head {
+  align-items: end;
+  border-bottom: 1px solid rgba(184, 236, 255, 0.055);
+  padding-bottom: clamp(14px, 1.8vw, 22px);
+}
+
+.creators-page .proof-value-grid-creators,
+.creators-page .creators-hero-core-grid,
+.creators-page .creators-secondary-grid,
+.creators-page .creator-active-summary-grid {
+  gap: clamp(12px, 1.5vw, 20px);
+}
+
+.creators-page .proof-value-card,
+.creators-page .creators-hero-core-card,
+.creators-page .creators-secondary-card,
+.creators-page .creator-active-summary-card,
+.creators-page .creator-active-stage-note,
+.creators-page .creator-session-card,
+.creators-page .creator-planner-objective,
+.creators-page .creator-planner-field,
+.creators-page .creator-output-card-list-item {
+  border-color: var(--creator-open-border) !important;
+  background:
+    radial-gradient(240px 110px at 100% 0%, rgba(88, 242, 255, 0.025), transparent 74%),
+    rgba(255, 255, 255, 0.012) !important;
+  box-shadow: none !important;
+}
+
+.creators-page .creators-hero-core-card,
+.creators-page .creators-secondary-card,
+.creators-page .proof-value-card {
+  border-radius: 24px;
+}
+
+.creators-page .proof-value-block,
+.creators-page .creators-hero-core-point,
+.creators-page .creators-secondary-card-copy {
+  border-color: rgba(184, 236, 255, 0.055) !important;
+  background: rgba(255, 255, 255, 0.008) !important;
+  box-shadow: none !important;
+}
+
+.creators-page .creators-hero-core-card[data-active="true"],
+.creators-page .creators-hero-core-card:hover,
+.creators-page .creators-secondary-card:hover,
+.creators-page .proof-value-card:hover {
+  border-color: rgba(88, 242, 255, 0.19) !important;
+  background:
+    radial-gradient(280px 130px at 0% 0%, rgba(88, 242, 255, 0.055), transparent 74%),
+    rgba(255, 255, 255, 0.014) !important;
+}
+
+.creators-page .creator-workspace-grid {
+  grid-template-columns: minmax(220px, 0.28fr) minmax(0, 1fr);
+  gap: clamp(20px, 2.7vw, 44px);
+}
+
+.creators-page .creator-workspace-side {
+  padding: 0 clamp(14px, 1.6vw, 24px) 0 0;
+  border-right: 1px solid rgba(184, 236, 255, 0.055);
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.creators-page .creators-side-note,
+.creators-page .creators-wallet-panel {
+  border-color: rgba(184, 236, 255, 0.055) !important;
+  background: rgba(255, 255, 255, 0.006) !important;
+  box-shadow: none !important;
+}
+
+.creators-page .creator-tab-btn {
+  padding: 13px 12px;
+  border-width: 0 0 0 1px !important;
+  border-radius: 0 18px 18px 0 !important;
+  border-color: rgba(184, 236, 255, 0.07) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.creators-page .creator-tab-btn:hover,
+.creators-page .creator-tab-btn[data-active="true"] {
+  border-left-color: rgba(88, 242, 255, 0.42) !important;
+  background:
+    linear-gradient(90deg, rgba(88, 242, 255, 0.09), rgba(255, 255, 255, 0.01) 62%, transparent) !important;
+}
+
+.creators-page .creator-tab-meta,
+.creators-page .creator-tab-support,
+.creators-page .creator-active-panel-copy,
+.creators-page .creators-hero-lead,
+.creators-page .creators-hero-panel-copy,
+.creators-page .proof-value-block p,
+.creators-page .creator-zone-copy,
+.creators-page .creator-inline-panel-header p,
+.creators-page .creator-result-copy,
+.creators-page .creator-output-card-meta,
+.creators-page .creator-output-card-list-item,
+.creators-page .creators-wallet-row span {
+  color: rgba(218, 240, 250, 0.78);
+}
+
+.creators-page .creator-workspace-card {
+  border: 1px solid rgba(184, 236, 255, 0.07) !important;
+  border-radius: 28px !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.004)),
+    rgba(2, 13, 36, 0.2) !important;
+  box-shadow: none !important;
+}
+
+.creators-page .creator-workspace-card::before {
+  opacity: 0.18;
+}
+
+.creators-page .creator-workspace-card-modular .creator-workspace-header {
+  border-bottom: 1px solid rgba(184, 236, 255, 0.055);
+  padding-bottom: clamp(14px, 1.8vw, 22px);
+}
+
+.creators-page .creator-form-zone,
+.creators-page .creator-context-zone,
+.creators-page .creator-inline-panel,
+.creators-page .creator-output-card,
+.creators-page .creator-next-step-panel,
+.creators-page .creator-estimate-row,
+.creators-page .creator-planner-panel,
+.creators-page .creator-loading-panel,
+.creators-page .creator-empty-state {
+  border-color: rgba(184, 236, 255, 0.065) !important;
+  background: rgba(255, 255, 255, 0.01) !important;
+  box-shadow: none !important;
+}
+
+.creators-page .creator-estimate-row {
+  border-left-color: rgba(88, 242, 255, 0.36) !important;
+  background:
+    linear-gradient(90deg, rgba(88, 242, 255, 0.05), transparent 42%),
+    rgba(255, 255, 255, 0.008) !important;
+}
+
+.creators-page .field-ea,
+.creators-page select.field-ea,
+.creators-page .creator-prompt-textarea {
+  border-color: rgba(184, 236, 255, 0.13) !important;
+  background: rgba(2, 11, 31, 0.34) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.028);
+}
+
+.creators-page .toggle-row {
+  min-height: 42px;
+  border-color: rgba(184, 236, 255, 0.09) !important;
+  background: rgba(255, 255, 255, 0.008) !important;
+}
+
+.creators-page .toggle-row[data-active="true"] {
+  border-color: rgba(88, 242, 255, 0.28) !important;
+  background: rgba(88, 242, 255, 0.045) !important;
+}
+
+.creators-page .creator-empty-state {
+  border-left: 2px solid rgba(88, 242, 255, 0.22) !important;
+}
+
+@media (min-width: 901px) and (max-width: 1240px) {
+  .creators-page .creator-workspace-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .creators-page .creator-workspace-side {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    border-right: 0;
+    padding-right: 0;
+    padding-bottom: 6px;
+    scrollbar-width: none;
+  }
+
+  .creators-page .creator-workspace-side::-webkit-scrollbar {
+    display: none;
+  }
+
+  .creators-page .creator-workspace-side > * {
+    min-width: min(42vw, 360px);
+  }
+}
+
+@media (max-width: 760px) {
+  .app-shell-frame:has(.creators-page) .app-nav-rail {
+    background: rgba(2, 11, 33, 0.28) !important;
+    border-right: 0;
+  }
+
+  .creators-page .creators-hero-open,
+  .creators-page .creators-core-canvas > .creators-flow-section,
+  .creators-page .creator-workspace-shell {
+    padding-block: 20px;
+  }
+
+  .creators-page .creators-hero-shell {
+    gap: 18px;
+  }
+
+  .creators-page .creators-entry-command {
+    padding: 16px;
+    border-radius: 22px;
+  }
+
+  .creators-page .proof-value-header,
+  .creators-page .focus-shell-head,
+  .creators-page .creator-active-panel-head {
+    align-items: start;
+  }
+
+  .creators-page .creator-workspace-card {
+    border-radius: 22px !important;
+  }
+}
