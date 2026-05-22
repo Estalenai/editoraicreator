@@ -15,7 +15,7 @@ type NavItem = {
 };
 
 const NAV_ITEMS: NavItem[] = [
-  { href: "/dashboard", label: "Dashboard", meta: "Visão geral do workspace", group: "overview" },
+  { href: "/dashboard", label: "Dashboard", meta: "Visão geral da conta", group: "overview" },
   { href: "/creators", label: "Creators", meta: "Gerar base criativa com contexto", group: "core" },
   { href: "/editor/new", label: "Editor", meta: "Abrir, revisar e consolidar a peça", group: "core", aliases: ["/editor"] },
   { href: "/projects", label: "Projetos", meta: "Continuidade, saída e registro", group: "core" },
@@ -253,9 +253,9 @@ export function AppTopNav() {
   return (
     <nav className="app-top-nav app-nav-rail layout-contract-rail" aria-label="Navegação principal">
       <div className="app-top-nav-head app-nav-rail-head layout-contract-rail-head">
-        <p className="app-top-nav-title">Workspace</p>
+        <p className="app-top-nav-title">Estúdio</p>
         <p className="app-top-nav-text">
-          Creators, editor e projetos ficam no centro. Operação entra como apoio.
+          Criação, edição e projetos ficam no centro. Conta e suporte ficam à mão.
         </p>
         <div className="app-nav-core-strip" aria-label="Fluxo principal do produto">
           <span className="app-nav-core-pill">Creators</span>
@@ -263,7 +263,7 @@ export function AppTopNav() {
           <span className="app-nav-core-pill">Projetos + saída</span>
         </div>
       </div>
-      <div className="app-nav-compact-strip" aria-label="Atalhos do workspace">
+      <div className="app-nav-compact-strip" aria-label="Atalhos do estúdio">
         {compactNavItems.map((item) => renderCompactNavItem(item))}
       </div>
       {overviewItems.length > 0 ? (
@@ -271,8 +271,8 @@ export function AppTopNav() {
       ) : null}
       <div className="app-nav-group app-nav-group-core">
         <div className="app-nav-group-head">
-          <p className="app-nav-group-kicker">Núcleo criativo</p>
-          <p className="app-nav-group-text">Geração, edição, continuidade e saída em primeiro plano.</p>
+          <p className="app-nav-group-kicker">Criação</p>
+          <p className="app-nav-group-text">Gere, revise e entregue com continuidade.</p>
         </div>
         <div className="app-nav-links app-nav-links-core app-nav-rail-links layout-contract-collection">
           {coreItems.map((item) => renderNavItem(item))}
@@ -280,8 +280,8 @@ export function AppTopNav() {
       </div>
       <div className="app-nav-group app-nav-group-support">
         <div className="app-nav-group-head">
-          <p className="app-nav-group-kicker">Camada operacional</p>
-          <p className="app-nav-group-text">Saldo, plano, suporte e área restrita só entram quando necessários.</p>
+          <p className="app-nav-group-kicker">Conta e suporte</p>
+          <p className="app-nav-group-text">Saldo, plano e ajuda aparecem quando você precisa.</p>
         </div>
         <div className="app-nav-links app-nav-links-support app-nav-rail-links layout-contract-collection">
           {supportItems.map((item) => renderNavItem(item))}
