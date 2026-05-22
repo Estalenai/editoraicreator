@@ -32679,3 +32679,27 @@ body:has(.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-da
     margin-inline: -4px;
   }
 }
+
+@media (min-width: 1081px) and (max-width: 1240px) {
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-shell {
+    width: min(100%, 920px);
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-canvas {
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 0.76fr);
+    grid-template-areas:
+      "prompt prompt"
+      "brief engine"
+      "output output";
+    align-items: stretch;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-demo-engine {
+    align-self: center;
+    width: min(100%, 394px);
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-output {
+    width: min(100%, 520px);
+  }
+}
