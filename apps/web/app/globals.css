@@ -32973,4 +32973,33 @@ body:has(.creators-page) {
   .creators-page .creators-entry-prompt-shell {
     border-radius: 22px;
   }
+
+  .creators-page .creators-hero-core-grid,
+  .creators-page .creators-secondary-grid,
+  .creators-page .creator-workspace-sidebar {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+  }
+
+  .creators-page .creators-hero-core-grid::-webkit-scrollbar,
+  .creators-page .creators-secondary-grid::-webkit-scrollbar,
+  .creators-page .creator-workspace-sidebar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .creators-page .creators-hero-core-grid > *,
+  .creators-page .creators-secondary-grid > *,
+  .creators-page .creator-workspace-sidebar > * {
+    min-width: min(82vw, 300px);
+    scroll-snap-align: start;
+  }
+
+  .creators-page .creator-workspace-grid {
+    gap: 12px;
+  }
 }
