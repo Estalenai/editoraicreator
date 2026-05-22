@@ -32742,3 +32742,235 @@ body:has(.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-da
     overflow: visible;
   }
 }
+
+/* Creators Entry Experience Lock: creation entry, not dashboard and not landing. */
+html:has(.creators-page),
+body:has(.creators-page) {
+  background: rgb(4, 16, 40);
+}
+
+.app-shell-frame:has(.creators-page),
+.app-shell-body:has(.creators-page) {
+  background:
+    linear-gradient(180deg, rgba(3, 13, 35, 0.46), rgba(3, 13, 35, 0.32) 42%, rgba(3, 13, 35, 0.58) 100%),
+    url("/brand/editor-ai-circuit-background.png"),
+    radial-gradient(960px 480px at 16% 0%, rgba(78, 226, 255, 0.1), transparent 76%),
+    radial-gradient(940px 560px at 78% 36%, rgba(62, 142, 255, 0.085), transparent 78%),
+    linear-gradient(180deg, rgb(5, 24, 58), rgb(3, 15, 40));
+  background-blend-mode: normal, soft-light, normal, normal, normal;
+  background-position: center top, center top, center top, center center, center top;
+  background-repeat: no-repeat;
+  background-size: cover, cover, auto, auto, cover;
+}
+
+.creators-page {
+  --creators-entry-surface:
+    radial-gradient(360px 150px at 100% 0%, rgba(88, 242, 255, 0.052), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.026), rgba(255, 255, 255, 0.006)),
+    rgba(7, 23, 56, 0.34);
+  gap: clamp(18px, 2.2vw, 28px);
+}
+
+.creators-page,
+.creators-page * {
+  min-width: 0;
+}
+
+.creators-page .creators-hero-open {
+  padding-block: clamp(28px, 4vw, 54px);
+}
+
+.creators-page .creators-hero-shell {
+  grid-template-columns: minmax(0, 0.98fr) minmax(360px, 0.72fr);
+  align-items: center;
+  gap: clamp(24px, 4vw, 64px);
+}
+
+.creators-page .creators-hero-copy h1 {
+  max-width: 11ch;
+  font-size: clamp(3.35rem, 6.8vw, 7.1rem);
+  line-height: 0.88;
+  letter-spacing: -0.075em !important;
+}
+
+.creators-page .creators-hero-lead {
+  max-width: 62ch;
+  color: rgba(225, 244, 255, 0.84);
+  font-size: clamp(1rem, 1.45vw, 1.18rem);
+}
+
+.creators-page .creators-hero-metrics-compact {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  max-width: 720px;
+}
+
+.creators-page .creators-hero-metric-card {
+  min-height: 150px;
+  align-content: start;
+  background: var(--creators-entry-surface) !important;
+  border-color: rgba(191, 239, 255, 0.075) !important;
+}
+
+.creators-page .creators-entry-command {
+  width: min(100%, 520px);
+  justify-self: end;
+  padding: clamp(18px, 2.2vw, 26px);
+  border-radius: 30px;
+  border-color: rgba(191, 239, 255, 0.105) !important;
+  background:
+    radial-gradient(460px 220px at 0% 0%, rgba(88, 242, 255, 0.1), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.042), rgba(255, 255, 255, 0.01)),
+    rgba(7, 22, 55, 0.48) !important;
+}
+
+.creators-page .creators-entry-prompt-shell {
+  display: grid;
+  gap: 12px;
+  padding: clamp(16px, 2vw, 22px);
+  border: 1px solid rgba(191, 239, 255, 0.11);
+  border-radius: 24px;
+  background:
+    linear-gradient(90deg, rgba(88, 242, 255, 0.07), transparent 44%),
+    rgba(2, 13, 34, 0.28);
+}
+
+.creators-page .creators-entry-prompt-label,
+.creators-page .creators-entry-account-actions > span {
+  color: rgba(166, 230, 246, 0.88);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.creators-page .creators-entry-prompt-shell p {
+  margin: 0;
+  color: rgba(244, 251, 255, 0.94);
+  font-size: clamp(1.05rem, 1.5vw, 1.26rem);
+  font-weight: 740;
+  line-height: 1.36;
+}
+
+.creators-page .creators-entry-prompt-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.creators-page .creators-entry-prompt-meta span,
+.creators-page .creators-entry-type-strip button {
+  border: 1px solid rgba(191, 239, 255, 0.11);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.035);
+  color: rgba(222, 242, 255, 0.82);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.creators-page .creators-entry-prompt-meta span {
+  padding: 7px 10px;
+}
+
+.creators-page .creators-entry-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+}
+
+.creators-page .creators-entry-type-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.creators-page .creators-entry-type-strip button {
+  cursor: pointer;
+  padding: 8px 11px;
+  transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+}
+
+.creators-page .creators-entry-type-strip button:hover,
+.creators-page .creators-entry-type-strip button[data-active="true"] {
+  border-color: rgba(88, 242, 255, 0.28);
+  background: rgba(88, 242, 255, 0.1);
+  transform: translateY(-1px);
+}
+
+.creators-page .creators-entry-account-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(191, 239, 255, 0.075);
+}
+
+.creators-page .creators-core-canvas,
+.creators-page .creator-workspace-shell {
+  background:
+    radial-gradient(620px 220px at 12% 0%, rgba(88, 242, 255, 0.04), transparent 76%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.005)),
+    rgba(4, 18, 47, 0.32) !important;
+  border-color: rgba(191, 239, 255, 0.065) !important;
+}
+
+.creators-page .creator-prompt-textarea,
+.creators-page .field-ea {
+  border-color: rgba(191, 239, 255, 0.13);
+  background: rgba(2, 11, 29, 0.42);
+}
+
+@media (min-width: 901px) and (max-width: 1240px) {
+  .creators-page .creators-hero-shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .creators-page .creators-entry-command {
+    justify-self: stretch;
+    width: 100%;
+  }
+
+  .creators-page .creators-hero-copy h1 {
+    max-width: 12ch;
+    font-size: clamp(3rem, 6vw, 4.8rem);
+  }
+}
+
+@media (max-width: 760px) {
+  .creators-page .creators-hero-open {
+    padding-block: 20px;
+  }
+
+  .creators-page .creators-hero-copy h1 {
+    max-width: 9ch;
+    font-size: clamp(3rem, 16vw, 4.6rem);
+  }
+
+  .creators-page .creators-hero-metrics-compact {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+
+  .creators-page .creators-hero-metrics-compact::-webkit-scrollbar {
+    display: none;
+  }
+
+  .creators-page .creators-hero-metric-card {
+    min-width: min(78vw, 260px);
+    min-height: 132px;
+  }
+
+  .creators-page .creators-entry-actions,
+  .creators-page .creators-entry-account-actions {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .creators-page .creators-entry-command,
+  .creators-page .creators-entry-prompt-shell {
+    border-radius: 22px;
+  }
+}

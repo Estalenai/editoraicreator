@@ -305,6 +305,10 @@ function CreatorsPageContent() {
   );
   const activeStageTone = creatorStageTone(activeTabMeta.group);
   const activeStageGuidance = CREATOR_STAGE_GUIDANCE[activeTabMeta.group];
+  const activeShowcase = useMemo(
+    () => CREATOR_SHOWCASES.find((item) => item.creator === activeTabMeta.label) ?? CREATOR_SHOWCASES[0],
+    [activeTabMeta.label]
+  );
   const supportHeroCreator = useMemo(
     () => secondaryCreators.find((tab) => tab.id === "ads") ?? secondaryCreators[0] ?? null,
     [secondaryCreators]
@@ -344,10 +348,10 @@ function CreatorsPageContent() {
         <div className="hero-split creators-hero-split creators-hero-shell">
           <div className="hero-copy creators-hero-copy">
             <div className="hero-title-stack">
-              <p className="section-kicker">Workspace de criação</p>
-              <h1 style={{ margin: 0, letterSpacing: -0.35 }}>Creators</h1>
+              <p className="section-kicker">Creators • entrada de criação</p>
+              <h1 style={{ margin: 0, letterSpacing: -0.35 }}>Peça sua próxima entrega</h1>
               <p className="creators-hero-lead">
-                Briefing, geração, projeto e continuidade no mesmo workspace.
+                Escolha o tipo, descreva o pedido e abra o briefing guiado para gerar com IA sem perder contexto.
               </p>
             </div>
 
@@ -375,23 +379,56 @@ function CreatorsPageContent() {
             </div>
           </div>
 
-          <div className="creators-hero-panel creators-hero-panel-quiet">
-            <div className="section-stack">
-              <p className="section-kicker">Controle operacional</p>
-              <h2 className="creators-hero-panel-title">Criar com estrutura</h2>
+          <div className="creators-hero-panel creators-hero-panel-quiet creators-entry-command">
+            <div className="section-stack-tight">
+              <p className="section-kicker">Pedido de criação</p>
+              <h2 className="creators-hero-panel-title">Comece pelo briefing</h2>
               <p className="meta-text-ea creators-hero-panel-copy">
-                Briefing, ação e resultado no mesmo eixo.
+                Use o workspace real para transformar o pedido em projeto, copy, roteiro ou job de clipe.
               </p>
             </div>
 
-            <div className="creators-hero-panel-stack hero-side-list hero-side-list-compact">
-              <div className="creators-hero-panel-note">
-                <strong>Briefing e continuidade</strong>
-                <span>Objetivo, contexto e resultado seguem juntos.</span>
+            <div className="creators-entry-prompt-shell" aria-label={`Exemplo de pedido para ${activeTabMeta.label}`}>
+              <span className="creators-entry-prompt-label">Pedido para {activeTabMeta.label}</span>
+              <p>{activeShowcase.briefing}</p>
+              <div className="creators-entry-prompt-meta">
+                <span>{activeTabMeta.expectedOutput}</span>
+                <span>{walletSummaryDisplay}</span>
               </div>
             </div>
 
-            <div className="hero-actions-row creators-hero-panel-actions">
+            <div className="hero-actions-row creators-hero-panel-actions creators-entry-actions">
+              <button
+                type="button"
+                onClick={() => focusSection("workspace", { scroll: "always" })}
+                className="btn-ea btn-primary btn-sm"
+              >
+                Abrir briefing guiado
+              </button>
+              <button
+                type="button"
+                onClick={() => focusSection("showcase", { scroll: "always" })}
+                className="btn-ea btn-ghost btn-sm"
+              >
+                Ver tipos de entrega
+              </button>
+            </div>
+
+            <div className="creators-entry-type-strip" aria-label="Tipos principais de entrega">
+              {heroCreators.map((tab) => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  data-active={activeTab === tab.id}
+                  onClick={() => activateTab(tab.id, { scrollToWorkspace: false })}
+                >
+                  {tab.label.replace("Creator ", "")}
+                </button>
+              ))}
+            </div>
+
+            <div className="creators-entry-account-actions">
+              <span>Conta e assinatura</span>
               <button
                 onClick={async () => {
                   await onSyncSubscription();
@@ -400,7 +437,7 @@ function CreatorsPageContent() {
                 disabled={syncingSubscription || loading}
                 className="btn-ea btn-ghost btn-sm"
               >
-                {syncingSubscription ? "Sincronizando..." : "Sincronizar assinatura"}
+                {syncingSubscription ? "Sincronizando..." : "Sincronizar"}
               </button>
               <button onClick={onLogout} className="btn-ea btn-ghost btn-sm">
                 Sair
