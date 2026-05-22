@@ -540,7 +540,7 @@ export function CreatorAdsCard({ planCode, walletCommon, onRefetch }: Props) {
 
       <div className="creator-context-zone">
         <p className="creator-zone-title">Estimativa e contexto</p>
-        <p className="creator-zone-copy">Use o prompt automático para acelerar variações de anúncio ou revisar manualmente antes de gerar.</p>
+        <p className="creator-zone-copy">Use a sugestão automática para acelerar variações de anúncio ou revisar manualmente antes de gerar.</p>
         <AiExecutionModeFields
           capabilities={execution.capabilities}
           mode={execution.mode}
@@ -556,7 +556,7 @@ export function CreatorAdsCard({ planCode, walletCommon, onRefetch }: Props) {
           persistingPreference={executionModeSaving}
           preferenceError={executionModeError}
         />
-        <div className="creator-section-label">Prompt Automático</div>
+        <div className="creator-section-label">Sugestão automática</div>
         <div className="creator-toggle-stack">
           <label className="toggle-row" data-active={promptEnabled}>
             <input
@@ -566,7 +566,7 @@ export function CreatorAdsCard({ planCode, walletCommon, onRefetch }: Props) {
                 await updatePromptEnabled(e.target.checked);
               }}
             />
-            <span>Usar Prompt Automático</span>
+            <span>Usar sugestão automática</span>
           </label>
           <label className="toggle-row" data-active={promptEnabled && autoApply} data-disabled={!promptEnabled}>
             <input
@@ -577,7 +577,7 @@ export function CreatorAdsCard({ planCode, walletCommon, onRefetch }: Props) {
                 await updateAutoApply(e.target.checked);
               }}
             />
-            <span>Auto aplicar prompt</span>
+            <span>Aplicar sugestão automaticamente</span>
           </label>
         </div>
         <div className="helper-note-inline">Use a revisão manual quando precisar ajustar a mensagem antes de gerar.</div>
@@ -586,7 +586,7 @@ export function CreatorAdsCard({ planCode, walletCommon, onRefetch }: Props) {
       <div className="creator-estimate-row">
         <div className="helper-note-inline">Estimativa de consumo: ~{estimatedCommon} Comum</div>
         <div className="helper-note-subtle">
-          Estimativa prévia. O consumo real aparece em Creator Coins {'>'} Histórico.
+          Estimativa prévia. O consumo real aparece no Histórico de créditos.
         </div>
         {!hasCredits && <div className="inline-alert inline-alert-error">Saldo insuficiente para gerar anúncio. Compre Creator Coins avulsas para continuar.</div>}
       </div>
@@ -603,7 +603,7 @@ export function CreatorAdsCard({ planCode, walletCommon, onRefetch }: Props) {
           </button>
         </div>
         ) : (
-          <div className="helper-note-inline">Revise o plano abaixo antes de executar a geração.</div>
+          <div className="helper-note-inline">Revise o planejamento abaixo antes de executar a geração.</div>
         )}
         {(error || success || copyMsg || saveMsg) ? (
           <div className="creator-feedback-stack">
@@ -628,13 +628,13 @@ export function CreatorAdsCard({ planCode, walletCommon, onRefetch }: Props) {
       {plannerOpen ? (
         <div id="creator-ads-planner">
           <CreatorPlannerPanel
-            title="Plano pronto para o Creator Ads"
+            title="Planejamento pronto para o Creator Ads"
             objective={`Gerar anúncio para ${platform} com foco em ${objective.toLowerCase()}.`}
             summary="Você revisa os principais blocos da peça antes da IA executar a geração final."
             steps={plannerSteps}
             settings={plannerSettings}
             parameters={plannerParameters}
-            note="Se o prompt automático estiver em modo manual, a peça ainda passa pela sua revisão antes de executar."
+            note="Se a sugestão automática estiver em modo manual, a peça ainda passa pela sua revisão antes de executar."
             continueLabel="Continuar com o anúncio"
             busy={isBusy}
             onContinue={() => {

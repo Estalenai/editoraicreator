@@ -738,7 +738,7 @@ export function CreatorClipsCard({ planCode, walletCommon, onRefetch }: Props) {
           persistingPreference={executionModeSaving}
           preferenceError={executionModeError}
         />
-        <div className="creator-section-label">Prompt Automático</div>
+        <div className="creator-section-label">Sugestão automática</div>
         <div className="creator-toggle-stack">
         <label className="toggle-row" data-active={promptEnabled}>
           <input
@@ -748,7 +748,7 @@ export function CreatorClipsCard({ planCode, walletCommon, onRefetch }: Props) {
               await updatePromptEnabled(e.target.checked);
             }}
           />
-          <span>Usar Prompt Automático</span>
+          <span>Usar sugestão automática</span>
         </label>
         <label className="toggle-row" data-active={promptEnabled && autoApply} data-disabled={!promptEnabled}>
           <input
@@ -759,14 +759,14 @@ export function CreatorClipsCard({ planCode, walletCommon, onRefetch }: Props) {
               await updateAutoApply(e.target.checked);
             }}
           />
-          <span>Auto aplicar prompt</span>
+          <span>Aplicar sugestão automaticamente</span>
         </label>
         </div>
         <div className="helper-note-inline">
           {estimatedCommon > 0
             ? `Estimativa de consumo inicial: ~${estimatedCommon} Comum.`
             : "Estimativa de consumo inicial disponível após o processamento do vídeo."}{" "}
-          O custo final pode variar conforme o job. O consumo real aparece em Créditos {'>'} Histórico.
+          O custo final pode variar conforme o job. O consumo real aparece no Histórico de créditos.
         </div>
       </div>
 
@@ -788,7 +788,7 @@ export function CreatorClipsCard({ planCode, walletCommon, onRefetch }: Props) {
           onClick={openPlanner}
           disabled={isBusy || !clipIdea.trim() || !objective.trim() || !hasCredits}
         >
-          {loadingApply ? "Gerando..." : clipResult ? "Gerar nova versão" : "Revisar plano e gerar"}
+          {loadingApply ? "Gerando..." : clipResult ? "Gerar nova versão" : "Revisar planejamento e gerar"}
         </button>
 
         {clipResult?.jobId && (
@@ -802,7 +802,7 @@ export function CreatorClipsCard({ planCode, walletCommon, onRefetch }: Props) {
             onClick={openPlanner}
             disabled={isBusy || !clipIdea.trim() || !objective.trim() || !hasCredits}
           >
-            Ajustar plano
+            Ajustar planejamento
           </button>
         ) : null}
         </div>
@@ -854,7 +854,7 @@ export function CreatorClipsCard({ planCode, walletCommon, onRefetch }: Props) {
       {plannerOpen ? (
         <div id="creator-clips-planner">
           <CreatorPlannerPanel
-            title="Plano pronto para o Creator Clips"
+            title="Planejamento pronto para o Creator Clips"
             objective={`Gerar clipe em ${aspectRatio} com foco em ${objective.toLowerCase()} e linguagem ${tone.toLowerCase()}.`}
             summary="Você revisa briefing, etapas, qualidade e parâmetros principais antes de iniciar o job visual."
             steps={plannerSteps}
@@ -886,7 +886,7 @@ export function CreatorClipsCard({ planCode, walletCommon, onRefetch }: Props) {
         <OperationalState
           kind="empty"
           title="Nenhum clipe gerado ainda"
-          description="Preencha ideia e objetivo, revise o planner e inicie o job. Depois acompanhe o status e leve o ativo para o editor com continuidade clara."
+          description="Preencha ideia e objetivo, revise o planejamento e inicie o job. Depois acompanhe o status e leve o ativo para o editor com continuidade clara."
           meta={[
             { label: "Fluxo", value: "Gerar job → acompanhar → salvar" },
             { label: "Saldo", value: hasCredits ? "Disponível" : "Insuficiente", tone: hasCredits ? "success" : "warning" },
@@ -898,7 +898,7 @@ export function CreatorClipsCard({ planCode, walletCommon, onRefetch }: Props) {
                 onClick={openPlanner}
                 disabled={isBusy || !clipIdea.trim() || !objective.trim() || !hasCredits}
               >
-                Revisar plano e gerar
+                Revisar planejamento e gerar
               </button>
               <Link href="/projects" className="btn-link-ea btn-ghost btn-sm">
                 Ver projetos
@@ -1121,7 +1121,7 @@ export function CreatorClipsCard({ planCode, walletCommon, onRefetch }: Props) {
                 onClick={openPlanner}
                 disabled={isBusy || !clipIdea.trim() || !objective.trim() || !hasCredits}
               >
-                Ajustar plano
+                Ajustar planejamento
               </button>
               <a href="/projects" className="btn-link-ea btn-ghost btn-sm">
                 Ver em Projetos

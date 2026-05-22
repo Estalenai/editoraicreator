@@ -754,7 +754,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
 
       <div className="creator-context-zone">
         <p className="creator-zone-title">Estimativa e contexto</p>
-        <p className="creator-zone-copy">Revise o consumo previsto e escolha entre autoaplicar o prompt ou revisar manualmente.</p>
+        <p className="creator-zone-copy">Revise o consumo previsto e escolha entre aplicar a sugestão automaticamente ou revisar manualmente.</p>
         <AiExecutionModeFields
           capabilities={execution.capabilities}
           mode={execution.mode}
@@ -770,7 +770,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
           persistingPreference={executionModeSaving}
           preferenceError={executionModeError}
         />
-        <div className="creator-section-label">Prompt Automático</div>
+        <div className="creator-section-label">Sugestão automática</div>
 
         <div className="creator-toggle-stack">
           <label className="toggle-row" data-active={promptEnabled}>
@@ -782,7 +782,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
                 await updatePromptEnabled(value);
               }}
             />
-            <span>Usar Prompt Automático</span>
+            <span>Usar sugestão automática</span>
           </label>
 
           <label className="toggle-row" data-active={promptEnabled && autoApply} data-disabled={!promptEnabled}>
@@ -795,7 +795,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
                 await updateAutoApply(value);
               }}
             />
-            <span>Auto aplicar prompt</span>
+            <span>Aplicar sugestão automaticamente</span>
           </label>
         </div>
 
@@ -807,7 +807,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
           Estimativa de consumo: ~{creditsEstimate.common} Comum • {creditsEstimate.pro} Pro • {creditsEstimate.ultra} Ultra
         </div>
         <div className="helper-note-subtle">
-          Estimativa prévia. O consumo real aparece em Creator Coins {'>'} Histórico.
+          Estimativa prévia. O consumo real aparece no Histórico de créditos.
         </div>
         {!hasCredits && <div className="inline-alert inline-alert-error">Saldo insuficiente para gerar. Compre Creator Coins avulsas para continuar.</div>}
       </div>
@@ -831,7 +831,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
             disabled={isBusy || !theme.trim() || !hasCredits}
             className={`btn-ea btn-primary ${isBusy || !theme.trim() || !hasCredits ? "creator-button-busy" : ""}`}
           >
-            {isBusy ? "Gerando..." : displayResult ? "Gerar nova versão" : "Revisar plano e gerar"}
+            {isBusy ? "Gerando..." : displayResult ? "Gerar nova versão" : "Revisar planejamento e gerar"}
           </button>
 
           {displayResult ? (
@@ -840,12 +840,12 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
               disabled={isBusy || !theme.trim() || !hasCredits}
               className={`btn-ea btn-secondary ${isBusy || !theme.trim() || !hasCredits ? "creator-button-busy-soft" : ""}`}
             >
-              Ajustar plano
+              Ajustar planejamento
             </button>
           ) : null}
         </div>
         ) : (
-          <div className="helper-note-inline">Revise o plano abaixo antes de executar a geração.</div>
+          <div className="helper-note-inline">Revise o planejamento abaixo antes de executar a geração.</div>
         )}
 
         {(error || success || copyMsg || saveMsg) ? (
@@ -895,7 +895,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
       {plannerOpen ? (
         <div id="creator-post-planner">
           <CreatorPlannerPanel
-            title="Plano pronto para o Creator Post"
+            title="Planejamento pronto para o Creator Post"
             objective={`Gerar ${contentType.toLowerCase()} para ${platform} com foco em ${objective.toLowerCase()}.`}
             summary="Antes da execução, você revisa o que a IA vai montar com base no briefing atual."
             steps={plannerSteps}
@@ -928,7 +928,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
         <div className="creator-inline-panel">
           <div className="creator-inline-panel-header">
             <strong>Prompt gerado</strong>
-            <p>Revise o texto antes de aplicar. Esse passo deixa a geração mais previsível sem sair do workspace.</p>
+            <p>Revise o texto antes de aplicar. Esse passo deixa a geração mais previsível sem sair da criação.</p>
           </div>
 
           <textarea
@@ -1023,7 +1023,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
         <OperationalState
           kind="empty"
           title="Nenhum post gerado ainda"
-          description="Preencha o briefing, revise o planner e gere a primeira versão. Depois, salve no projeto e continue no editor com a base do post já preservada."
+          description="Preencha o briefing, revise o planejamento e gere a primeira versão. Depois, salve no projeto e continue no editor com a base do post já preservada."
           meta={[
             { label: "Fluxo", value: "Gerar → salvar → editor" },
             { label: "Saldo", value: hasCredits ? "Disponível" : "Insuficiente", tone: hasCredits ? "success" : "warning" },
@@ -1035,7 +1035,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
                 onClick={openPlanner}
                 disabled={isBusy || !theme.trim() || !hasCredits}
               >
-                Revisar plano e gerar
+                Revisar planejamento e gerar
               </button>
               <Link href="/projects" className="btn-link-ea btn-ghost btn-sm">
                 Ver projetos
@@ -1150,7 +1150,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
               <OperationalState
                 kind="saved"
                 title="Projeto sincronizado"
-                description="O editor vai receber legenda, CTA e hashtags preservados neste fluxo hero."
+                description="O editor vai receber legenda, CTA e hashtags preservados neste fluxo de criação."
                 compact
               />
             ) : needsProjectSync ? (

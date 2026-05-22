@@ -573,11 +573,11 @@ export function CreatorNoCodeCard({ planCode, walletCommon, onRefetch }: Props) 
             persistingPreference={executionModeSaving}
             preferenceError={executionModeError}
           />
-          <div className="creator-section-label">Prompt Automático</div>
+          <div className="creator-section-label">Sugestão automática</div>
           <div className="creator-toggle-stack">
             <label className="toggle-row" data-active={promptEnabled}>
               <input type="checkbox" checked={promptEnabled} onChange={async (e) => await updatePromptEnabled(e.target.checked)} />
-              <span>Usar Prompt Automático</span>
+              <span>Usar sugestão automática</span>
             </label>
             <label className="toggle-row" data-active={promptEnabled && autoApply} data-disabled={!promptEnabled}>
               <input
@@ -586,7 +586,7 @@ export function CreatorNoCodeCard({ planCode, walletCommon, onRefetch }: Props) 
                 disabled={!promptEnabled}
                 onChange={async (e) => await updateAutoApply(e.target.checked)}
               />
-              <span>Auto aplicar prompt</span>
+              <span>Aplicar sugestão automaticamente</span>
             </label>
           </div>
           <div className="helper-note-subtle">
@@ -601,7 +601,7 @@ export function CreatorNoCodeCard({ planCode, walletCommon, onRefetch }: Props) 
 
         <div className="creator-estimate-row">
           <div className="helper-note-inline">Estimativa de consumo: ~{estimatedCommon} Comum</div>
-          <div className="helper-note-subtle">Estimativa prévia. O consumo real aparece em Créditos {'>'} Histórico.</div>
+          <div className="helper-note-subtle">Estimativa prévia. O consumo real aparece no Histórico de créditos.</div>
           {!hasCredits ? <div className="inline-alert inline-alert-error">Saldo insuficiente para gerar blueprint.</div> : null}
         </div>
 

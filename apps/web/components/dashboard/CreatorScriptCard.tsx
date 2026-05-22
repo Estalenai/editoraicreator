@@ -627,7 +627,7 @@ export function CreatorScriptCard({ planCode, walletCommon, onRefetch }: Props) 
           persistingPreference={executionModeSaving}
           preferenceError={executionModeError}
         />
-        <div className="creator-section-label">Prompt Automático</div>
+        <div className="creator-section-label">Sugestão automática</div>
 
         <div className="creator-toggle-stack">
           <label className="toggle-row" data-active={promptEnabled}>
@@ -638,7 +638,7 @@ export function CreatorScriptCard({ planCode, walletCommon, onRefetch }: Props) 
                 await updatePromptEnabled(e.target.checked);
               }}
             />
-            <span>Usar Prompt Automático</span>
+            <span>Usar sugestão automática</span>
           </label>
 
           <label className="toggle-row" data-active={promptEnabled && autoApply} data-disabled={!promptEnabled}>
@@ -650,17 +650,17 @@ export function CreatorScriptCard({ planCode, walletCommon, onRefetch }: Props) 
                 await updateAutoApply(e.target.checked);
               }}
             />
-            <span>Auto aplicar prompt</span>
+            <span>Aplicar sugestão automaticamente</span>
           </label>
         </div>
 
-        <div className="helper-note-inline">Se autoaplicar estiver ativo, o roteiro é gerado logo após montar o prompt.</div>
+        <div className="helper-note-inline">Se a aplicação automática estiver ativa, o roteiro é gerado logo após montar o prompt.</div>
       </div>
 
       <div className="creator-estimate-row">
         <div className="helper-note-inline">Estimativa de consumo: ~{estimatedCommon} Comum</div>
         <div className="helper-note-subtle">
-          Estimativa prévia. O consumo real aparece em Creator Coins {'>'} Histórico.
+          Estimativa prévia. O consumo real aparece no Histórico de créditos.
         </div>
         {!hasCredits && <div className="inline-alert inline-alert-error">Saldo insuficiente para gerar roteiro. Compre Creator Coins avulsas para continuar.</div>}
       </div>
@@ -684,7 +684,7 @@ export function CreatorScriptCard({ planCode, walletCommon, onRefetch }: Props) 
             disabled={isBusy || !theme.trim() || !objective.trim() || !hasCredits}
             className={`btn-ea btn-primary ${isBusy || !theme.trim() || !objective.trim() || !hasCredits ? "creator-button-busy" : ""}`}
           >
-            {isBusy ? "Gerando..." : resultText ? "Gerar nova versão" : "Revisar plano e gerar"}
+            {isBusy ? "Gerando..." : resultText ? "Gerar nova versão" : "Revisar planejamento e gerar"}
           </button>
           {resultText ? (
             <button
@@ -692,12 +692,12 @@ export function CreatorScriptCard({ planCode, walletCommon, onRefetch }: Props) 
               disabled={isBusy || !theme.trim() || !objective.trim() || !hasCredits}
               className={`btn-ea btn-secondary ${isBusy || !theme.trim() || !objective.trim() || !hasCredits ? "creator-button-busy-soft" : ""}`}
             >
-              Ajustar plano
+              Ajustar planejamento
             </button>
           ) : null}
         </div>
         ) : (
-          <div className="helper-note-inline">Revise o plano abaixo antes de executar a geração.</div>
+          <div className="helper-note-inline">Revise o planejamento abaixo antes de executar a geração.</div>
         )}
         {(error || success || copyMsg || saveMsg) ? (
           <div className="creator-feedback-stack">
@@ -746,7 +746,7 @@ export function CreatorScriptCard({ planCode, walletCommon, onRefetch }: Props) 
       {plannerOpen ? (
         <div id="creator-scripts-planner">
           <CreatorPlannerPanel
-            title="Plano pronto para o Creator Scripts"
+            title="Planejamento pronto para o Creator Scripts"
             objective={`Gerar roteiro em ${format.toLowerCase()} com foco em ${objective.toLowerCase()}.`}
             summary="Você revisa objetivo, etapas e parâmetros principais antes de a IA executar o roteiro."
             steps={plannerSteps}
@@ -864,7 +864,7 @@ export function CreatorScriptCard({ planCode, walletCommon, onRefetch }: Props) 
         <OperationalState
           kind="empty"
           title="Nenhum roteiro gerado ainda"
-          description="Defina tema e objetivo, revise o planner e gere o roteiro. Depois, salve no projeto para continuar a revisão no editor."
+          description="Defina tema e objetivo, revise o planejamento e gere o roteiro. Depois, salve no projeto para continuar a revisão no editor."
           meta={[
             { label: "Fluxo", value: "Gerar → salvar → revisão" },
             { label: "Saldo", value: hasCredits ? "Disponível" : "Insuficiente", tone: hasCredits ? "success" : "warning" },
@@ -876,7 +876,7 @@ export function CreatorScriptCard({ planCode, walletCommon, onRefetch }: Props) 
                 onClick={openPlanner}
                 disabled={isBusy || !theme.trim() || !objective.trim() || !hasCredits}
               >
-                Revisar plano e gerar
+                Revisar planejamento e gerar
               </button>
               <Link href="/projects" className="btn-link-ea btn-ghost btn-sm">
                 Ver projetos

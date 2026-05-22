@@ -561,7 +561,7 @@ export function CreatorMusicCard({ planCode, walletCommon, onRefetch }: Props) {
 
         <div className="creator-estimate-row">
           <div className="helper-note-inline">Estimativa de consumo: ~{estimatedCommon} Comum</div>
-          <div className="helper-note-subtle">Estimativa prévia. O consumo real aparece em Créditos {'>'} Histórico.</div>
+          <div className="helper-note-subtle">Estimativa prévia. O consumo real aparece no Histórico de créditos.</div>
           {!hasTheme && !interactionStarted ? (
             <div className="inline-alert">Defina o tema para habilitar a geração.</div>
           ) : null}
@@ -617,7 +617,7 @@ export function CreatorMusicCard({ planCode, walletCommon, onRefetch }: Props) {
         {plannerOpen ? (
           <div id="creator-music-planner">
             <CreatorPlannerPanel
-              title="Plano pronto para o Creator Music"
+              title="Planejamento pronto para o Creator Music"
               objective={`Gerar uma faixa ${normalizedTheme || "sob medida"} com clima ${MOOD_OPTIONS.find((item) => item.value === mood)?.label.toLowerCase() || mood}.`}
               summary="Antes da execução, você revisa a direção sonora, o tipo de entrega e os parâmetros principais."
               steps={plannerSteps}

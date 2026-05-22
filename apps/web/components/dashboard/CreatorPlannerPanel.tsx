@@ -45,7 +45,7 @@ export function CreatorPlannerPanel({
     <section className="premium-card-soft creator-planner-panel creator-planner-anchor">
       <div className="creator-planner-head">
         <div className="section-stack-tight creator-planner-copy">
-          <p className="section-kicker">Planner da IA</p>
+          <p className="section-kicker">Planejamento da IA</p>
           <h4 className="heading-reset">{title}</h4>
           <p className="helper-text-ea">{summary}</p>
         </div>
@@ -105,7 +105,7 @@ export function CreatorPlannerPanel({
           {busy ? "Executando..." : continueLabel}
         </button>
         <button type="button" className="btn-ea btn-secondary" onClick={onEdit}>
-          Editar plano
+          Editar planejamento
         </button>
         <button type="button" className="btn-ea btn-ghost" onClick={onCancel}>
           Cancelar
