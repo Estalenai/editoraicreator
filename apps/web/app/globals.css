@@ -32703,3 +32703,42 @@ body:has(.dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-da
     width: min(100%, 520px);
   }
 }
+
+/* Final dashboard lock: keep the product mark clean and force browser-zoom
+   widths to behave like real responsive widths, not compressed desktop. */
+.app-shell-frame:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) .app-shell-head,
+.app-shell-frame:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) .app-shell-head-region,
+.app-shell-frame:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) .app-shell-head-copy {
+  background: transparent !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.app-shell-frame:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) .app-shell-head::before,
+.app-shell-frame:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) .app-shell-head::after,
+.app-shell-frame:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) .app-shell-head-region::before,
+.app-shell-frame:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) .app-shell-head-region::after {
+  content: none !important;
+  display: none !important;
+}
+
+.app-shell-frame:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) .app-brand-mark-group,
+.app-shell-frame:has(.dashboard-surface-page[data-dashboard-final-rhythm="editorial"]) .app-shell-head-copy strong {
+  background: transparent !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+@media (min-width: 901px) and (max-width: 1240px) {
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-canvas > * {
+    min-width: 0;
+  }
+
+  .dashboard-studio-page[data-dashboard-final-rhythm="editorial"][data-dashboard-optical-center="hero-demo"][data-dashboard-demo-clarity="brief-to-delivery"] .dashboard-studio-preview-output {
+    position: relative;
+    z-index: 3;
+    overflow: visible;
+  }
+}
