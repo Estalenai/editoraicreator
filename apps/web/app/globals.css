@@ -33538,6 +33538,23 @@ body:has(.creators-page) {
     border-right: 0;
   }
 
+  .creators-page .creators-hero-shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .creators-page .creators-hero-copy {
+    width: 100%;
+  }
+
+  .creators-page .creators-hero-copy h1 {
+    max-width: 9.8ch;
+  }
+
+  .creators-page .creators-hero-lead {
+    width: min(100%, 34rem);
+    max-width: 100%;
+  }
+
   .creators-page .creators-hero-open,
   .creators-page .creators-core-canvas > .creators-flow-section,
   .creators-page .creator-workspace-shell {
