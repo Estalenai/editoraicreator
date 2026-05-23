@@ -33473,6 +33473,42 @@ body:has(.creators-page) {
 }
 
 @media (min-width: 901px) and (max-width: 1240px) {
+  .app-shell-frame:has(.creators-page) .app-shell-body:has(.app-nav-rail) {
+    display: grid;
+    grid-template-columns: minmax(174px, 214px) minmax(0, 1fr);
+    column-gap: clamp(14px, 2vw, 24px);
+    align-items: start;
+  }
+
+  .app-shell-frame:has(.creators-page) .app-nav-rail {
+    position: sticky;
+    top: 10px;
+    align-self: start;
+    padding: 14px 10px 18px 12px;
+    border-right: 1px solid rgba(174, 232, 255, 0.045) !important;
+    border-bottom: 0 !important;
+  }
+
+  .app-shell-frame:has(.creators-page) .app-nav-rail-links {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .app-shell-frame:has(.creators-page) .app-nav-link.layout-contract-rail-link {
+    min-height: 44px;
+    padding-block: 8px;
+  }
+
+  .app-shell-frame:has(.creators-page) .app-nav-link-meta,
+  .app-shell-frame:has(.creators-page) .app-nav-group-text,
+  .app-shell-frame:has(.creators-page) .app-top-nav-text {
+    font-size: 0.68rem;
+    line-height: 1.35;
+  }
+
+  .creators-page .creators-hero-open {
+    padding-top: clamp(22px, 3.4vw, 42px);
+  }
+
   .creators-page .creator-workspace-grid {
     grid-template-columns: minmax(0, 1fr);
   }
