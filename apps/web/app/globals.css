@@ -33580,3 +33580,680 @@ body:has(.creators-page) {
     border-radius: 22px !important;
   }
 }
+
+/* Creators Dashboard Visual System Lock
+   Dashboard's current benchmark is a continuous brand field with open
+   operational surfaces. Keep Creators functional, but remove the stacked
+   admin-panel read by applying the same field logic with scoped rules. */
+html:has(.creators-page),
+body:has(.creators-page) {
+  min-height: 100%;
+  background:
+    radial-gradient(circle at 50% 5%, rgba(87, 214, 255, 0.26), transparent 34rem),
+    linear-gradient(180deg, #061f4a 0%, #042357 42%, #031637 100%);
+}
+
+.app-shell-frame:has(.creators-page),
+.app-shell-body:has(.creators-page) {
+  min-height: 100dvh;
+  background:
+    linear-gradient(180deg, rgba(8, 44, 94, 0.1), rgba(2, 15, 42, 0.24)),
+    radial-gradient(circle at 51% 4%, rgba(96, 221, 255, 0.28), transparent 34rem),
+    radial-gradient(circle at 82% 42%, rgba(34, 142, 255, 0.16), transparent 30rem),
+    url("/brand/editor-ai-circuit-background.png") center top / cover no-repeat,
+    linear-gradient(180deg, #062c63 0%, #06326b 36%, #031c43 100%);
+}
+
+.app-shell-frame:has(.creators-page) .app-shell-main {
+  padding:
+    clamp(1.35rem, 2.5vw, 2.7rem)
+    clamp(1.25rem, 4.4vw, 4.75rem)
+    clamp(2.5rem, 6vw, 6rem);
+}
+
+.app-shell-frame:has(.creators-page) .app-shell-body:has(.app-nav-rail) {
+  grid-template-columns: minmax(11.25rem, 13rem) minmax(0, 1fr);
+}
+
+.app-shell-frame:has(.creators-page) .app-nav-rail {
+  margin: clamp(1rem, 1.8vw, 1.6rem) 0 clamp(1rem, 1.8vw, 1.6rem) clamp(0.9rem, 1.4vw, 1.4rem);
+  padding: clamp(1rem, 1.7vw, 1.45rem) clamp(0.72rem, 1vw, 0.95rem);
+  border-color: rgba(130, 224, 255, 0.08) !important;
+  background:
+    linear-gradient(180deg, rgba(10, 62, 124, 0.22), rgba(4, 25, 66, 0.06)),
+    rgba(2, 21, 55, 0.05) !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(12px);
+}
+
+.app-shell-frame:has(.creators-page) .app-nav-rail-head,
+.app-shell-frame:has(.creators-page) .app-nav-group {
+  border-color: rgba(148, 221, 255, 0.08) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.app-shell-frame:has(.creators-page) .app-nav-link {
+  border-color: transparent !important;
+  background: transparent !important;
+  color: rgba(223, 246, 255, 0.76);
+  box-shadow: none !important;
+}
+
+.app-shell-frame:has(.creators-page) .app-nav-link:hover,
+.app-shell-frame:has(.creators-page) .app-nav-link:focus-visible {
+  border-color: rgba(120, 225, 255, 0.2) !important;
+  background: rgba(84, 202, 255, 0.08) !important;
+  color: #ffffff;
+}
+
+.app-shell-frame:has(.creators-page) .app-nav-link-active {
+  border-color: rgba(111, 226, 255, 0.28) !important;
+  background:
+    linear-gradient(90deg, rgba(101, 222, 255, 0.18), rgba(77, 173, 255, 0.035)),
+    rgba(8, 74, 143, 0.08) !important;
+  box-shadow: inset 2px 0 0 rgba(100, 230, 255, 0.72) !important;
+}
+
+.app-shell-frame:has(.creators-page) .app-nav-link-meta,
+.app-shell-frame:has(.creators-page) .app-nav-rail-foot,
+.app-shell-frame:has(.creators-page) .app-nav-group-label {
+  color: rgba(211, 239, 255, 0.58);
+}
+
+.creators-page {
+  --creators-field-border: rgba(143, 228, 255, 0.16);
+  --creators-field-border-strong: rgba(143, 228, 255, 0.28);
+  --creators-field-surface: rgba(10, 64, 125, 0.18);
+  --creators-field-surface-soft: rgba(8, 45, 97, 0.1);
+  --creators-field-text: rgba(238, 250, 255, 0.94);
+  --creators-field-muted: rgba(208, 235, 248, 0.72);
+  --creators-field-faint: rgba(190, 222, 239, 0.58);
+  position: relative;
+  isolation: isolate;
+  width: min(100%, 86rem);
+  max-width: min(100%, 86rem);
+  margin-inline: auto;
+  padding: 0;
+  gap: clamp(2.2rem, 4.8vw, 5.4rem);
+  color: var(--creators-field-text);
+}
+
+.creators-page::before,
+.creators-page::after {
+  content: "";
+  position: absolute;
+  inset: -2.5rem clamp(-4rem, -4vw, -1rem);
+  z-index: -2;
+  pointer-events: none;
+}
+
+.creators-page::before {
+  background:
+    linear-gradient(180deg, rgba(8, 58, 118, 0.08) 0%, rgba(28, 156, 217, 0.08) 36%, rgba(1, 15, 42, 0.08) 100%),
+    url("/brand/editor-ai-circuit-background.png") center top / cover no-repeat;
+  opacity: 0.34;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.76), rgba(0, 0, 0, 0.24) 62%, rgba(0, 0, 0, 0.1));
+}
+
+.creators-page::after {
+  z-index: -1;
+  background:
+    radial-gradient(circle at 22% 8%, rgba(94, 221, 255, 0.14), transparent 24rem),
+    radial-gradient(circle at 74% 36%, rgba(85, 183, 255, 0.12), transparent 27rem),
+    linear-gradient(180deg, rgba(2, 20, 51, 0), rgba(2, 18, 46, 0.14) 58%, rgba(1, 12, 34, 0.22));
+}
+
+.creators-page > * {
+  position: relative;
+  z-index: 1;
+}
+
+.creators-page :is(
+  .creators-hero-open,
+  .creators-core-canvas,
+  .creator-workspace-shell
+) {
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible;
+}
+
+.creators-page .creators-hero-open {
+  padding: clamp(0.6rem, 1.4vw, 1rem) 0 0 !important;
+}
+
+.creators-page .creators-hero-shell {
+  align-items: stretch;
+  gap: clamp(1.8rem, 4.1vw, 4.8rem);
+  grid-template-columns: minmax(0, 0.97fr) minmax(22rem, 0.74fr);
+  padding-bottom: clamp(1.6rem, 3.4vw, 3.8rem);
+  border-bottom: 1px solid rgba(143, 228, 255, 0.14);
+}
+
+.creators-page .creators-hero-copy {
+  min-width: 0;
+  align-self: center;
+}
+
+.creators-page .creators-hero-copy h1 {
+  max-width: 10.8ch;
+  letter-spacing: -0.066em;
+  line-height: 0.91;
+  text-wrap: balance;
+}
+
+.creators-page .creators-hero-lead {
+  max-width: 43rem;
+  color: rgba(225, 246, 255, 0.78);
+  text-wrap: balance;
+}
+
+.creators-page .hero-eyebrow,
+.creators-page :is(.creator-section-kicker, .creator-card-kicker, .creator-tab-label, .creator-form-label) {
+  color: rgba(154, 234, 255, 0.82);
+  letter-spacing: 0.13em;
+}
+
+.creators-page .creators-hero-metrics-compact {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  max-width: 43rem;
+  margin-top: clamp(1.35rem, 2.2vw, 2rem);
+  overflow: visible;
+}
+
+.creators-page .creators-hero-metric-card {
+  min-width: 0;
+  padding: 0.86rem clamp(0.82rem, 1.6vw, 1.2rem);
+  border: 0 !important;
+  border-left: 1px solid rgba(143, 228, 255, 0.12) !important;
+  border-top: 1px solid rgba(143, 228, 255, 0.16) !important;
+  border-radius: 0 !important;
+  background:
+    linear-gradient(180deg, rgba(62, 194, 255, 0.07), rgba(9, 55, 118, 0.03)),
+    transparent !important;
+  box-shadow: none !important;
+}
+
+.creators-page .creators-hero-metric-card:first-child {
+  border-left-color: transparent !important;
+}
+
+.creators-page .creators-entry-command {
+  align-self: stretch;
+  min-width: 0;
+  border: 1px solid rgba(146, 229, 255, 0.18) !important;
+  border-top-color: rgba(170, 238, 255, 0.34) !important;
+  border-left-color: rgba(170, 238, 255, 0.26) !important;
+  border-radius: clamp(1.25rem, 2.3vw, 2rem) !important;
+  background:
+    linear-gradient(140deg, rgba(55, 181, 255, 0.18), rgba(7, 50, 109, 0.07) 52%, rgba(4, 27, 70, 0.18)),
+    rgba(6, 42, 92, 0.2) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+  backdrop-filter: blur(16px);
+}
+
+.creators-page .creators-entry-prompt-shell {
+  border-color: rgba(158, 233, 255, 0.2) !important;
+  background:
+    linear-gradient(180deg, rgba(12, 79, 151, 0.2), rgba(6, 42, 96, 0.12)),
+    rgba(4, 24, 62, 0.12) !important;
+  box-shadow: none !important;
+}
+
+.creators-page .creators-entry-tags .pill,
+.creators-page :is(.creator-chip, .creator-tab-status, .creator-format-pill) {
+  border-color: rgba(139, 226, 255, 0.24);
+  background: rgba(78, 203, 255, 0.08);
+  color: rgba(233, 250, 255, 0.86);
+}
+
+.creators-page .creators-core-canvas {
+  display: grid;
+  gap: clamp(2rem, 4.6vw, 4.9rem);
+  padding-top: clamp(0.4rem, 1vw, 0.9rem);
+}
+
+.creators-page .creators-core-canvas::before {
+  content: "";
+  position: absolute;
+  inset: -3rem clamp(-1.5rem, -2vw, -0.5rem) auto;
+  height: clamp(8rem, 18vw, 15rem);
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent, rgba(111, 226, 255, 0.18), transparent),
+    radial-gradient(circle at 48% 30%, rgba(107, 229, 255, 0.16), transparent 18rem);
+  opacity: 0.72;
+  mask-image: linear-gradient(180deg, transparent, #000 28%, transparent 92%);
+}
+
+.creators-page .creators-flow-section {
+  padding: clamp(1.15rem, 2.5vw, 2.35rem) 0 0 !important;
+  border-top: 1px solid rgba(143, 228, 255, 0.15);
+  background: transparent !important;
+}
+
+.creators-page .creators-section-heading {
+  max-width: 48rem;
+  margin-bottom: clamp(1.05rem, 2vw, 1.7rem);
+}
+
+.creators-page .creators-section-heading h2,
+.creators-page .creator-workspace-heading h2,
+.creators-page .creator-form-zone h3,
+.creators-page .creator-output-card h3 {
+  color: rgba(247, 253, 255, 0.96);
+  letter-spacing: -0.034em;
+}
+
+.creators-page .creators-section-heading p,
+.creators-page .creator-workspace-heading p,
+.creators-page :is(.creator-card-description, .creator-tab-meta, .creator-tab-support, .creator-form-help, .creator-field-hint, .creator-empty-copy, .creator-output-card p) {
+  color: var(--creators-field-muted);
+}
+
+.creators-page :is(
+  .proof-value-card,
+  .creators-hero-core-card,
+  .creators-secondary-card,
+  .creator-workspace-card,
+  .creator-form-zone,
+  .creator-context-zone,
+  .creator-inline-panel,
+  .creator-output-card,
+  .creator-next-step-panel,
+  .creator-empty-state,
+  .creator-estimate-row
+) {
+  min-width: 0;
+  border: 1px solid rgba(143, 228, 255, 0.13) !important;
+  border-top-color: rgba(166, 236, 255, 0.24) !important;
+  border-left-color: rgba(166, 236, 255, 0.2) !important;
+  background:
+    linear-gradient(180deg, rgba(45, 169, 238, 0.1), rgba(6, 39, 91, 0.045)),
+    rgba(3, 25, 67, 0.055) !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(10px);
+}
+
+.creators-page :is(.proof-value-card, .creators-hero-core-card, .creators-secondary-card) {
+  padding: clamp(1rem, 1.9vw, 1.45rem);
+  border-radius: clamp(1rem, 1.8vw, 1.35rem) !important;
+}
+
+.creators-page :is(.proof-value-card:hover, .creators-hero-core-card:hover, .creators-secondary-card:hover) {
+  border-color: rgba(141, 230, 255, 0.26) !important;
+  background:
+    linear-gradient(180deg, rgba(59, 190, 255, 0.14), rgba(9, 49, 107, 0.08)),
+    rgba(5, 36, 83, 0.08) !important;
+}
+
+.creators-page .proof-value-grid,
+.creators-page .creators-hero-core-grid,
+.creators-page .creators-secondary-grid {
+  gap: clamp(0.85rem, 1.6vw, 1.25rem);
+}
+
+.creators-page .proof-value-card::before,
+.creators-page .creators-hero-core-card::before,
+.creators-page .creators-secondary-card::before {
+  background: rgba(112, 226, 255, 0.42);
+  box-shadow: 0 0 24px rgba(83, 219, 255, 0.18);
+}
+
+.creators-page .creator-workspace-shell {
+  padding: clamp(1.1rem, 2.4vw, 2.3rem) 0 0 !important;
+  border-top: 1px solid rgba(143, 228, 255, 0.17) !important;
+}
+
+.creators-page .creator-workspace-grid {
+  align-items: start;
+  grid-template-columns: minmax(11.75rem, 0.22fr) minmax(0, 1fr);
+  gap: clamp(1.05rem, 2.2vw, 2rem);
+}
+
+.creators-page .creator-workspace-side {
+  position: sticky;
+  top: clamp(1rem, 2vw, 1.8rem);
+  max-height: calc(100dvh - 2.5rem);
+  overflow: auto;
+  border: 1px solid rgba(143, 228, 255, 0.12) !important;
+  border-left: 0 !important;
+  border-right: 0 !important;
+  border-radius: 0 !important;
+  background:
+    linear-gradient(180deg, rgba(38, 162, 232, 0.08), rgba(4, 28, 72, 0.03)),
+    transparent !important;
+  box-shadow: none !important;
+  scrollbar-width: thin;
+}
+
+.creators-page .creator-tab-btn {
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: rgba(232, 248, 255, 0.78);
+}
+
+.creators-page .creator-tab-btn + .creator-tab-btn {
+  border-top: 1px solid rgba(143, 228, 255, 0.1) !important;
+}
+
+.creators-page .creator-tab-btn:hover,
+.creators-page .creator-tab-btn:focus-visible {
+  background: rgba(83, 207, 255, 0.07) !important;
+  color: #ffffff;
+}
+
+.creators-page .creator-tab-btn-active {
+  background:
+    linear-gradient(90deg, rgba(97, 219, 255, 0.16), rgba(80, 160, 255, 0.025)),
+    transparent !important;
+  box-shadow: inset 2px 0 0 rgba(103, 231, 255, 0.82) !important;
+}
+
+.creators-page .creator-tab-meta,
+.creators-page .creator-tab-support {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.creators-page .creator-workspace-main {
+  min-width: 0;
+  gap: clamp(1rem, 2vw, 1.65rem);
+}
+
+.creators-page .creator-workspace-card-modular {
+  padding: clamp(1rem, 2.1vw, 1.7rem);
+}
+
+.creators-page .creator-form-grid,
+.creators-page .creator-context-grid {
+  gap: clamp(0.9rem, 1.6vw, 1.25rem);
+}
+
+.creators-page :is(.creator-input, .creator-select, .creator-textarea, .creator-field-input, textarea, select, input[type="text"]) {
+  border-color: rgba(144, 226, 255, 0.19) !important;
+  background:
+    linear-gradient(180deg, rgba(8, 56, 119, 0.18), rgba(4, 30, 80, 0.1)),
+    rgba(5, 27, 70, 0.2) !important;
+  color: rgba(245, 253, 255, 0.94);
+  box-shadow: none !important;
+}
+
+.creators-page :is(.creator-input, .creator-select, .creator-textarea, .creator-field-input, textarea, select, input[type="text"]):focus {
+  border-color: rgba(112, 230, 255, 0.52) !important;
+  box-shadow: 0 0 0 3px rgba(89, 217, 255, 0.12) !important;
+  outline: none;
+}
+
+.creators-page :is(.creator-checkbox-card, .creator-format-option, .creator-suggestion-card) {
+  border-color: rgba(143, 228, 255, 0.13) !important;
+  background: rgba(5, 33, 82, 0.08) !important;
+  box-shadow: none !important;
+}
+
+.creators-page :is(.creator-checkbox-card:hover, .creator-format-option:hover, .creator-suggestion-card:hover) {
+  border-color: rgba(143, 228, 255, 0.25) !important;
+  background: rgba(76, 201, 255, 0.08) !important;
+}
+
+.creators-page :is(.creator-primary-action, .creators-entry-primary, .creator-action-primary) {
+  border-color: rgba(145, 235, 255, 0.5);
+  background: linear-gradient(135deg, #74e5ff 0%, #3fb7ff 52%, #2a8cff 100%);
+  color: #031633;
+  box-shadow: 0 16px 36px rgba(20, 140, 230, 0.2);
+}
+
+.creators-page :is(.creator-secondary-action, .creators-entry-secondary, .creator-action-secondary, .creator-link-action) {
+  color: rgba(211, 246, 255, 0.92);
+  text-decoration-color: rgba(134, 231, 255, 0.45);
+  text-underline-offset: 0.22em;
+}
+
+.creators-page .creator-empty-state {
+  border-radius: clamp(1rem, 1.8vw, 1.35rem) !important;
+  background:
+    linear-gradient(90deg, rgba(42, 177, 237, 0.12), rgba(5, 41, 98, 0.04)),
+    transparent !important;
+}
+
+@media (max-width: 1240px) {
+  .app-shell-frame:has(.creators-page) .app-shell-body:has(.app-nav-rail) {
+    grid-template-columns: minmax(9.75rem, 11.25rem) minmax(0, 1fr);
+  }
+
+  .app-shell-frame:has(.creators-page) .app-shell-main {
+    padding-inline: clamp(1rem, 2.5vw, 2rem);
+  }
+
+  .creators-page {
+    gap: clamp(1.75rem, 4vw, 3.4rem);
+  }
+
+  .creators-page .creators-hero-shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .creators-page .creators-entry-command {
+    max-width: 48rem;
+  }
+
+  .creators-page .creator-workspace-grid {
+    grid-template-columns: minmax(10rem, 0.2fr) minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 980px) {
+  .app-shell-frame:has(.creators-page) .app-shell-body:has(.app-nav-rail) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .app-shell-frame:has(.creators-page) .app-nav-rail {
+    position: relative;
+    margin: 0 0 clamp(1rem, 2.5vw, 1.5rem);
+    border-radius: 0 !important;
+    border-width: 0 0 1px !important;
+    overflow-x: auto;
+  }
+
+  .creators-page .creator-workspace-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .creators-page .creator-workspace-side {
+    position: relative;
+    top: auto;
+    max-height: none;
+  }
+
+  .creators-page .creators-hero-metrics-compact {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .app-shell-frame:has(.creators-page) .app-shell-main {
+    padding: 1rem 0.88rem 2.5rem;
+  }
+
+  .creators-page {
+    width: min(100%, 34rem);
+    gap: 1.65rem;
+  }
+
+  .creators-page::before,
+  .creators-page::after {
+    inset-inline: -0.9rem;
+  }
+
+  .creators-page .creators-hero-shell {
+    gap: 1.2rem;
+    padding-bottom: 1.2rem;
+  }
+
+  .creators-page .creators-hero-copy h1 {
+    max-width: 10.6ch;
+    font-size: clamp(3.15rem, 17vw, 4.9rem);
+  }
+
+  .creators-page .creators-hero-metrics-compact {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    max-width: 100%;
+  }
+
+  .creators-page .creators-hero-metric-card {
+    border-left-color: transparent !important;
+    border-top-color: rgba(143, 228, 255, 0.15) !important;
+    padding: 0.74rem 0;
+  }
+
+  .creators-page .creators-entry-command,
+  .creators-page :is(.proof-value-card, .creators-hero-core-card, .creators-secondary-card, .creator-workspace-card, .creator-form-zone, .creator-context-zone, .creator-output-card, .creator-empty-state) {
+    border-radius: 1rem !important;
+  }
+
+  .creators-page .creators-entry-command,
+  .creators-page .creator-workspace-card-modular {
+    padding: 1rem;
+  }
+
+  .creators-page .creators-flow-section,
+  .creators-page .creator-workspace-shell {
+    padding-top: 1rem !important;
+  }
+
+  .creators-page .proof-value-grid,
+  .creators-page .creators-hero-core-grid,
+  .creators-page .creators-secondary-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .creators-page .creator-workspace-side {
+    padding-block: 0;
+  }
+
+  .creators-page .creator-tab-btn {
+    padding-inline: 0.82rem;
+  }
+}
+
+@media (min-width: 1800px) {
+  .creators-page {
+    width: min(100%, 92rem);
+    max-width: min(100%, 92rem);
+  }
+
+  .app-shell-frame:has(.creators-page) .app-shell-main {
+    padding-inline: clamp(3rem, 7vw, 9rem);
+  }
+}
+
+/* Creators Dashboard Visual System Lock: final weight reduction. */
+.app-shell-frame:has(.creators-page) .app-nav-rail {
+  align-self: start;
+  width: 100%;
+  min-height: 0;
+  background:
+    linear-gradient(180deg, rgba(4, 42, 95, 0.12), rgba(2, 18, 50, 0.025)),
+    transparent !important;
+  border-color: rgba(144, 226, 255, 0.05) !important;
+  box-shadow: none !important;
+}
+
+.app-shell-frame:has(.creators-page) .app-shell-body:has(.app-nav-rail) {
+  grid-template-columns: minmax(9.75rem, 10.75rem) minmax(0, 1fr);
+}
+
+.app-shell-frame:has(.creators-page) .app-nav-group-text,
+.app-shell-frame:has(.creators-page) .app-nav-link-meta {
+  display: none;
+}
+
+.app-shell-frame:has(.creators-page) .app-nav-link.layout-contract-rail-link {
+  min-height: 2.35rem;
+  padding-block: 0.44rem;
+}
+
+.app-shell-frame:has(.creators-page) .app-nav-rail::before {
+  opacity: 0.05 !important;
+}
+
+.app-shell-frame:has(.creators-page) .app-nav-rail-head,
+.app-shell-frame:has(.creators-page) .app-nav-group {
+  background: transparent !important;
+  border-color: rgba(144, 226, 255, 0.045) !important;
+}
+
+.creators-page .creators-entry-command {
+  border-width: 1px 0 0 1px !important;
+  border-radius: clamp(1.1rem, 2vw, 1.7rem) !important;
+  background:
+    linear-gradient(140deg, rgba(66, 196, 255, 0.1), rgba(7, 50, 109, 0.035) 54%, transparent),
+    transparent !important;
+  box-shadow: none !important;
+}
+
+.creators-page .creators-entry-prompt-shell {
+  border-top-color: rgba(172, 239, 255, 0.3) !important;
+  border-left-color: rgba(172, 239, 255, 0.24) !important;
+  background:
+    linear-gradient(180deg, rgba(33, 151, 222, 0.16), rgba(4, 32, 82, 0.08)),
+    rgba(2, 18, 52, 0.08) !important;
+}
+
+.creators-page :is(
+  .proof-value-card,
+  .creators-hero-core-card,
+  .creators-secondary-card,
+  .creator-workspace-card,
+  .creator-form-zone,
+  .creator-context-zone,
+  .creator-inline-panel,
+  .creator-output-card,
+  .creator-next-step-panel,
+  .creator-empty-state,
+  .creator-estimate-row
+) {
+  border-right-color: rgba(143, 228, 255, 0.08) !important;
+  border-bottom-color: rgba(143, 228, 255, 0.07) !important;
+  background:
+    linear-gradient(180deg, rgba(54, 182, 246, 0.075), rgba(6, 39, 91, 0.025)),
+    rgba(3, 25, 67, 0.035) !important;
+}
+
+.creators-page .creator-workspace-side {
+  background:
+    linear-gradient(180deg, rgba(38, 162, 232, 0.04), rgba(4, 28, 72, 0.015)),
+    transparent !important;
+}
+
+@media (max-width: 760px) {
+  .app-shell-frame:has(.creators-page) .app-nav-rail {
+    background:
+      linear-gradient(180deg, rgba(4, 42, 95, 0.18), rgba(2, 18, 50, 0.05)),
+      transparent !important;
+  }
+
+  .app-shell-frame:has(.creators-page) .app-shell-body:has(.app-nav-rail) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .creators-page .creators-entry-command {
+    border-width: 1px !important;
+  }
+}
+
+@media (min-width: 761px) and (max-width: 980px) {
+  .app-shell-frame:has(.creators-page) .app-shell-body:has(.app-nav-rail) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
