@@ -34813,6 +34813,25 @@ body:has(.creators-dashboard-system-page) {
   }
 }
 
+@media (min-width: 1800px) {
+  .creators-dashboard-system-page .creator-workspace-shell::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 100vw;
+    transform: translateX(-50%);
+    pointer-events: none;
+    z-index: 2;
+    background:
+      linear-gradient(180deg, rgba(2, 20, 58, 0.68), rgba(2, 24, 66, 0.54) 48%, rgba(2, 18, 54, 0.72)),
+      radial-gradient(780px 420px at 50% 8%, rgba(79, 204, 255, 0.1), transparent 72%);
+    mix-blend-mode: multiply;
+    opacity: 0.76;
+  }
+}
+
 /* Round 2 nav parity: one transparent Dashboard-like navigation row. */
 .app-shell-body:has(.creators-dashboard-system-page) .app-nav-rail {
   display: flex !important;
