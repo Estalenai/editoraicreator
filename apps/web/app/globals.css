@@ -34912,3 +34912,251 @@ body:has(.creators-dashboard-system-page) {
 .creators-dashboard-system-page .creator-active-panel-actions :is(.btn-ea, .btn-link-ea) {
   border-radius: 999px;
 }
+
+/* Creators Step 3: make hero and guided briefing read as one creation scene. */
+.creators-dashboard-system-page .creators-hero-open {
+  padding-block: clamp(1.35rem, 2.7vw, 2.9rem) clamp(1.9rem, 3.8vw, 4.6rem) !important;
+}
+
+.creators-dashboard-system-page .creators-hero-shell {
+  grid-template-columns: minmax(0, 0.94fr) minmax(21rem, 0.62fr);
+  align-items: center;
+  gap: clamp(2rem, 4.6vw, 5.2rem);
+}
+
+.creators-dashboard-system-page .creators-hero-copy {
+  align-self: center;
+}
+
+.creators-dashboard-system-page .creators-hero-copy .hero-title-stack {
+  gap: clamp(0.7rem, 1.2vw, 1rem);
+}
+
+.creators-dashboard-system-page .creators-hero-copy h1 {
+  max-width: 10.2ch;
+  font-size: clamp(4rem, 7.25vw, 6.95rem);
+  line-height: 0.9;
+  letter-spacing: -0.074em !important;
+  text-wrap: balance;
+}
+
+.creators-dashboard-system-page .creators-hero-lead {
+  max-width: 33.5rem;
+  margin-top: clamp(0.7rem, 1.35vw, 1.15rem);
+  font-size: clamp(1rem, 1.16vw, 1.14rem);
+  line-height: 1.55;
+}
+
+.creators-dashboard-system-page .hero-meta-row-compact {
+  margin-top: clamp(0.85rem, 1.6vw, 1.35rem);
+}
+
+.creators-dashboard-system-page .creators-hero-thread {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  max-width: min(100%, 46rem);
+  margin-top: clamp(1.2rem, 2.2vw, 1.9rem);
+  border-top-color: rgba(191, 239, 255, 0.12);
+  border-bottom: 0;
+}
+
+.creators-dashboard-system-page .creators-hero-signal {
+  min-height: auto !important;
+  padding: clamp(0.82rem, 1.45vw, 1.25rem) clamp(0.85rem, 1.5vw, 1.2rem) !important;
+  border: 0 !important;
+  border-left: 1px solid rgba(191, 239, 255, 0.075) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+.creators-dashboard-system-page .creators-hero-signal:first-child {
+  border-left-color: transparent !important;
+}
+
+.creators-dashboard-system-page .creators-hero-signal .hero-kpi-value {
+  max-width: 12.6ch;
+  font-size: clamp(1.04rem, 1.42vw, 1.36rem);
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+}
+
+.creators-dashboard-system-page .creators-hero-signal .hero-kpi-text {
+  max-width: 20ch;
+  color: rgba(211, 239, 255, 0.58);
+  line-height: 1.42;
+}
+
+.creators-dashboard-system-page .creators-entry-surface {
+  position: relative;
+  justify-self: end;
+  width: min(100%, 31.5rem);
+  padding: clamp(1.15rem, 2vw, 1.85rem) !important;
+  border: 0 !important;
+  border-top: 1px solid rgba(191, 239, 255, 0.22) !important;
+  border-left: 1px solid rgba(191, 239, 255, 0.16) !important;
+  border-radius: clamp(1.4rem, 2.4vw, 2.1rem) !important;
+  background:
+    radial-gradient(520px 260px at 0% 0%, rgba(91, 215, 255, 0.11), transparent 68%),
+    linear-gradient(138deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.01) 48%, transparent 78%),
+    transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
+.creators-dashboard-system-page .creators-entry-surface::before {
+  content: "";
+  position: absolute;
+  inset: -1px auto 1.2rem 0;
+  width: 1px;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(117, 234, 255, 0.42), transparent);
+  opacity: 0.7;
+}
+
+.creators-dashboard-system-page .creators-hero-panel-title {
+  margin: 0;
+  font-size: clamp(1.78rem, 2.8vw, 2.55rem);
+  line-height: 0.98;
+  letter-spacing: -0.052em;
+}
+
+.creators-dashboard-system-page .creators-hero-panel-copy {
+  max-width: 22rem;
+  color: rgba(211, 239, 255, 0.74);
+  line-height: 1.52;
+}
+
+.creators-dashboard-system-page .creators-entry-prompt-field {
+  margin-top: clamp(1rem, 1.8vw, 1.45rem);
+  padding: clamp(1rem, 1.7vw, 1.35rem) 0 0 !important;
+  border: 0 !important;
+  border-top: 1px solid rgba(191, 239, 255, 0.13) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+.creators-dashboard-system-page .creators-entry-prompt-field p {
+  max-width: 27rem;
+  font-size: clamp(1.04rem, 1.35vw, 1.2rem);
+  line-height: 1.36;
+}
+
+.creators-dashboard-system-page .creators-entry-prompt-meta {
+  gap: 0.45rem;
+}
+
+.creators-dashboard-system-page .creators-entry-prompt-meta span {
+  border-color: rgba(191, 239, 255, 0.13);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.creators-dashboard-system-page .creators-entry-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.65rem;
+  margin-top: clamp(1rem, 1.7vw, 1.35rem);
+}
+
+.creators-dashboard-system-page .creators-entry-actions .btn-primary {
+  min-width: 0;
+  width: 100%;
+  box-shadow: 0 12px 38px rgba(59, 210, 255, 0.12) !important;
+}
+
+.creators-dashboard-system-page .creators-entry-actions .btn-ghost {
+  background: rgba(255, 255, 255, 0.018) !important;
+  border-color: rgba(191, 239, 255, 0.12) !important;
+}
+
+.creators-dashboard-system-page .creators-entry-type-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: clamp(0.7rem, 1.3vw, 1rem);
+}
+
+.creators-dashboard-system-page .creators-entry-type-strip button {
+  min-height: 2.25rem;
+  padding: 0.48rem 0.85rem !important;
+  border-color: rgba(191, 239, 255, 0.12) !important;
+  background: rgba(255, 255, 255, 0.018) !important;
+  box-shadow: none !important;
+}
+
+.creators-dashboard-system-page .creators-entry-type-strip button:hover,
+.creators-dashboard-system-page .creators-entry-type-strip button[data-active="true"] {
+  border-color: rgba(99, 231, 255, 0.3) !important;
+  background: rgba(91, 215, 255, 0.075) !important;
+}
+
+.creators-dashboard-system-page .creators-entry-account-actions {
+  margin-top: clamp(1rem, 1.7vw, 1.35rem);
+  padding-top: clamp(0.7rem, 1.3vw, 1rem);
+  border-top-color: rgba(191, 239, 255, 0.075);
+  opacity: 0.72;
+}
+
+@media (max-width: 1240px) {
+  .creators-dashboard-system-page .creators-hero-shell {
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(1.55rem, 3.4vw, 2.7rem);
+  }
+
+  .creators-dashboard-system-page .creators-hero-copy h1 {
+    max-width: 9.6ch;
+    font-size: clamp(3.75rem, 8.8vw, 5.85rem);
+  }
+
+  .creators-dashboard-system-page .creators-entry-surface {
+    justify-self: start;
+    width: min(100%, 39rem);
+  }
+}
+
+@media (max-width: 760px) {
+  .creators-dashboard-system-page .creators-hero-open {
+    padding-block: 1.15rem 1.85rem !important;
+  }
+
+  .creators-dashboard-system-page .creators-hero-copy h1 {
+    max-width: 8.6ch;
+    font-size: clamp(3.05rem, 14.5vw, 4.35rem);
+    line-height: 0.92;
+    letter-spacing: -0.066em !important;
+  }
+
+  .creators-dashboard-system-page .creators-hero-lead {
+    max-width: 30rem;
+    font-size: 1rem;
+  }
+
+  .creators-dashboard-system-page .creators-hero-thread {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 100%;
+  }
+
+  .creators-dashboard-system-page .creators-hero-signal {
+    border-left: 0 !important;
+    border-top: 1px solid rgba(191, 239, 255, 0.075) !important;
+    padding-inline: 0 !important;
+  }
+
+  .creators-dashboard-system-page .creators-hero-signal:first-child {
+    border-top-color: transparent !important;
+  }
+
+  .creators-dashboard-system-page .creators-entry-surface {
+    width: 100%;
+    padding: 1rem !important;
+    border-radius: 1.35rem !important;
+  }
+
+  .creators-dashboard-system-page .creators-entry-actions {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .creators-dashboard-system-page .creators-entry-actions .btn-ghost {
+    width: 100%;
+  }
+}
