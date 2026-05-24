@@ -33602,6 +33602,8 @@ body:has(.creators-dashboard-system-page) {
 .app-shell-frame:has(.creators-dashboard-system-page),
 .app-shell-body:has(.creators-dashboard-system-page) {
   min-height: max(100dvh, 100%);
+  height: auto !important;
+  overflow: visible !important;
   background:
     linear-gradient(180deg, rgba(4, 18, 45, 0.5), rgba(3, 16, 42, 0.2) 34%, rgba(3, 14, 36, 0.62) 100%),
     radial-gradient(920px 440px at 18% 0%, rgba(96, 221, 255, 0.13), transparent 76%),
@@ -33619,7 +33621,17 @@ body:has(.creators-dashboard-system-page) {
     clamp(1.35rem, 2.5vw, 2.7rem)
     clamp(1.25rem, 4.4vw, 4.75rem)
     clamp(2.5rem, 6vw, 6rem);
-  background: transparent !important;
+  min-height: max(100dvh, 100%);
+  background:
+    linear-gradient(180deg, rgba(4, 18, 45, 0.16), rgba(3, 16, 42, 0.05) 38%, rgba(3, 14, 36, 0.42) 100%),
+    radial-gradient(980px 520px at 16% 10%, rgba(96, 221, 255, 0.07), transparent 76%),
+    radial-gradient(1040px 620px at 78% 72%, rgba(34, 142, 255, 0.055), transparent 78%),
+    url("/brand/editor-ai-circuit-background.png"),
+    linear-gradient(180deg, rgba(6, 42, 99, 0.82), rgba(3, 24, 58, 0.92) 54%, rgba(2, 13, 35, 0.98)) !important;
+  background-blend-mode: normal, normal, normal, soft-light, normal;
+  background-position: center top, center top, center center, center top, center top;
+  background-repeat: no-repeat;
+  background-size: cover, auto, auto, cover, cover;
 }
 
 .app-shell-frame:has(.creators-dashboard-system-page) .app-shell-body:has(.app-nav-rail) {
