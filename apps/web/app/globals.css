@@ -34495,6 +34495,15 @@ body:has(.creators-dashboard-system-page) {
   background:
     linear-gradient(90deg, transparent, rgba(112, 226, 255, 0.04), transparent),
     transparent !important;
+  backdrop-filter: none !important;
+}
+
+.creators-dashboard-system-page .creators-core-canvas::before,
+.creators-dashboard-system-page .creators-core-canvas::after,
+.creators-dashboard-system-page .creator-workspace-shell::before,
+.creators-dashboard-system-page .creator-workspace-shell::after {
+  filter: none !important;
+  backdrop-filter: none !important;
 }
 
 .creators-dashboard-system-page .proof-value-header,
