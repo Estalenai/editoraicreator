@@ -33583,71 +33583,83 @@ body:has(.creators-page) {
 
 /* Creators Dashboard Visual System Lock
    Dashboard's current benchmark is a continuous brand field with open
-   operational surfaces. Keep Creators functional, but remove the stacked
-   admin-panel read by applying the same field logic with scoped rules. */
-html:has(.creators-page),
-body:has(.creators-page) {
+   operational surfaces. Scope this shell fabric to the Creators contract so
+   other tabs keep their own treatment. */
+html:has(.creators-dashboard-system-page),
+body:has(.creators-dashboard-system-page) {
   min-height: 100%;
   background:
-    radial-gradient(circle at 50% 5%, rgba(87, 214, 255, 0.26), transparent 34rem),
+    linear-gradient(180deg, rgba(3, 13, 35, 0.4), rgba(3, 13, 35, 0.2) 42%, rgba(3, 13, 35, 0.5) 100%),
+    url("/brand/editor-ai-circuit-background.png"),
+    radial-gradient(circle at 50% 5%, rgba(87, 214, 255, 0.2), transparent 34rem),
     linear-gradient(180deg, #061f4a 0%, #042357 42%, #031637 100%);
+  background-blend-mode: normal, soft-light, normal, normal;
+  background-position: center top, center top, center top, center top;
+  background-repeat: no-repeat;
+  background-size: cover, cover, auto, cover;
 }
 
-.app-shell-frame:has(.creators-page),
-.app-shell-body:has(.creators-page) {
-  min-height: 100dvh;
+.app-shell-frame:has(.creators-dashboard-system-page),
+.app-shell-body:has(.creators-dashboard-system-page) {
+  min-height: max(100dvh, 100%);
   background:
-    linear-gradient(180deg, rgba(8, 44, 94, 0.1), rgba(2, 15, 42, 0.24)),
-    radial-gradient(circle at 51% 4%, rgba(96, 221, 255, 0.28), transparent 34rem),
-    radial-gradient(circle at 82% 42%, rgba(34, 142, 255, 0.16), transparent 30rem),
-    url("/brand/editor-ai-circuit-background.png") center top / cover no-repeat,
-    linear-gradient(180deg, #062c63 0%, #06326b 36%, #031c43 100%);
+    linear-gradient(180deg, rgba(4, 18, 45, 0.5), rgba(3, 16, 42, 0.2) 34%, rgba(3, 14, 36, 0.62) 100%),
+    radial-gradient(920px 440px at 18% 0%, rgba(96, 221, 255, 0.13), transparent 76%),
+    radial-gradient(980px 560px at 82% 38%, rgba(34, 142, 255, 0.105), transparent 78%),
+    url("/brand/editor-ai-circuit-background.png"),
+    linear-gradient(180deg, #062c63 0%, #062a63 36%, #031936 100%);
+  background-blend-mode: normal, normal, normal, soft-light, normal;
+  background-position: center top, center top, center center, center top, center top;
+  background-repeat: no-repeat;
+  background-size: cover, auto, auto, cover, cover;
 }
 
-.app-shell-frame:has(.creators-page) .app-shell-main {
+.app-shell-frame:has(.creators-dashboard-system-page) .app-shell-main {
   padding:
     clamp(1.35rem, 2.5vw, 2.7rem)
     clamp(1.25rem, 4.4vw, 4.75rem)
     clamp(2.5rem, 6vw, 6rem);
+  background: transparent !important;
 }
 
-.app-shell-frame:has(.creators-page) .app-shell-body:has(.app-nav-rail) {
-  grid-template-columns: minmax(11.25rem, 13rem) minmax(0, 1fr);
+.app-shell-frame:has(.creators-dashboard-system-page) .app-shell-body:has(.app-nav-rail) {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
 }
 
-.app-shell-frame:has(.creators-page) .app-nav-rail {
-  margin: clamp(1rem, 1.8vw, 1.6rem) 0 clamp(1rem, 1.8vw, 1.6rem) clamp(0.9rem, 1.4vw, 1.4rem);
-  padding: clamp(1rem, 1.7vw, 1.45rem) clamp(0.72rem, 1vw, 0.95rem);
-  border-color: rgba(130, 224, 255, 0.08) !important;
-  background:
-    linear-gradient(180deg, rgba(10, 62, 124, 0.22), rgba(4, 25, 66, 0.06)),
-    rgba(2, 21, 55, 0.05) !important;
+.app-shell-frame:has(.creators-dashboard-system-page) .app-nav-rail {
+  margin: 0 clamp(1.1rem, 1.9vw, 1.75rem) clamp(0.4rem, 1vw, 0.8rem) !important;
+  padding: 0.5rem 0 0.38rem !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
   box-shadow: none !important;
-  backdrop-filter: blur(12px);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
-.app-shell-frame:has(.creators-page) .app-nav-rail-head,
-.app-shell-frame:has(.creators-page) .app-nav-group {
+.app-shell-frame:has(.creators-dashboard-system-page) .app-nav-rail-head,
+.app-shell-frame:has(.creators-dashboard-system-page) .app-nav-group {
   border-color: rgba(148, 221, 255, 0.08) !important;
   background: transparent !important;
   box-shadow: none !important;
 }
 
-.app-shell-frame:has(.creators-page) .app-nav-link {
+.app-shell-frame:has(.creators-dashboard-system-page) .app-nav-link {
   border-color: transparent !important;
   background: transparent !important;
   color: rgba(223, 246, 255, 0.76);
   box-shadow: none !important;
 }
 
-.app-shell-frame:has(.creators-page) .app-nav-link:hover,
-.app-shell-frame:has(.creators-page) .app-nav-link:focus-visible {
+.app-shell-frame:has(.creators-dashboard-system-page) .app-nav-link:hover,
+.app-shell-frame:has(.creators-dashboard-system-page) .app-nav-link:focus-visible {
   border-color: rgba(120, 225, 255, 0.2) !important;
   background: rgba(84, 202, 255, 0.08) !important;
   color: #ffffff;
 }
 
-.app-shell-frame:has(.creators-page) .app-nav-link-active {
+.app-shell-frame:has(.creators-dashboard-system-page) .app-nav-link-active {
   border-color: rgba(111, 226, 255, 0.28) !important;
   background:
     linear-gradient(90deg, rgba(101, 222, 255, 0.18), rgba(77, 173, 255, 0.035)),
@@ -33655,9 +33667,9 @@ body:has(.creators-page) {
   box-shadow: inset 2px 0 0 rgba(100, 230, 255, 0.72) !important;
 }
 
-.app-shell-frame:has(.creators-page) .app-nav-link-meta,
-.app-shell-frame:has(.creators-page) .app-nav-rail-foot,
-.app-shell-frame:has(.creators-page) .app-nav-group-label {
+.app-shell-frame:has(.creators-dashboard-system-page) .app-nav-link-meta,
+.app-shell-frame:has(.creators-dashboard-system-page) .app-nav-rail-foot,
+.app-shell-frame:has(.creators-dashboard-system-page) .app-nav-group-label {
   color: rgba(211, 239, 255, 0.58);
 }
 
