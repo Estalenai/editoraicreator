@@ -343,7 +343,11 @@ function CreatorsPageContent() {
   }
 
   return (
-    <div className="page-shell creators-page">
+    <div
+      className="page-shell creators-page creators-dashboard-system-page"
+      data-creators-system="dashboard-parity"
+      data-creators-composition="continuous-field"
+    >
       <section className="creators-hero creators-hero-open">
         <div className="hero-split creators-hero-split creators-hero-shell">
           <div className="hero-copy creators-hero-copy">
@@ -360,18 +364,18 @@ function CreatorsPageContent() {
               <span className="premium-badge premium-badge-soon">Formatos principais no centro</span>
             </div>
 
-            <div className="hero-kpi-grid creators-hero-metrics creators-hero-metrics-compact">
-              <div className="creators-hero-metric-card">
+            <div className="hero-kpi-grid creators-hero-metrics creators-hero-metrics-compact creators-hero-thread" aria-label="Resumo do fluxo de criação">
+              <div className="creators-hero-metric-card creators-hero-signal">
                 <span className="hero-kpi-label">Formato selecionado</span>
                 <strong className="hero-kpi-value">{activeTabMeta.label}</strong>
                 <span className="hero-kpi-text">{activeTabMeta.bestFor}</span>
               </div>
-              <div className="creators-hero-metric-card">
+              <div className="creators-hero-metric-card creators-hero-signal">
                 <span className="hero-kpi-label">Saldo disponível</span>
                 <strong className="hero-kpi-value">{walletSummaryDisplay}</strong>
                 <span className="hero-kpi-text">{loading ? "Saldo e plano em sincronização." : `Estimativa antes da geração. Consumo real em ${CREATOR_COINS_PUBLIC_NAME}.`}</span>
               </div>
-              <div className="creators-hero-metric-card">
+              <div className="creators-hero-metric-card creators-hero-signal">
                 <span className="hero-kpi-label">Próximo passo</span>
                 <strong className="hero-kpi-value">Criar → revisar → salvar</strong>
                 <span className="hero-kpi-text">Projeto e editor continuam com o mesmo contexto.</span>
@@ -379,7 +383,7 @@ function CreatorsPageContent() {
             </div>
           </div>
 
-          <div className="creators-hero-panel creators-hero-panel-quiet creators-entry-command">
+          <div className="creators-hero-panel creators-hero-panel-quiet creators-entry-command creators-entry-surface">
             <div className="section-stack-tight">
               <p className="section-kicker">Pedido de criação</p>
               <h2 className="creators-hero-panel-title">Briefing guiado</h2>
@@ -388,7 +392,7 @@ function CreatorsPageContent() {
               </p>
             </div>
 
-            <div className="creators-entry-prompt-shell" aria-label={`Exemplo de pedido para ${activeTabMeta.label}`}>
+            <div className="creators-entry-prompt-shell creators-entry-prompt-field" aria-label={`Exemplo de pedido para ${activeTabMeta.label}`}>
               <span className="creators-entry-prompt-label">Pedido para {activeTabMeta.label}</span>
               <p>{activeShowcase.briefing}</p>
               <div className="creators-entry-prompt-meta">
@@ -459,7 +463,7 @@ function CreatorsPageContent() {
       ) : null}
 
       <div className="creators-core-canvas layout-contract-region" data-reveal data-reveal-delay="60">
-        <section className="proof-value-section creators-proof-section creators-flow-section surface-flow-region creators-flow-section-start layout-contract-region">
+        <section className="proof-value-section creators-proof-section creators-flow-section surface-flow-region creators-flow-section-start layout-contract-region creators-open-track">
           <div className="proof-value-header">
             <div className="section-stack-tight">
               <p className="section-kicker">Exemplos de resultado</p>
@@ -473,11 +477,11 @@ function CreatorsPageContent() {
             </Link>
           </div>
 
-          <div className="proof-value-grid proof-value-grid-creators">
+          <div className="proof-value-grid proof-value-grid-creators creators-proof-stream">
             {CREATOR_SHOWCASES.map((item, index) => (
               <article
                 key={item.creator}
-                className={`proof-value-card layout-contract-item ${index === 0 ? "creators-proof-card-primary" : "creators-proof-card-support"}`}
+                className={`proof-value-card layout-contract-item creators-open-module ${index === 0 ? "creators-proof-card-primary" : "creators-proof-card-support"}`}
                 data-reveal
                 data-reveal-delay={String(70 + index * 55)}
               >
@@ -506,7 +510,7 @@ function CreatorsPageContent() {
 
       <section
         ref={registerSection("showcase")}
-        className="creators-hero-core-section creators-flow-section surface-flow-region creators-flow-section-middle layout-contract-region focus-shell-section"
+        className="creators-hero-core-section creators-flow-section surface-flow-region creators-flow-section-middle layout-contract-region focus-shell-section creators-open-track"
         data-focus-active={activeSection === "showcase"}
         data-reveal
         data-reveal-delay="90"
@@ -547,11 +551,11 @@ function CreatorsPageContent() {
           Os formatos principais ficam visíveis sem disputar o briefing ativo.
         </div>
           <div className="focus-shell-body">
-            <div className="creators-hero-core-grid">
+            <div className="creators-hero-core-grid creators-format-stream">
               {heroCoreCards.map((tab, index) => (
                 <article
                   key={tab.id}
-                  className={`creators-hero-core-card layout-contract-item ${tab.group !== "hero" ? "creators-hero-core-card-support" : ""}`}
+                  className={`creators-hero-core-card layout-contract-item creators-open-module ${tab.group !== "hero" ? "creators-hero-core-card-support" : ""}`}
                   data-active={activeTab === tab.id}
                   data-group={tab.group}
                   data-reveal
@@ -595,7 +599,7 @@ function CreatorsPageContent() {
 
       <section
         ref={registerSection("catalog")}
-        className="creators-secondary-section creators-flow-section surface-flow-region creators-flow-section-middle layout-contract-region focus-shell-section"
+        className="creators-secondary-section creators-flow-section surface-flow-region creators-flow-section-middle layout-contract-region focus-shell-section creators-open-track"
         data-focus-active={activeSection === "catalog"}
         data-reveal
         data-reveal-delay="120"
@@ -632,9 +636,9 @@ function CreatorsPageContent() {
           Apoio e experimentos continuam acessíveis, com menos peso quando o briefing ativo está aberto.
         </div>
           <div className="focus-shell-body">
-            <div className="creators-secondary-grid">
+            <div className="creators-secondary-grid creators-secondary-stream">
               {secondaryCatalog.map((tab, index) => (
-                <article key={tab.id} className="creators-secondary-card layout-contract-item" data-priority={tab.group} data-reveal data-reveal-delay={String(70 + index * 45)}>
+                <article key={tab.id} className="creators-secondary-card layout-contract-item creators-open-module" data-priority={tab.group} data-reveal data-reveal-delay={String(70 + index * 45)}>
                   <div className="creators-secondary-card-head">
                     <strong>{tab.label}</strong>
                     <span className={`premium-badge premium-badge-${creatorStageTone(tab.group)}`}>{tab.stageLabel}</span>
@@ -660,7 +664,7 @@ function CreatorsPageContent() {
 
       <section
         ref={registerSection("workspace")}
-        className="creator-workspace-shell creators-flow-section surface-flow-region creators-flow-section-end layout-contract-region focus-shell-section"
+        className="creator-workspace-shell creators-flow-section surface-flow-region creators-flow-section-end layout-contract-region focus-shell-section creators-open-track creators-workspace-field"
         data-focus-active={activeSection === "workspace"}
       >
         <div
@@ -692,7 +696,7 @@ function CreatorsPageContent() {
           A criação ativa concentra formato, saldo e próximo passo.
         </div>
         <div className="focus-shell-body creator-workspace-grid">
-        <aside className="creator-workspace-side creators-sidebar creators-sidebar-soft layout-contract-rail" data-reveal data-reveal-delay="140">
+        <aside className="creator-workspace-side creators-sidebar creators-sidebar-soft layout-contract-rail creators-format-rail" data-reveal data-reveal-delay="140">
           <div className="creators-side-note creators-side-note-primary">
             <strong>Comece pelos formatos principais</strong>
             <span>

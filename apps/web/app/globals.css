@@ -34257,3 +34257,606 @@ body:has(.creators-page) {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* Creators Dashboard System Parity Lock Round 2
+   This is intentionally stronger than the previous polish pass: Creators now
+   uses Dashboard's one-column shell, horizontal transparent nav, open tracks,
+   and a single workspace axis instead of nested panels. */
+.app-shell-body:has(.creators-dashboard-system-page) {
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 0 !important;
+}
+
+.app-shell-frame:has(.creators-dashboard-system-page) .app-shell-main {
+  padding-top: 0 !important;
+}
+
+.app-shell-body:has(.creators-dashboard-system-page) .app-top-nav,
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-rail {
+  width: auto !important;
+  max-width: none !important;
+  position: relative !important;
+  top: auto !important;
+  margin: 0 clamp(1.1rem, 1.9vw, 1.75rem) clamp(0.4rem, 1vw, 0.8rem) !important;
+  padding: 0.5rem 0 0.38rem !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  overflow: visible !important;
+}
+
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-rail::before,
+.app-shell-body:has(.creators-dashboard-system-page) .app-top-nav::before,
+.app-shell-body:has(.creators-dashboard-system-page) .app-top-nav::after {
+  display: none !important;
+  content: none !important;
+}
+
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-dashboard-mode {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(0.9rem, 1.8vw, 1.55rem);
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible;
+}
+
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-dashboard-field-line {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.85rem, 1.6vw, 1.5rem);
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-dashboard-mode .app-top-nav-head {
+  gap: 0.38rem;
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-dashboard-context strong {
+  font-size: 0.76rem;
+  color: rgba(244, 251, 255, 0.82);
+}
+
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-dashboard-context-copy,
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-group-text,
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-link-meta,
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-rail-foot {
+  display: none !important;
+}
+
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-dashboard-stack,
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-dashboard-links,
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-dashboard-links-support,
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-links,
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-compact-strip {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 0.38rem;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-links::-webkit-scrollbar,
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-compact-strip::-webkit-scrollbar {
+  display: none;
+}
+
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-group {
+  display: contents !important;
+}
+
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-link,
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-link:hover,
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-link:active,
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-link-active {
+  min-height: 2.08rem !important;
+  width: auto !important;
+  min-width: max-content !important;
+  flex: 0 0 auto;
+  padding: 0 0.78rem !important;
+  gap: 0 !important;
+  border: 1px solid transparent !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  opacity: 0.55;
+  white-space: nowrap;
+  color: rgba(230, 248, 255, 0.8);
+}
+
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-link:hover {
+  opacity: 0.78;
+  background: rgba(255, 255, 255, 0.018) !important;
+}
+
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-link-active,
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-link[aria-current="page"],
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-link[data-active="true"] {
+  opacity: 1;
+  border-color: rgba(191, 239, 255, 0.09) !important;
+  background: rgba(255, 255, 255, 0.02) !important;
+}
+
+.creators-dashboard-system-page {
+  width: min(100%, 82rem);
+  max-width: min(100%, 82rem);
+  gap: clamp(2.75rem, 5.4vw, 6.4rem);
+}
+
+.creators-dashboard-system-page::before {
+  opacity: 0.2;
+}
+
+.creators-dashboard-system-page .creators-hero-shell {
+  grid-template-columns: minmax(0, 1fr) minmax(19rem, 0.58fr);
+  gap: clamp(2.4rem, 7vw, 7.8rem);
+  border-bottom: 0;
+}
+
+.creators-dashboard-system-page .creators-hero-copy h1 {
+  max-width: 9.2ch;
+  font-size: clamp(4.8rem, 10.8vw, 9.4rem);
+  line-height: 0.86;
+  letter-spacing: -0.078em !important;
+}
+
+.creators-dashboard-system-page .creators-hero-lead {
+  max-width: 39rem;
+  font-size: clamp(1rem, 1.28vw, 1.22rem);
+}
+
+.creators-dashboard-system-page .creators-hero-thread {
+  max-width: 100%;
+  margin-top: clamp(1.65rem, 3vw, 2.7rem);
+  border-top: 1px solid rgba(191, 239, 255, 0.13);
+  border-bottom: 1px solid rgba(191, 239, 255, 0.065);
+}
+
+.creators-dashboard-system-page .creators-hero-signal {
+  padding: clamp(1rem, 1.8vw, 1.55rem) clamp(1rem, 2vw, 1.6rem);
+  border-top: 0 !important;
+  background: transparent !important;
+}
+
+.creators-dashboard-system-page .creators-hero-signal .hero-kpi-value {
+  max-width: 13ch;
+  font-size: clamp(1.22rem, 1.9vw, 1.72rem);
+  line-height: 1.06;
+}
+
+.creators-dashboard-system-page .creators-entry-surface {
+  align-self: center;
+  padding: clamp(1.2rem, 2.2vw, 2rem) !important;
+  border-width: 1px 0 0 1px !important;
+  border-radius: clamp(1.25rem, 2.4vw, 2.1rem) !important;
+  background:
+    linear-gradient(135deg, rgba(91, 215, 255, 0.09), rgba(3, 33, 82, 0.025) 54%, transparent),
+    transparent !important;
+}
+
+.creators-dashboard-system-page .creators-entry-prompt-field {
+  margin-top: clamp(1rem, 2vw, 1.65rem);
+  border-width: 1px 0 0 1px !important;
+  border-radius: clamp(1rem, 1.8vw, 1.45rem) !important;
+  background:
+    linear-gradient(180deg, rgba(56, 181, 246, 0.1), rgba(3, 31, 78, 0.035)),
+    transparent !important;
+}
+
+.creators-dashboard-system-page .creators-entry-account-actions {
+  border-top-color: rgba(191, 239, 255, 0.08);
+}
+
+.creators-dashboard-system-page .creators-core-canvas {
+  gap: clamp(2.35rem, 5.2vw, 5.9rem);
+}
+
+.creators-dashboard-system-page .creators-open-track,
+.creators-dashboard-system-page .creators-core-canvas > .creators-flow-section,
+.creators-dashboard-system-page .creator-workspace-shell {
+  padding: clamp(1.2rem, 2.4vw, 2.2rem) 0 0 !important;
+  border-top: 1px solid rgba(191, 239, 255, 0.12) !important;
+  background:
+    linear-gradient(90deg, transparent, rgba(112, 226, 255, 0.04), transparent),
+    transparent !important;
+}
+
+.creators-dashboard-system-page .proof-value-header,
+.creators-dashboard-system-page .focus-shell-head {
+  align-items: end;
+  gap: clamp(1rem, 2vw, 1.8rem);
+  padding-bottom: clamp(0.7rem, 1.4vw, 1rem);
+}
+
+.creators-dashboard-system-page .focus-shell-preview {
+  max-width: 46rem;
+  margin: 0 0 clamp(0.9rem, 1.8vw, 1.4rem);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: rgba(211, 239, 255, 0.62);
+}
+
+.creators-dashboard-system-page :is(.creators-proof-stream, .creators-format-stream, .creators-secondary-stream) {
+  display: grid;
+  gap: 0;
+  border-top: 1px solid rgba(191, 239, 255, 0.095);
+  border-bottom: 1px solid rgba(191, 239, 255, 0.045);
+}
+
+.creators-dashboard-system-page .creators-proof-stream {
+  grid-template-columns: minmax(0, 1.2fr) repeat(2, minmax(0, 0.82fr));
+}
+
+.creators-dashboard-system-page .creators-format-stream {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.creators-dashboard-system-page .creators-secondary-stream {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.creators-dashboard-system-page .creators-open-module,
+.creators-dashboard-system-page :is(.proof-value-card, .creators-hero-core-card, .creators-secondary-card) {
+  min-width: 0;
+  border: 0 !important;
+  border-left: 1px solid rgba(191, 239, 255, 0.075) !important;
+  border-radius: 0 !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.004)),
+    transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
+.creators-dashboard-system-page .creators-open-module:first-child,
+.creators-dashboard-system-page .proof-value-grid > *:first-child {
+  border-left-color: transparent !important;
+}
+
+.creators-dashboard-system-page :is(.proof-value-card, .creators-hero-core-card, .creators-secondary-card) {
+  padding: clamp(1rem, 1.7vw, 1.45rem) !important;
+}
+
+.creators-dashboard-system-page :is(.proof-value-block, .creators-hero-core-point, .creators-secondary-card-copy) {
+  border-color: rgba(191, 239, 255, 0.055) !important;
+  background: transparent !important;
+}
+
+.creators-dashboard-system-page .creator-workspace-grid {
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: clamp(1.2rem, 2.6vw, 2.3rem);
+}
+
+.creators-dashboard-system-page .creators-format-rail {
+  position: relative !important;
+  top: auto !important;
+  display: grid;
+  grid-template-columns: minmax(12rem, 0.22fr) minmax(0, 1fr) minmax(14rem, 0.24fr);
+  gap: clamp(1rem, 2vw, 1.75rem);
+  max-height: none !important;
+  overflow: visible !important;
+  padding: clamp(0.85rem, 1.7vw, 1.2rem) 0 !important;
+  border-width: 1px 0 !important;
+  border-color: rgba(191, 239, 255, 0.11) !important;
+  background: transparent !important;
+}
+
+.creators-dashboard-system-page .creators-sidebar-nav {
+  min-width: 0;
+}
+
+.creators-dashboard-system-page .creators-sidebar-group {
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.creators-dashboard-system-page .creators-sidebar-group + .creators-sidebar-group {
+  margin-top: clamp(0.85rem, 1.6vw, 1.25rem);
+  padding-top: clamp(0.75rem, 1.4vw, 1rem);
+  border-top: 1px solid rgba(191, 239, 255, 0.07);
+}
+
+.creators-dashboard-system-page .creators-sidebar-group-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  border-top: 1px solid rgba(191, 239, 255, 0.07);
+}
+
+.creators-dashboard-system-page .creator-tab-btn {
+  min-width: 0;
+  padding: clamp(0.75rem, 1.3vw, 1.05rem) clamp(0.75rem, 1.4vw, 1.1rem) !important;
+  border: 0 !important;
+  border-left: 1px solid rgba(191, 239, 255, 0.065) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+.creators-dashboard-system-page .creator-tab-btn:first-child {
+  border-left-color: transparent !important;
+}
+
+.creators-dashboard-system-page .creator-tab-btn[data-active="true"] {
+  background:
+    linear-gradient(180deg, rgba(91, 215, 255, 0.12), rgba(255, 255, 255, 0.006)),
+    transparent !important;
+  box-shadow: inset 0 2px 0 rgba(99, 231, 255, 0.7) !important;
+}
+
+.creators-dashboard-system-page .creator-tab-meta,
+.creators-dashboard-system-page .creator-tab-support {
+  -webkit-line-clamp: 1;
+}
+
+.creators-dashboard-system-page .creators-sidebar-stack {
+  display: grid;
+  gap: 0;
+  align-content: start;
+  border-top: 1px solid rgba(191, 239, 255, 0.075);
+}
+
+.creators-dashboard-system-page .creators-side-note,
+.creators-dashboard-system-page .creators-wallet-panel {
+  padding: 0.78rem 0 !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(191, 239, 255, 0.06) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+.creators-dashboard-system-page .creator-workspace-main-stack {
+  gap: clamp(1rem, 2vw, 1.8rem);
+}
+
+.creators-dashboard-system-page .creator-active-panel,
+.creators-dashboard-system-page .creator-workspace-card,
+.creators-dashboard-system-page :is(.creator-form-zone, .creator-context-zone, .creator-inline-panel, .creator-output-card, .creator-next-step-panel, .creator-estimate-row, .creator-planner-panel, .creator-loading-panel, .creator-empty-state) {
+  border: 0 !important;
+  border-top: 1px solid rgba(191, 239, 255, 0.11) !important;
+  border-left: 1px solid rgba(191, 239, 255, 0.075) !important;
+  border-radius: clamp(1rem, 1.7vw, 1.45rem) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.004)),
+    rgba(7, 42, 95, 0.035) !important;
+  box-shadow: none !important;
+}
+
+.creators-dashboard-system-page .creator-workspace-card-modular .creator-workspace-header {
+  border-bottom-color: rgba(191, 239, 255, 0.075);
+}
+
+.creators-dashboard-system-page .creator-active-summary-card,
+.creators-dashboard-system-page .creator-active-stage-note {
+  border-color: rgba(191, 239, 255, 0.07) !important;
+  background: transparent !important;
+}
+
+.creators-dashboard-system-page :is(.field-ea, select.field-ea, .creator-prompt-textarea) {
+  border-color: rgba(191, 239, 255, 0.16) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0.006)),
+    rgba(2, 22, 58, 0.18) !important;
+}
+
+.creators-dashboard-system-page .toggle-row {
+  border-color: rgba(191, 239, 255, 0.1) !important;
+  background: rgba(255, 255, 255, 0.01) !important;
+}
+
+.creators-dashboard-system-page .creator-empty-state {
+  border-left: 2px solid rgba(99, 231, 255, 0.42) !important;
+}
+
+@media (max-width: 1240px) {
+  .creators-dashboard-system-page {
+    width: min(100%, 76rem);
+  }
+
+  .creators-dashboard-system-page .creators-hero-shell {
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(1.4rem, 3vw, 2.4rem);
+  }
+
+  .creators-dashboard-system-page .creators-entry-surface {
+    max-width: 52rem;
+  }
+
+  .creators-dashboard-system-page .creators-format-rail {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .creators-dashboard-system-page .creators-sidebar-stack {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+  }
+
+  .creators-dashboard-system-page .creators-side-note,
+  .creators-dashboard-system-page .creators-wallet-panel {
+    padding-inline: clamp(0.75rem, 1.4vw, 1rem) !important;
+    border-bottom: 0 !important;
+    border-left: 1px solid rgba(191, 239, 255, 0.055) !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .creators-dashboard-system-page {
+    width: min(100%, 44rem);
+  }
+
+  .creators-dashboard-system-page .creators-proof-stream,
+  .creators-dashboard-system-page .creators-format-stream,
+  .creators-dashboard-system-page .creators-secondary-stream {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .creators-dashboard-system-page .creators-open-module,
+  .creators-dashboard-system-page :is(.proof-value-card, .creators-hero-core-card, .creators-secondary-card) {
+    border-left: 0 !important;
+    border-top: 1px solid rgba(191, 239, 255, 0.08) !important;
+  }
+
+  .creators-dashboard-system-page .creators-sidebar-group-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .creators-dashboard-system-page .creator-tab-btn {
+    border-left: 0 !important;
+    border-top: 1px solid rgba(191, 239, 255, 0.055) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .app-shell-body:has(.creators-dashboard-system-page) .app-nav-dashboard-mode {
+    align-items: stretch;
+  }
+
+  .app-shell-body:has(.creators-dashboard-system-page) .app-nav-dashboard-field-line {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.55rem;
+  }
+
+  .app-shell-body:has(.creators-dashboard-system-page) .app-nav-dashboard-stack,
+  .app-shell-body:has(.creators-dashboard-system-page) .app-nav-dashboard-links,
+  .app-shell-body:has(.creators-dashboard-system-page) .app-nav-links,
+  .app-shell-body:has(.creators-dashboard-system-page) .app-nav-compact-strip {
+    width: 100%;
+  }
+
+  .creators-dashboard-system-page {
+    width: min(100%, 34rem);
+    gap: 2rem;
+  }
+
+  .creators-dashboard-system-page .creators-hero-copy h1 {
+    max-width: 8.4ch;
+    font-size: clamp(3.3rem, 17.5vw, 5rem);
+    letter-spacing: -0.07em !important;
+  }
+
+  .creators-dashboard-system-page .creators-hero-thread {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .creators-dashboard-system-page .creators-hero-signal {
+    border-left: 0 !important;
+    border-top: 1px solid rgba(191, 239, 255, 0.09) !important;
+    padding-inline: 0;
+  }
+
+  .creators-dashboard-system-page .creators-entry-surface {
+    padding: 1rem !important;
+    border-width: 1px !important;
+  }
+
+  .creators-dashboard-system-page .proof-value-header,
+  .creators-dashboard-system-page .focus-shell-head {
+    align-items: start;
+  }
+
+  .creators-dashboard-system-page .creators-sidebar-stack {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .creators-dashboard-system-page .creators-side-note,
+  .creators-dashboard-system-page .creators-wallet-panel {
+    padding-inline: 0 !important;
+    border-left: 0 !important;
+    border-bottom: 1px solid rgba(191, 239, 255, 0.055) !important;
+  }
+}
+
+/* Round 2 nav parity: one transparent Dashboard-like navigation row. */
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-rail {
+  display: flex !important;
+  align-items: center;
+  gap: 0.38rem;
+  flex-wrap: nowrap;
+  overflow-x: auto !important;
+  scrollbar-width: none;
+}
+
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-rail::-webkit-scrollbar {
+  display: none;
+}
+
+.app-shell-body:has(.creators-dashboard-system-page) .app-top-nav-head,
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-compact-strip,
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-group-head {
+  display: none !important;
+}
+
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-overview,
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-group,
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-links {
+  display: contents !important;
+}
+
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-group + .app-nav-group {
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-link.layout-contract-rail-link {
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.creators-dashboard-system-page :is(.surface-flow-region, .focus-shell-section, .layout-contract-region) {
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+.creators-dashboard-system-page :is(.surface-flow-region, .focus-shell-section, .layout-contract-region)::before,
+.creators-dashboard-system-page :is(.surface-flow-region, .focus-shell-section, .layout-contract-region)::after {
+  opacity: 0.12;
+}
+
+.creators-dashboard-system-page .creator-workspace-card,
+.creators-dashboard-system-page .creator-active-panel {
+  border-radius: 0 !important;
+  border-left: 0 !important;
+  border-right: 0 !important;
+  background: transparent !important;
+}
+
+.creators-dashboard-system-page :is(.creator-form-zone, .creator-context-zone, .creator-inline-panel, .creator-output-card, .creator-next-step-panel, .creator-estimate-row, .creator-planner-panel, .creator-loading-panel) {
+  border-width: 1px 0 0 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+}
+
+.creators-dashboard-system-page .creator-empty-state {
+  border-width: 1px 0 0 2px !important;
+  border-radius: clamp(0.9rem, 1.6vw, 1.25rem) !important;
+  background:
+    linear-gradient(90deg, rgba(93, 213, 255, 0.075), transparent 58%),
+    transparent !important;
+}
+
+.creators-dashboard-system-page .creator-active-summary-card,
+.creators-dashboard-system-page .creator-active-stage-note {
+  border-width: 1px 0 0 0 !important;
+  border-radius: 0 !important;
+}
+
+.creators-dashboard-system-page .hero-actions-row :is(.btn-ea, .btn-link-ea),
+.creators-dashboard-system-page .creator-active-panel-actions :is(.btn-ea, .btn-link-ea) {
+  border-radius: 999px;
+}
