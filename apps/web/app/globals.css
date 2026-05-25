@@ -35555,3 +35555,599 @@ body:has(.creators-dashboard-system-page) {
     justify-content: center;
   }
 }
+
+/* Creators Step 5: active creation becomes an open premium workspace. */
+.creators-dashboard-system-page .creator-workspace-shell {
+  margin-top: clamp(0.35rem, 1.2vw, 1.1rem);
+  padding-top: clamp(1.25rem, 2.3vw, 2.15rem) !important;
+  border-top-color: rgba(191, 239, 255, 0.13) !important;
+  background:
+    radial-gradient(840px 480px at 18% 18%, rgba(90, 224, 255, 0.055), transparent 74%),
+    radial-gradient(980px 560px at 82% 52%, rgba(43, 132, 236, 0.05), transparent 76%),
+    linear-gradient(90deg, transparent, rgba(112, 226, 255, 0.028), transparent),
+    transparent !important;
+}
+
+.creators-dashboard-system-page .creator-workspace-shell > .focus-shell-head {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  padding-bottom: clamp(0.85rem, 1.5vw, 1.18rem);
+  border-bottom: 1px solid rgba(191, 239, 255, 0.075);
+}
+
+.creators-dashboard-system-page .creator-workspace-shell .section-header-ea {
+  max-width: 47rem;
+}
+
+.creators-dashboard-system-page .creator-workspace-shell .section-header-ea .heading-reset {
+  font-size: clamp(2rem, 3vw, 2.85rem);
+  line-height: 0.98;
+  letter-spacing: -0.046em;
+}
+
+.creators-dashboard-system-page .creator-workspace-shell .focus-shell-preview {
+  max-width: 40rem;
+  margin-bottom: clamp(1rem, 2vw, 1.5rem);
+  color: rgba(211, 239, 255, 0.62);
+}
+
+.creators-dashboard-system-page .creator-workspace-grid {
+  grid-template-columns: minmax(13.75rem, 16.75rem) minmax(0, 1fr) !important;
+  align-items: start;
+  gap: clamp(1.25rem, 2.7vw, 2.6rem);
+}
+
+.creators-dashboard-system-page .creator-workspace-main,
+.creators-dashboard-system-page .creator-workspace-main-stack {
+  min-width: 0;
+}
+
+.creators-dashboard-system-page .creator-workspace-main-stack {
+  gap: clamp(1rem, 2vw, 1.7rem);
+}
+
+.creators-dashboard-system-page .creator-workspace-side {
+  position: sticky !important;
+  top: clamp(1rem, 2vw, 1.7rem) !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: clamp(0.85rem, 1.5vw, 1.15rem) !important;
+  max-height: calc(100dvh - 2.25rem) !important;
+  overflow: auto !important;
+  padding: clamp(0.75rem, 1.5vw, 1.1rem) 0 !important;
+  border-width: 1px 0 !important;
+  border-color: rgba(191, 239, 255, 0.1) !important;
+  border-radius: 0 !important;
+  background:
+    linear-gradient(180deg, rgba(91, 215, 255, 0.038), transparent 58%),
+    transparent !important;
+  box-shadow: none !important;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(130, 232, 255, 0.32) transparent;
+}
+
+.creators-dashboard-system-page .creator-workspace-side::-webkit-scrollbar {
+  width: 6px;
+}
+
+.creators-dashboard-system-page .creator-workspace-side::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(130, 232, 255, 0.28);
+}
+
+.creators-dashboard-system-page .creator-workspace-side > * {
+  min-width: 0;
+}
+
+.creators-dashboard-system-page .creator-workspace-side .creators-side-note {
+  padding: clamp(0.72rem, 1.25vw, 0.98rem) 0 !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(191, 239, 255, 0.062) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+.creators-dashboard-system-page .creator-workspace-side .creators-side-note strong,
+.creators-dashboard-system-page .creator-workspace-side .creator-group-title {
+  color: rgba(238, 250, 255, 0.88);
+  letter-spacing: -0.012em;
+}
+
+.creators-dashboard-system-page .creator-workspace-side .creators-side-note span,
+.creators-dashboard-system-page .creator-workspace-side .creator-group-subtitle {
+  color: rgba(211, 239, 255, 0.61);
+  line-height: 1.48;
+}
+
+.creators-dashboard-system-page .creator-workspace-side .creators-sidebar-nav {
+  display: grid;
+  gap: clamp(0.95rem, 1.6vw, 1.25rem);
+  min-width: 0;
+}
+
+.creators-dashboard-system-page .creator-workspace-side .creators-sidebar-group {
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.creators-dashboard-system-page .creator-workspace-side .creators-sidebar-group + .creators-sidebar-group {
+  margin-top: 0;
+  padding-top: clamp(0.85rem, 1.4vw, 1rem) !important;
+  border-top: 1px solid rgba(191, 239, 255, 0.075) !important;
+}
+
+.creators-dashboard-system-page .creator-workspace-side .creators-sidebar-group-list {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  border-top: 1px solid rgba(191, 239, 255, 0.058);
+}
+
+.creators-dashboard-system-page .creator-workspace-side .creator-tab-btn {
+  position: relative;
+  min-width: 0;
+  padding: clamp(0.72rem, 1.28vw, 1rem) 0.2rem clamp(0.75rem, 1.34vw, 1.05rem) 0.85rem !important;
+  border: 0 !important;
+  border-top: 1px solid rgba(191, 239, 255, 0.055) !important;
+  border-left: 2px solid transparent !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: rgba(232, 248, 255, 0.76);
+}
+
+.creators-dashboard-system-page .creator-workspace-side .creator-tab-btn:first-child {
+  border-top-color: transparent !important;
+}
+
+.creators-dashboard-system-page .creator-workspace-side .creator-tab-btn:hover,
+.creators-dashboard-system-page .creator-workspace-side .creator-tab-btn:focus-visible {
+  border-left-color: rgba(99, 231, 255, 0.38) !important;
+  background:
+    linear-gradient(90deg, rgba(91, 215, 255, 0.07), transparent 72%),
+    transparent !important;
+  color: rgba(248, 253, 255, 0.96);
+}
+
+.creators-dashboard-system-page .creator-workspace-side .creator-tab-btn[data-active="true"] {
+  border-left-color: rgba(99, 231, 255, 0.86) !important;
+  background:
+    linear-gradient(90deg, rgba(91, 215, 255, 0.11), rgba(255, 255, 255, 0.012) 68%, transparent),
+    transparent !important;
+  box-shadow: inset 0 1px 0 rgba(191, 239, 255, 0.08) !important;
+}
+
+.creators-dashboard-system-page .creator-workspace-side .creator-tab-head {
+  gap: 0.55rem;
+}
+
+.creators-dashboard-system-page .creator-workspace-side .creator-tab-title {
+  color: rgba(244, 252, 255, 0.9);
+  letter-spacing: -0.01em;
+}
+
+.creators-dashboard-system-page .creator-workspace-side .creator-tab-chip {
+  border-color: rgba(191, 239, 255, 0.13);
+  background: rgba(91, 215, 255, 0.045);
+  color: rgba(209, 241, 255, 0.72);
+}
+
+.creators-dashboard-system-page .creator-workspace-side :is(.creator-tab-meta, .creator-tab-support) {
+  color: rgba(211, 239, 255, 0.6);
+  line-height: 1.42;
+  -webkit-line-clamp: 2;
+}
+
+.creators-dashboard-system-page .creator-workspace-side .creators-sidebar-stack {
+  display: grid;
+  gap: 0;
+  border-top: 1px solid rgba(191, 239, 255, 0.07);
+}
+
+.creators-dashboard-system-page .creator-workspace-side .creators-wallet-stack {
+  margin-top: clamp(0.65rem, 1.15vw, 0.9rem);
+  border-top: 1px solid rgba(191, 239, 255, 0.058);
+}
+
+.creators-dashboard-system-page .creator-workspace-side .creators-wallet-row {
+  padding: 0.52rem 0;
+  border-bottom: 1px solid rgba(191, 239, 255, 0.04);
+}
+
+.creators-dashboard-system-page .creator-workspace-side .creators-wallet-row span {
+  color: rgba(211, 239, 255, 0.62);
+}
+
+.creators-dashboard-system-page .creator-workspace-side .creators-wallet-row strong {
+  color: rgba(245, 253, 255, 0.9);
+}
+
+.creators-dashboard-system-page .creator-active-panel,
+.creators-dashboard-system-page .creator-workspace-card {
+  padding: clamp(1.05rem, 2vw, 1.7rem) !important;
+  border-width: 1px 0 0 1px !important;
+  border-color: rgba(191, 239, 255, 0.115) !important;
+  border-radius: clamp(1.05rem, 1.8vw, 1.55rem) !important;
+  background:
+    linear-gradient(135deg, rgba(91, 215, 255, 0.055), rgba(255, 255, 255, 0.012) 46%, transparent),
+    rgba(4, 28, 72, 0.03) !important;
+  box-shadow: none !important;
+}
+
+.creators-dashboard-system-page .creator-active-panel {
+  display: grid;
+  gap: clamp(0.95rem, 1.75vw, 1.35rem);
+}
+
+.creators-dashboard-system-page .creator-active-panel-head,
+.creators-dashboard-system-page .creator-workspace-card-modular .creator-workspace-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: clamp(0.85rem, 1.7vw, 1.3rem);
+  padding-bottom: clamp(0.85rem, 1.55vw, 1.15rem);
+  border-bottom: 1px solid rgba(191, 239, 255, 0.075) !important;
+}
+
+.creators-dashboard-system-page .creator-active-panel-title,
+.creators-dashboard-system-page .creator-workspace-card h3 {
+  font-size: clamp(1.7rem, 2.35vw, 2.35rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.creators-dashboard-system-page .creator-active-panel-copy,
+.creators-dashboard-system-page .creator-workspace-subtitle {
+  max-width: 42rem;
+  color: rgba(211, 239, 255, 0.66);
+}
+
+.creators-dashboard-system-page .creator-active-panel-meta {
+  justify-content: flex-end;
+  gap: 0.45rem;
+}
+
+.creators-dashboard-system-page .creator-active-summary-grid,
+.creators-dashboard-system-page .creator-planner-field-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  border-top: 1px solid rgba(191, 239, 255, 0.07);
+}
+
+.creators-dashboard-system-page .creator-planner-field-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.creators-dashboard-system-page .creator-active-summary-card,
+.creators-dashboard-system-page .creator-active-stage-note,
+.creators-dashboard-system-page .creator-planner-field {
+  padding: clamp(0.8rem, 1.35vw, 1.05rem) clamp(0.75rem, 1.35vw, 1rem) !important;
+  border: 0 !important;
+  border-left: 1px solid rgba(191, 239, 255, 0.06) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+.creators-dashboard-system-page .creator-active-summary-card:first-child,
+.creators-dashboard-system-page .creator-planner-field:first-child {
+  border-left-color: transparent !important;
+}
+
+.creators-dashboard-system-page .creator-active-summary-card span,
+.creators-dashboard-system-page .creator-planner-field span,
+.creators-dashboard-system-page .creator-section-label {
+  color: rgba(173, 235, 255, 0.62);
+  letter-spacing: 0.105em;
+}
+
+.creators-dashboard-system-page .creator-active-summary-card strong,
+.creators-dashboard-system-page .creator-active-stage-note strong,
+.creators-dashboard-system-page .creator-planner-field strong {
+  color: rgba(241, 252, 255, 0.9);
+  line-height: 1.38;
+}
+
+.creators-dashboard-system-page .creator-active-stage-note {
+  border-left: 0 !important;
+  border-top: 1px solid rgba(191, 239, 255, 0.07) !important;
+}
+
+.creators-dashboard-system-page .creator-active-panel-actions {
+  display: flex !important;
+  flex-wrap: wrap;
+  align-items: center;
+  padding-top: clamp(0.1rem, 0.5vw, 0.35rem);
+}
+
+.creators-dashboard-system-page .creator-active-panel-actions :is(.btn-ea, .btn-link-ea) {
+  flex: 0 0 auto !important;
+  width: auto;
+  min-width: min(100%, 10.5rem);
+}
+
+.creators-dashboard-system-page .creator-active-panel-actions :is(.btn-ea, .btn-link-ea),
+.creators-dashboard-system-page .creator-actions-row :is(.btn-ea, .btn-link-ea),
+.creators-dashboard-system-page .creator-output-card-actions :is(.btn-ea, .btn-link-ea),
+.creators-dashboard-system-page .creator-inline-actions :is(.btn-ea, .btn-link-ea),
+.creators-dashboard-system-page .creator-empty-state :is(.btn-ea, .btn-link-ea) {
+  border-radius: 999px;
+  box-shadow: none !important;
+}
+
+.creators-dashboard-system-page .creator-workspace-zones {
+  gap: clamp(0.95rem, 1.9vw, 1.45rem);
+}
+
+.creators-dashboard-system-page :is(
+  .creator-form-zone,
+  .creator-context-zone,
+  .creator-inline-panel,
+  .creator-output-card,
+  .creator-next-step-panel,
+  .creator-estimate-row,
+  .creator-planner-panel,
+  .creator-loading-panel
+) {
+  padding: clamp(0.95rem, 1.75vw, 1.35rem) !important;
+  border-width: 1px 0 0 0 !important;
+  border-color: rgba(191, 239, 255, 0.09) !important;
+  border-radius: 0 !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.014), rgba(255, 255, 255, 0.004)),
+    transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
+.creators-dashboard-system-page .creator-form-zone:first-of-type {
+  border-top-color: rgba(191, 239, 255, 0.11) !important;
+}
+
+.creators-dashboard-system-page .creator-zone-title,
+.creators-dashboard-system-page .creator-inline-panel-header strong,
+.creators-dashboard-system-page .creator-output-card-title {
+  color: rgba(244, 252, 255, 0.92);
+  font-weight: 800;
+  letter-spacing: -0.012em;
+}
+
+.creators-dashboard-system-page .creator-zone-copy,
+.creators-dashboard-system-page .creator-inline-panel-header p,
+.creators-dashboard-system-page .creator-output-card-meta,
+.creators-dashboard-system-page .creator-empty-copy,
+.creators-dashboard-system-page .helper-note-inline,
+.creators-dashboard-system-page .helper-note-subtle {
+  color: rgba(211, 239, 255, 0.64);
+  line-height: 1.52;
+}
+
+.creators-dashboard-system-page .creator-field-grid,
+.creators-dashboard-system-page .creator-form-grid,
+.creators-dashboard-system-page .creator-context-grid {
+  gap: clamp(0.78rem, 1.45vw, 1.12rem);
+}
+
+.creators-dashboard-system-page .field-label-ea {
+  gap: 0.42rem;
+}
+
+.creators-dashboard-system-page .field-label-ea > span {
+  color: rgba(200, 238, 255, 0.74);
+  letter-spacing: 0.05em;
+}
+
+.creators-dashboard-system-page .creator-workspace-shell :is(.field-ea, .ea-select-trigger, textarea.field-ea, select.field-ea) {
+  min-height: 2.78rem;
+  border-color: rgba(191, 239, 255, 0.16) !important;
+  border-radius: 0.88rem !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.034), rgba(255, 255, 255, 0.008)),
+    rgba(2, 20, 54, 0.18) !important;
+  color: rgba(246, 253, 255, 0.94);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035) !important;
+}
+
+.creators-dashboard-system-page .creator-workspace-shell :is(.field-ea, .ea-select-trigger, textarea.field-ea, select.field-ea):hover {
+  border-color: rgba(191, 239, 255, 0.28) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.012)),
+    rgba(3, 28, 72, 0.2) !important;
+}
+
+.creators-dashboard-system-page .creator-workspace-shell :is(.field-ea, .ea-select-trigger, textarea.field-ea, select.field-ea):focus,
+.creators-dashboard-system-page .creator-workspace-shell .ea-select-trigger[data-open="true"] {
+  border-color: rgba(105, 231, 255, 0.5) !important;
+  box-shadow:
+    0 0 0 3px rgba(89, 217, 255, 0.11),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+  outline: none;
+}
+
+.creators-dashboard-system-page .creator-workspace-shell textarea.field-ea,
+.creators-dashboard-system-page .creator-prompt-textarea {
+  min-height: clamp(7.5rem, 14vw, 10rem);
+  line-height: 1.55;
+}
+
+.creators-dashboard-system-page .creator-toggle-stack {
+  gap: 0.52rem;
+}
+
+.creators-dashboard-system-page .toggle-row {
+  padding: clamp(0.78rem, 1.25vw, 0.98rem) clamp(0.85rem, 1.35vw, 1rem) !important;
+  border-color: rgba(191, 239, 255, 0.105) !important;
+  border-radius: 0.95rem !important;
+  background:
+    linear-gradient(90deg, rgba(91, 215, 255, 0.035), transparent 68%),
+    transparent !important;
+}
+
+.creators-dashboard-system-page .toggle-row[data-active="true"] {
+  border-color: rgba(105, 231, 255, 0.34) !important;
+  background:
+    linear-gradient(90deg, rgba(91, 215, 255, 0.08), rgba(255, 255, 255, 0.008) 70%),
+    transparent !important;
+}
+
+.creators-dashboard-system-page .creator-estimate-row {
+  justify-content: space-between;
+  border-top-color: rgba(191, 239, 255, 0.12) !important;
+}
+
+.creators-dashboard-system-page .creator-inline-panel,
+.creators-dashboard-system-page .creator-output-card {
+  display: grid;
+  gap: clamp(0.75rem, 1.3vw, 1rem);
+}
+
+.creators-dashboard-system-page .creator-output-card-list-item {
+  border-color: rgba(191, 239, 255, 0.08) !important;
+  background: rgba(255, 255, 255, 0.012) !important;
+}
+
+.creators-dashboard-system-page .creator-empty-state {
+  padding: clamp(1rem, 2vw, 1.55rem) !important;
+  border-width: 1px 0 0 2px !important;
+  border-color: rgba(191, 239, 255, 0.1) !important;
+  border-left-color: rgba(99, 231, 255, 0.5) !important;
+  border-radius: clamp(1rem, 1.65vw, 1.35rem) !important;
+  background:
+    radial-gradient(620px 240px at 0% 0%, rgba(91, 215, 255, 0.095), transparent 72%),
+    linear-gradient(90deg, rgba(91, 215, 255, 0.055), transparent 62%),
+    transparent !important;
+  box-shadow: none !important;
+}
+
+.creators-dashboard-system-page .creator-empty-state .state-ea-badge,
+.creators-dashboard-system-page .creator-empty-state [class*="badge"] {
+  border-color: rgba(191, 239, 255, 0.14);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+@media (max-width: 1240px) {
+  .creators-dashboard-system-page .creator-workspace-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .creators-dashboard-system-page .creator-workspace-side {
+    position: relative !important;
+    top: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .creators-dashboard-system-page .creator-workspace-side .creators-sidebar-nav {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .creators-dashboard-system-page .creator-workspace-side .creators-sidebar-stack {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+  }
+
+  .creators-dashboard-system-page .creator-workspace-side .creators-side-note {
+    padding-inline: clamp(0.75rem, 1.35vw, 1rem) !important;
+    border-bottom: 0 !important;
+    border-left: 1px solid rgba(191, 239, 255, 0.055) !important;
+  }
+
+  .creators-dashboard-system-page .creator-workspace-side .creators-side-note:first-child {
+    border-left-color: transparent !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .creators-dashboard-system-page .creator-workspace-shell > .focus-shell-head,
+  .creators-dashboard-system-page .creator-active-panel-head,
+  .creators-dashboard-system-page .creator-workspace-card-modular .creator-workspace-header {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .creators-dashboard-system-page .creator-active-panel-meta {
+    justify-content: flex-start;
+  }
+
+  .creators-dashboard-system-page .creator-active-summary-grid,
+  .creators-dashboard-system-page .creator-planner-field-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .creators-dashboard-system-page .creator-active-summary-card,
+  .creators-dashboard-system-page .creator-planner-field {
+    border-left: 0 !important;
+    border-top: 1px solid rgba(191, 239, 255, 0.06) !important;
+  }
+
+  .creators-dashboard-system-page .creator-active-summary-card:first-child,
+  .creators-dashboard-system-page .creator-planner-field:first-child {
+    border-top-color: transparent !important;
+  }
+
+  .creators-dashboard-system-page .creator-workspace-side .creators-sidebar-stack {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .creators-dashboard-system-page .creator-workspace-side .creators-side-note {
+    padding-inline: 0 !important;
+    border-left: 0 !important;
+    border-bottom: 1px solid rgba(191, 239, 255, 0.055) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .creators-dashboard-system-page .creator-workspace-shell {
+    padding-top: 1.15rem !important;
+  }
+
+  .creators-dashboard-system-page .creator-workspace-shell .section-header-ea .heading-reset {
+    font-size: clamp(1.8rem, 9vw, 2.35rem);
+  }
+
+  .creators-dashboard-system-page .creator-workspace-side {
+    padding-block: 0.35rem !important;
+  }
+
+  .creators-dashboard-system-page .creator-workspace-side .creator-tab-btn {
+    padding-inline: 0.72rem !important;
+  }
+
+  .creators-dashboard-system-page .creator-active-panel,
+  .creators-dashboard-system-page .creator-workspace-card {
+    padding: 1rem !important;
+    border-left: 0 !important;
+    border-radius: 1.2rem !important;
+  }
+
+  .creators-dashboard-system-page :is(
+    .creator-form-zone,
+    .creator-context-zone,
+    .creator-inline-panel,
+    .creator-output-card,
+    .creator-next-step-panel,
+    .creator-estimate-row,
+    .creator-planner-panel,
+    .creator-loading-panel
+  ) {
+    padding: 0.95rem 0 !important;
+  }
+
+  .creators-dashboard-system-page .creator-actions-row,
+  .creators-dashboard-system-page .creator-action-buttons,
+  .creators-dashboard-system-page .creator-inline-actions,
+  .creators-dashboard-system-page .creator-output-card-actions,
+  .creators-dashboard-system-page .creator-empty-state .state-ea-actions {
+    width: 100%;
+    align-items: stretch;
+  }
+
+  .creators-dashboard-system-page .creator-actions-row :is(.btn-ea, .btn-link-ea),
+  .creators-dashboard-system-page .creator-action-buttons :is(.btn-ea, .btn-link-ea),
+  .creators-dashboard-system-page .creator-inline-actions :is(.btn-ea, .btn-link-ea),
+  .creators-dashboard-system-page .creator-output-card-actions :is(.btn-ea, .btn-link-ea),
+  .creators-dashboard-system-page .creator-empty-state :is(.btn-ea, .btn-link-ea) {
+    width: 100%;
+    justify-content: center;
+  }
+}
