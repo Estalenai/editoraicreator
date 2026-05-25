@@ -34538,7 +34538,7 @@ body:has(.creators-dashboard-system-page) {
 }
 
 .creators-dashboard-system-page .creators-secondary-stream {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .creators-dashboard-system-page :is(
@@ -35360,6 +35360,11 @@ body:has(.creators-dashboard-system-page) {
   border-top: 1px solid rgba(191, 239, 255, 0.06) !important;
   border-radius: 0 !important;
   background: transparent !important;
+}
+
+.creators-dashboard-system-page .proof-value-block .proof-value-label {
+  display: block;
+  margin-bottom: 0.38rem;
 }
 
 .creators-dashboard-system-page .proof-value-block:first-child {
