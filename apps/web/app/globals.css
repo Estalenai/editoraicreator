@@ -34541,6 +34541,15 @@ body:has(.creators-dashboard-system-page) {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
+.creators-dashboard-system-page :is(
+  .creators-proof-stream,
+  .creators-format-stream,
+  .creators-secondary-stream
+) > * {
+  grid-column: auto !important;
+  min-height: 0 !important;
+}
+
 .creators-dashboard-system-page .creators-open-module,
 .creators-dashboard-system-page :is(.proof-value-card, .creators-hero-core-card, .creators-secondary-card) {
   min-width: 0;
@@ -35372,6 +35381,29 @@ body:has(.creators-dashboard-system-page) {
   padding-top: clamp(0.55rem, 1vw, 0.75rem);
   border-top: 1px solid rgba(191, 239, 255, 0.04);
   color: rgba(211, 239, 255, 0.58);
+}
+
+.creators-dashboard-system-page .creators-hero-core-header > .section-stack-tight {
+  grid-row: 1 / span 2;
+}
+
+.creators-dashboard-system-page .creators-hero-core-header-note {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+}
+
+.creators-dashboard-system-page .creators-hero-core-header > .focus-shell-toggle {
+  grid-column: 2;
+  grid-row: 2;
+  justify-self: end;
+  width: auto;
+}
+
+.creators-dashboard-system-page .creators-secondary-header > .focus-shell-toggle,
+.creators-dashboard-system-page .creators-proof-section .proof-value-header > .btn-link-ea {
+  justify-self: end;
+  width: auto;
 }
 
 .creators-dashboard-system-page .creators-hero-core-card {
