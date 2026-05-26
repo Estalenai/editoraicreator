@@ -36188,7 +36188,7 @@ body:has(.creators-dashboard-system-page) {
 .creators-dashboard-system-page {
   width: min(100%, 82rem);
   max-width: min(100%, 82rem);
-  gap: clamp(1.75rem, 3.6vw, 4.5rem) !important;
+  gap: clamp(1.45rem, 3.1vw, 3.75rem) !important;
   isolation: isolate;
 }
 
@@ -36223,7 +36223,7 @@ body:has(.creators-dashboard-system-page) {
   .creator-workspace-shell
 ) {
   background: transparent !important;
-  border-top-color: rgba(191, 239, 255, 0.085) !important;
+  border-top-color: rgba(191, 239, 255, 0.04) !important;
   box-shadow: none !important;
 }
 
@@ -36253,12 +36253,12 @@ body:has(.creators-dashboard-system-page) {
 }
 
 .creators-dashboard-system-page .creators-core-canvas {
-  gap: clamp(1.35rem, 3vw, 3.4rem) !important;
+  gap: clamp(1.05rem, 2.45vw, 2.85rem) !important;
 }
 
 .creators-dashboard-system-page .creators-flow-section,
 .creators-dashboard-system-page .creator-workspace-shell {
-  padding-top: clamp(0.95rem, 2vw, 1.75rem) !important;
+  padding-top: clamp(0.72rem, 1.65vw, 1.35rem) !important;
 }
 
 .creators-dashboard-system-page .creators-flow-section::before,
@@ -36272,11 +36272,45 @@ body:has(.creators-dashboard-system-page) {
   .creators-secondary-stream
 ) {
   background: transparent !important;
+  border-top-color: rgba(191, 239, 255, 0.04) !important;
+  border-bottom-color: rgba(191, 239, 255, 0.022) !important;
   box-shadow: none !important;
 }
 
+.creators-dashboard-system-page :is(
+  .creators-proof-section,
+  .creators-hero-core-section,
+  .creators-secondary-section
+) .heading-reset {
+  max-width: 15ch;
+  font-size: clamp(1.85rem, 3.45vw, 3.25rem);
+  line-height: 0.98;
+  letter-spacing: -0.05em;
+}
+
+.creators-dashboard-system-page :is(.proof-value-card, .creators-hero-core-card, .creators-secondary-card) {
+  border-left-color: rgba(191, 239, 255, 0.035) !important;
+  padding: clamp(0.78rem, 1.28vw, 1.08rem) clamp(0.38rem, 1vw, 0.82rem) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.002)),
+    transparent !important;
+}
+
+.creators-dashboard-system-page :is(.proof-value-block, .creators-hero-core-point, .creators-secondary-card-copy) {
+  border-color: rgba(191, 239, 255, 0.035) !important;
+  background: rgba(255, 255, 255, 0.006) !important;
+}
+
+.creators-dashboard-system-page :is(.proof-value-card, .creators-hero-core-card, .creators-secondary-card) :is(p, span, small) {
+  text-wrap: pretty;
+}
+
+.creators-dashboard-system-page :is(.creators-format-stream, .creators-secondary-stream) :is(.creators-open-module, .creators-hero-core-card, .creators-secondary-card) {
+  min-width: 0;
+}
+
 .creators-dashboard-system-page .creators-hero-open {
-  padding-block: clamp(1.1rem, 2.15vw, 2.25rem) clamp(1.45rem, 3vw, 3.4rem) !important;
+  padding-block: clamp(0.9rem, 1.8vw, 1.85rem) clamp(1.1rem, 2.45vw, 2.7rem) !important;
 }
 
 .creators-dashboard-system-page .creators-hero-shell {
@@ -36286,10 +36320,10 @@ body:has(.creators-dashboard-system-page) {
 }
 
 .creators-dashboard-system-page .creators-hero-copy h1 {
-  max-width: 10ch;
-  font-size: clamp(3.2rem, 5.45vw, 5.45rem) !important;
-  line-height: 0.94 !important;
-  letter-spacing: -0.058em !important;
+  max-width: 11.6ch;
+  font-size: clamp(2.65rem, 4.35vw, 4.25rem) !important;
+  line-height: 1 !important;
+  letter-spacing: -0.046em !important;
 }
 
 .creators-dashboard-system-page .creators-hero-lead {
@@ -36297,10 +36331,13 @@ body:has(.creators-dashboard-system-page) {
 }
 
 .creators-dashboard-system-page .creators-entry-surface {
-  max-width: 27.5rem;
+  max-width: 26.5rem;
+  padding: clamp(1.05rem, 1.9vw, 1.7rem) !important;
+  border-color: rgba(191, 239, 255, 0.075) !important;
   background:
-    linear-gradient(135deg, rgba(91, 215, 255, 0.075), rgba(255, 255, 255, 0.01) 52%, transparent),
+    linear-gradient(135deg, rgba(91, 215, 255, 0.034), rgba(255, 255, 255, 0.004) 52%, transparent),
     transparent !important;
+  box-shadow: none !important;
 }
 
 .creators-dashboard-system-page .creators-hero-thread {
@@ -36326,14 +36363,14 @@ body:has(.creators-dashboard-system-page) {
   top: auto !important;
   display: grid !important;
   grid-template-columns: minmax(12rem, 0.22fr) minmax(0, 1fr) minmax(13rem, 0.24fr);
-  gap: clamp(0.9rem, 1.8vw, 1.45rem) !important;
+  gap: clamp(0.72rem, 1.45vw, 1.15rem) !important;
   max-height: none !important;
   overflow: visible !important;
   padding: clamp(0.65rem, 1.25vw, 0.95rem) 0 !important;
   border-width: 1px 0 !important;
-  border-color: rgba(191, 239, 255, 0.07) !important;
+  border-color: rgba(191, 239, 255, 0.045) !important;
   background:
-    linear-gradient(180deg, rgba(91, 215, 255, 0.026), transparent 54%),
+    linear-gradient(180deg, rgba(91, 215, 255, 0.014), transparent 54%),
     transparent !important;
   box-shadow: none !important;
   scrollbar-gutter: stable;
@@ -36355,8 +36392,8 @@ body:has(.creators-dashboard-system-page) {
 }
 
 .creators-dashboard-system-page .creator-workspace-side .creators-side-note {
-  padding-block: clamp(0.62rem, 1.1vw, 0.86rem) !important;
-  padding-inline: clamp(0.7rem, 1.25vw, 1rem) !important;
+  padding-block: clamp(0.5rem, 0.95vw, 0.72rem) !important;
+  padding-inline: clamp(0.58rem, 1vw, 0.82rem) !important;
   border-bottom: 0 !important;
   border-left: 1px solid rgba(191, 239, 255, 0.055) !important;
 }
@@ -36366,11 +36403,13 @@ body:has(.creators-dashboard-system-page) {
 }
 
 .creators-dashboard-system-page .creator-workspace-side .creator-tab-btn {
-  padding: clamp(0.62rem, 1.08vw, 0.86rem) 0.15rem clamp(0.65rem, 1.1vw, 0.9rem) 0.72rem !important;
+  padding: clamp(0.5rem, 0.92vw, 0.74rem) 0.1rem clamp(0.54rem, 0.95vw, 0.78rem) 0.62rem !important;
+  border-top-color: rgba(191, 239, 255, 0.04) !important;
 }
 
 .creators-dashboard-system-page .creator-workspace-side :is(.creator-tab-meta, .creator-tab-support) {
   line-height: 1.35;
+  color: rgba(211, 239, 255, 0.52);
 }
 
 .creators-dashboard-system-page .creator-workspace-main-stack {
@@ -36380,8 +36419,10 @@ body:has(.creators-dashboard-system-page) {
 .creators-dashboard-system-page .creator-active-panel,
 .creators-dashboard-system-page .creator-workspace-card {
   background:
-    linear-gradient(135deg, rgba(91, 215, 255, 0.042), rgba(255, 255, 255, 0.008) 46%, transparent),
-    rgba(4, 26, 68, 0.022) !important;
+    linear-gradient(135deg, rgba(91, 215, 255, 0.03), rgba(255, 255, 255, 0.005) 46%, transparent),
+    rgba(4, 26, 68, 0.012) !important;
+  border-color: rgba(191, 239, 255, 0.065) !important;
+  box-shadow: none !important;
 }
 
 .creators-dashboard-system-page :is(
@@ -36395,19 +36436,40 @@ body:has(.creators-dashboard-system-page) {
   .creator-loading-panel
 ) {
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.01), transparent),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.006), transparent),
     transparent !important;
+  border-color: rgba(191, 239, 255, 0.055) !important;
 }
 
 .creators-dashboard-system-page .creator-workspace-shell :is(.field-ea, .ea-select-trigger, textarea.field-ea, select.field-ea) {
   min-width: 0;
-  min-height: 2.92rem;
-  padding-inline: clamp(0.88rem, 1.35vw, 1.08rem);
+  min-height: 2.72rem;
+  padding-inline: clamp(0.78rem, 1.2vw, 0.98rem);
+  border-color: rgba(191, 239, 255, 0.13) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.006)),
+    rgba(2, 20, 54, 0.135) !important;
 }
 
 .creators-dashboard-system-page .creator-workspace-shell textarea.field-ea,
 .creators-dashboard-system-page .creator-prompt-textarea {
-  min-height: clamp(8rem, 13vw, 10.5rem);
+  min-height: clamp(7rem, 11vw, 9.25rem);
+}
+
+.creators-dashboard-system-page .creator-workspace-shell :is(.field-ea, .ea-select-trigger, textarea.field-ea, select.field-ea):focus,
+.creators-dashboard-system-page .creator-workspace-shell :is(.field-ea, .ea-select-trigger, textarea.field-ea, select.field-ea):focus-visible {
+  border-color: rgba(107, 225, 255, 0.42) !important;
+  box-shadow: 0 0 0 1px rgba(107, 225, 255, 0.12), 0 16px 36px rgba(4, 20, 50, 0.18) !important;
+}
+
+.creators-dashboard-system-page .creator-empty-state {
+  background:
+    radial-gradient(520px 180px at 0% 0%, rgba(91, 215, 255, 0.055), transparent 74%),
+    linear-gradient(90deg, rgba(91, 215, 255, 0.024), transparent 62%),
+    transparent !important;
+  border-color: rgba(191, 239, 255, 0.058) !important;
+  border-left-color: rgba(99, 231, 255, 0.32) !important;
+  box-shadow: none !important;
 }
 
 .creators-dashboard-system-page .creator-field-grid,
@@ -36428,8 +36490,8 @@ body:has(.creators-dashboard-system-page) {
   }
 
   .creators-dashboard-system-page .creators-hero-copy h1 {
-    font-size: clamp(3rem, 6.4vw, 4.75rem) !important;
-    max-width: 10.5ch;
+    font-size: clamp(2.55rem, 5.25vw, 3.9rem) !important;
+    max-width: 11.4ch;
   }
 
   .creators-dashboard-system-page .creator-workspace-side {
@@ -36461,6 +36523,10 @@ body:has(.creators-dashboard-system-page) {
 }
 
 @media (max-width: 1040px) {
+  .creators-dashboard-system-page {
+    gap: clamp(1.25rem, 3.7vw, 3rem) !important;
+  }
+
   .creators-dashboard-system-page .creators-hero-shell {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -36502,9 +36568,18 @@ body:has(.creators-dashboard-system-page) {
   }
 
   .creators-dashboard-system-page .creators-hero-copy h1 {
-    font-size: clamp(2.7rem, 10.4vw, 4.2rem) !important;
-    line-height: 0.94 !important;
-    letter-spacing: -0.056em !important;
+    font-size: clamp(2.18rem, 8.4vw, 3.28rem) !important;
+    line-height: 1 !important;
+    letter-spacing: -0.044em !important;
+  }
+
+  .creators-dashboard-system-page :is(
+    .creators-proof-section,
+    .creators-hero-core-section,
+    .creators-secondary-section
+  ) .heading-reset {
+    max-width: 16ch;
+    font-size: clamp(1.65rem, 7vw, 2.65rem);
   }
 
   .creators-dashboard-system-page .creators-hero-thread {
@@ -36534,17 +36609,26 @@ body:has(.creators-dashboard-system-page) {
 
 @media (max-width: 640px) {
   .app-shell-frame:has(.creators-dashboard-system-page) .app-shell-main {
-    overflow: hidden;
+    overflow-x: clip;
+    overflow-y: visible;
   }
 
   .creators-dashboard-system-page {
-    width: min(100%, calc(100vw - 1.35rem));
-    gap: clamp(1.05rem, 5.2vw, 2rem) !important;
+    width: min(100%, calc(100vw - 1rem));
+    gap: clamp(0.92rem, 4.7vw, 1.75rem) !important;
+  }
+
+  .creators-dashboard-system-page :is(
+    .creators-proof-section,
+    .creators-hero-core-section,
+    .creators-secondary-section
+  ) .heading-reset {
+    font-size: clamp(1.42rem, 7.2vw, 2.15rem);
   }
 
   .creators-dashboard-system-page .creators-hero-copy h1 {
-    max-width: 9.5ch;
-    font-size: clamp(2.45rem, 12vw, 3.35rem) !important;
+    max-width: 11ch;
+    font-size: clamp(1.86rem, 9.2vw, 2.48rem) !important;
   }
 
   .creators-dashboard-system-page .creators-entry-actions,
@@ -36559,11 +36643,17 @@ body:has(.creators-dashboard-system-page) {
 
   .creators-dashboard-system-page .creators-flow-section,
   .creators-dashboard-system-page .creator-workspace-shell {
-    padding-top: 0.95rem !important;
+    padding-top: 0.74rem !important;
   }
 
   .creators-dashboard-system-page .creator-workspace-side {
     padding-block: 0.2rem !important;
+  }
+
+  .creators-dashboard-system-page :is(.proof-value-card, .creators-hero-core-card, .creators-secondary-card),
+  .creators-dashboard-system-page :is(.creator-active-panel, .creator-workspace-card),
+  .creators-dashboard-system-page :is(.creator-form-zone, .creator-context-zone, .creator-output-card, .creator-empty-state) {
+    padding: 0.82rem !important;
   }
 
   .creators-dashboard-system-page .creator-workspace-shell textarea.field-ea,
