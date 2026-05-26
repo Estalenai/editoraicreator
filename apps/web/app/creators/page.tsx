@@ -363,24 +363,6 @@ function CreatorsPageContent() {
               <span className="premium-badge premium-badge-phase">Plano: {planLabelDisplay}</span>
               <span className="premium-badge premium-badge-soon">Formatos principais no centro</span>
             </div>
-
-            <div className="hero-kpi-grid creators-hero-metrics creators-hero-metrics-compact creators-hero-thread" aria-label="Resumo do fluxo de criação">
-              <div className="creators-hero-metric-card creators-hero-signal">
-                <span className="hero-kpi-label">Formato selecionado</span>
-                <strong className="hero-kpi-value">{activeTabMeta.label}</strong>
-                <span className="hero-kpi-text">{activeTabMeta.bestFor}</span>
-              </div>
-              <div className="creators-hero-metric-card creators-hero-signal">
-                <span className="hero-kpi-label">Saldo disponível</span>
-                <strong className="hero-kpi-value">{walletSummaryDisplay}</strong>
-                <span className="hero-kpi-text">{loading ? "Saldo e plano em sincronização." : `Estimativa antes da geração. Consumo real em ${CREATOR_COINS_PUBLIC_NAME}.`}</span>
-              </div>
-              <div className="creators-hero-metric-card creators-hero-signal">
-                <span className="hero-kpi-label">Próximo passo</span>
-                <strong className="hero-kpi-value">Criar → revisar → salvar</strong>
-                <span className="hero-kpi-text">Projeto e editor continuam com o mesmo contexto.</span>
-              </div>
-            </div>
           </div>
 
           <div className="creators-hero-panel creators-hero-panel-quiet creators-entry-command creators-entry-surface creators-entry-field">
@@ -446,6 +428,24 @@ function CreatorsPageContent() {
               <button onClick={onLogout} className="btn-ea btn-ghost btn-sm">
                 Sair
               </button>
+            </div>
+          </div>
+
+          <div className="hero-kpi-grid creators-hero-metrics creators-hero-metrics-compact creators-hero-thread" aria-label="Resumo do fluxo de criação">
+            <div className="creators-hero-metric-card creators-hero-signal">
+              <span className="hero-kpi-label">Formato selecionado</span>
+              <strong className="hero-kpi-value">{activeTabMeta.label}</strong>
+              <span className="hero-kpi-text">{activeTabMeta.bestFor}</span>
+            </div>
+            <div className="creators-hero-metric-card creators-hero-signal">
+              <span className="hero-kpi-label">Saldo disponível</span>
+              <strong className="hero-kpi-value">{walletSummaryDisplay}</strong>
+              <span className="hero-kpi-text">{loading ? "Saldo e plano em sincronização." : `Estimativa antes da geração. Consumo real em ${CREATOR_COINS_PUBLIC_NAME}.`}</span>
+            </div>
+            <div className="creators-hero-metric-card creators-hero-signal">
+              <span className="hero-kpi-label">Próximo passo</span>
+              <strong className="hero-kpi-value">Criar → revisar → salvar</strong>
+              <span className="hero-kpi-text">Projeto e editor continuam com o mesmo contexto.</span>
             </div>
           </div>
         </div>

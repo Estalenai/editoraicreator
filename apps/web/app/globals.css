@@ -37373,7 +37373,7 @@ body:has(.creators-dashboard-system-page),
 }
 
 .creators-dashboard-system-page .creators-hero-open {
-  padding-block: clamp(0.55rem, 1.1vw, 1rem) clamp(0.8rem, 1.95vw, 1.85rem) !important;
+  padding-block: clamp(0.45rem, 0.9vw, 0.85rem) clamp(0.7rem, 1.55vw, 1.55rem) !important;
   background:
     radial-gradient(980px 480px at 27% 9%, rgba(148, 244, 255, 0.19), transparent 72%),
     radial-gradient(900px 480px at 53% 18%, rgba(80, 190, 255, 0.105), transparent 78%),
@@ -37382,53 +37382,148 @@ body:has(.creators-dashboard-system-page),
 }
 
 .creators-dashboard-system-page .creators-hero-shell {
-  grid-template-columns: minmax(0, 0.9fr) minmax(17rem, 0.48fr) !important;
-  align-items: center;
-  gap: clamp(1.2rem, 3.35vw, 3.6rem) !important;
+  position: relative;
+  grid-template-columns: minmax(18rem, 0.64fr) minmax(0, 1fr) !important;
+  align-items: end;
+  width: min(100%, 1120px);
+  margin-inline: auto;
+  gap: clamp(0.9rem, 2vw, 2.15rem) !important;
+  padding-block: clamp(0.35rem, 0.8vw, 0.8rem);
+}
+
+.creators-dashboard-system-page .creators-hero-shell::before {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  inset: clamp(1rem, 3vw, 2rem) 10% auto 22%;
+  height: clamp(110px, 15vw, 184px);
+  background:
+    radial-gradient(closest-side at 50% 50%, rgba(113, 226, 255, 0.13), transparent 72%),
+    linear-gradient(90deg, transparent, rgba(151, 238, 255, 0.08), transparent);
+  filter: blur(10px);
+  opacity: 0.7;
+  z-index: -1;
 }
 
 .creators-dashboard-system-page .creators-hero-copy h1 {
-  max-width: 13.4ch;
-  font-size: clamp(2rem, 2.72vw, 3rem) !important;
-  line-height: 1.035 !important;
-  letter-spacing: -0.038em !important;
+  max-width: 11.8ch;
+  font-size: clamp(1.84rem, 2.22vw, 2.45rem) !important;
+  line-height: 1.045 !important;
+  letter-spacing: -0.032em !important;
 }
 
 .creators-dashboard-system-page .creators-hero-lead {
-  max-width: 33.5rem;
+  max-width: 29rem;
   color: var(--creators-text-secondary) !important;
 }
 
 .creators-dashboard-system-page .creators-entry-field {
-  max-width: 26rem;
-  padding: clamp(0.65rem, 1.1vw, 0.9rem) 0 !important;
+  width: 100%;
+  max-width: none;
+  justify-self: stretch;
+  align-self: end;
+  padding: clamp(0.9rem, 1.35vw, 1.1rem) 0 clamp(0.58rem, 0.95vw, 0.82rem) clamp(1rem, 1.65vw, 1.45rem) !important;
   border: 0 !important;
-  border-top: 1px solid var(--creators-line-soft) !important;
+  border-top: 1px solid rgba(178, 242, 255, 0.07) !important;
   border-radius: 0 !important;
-  background: transparent !important;
+  background:
+    radial-gradient(680px 260px at 18% 8%, rgba(116, 223, 255, 0.055), transparent 74%),
+    linear-gradient(90deg, rgba(116, 223, 255, 0.024), rgba(68, 174, 255, 0.014) 48%, transparent 100%) !important;
   box-shadow: none !important;
 }
 
 .creators-dashboard-system-page .creators-entry-prompt-shell {
   border: 0 !important;
-  border-left: 1px solid rgba(143, 233, 255, 0.18) !important;
+  border-left: 1px solid rgba(143, 233, 255, 0.15) !important;
   border-radius: 0 !important;
-  background: linear-gradient(90deg, rgba(128, 229, 255, 0.055), transparent 86%) !important;
+  background: linear-gradient(90deg, rgba(128, 229, 255, 0.045), transparent 86%) !important;
   box-shadow: none !important;
-  padding: 0.7rem 0 0.7rem 0.85rem !important;
+  padding: 0.74rem 0 0.74rem 0.9rem !important;
 }
 
 .creators-dashboard-system-page .creators-hero-thread {
   display: grid;
+  grid-column: 1 / -1;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(0.55rem, 1.1vw, 0.9rem);
-  border-block-color: var(--creators-line-soft) !important;
+  gap: clamp(0.7rem, 1.45vw, 1.25rem);
+  width: min(100%, 880px);
+  margin-top: clamp(-0.35rem, -0.35vw, -0.08rem);
+  border-block: 1px solid rgba(211, 247, 255, 0.045) !important;
+  padding-block: clamp(0.62rem, 1vw, 0.95rem) !important;
 }
 
 .creators-dashboard-system-page .creators-hero-signal {
   border: 0 !important;
-  border-top: 1px solid rgba(211, 247, 255, 0.04) !important;
-  padding: 0.58rem 0 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.creators-dashboard-system-page .creators-hero-signal .hero-kpi-label {
+  font-size: 0.67rem !important;
+  letter-spacing: 0.13em !important;
+  color: rgba(177, 238, 255, 0.68) !important;
+}
+
+.creators-dashboard-system-page .creators-hero-signal .hero-kpi-value {
+  font-size: clamp(0.95rem, 1.35vw, 1.18rem) !important;
+  line-height: 1.08 !important;
+}
+
+.creators-dashboard-system-page .creators-hero-signal .hero-kpi-text {
+  max-width: 18rem;
+  color: rgba(220, 243, 255, 0.58) !important;
+}
+
+.creators-dashboard-system-page .creators-entry-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(0.52rem, 1vw, 0.76rem);
+  margin-top: clamp(0.85rem, 1.45vw, 1.18rem);
+}
+
+.creators-dashboard-system-page .creators-entry-actions .btn-primary {
+  width: 100%;
+  min-height: clamp(2.85rem, 3.45vw, 3.25rem);
+  box-shadow: 0 16px 42px rgba(57, 211, 255, 0.16) !important;
+}
+
+.creators-dashboard-system-page .creators-entry-actions .btn-ghost {
+  min-height: clamp(2.35rem, 2.8vw, 2.8rem);
+  background: transparent !important;
+  border-color: rgba(191, 239, 255, 0.085) !important;
+  color: rgba(231, 248, 255, 0.72) !important;
+}
+
+.creators-dashboard-system-page .creators-entry-type-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.46rem;
+  margin-top: clamp(0.62rem, 1.05vw, 0.86rem);
+}
+
+.creators-dashboard-system-page .creators-entry-type-strip button {
+  min-height: 2.12rem;
+  padding: 0.4rem 0.74rem !important;
+  border-color: rgba(191, 239, 255, 0.088) !important;
+  background: rgba(255, 255, 255, 0.012) !important;
+  box-shadow: none !important;
+  color: rgba(235, 250, 255, 0.76) !important;
+}
+
+.creators-dashboard-system-page .creators-entry-type-strip button:hover,
+.creators-dashboard-system-page .creators-entry-type-strip button[data-active="true"] {
+  border-color: rgba(105, 235, 255, 0.26) !important;
+  background: rgba(96, 221, 255, 0.06) !important;
+  color: rgba(255, 255, 255, 0.94) !important;
+}
+
+.creators-dashboard-system-page .creators-entry-account-actions {
+  margin-top: clamp(0.72rem, 1.2vw, 1rem);
+  padding-top: clamp(0.48rem, 0.9vw, 0.7rem);
+  border-top-color: rgba(191, 239, 255, 0.045) !important;
+  opacity: 0.58;
 }
 
 .creators-dashboard-system-page :is(.proof-value-header, .focus-shell-head) {
@@ -37672,7 +37767,7 @@ body:has(.creators-dashboard-system-page),
 
 @media (max-width: 1320px) {
   .creators-dashboard-system-page .creators-hero-copy h1 {
-    font-size: clamp(1.95rem, 3.25vw, 2.72rem) !important;
+    font-size: clamp(1.84rem, 2.72vw, 2.5rem) !important;
   }
 
   .creators-dashboard-system-page .creator-workspace-grid {
@@ -37688,10 +37783,12 @@ body:has(.creators-dashboard-system-page),
 @media (max-width: 1040px) {
   .creators-dashboard-system-page :is(.creators-hero-shell, .creator-post-briefing-flow, .creators-editorial-stream) {
     grid-template-columns: minmax(0, 1fr) !important;
+    gap: clamp(0.92rem, 2.5vw, 1.65rem) !important;
   }
 
   .creators-dashboard-system-page .creators-entry-field {
     max-width: 100%;
+    justify-self: stretch;
   }
 
   .creators-dashboard-system-page .creators-context-ribbon :is(.creators-sidebar-nav, .creators-sidebar-stack) {
@@ -37723,18 +37820,23 @@ body:has(.creators-dashboard-system-page),
   }
 
   .creators-dashboard-system-page .creators-hero-copy h1 {
-    max-width: 14ch;
-    font-size: clamp(1.64rem, 7vw, 2.08rem) !important;
+    max-width: 13.2ch;
+    font-size: clamp(1.52rem, 6.1vw, 1.92rem) !important;
     line-height: 1.05 !important;
   }
 
   .creators-dashboard-system-page .creators-hero-thread {
     grid-template-columns: minmax(0, 1fr);
     border-block: 0 !important;
+    margin-top: 0;
+    padding-block: 0.42rem !important;
   }
 
   .creators-dashboard-system-page .creators-entry-field {
-    padding-inline: 0 !important;
+    padding: 0.74rem 0 0 !important;
+    border-left: 0 !important;
+    border-top: 1px solid rgba(178, 242, 255, 0.12) !important;
+    background: transparent !important;
   }
 
   .creators-dashboard-system-page .creators-entry-actions {
