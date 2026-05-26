@@ -36158,20 +36158,44 @@ body:has(.creators-dashboard-system-page) {
 html:has(.creators-dashboard-system-page),
 body:has(.creators-dashboard-system-page) {
   min-height: 100%;
-  background: rgb(3, 15, 39) !important;
+  background:
+    radial-gradient(1180px 560px at 14% 5%, rgba(75, 232, 255, 0.23), transparent 72%),
+    radial-gradient(980px 520px at 76% 18%, rgba(57, 112, 255, 0.18), transparent 78%),
+    radial-gradient(1180px 620px at 44% 48%, rgba(78, 226, 255, 0.15), transparent 80%),
+    url("/brand/editor-ai-circuit-background.png"),
+    radial-gradient(1040px 720px at 64% 92%, rgba(0, 82, 176, 0.18), transparent 76%),
+    linear-gradient(180deg, rgb(10, 48, 102), rgb(7, 36, 85) 58%, rgb(5, 26, 64)) !important;
+  background-blend-mode: normal, normal, normal, soft-light, normal, normal;
+  background-position: center top, center top, center top, center center, center bottom, center top;
+  background-repeat: no-repeat;
+  background-size: cover, cover, auto, auto, auto, cover;
+}
+
+.app-shell-bg:has(.creators-dashboard-system-page) {
+  background:
+    radial-gradient(1180px 560px at 14% 5%, rgba(75, 232, 255, 0.23), transparent 72%),
+    radial-gradient(980px 520px at 76% 18%, rgba(57, 112, 255, 0.18), transparent 78%),
+    radial-gradient(1180px 620px at 44% 48%, rgba(78, 226, 255, 0.15), transparent 80%),
+    url("/brand/editor-ai-circuit-background.png"),
+    radial-gradient(1040px 720px at 64% 92%, rgba(0, 82, 176, 0.18), transparent 76%),
+    linear-gradient(180deg, rgb(10, 48, 102), rgb(7, 36, 85) 58%, rgb(5, 26, 64)) !important;
+  background-blend-mode: normal, normal, normal, soft-light, normal, normal;
+  background-position: center top, center top, center top, center center, center bottom, center top;
+  background-repeat: no-repeat;
+  background-size: cover, cover, auto, auto, auto, cover;
 }
 
 .app-shell-frame:has(.creators-dashboard-system-page),
 .app-shell-body:has(.creators-dashboard-system-page) {
   min-height: 100%;
   background:
-    linear-gradient(180deg, rgba(3, 13, 35, 0.5), rgba(3, 13, 35, 0.28) 38%, rgba(3, 13, 35, 0.5) 100%),
+    radial-gradient(1180px 560px at 14% 5%, rgba(75, 232, 255, 0.23), transparent 72%),
+    radial-gradient(980px 520px at 76% 18%, rgba(57, 112, 255, 0.18), transparent 78%),
+    radial-gradient(1180px 620px at 44% 48%, rgba(78, 226, 255, 0.15), transparent 80%),
     url("/brand/editor-ai-circuit-background.png"),
-    radial-gradient(1120px 620px at 22% 0%, rgba(87, 229, 255, 0.12), transparent 72%),
-    radial-gradient(980px 620px at 76% 40%, rgba(45, 142, 242, 0.1), transparent 76%),
-    radial-gradient(1040px 760px at 48% 94%, rgba(26, 125, 224, 0.08), transparent 78%),
-    linear-gradient(180deg, rgb(5, 25, 60), rgb(3, 16, 42) 58%, rgb(3, 14, 37));
-  background-blend-mode: normal, soft-light, normal, normal, normal, normal;
+    radial-gradient(1040px 720px at 64% 92%, rgba(0, 82, 176, 0.18), transparent 76%),
+    linear-gradient(180deg, rgb(10, 48, 102), rgb(7, 36, 85) 58%, rgb(5, 26, 64));
+  background-blend-mode: normal, normal, normal, soft-light, normal, normal;
   background-position: center top, center top, center top, center center, center bottom, center top;
   background-repeat: no-repeat;
   background-size: cover, cover, auto, auto, auto, cover;
@@ -36195,26 +36219,26 @@ body:has(.creators-dashboard-system-page) {
 .creators-dashboard-system-page::before {
   inset: -1.5rem min(-1rem, -1vw) 0;
   background:
-    linear-gradient(180deg, rgba(3, 13, 35, 0.24), rgba(3, 13, 35, 0.08) 40%, rgba(3, 13, 35, 0.28) 100%),
+    linear-gradient(180deg, rgba(20, 91, 164, 0.075), rgba(35, 139, 205, 0.025) 42%, rgba(3, 23, 56, 0.12) 100%),
     url("/brand/editor-ai-circuit-background.png"),
-    linear-gradient(90deg, rgba(191, 239, 255, 0.018) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(191, 239, 255, 0.014) 1px, transparent 1px);
+    linear-gradient(90deg, rgba(191, 239, 255, 0.024) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(191, 239, 255, 0.018) 1px, transparent 1px);
   background-blend-mode: normal, soft-light, normal, normal;
   background-position: center top, center top, 0 0, 0 0;
   background-repeat: no-repeat, no-repeat, repeat, repeat;
   background-size: cover, cover, 112px 112px, 112px 112px;
-  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.86), rgba(0, 0, 0, 0.58) 56%, rgba(0, 0, 0, 0.74));
-  opacity: 0.36 !important;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.92), rgba(0, 0, 0, 0.68) 56%, rgba(0, 0, 0, 0.72));
+  opacity: 0.58 !important;
 }
 
 .creators-dashboard-system-page::after {
   background:
-    radial-gradient(780px 440px at 50% 18%, rgba(93, 218, 255, 0.075), transparent 72%),
-    radial-gradient(860px 520px at 42% 52%, rgba(61, 188, 255, 0.064), transparent 76%),
-    radial-gradient(920px 620px at 58% 88%, rgba(36, 125, 228, 0.052), transparent 80%),
-    linear-gradient(90deg, transparent 0 18%, rgba(17, 88, 175, 0.032) 42%, rgba(38, 157, 226, 0.038) 55%, transparent 86%);
+    radial-gradient(820px 460px at 50% 16%, rgba(93, 218, 255, 0.16), transparent 72%),
+    radial-gradient(920px 560px at 36% 50%, rgba(61, 188, 255, 0.118), transparent 76%),
+    radial-gradient(980px 660px at 58% 88%, rgba(36, 125, 228, 0.086), transparent 80%),
+    linear-gradient(90deg, transparent 0 18%, rgba(17, 88, 175, 0.028) 42%, rgba(38, 157, 226, 0.034) 55%, transparent 86%);
   filter: none !important;
-  opacity: 0.64 !important;
+  opacity: 0.9 !important;
 }
 
 .creators-dashboard-system-page :is(
@@ -36321,6 +36345,10 @@ body:has(.creators-dashboard-system-page) {
 
 .creators-dashboard-system-page .creators-hero-open {
   padding-block: clamp(0.9rem, 1.8vw, 1.85rem) clamp(1.1rem, 2.45vw, 2.7rem) !important;
+  background:
+    radial-gradient(920px 470px at 18% 14%, rgba(83, 218, 255, 0.22), transparent 72%),
+    radial-gradient(780px 430px at 76% 20%, rgba(56, 124, 255, 0.13), transparent 76%),
+    transparent !important;
 }
 
 .creators-dashboard-system-page .creators-hero-shell {
@@ -36331,7 +36359,7 @@ body:has(.creators-dashboard-system-page) {
 
 .creators-dashboard-system-page .creators-hero-copy h1 {
   max-width: 11.6ch;
-  font-size: clamp(2.65rem, 4.35vw, 4.25rem) !important;
+  font-size: clamp(2.55rem, 4.05vw, 4.05rem) !important;
   line-height: 1 !important;
   letter-spacing: -0.046em !important;
 }
@@ -36343,9 +36371,10 @@ body:has(.creators-dashboard-system-page) {
 .creators-dashboard-system-page .creators-entry-surface {
   max-width: 26.5rem;
   padding: clamp(1.05rem, 1.9vw, 1.7rem) !important;
-  border-color: rgba(191, 239, 255, 0.075) !important;
+  border-color: rgba(191, 239, 255, 0.09) !important;
   background:
-    linear-gradient(135deg, rgba(91, 215, 255, 0.034), rgba(255, 255, 255, 0.004) 52%, transparent),
+    radial-gradient(520px 220px at 0% 0%, rgba(91, 215, 255, 0.078), transparent 74%),
+    linear-gradient(135deg, rgba(91, 215, 255, 0.05), rgba(255, 255, 255, 0.014) 52%, transparent),
     transparent !important;
   box-shadow: none !important;
 }
@@ -36380,7 +36409,7 @@ body:has(.creators-dashboard-system-page) {
   border-width: 1px 0 !important;
   border-color: rgba(191, 239, 255, 0.045) !important;
   background:
-    linear-gradient(180deg, rgba(91, 215, 255, 0.014), transparent 54%),
+    linear-gradient(180deg, rgba(91, 215, 255, 0.024), transparent 58%),
     transparent !important;
   box-shadow: none !important;
   scrollbar-gutter: stable;
@@ -36429,9 +36458,10 @@ body:has(.creators-dashboard-system-page) {
 .creators-dashboard-system-page .creator-active-panel,
 .creators-dashboard-system-page .creator-workspace-card {
   background:
-    linear-gradient(135deg, rgba(91, 215, 255, 0.03), rgba(255, 255, 255, 0.005) 46%, transparent),
-    rgba(4, 26, 68, 0.012) !important;
-  border-color: rgba(191, 239, 255, 0.065) !important;
+    radial-gradient(720px 260px at 0% 0%, rgba(91, 215, 255, 0.05), transparent 76%),
+    linear-gradient(135deg, rgba(91, 215, 255, 0.036), rgba(255, 255, 255, 0.01) 46%, transparent),
+    rgba(8, 37, 82, 0.028) !important;
+  border-color: rgba(191, 239, 255, 0.082) !important;
   box-shadow: none !important;
 }
 
@@ -36446,9 +36476,9 @@ body:has(.creators-dashboard-system-page) {
   .creator-loading-panel
 ) {
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.006), transparent),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.004)),
     transparent !important;
-  border-color: rgba(191, 239, 255, 0.055) !important;
+  border-color: rgba(191, 239, 255, 0.072) !important;
 }
 
 .creators-dashboard-system-page .creator-workspace-shell :is(.field-ea, .ea-select-trigger, textarea.field-ea, select.field-ea) {
@@ -36457,8 +36487,8 @@ body:has(.creators-dashboard-system-page) {
   padding-inline: clamp(0.78rem, 1.2vw, 0.98rem);
   border-color: rgba(191, 239, 255, 0.13) !important;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.006)),
-    rgba(2, 20, 54, 0.135) !important;
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.012)),
+    rgba(9, 42, 86, 0.18) !important;
 }
 
 .creators-dashboard-system-page .creator-workspace-shell textarea.field-ea,
@@ -36474,10 +36504,10 @@ body:has(.creators-dashboard-system-page) {
 
 .creators-dashboard-system-page .creator-empty-state {
   background:
-    radial-gradient(520px 180px at 0% 0%, rgba(91, 215, 255, 0.055), transparent 74%),
-    linear-gradient(90deg, rgba(91, 215, 255, 0.024), transparent 62%),
+    radial-gradient(560px 200px at 0% 0%, rgba(91, 215, 255, 0.078), transparent 74%),
+    linear-gradient(90deg, rgba(91, 215, 255, 0.036), transparent 62%),
     transparent !important;
-  border-color: rgba(191, 239, 255, 0.058) !important;
+  border-color: rgba(191, 239, 255, 0.072) !important;
   border-left-color: rgba(99, 231, 255, 0.32) !important;
   box-shadow: none !important;
 }
