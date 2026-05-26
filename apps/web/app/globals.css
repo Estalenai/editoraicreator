@@ -37271,3 +37271,433 @@ body:has(.creators-dashboard-system-page),
     padding-block: 0.82rem !important;
   }
 }
+
+/* Creators final visual correction. This block is deliberately last so older
+   Creators layers cannot reintroduce darker palette, grid, or CRM chrome. */
+html:has(.creators-dashboard-system-page),
+body:has(.creators-dashboard-system-page),
+.app-shell-bg:has(.creators-dashboard-system-page),
+.app-shell-frame:has(.creators-dashboard-system-page),
+.app-shell-body:has(.creators-dashboard-system-page) {
+  background:
+    radial-gradient(1280px 620px at 17% 0%, rgba(124, 241, 255, 0.36), transparent 70%),
+    radial-gradient(1180px 660px at 76% 8%, rgba(92, 176, 255, 0.24), transparent 74%),
+    radial-gradient(1080px 720px at 48% 42%, rgba(83, 210, 255, 0.18), transparent 76%),
+    url("/brand/editor-ai-circuit-background.png"),
+    radial-gradient(1240px 760px at 54% 92%, rgba(42, 135, 224, 0.2), transparent 76%),
+    linear-gradient(180deg, rgb(16, 80, 151) 0%, rgb(11, 62, 130) 45%, rgb(8, 43, 100) 100%) !important;
+  background-blend-mode: normal, normal, normal, soft-light, normal, normal;
+  background-attachment: fixed, fixed, fixed, fixed, fixed, fixed;
+  background-repeat: no-repeat, no-repeat, no-repeat, repeat, no-repeat, no-repeat;
+  background-size: cover, cover, cover, 1680px auto, cover, cover;
+}
+
+.creators-dashboard-system-page {
+  --creators-line-soft: rgba(211, 247, 255, 0.055);
+  --creators-line-medium: rgba(211, 247, 255, 0.095);
+  --creators-text-primary: rgba(250, 254, 255, 0.96);
+  --creators-text-secondary: rgba(226, 246, 255, 0.74);
+  --creators-text-muted: rgba(214, 241, 255, 0.58);
+  gap: clamp(1rem, 2.15vw, 2.55rem) !important;
+}
+
+.creators-dashboard-system-page::before {
+  background:
+    radial-gradient(920px 520px at 21% 8%, rgba(150, 245, 255, 0.16), transparent 72%),
+    radial-gradient(820px 520px at 74% 32%, rgba(101, 188, 255, 0.1), transparent 74%),
+    url("/brand/editor-ai-circuit-background.png") !important;
+  background-blend-mode: normal, normal, soft-light;
+  opacity: 0.42 !important;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.5) 48%, rgba(0, 0, 0, 0.58));
+}
+
+.creators-dashboard-system-page::after {
+  position: fixed !important;
+  inset: 0 !important;
+  background:
+    radial-gradient(980px 620px at 31% 22%, rgba(139, 239, 255, 0.075), transparent 72%),
+    radial-gradient(1020px 720px at 82% 68%, rgba(91, 168, 255, 0.055), transparent 78%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.026), rgba(255, 255, 255, 0.012) 52%, rgba(5, 31, 78, 0.028) 100%) !important;
+  opacity: 0.78 !important;
+  z-index: 0 !important;
+}
+
+.creators-dashboard-system-page > * {
+  position: relative;
+  z-index: 1;
+}
+
+.app-shell-body:has(.creators-dashboard-system-page) :is(.app-top-nav, .app-nav-rail) {
+  background: transparent !important;
+  border-color: rgba(211, 247, 255, 0.035) !important;
+  box-shadow: none !important;
+}
+
+.app-shell-frame:has(.creators-dashboard-system-page) .app-shell-main::before {
+  display: none !important;
+  opacity: 0 !important;
+  background: none !important;
+}
+
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-link.layout-contract-rail-link {
+  color: rgba(236, 250, 255, 0.9) !important;
+  opacity: 0.92;
+}
+
+.app-shell-body:has(.creators-dashboard-system-page) :is(.app-nav-link-active, .app-nav-link[aria-current="page"], .app-nav-link[data-active="true"]) {
+  color: rgba(252, 254, 255, 0.99) !important;
+  background: linear-gradient(90deg, rgba(132, 234, 255, 0.17), rgba(255, 255, 255, 0.035) 70%, transparent) !important;
+  border-color: rgba(201, 245, 255, 0.18) !important;
+}
+
+.creators-dashboard-system-page :is(.creators-flow-section, .surface-flow-region, .focus-shell-section)::before,
+.creators-dashboard-system-page :is(.creators-flow-section, .surface-flow-region, .focus-shell-section)::after,
+.creators-dashboard-system-page :is(.creators-entry-field, .creators-editorial-item, .creators-decision-item, .creator-workspace-card, .creator-active-panel)::before,
+.creators-dashboard-system-page :is(.creators-entry-field, .creators-editorial-item, .creators-decision-item, .creator-workspace-card, .creator-active-panel)::after {
+  opacity: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
+}
+
+.creators-dashboard-system-page .creators-hero-open {
+  padding-block: clamp(0.55rem, 1.1vw, 1rem) clamp(0.8rem, 1.95vw, 1.85rem) !important;
+  background:
+    radial-gradient(900px 430px at 27% 9%, rgba(157, 248, 255, 0.21), transparent 72%),
+    radial-gradient(760px 390px at 82% 16%, rgba(116, 191, 255, 0.14), transparent 76%),
+    transparent !important;
+}
+
+.creators-dashboard-system-page .creators-hero-shell {
+  grid-template-columns: minmax(0, 0.9fr) minmax(17rem, 0.48fr) !important;
+  align-items: center;
+  gap: clamp(1.2rem, 3.35vw, 3.6rem) !important;
+}
+
+.creators-dashboard-system-page .creators-hero-copy h1 {
+  max-width: 13.4ch;
+  font-size: clamp(2rem, 2.72vw, 3rem) !important;
+  line-height: 1.035 !important;
+  letter-spacing: -0.038em !important;
+}
+
+.creators-dashboard-system-page .creators-hero-lead {
+  max-width: 33.5rem;
+  color: var(--creators-text-secondary) !important;
+}
+
+.creators-dashboard-system-page .creators-entry-field {
+  max-width: 26rem;
+  padding: clamp(0.65rem, 1.1vw, 0.9rem) 0 !important;
+  border: 0 !important;
+  border-top: 1px solid var(--creators-line-soft) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.creators-dashboard-system-page .creators-entry-prompt-shell {
+  border: 0 !important;
+  border-left: 1px solid rgba(143, 233, 255, 0.18) !important;
+  border-radius: 0 !important;
+  background: linear-gradient(90deg, rgba(128, 229, 255, 0.055), transparent 86%) !important;
+  box-shadow: none !important;
+  padding: 0.7rem 0 0.7rem 0.85rem !important;
+}
+
+.creators-dashboard-system-page .creators-hero-thread {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(0.55rem, 1.1vw, 0.9rem);
+  border-block-color: var(--creators-line-soft) !important;
+}
+
+.creators-dashboard-system-page .creators-hero-signal {
+  border: 0 !important;
+  border-top: 1px solid rgba(211, 247, 255, 0.04) !important;
+  padding: 0.58rem 0 0 !important;
+}
+
+.creators-dashboard-system-page :is(.proof-value-header, .focus-shell-head) {
+  border: 0 !important;
+  border-top: 1px solid var(--creators-line-soft) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding-top: clamp(0.75rem, 1.3vw, 1.12rem) !important;
+}
+
+.creators-dashboard-system-page :is(.creators-proof-section, .creators-hero-core-section, .creators-secondary-section, .creator-workspace-shell) {
+  background:
+    radial-gradient(780px 260px at 24% 0%, rgba(142, 238, 255, 0.055), transparent 72%),
+    transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.creators-dashboard-system-page .creators-editorial-stream {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.96fr) minmax(0, 0.96fr) !important;
+  gap: clamp(1rem, 2vw, 1.7rem) !important;
+}
+
+.creators-dashboard-system-page .creators-decision-stream {
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: clamp(0.78rem, 1.55vw, 1.18rem) !important;
+  align-items: stretch;
+}
+
+.creators-dashboard-system-page .creators-decision-item {
+  flex: 1 1 min(100%, 19rem);
+}
+
+.creators-dashboard-system-page .creators-decision-item-secondary {
+  flex-basis: min(100%, 16rem);
+}
+
+.creators-dashboard-system-page :is(.creators-editorial-item, .creators-decision-item) {
+  position: relative;
+  border: 0 !important;
+  border-top: 1px solid rgba(211, 247, 255, 0.046) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: clamp(0.78rem, 1.25vw, 1.05rem) 0 0 !important;
+}
+
+.creators-dashboard-system-page :is(.creators-editorial-item, .creators-decision-item)::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: min(7rem, 42%);
+  height: 1px;
+  background: rgba(137, 236, 255, 0.33);
+  opacity: 0.72 !important;
+}
+
+.creators-dashboard-system-page :is(.proof-value-block, .creators-hero-core-point, .creators-secondary-card-copy) {
+  border-top-color: rgba(211, 247, 255, 0.032) !important;
+  padding-top: 0.48rem !important;
+}
+
+.creators-dashboard-system-page .creator-workspace-grid {
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.58fr) !important;
+  gap: clamp(1rem, 2.2vw, 1.8rem) !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.creators-dashboard-system-page .creators-context-ribbon {
+  align-content: start;
+  border: 0 !important;
+  border-top: 1px solid var(--creators-line-soft) !important;
+  background: transparent !important;
+}
+
+.creators-dashboard-system-page .creators-context-ribbon :is(.creators-sidebar-nav, .creators-sidebar-stack) {
+  border-block: 0 !important;
+}
+
+.creators-dashboard-system-page .creators-context-ribbon .creators-sidebar-group {
+  flex: 1 1 min(100%, 15rem);
+  border-top: 1px solid rgba(211, 247, 255, 0.038);
+  padding-top: 0.58rem;
+}
+
+.creators-dashboard-system-page .creators-context-ribbon .creator-tab-btn {
+  flex-basis: 100%;
+  min-height: auto;
+  padding: 0.5rem 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+.creators-dashboard-system-page .creators-context-ribbon .creator-tab-btn[data-active="true"] {
+  border-left: 2px solid rgba(121, 235, 255, 0.48) !important;
+  padding-left: 0.58rem !important;
+}
+
+.creators-dashboard-system-page .creators-context-ribbon :is(.creators-side-note, .creators-wallet-row) {
+  border-top-color: rgba(211, 247, 255, 0.038) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.creators-dashboard-system-page .creators-context-ribbon :is(.btn-ea, .btn-link-ea) {
+  justify-content: flex-start;
+  min-height: auto;
+  padding: 0.26rem 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: rgba(226, 247, 255, 0.78) !important;
+}
+
+.creators-dashboard-system-page .creators-context-ribbon :is(.btn-ea, .btn-link-ea)::before,
+.creators-dashboard-system-page .creators-context-ribbon :is(.btn-ea, .btn-link-ea)::after {
+  opacity: 0 !important;
+  background: none !important;
+}
+
+.creators-dashboard-system-page .creator-active-summary-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(0.55rem, 1vw, 0.8rem);
+}
+
+.creators-dashboard-system-page .creator-active-summary-card {
+  flex: 1 1 min(100%, 12rem);
+  border-top-color: rgba(211, 247, 255, 0.038) !important;
+}
+
+.creators-dashboard-system-page .creator-post-briefing-flow {
+  display: grid;
+  grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
+  gap: clamp(0.78rem, 1.45vw, 1.08rem) clamp(1rem, 2vw, 1.55rem) !important;
+  align-items: start;
+}
+
+.creators-dashboard-system-page .creator-form-zone-ai,
+.creators-dashboard-system-page .creator-estimate-line,
+.creators-dashboard-system-page .creator-journey-line,
+.creators-dashboard-system-page .creator-generate-actions,
+.creators-dashboard-system-page .creator-empty-flow {
+  grid-column: 1 / -1;
+}
+
+.creators-dashboard-system-page :is(.creator-form-zone, .creator-context-zone, .creator-inline-panel, .creator-output-card, .creator-next-step-panel, .creator-estimate-row, .creator-planner-panel, .creator-loading-panel, .creator-empty-flow) {
+  border: 0 !important;
+  border-top: 1px solid rgba(211, 247, 255, 0.052) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.creators-dashboard-system-page .creator-form-zone[data-step-label]::before,
+.creators-dashboard-system-page .creator-context-zone[data-step-label]::before {
+  content: attr(data-step-label) !important;
+  border: 0 !important;
+  background: transparent !important;
+  padding: 0 !important;
+  color: rgba(154, 235, 255, 0.72);
+  letter-spacing: 0.105em;
+}
+
+.creators-dashboard-system-page .creator-workspace-shell .field-label-ea > span {
+  color: rgba(224, 247, 255, 0.76);
+  font-weight: 760;
+}
+
+.creators-dashboard-system-page .creator-workspace-shell :is(.field-ea, .ea-select-trigger, select.field-ea) {
+  border-width: 0 0 1px !important;
+  border-radius: 0 !important;
+  border-color: rgba(211, 247, 255, 0.16) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding-inline: 0 !important;
+}
+
+.creators-dashboard-system-page .creator-workspace-shell :is(textarea.field-ea, .creator-prompt-textarea) {
+  border: 1px solid rgba(211, 247, 255, 0.105) !important;
+  border-radius: 1.05rem !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.014)) !important;
+  padding: 0.9rem !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.026) !important;
+}
+
+.creators-dashboard-system-page .toggle-row {
+  border-color: rgba(211, 247, 255, 0.07) !important;
+  background: transparent !important;
+  padding: 0.42rem 0.62rem !important;
+}
+
+.creators-dashboard-system-page .creator-estimate-line {
+  display: flex !important;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.creators-dashboard-system-page .creator-empty-flow {
+  padding: clamp(0.8rem, 1.2vw, 1rem) 0 !important;
+}
+
+.creators-dashboard-system-page .creator-empty-flow .state-ea-title {
+  font-size: clamp(1rem, 1.28vw, 1.16rem);
+}
+
+@media (max-width: 1320px) {
+  .creators-dashboard-system-page .creators-hero-copy h1 {
+    font-size: clamp(1.95rem, 3.25vw, 2.72rem) !important;
+  }
+
+  .creators-dashboard-system-page .creator-workspace-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .creators-dashboard-system-page .creators-context-ribbon :is(.creators-sidebar-nav, .creators-sidebar-stack) {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1040px) {
+  .creators-dashboard-system-page :is(.creators-hero-shell, .creator-post-briefing-flow, .creators-editorial-stream) {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .creators-dashboard-system-page .creators-entry-field {
+    max-width: 100%;
+  }
+
+  .creators-dashboard-system-page .creators-context-ribbon :is(.creators-sidebar-nav, .creators-sidebar-stack) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 760px) {
+  .creators-dashboard-system-page {
+    gap: clamp(0.78rem, 3.4vw, 1.25rem) !important;
+  }
+
+  .creators-dashboard-system-page .creators-hero-copy h1 {
+    max-width: 14ch;
+    font-size: clamp(1.64rem, 7vw, 2.08rem) !important;
+    line-height: 1.05 !important;
+  }
+
+  .creators-dashboard-system-page .creators-hero-thread {
+    grid-template-columns: minmax(0, 1fr);
+    border-block: 0 !important;
+  }
+
+  .creators-dashboard-system-page .creators-entry-field {
+    padding-inline: 0 !important;
+  }
+
+  .creators-dashboard-system-page .creators-entry-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .creators-dashboard-system-page .creators-entry-type-strip {
+    display: flex;
+    overflow-x: auto;
+    padding-bottom: 0.12rem;
+  }
+
+  .creators-dashboard-system-page .creators-decision-item,
+  .creators-dashboard-system-page .creators-decision-item-secondary {
+    flex-basis: 100%;
+  }
+
+  .creators-dashboard-system-page .creator-workspace-shell :is(textarea.field-ea, .creator-prompt-textarea) {
+    min-height: 6.6rem;
+  }
+}

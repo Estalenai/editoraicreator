@@ -383,7 +383,7 @@ function CreatorsPageContent() {
             </div>
           </div>
 
-          <div className="creators-hero-panel creators-hero-panel-quiet creators-entry-command creators-entry-surface">
+          <div className="creators-hero-panel creators-hero-panel-quiet creators-entry-command creators-entry-surface creators-entry-field">
             <div className="section-stack-tight">
               <p className="section-kicker">Pedido de criação</p>
               <h2 className="creators-hero-panel-title">Briefing guiado</h2>
@@ -477,11 +477,11 @@ function CreatorsPageContent() {
             </Link>
           </div>
 
-          <div className="proof-value-grid proof-value-grid-creators creators-proof-stream">
+          <div className="proof-value-grid proof-value-grid-creators creators-proof-stream creators-editorial-stream">
             {CREATOR_SHOWCASES.map((item, index) => (
               <article
                 key={item.creator}
-                className={`proof-value-card layout-contract-item creators-open-module ${index === 0 ? "creators-proof-card-primary" : "creators-proof-card-support"}`}
+                className={`proof-value-card layout-contract-item creators-open-module creators-editorial-item ${index === 0 ? "creators-proof-card-primary" : "creators-proof-card-support"}`}
                 data-reveal
                 data-reveal-delay={String(70 + index * 55)}
               >
@@ -551,11 +551,11 @@ function CreatorsPageContent() {
           Os formatos principais ficam visíveis sem disputar o briefing ativo.
         </div>
           <div className="focus-shell-body">
-            <div className="creators-hero-core-grid creators-format-stream">
+            <div className="creators-hero-core-grid creators-format-stream creators-decision-stream">
               {heroCoreCards.map((tab, index) => (
                 <article
                   key={tab.id}
-                  className={`creators-hero-core-card layout-contract-item creators-open-module ${tab.group !== "hero" ? "creators-hero-core-card-support" : ""}`}
+                  className={`creators-hero-core-card layout-contract-item creators-open-module creators-decision-item ${tab.group !== "hero" ? "creators-hero-core-card-support" : ""}`}
                   data-active={activeTab === tab.id}
                   data-group={tab.group}
                   data-reveal
@@ -636,9 +636,9 @@ function CreatorsPageContent() {
           Apoio e experimentos continuam acessíveis, com menos peso quando o briefing ativo está aberto.
         </div>
           <div className="focus-shell-body">
-            <div className="creators-secondary-grid creators-secondary-stream">
+            <div className="creators-secondary-grid creators-secondary-stream creators-decision-stream creators-decision-stream-secondary">
               {secondaryCatalog.map((tab, index) => (
-                <article key={tab.id} className="creators-secondary-card layout-contract-item creators-open-module" data-priority={tab.group} data-reveal data-reveal-delay={String(70 + index * 45)}>
+                <article key={tab.id} className="creators-secondary-card layout-contract-item creators-open-module creators-decision-item creators-decision-item-secondary" data-priority={tab.group} data-reveal data-reveal-delay={String(70 + index * 45)}>
                   <div className="creators-secondary-card-head">
                     <strong>{tab.label}</strong>
                     <span className={`premium-badge premium-badge-${creatorStageTone(tab.group)}`}>{tab.stageLabel}</span>
@@ -696,7 +696,7 @@ function CreatorsPageContent() {
           A criação ativa concentra formato, saldo e próximo passo.
         </div>
         <div className="focus-shell-body creator-workspace-grid">
-        <aside className="creator-workspace-side creators-sidebar creators-sidebar-soft layout-contract-rail creators-format-rail" data-reveal data-reveal-delay="140">
+        <aside className="creator-workspace-side creators-sidebar creators-sidebar-soft layout-contract-rail creators-format-rail creators-context-ribbon" data-reveal data-reveal-delay="140">
           <div className="creators-side-note creators-side-note-primary">
             <strong>Comece pelos formatos principais</strong>
             <span>

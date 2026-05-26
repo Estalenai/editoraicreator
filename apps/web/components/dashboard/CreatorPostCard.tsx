@@ -677,8 +677,8 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
         </p>
       </div>
 
-      <div className="creator-workspace-zones">
-      <div id="creator-post-config" className="creator-form-zone">
+      <div className="creator-workspace-zones creator-post-briefing-flow">
+      <div id="creator-post-config" className="creator-form-zone creator-form-zone-setup" data-step-label="1. Formato e canal">
         <p className="creator-zone-title">Como deseja gerar</p>
         <p className="creator-zone-copy">Defina plataforma, formato, objetivo e idioma antes de detalhar o tema.</p>
         <div className="form-grid-2 creator-field-grid">
@@ -733,7 +733,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
         </div>
       </div>
 
-      <div className="creator-form-zone">
+      <div className="creator-form-zone creator-form-zone-brief" data-step-label="2. Contexto e objetivo">
         <p className="creator-zone-title">Contexto e briefing</p>
         <p className="creator-zone-copy">Descreva o assunto central. A qualidade do briefing melhora legenda, CTA e variações.</p>
         <label className="field-label-ea">
@@ -752,7 +752,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
         </label>
       </div>
 
-      <div className="creator-context-zone">
+      <div className="creator-context-zone creator-form-zone-ai" data-step-label="3. IA e estimativa">
         <p className="creator-zone-title">Estimativa e contexto</p>
         <p className="creator-zone-copy">Revise o consumo previsto e escolha entre aplicar a sugestão automaticamente ou revisar manualmente.</p>
         <AiExecutionModeFields
@@ -802,7 +802,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
         <div className="helper-note-inline">Quando ativo, a IA cria um prompt otimizado antes de gerar.</div>
       </div>
 
-      <div className="creator-estimate-row">
+      <div className="creator-estimate-row creator-estimate-line">
         <div className="helper-note-inline">
           Estimativa de consumo: ~{creditsEstimate.common} Comum • {creditsEstimate.pro} Pro • {creditsEstimate.ultra} Ultra
         </div>
@@ -812,7 +812,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
         {!hasCredits && <div className="inline-alert inline-alert-error">Saldo insuficiente para gerar. Compre Creator Coins avulsas para continuar.</div>}
       </div>
 
-      <div className="creator-planner-field-grid creator-post-journey-grid">
+      <div className="creator-planner-field-grid creator-post-journey-grid creator-journey-line">
         <div className="creator-planner-field">
           <span>Saída esperada</span>
           <strong>Legenda principal, CTA, hashtags, mídia sugerida e variações.</strong>
@@ -823,7 +823,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
         </div>
       </div>
 
-      <div className="creator-actions-row">
+      <div className="creator-actions-row creator-generate-actions">
         {!plannerOpen ? (
         <div className="creator-action-buttons">
           <button
@@ -1042,7 +1042,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
               </Link>
             </>
           }
-          className="creator-empty-state"
+          className="creator-empty-state creator-empty-flow"
         />
       ) : null}
 
