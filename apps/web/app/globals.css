@@ -36281,11 +36281,21 @@ body:has(.creators-dashboard-system-page) {
   .creators-proof-section,
   .creators-hero-core-section,
   .creators-secondary-section
+) .section-stack-tight {
+  display: grid;
+  gap: clamp(0.42rem, 0.8vw, 0.72rem);
+  max-width: min(100%, 58rem);
+}
+
+.creators-dashboard-system-page :is(
+  .creators-proof-section,
+  .creators-hero-core-section,
+  .creators-secondary-section
 ) .heading-reset {
-  max-width: 15ch;
-  font-size: clamp(1.85rem, 3.45vw, 3.25rem);
-  line-height: 0.98;
-  letter-spacing: -0.05em;
+  max-width: 22ch;
+  font-size: clamp(1.65rem, 2.7vw, 2.72rem);
+  line-height: 1.03;
+  letter-spacing: -0.04em;
 }
 
 .creators-dashboard-system-page :is(.proof-value-card, .creators-hero-core-card, .creators-secondary-card) {
@@ -36578,8 +36588,9 @@ body:has(.creators-dashboard-system-page) {
     .creators-hero-core-section,
     .creators-secondary-section
   ) .heading-reset {
-    max-width: 16ch;
-    font-size: clamp(1.65rem, 7vw, 2.65rem);
+    max-width: 20ch;
+    font-size: clamp(1.5rem, 6vw, 2.25rem);
+    line-height: 1.04;
   }
 
   .creators-dashboard-system-page .creators-hero-thread {
@@ -36623,7 +36634,7 @@ body:has(.creators-dashboard-system-page) {
     .creators-hero-core-section,
     .creators-secondary-section
   ) .heading-reset {
-    font-size: clamp(1.42rem, 7.2vw, 2.15rem);
+    font-size: clamp(1.34rem, 6.8vw, 1.9rem);
   }
 
   .creators-dashboard-system-page .creators-hero-copy h1 {
