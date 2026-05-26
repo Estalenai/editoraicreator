@@ -36702,3 +36702,572 @@ body:has(.creators-dashboard-system-page) {
     min-height: 8rem;
   }
 }
+
+/* Creators external audit lock: keep the creation flow intact while removing
+   the remaining grid/admin reading from the authenticated Creators workspace. */
+html:has(.creators-dashboard-system-page),
+body:has(.creators-dashboard-system-page),
+.app-shell-bg:has(.creators-dashboard-system-page),
+.app-shell-frame:has(.creators-dashboard-system-page),
+.app-shell-body:has(.creators-dashboard-system-page) {
+  background:
+    radial-gradient(1180px 580px at 13% 3%, rgba(95, 235, 255, 0.28), transparent 73%),
+    radial-gradient(1040px 560px at 74% 14%, rgba(70, 143, 255, 0.19), transparent 76%),
+    radial-gradient(1100px 640px at 42% 46%, rgba(80, 218, 255, 0.17), transparent 78%),
+    url("/brand/editor-ai-circuit-background.png"),
+    radial-gradient(1120px 760px at 54% 94%, rgba(24, 111, 210, 0.16), transparent 76%),
+    linear-gradient(180deg, rgb(13, 61, 124), rgb(9, 47, 104) 54%, rgb(6, 31, 76)) !important;
+  background-blend-mode: normal, normal, normal, soft-light, normal, normal;
+  background-position: center top, center top, center top, center center, center bottom, center top;
+  background-repeat: no-repeat;
+  background-size: cover, cover, auto, auto, auto, cover;
+}
+
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-link.layout-contract-rail-link {
+  color: rgba(230, 248, 255, 0.86) !important;
+  opacity: 0.86;
+  letter-spacing: -0.006em;
+}
+
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-link.layout-contract-rail-link .app-nav-link-label {
+  font-weight: 760;
+}
+
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-link-active,
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-link[aria-current="page"],
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-link[data-active="true"] {
+  color: rgba(250, 254, 255, 0.98) !important;
+  opacity: 1;
+  background:
+    linear-gradient(90deg, rgba(145, 235, 255, 0.13), rgba(255, 255, 255, 0.028) 62%, transparent) !important;
+  border-color: rgba(191, 239, 255, 0.16) !important;
+}
+
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-link:not(.app-nav-link-active):hover {
+  color: rgba(248, 253, 255, 0.96) !important;
+  opacity: 0.95;
+}
+
+.creators-dashboard-system-page {
+  gap: clamp(1.15rem, 2.45vw, 3.05rem) !important;
+}
+
+.creators-dashboard-system-page::before {
+  background:
+    linear-gradient(180deg, rgba(63, 169, 232, 0.055), rgba(93, 214, 255, 0.018) 44%, rgba(4, 23, 56, 0.065) 100%),
+    url("/brand/editor-ai-circuit-background.png"),
+    linear-gradient(90deg, rgba(191, 239, 255, 0.016) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(191, 239, 255, 0.012) 1px, transparent 1px) !important;
+  background-blend-mode: normal, soft-light, normal, normal;
+  opacity: 0.48 !important;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.84), rgba(0, 0, 0, 0.6) 58%, rgba(0, 0, 0, 0.66));
+}
+
+.creators-dashboard-system-page::after {
+  opacity: 0.72 !important;
+}
+
+.creators-dashboard-system-page .creators-hero-open {
+  padding-block: clamp(0.62rem, 1.35vw, 1.35rem) clamp(0.9rem, 2.2vw, 2.28rem) !important;
+  background:
+    radial-gradient(860px 430px at 18% 10%, rgba(112, 232, 255, 0.24), transparent 72%),
+    radial-gradient(720px 390px at 78% 18%, rgba(76, 156, 255, 0.12), transparent 76%),
+    transparent !important;
+}
+
+.creators-dashboard-system-page .creators-hero-shell {
+  grid-template-columns: minmax(0, 0.94fr) minmax(18rem, 0.46fr);
+  gap: clamp(1.4rem, 4vw, 4.25rem) !important;
+}
+
+.creators-dashboard-system-page .creators-hero-copy h1 {
+  max-width: 12.7ch;
+  font-size: clamp(2.18rem, 3.18vw, 3.38rem) !important;
+  line-height: 1.015 !important;
+  letter-spacing: -0.04em !important;
+}
+
+.creators-dashboard-system-page .creators-hero-lead {
+  max-width: 32rem;
+  color: rgba(224, 244, 255, 0.78);
+}
+
+.creators-dashboard-system-page .creators-entry-surface {
+  max-width: 25.5rem;
+  padding: clamp(0.8rem, 1.35vw, 1.08rem) 0 !important;
+  border-width: 1px 0 0 0 !important;
+  border-color: rgba(211, 246, 255, 0.072) !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.creators-dashboard-system-page .creators-entry-surface::before,
+.creators-dashboard-system-page .creators-entry-surface::after {
+  opacity: 0 !important;
+}
+
+.creators-dashboard-system-page .creators-entry-surface .creators-hero-panel-title {
+  font-size: clamp(1.18rem, 1.55vw, 1.48rem);
+}
+
+.creators-dashboard-system-page .creators-entry-actions {
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.creators-dashboard-system-page .creators-entry-actions .btn-primary {
+  min-height: 2.55rem;
+  padding-inline: 1rem;
+}
+
+.creators-dashboard-system-page .creators-entry-actions .btn-ghost {
+  border-color: rgba(191, 239, 255, 0.09) !important;
+  color: rgba(222, 243, 255, 0.78) !important;
+  background: transparent !important;
+}
+
+.creators-dashboard-system-page .creators-entry-type-strip {
+  gap: 0.42rem;
+}
+
+.creators-dashboard-system-page .creators-entry-type-strip button {
+  padding: 0.42rem 0.68rem;
+  border-color: rgba(191, 239, 255, 0.075) !important;
+  background: rgba(255, 255, 255, 0.012) !important;
+  color: rgba(225, 246, 255, 0.73);
+  box-shadow: none !important;
+}
+
+.creators-dashboard-system-page .creators-entry-type-strip button[data-active="true"] {
+  border-color: rgba(111, 226, 255, 0.28) !important;
+  background: rgba(111, 226, 255, 0.085) !important;
+  color: rgba(250, 254, 255, 0.96);
+}
+
+.creators-dashboard-system-page .creators-hero-thread {
+  margin-top: clamp(0.9rem, 1.75vw, 1.6rem);
+  gap: clamp(0.55rem, 1.15vw, 0.95rem);
+  border-top-color: rgba(191, 239, 255, 0.045);
+  border-bottom-color: rgba(191, 239, 255, 0.025);
+}
+
+.creators-dashboard-system-page .creators-hero-signal {
+  padding: clamp(0.55rem, 0.95vw, 0.82rem) 0 !important;
+  background: transparent !important;
+  border-color: rgba(191, 239, 255, 0.035) !important;
+}
+
+.creators-dashboard-system-page :is(
+  .creators-proof-section,
+  .creators-hero-core-section,
+  .creators-secondary-section
+) {
+  padding-block: clamp(0.55rem, 1.35vw, 1.15rem) !important;
+}
+
+.creators-dashboard-system-page :is(
+  .creators-proof-section,
+  .creators-hero-core-section,
+  .creators-secondary-section
+) .heading-reset {
+  font-size: clamp(1.42rem, 2.24vw, 2.34rem);
+  max-width: 24ch;
+}
+
+.creators-dashboard-system-page :is(
+  .creators-proof-stream,
+  .creators-format-stream,
+  .creators-secondary-stream
+) {
+  gap: clamp(0.82rem, 1.55vw, 1.28rem) !important;
+  padding-top: clamp(0.5rem, 1vw, 0.85rem);
+  border: 0 !important;
+}
+
+.creators-dashboard-system-page .creators-proof-stream {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.creators-dashboard-system-page .creators-format-stream {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.creators-dashboard-system-page .creators-secondary-stream {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.creators-dashboard-system-page :is(.proof-value-card, .creators-hero-core-card, .creators-secondary-card) {
+  border: 0 !important;
+  border-top: 1px solid rgba(203, 243, 255, 0.045) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: clamp(0.78rem, 1.35vw, 1.12rem) 0 !important;
+}
+
+.creators-dashboard-system-page :is(.proof-value-card, .creators-hero-core-card, .creators-secondary-card)::before,
+.creators-dashboard-system-page :is(.proof-value-card, .creators-hero-core-card, .creators-secondary-card)::after {
+  opacity: 0 !important;
+}
+
+.creators-dashboard-system-page :is(.proof-value-block, .creators-hero-core-point, .creators-secondary-card-copy) {
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  padding: 0.58rem 0 0 !important;
+}
+
+.creators-dashboard-system-page :is(.proof-value-card, .creators-hero-core-card, .creators-secondary-card) :is(p, span, small, li) {
+  color: rgba(218, 241, 255, 0.71);
+}
+
+.creators-dashboard-system-page :is(.proof-value-card, .creators-hero-core-card, .creators-secondary-card) :is(h3, strong) {
+  color: rgba(249, 254, 255, 0.94);
+}
+
+.creators-dashboard-system-page .creators-secondary-card[data-priority="labs"],
+.creators-dashboard-system-page .creators-format-stream > .creators-hero-core-card[data-group="secondary"] {
+  opacity: 0.76;
+}
+
+.creators-dashboard-system-page .creator-workspace-shell {
+  padding-top: clamp(0.62rem, 1.35vw, 1.1rem) !important;
+  background: transparent !important;
+}
+
+.creators-dashboard-system-page .creator-workspace-grid {
+  gap: clamp(0.9rem, 1.85vw, 1.55rem) !important;
+}
+
+.creators-dashboard-system-page .creator-workspace-side {
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: clamp(0.62rem, 1.2vw, 0.95rem) !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.creators-dashboard-system-page .creator-workspace-side .creators-sidebar-nav,
+.creators-dashboard-system-page .creator-workspace-side .creators-sidebar-group-list,
+.creators-dashboard-system-page .creator-workspace-side .creators-sidebar-stack {
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: clamp(0.5rem, 1vw, 0.82rem);
+  align-items: stretch;
+}
+
+.creators-dashboard-system-page .creator-workspace-side .creators-sidebar-nav {
+  border-block: 1px solid rgba(191, 239, 255, 0.045);
+  padding-block: 0.52rem;
+}
+
+.creators-dashboard-system-page .creator-workspace-side .creators-sidebar-group-list {
+  flex: 1 1 100%;
+}
+
+.creators-dashboard-system-page .creator-workspace-side .creator-tab-btn {
+  flex: 1 1 min(100%, 12rem);
+  padding: 0.58rem 0.72rem !important;
+  border: 0 !important;
+  border-top: 1px solid rgba(191, 239, 255, 0.045) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.creators-dashboard-system-page .creator-workspace-side .creator-tab-btn[data-active="true"] {
+  border-top-color: rgba(125, 232, 255, 0.32) !important;
+  background:
+    linear-gradient(180deg, rgba(125, 232, 255, 0.06), rgba(255, 255, 255, 0.008)) !important;
+}
+
+.creators-dashboard-system-page .creator-workspace-side .creator-tab-title {
+  color: rgba(249, 254, 255, 0.92);
+}
+
+.creators-dashboard-system-page .creator-workspace-side :is(.creator-tab-meta, .creator-tab-support) {
+  color: rgba(214, 241, 255, 0.58);
+  font-size: 0.72rem;
+}
+
+.creators-dashboard-system-page .creator-workspace-side .creators-side-note {
+  flex: 1 1 min(100%, 12rem);
+  border: 0 !important;
+  border-top: 1px solid rgba(191, 239, 255, 0.045) !important;
+  background: transparent !important;
+  padding: 0.62rem 0 !important;
+  box-shadow: none !important;
+}
+
+.creators-dashboard-system-page .creator-workspace-side .creators-wallet-panel {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.creators-dashboard-system-page .creator-active-panel,
+.creators-dashboard-system-page .creator-workspace-card {
+  border: 0 !important;
+  border-top: 1px solid rgba(203, 243, 255, 0.052) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding-inline: 0 !important;
+}
+
+.creators-dashboard-system-page :is(.creator-active-panel, .creator-workspace-card)::before,
+.creators-dashboard-system-page :is(.creator-active-panel, .creator-workspace-card)::after {
+  opacity: 0 !important;
+  background: none !important;
+}
+
+.creators-dashboard-system-page .creator-active-summary-grid {
+  gap: clamp(0.62rem, 1.15vw, 0.9rem);
+}
+
+.creators-dashboard-system-page .creator-active-summary-card,
+.creators-dashboard-system-page .creator-planner-field {
+  border: 0 !important;
+  border-top: 1px solid rgba(191, 239, 255, 0.045) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  padding: 0.68rem 0 0 !important;
+  box-shadow: none !important;
+}
+
+.creators-dashboard-system-page .creator-workspace-zones {
+  gap: clamp(0.58rem, 1.12vw, 0.86rem);
+}
+
+.creators-dashboard-system-page :is(
+  .creator-form-zone,
+  .creator-context-zone,
+  .creator-inline-panel,
+  .creator-output-card,
+  .creator-next-step-panel,
+  .creator-estimate-row,
+  .creator-planner-panel,
+  .creator-loading-panel
+) {
+  position: relative;
+  border: 0 !important;
+  border-top: 1px solid rgba(191, 239, 255, 0.046) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: clamp(0.92rem, 1.55vw, 1.24rem) 0 !important;
+}
+
+.creators-dashboard-system-page .creator-form-zone::before,
+.creators-dashboard-system-page .creator-context-zone::before {
+  display: inline-flex;
+  width: fit-content;
+  margin-bottom: 0.58rem;
+  padding: 0.22rem 0.52rem;
+  border: 1px solid rgba(191, 239, 255, 0.1);
+  border-radius: 999px;
+  color: rgba(207, 240, 255, 0.68);
+  background: rgba(255, 255, 255, 0.018);
+  font-size: 0.66rem;
+  font-weight: 840;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.creators-dashboard-system-page .creator-form-zone:first-of-type::before {
+  content: "1. Formato e canal";
+}
+
+.creators-dashboard-system-page .creator-form-zone + .creator-form-zone::before {
+  content: "2. Contexto e objetivo";
+}
+
+.creators-dashboard-system-page .creator-context-zone::before {
+  content: "3. IA e estimativa";
+}
+
+.creators-dashboard-system-page .creator-zone-title {
+  font-size: clamp(0.96rem, 1.2vw, 1.08rem);
+  color: rgba(249, 254, 255, 0.93);
+}
+
+.creators-dashboard-system-page .creator-zone-copy,
+.creators-dashboard-system-page .helper-note-subtle,
+.creators-dashboard-system-page .helper-note-inline {
+  color: rgba(218, 242, 255, 0.66);
+}
+
+.creators-dashboard-system-page .creator-context-zone .creator-zone-copy,
+.creators-dashboard-system-page .creator-form-zone:first-of-type .creator-zone-copy {
+  max-width: 42rem;
+}
+
+.creators-dashboard-system-page .creator-workspace-shell :is(.field-ea, .ea-select-trigger, textarea.field-ea, select.field-ea) {
+  min-height: 2.58rem;
+  border-color: rgba(203, 243, 255, 0.115) !important;
+  border-radius: 0.76rem !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.044), rgba(255, 255, 255, 0.012)),
+    rgba(13, 57, 113, 0.09) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.032) !important;
+}
+
+.creators-dashboard-system-page .creator-workspace-shell textarea.field-ea,
+.creators-dashboard-system-page .creator-prompt-textarea {
+  min-height: clamp(6.8rem, 9.4vw, 8.4rem);
+}
+
+.creators-dashboard-system-page .creator-toggle-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.creators-dashboard-system-page .toggle-row {
+  flex: 0 1 auto;
+  border: 1px solid rgba(191, 239, 255, 0.075) !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.012) !important;
+  padding: 0.48rem 0.72rem !important;
+  box-shadow: none !important;
+}
+
+.creators-dashboard-system-page .toggle-row[data-active="true"] {
+  border-color: rgba(111, 226, 255, 0.22) !important;
+  background: rgba(111, 226, 255, 0.055) !important;
+}
+
+.creators-dashboard-system-page .creator-estimate-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.72fr);
+  gap: clamp(0.5rem, 1vw, 0.85rem);
+  align-items: start;
+}
+
+.creators-dashboard-system-page .creator-planner-field-grid,
+.creators-dashboard-system-page .creator-post-journey-grid {
+  gap: clamp(0.72rem, 1.2vw, 0.95rem);
+}
+
+.creators-dashboard-system-page .creator-actions-row {
+  padding-top: 0.25rem;
+}
+
+.creators-dashboard-system-page .state-ea.creator-empty-state,
+.creators-dashboard-system-page .creator-empty-state {
+  border: 0 !important;
+  border-top: 1px solid rgba(191, 239, 255, 0.07) !important;
+  border-left: 0 !important;
+  border-radius: 0 !important;
+  background:
+    linear-gradient(90deg, rgba(111, 226, 255, 0.045), transparent 64%),
+    transparent !important;
+  box-shadow: none !important;
+  padding: clamp(0.95rem, 1.7vw, 1.28rem) 0 !important;
+}
+
+.creators-dashboard-system-page .state-ea.creator-empty-state::before {
+  width: 2px;
+  opacity: 0.62;
+}
+
+.creators-dashboard-system-page .creator-empty-state .state-ea-text {
+  max-width: 54rem;
+}
+
+@media (max-width: 1320px) {
+  .creators-dashboard-system-page .creators-hero-shell {
+    grid-template-columns: minmax(0, 0.98fr) minmax(17rem, 0.42fr);
+    gap: clamp(1.1rem, 2.8vw, 2.4rem) !important;
+  }
+
+  .creators-dashboard-system-page .creators-hero-copy h1 {
+    font-size: clamp(2.05rem, 3.9vw, 3.05rem) !important;
+  }
+
+  .creators-dashboard-system-page .creators-proof-stream,
+  .creators-dashboard-system-page .creators-format-stream {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .creators-dashboard-system-page .creators-secondary-stream {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1040px) {
+  .creators-dashboard-system-page .creators-hero-shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .creators-dashboard-system-page .creators-entry-surface {
+    max-width: 100%;
+  }
+
+  .creators-dashboard-system-page .creators-proof-stream,
+  .creators-dashboard-system-page .creators-format-stream,
+  .creators-dashboard-system-page .creators-secondary-stream {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .creators-dashboard-system-page .creator-estimate-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 760px) {
+  .creators-dashboard-system-page {
+    gap: clamp(0.88rem, 4vw, 1.55rem) !important;
+  }
+
+  .creators-dashboard-system-page .creators-hero-open {
+    padding-block: 0.42rem 1rem !important;
+  }
+
+  .creators-dashboard-system-page .creators-hero-copy h1 {
+    max-width: 12ch;
+    font-size: clamp(1.78rem, 8.2vw, 2.34rem) !important;
+    line-height: 1.03 !important;
+  }
+
+  .creators-dashboard-system-page .creators-entry-surface {
+    padding: 0.82rem !important;
+  }
+
+  .creators-dashboard-system-page .creators-entry-actions,
+  .creators-dashboard-system-page .creator-action-buttons,
+  .creators-dashboard-system-page .creator-inline-actions,
+  .creators-dashboard-system-page .creator-empty-state .state-ea-actions {
+    width: 100%;
+    align-items: stretch;
+  }
+
+  .creators-dashboard-system-page .creators-entry-actions :is(.btn-ea, .btn-link-ea),
+  .creators-dashboard-system-page .creator-action-buttons :is(.btn-ea, .btn-link-ea),
+  .creators-dashboard-system-page .creator-inline-actions :is(.btn-ea, .btn-link-ea),
+  .creators-dashboard-system-page .creator-empty-state :is(.btn-ea, .btn-link-ea) {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .creators-dashboard-system-page .creators-hero-thread {
+    gap: 0;
+  }
+
+  .creators-dashboard-system-page .creator-workspace-side .creator-tab-btn,
+  .creators-dashboard-system-page .creator-workspace-side .creators-side-note {
+    flex-basis: 100%;
+  }
+
+  .creators-dashboard-system-page :is(
+    .creator-form-zone,
+    .creator-context-zone,
+    .creator-inline-panel,
+    .creator-output-card,
+    .creator-estimate-row,
+    .creator-empty-state
+  ) {
+    padding-block: 0.82rem !important;
+  }
+}
