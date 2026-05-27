@@ -37867,8 +37867,8 @@ body:has(.creators-dashboard-system-page),
 }
 
 .creators-dashboard-system-page .creator-workspace-grid {
-  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.58fr) !important;
-  gap: clamp(1rem, 2.2vw, 1.8rem) !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: clamp(0.95rem, 2vw, 1.55rem) !important;
   padding: 0 !important;
   border: 0 !important;
   border-radius: 0 !important;
@@ -37877,40 +37877,188 @@ body:has(.creators-dashboard-system-page),
 }
 
 .creators-dashboard-system-page .creators-context-ribbon {
+  position: relative !important;
+  top: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+  display: grid !important;
+  grid-template-columns: minmax(10rem, 0.86fr) minmax(0, 2.25fr) minmax(12rem, 1.05fr) !important;
+  align-items: start;
   align-content: start;
+  gap: clamp(0.78rem, 1.4vw, 1rem) !important;
+  padding: clamp(0.38rem, 0.9vw, 0.62rem) 0 !important;
   border: 0 !important;
-  border-top: 1px solid var(--creators-line-soft) !important;
-  background: transparent !important;
+  border-block: 1px solid rgba(211, 247, 255, 0.052) !important;
+  border-radius: 0 !important;
+  background:
+    linear-gradient(180deg, rgba(109, 221, 255, 0.026), transparent 54%),
+    transparent !important;
+  box-shadow: none !important;
 }
 
 .creators-dashboard-system-page .creators-context-ribbon :is(.creators-sidebar-nav, .creators-sidebar-stack) {
+  display: grid !important;
+  gap: clamp(0.65rem, 1.15vw, 0.9rem) !important;
   border-block: 0 !important;
+  background: transparent !important;
+}
+
+.creators-dashboard-system-page .creators-context-ribbon .creators-sidebar-nav {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+
+.creators-dashboard-system-page .creators-context-ribbon .creators-sidebar-stack {
+  grid-template-columns: minmax(0, 1fr) !important;
 }
 
 .creators-dashboard-system-page .creators-context-ribbon .creators-sidebar-group {
-  flex: 1 1 min(100%, 15rem);
-  border-top: 1px solid rgba(211, 247, 255, 0.038);
-  padding-top: 0.58rem;
+  flex: 1 1 min(100%, 13rem);
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.creators-dashboard-system-page .creators-context-ribbon .creators-sidebar-group + .creators-sidebar-group {
+  padding-top: clamp(0.62rem, 1.05vw, 0.82rem) !important;
+  border-top: 1px solid rgba(211, 247, 255, 0.045) !important;
+}
+
+.creators-dashboard-system-page .creators-context-ribbon :is(.creator-group-title, .creators-side-note strong) {
+  color: rgba(243, 252, 255, 0.86);
+  font-size: 0.76rem;
+  letter-spacing: 0.035em;
+}
+
+.creators-dashboard-system-page .creators-context-ribbon :is(.creator-group-subtitle, .creators-side-note span) {
+  color: rgba(213, 242, 255, 0.58);
+  font-size: 0.78rem;
+  line-height: 1.42;
+}
+
+.creators-dashboard-system-page .creators-context-ribbon .creators-sidebar-group-list {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 0.12rem !important;
+  margin-top: 0.36rem;
+  border: 0 !important;
 }
 
 .creators-dashboard-system-page .creators-context-ribbon .creator-tab-btn {
+  display: grid !important;
+  grid-template-columns: minmax(6rem, 0.78fr) minmax(0, 1fr);
+  align-items: baseline;
+  column-gap: 0.52rem;
+  row-gap: 0.08rem;
   flex-basis: 100%;
   min-height: auto;
-  padding: 0.5rem 0 !important;
+  padding: 0.34rem 0.15rem 0.36rem 0.58rem !important;
   border: 0 !important;
+  border-left: 2px solid transparent !important;
   border-radius: 0 !important;
   background: transparent !important;
+  box-shadow: none !important;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    opacity 160ms ease;
+}
+
+.creators-dashboard-system-page .creators-context-ribbon .creator-tab-btn::before,
+.creators-dashboard-system-page .creators-context-ribbon .creator-tab-btn::after {
+  display: none !important;
+  content: none !important;
 }
 
 .creators-dashboard-system-page .creators-context-ribbon .creator-tab-btn[data-active="true"] {
-  border-left: 2px solid rgba(121, 235, 255, 0.48) !important;
-  padding-left: 0.58rem !important;
+  border-left-color: rgba(121, 235, 255, 0.72) !important;
+  background:
+    linear-gradient(90deg, rgba(101, 221, 255, 0.075), transparent 70%),
+    transparent !important;
+}
+
+.creators-dashboard-system-page .creators-context-ribbon .creator-tab-btn:hover,
+.creators-dashboard-system-page .creators-context-ribbon .creator-tab-btn:focus-visible {
+  border-left-color: rgba(121, 235, 255, 0.48) !important;
+  background:
+    linear-gradient(90deg, rgba(101, 221, 255, 0.052), transparent 72%),
+    transparent !important;
+}
+
+.creators-dashboard-system-page .creators-context-ribbon .creator-tab-head {
+  gap: 0.42rem;
+  align-items: center;
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  min-width: 0;
+}
+
+.creators-dashboard-system-page .creators-context-ribbon .creator-tab-title {
+  color: rgba(246, 253, 255, 0.88);
+  font-size: 0.86rem;
+  letter-spacing: -0.012em;
+}
+
+.creators-dashboard-system-page .creators-context-ribbon .creator-tab-chip {
+  padding: 0;
+  border: 0 !important;
+  background: transparent !important;
+  color: rgba(158, 232, 255, 0.66);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+}
+
+.creators-dashboard-system-page .creators-context-ribbon :is(.creator-tab-meta, .creator-tab-support) {
+  color: rgba(213, 242, 255, 0.54);
+  font-size: 0.72rem;
+  line-height: 1.3;
+  -webkit-line-clamp: 1;
+}
+
+.creators-dashboard-system-page .creators-context-ribbon .creator-tab-meta {
+  grid-column: 2;
+}
+
+.creators-dashboard-system-page .creators-context-ribbon .creator-tab-support {
+  grid-column: 2;
+  color: rgba(172, 226, 248, 0.5);
+  font-size: 0.68rem;
 }
 
 .creators-dashboard-system-page .creators-context-ribbon :is(.creators-side-note, .creators-wallet-row) {
-  border-top-color: rgba(211, 247, 255, 0.038) !important;
+  padding: clamp(0.52rem, 1vw, 0.72rem) 0 !important;
+  border: 0 !important;
+  border-top: 1px solid rgba(211, 247, 255, 0.038) !important;
+  border-radius: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
+}
+
+.creators-dashboard-system-page .creators-context-ribbon .creators-side-note:first-child {
+  border-top-color: transparent !important;
+}
+
+.creators-dashboard-system-page .creators-context-ribbon .creators-wallet-stack {
+  display: grid !important;
+  gap: 0;
+  margin-top: clamp(0.45rem, 0.9vw, 0.62rem);
+  border-top: 1px solid rgba(211, 247, 255, 0.04) !important;
+}
+
+.creators-dashboard-system-page .creators-context-ribbon .creators-wallet-row {
+  display: flex !important;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.creators-dashboard-system-page .creators-context-ribbon .creators-wallet-row span {
+  color: rgba(213, 242, 255, 0.55);
+}
+
+.creators-dashboard-system-page .creators-context-ribbon .creators-wallet-row strong {
+  color: rgba(248, 253, 255, 0.88);
+  font-size: 0.84rem;
 }
 
 .creators-dashboard-system-page .creators-context-ribbon :is(.btn-ea, .btn-link-ea) {
@@ -37933,12 +38081,26 @@ body:has(.creators-dashboard-system-page),
 .creators-dashboard-system-page .creator-active-summary-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: clamp(0.55rem, 1vw, 0.8rem);
+  gap: clamp(0.62rem, 1.05vw, 0.9rem);
 }
 
 .creators-dashboard-system-page .creator-active-summary-card {
-  flex: 1 1 min(100%, 12rem);
-  border-top-color: rgba(211, 247, 255, 0.038) !important;
+  flex: 1 1 min(100%, 13rem);
+  padding: clamp(0.58rem, 1vw, 0.78rem) 0 !important;
+  border: 0 !important;
+  border-top: 1px solid rgba(211, 247, 255, 0.052) !important;
+  background: transparent !important;
+}
+
+.creators-dashboard-system-page .creator-active-summary-card span {
+  color: rgba(159, 235, 255, 0.66);
+  font-size: 0.68rem;
+}
+
+.creators-dashboard-system-page .creator-active-summary-card strong {
+  color: rgba(245, 253, 255, 0.9);
+  font-size: 0.92rem;
+  line-height: 1.34;
 }
 
 .creators-dashboard-system-page .creator-post-briefing-flow {
@@ -38010,11 +38172,196 @@ body:has(.creators-dashboard-system-page),
 }
 
 .creators-dashboard-system-page .creator-empty-flow {
-  padding: clamp(0.8rem, 1.2vw, 1rem) 0 !important;
+  padding: clamp(0.78rem, 1.2vw, 1rem) 0 !important;
 }
 
 .creators-dashboard-system-page .creator-empty-flow .state-ea-title {
   font-size: clamp(1rem, 1.28vw, 1.16rem);
+}
+
+/* Creators Phase 5: active workspace should read as an operational field,
+   not as a sidebar-driven cockpit. */
+.creators-dashboard-system-page .creator-workspace-shell {
+  margin-top: clamp(0.25rem, 1vw, 0.8rem) !important;
+  padding-top: clamp(0.9rem, 1.8vw, 1.55rem) !important;
+}
+
+.creators-dashboard-system-page .creator-workspace-shell > .focus-shell-head {
+  padding-bottom: clamp(0.58rem, 1.1vw, 0.9rem) !important;
+  border-bottom-color: rgba(211, 247, 255, 0.052) !important;
+}
+
+.creators-dashboard-system-page .creator-workspace-shell .focus-shell-preview {
+  margin-bottom: clamp(0.78rem, 1.45vw, 1.08rem) !important;
+}
+
+.creators-dashboard-system-page .creator-workspace-main-stack {
+  gap: clamp(0.82rem, 1.45vw, 1.18rem) !important;
+}
+
+.creators-dashboard-system-page .creator-active-panel,
+.creators-dashboard-system-page .creator-workspace-card {
+  padding: clamp(0.98rem, 1.9vw, 1.55rem) clamp(1rem, 2vw, 1.7rem) !important;
+  border: 0 !important;
+  border-top: 1px solid rgba(211, 247, 255, 0.068) !important;
+  border-radius: 0 !important;
+  background:
+    radial-gradient(760px 280px at 14% 0%, rgba(102, 226, 255, 0.045), transparent 72%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.004) 78%),
+    transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
+.creators-dashboard-system-page .creator-active-panel {
+  gap: clamp(0.72rem, 1.35vw, 1.02rem) !important;
+}
+
+.creators-dashboard-system-page .creator-active-panel-head,
+.creators-dashboard-system-page .creator-workspace-card-modular .creator-workspace-header {
+  padding-bottom: clamp(0.64rem, 1.15vw, 0.88rem) !important;
+  border-bottom-color: rgba(211, 247, 255, 0.048) !important;
+}
+
+.creators-dashboard-system-page .creator-active-panel-title,
+.creators-dashboard-system-page .creator-workspace-card h3 {
+  font-size: clamp(1.42rem, 1.95vw, 2rem) !important;
+  letter-spacing: -0.032em;
+}
+
+.creators-dashboard-system-page .creator-active-panel-copy,
+.creators-dashboard-system-page .creator-workspace-subtitle {
+  color: rgba(218, 244, 255, 0.62) !important;
+}
+
+.creators-dashboard-system-page .creator-active-panel-meta {
+  align-items: center;
+  gap: 0.34rem !important;
+}
+
+.creators-dashboard-system-page .creator-active-panel-meta .premium-badge {
+  padding: 0.28rem 0.5rem;
+  border-color: rgba(211, 247, 255, 0.095) !important;
+  background: rgba(255, 255, 255, 0.018) !important;
+  color: rgba(218, 244, 255, 0.68) !important;
+  box-shadow: none !important;
+}
+
+.creators-dashboard-system-page .creator-active-panel-meta .premium-badge-warning {
+  color: rgba(181, 236, 255, 0.82) !important;
+}
+
+.creators-dashboard-system-page .creator-active-stage-note {
+  display: grid;
+  grid-template-columns: minmax(8rem, 0.36fr) minmax(0, 1fr);
+  align-items: baseline;
+  gap: clamp(0.55rem, 1vw, 0.9rem);
+  padding: clamp(0.62rem, 1.05vw, 0.82rem) 0 !important;
+  border: 0 !important;
+  border-top: 1px solid rgba(211, 247, 255, 0.048) !important;
+  background: transparent !important;
+}
+
+.creators-dashboard-system-page .creator-active-stage-note strong {
+  color: rgba(239, 251, 255, 0.86);
+  font-size: 0.82rem;
+}
+
+.creators-dashboard-system-page .creator-active-stage-note span {
+  color: rgba(213, 242, 255, 0.58);
+  line-height: 1.45;
+}
+
+.creators-dashboard-system-page .creator-active-panel-actions {
+  gap: 0.5rem !important;
+  padding-top: 0 !important;
+}
+
+.creators-dashboard-system-page .creator-active-panel-actions .btn-ghost,
+.creators-dashboard-system-page .creator-active-panel-actions .btn-link-ea.btn-ghost {
+  min-width: auto !important;
+  padding-inline: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: rgba(223, 247, 255, 0.78) !important;
+}
+
+.creators-dashboard-system-page .creator-active-panel-actions .btn-secondary {
+  border-color: rgba(111, 226, 255, 0.24) !important;
+  background:
+    linear-gradient(180deg, rgba(98, 220, 255, 0.1), rgba(98, 220, 255, 0.035)),
+    transparent !important;
+  box-shadow: none !important;
+}
+
+.creators-dashboard-system-page .creator-output-card,
+.creators-dashboard-system-page .creator-empty-state {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.006)),
+    transparent !important;
+}
+
+.creators-dashboard-system-page .state-ea.creator-empty-state,
+.creators-dashboard-system-page .creator-empty-state {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(0.58rem, 1vw, 0.78rem) !important;
+  padding: clamp(0.78rem, 1.3vw, 1rem) 0 !important;
+  border: 0 !important;
+  border-top: 1px solid rgba(211, 247, 255, 0.06) !important;
+  border-left: 0 !important;
+  border-radius: 0 !important;
+  background:
+    linear-gradient(90deg, rgba(93, 223, 255, 0.036), transparent 58%),
+    transparent !important;
+  box-shadow: none !important;
+}
+
+.creators-dashboard-system-page .state-ea.creator-empty-state::before,
+.creators-dashboard-system-page .state-ea.creator-empty-state::after {
+  display: none !important;
+}
+
+.creators-dashboard-system-page .creator-empty-state .state-ea-title {
+  color: rgba(246, 253, 255, 0.9);
+  font-size: clamp(1rem, 1.22vw, 1.12rem) !important;
+}
+
+.creators-dashboard-system-page .creator-empty-state .state-ea-text {
+  max-width: 52rem;
+  color: rgba(218, 244, 255, 0.62) !important;
+}
+
+.creators-dashboard-system-page .creator-empty-state .operational-state-meta,
+.creators-dashboard-system-page .creator-empty-state .operational-state-meta-grid,
+.creators-dashboard-system-page .creator-empty-state [class*="meta"] {
+  gap: 0.48rem !important;
+}
+
+.creators-dashboard-system-page .creator-empty-state .operational-state-meta > *,
+.creators-dashboard-system-page .creator-empty-state .operational-state-meta-grid > *,
+.creators-dashboard-system-page .creator-empty-state .operational-state-meta-item,
+.creators-dashboard-system-page .creator-empty-state [class*="meta"] > * {
+  border: 0 !important;
+  border-top: 1px solid rgba(211, 247, 255, 0.06) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.creators-dashboard-system-page .creator-empty-state .state-ea-actions,
+.creators-dashboard-system-page .creator-output-card-actions,
+.creators-dashboard-system-page .creator-inline-actions {
+  gap: 0.52rem !important;
+  align-items: center;
+}
+
+.creators-dashboard-system-page .creator-empty-state .state-ea-actions .btn-ghost,
+.creators-dashboard-system-page .creator-output-card-actions .btn-ghost,
+.creators-dashboard-system-page .creator-inline-actions .btn-ghost {
+  border-color: rgba(211, 247, 255, 0.08) !important;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
 @media (max-width: 1320px) {
@@ -38043,8 +38390,21 @@ body:has(.creators-dashboard-system-page),
     justify-self: stretch;
   }
 
-  .creators-dashboard-system-page .creators-context-ribbon :is(.creators-sidebar-nav, .creators-sidebar-stack) {
-    grid-template-columns: minmax(0, 1fr);
+  .creators-dashboard-system-page .creators-context-ribbon {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .creators-dashboard-system-page .creators-context-ribbon .creators-sidebar-nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .creators-dashboard-system-page .creators-context-ribbon .creators-sidebar-stack {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: clamp(0.62rem, 1.6vw, 0.95rem) !important;
+  }
+
+  .creators-dashboard-system-page .creators-context-ribbon .creators-side-note {
+    border-top-color: rgba(211, 247, 255, 0.042) !important;
   }
 }
 
@@ -38138,5 +38498,56 @@ body:has(.creators-dashboard-system-page),
 
   .creators-dashboard-system-page .creator-workspace-shell :is(textarea.field-ea, .creator-prompt-textarea) {
     min-height: 6.6rem;
+  }
+
+  .creators-dashboard-system-page .creator-workspace-shell > .focus-shell-head {
+    gap: 0.58rem;
+  }
+
+  .creators-dashboard-system-page .creator-workspace-grid {
+    gap: clamp(0.82rem, 3vw, 1.15rem) !important;
+  }
+
+  .creators-dashboard-system-page .creators-context-ribbon {
+    gap: 0.7rem !important;
+    padding-block: 0.5rem !important;
+  }
+
+  .creators-dashboard-system-page .creators-context-ribbon :is(.creators-sidebar-nav, .creators-sidebar-stack),
+  .creators-dashboard-system-page .creators-context-ribbon .creators-sidebar-nav,
+  .creators-dashboard-system-page .creators-context-ribbon .creators-sidebar-stack {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .creators-dashboard-system-page .creators-context-ribbon .creators-sidebar-group + .creators-sidebar-group {
+    padding-top: 0.46rem !important;
+  }
+
+  .creators-dashboard-system-page .creators-context-ribbon .creator-tab-btn {
+    padding-block: 0.42rem !important;
+  }
+
+  .creators-dashboard-system-page .creators-context-ribbon :is(.creator-tab-meta, .creator-tab-support) {
+    -webkit-line-clamp: 1;
+  }
+
+  .creators-dashboard-system-page .creator-active-panel,
+  .creators-dashboard-system-page .creator-workspace-card {
+    padding: 0.95rem 0 !important;
+  }
+
+  .creators-dashboard-system-page .creator-active-stage-note {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.26rem;
+  }
+
+  .creators-dashboard-system-page .creator-active-panel-meta .premium-badge {
+    padding: 0.24rem 0.42rem;
+  }
+
+  .creators-dashboard-system-page .creator-empty-state .state-ea-actions,
+  .creators-dashboard-system-page .creator-output-card-actions,
+  .creators-dashboard-system-page .creator-inline-actions {
+    align-items: stretch;
   }
 }
