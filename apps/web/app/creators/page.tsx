@@ -349,7 +349,7 @@ function CreatorsPageContent() {
       data-creators-composition="continuous-field"
     >
       <section className="creators-hero creators-hero-open">
-        <div className="hero-split creators-hero-split creators-hero-shell">
+        <div className="creators-hero-scene creators-hero-split creators-hero-shell" data-creators-hero="single-scene">
           <div className="hero-copy creators-hero-copy">
             <div className="hero-title-stack">
               <p className="section-kicker">Creators • criação guiada</p>

@@ -37383,12 +37383,13 @@ body:has(.creators-dashboard-system-page),
 
 .creators-dashboard-system-page .creators-hero-shell {
   position: relative;
-  grid-template-columns: minmax(18rem, 0.64fr) minmax(0, 1fr) !important;
-  align-items: end;
-  width: min(100%, 1120px);
+  grid-template-columns: minmax(0, 1fr) !important;
+  justify-items: center;
+  align-items: start;
+  width: min(100%, 980px);
   margin-inline: auto;
-  gap: clamp(0.9rem, 2vw, 2.15rem) !important;
-  padding-block: clamp(0.35rem, 0.8vw, 0.8rem);
+  gap: clamp(0.68rem, 1.45vw, 1.28rem) !important;
+  padding-block: clamp(0.28rem, 0.72vw, 0.68rem);
 }
 
 .creators-dashboard-system-page .creators-hero-shell::before {
@@ -37405,40 +37406,72 @@ body:has(.creators-dashboard-system-page),
   z-index: -1;
 }
 
+.creators-dashboard-system-page .creators-hero-copy {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  width: min(100%, 760px);
+}
+
+.creators-dashboard-system-page .creators-hero-copy .hero-title-stack {
+  display: grid;
+  justify-items: center;
+  gap: clamp(0.48rem, 0.9vw, 0.72rem);
+}
+
 .creators-dashboard-system-page .creators-hero-copy h1 {
-  max-width: 11.8ch;
-  font-size: clamp(1.84rem, 2.22vw, 2.45rem) !important;
+  max-width: 18ch;
+  font-size: clamp(2rem, 3.18vw, 3.42rem) !important;
   line-height: 1.045 !important;
   letter-spacing: -0.032em !important;
 }
 
 .creators-dashboard-system-page .creators-hero-lead {
-  max-width: 29rem;
+  max-width: 42rem;
   color: var(--creators-text-secondary) !important;
+}
+
+.creators-dashboard-system-page .hero-meta-row-compact {
+  justify-content: center;
+  margin-top: clamp(0.34rem, 0.72vw, 0.58rem);
 }
 
 .creators-dashboard-system-page .creators-entry-field {
   width: 100%;
-  max-width: none;
-  justify-self: stretch;
-  align-self: end;
-  padding: clamp(0.9rem, 1.35vw, 1.1rem) 0 clamp(0.58rem, 0.95vw, 0.82rem) clamp(1rem, 1.65vw, 1.45rem) !important;
+  max-width: 800px;
+  justify-self: center;
+  align-self: start;
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  padding: clamp(0.72rem, 1.15vw, 0.95rem) 0 clamp(0.5rem, 0.85vw, 0.76rem) !important;
   border: 0 !important;
-  border-top: 1px solid rgba(178, 242, 255, 0.07) !important;
+  border-top: 1px solid rgba(178, 242, 255, 0.055) !important;
+  border-bottom: 1px solid rgba(178, 242, 255, 0.04) !important;
   border-radius: 0 !important;
   background:
-    radial-gradient(680px 260px at 18% 8%, rgba(116, 223, 255, 0.055), transparent 74%),
-    linear-gradient(90deg, rgba(116, 223, 255, 0.024), rgba(68, 174, 255, 0.014) 48%, transparent 100%) !important;
+    radial-gradient(720px 280px at 50% 6%, rgba(116, 223, 255, 0.07), transparent 74%),
+    linear-gradient(90deg, transparent, rgba(116, 223, 255, 0.028) 20%, rgba(68, 174, 255, 0.018) 50%, rgba(116, 223, 255, 0.025) 80%, transparent) !important;
   box-shadow: none !important;
+}
+
+.creators-dashboard-system-page .creators-entry-field .section-stack-tight {
+  display: grid;
+  justify-items: center;
+  max-width: 34rem;
 }
 
 .creators-dashboard-system-page .creators-entry-prompt-shell {
   border: 0 !important;
-  border-left: 1px solid rgba(143, 233, 255, 0.15) !important;
+  border-top: 1px solid rgba(143, 233, 255, 0.09) !important;
+  border-bottom: 1px solid rgba(143, 233, 255, 0.055) !important;
   border-radius: 0 !important;
-  background: linear-gradient(90deg, rgba(128, 229, 255, 0.045), transparent 86%) !important;
+  background: linear-gradient(90deg, transparent, rgba(128, 229, 255, 0.048) 18%, rgba(255, 255, 255, 0.012) 52%, transparent 100%) !important;
   box-shadow: none !important;
-  padding: 0.74rem 0 0.74rem 0.9rem !important;
+  width: min(100%, 620px);
+  margin-top: clamp(0.58rem, 1vw, 0.82rem);
+  padding: 0.74rem clamp(0.2rem, 1vw, 0.8rem) !important;
+  text-align: center;
 }
 
 .creators-dashboard-system-page .creators-hero-thread {
@@ -37446,10 +37479,10 @@ body:has(.creators-dashboard-system-page),
   grid-column: 1 / -1;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: clamp(0.7rem, 1.45vw, 1.25rem);
-  width: min(100%, 880px);
-  margin-top: clamp(-0.35rem, -0.35vw, -0.08rem);
-  border-block: 1px solid rgba(211, 247, 255, 0.045) !important;
-  padding-block: clamp(0.62rem, 1vw, 0.95rem) !important;
+  width: min(100%, 830px);
+  margin-top: clamp(0.08rem, 0.32vw, 0.28rem);
+  border-block: 1px solid rgba(211, 247, 255, 0.038) !important;
+  padding-block: clamp(0.5rem, 0.82vw, 0.74rem) !important;
 }
 
 .creators-dashboard-system-page .creators-hero-signal {
@@ -37480,7 +37513,8 @@ body:has(.creators-dashboard-system-page),
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: clamp(0.52rem, 1vw, 0.76rem);
-  margin-top: clamp(0.85rem, 1.45vw, 1.18rem);
+  width: min(100%, 620px);
+  margin-top: clamp(0.74rem, 1.2vw, 1rem);
 }
 
 .creators-dashboard-system-page .creators-entry-actions .btn-primary {
@@ -37499,6 +37533,7 @@ body:has(.creators-dashboard-system-page),
 .creators-dashboard-system-page .creators-entry-type-strip {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 0.46rem;
   margin-top: clamp(0.62rem, 1.05vw, 0.86rem);
 }
@@ -37520,6 +37555,7 @@ body:has(.creators-dashboard-system-page),
 }
 
 .creators-dashboard-system-page .creators-entry-account-actions {
+  justify-content: center;
   margin-top: clamp(0.72rem, 1.2vw, 1rem);
   padding-top: clamp(0.48rem, 0.9vw, 0.7rem);
   border-top-color: rgba(191, 239, 255, 0.045) !important;
