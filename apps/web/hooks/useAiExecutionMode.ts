@@ -161,9 +161,9 @@ export function useAiExecutionMode({
       return "Seu plano mantém a execução protegida. Personalização manual aparece apenas quando essa camada estiver liberada.";
     }
     if (capabilities.manualModeLevel === "limited") {
-      return "Manual limitado: você fixa a rota principal, mas o backend continua fechando qualquer combinação fora do plano.";
+      return "Manual limitado: você escolhe a rota principal; opções fora do plano continuam protegidas.";
     }
-    return "Manual continua protegido pelo backend. Se a UI expuser algo acima do seu plano, a execução será bloqueada.";
+    return "Manual protegido: se alguma opção ficar fora do plano, a geração é bloqueada antes de consumir créditos.";
   }, [capabilities.featureAvailable, capabilities.manualAvailable, capabilities.manualModeLevel, capabilities.mockOnly]);
 
   const qualityOutputsLabel = useMemo(() => {
