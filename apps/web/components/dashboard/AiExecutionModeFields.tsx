@@ -42,8 +42,8 @@ export function AiExecutionModeFields({
   const showTierSelect = mode === "manual" && capabilities.manualModeLevel === "full" && hasMultipleOptions(capabilities.tierOptions);
 
   return (
-    <>
-      <div className="creator-section-label">Execução da IA</div>
+    <div className="creator-ai-assist-fields">
+      <div className="creator-section-label">Como a IA deve ajudar</div>
       <div className="form-grid-2 creator-field-grid">
         <label className="field-label-ea">
           <span>Modo</span>
@@ -80,30 +80,32 @@ export function AiExecutionModeFields({
         ) : null}
       </div>
 
-      <div className="helper-note-inline">{modeDetail}</div>
-      {manualSelectionLabel ? (
-        <div className="helper-note-subtle">Rota manual atual: {manualSelectionLabel}.</div>
-      ) : null}
-      {qualityOutputsLabel ? (
-        <div className="helper-note-subtle">Qualidade máxima do plano nesta trilha: {qualityOutputsLabel}.</div>
-      ) : null}
-      <div className="helper-note-subtle">{availabilityNote}</div>
-      {mode !== "manual" ? (
-        <div className="helper-note-subtle">
-          {persistingPreference
-            ? "Salvando sua preferência automática para a conta..."
-            : "Quando você escolhe um perfil automático, ele vira o padrão da sua conta nesta experiência."}
-        </div>
-      ) : (
-        <div className="helper-note-subtle">
-          Manual vale só para esta execução e nunca altera a regra do seu plano.
-        </div>
-      )}
-      {preferenceError ? (
-        <div className="helper-note-subtle">
-          Não foi possível salvar a preferência automática agora. A execução atual continua válida nesta tela.
-        </div>
-      ) : null}
-    </>
+      <div className="creator-ai-assist-notes">
+        <div className="helper-note-inline">{modeDetail}</div>
+        {manualSelectionLabel ? (
+          <div className="helper-note-subtle">Rota manual atual: {manualSelectionLabel}.</div>
+        ) : null}
+        {qualityOutputsLabel ? (
+          <div className="helper-note-subtle">Qualidade máxima do plano nesta trilha: {qualityOutputsLabel}.</div>
+        ) : null}
+        <div className="helper-note-subtle">{availabilityNote}</div>
+        {mode !== "manual" ? (
+          <div className="helper-note-subtle">
+            {persistingPreference
+              ? "Salvando sua preferência automática para a conta..."
+              : "Quando você escolhe um perfil automático, ele vira o padrão da sua conta nesta experiência."}
+          </div>
+        ) : (
+          <div className="helper-note-subtle">
+            Manual vale só para esta execução e nunca altera a regra do seu plano.
+          </div>
+        )}
+        {preferenceError ? (
+          <div className="helper-note-subtle">
+            Não foi possível salvar a preferência automática agora. A execução atual continua válida nesta tela.
+          </div>
+        ) : null}
+      </div>
+    </div>
   );
 }

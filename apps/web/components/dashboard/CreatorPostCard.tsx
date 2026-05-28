@@ -677,8 +677,27 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
         </p>
       </div>
 
-      <div className="creator-workspace-zones creator-post-briefing-flow">
-      <div id="creator-post-config" className="creator-form-zone creator-form-zone-setup" data-step-label="1. Formato e canal">
+      <div className="creator-briefing-stepper" aria-label="Fluxo do briefing">
+        <div className="creator-briefing-step-pill" data-step-state="active">
+          <span>1</span>
+          <strong>Formato e canal</strong>
+          <small>onde a peça vai sair</small>
+        </div>
+        <div className="creator-briefing-step-pill">
+          <span>2</span>
+          <strong>Contexto</strong>
+          <small>o que a IA precisa entender</small>
+        </div>
+        <div className="creator-briefing-step-pill">
+          <span>3</span>
+          <strong>IA e saída</strong>
+          <small>revisar, gerar e continuar</small>
+        </div>
+      </div>
+
+      <div className="creator-workspace-zones creator-post-briefing-flow creator-briefing-guided-flow">
+      <section className="creator-briefing-step creator-briefing-step-channel" data-step-index="1" aria-label="Etapa 1: formato e canal">
+      <div id="creator-post-config" className="creator-form-zone creator-form-zone-setup" data-step-label="Formato e canal">
         <p className="creator-zone-title">Como deseja gerar</p>
         <p className="creator-zone-copy">Defina plataforma, formato, objetivo e idioma antes de detalhar o tema.</p>
         <div className="form-grid-2 creator-field-grid">
@@ -732,8 +751,10 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
         </label>
         </div>
       </div>
+      </section>
 
-      <div className="creator-form-zone creator-form-zone-brief" data-step-label="2. Contexto e objetivo">
+      <section className="creator-briefing-step creator-briefing-step-context" data-step-index="2" aria-label="Etapa 2: contexto e briefing">
+      <div className="creator-form-zone creator-form-zone-brief" data-step-label="Contexto e objetivo">
         <p className="creator-zone-title">Contexto e briefing</p>
         <p className="creator-zone-copy">Descreva o assunto central. A qualidade do briefing melhora legenda, CTA e variações.</p>
         <label className="field-label-ea">
@@ -751,10 +772,12 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
           />
         </label>
       </div>
+      </section>
 
-      <div className="creator-context-zone creator-form-zone-ai" data-step-label="3. IA e estimativa">
-        <p className="creator-zone-title">Estimativa e contexto</p>
-        <p className="creator-zone-copy">Revise o consumo previsto e escolha entre aplicar a sugestão automaticamente ou revisar manualmente.</p>
+      <section className="creator-briefing-step creator-briefing-step-ai" data-step-index="3" aria-label="Etapa 3: IA, estimativa e saída">
+      <div className="creator-context-zone creator-form-zone-ai" data-step-label="IA, estimativa e saída">
+        <p className="creator-zone-title">IA, estimativa e saída</p>
+        <p className="creator-zone-copy">Escolha como a IA apoia a geração, confirme o consumo previsto e siga para a revisão.</p>
         <AiExecutionModeFields
           capabilities={execution.capabilities}
           mode={execution.mode}
@@ -1201,6 +1224,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
           </div>
         </div>
       )}
+      </section>
       </div>
     </div>
   );
