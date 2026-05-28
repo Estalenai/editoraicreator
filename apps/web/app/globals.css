@@ -38282,8 +38282,16 @@ body:has(.creators-dashboard-system-page),
   grid-column: 1;
 }
 
-.creators-dashboard-system-page .creator-briefing-step-ai > :is(.creator-journey-line, .creator-generate-actions, #creator-post-planner, .creator-loading-panel, .creator-inline-panel, .creator-empty-flow, .creator-result-stack) {
+.creators-dashboard-system-page .creator-briefing-step-ai > .creator-final-flow-panel {
   grid-column: 2;
+}
+
+.creators-dashboard-system-page .creator-final-flow-panel {
+  display: grid;
+  align-self: start;
+  min-width: 0;
+  gap: clamp(0.62rem, 1vw, 0.86rem);
+  padding-top: clamp(0.08rem, 0.45vw, 0.38rem);
 }
 
 .creators-dashboard-system-page .creator-workspace-shell .field-label-ea {
@@ -38391,17 +38399,17 @@ body:has(.creators-dashboard-system-page),
   font-size: 0.75rem;
 }
 
-.creators-dashboard-system-page .creator-journey-line {
+.creators-dashboard-system-page .creator-final-flow-panel .creator-journey-line {
   display: grid !important;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 0.48rem !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(0.62rem, 1vw, 0.82rem) !important;
   padding: 0 !important;
   border: 0 !important;
   background: transparent !important;
 }
 
-.creators-dashboard-system-page .creator-journey-line > .creator-planner-field {
-  padding: 0.56rem 0 !important;
+.creators-dashboard-system-page .creator-final-flow-panel .creator-journey-line > .creator-planner-field {
+  padding: 0.58rem 0 !important;
   border: 0 !important;
   border-top: 1px solid rgba(211, 247, 255, 0.058) !important;
   border-radius: 0 !important;
@@ -38409,32 +38417,88 @@ body:has(.creators-dashboard-system-page),
   box-shadow: none !important;
 }
 
-.creators-dashboard-system-page .creator-generate-actions {
+.creators-dashboard-system-page .creator-final-flow-panel .creator-generate-actions {
   padding-top: 0.68rem !important;
   border-top: 1px solid rgba(211, 247, 255, 0.055);
 }
 
-.creators-dashboard-system-page .creator-generate-actions .creator-action-buttons {
+.creators-dashboard-system-page .creator-final-flow-panel .creator-generate-actions .creator-action-buttons {
   display: flex;
   flex-wrap: wrap;
   gap: 0.52rem;
 }
 
-.creators-dashboard-system-page .creator-empty-flow {
+.creators-dashboard-system-page .creator-final-flow-panel .creator-empty-flow {
   align-self: start;
-  padding: clamp(0.72rem, 1.1vw, 0.92rem) 0 !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(0.52rem, 0.9vw, 0.72rem) !important;
+  padding: clamp(0.58rem, 1vw, 0.82rem) 0 0 !important;
   border-top: 1px solid rgba(211, 247, 255, 0.06) !important;
-  background:
-    linear-gradient(90deg, rgba(93, 223, 255, 0.036), transparent 58%),
-    transparent !important;
+  background: transparent !important;
 }
 
-.creators-dashboard-system-page .creator-empty-flow .state-ea-title {
-  font-size: clamp(0.98rem, 1.16vw, 1.08rem) !important;
+.creators-dashboard-system-page .creator-final-flow-panel .state-ea.creator-empty-state.creator-empty-flow {
+  border: 0 !important;
+  border-top: 1px solid rgba(211, 247, 255, 0.06) !important;
+  border-left: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
-.creators-dashboard-system-page .creator-empty-flow .state-ea-text {
-  max-width: 36rem;
+.creators-dashboard-system-page .creator-final-flow-panel .state-ea.creator-empty-state.creator-empty-flow::before,
+.creators-dashboard-system-page .creator-final-flow-panel .state-ea.creator-empty-state.creator-empty-flow::after {
+  display: none !important;
+}
+
+.creators-dashboard-system-page .creator-final-flow-panel .creator-empty-flow .operational-state-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.34rem;
+}
+
+.creators-dashboard-system-page .creator-final-flow-panel .creator-empty-flow .operational-state-badge {
+  width: fit-content;
+  border-color: rgba(126, 231, 255, 0.16);
+  background: rgba(91, 223, 255, 0.045);
+  color: rgba(214, 246, 255, 0.72);
+  font-size: 0.62rem;
+  letter-spacing: 0.095em;
+}
+
+.creators-dashboard-system-page .creator-final-flow-panel .creator-empty-flow .state-ea-title {
+  color: rgba(245, 253, 255, 0.82);
+  font-size: clamp(0.92rem, 1.05vw, 1rem) !important;
+  letter-spacing: -0.012em;
+}
+
+.creators-dashboard-system-page .creator-final-flow-panel .creator-empty-flow .state-ea-text {
+  max-width: 100%;
+  color: rgba(214, 244, 255, 0.56) !important;
+  font-size: clamp(0.76rem, 0.86vw, 0.82rem);
+  line-height: 1.45;
+}
+
+.creators-dashboard-system-page .creator-final-flow-panel .creator-empty-flow .operational-state-meta-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 0.5rem !important;
+}
+
+.creators-dashboard-system-page .creator-final-flow-panel .creator-empty-flow .state-ea-actions {
+  margin-top: 0 !important;
+  padding-top: 0.16rem;
+  border-top: 0 !important;
+}
+
+.creators-dashboard-system-page .creator-final-flow-panel .creator-empty-flow .state-ea-actions .btn-primary {
+  min-width: min(100%, 12.5rem);
+}
+
+.creators-dashboard-system-page .creator-final-flow-panel .creator-empty-flow .state-ea-actions .btn-ghost {
+  padding-inline: 0.2rem !important;
+  border-color: transparent !important;
+  background: transparent !important;
 }
 
 /* Creators Phase 5: active workspace should read as an operational field,
@@ -38643,6 +38707,14 @@ body:has(.creators-dashboard-system-page),
     gap: clamp(0.92rem, 2.5vw, 1.65rem) !important;
   }
 
+  .creators-dashboard-system-page .creator-briefing-step-ai {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .creators-dashboard-system-page .creator-briefing-step-ai > .creator-final-flow-panel {
+    grid-column: 1;
+  }
+
   .creators-dashboard-system-page .creators-entry-field {
     max-width: 100%;
     justify-self: stretch;
@@ -38756,6 +38828,15 @@ body:has(.creators-dashboard-system-page),
 
   .creators-dashboard-system-page .creator-workspace-shell :is(textarea.field-ea, .creator-prompt-textarea) {
     min-height: 6.6rem;
+  }
+
+  .creators-dashboard-system-page .creator-final-flow-panel .creator-journey-line,
+  .creators-dashboard-system-page .creator-final-flow-panel .creator-empty-flow .operational-state-meta-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .creators-dashboard-system-page .creator-final-flow-panel .creator-empty-flow .state-ea-actions {
+    align-items: stretch;
   }
 
   .creators-dashboard-system-page .creator-workspace-shell > .focus-shell-head {

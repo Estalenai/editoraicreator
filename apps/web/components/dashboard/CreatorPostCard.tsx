@@ -835,6 +835,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
         {!hasCredits && <div className="inline-alert inline-alert-error">Saldo insuficiente para gerar. Compre Creator Coins avulsas para continuar.</div>}
       </div>
 
+      <div className="creator-final-flow-panel">
       <div className="creator-planner-field-grid creator-post-journey-grid creator-journey-line">
         <div className="creator-planner-field">
           <span>Saída esperada</span>
@@ -846,74 +847,78 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
         </div>
       </div>
 
-      <div className="creator-actions-row creator-generate-actions">
-        {!plannerOpen ? (
-        <div className="creator-action-buttons">
-          <button
-            onClick={openPlanner}
-            disabled={isBusy || !theme.trim() || !hasCredits}
-            className={`btn-ea btn-primary ${isBusy || !theme.trim() || !hasCredits ? "creator-button-busy" : ""}`}
-          >
-            {isBusy ? "Gerando..." : displayResult ? "Gerar nova versão" : "Revisar planejamento e gerar"}
-          </button>
+      {(displayResult || plannerOpen || error || success || copyMsg || saveMsg) ? (
+        <div className="creator-actions-row creator-generate-actions">
+          {!plannerOpen ? (
+          <div className="creator-action-buttons">
+            {displayResult ? (
+              <>
+              <button
+                onClick={openPlanner}
+                disabled={isBusy || !theme.trim() || !hasCredits}
+                className={`btn-ea btn-primary ${isBusy || !theme.trim() || !hasCredits ? "creator-button-busy" : ""}`}
+              >
+                {isBusy ? "Gerando..." : "Gerar nova versão"}
+              </button>
 
-          {displayResult ? (
-            <button
-              onClick={openPlanner}
-              disabled={isBusy || !theme.trim() || !hasCredits}
-              className={`btn-ea btn-secondary ${isBusy || !theme.trim() || !hasCredits ? "creator-button-busy-soft" : ""}`}
-            >
-              Ajustar planejamento
-            </button>
-          ) : null}
-        </div>
-        ) : (
-          <div className="helper-note-inline">Revise o planejamento abaixo antes de executar a geração.</div>
-        )}
-
-        {(error || success || copyMsg || saveMsg) ? (
-          <div className="creator-feedback-stack">
-            {error ? (
-              <OperationalState
-                kind="error"
-                title="Falha na geração"
-                description={toUserFacingError(error, "Ajuste o briefing e tente novamente.")}
-                meta={[
-                  { label: "Plataforma", value: platform },
-                  { label: "Objetivo", value: objective || "Não definido" },
-                ]}
-                compact
-              />
-            ) : null}
-            {success ? (
-              <OperationalState
-                kind="success"
-                title={resultProvider === "mock" || resultReplay ? "Geração concluída em modo beta" : "Geração concluída"}
-                description={success}
-                meta={[
-                  { label: "Legenda", value: `${caption.trim().length} caracteres` },
-                  { label: "Variações", value: displayResult?.variations.length || 0 },
-                  { label: "Provedor", value: resultProvider || "Editor AI Creator" },
-                ]}
-                compact
-              />
-            ) : null}
-            {copyMsg ? <div className="creator-feedback-note">{copyMsg}</div> : null}
-            {saveMsg ? (
-              <OperationalState
-                kind={needsProjectSync ? "unsaved" : "saved"}
-                title={needsProjectSync ? "Projeto precisa de nova sincronização" : "Projeto sincronizado"}
-                description={saveMsg}
-                meta={[
-                  { label: "Projeto", value: savedProjectId ? "Vinculado" : "Ainda não criado" },
-                  { label: "Próximo passo", value: needsProjectSync ? "Atualizar e abrir no editor" : "Pronto para abrir no editor" },
-                ]}
-                compact
-              />
+              <button
+                onClick={openPlanner}
+                disabled={isBusy || !theme.trim() || !hasCredits}
+                className={`btn-ea btn-secondary ${isBusy || !theme.trim() || !hasCredits ? "creator-button-busy-soft" : ""}`}
+              >
+                Ajustar planejamento
+              </button>
+              </>
             ) : null}
           </div>
-        ) : null}
-      </div>
+          ) : (
+            <div className="helper-note-inline">Revise o planejamento abaixo antes de executar a geração.</div>
+          )}
+
+          {(error || success || copyMsg || saveMsg) ? (
+            <div className="creator-feedback-stack">
+              {error ? (
+                <OperationalState
+                  kind="error"
+                  title="Falha na geração"
+                  description={toUserFacingError(error, "Ajuste o briefing e tente novamente.")}
+                  meta={[
+                    { label: "Plataforma", value: platform },
+                    { label: "Objetivo", value: objective || "Não definido" },
+                  ]}
+                  compact
+                />
+              ) : null}
+              {success ? (
+                <OperationalState
+                  kind="success"
+                  title={resultProvider === "mock" || resultReplay ? "Geração concluída em modo beta" : "Geração concluída"}
+                  description={success}
+                  meta={[
+                    { label: "Legenda", value: `${caption.trim().length} caracteres` },
+                    { label: "Variações", value: displayResult?.variations.length || 0 },
+                    { label: "Provedor", value: resultProvider || "Editor AI Creator" },
+                  ]}
+                  compact
+                />
+              ) : null}
+              {copyMsg ? <div className="creator-feedback-note">{copyMsg}</div> : null}
+              {saveMsg ? (
+                <OperationalState
+                  kind={needsProjectSync ? "unsaved" : "saved"}
+                  title={needsProjectSync ? "Projeto precisa de nova sincronização" : "Projeto sincronizado"}
+                  description={saveMsg}
+                  meta={[
+                    { label: "Projeto", value: savedProjectId ? "Vinculado" : "Ainda não criado" },
+                    { label: "Próximo passo", value: needsProjectSync ? "Atualizar e abrir no editor" : "Pronto para abrir no editor" },
+                  ]}
+                  compact
+                />
+              ) : null}
+            </div>
+          ) : null}
+        </div>
+      ) : null}
 
       {plannerOpen ? (
         <div id="creator-post-planner">
@@ -1224,6 +1229,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
           </div>
         </div>
       )}
+      </div>
       </section>
       </div>
     </div>
