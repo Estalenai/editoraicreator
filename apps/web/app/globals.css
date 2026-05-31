@@ -39516,8 +39516,103 @@ body:has(.creators-lasy-system-page),
 .creators-lasy-system-page :is(.creators-proof-section, .creators-hero-core-section, .creators-secondary-section, .creator-workspace-shell) {
   padding-block: clamp(2.45rem, 4.8vw, 5.1rem) !important;
   background: transparent !important;
+  border: 0 !important;
   border-color: rgba(235, 249, 255, 0.026) !important;
+  border-radius: 0 !important;
   box-shadow: none !important;
+  overflow: visible !important;
+}
+
+@media (min-width: 1800px) {
+  .creators-lasy-system-page {
+    --creators-lasy-max: min(86vw, 218rem);
+    --creators-lasy-core: min(72vw, 176rem);
+  }
+
+  .creators-lasy-system-page .creators-lasy-hero-shell {
+    width: min(100%, 72rem);
+  }
+
+  .creators-lasy-system-page .creators-core-canvas {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    column-gap: clamp(4rem, 7vw, 16rem) !important;
+    row-gap: clamp(4rem, 6vw, 12rem) !important;
+    align-items: start;
+  }
+
+  .creators-lasy-system-page .creators-core-canvas::before,
+  .creators-lasy-system-page .creators-core-canvas::after {
+    inset: clamp(-120px, -6vw, -80px) 0 auto !important;
+    min-height: clamp(40rem, 72vw, 120rem);
+    background:
+      radial-gradient(42vw 24vw at 34% 12%, rgba(105, 221, 255, 0.04), transparent 74%),
+      radial-gradient(40vw 28vw at 72% 28%, rgba(66, 150, 255, 0.032), transparent 78%),
+      linear-gradient(90deg, transparent, rgba(106, 223, 255, 0.018) 44%, rgba(106, 223, 255, 0.018) 56%, transparent) !important;
+    opacity: 0.34 !important;
+    mask-image: linear-gradient(180deg, transparent, #000 12%, rgba(0, 0, 0, 0.74) 76%, transparent) !important;
+  }
+
+  .creators-lasy-system-page .creators-proof-section {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .creators-lasy-system-page .creators-hero-core-section {
+    grid-column: 2;
+    grid-row: 1;
+    margin-top: clamp(3rem, 6vw, 9rem);
+  }
+
+  .creators-lasy-system-page .creators-secondary-section {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    display: grid;
+    grid-template-columns: minmax(22rem, 0.55fr) minmax(0, 1fr);
+    column-gap: clamp(3rem, 6vw, 12rem);
+    align-items: start;
+    padding-top: clamp(3rem, 5vw, 8rem) !important;
+  }
+
+  .creators-lasy-system-page .creators-secondary-section > .focus-shell-head,
+  .creators-lasy-system-page .creators-secondary-section > .focus-shell-preview {
+    grid-column: 1;
+  }
+
+  .creators-lasy-system-page .creators-secondary-section > .focus-shell-body {
+    grid-column: 2;
+    grid-row: 1 / span 3;
+  }
+
+  .creators-lasy-system-page .creator-workspace-shell {
+    width: min(76vw, 188rem) !important;
+    max-width: min(76vw, 188rem) !important;
+    padding-top: clamp(4rem, 7vw, 11rem) !important;
+  }
+
+  .creators-lasy-system-page .creator-workspace-grid {
+    display: grid !important;
+    grid-template-columns: minmax(26rem, 0.52fr) minmax(0, 1.48fr) !important;
+    gap: clamp(3rem, 5vw, 9rem) !important;
+    align-items: start;
+  }
+
+  .creators-lasy-system-page .creators-context-ribbon {
+    grid-template-columns: minmax(0, 1fr) !important;
+    border-block-color: rgba(235, 249, 255, 0.034) !important;
+  }
+
+  .creators-lasy-system-page .creators-context-ribbon .creators-sidebar-nav {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .creators-lasy-system-page .creators-context-ribbon .creators-sidebar-stack {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .creators-lasy-system-page .creator-workspace-main {
+    min-width: 0;
+  }
 }
 
 @media (max-width: 900px) {
