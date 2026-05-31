@@ -38686,6 +38686,130 @@ body:has(.creators-dashboard-system-page),
   box-shadow: none !important;
 }
 
+@media (min-width: 1041px) {
+  .creators-dashboard-system-page .creator-briefing-guided-flow {
+    grid-template-columns: minmax(0, 0.94fr) minmax(24rem, 0.82fr) !important;
+    grid-template-rows: auto 1fr;
+    column-gap: clamp(1.25rem, 2.45vw, 2.35rem) !important;
+    row-gap: clamp(0.62rem, 1.2vw, 0.95rem) !important;
+    align-items: start;
+  }
+
+  .creators-dashboard-system-page .creator-briefing-step-channel {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .creators-dashboard-system-page .creator-briefing-step-context {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .creators-dashboard-system-page .creator-briefing-step-ai {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    grid-template-columns: minmax(0, 1fr) !important;
+    align-content: start;
+    align-self: start;
+    min-height: 100%;
+    padding-left: clamp(2.2rem, 3.4vw, 3rem);
+    border-top-color: rgba(211, 247, 255, 0.045);
+    background:
+      linear-gradient(90deg, rgba(91, 223, 255, 0.028), transparent 30%),
+      transparent;
+  }
+
+  .creators-dashboard-system-page .creator-briefing-step-ai > .creator-form-zone-ai,
+  .creators-dashboard-system-page .creator-briefing-step-ai > .creator-estimate-line,
+  .creators-dashboard-system-page .creator-briefing-step-ai > .creator-final-flow-panel {
+    grid-column: 1 !important;
+  }
+
+  .creators-dashboard-system-page .creator-briefing-step {
+    gap: clamp(0.54rem, 0.85vw, 0.78rem);
+    padding-top: clamp(0.72rem, 1.2vw, 0.98rem);
+    padding-bottom: clamp(0.76rem, 1.35vw, 1.08rem);
+  }
+
+  .creators-dashboard-system-page .creator-briefing-step::before {
+    width: 1.56rem;
+    height: 1.56rem;
+    font-size: 0.7rem;
+  }
+
+  .creators-dashboard-system-page .creator-briefing-step::after {
+    left: 0.78rem;
+    top: calc(clamp(0.82rem, 1.4vw, 1.12rem) + 1.6rem);
+  }
+
+  .creators-dashboard-system-page .creator-briefing-step-channel .creator-field-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(0.58rem, 0.92vw, 0.82rem) clamp(0.85rem, 1.35vw, 1.12rem) !important;
+  }
+
+  .creators-dashboard-system-page .creator-briefing-step .creator-zone-copy {
+    max-width: 38rem;
+  }
+
+  .creators-dashboard-system-page .creator-workspace-shell :is(.field-ea, .ea-select-trigger, select.field-ea) {
+    min-height: 2.46rem;
+  }
+
+  .creators-dashboard-system-page .creator-workspace-shell :is(textarea.field-ea, .creator-prompt-textarea) {
+    min-height: clamp(5.8rem, 7.2vw, 7rem);
+  }
+
+  .creators-dashboard-system-page .creator-ai-assist-fields {
+    gap: clamp(0.46rem, 0.82vw, 0.66rem);
+  }
+
+  .creators-dashboard-system-page .creator-ai-assist-notes {
+    gap: 0.18rem;
+    padding-left: 0.6rem;
+  }
+
+  .creators-dashboard-system-page .creator-toggle-stack {
+    gap: 0.34rem !important;
+  }
+
+  .creators-dashboard-system-page .toggle-row {
+    min-height: 2.08rem;
+    padding: 0.28rem 0.54rem !important;
+  }
+
+  .creators-dashboard-system-page .creator-estimate-line {
+    padding-top: 0.48rem !important;
+  }
+
+  .creators-dashboard-system-page .creator-final-flow-panel {
+    gap: clamp(0.48rem, 0.82vw, 0.68rem);
+    padding-top: 0;
+  }
+
+  .creators-dashboard-system-page .creator-final-flow-panel .creator-journey-line {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 0.38rem !important;
+  }
+
+  .creators-dashboard-system-page .creator-final-flow-panel .creator-journey-line > .creator-planner-field {
+    padding-block: 0.44rem !important;
+  }
+
+  .creators-dashboard-system-page .creator-final-flow-panel .creator-empty-flow {
+    gap: 0.42rem !important;
+    padding-top: 0.46rem !important;
+  }
+
+  .creators-dashboard-system-page .creator-final-flow-panel .creator-empty-flow .state-ea-title {
+    font-size: 0.92rem !important;
+  }
+
+  .creators-dashboard-system-page .creator-final-flow-panel .creator-empty-flow .state-ea-text {
+    font-size: 0.72rem;
+    line-height: 1.36;
+  }
+}
+
 @media (max-width: 1320px) {
   .creators-dashboard-system-page .creators-hero-copy h1 {
     font-size: clamp(1.84rem, 2.72vw, 2.5rem) !important;
