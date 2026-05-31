@@ -375,30 +375,32 @@ function CreatorsPageContent() {
               </p>
             </div>
 
-            <div className="creators-entry-prompt-shell creators-entry-prompt-field" aria-label={`Exemplo de pedido para ${activeTabMeta.label}`}>
-              <span className="creators-entry-prompt-label">Pedido para {activeTabMeta.label}</span>
-              <p>{activeShowcase.briefing}</p>
-              <div className="creators-entry-prompt-meta">
-                <span>{activeTabMeta.expectedOutput}</span>
-                <span>{walletSummaryDisplay}</span>
+            <div className="creators-lasy-command-field">
+              <div className="creators-entry-prompt-shell creators-entry-prompt-field" aria-label={`Exemplo de pedido para ${activeTabMeta.label}`}>
+                <span className="creators-entry-prompt-label">Pedido para {activeTabMeta.label}</span>
+                <p>{activeShowcase.briefing}</p>
+                <div className="creators-entry-prompt-meta">
+                  <span>{activeTabMeta.expectedOutput}</span>
+                  <span>{walletSummaryDisplay}</span>
+                </div>
               </div>
-            </div>
 
-            <div className="hero-actions-row creators-hero-panel-actions creators-entry-actions">
-              <button
-                type="button"
-                onClick={() => focusSection("workspace", { scroll: "always" })}
-                className="btn-ea btn-primary btn-sm"
-              >
-                Abrir briefing guiado
-              </button>
-              <button
-                type="button"
-                onClick={() => focusSection("showcase", { scroll: "always" })}
-                className="btn-ea btn-ghost btn-sm"
-              >
-                Ver tipos de entrega
-              </button>
+              <div className="hero-actions-row creators-hero-panel-actions creators-entry-actions">
+                <button
+                  type="button"
+                  onClick={() => focusSection("workspace", { scroll: "always" })}
+                  className="btn-ea btn-primary btn-sm"
+                >
+                  Abrir briefing guiado
+                </button>
+                <button
+                  type="button"
+                  onClick={() => focusSection("showcase", { scroll: "always" })}
+                  className="btn-ea btn-ghost btn-sm"
+                >
+                  Ver tipos de entrega
+                </button>
+              </div>
             </div>
 
             <div className="creators-entry-type-strip" aria-label="Tipos principais de entrega">
@@ -414,22 +416,6 @@ function CreatorsPageContent() {
               ))}
             </div>
 
-            <div className="creators-entry-account-actions creators-hero-utility-actions">
-              <span>Conta e assinatura</span>
-              <button
-                onClick={async () => {
-                  await onSyncSubscription();
-                  await refresh();
-                }}
-                disabled={syncingSubscription || loading}
-                className="btn-ea btn-ghost btn-sm"
-              >
-                {syncingSubscription ? "Sincronizando..." : "Sincronizar"}
-              </button>
-              <button onClick={onLogout} className="btn-ea btn-ghost btn-sm">
-                Sair
-              </button>
-            </div>
           </div>
 
           <div className="hero-kpi-grid creators-hero-metrics creators-hero-metrics-compact creators-hero-thread creators-lasy-signal-strip" aria-label="Resumo do fluxo de criação">
@@ -448,6 +434,23 @@ function CreatorsPageContent() {
               <strong className="hero-kpi-value">Criar → revisar → salvar</strong>
               <span className="hero-kpi-text">Projeto e editor continuam com o mesmo contexto.</span>
             </div>
+          </div>
+
+          <div className="creators-entry-account-actions creators-hero-utility-actions">
+            <span>Conta e assinatura</span>
+            <button
+              onClick={async () => {
+                await onSyncSubscription();
+                await refresh();
+              }}
+              disabled={syncingSubscription || loading}
+              className="btn-ea btn-ghost btn-sm"
+            >
+              {syncingSubscription ? "Sincronizando..." : "Sincronizar"}
+            </button>
+            <button onClick={onLogout} className="btn-ea btn-ghost btn-sm">
+              Sair
+            </button>
           </div>
         </div>
       </section>

@@ -39171,12 +39171,12 @@ body:has(.creators-dashboard-system-page),
   }
 }
 
-/* Meta-Lasy Round 1: optical composition consolidation.
+/* Meta-Lasy Round 2: optical composition consolidation.
    The TSX removes the old split/panel classes; this scoped contract turns
    Creators into one creation field instead of a stack of product panels. */
 .creators-lasy-system-page {
   --creators-lasy-max: min(100%, 88rem);
-  --creators-lasy-core: min(100%, 74rem);
+  --creators-lasy-core: min(100%, 70rem);
   --creators-lasy-line: rgba(210, 247, 255, 0.055);
   --creators-lasy-line-strong: rgba(148, 236, 255, 0.16);
   --creators-lasy-muted: rgba(225, 246, 255, 0.64);
@@ -39192,13 +39192,13 @@ body:has(.creators-lasy-system-page),
 .app-shell-frame:has(.creators-lasy-system-page),
 .app-shell-body:has(.creators-lasy-system-page) {
   background:
-    radial-gradient(1320px 520px at 50% -4%, rgba(78, 226, 255, 0.108), transparent 72%),
-    radial-gradient(1180px 620px at 15% 18%, rgba(50, 119, 255, 0.092), transparent 76%),
-    radial-gradient(1080px 680px at 84% 34%, rgba(40, 154, 255, 0.072), transparent 76%),
+    radial-gradient(1180px 460px at 50% -6%, rgba(94, 231, 255, 0.095), transparent 72%),
+    radial-gradient(1040px 560px at 18% 14%, rgba(46, 116, 255, 0.055), transparent 78%),
+    radial-gradient(1080px 640px at 82% 32%, rgba(48, 154, 255, 0.046), transparent 78%),
     linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px),
     linear-gradient(180deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px),
     url("/brand/editor-ai-circuit-background.png"),
-    linear-gradient(180deg, #061c46 0%, #041637 46%, #04122f 100%) !important;
+    linear-gradient(180deg, #061a41 0%, #041431 48%, #030e25 100%) !important;
   background-size: auto, auto, auto, 64px 64px, 64px 64px, cover, cover !important;
   background-position: center top, center top, center center, center top, center top, center top, center top !important;
   background-repeat: no-repeat, no-repeat, no-repeat, repeat, repeat, repeat-y, no-repeat !important;
@@ -39206,16 +39206,17 @@ body:has(.creators-lasy-system-page),
 }
 
 .creators-lasy-system-page::before {
-  opacity: 0.3 !important;
-  filter: saturate(0.94) brightness(1.04);
+  display: none !important;
+  content: none !important;
+  opacity: 0 !important;
+  background: none !important;
 }
 
 .creators-lasy-system-page::after {
-  opacity: 0.56 !important;
-  background:
-    radial-gradient(1080px 500px at 50% 8%, rgba(106, 232, 255, 0.082), transparent 74%),
-    radial-gradient(1100px 720px at 50% 54%, rgba(44, 137, 255, 0.044), transparent 76%),
-    linear-gradient(180deg, transparent 0 32%, rgba(5, 20, 52, 0.08) 62%, transparent 100%) !important;
+  display: none !important;
+  content: none !important;
+  opacity: 0 !important;
+  background: none !important;
 }
 
 .creators-lasy-system-page .creators-hero-open {
@@ -39223,6 +39224,14 @@ body:has(.creators-lasy-system-page),
   align-items: start;
   min-height: auto;
   padding: clamp(1.65rem, 3vw, 3.15rem) 0 clamp(1.5rem, 3vw, 3rem) !important;
+  background: transparent !important;
+}
+
+.creators-lasy-system-page .creators-hero-open::before,
+.creators-lasy-system-page .creators-hero-open::after {
+  display: none !important;
+  opacity: 0 !important;
+  content: none !important;
 }
 
 .creators-lasy-system-page .creators-lasy-hero-shell {
@@ -39243,12 +39252,12 @@ body:has(.creators-lasy-system-page),
   position: absolute;
   z-index: -1;
   pointer-events: none;
-  inset: -12% -12% 18%;
+  inset: -8% 5% 26%;
   background:
-    radial-gradient(620px 300px at 50% 12%, rgba(122, 238, 255, 0.108), transparent 74%),
-    linear-gradient(90deg, transparent, rgba(216, 249, 255, 0.052), transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent);
-  opacity: 0.92;
+    radial-gradient(560px 260px at 50% 10%, rgba(122, 238, 255, 0.085), transparent 74%),
+    linear-gradient(90deg, transparent, rgba(216, 249, 255, 0.032), transparent);
+  mask-image: radial-gradient(ellipse at 50% 18%, #000 0%, transparent 74%);
+  opacity: 0.82;
 }
 
 .creators-lasy-system-page .creators-lasy-hero-copy {
@@ -39264,10 +39273,10 @@ body:has(.creators-lasy-system-page),
 }
 
 .creators-lasy-system-page .creators-lasy-hero-copy h1 {
-  max-width: 14ch !important;
-  font-size: clamp(3rem, 4.75vw, 4.82rem) !important;
-  line-height: 0.95 !important;
-  letter-spacing: -0.062em !important;
+  max-width: 15ch !important;
+  font-size: clamp(2.72rem, 4.25vw, 4.22rem) !important;
+  line-height: 0.985 !important;
+  letter-spacing: -0.052em !important;
   text-wrap: balance;
 }
 
@@ -39296,9 +39305,9 @@ body:has(.creators-lasy-system-page),
 .creators-lasy-system-page .creators-lasy-entry {
   display: grid !important;
   justify-items: center;
-  gap: clamp(0.48rem, 0.9vw, 0.78rem) !important;
-  width: min(100%, 48rem) !important;
-  padding: clamp(0.62rem, 1.25vw, 0.95rem) 0 0 !important;
+  gap: clamp(0.44rem, 0.82vw, 0.68rem) !important;
+  width: min(100%, 46rem) !important;
+  padding: clamp(0.42rem, 0.95vw, 0.74rem) 0 0 !important;
   border: 0 !important;
   border-radius: 0 !important;
   background: transparent !important;
@@ -39322,77 +39331,107 @@ body:has(.creators-lasy-system-page),
   color: rgba(225, 246, 255, 0.58) !important;
 }
 
-.creators-lasy-system-page .creators-entry-prompt-shell {
-  width: min(100%, 48rem);
-  min-height: clamp(6.35rem, 9vw, 7.45rem);
-  align-content: space-between;
-  padding: clamp(0.82rem, 1.22vw, 1.08rem) clamp(1rem, 1.55vw, 1.35rem) !important;
-  border: 1px solid rgba(235, 249, 255, 0.08) !important;
-  border-radius: clamp(1.45rem, 2.1vw, 2rem) !important;
+.creators-lasy-system-page .creators-lasy-command-field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(9.5rem, 13rem);
+  gap: clamp(0.58rem, 1vw, 0.86rem);
+  align-items: stretch;
+  width: min(100%, 46rem);
+  margin-top: clamp(0.36rem, 0.74vw, 0.58rem);
+  padding: clamp(0.46rem, 0.82vw, 0.66rem);
+  border: 1px solid rgba(235, 249, 255, 0.058);
+  border-radius: clamp(1.25rem, 1.9vw, 1.7rem);
   background:
-    radial-gradient(520px 160px at 50% 0%, rgba(255, 255, 255, 0.056), transparent 72%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.046), rgba(255, 255, 255, 0.012)),
-    rgba(8, 12, 22, 0.46) !important;
+    radial-gradient(620px 160px at 18% 0%, rgba(119, 235, 255, 0.032), transparent 72%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.024), rgba(255, 255, 255, 0.006)),
+    rgba(5, 12, 27, 0.28);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 24px 80px rgba(0, 0, 0, 0.18) !important;
-  backdrop-filter: blur(18px) saturate(1.03);
-  -webkit-backdrop-filter: blur(18px) saturate(1.03);
+    inset 0 1px 0 rgba(255, 255, 255, 0.042),
+    0 16px 48px rgba(0, 0, 0, 0.095);
+  backdrop-filter: blur(18px) saturate(1.02);
+  -webkit-backdrop-filter: blur(18px) saturate(1.02);
+}
+
+.creators-lasy-system-page .creators-entry-prompt-shell {
+  width: 100%;
+  min-height: clamp(4.7rem, 6.2vw, 5.85rem);
+  align-content: space-between;
+  padding: clamp(0.62rem, 1vw, 0.82rem) clamp(0.7rem, 1.15vw, 0.98rem) !important;
+  border: 0 !important;
+  border-radius: clamp(0.92rem, 1.35vw, 1.18rem) !important;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0.01)),
+    rgba(255, 255, 255, 0.01) !important;
+  box-shadow: none !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .creators-lasy-system-page .creators-entry-prompt-shell p {
-  max-width: 35rem;
-  margin-inline: auto;
-  font-size: clamp(0.96rem, 1.18vw, 1.08rem) !important;
-  line-height: 1.38 !important;
-  font-weight: 680 !important;
+  max-width: 32rem;
+  margin-inline: 0 auto;
+  font-size: clamp(0.88rem, 1.04vw, 0.98rem) !important;
+  line-height: 1.34 !important;
+  font-weight: 650 !important;
   text-wrap: balance;
+  text-align: left;
 }
 
 .creators-lasy-system-page .creators-entry-prompt-meta {
-  justify-content: center;
+  justify-content: flex-start;
+  gap: 0.36rem;
 }
 
 .creators-lasy-system-page .creators-entry-prompt-meta span {
-  border-color: rgba(235, 249, 255, 0.078) !important;
-  background: rgba(255, 255, 255, 0.018) !important;
-  color: rgba(232, 247, 255, 0.68) !important;
+  border-color: rgba(235, 249, 255, 0.055) !important;
+  background: rgba(255, 255, 255, 0.01) !important;
+  color: rgba(232, 247, 255, 0.58) !important;
+  font-size: 0.68rem !important;
+}
+
+.creators-lasy-system-page .creators-entry-prompt-label {
+  text-align: left;
+  color: rgba(170, 238, 255, 0.66) !important;
 }
 
 .creators-lasy-system-page .creators-entry-actions {
-  width: min(100%, 48rem);
-  grid-template-columns: minmax(0, 1fr) auto !important;
-  margin-top: clamp(0.2rem, 0.7vw, 0.45rem) !important;
+  width: 100%;
+  grid-template-columns: minmax(0, 1fr) !important;
+  align-content: center;
+  margin-top: 0 !important;
 }
 
 .creators-lasy-system-page .creators-entry-actions .btn-primary {
-  min-height: clamp(2.74rem, 3.2vw, 3rem) !important;
-  border-radius: 0.96rem !important;
+  min-height: clamp(2.58rem, 3vw, 2.86rem) !important;
+  border-radius: 0.9rem !important;
   box-shadow:
     0 18px 54px rgba(52, 210, 255, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
 }
 
 .creators-lasy-system-page .creators-entry-actions .btn-ghost {
-  padding-inline: 1rem !important;
-  border-color: rgba(235, 249, 255, 0.07) !important;
+  min-height: 2.1rem !important;
+  padding-inline: 0.72rem !important;
+  border-color: transparent !important;
   background: transparent !important;
-  color: rgba(232, 247, 255, 0.68) !important;
+  color: rgba(232, 247, 255, 0.56) !important;
+  box-shadow: none !important;
 }
 
 .creators-lasy-system-page .creators-entry-type-strip {
-  width: min(100%, 48rem);
+  width: min(100%, 46rem);
   justify-content: center;
   margin-top: 0 !important;
   opacity: 0.78;
 }
 
 .creators-lasy-system-page .creators-entry-type-strip button {
-  min-height: 1.98rem !important;
-  padding-inline: 0.72rem !important;
-  border-color: rgba(235, 249, 255, 0.072) !important;
+  min-height: 1.76rem !important;
+  padding-inline: 0.62rem !important;
+  border-color: rgba(235, 249, 255, 0.052) !important;
   background: rgba(255, 255, 255, 0.01) !important;
-  color: rgba(235, 250, 255, 0.76) !important;
+  color: rgba(235, 250, 255, 0.64) !important;
+  font-size: 0.72rem !important;
 }
 
 .creators-lasy-system-page .creators-hero-utility-actions {
@@ -39400,11 +39439,11 @@ body:has(.creators-lasy-system-page),
   flex-wrap: wrap;
   justify-content: center;
   gap: 0.42rem !important;
-  width: min(100%, 48rem);
-  margin-top: 0.08rem !important;
+  width: min(100%, 46rem);
+  margin-top: 0 !important;
   padding-top: 0 !important;
   border-top: 0 !important;
-  opacity: 0.42;
+  opacity: 0.34;
 }
 
 .creators-lasy-system-page .creators-hero-utility-actions:hover,
@@ -39414,11 +39453,11 @@ body:has(.creators-lasy-system-page),
 
 .creators-lasy-system-page .creators-hero-utility-actions > span {
   flex-basis: 100%;
-  font-size: 0.62rem !important;
+  font-size: 0.58rem !important;
 }
 
 .creators-lasy-system-page .creators-lasy-signal-strip {
-  width: min(100%, 48rem) !important;
+  width: min(100%, 46rem) !important;
   grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
   gap: clamp(0.56rem, 1vw, 0.84rem) !important;
   margin-top: clamp(0.4rem, 1vw, 0.7rem) !important;
@@ -39462,8 +39501,23 @@ body:has(.creators-lasy-system-page),
   margin-inline: auto;
 }
 
+.creators-lasy-system-page .creators-core-canvas::before,
+.creators-lasy-system-page .creators-core-canvas::after,
+.creators-lasy-system-page .creator-workspace-shell::before,
+.creators-lasy-system-page .creator-workspace-shell::after {
+  background:
+    radial-gradient(820px 420px at 50% 0%, rgba(105, 221, 255, 0.032), transparent 74%),
+    linear-gradient(180deg, transparent, rgba(28, 118, 210, 0.012) 48%, transparent) !important;
+  opacity: 0.28 !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+
 .creators-lasy-system-page :is(.creators-proof-section, .creators-hero-core-section, .creators-secondary-section, .creator-workspace-shell) {
-  padding-block: clamp(2.8rem, 5.4vw, 5.7rem) !important;
+  padding-block: clamp(2.45rem, 4.8vw, 5.1rem) !important;
+  background: transparent !important;
+  border-color: rgba(235, 249, 255, 0.026) !important;
+  box-shadow: none !important;
 }
 
 @media (max-width: 900px) {
@@ -39479,11 +39533,16 @@ body:has(.creators-lasy-system-page),
   }
 
   .creators-lasy-system-page .creators-lasy-hero-copy h1 {
-    font-size: clamp(2.55rem, 8.4vw, 3.62rem) !important;
+    font-size: clamp(2.35rem, 7.4vw, 3.28rem) !important;
   }
 
   .creators-lasy-system-page .creators-lasy-signal-strip {
     width: min(100%, 40rem) !important;
+  }
+
+  .creators-lasy-system-page .creators-lasy-command-field {
+    grid-template-columns: minmax(0, 1fr);
+    width: min(100%, 40rem);
   }
 }
 
@@ -39498,14 +39557,14 @@ body:has(.creators-lasy-system-page),
 
   .creators-lasy-system-page .creators-lasy-hero-copy h1 {
     max-width: 11ch !important;
-    font-size: clamp(2.08rem, 9.1vw, 2.64rem) !important;
-    line-height: 0.98 !important;
+    font-size: clamp(1.78rem, 7.5vw, 2.22rem) !important;
+    line-height: 1.02 !important;
   }
 
   .creators-lasy-system-page .creators-hero-lead {
     max-width: 28rem !important;
-    font-size: 0.98rem !important;
-    line-height: 1.55 !important;
+    font-size: 0.9rem !important;
+    line-height: 1.48 !important;
   }
 
   .creators-lasy-system-page .hero-meta-row-compact {
@@ -39513,8 +39572,29 @@ body:has(.creators-lasy-system-page),
   }
 
   .creators-lasy-system-page .creators-entry-prompt-shell {
-    min-height: 6.45rem;
-    border-radius: 1.32rem !important;
+    min-height: 4.15rem;
+    padding: 0.55rem 0.62rem !important;
+    border-radius: 1.05rem !important;
+  }
+
+  .creators-lasy-system-page .creators-lasy-command-field {
+    padding: 0.34rem;
+    gap: 0.38rem;
+    border-radius: 1.18rem;
+  }
+
+  .creators-lasy-system-page .creators-entry-prompt-shell p {
+    font-size: 0.84rem !important;
+    line-height: 1.3 !important;
+  }
+
+  .creators-lasy-system-page .creators-entry-prompt-meta span {
+    padding: 0.32rem 0.44rem !important;
+    font-size: 0.63rem !important;
+  }
+
+  .creators-lasy-system-page .creators-entry-actions .btn-primary {
+    min-height: 2.54rem !important;
   }
 
   .creators-lasy-system-page .creators-entry-actions {
