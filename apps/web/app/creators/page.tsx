@@ -344,13 +344,14 @@ function CreatorsPageContent() {
 
   return (
     <div
-      className="page-shell creators-page creators-dashboard-system-page"
+      className="page-shell creators-page creators-dashboard-system-page creators-lasy-system-page"
       data-creators-system="dashboard-parity"
       data-creators-composition="continuous-field"
+      data-creators-reference="lasy-meta"
     >
       <section className="creators-hero creators-hero-open">
-        <div className="creators-hero-scene creators-hero-split creators-hero-shell" data-creators-hero="single-scene">
-          <div className="hero-copy creators-hero-copy">
+        <div className="creators-hero-scene creators-hero-shell creators-lasy-hero-shell" data-creators-hero="single-scene">
+          <div className="hero-copy creators-hero-copy creators-lasy-hero-copy">
             <div className="hero-title-stack">
               <p className="section-kicker">Creators • criação guiada</p>
               <h1 style={{ margin: 0, letterSpacing: -0.35 }}>Transforme ideia em briefing pronto</h1>
@@ -365,7 +366,7 @@ function CreatorsPageContent() {
             </div>
           </div>
 
-          <div className="creators-hero-panel creators-hero-panel-quiet creators-entry-command creators-entry-surface creators-entry-field">
+          <div className="creators-hero-panel creators-entry-command creators-entry-surface creators-entry-field creators-lasy-entry">
             <div className="section-stack-tight">
               <p className="section-kicker">Pedido de criação</p>
               <h2 className="creators-hero-panel-title">Briefing guiado</h2>
@@ -413,7 +414,7 @@ function CreatorsPageContent() {
               ))}
             </div>
 
-            <div className="creators-entry-account-actions">
+            <div className="creators-entry-account-actions creators-hero-utility-actions">
               <span>Conta e assinatura</span>
               <button
                 onClick={async () => {
@@ -431,7 +432,7 @@ function CreatorsPageContent() {
             </div>
           </div>
 
-          <div className="hero-kpi-grid creators-hero-metrics creators-hero-metrics-compact creators-hero-thread" aria-label="Resumo do fluxo de criação">
+          <div className="hero-kpi-grid creators-hero-metrics creators-hero-metrics-compact creators-hero-thread creators-lasy-signal-strip" aria-label="Resumo do fluxo de criação">
             <div className="creators-hero-metric-card creators-hero-signal">
               <span className="hero-kpi-label">Formato selecionado</span>
               <strong className="hero-kpi-value">{activeTabMeta.label}</strong>
