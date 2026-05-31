@@ -38890,3 +38890,283 @@ body:has(.creators-dashboard-system-page),
     align-items: stretch;
   }
 }
+
+/* Creators Phase 7: shell/navigation parity with Dashboard.
+   This neutralizes the accumulated generic rail/account chrome only when the
+   Creators canvas is mounted, keeping the rest of the app shell untouched. */
+.app-shell-frame:has(.creators-dashboard-system-page) {
+  --creators-shell-x: clamp(1rem, 1.85vw, 1.75rem);
+}
+
+.app-shell-frame:has(.creators-dashboard-system-page) .app-shell-head,
+.app-shell-frame:has(.creators-dashboard-system-page) .app-shell-head-region {
+  min-height: 0 !important;
+  padding: 0.68rem var(--creators-shell-x) 0.44rem !important;
+  border-bottom-color: rgba(211, 247, 255, 0.024) !important;
+  background:
+    linear-gradient(180deg, rgba(7, 23, 56, 0.28), rgba(6, 18, 45, 0.035)),
+    transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.app-shell-frame:has(.creators-dashboard-system-page) .app-shell-head::before,
+.app-shell-frame:has(.creators-dashboard-system-page) .app-shell-head::after,
+.app-shell-frame:has(.creators-dashboard-system-page) .app-shell-head-region::before,
+.app-shell-frame:has(.creators-dashboard-system-page) .app-shell-head-region::after {
+  opacity: 0.18 !important;
+  background: linear-gradient(90deg, transparent, rgba(211, 247, 255, 0.04), transparent) !important;
+  box-shadow: none !important;
+}
+
+.app-shell-frame:has(.creators-dashboard-system-page) .app-brand-mark-group {
+  gap: 0.58rem !important;
+}
+
+.app-shell-frame:has(.creators-dashboard-system-page) .app-brand-mark {
+  width: 1.86rem !important;
+  height: 1.86rem !important;
+  flex-basis: 1.86rem !important;
+  box-shadow:
+    0 0 0 1px rgba(191, 239, 255, 0.11),
+    0 10px 26px rgba(58, 205, 255, 0.14) !important;
+}
+
+.app-shell-frame:has(.creators-dashboard-system-page) .app-brand-mark::before,
+.app-shell-frame:has(.creators-dashboard-system-page) .app-brand-mark::after {
+  opacity: 0.55 !important;
+}
+
+.app-shell-frame:has(.creators-dashboard-system-page) .app-shell-head-copy {
+  gap: 0.06rem !important;
+}
+
+.app-shell-frame:has(.creators-dashboard-system-page) .app-shell-head-copy strong {
+  font-size: clamp(0.82rem, 0.84vw, 0.94rem) !important;
+  letter-spacing: -0.018em;
+  color: rgba(247, 253, 255, 0.94);
+}
+
+.app-shell-frame:has(.creators-dashboard-system-page) .app-shell-head-note {
+  font-size: clamp(0.64rem, 0.7vw, 0.76rem) !important;
+  line-height: 1.25;
+  color: rgba(225, 245, 255, 0.54) !important;
+}
+
+.app-shell-frame:has(.creators-dashboard-system-page) .app-shell-head-actions,
+.app-shell-frame:has(.creators-dashboard-system-page) .app-account-controls {
+  gap: 0.44rem !important;
+}
+
+.app-shell-frame:has(.creators-dashboard-system-page) :is(.app-account-inbox-button, .app-account-link) {
+  min-height: 2.25rem !important;
+  padding: 0.34rem 0.58rem !important;
+  gap: 0.42rem !important;
+  border-color: rgba(211, 247, 255, 0.072) !important;
+  background:
+    radial-gradient(104px 32px at 12% 0%, rgba(103, 229, 255, 0.045), transparent 78%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.006)) !important;
+  box-shadow: none !important;
+  color: rgba(235, 250, 255, 0.82) !important;
+}
+
+.app-shell-frame:has(.creators-dashboard-system-page) :is(.app-account-inbox-button, .app-account-link):hover {
+  border-color: rgba(211, 247, 255, 0.12) !important;
+  background:
+    radial-gradient(104px 32px at 12% 0%, rgba(103, 229, 255, 0.075), transparent 78%),
+    rgba(255, 255, 255, 0.014) !important;
+}
+
+.app-shell-frame:has(.creators-dashboard-system-page) :is(.app-account-inbox-icon, .app-account-avatar) {
+  width: 1.42rem !important;
+  height: 1.42rem !important;
+  font-size: 0.55rem !important;
+  border-color: rgba(211, 247, 255, 0.105) !important;
+  background: rgba(255, 255, 255, 0.024) !important;
+}
+
+.app-shell-frame:has(.creators-dashboard-system-page) :is(.app-account-inbox-copy, .app-account-link-copy) {
+  gap: 0 !important;
+}
+
+.app-shell-frame:has(.creators-dashboard-system-page) :is(.app-account-inbox-copy strong, .app-account-link-copy strong) {
+  font-size: 0.68rem !important;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: rgba(248, 253, 255, 0.88);
+}
+
+.app-shell-frame:has(.creators-dashboard-system-page) :is(.app-account-inbox-copy span, .app-account-link-copy span) {
+  font-size: 0.57rem !important;
+  line-height: 1.18;
+  color: rgba(218, 244, 255, 0.5) !important;
+}
+
+.app-shell-frame:has(.creators-dashboard-system-page) .app-brand-badge {
+  padding: 0.26rem 0.52rem !important;
+  border-color: rgba(211, 247, 255, 0.048) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: rgba(224, 246, 255, 0.58) !important;
+  opacity: 0.68 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.app-shell-body:has(.creators-dashboard-system-page) :is(.app-top-nav, .app-nav-rail) {
+  margin: 0 var(--creators-shell-x) 0.28rem !important;
+  padding: 0.18rem 0 0.34rem !important;
+  min-height: 0 !important;
+  border: 0 !important;
+  background:
+    linear-gradient(90deg, transparent, rgba(211, 247, 255, 0.026), transparent) bottom / 100% 1px no-repeat,
+    transparent !important;
+  box-shadow: none !important;
+}
+
+.app-shell-body:has(.creators-dashboard-system-page) :is(.app-top-nav-head, .app-nav-rail-head, .app-nav-core-strip, .app-nav-compact-strip) {
+  display: none !important;
+}
+
+.app-shell-body:has(.creators-dashboard-system-page) :is(.app-nav-overview, .app-nav-group, .app-nav-links, .app-nav-rail-links) {
+  min-width: 0;
+}
+
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-links {
+  gap: 0.28rem !important;
+  padding-bottom: 0.02rem;
+  mask-image: linear-gradient(90deg, #000 calc(100% - 2rem), transparent);
+}
+
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-link.layout-contract-rail-link,
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-link.layout-contract-rail-link:hover,
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-link.layout-contract-rail-link:active {
+  min-height: 1.9rem !important;
+  padding: 0 0.7rem !important;
+  border-color: transparent !important;
+  background: transparent !important;
+  color: rgba(229, 247, 255, 0.74) !important;
+  opacity: 0.78 !important;
+  font-size: 0.72rem !important;
+  line-height: 1;
+  box-shadow: none !important;
+}
+
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-link.layout-contract-rail-link:hover {
+  color: rgba(248, 253, 255, 0.94) !important;
+  opacity: 0.94 !important;
+}
+
+.app-shell-body:has(.creators-dashboard-system-page) .app-nav-link.layout-contract-rail-link .app-nav-link-label {
+  font-weight: 720 !important;
+  letter-spacing: -0.014em;
+}
+
+.app-shell-body:has(.creators-dashboard-system-page) :is(.app-nav-link-active, .app-nav-link[aria-current="page"], .app-nav-link[data-active="true"]).layout-contract-rail-link {
+  color: rgba(252, 254, 255, 0.98) !important;
+  opacity: 1 !important;
+  border-color: rgba(211, 247, 255, 0.082) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.032), rgba(255, 255, 255, 0.008)) !important;
+}
+
+.app-shell-body:has(.creators-dashboard-system-page) :is(.app-nav-link-active, .app-nav-link[aria-current="page"], .app-nav-link[data-active="true"]).layout-contract-rail-link::after {
+  opacity: 1 !important;
+  height: 1px !important;
+  inset-inline: 0.72rem !important;
+  bottom: 0.28rem !important;
+  background: linear-gradient(90deg, transparent, rgba(118, 232, 255, 0.9), transparent) !important;
+}
+
+@media (max-width: 900px) {
+  .app-shell-frame:has(.creators-dashboard-system-page) .app-shell-head,
+  .app-shell-frame:has(.creators-dashboard-system-page) .app-shell-head-region {
+    align-items: start;
+    gap: 0.48rem !important;
+    padding: 0.58rem var(--creators-shell-x) 0.34rem !important;
+  }
+
+  .app-shell-frame:has(.creators-dashboard-system-page) .app-shell-head-actions,
+  .app-shell-frame:has(.creators-dashboard-system-page) .app-account-controls {
+    width: auto !important;
+    justify-content: flex-end !important;
+  }
+
+  .app-shell-frame:has(.creators-dashboard-system-page) .app-shell-head-note,
+  .app-shell-frame:has(.creators-dashboard-system-page) .app-brand-badge,
+  .app-shell-frame:has(.creators-dashboard-system-page) :is(.app-account-inbox-copy span, .app-account-link-copy span) {
+    display: none !important;
+  }
+
+  .app-shell-frame:has(.creators-dashboard-system-page) :is(.app-account-inbox-button, .app-account-link) {
+    min-height: 2.05rem !important;
+    flex: 0 0 auto !important;
+    padding: 0.3rem 0.5rem !important;
+  }
+
+  .app-shell-body:has(.creators-dashboard-system-page) :is(.app-top-nav, .app-nav-rail) {
+    margin-inline: var(--creators-shell-x) !important;
+    padding-block: 0.1rem 0.28rem !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .app-shell-frame:has(.creators-dashboard-system-page) {
+    --creators-shell-x: clamp(0.86rem, 4.8vw, 1.12rem);
+  }
+
+  .app-shell-frame:has(.creators-dashboard-system-page) .app-shell-head,
+  .app-shell-frame:has(.creators-dashboard-system-page) .app-shell-head-region {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr);
+    padding-top: 0.52rem !important;
+  }
+
+  .app-shell-frame:has(.creators-dashboard-system-page) .app-brand-mark {
+    width: 1.62rem !important;
+    height: 1.62rem !important;
+    flex-basis: 1.62rem !important;
+  }
+
+  .app-shell-frame:has(.creators-dashboard-system-page) .app-shell-head-copy strong {
+    font-size: 0.78rem !important;
+  }
+
+  .app-shell-frame:has(.creators-dashboard-system-page) .app-shell-head-actions,
+  .app-shell-frame:has(.creators-dashboard-system-page) .app-account-controls {
+    display: flex !important;
+    width: 100% !important;
+    justify-content: space-between !important;
+    gap: 0.36rem !important;
+  }
+
+  .app-shell-frame:has(.creators-dashboard-system-page) :is(.app-account-inbox-button, .app-account-link) {
+    min-height: 1.96rem !important;
+    flex: 1 1 0 !important;
+    border-radius: 0.86rem !important;
+  }
+
+  .app-shell-frame:has(.creators-dashboard-system-page) :is(.app-account-inbox-icon, .app-account-avatar) {
+    width: 1.24rem !important;
+    height: 1.24rem !important;
+  }
+
+  .app-shell-frame:has(.creators-dashboard-system-page) :is(.app-account-inbox-copy strong, .app-account-link-copy strong) {
+    font-size: 0.63rem !important;
+  }
+
+  .app-shell-body:has(.creators-dashboard-system-page) .app-nav-links {
+    gap: 0.22rem !important;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+  }
+
+  .app-shell-body:has(.creators-dashboard-system-page) .app-nav-link.layout-contract-rail-link,
+  .app-shell-body:has(.creators-dashboard-system-page) .app-nav-link.layout-contract-rail-link:hover,
+  .app-shell-body:has(.creators-dashboard-system-page) .app-nav-link.layout-contract-rail-link:active {
+    min-height: 1.82rem !important;
+    padding-inline: 0.62rem !important;
+    font-size: 0.68rem !important;
+  }
+}
