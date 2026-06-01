@@ -40046,6 +40046,40 @@ body:has(.creators-lasy-system-page),
     gap: 0.46rem !important;
   }
 
+  .creators-lasy-system-page .creators-proof-section .creators-proof-stream {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    grid-template-columns: none !important;
+    gap: 0.56rem !important;
+    overflow-x: auto !important;
+    overscroll-behavior-x: contain !important;
+    scroll-snap-type: x proximity !important;
+    padding: 0.1rem 0 0.58rem !important;
+    mask-image: linear-gradient(90deg, #000 calc(100% - 2.1rem), transparent);
+  }
+
+  .creators-lasy-system-page .creators-proof-section .creators-proof-stream > * {
+    flex: 0 0 min(84vw, 18.5rem) !important;
+    width: min(84vw, 18.5rem) !important;
+    min-width: min(84vw, 18.5rem) !important;
+    scroll-snap-align: start !important;
+    padding: 0.72rem !important;
+  }
+
+  .creators-lasy-system-page .creators-proof-section .proof-value-stack {
+    gap: 0.48rem !important;
+  }
+
+  .creators-lasy-system-page .creators-proof-section .proof-value-block {
+    gap: 0.16rem !important;
+  }
+
+  .creators-lasy-system-page .creators-proof-section .proof-value-block p {
+    font-size: 0.76rem !important;
+    line-height: 1.32 !important;
+  }
+
   .creators-lasy-system-page .creators-context-ribbon {
     gap: 0.58rem !important;
     padding-block: 0.34rem !important;
