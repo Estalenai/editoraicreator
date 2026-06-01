@@ -38485,6 +38485,37 @@ body:has(.creators-dashboard-system-page),
   gap: 0.5rem !important;
 }
 
+.creators-lasy-system-page .creator-final-flow-panel .creator-empty-flow {
+  gap: clamp(0.36rem, 0.72vw, 0.58rem) !important;
+  padding-top: clamp(0.42rem, 0.82vw, 0.64rem) !important;
+}
+
+.creators-lasy-system-page .creator-final-flow-panel .creator-empty-flow .operational-state-badge {
+  width: fit-content;
+  min-height: 1.86rem;
+  padding-inline: 0.72rem !important;
+}
+
+.creators-lasy-system-page .creator-final-flow-panel .creator-empty-flow .state-ea-title {
+  font-size: clamp(0.88rem, 0.98vw, 0.96rem) !important;
+  line-height: 1.12 !important;
+}
+
+.creators-lasy-system-page .creator-final-flow-panel .creator-empty-flow .state-ea-text {
+  max-width: 34rem;
+  font-size: clamp(0.72rem, 0.78vw, 0.78rem) !important;
+  line-height: 1.36 !important;
+}
+
+.creators-lasy-system-page .creator-final-flow-panel .creator-empty-flow .operational-state-meta-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 0.34rem 0.62rem !important;
+}
+
+.creators-lasy-system-page .creator-final-flow-panel .creator-empty-flow .operational-state-meta-item {
+  padding-block: 0.42rem !important;
+}
+
 .creators-dashboard-system-page .creator-final-flow-panel .creator-empty-flow .state-ea-actions {
   margin-top: 0 !important;
   padding-top: 0.16rem;
@@ -40119,7 +40150,39 @@ body:has(.creators-lasy-system-page),
   }
 
   .creators-lasy-system-page .creator-final-flow-panel .creator-empty-flow {
-    gap: 0.42rem !important;
-    padding-top: 0.52rem !important;
+    gap: 0.34rem !important;
+    padding-top: 0.42rem !important;
+  }
+
+  .creators-lasy-system-page .creator-final-flow-panel .creator-empty-flow .operational-state-badge {
+    min-height: 1.72rem;
+    padding-inline: 0.62rem !important;
+    font-size: 0.58rem !important;
+  }
+
+  .creators-lasy-system-page .creator-final-flow-panel .creator-empty-flow .state-ea-title {
+    font-size: 0.86rem !important;
+  }
+
+  .creators-lasy-system-page .creator-final-flow-panel .creator-empty-flow .state-ea-text {
+    font-size: 0.7rem !important;
+    line-height: 1.32 !important;
+  }
+
+  .creators-lasy-system-page .creator-final-flow-panel .creator-empty-flow .operational-state-meta-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 0.24rem !important;
+  }
+
+  .creators-lasy-system-page .creator-final-flow-panel .creator-empty-flow .operational-state-meta-item {
+    padding-block: 0.34rem !important;
+  }
+
+  .creators-lasy-system-page .creator-final-flow-panel .creator-empty-flow .state-ea-actions {
+    gap: 0.36rem !important;
+  }
+
+  .creators-lasy-system-page .creator-final-flow-panel .creator-empty-flow .state-ea-actions :is(.btn-ea, .btn-link-ea) {
+    min-height: 2.2rem !important;
   }
 }
