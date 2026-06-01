@@ -39237,6 +39237,8 @@ body:has(.creators-dashboard-system-page),
 @media (max-width: 900px) {
   .app-shell-frame:has(.creators-dashboard-system-page) .app-shell-head,
   .app-shell-frame:has(.creators-dashboard-system-page) .app-shell-head-region {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: start;
     gap: 0.48rem !important;
     padding: 0.58rem var(--creators-shell-x) 0.34rem !important;
@@ -39244,6 +39246,8 @@ body:has(.creators-dashboard-system-page),
 
   .app-shell-frame:has(.creators-dashboard-system-page) .app-shell-head-actions,
   .app-shell-frame:has(.creators-dashboard-system-page) .app-account-controls {
+    grid-column: 2;
+    grid-row: 1;
     width: auto !important;
     justify-content: flex-end !important;
   }
@@ -39268,51 +39272,61 @@ body:has(.creators-dashboard-system-page),
 
 @media (max-width: 640px) {
   .app-shell-frame:has(.creators-dashboard-system-page) {
-    --creators-shell-x: clamp(0.86rem, 4.8vw, 1.12rem);
+    --creators-shell-x: clamp(0.72rem, 4vw, 0.98rem);
   }
 
   .app-shell-frame:has(.creators-dashboard-system-page) .app-shell-head,
   .app-shell-frame:has(.creators-dashboard-system-page) .app-shell-head-region {
     display: grid !important;
-    grid-template-columns: minmax(0, 1fr);
-    padding-top: 0.52rem !important;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center !important;
+    gap: 0.34rem !important;
+    padding: 0.42rem var(--creators-shell-x) 0.16rem !important;
   }
 
   .app-shell-frame:has(.creators-dashboard-system-page) .app-brand-mark {
-    width: 1.62rem !important;
-    height: 1.62rem !important;
-    flex-basis: 1.62rem !important;
+    width: 1.48rem !important;
+    height: 1.48rem !important;
+    flex-basis: 1.48rem !important;
   }
 
   .app-shell-frame:has(.creators-dashboard-system-page) .app-shell-head-copy strong {
-    font-size: 0.78rem !important;
+    font-size: 0.74rem !important;
   }
 
   .app-shell-frame:has(.creators-dashboard-system-page) .app-shell-head-actions,
   .app-shell-frame:has(.creators-dashboard-system-page) .app-account-controls {
     display: flex !important;
-    width: 100% !important;
-    justify-content: space-between !important;
-    gap: 0.36rem !important;
+    width: auto !important;
+    justify-content: flex-end !important;
+    gap: 0.22rem !important;
+    min-width: 0 !important;
   }
 
   .app-shell-frame:has(.creators-dashboard-system-page) :is(.app-account-inbox-button, .app-account-link) {
-    min-height: 1.96rem !important;
-    flex: 1 1 0 !important;
-    border-radius: 0.86rem !important;
+    min-width: 2rem !important;
+    min-height: 1.86rem !important;
+    flex: 0 0 auto !important;
+    padding: 0.24rem 0.34rem !important;
+    border-radius: 999px !important;
   }
 
   .app-shell-frame:has(.creators-dashboard-system-page) :is(.app-account-inbox-icon, .app-account-avatar) {
-    width: 1.24rem !important;
-    height: 1.24rem !important;
+    width: 1.18rem !important;
+    height: 1.18rem !important;
   }
 
-  .app-shell-frame:has(.creators-dashboard-system-page) :is(.app-account-inbox-copy strong, .app-account-link-copy strong) {
-    font-size: 0.63rem !important;
+  .app-shell-frame:has(.creators-dashboard-system-page) :is(.app-account-inbox-copy, .app-account-link-copy) {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden !important;
+    clip-path: inset(50%) !important;
+    white-space: nowrap !important;
   }
 
   .app-shell-body:has(.creators-dashboard-system-page) .app-nav-links {
-    gap: 0.22rem !important;
+    gap: 0.16rem !important;
     overflow-x: auto;
     overscroll-behavior-x: contain;
   }
@@ -39320,9 +39334,14 @@ body:has(.creators-dashboard-system-page),
   .app-shell-body:has(.creators-dashboard-system-page) .app-nav-link.layout-contract-rail-link,
   .app-shell-body:has(.creators-dashboard-system-page) .app-nav-link.layout-contract-rail-link:hover,
   .app-shell-body:has(.creators-dashboard-system-page) .app-nav-link.layout-contract-rail-link:active {
-    min-height: 1.82rem !important;
-    padding-inline: 0.62rem !important;
-    font-size: 0.68rem !important;
+    min-height: 1.54rem !important;
+    padding-inline: 0.5rem !important;
+    font-size: 0.64rem !important;
+  }
+
+  .app-shell-body:has(.creators-dashboard-system-page) :is(.app-top-nav, .app-nav-rail) {
+    margin-bottom: 0.12rem !important;
+    padding-block: 0.02rem 0.16rem !important;
   }
 }
 
