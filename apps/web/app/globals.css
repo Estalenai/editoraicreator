@@ -39895,8 +39895,44 @@ body:has(.creators-lasy-system-page),
   }
 
   .creators-lasy-system-page :is(.creators-proof-section, .creators-hero-core-section, .creators-secondary-section, .creator-workspace-shell) > .focus-shell-head {
+    grid-template-columns: minmax(0, 1fr) !important;
     gap: 0.46rem !important;
     padding-bottom: 0.48rem !important;
+  }
+
+  .creators-lasy-system-page :is(.creators-hero-core-header, .creators-secondary-header) > *,
+  .creators-lasy-system-page .creators-proof-section .proof-value-header > * {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+    min-width: 0 !important;
+    justify-self: start !important;
+  }
+
+  .creators-lasy-system-page :is(.creators-proof-section, .creators-hero-core-section, .creators-secondary-section) .section-stack-tight > .heading-reset {
+    max-width: min(100%, 21rem) !important;
+    font-size: clamp(1.34rem, 6.6vw, 1.68rem) !important;
+    line-height: 1.04 !important;
+    letter-spacing: -0.04em !important;
+  }
+
+  .creators-lasy-system-page .creators-secondary-section .section-stack-tight > .heading-reset {
+    font-size: clamp(1.24rem, 6vw, 1.54rem) !important;
+    max-width: min(100%, 22rem) !important;
+  }
+
+  .creators-lasy-system-page :is(.creators-proof-section, .creators-hero-core-section, .creators-secondary-section) :is(.focus-shell-toggle, .btn-link-ea) {
+    width: auto !important;
+    min-height: 2.08rem !important;
+    justify-self: start;
+    padding-inline: 0.72rem !important;
+  }
+
+  .creators-lasy-system-page .creators-hero-core-header-note {
+    width: 100%;
+    max-width: 100%;
+    gap: 0.28rem;
+    justify-items: start !important;
+    text-align: left !important;
   }
 
   .creators-lasy-system-page :is(.creators-proof-section, .creators-hero-core-section, .creators-secondary-section, .creator-workspace-shell) .focus-shell-preview {
