@@ -39649,19 +39649,19 @@ body:has(.creators-lasy-system-page),
 
 @media (min-width: 1800px) {
   .creators-lasy-system-page {
-    --creators-lasy-max: min(86vw, 218rem);
-    --creators-lasy-core: min(72vw, 176rem);
+    --creators-lasy-max: min(80vw, 186rem);
+    --creators-lasy-core: min(66vw, 144rem);
   }
 
   .creators-lasy-system-page .creators-lasy-hero-shell {
-    width: min(100%, 72rem);
+    width: min(100%, 68rem);
   }
 
   .creators-lasy-system-page .creators-core-canvas {
     display: grid !important;
     grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-    column-gap: clamp(4rem, 7vw, 16rem) !important;
-    row-gap: clamp(4rem, 6vw, 12rem) !important;
+    column-gap: clamp(3.25rem, 5vw, 10rem) !important;
+    row-gap: clamp(3.25rem, 5vw, 8rem) !important;
     align-items: start;
   }
 
@@ -39693,7 +39693,7 @@ body:has(.creators-lasy-system-page),
     grid-row: 2;
     display: grid;
     grid-template-columns: minmax(22rem, 0.55fr) minmax(0, 1fr);
-    column-gap: clamp(3rem, 6vw, 12rem);
+    column-gap: clamp(2.75rem, 4.8vw, 9rem);
     align-items: start;
     padding-top: clamp(3rem, 5vw, 8rem) !important;
   }
@@ -39709,15 +39709,15 @@ body:has(.creators-lasy-system-page),
   }
 
   .creators-lasy-system-page .creator-workspace-shell {
-    width: min(76vw, 188rem) !important;
-    max-width: min(76vw, 188rem) !important;
-    padding-top: clamp(4rem, 7vw, 11rem) !important;
+    width: min(70vw, 158rem) !important;
+    max-width: min(70vw, 158rem) !important;
+    padding-top: clamp(3.25rem, 5.8vw, 8rem) !important;
   }
 
   .creators-lasy-system-page .creator-workspace-grid {
     display: grid !important;
     grid-template-columns: minmax(26rem, 0.52fr) minmax(0, 1.48fr) !important;
-    gap: clamp(3rem, 5vw, 9rem) !important;
+    gap: clamp(2.75rem, 4.2vw, 7rem) !important;
     align-items: start;
   }
 
