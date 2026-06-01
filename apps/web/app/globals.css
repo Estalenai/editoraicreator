@@ -39378,7 +39378,7 @@ body:has(.creators-lasy-system-page),
   display: grid;
   align-items: start;
   min-height: auto;
-  padding: clamp(1.65rem, 3vw, 3.15rem) 0 clamp(1.5rem, 3vw, 3rem) !important;
+  padding: clamp(1.35rem, 2.45vw, 2.55rem) 0 clamp(1.18rem, 2.35vw, 2.35rem) !important;
   background: transparent !important;
 }
 
@@ -39396,7 +39396,7 @@ body:has(.creators-lasy-system-page),
   grid-template-columns: minmax(0, 1fr) !important;
   justify-items: center;
   align-items: start;
-  gap: clamp(0.54rem, 1vw, 0.92rem) !important;
+  gap: clamp(0.46rem, 0.82vw, 0.78rem) !important;
   width: min(100%, 64rem);
   margin-inline: auto;
   text-align: center;
@@ -39429,7 +39429,7 @@ body:has(.creators-lasy-system-page),
 
 .creators-lasy-system-page .creators-lasy-hero-copy h1 {
   max-width: 15ch !important;
-  font-size: clamp(2.72rem, 4.25vw, 4.22rem) !important;
+  font-size: clamp(2.58rem, 4vw, 3.96rem) !important;
   line-height: 0.985 !important;
   letter-spacing: -0.052em !important;
   text-wrap: balance;
@@ -39509,7 +39509,7 @@ body:has(.creators-lasy-system-page),
 
 .creators-lasy-system-page .creators-entry-prompt-shell {
   width: 100%;
-  min-height: clamp(4.7rem, 6.2vw, 5.85rem);
+  min-height: clamp(4.28rem, 5.4vw, 5.2rem);
   align-content: space-between;
   padding: clamp(0.62rem, 1vw, 0.82rem) clamp(0.7rem, 1.15vw, 0.98rem) !important;
   border: 0 !important;
@@ -39614,9 +39614,9 @@ body:has(.creators-lasy-system-page),
 .creators-lasy-system-page .creators-lasy-signal-strip {
   width: min(100%, 46rem) !important;
   grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  gap: clamp(0.56rem, 1vw, 0.84rem) !important;
-  margin-top: clamp(0.4rem, 1vw, 0.7rem) !important;
-  padding-block: clamp(0.5rem, 0.85vw, 0.72rem) !important;
+  gap: clamp(0.42rem, 0.82vw, 0.68rem) !important;
+  margin-top: clamp(0.3rem, 0.75vw, 0.54rem) !important;
+  padding-block: clamp(0.38rem, 0.7vw, 0.58rem) !important;
   border-block: 1px solid rgba(235, 249, 255, 0.04) !important;
 }
 
