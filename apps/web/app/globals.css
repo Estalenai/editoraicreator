@@ -39769,10 +39769,16 @@ body:has(.creators-lasy-system-page),
   }
 
   .creators-lasy-system-page .creators-core-canvas {
+    box-sizing: border-box !important;
+    width: min(100%, calc(100vw - 2.25rem)) !important;
+    max-width: calc(100vw - 2.25rem) !important;
+    margin-inline: auto !important;
     gap: clamp(1.4rem, 4.8vw, 2.8rem) !important;
   }
 
   .creators-lasy-system-page .creator-workspace-shell {
+    box-sizing: border-box !important;
+    max-width: calc(100vw - 2.25rem) !important;
     padding-top: clamp(1.1rem, 3.4vw, 2rem) !important;
   }
 }
@@ -39878,7 +39884,10 @@ body:has(.creators-lasy-system-page),
 
   .creators-lasy-system-page .creators-core-canvas,
   .creators-lasy-system-page .creator-workspace-shell {
-    width: min(100%, calc(100vw - 1.6rem)) !important;
+    box-sizing: border-box !important;
+    width: min(100%, calc(100vw - 2rem)) !important;
+    max-width: calc(100vw - 2rem) !important;
+    margin-inline: auto !important;
   }
 
   .creators-lasy-system-page :is(.creators-proof-section, .creators-hero-core-section, .creators-secondary-section, .creator-workspace-shell) {
@@ -39897,17 +39906,15 @@ body:has(.creators-lasy-system-page),
   }
 
   .creators-lasy-system-page :is(.creators-proof-stream, .creators-format-stream, .creators-secondary-stream) {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    grid-template-columns: none !important;
-    gap: 0.7rem !important;
-    margin-inline: -0.18rem;
-    padding: 0.08rem 0.18rem 0.48rem !important;
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    scroll-padding-inline: 0.18rem;
-    scroll-snap-type: x proximity;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 0.72rem !important;
+    margin-inline: 0;
+    padding: 0.08rem 0 0.48rem !important;
+    overflow-x: visible;
+    overscroll-behavior-x: auto;
+    scroll-padding-inline: 0;
+    scroll-snap-type: none;
     scrollbar-width: none;
   }
 
@@ -39916,8 +39923,11 @@ body:has(.creators-lasy-system-page),
   }
 
   .creators-lasy-system-page :is(.creators-proof-stream, .creators-format-stream, .creators-secondary-stream) > * {
-    flex: 0 0 min(82vw, 21rem) !important;
-    scroll-snap-align: start;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    flex: initial !important;
+    scroll-snap-align: none;
     min-height: auto !important;
     padding-block: 0.74rem !important;
   }
@@ -39929,22 +39939,20 @@ body:has(.creators-lasy-system-page),
   .creators-lasy-system-page .creators-context-ribbon {
     gap: 0.58rem !important;
     padding-block: 0.34rem !important;
-    overflow: hidden !important;
+    overflow: visible !important;
   }
 
   .creators-lasy-system-page .creators-context-ribbon .creators-sidebar-nav,
   .creators-lasy-system-page .creators-context-ribbon .creators-sidebar-stack {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    grid-template-columns: none !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
     gap: 0.68rem !important;
-    margin-inline: -0.08rem;
-    padding: 0 0.08rem 0.38rem !important;
-    overflow-x: auto !important;
-    overscroll-behavior-x: contain;
-    scroll-padding-inline: 0.08rem;
-    scroll-snap-type: x proximity;
+    margin-inline: 0;
+    padding: 0 0 0.38rem !important;
+    overflow-x: visible !important;
+    overscroll-behavior-x: auto;
+    scroll-padding-inline: 0;
+    scroll-snap-type: none;
     scrollbar-width: none;
   }
 
@@ -39955,8 +39963,11 @@ body:has(.creators-lasy-system-page),
 
   .creators-lasy-system-page .creators-context-ribbon .creators-sidebar-group,
   .creators-lasy-system-page .creators-context-ribbon .creators-side-note {
-    flex: 0 0 min(82vw, 21rem) !important;
-    scroll-snap-align: start;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    flex: initial !important;
+    scroll-snap-align: none;
   }
 
   .creators-lasy-system-page .creators-context-ribbon .creators-sidebar-group + .creators-sidebar-group {
@@ -39965,8 +39976,19 @@ body:has(.creators-lasy-system-page),
   }
 
   .creators-lasy-system-page .creators-context-ribbon .creator-tab-btn {
-    grid-template-columns: minmax(5.6rem, 0.74fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.26rem;
     padding: 0.32rem 0.08rem 0.34rem 0.46rem !important;
+  }
+
+  .creators-lasy-system-page .creators-context-ribbon .creator-tab-head,
+  .creators-lasy-system-page .creators-context-ribbon :is(.creator-tab-meta, .creator-tab-support) {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+  }
+
+  .creators-lasy-system-page .creators-context-ribbon .creator-tab-head {
+    gap: 0.32rem;
   }
 
   .creators-lasy-system-page .creators-context-ribbon :is(.creator-tab-title, .creators-wallet-row strong) {
