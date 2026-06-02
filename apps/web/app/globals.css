@@ -39057,9 +39057,9 @@ body:has(.creators-dashboard-system-page),
 .app-shell-frame:has(.creators-dashboard-system-page) .app-shell-head-region {
   min-height: 0 !important;
   padding: 0.68rem var(--creators-shell-x) 0.44rem !important;
-  border-bottom-color: rgba(211, 247, 255, 0.024) !important;
+  border-bottom-color: rgba(211, 247, 255, 0.014) !important;
   background:
-    linear-gradient(180deg, rgba(7, 23, 56, 0.28), rgba(6, 18, 45, 0.035)),
+    linear-gradient(180deg, rgba(7, 23, 56, 0.12), rgba(6, 18, 45, 0.018)),
     transparent !important;
   box-shadow: none !important;
   backdrop-filter: none !important;
@@ -39118,10 +39118,10 @@ body:has(.creators-dashboard-system-page),
   min-height: 2.25rem !important;
   padding: 0.34rem 0.58rem !important;
   gap: 0.42rem !important;
-  border-color: rgba(211, 247, 255, 0.072) !important;
+  border-color: rgba(211, 247, 255, 0.052) !important;
   background:
-    radial-gradient(104px 32px at 12% 0%, rgba(103, 229, 255, 0.045), transparent 78%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.006)) !important;
+    radial-gradient(104px 32px at 12% 0%, rgba(103, 229, 255, 0.026), transparent 78%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.003)) !important;
   box-shadow: none !important;
   color: rgba(235, 250, 255, 0.82) !important;
 }
@@ -39175,7 +39175,7 @@ body:has(.creators-dashboard-system-page),
   min-height: 0 !important;
   border: 0 !important;
   background:
-    linear-gradient(90deg, transparent, rgba(211, 247, 255, 0.026), transparent) bottom / 100% 1px no-repeat,
+    linear-gradient(90deg, transparent, rgba(211, 247, 255, 0.016), transparent) bottom / 100% 1px no-repeat,
     transparent !important;
   box-shadow: none !important;
 }
@@ -39223,7 +39223,7 @@ body:has(.creators-dashboard-system-page),
   opacity: 1 !important;
   border-color: rgba(211, 247, 255, 0.082) !important;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.032), rgba(255, 255, 255, 0.008)) !important;
+    linear-gradient(180deg, rgba(255, 255, 255, 0.024), rgba(255, 255, 255, 0.005)) !important;
 }
 
 .app-shell-body:has(.creators-dashboard-system-page) :is(.app-nav-link-active, .app-nav-link[aria-current="page"], .app-nav-link[data-active="true"]).layout-contract-rail-link::after {
@@ -39351,10 +39351,12 @@ body:has(.creators-dashboard-system-page),
 .creators-lasy-system-page {
   --creators-lasy-max: min(100%, 88rem);
   --creators-lasy-core: min(100%, 70rem);
-  --creators-lasy-line: rgba(210, 247, 255, 0.055);
-  --creators-lasy-line-strong: rgba(148, 236, 255, 0.16);
-  --creators-lasy-muted: rgba(225, 246, 255, 0.64);
-  --creators-lasy-soft: rgba(255, 255, 255, 0.018);
+  --creators-lasy-line: rgba(211, 247, 255, 0.042);
+  --creators-lasy-line-strong: rgba(150, 242, 255, 0.145);
+  --creators-lasy-muted: rgba(225, 246, 255, 0.66);
+  --creators-lasy-soft: rgba(255, 255, 255, 0.014);
+  position: relative;
+  isolation: isolate;
   width: var(--creators-lasy-max) !important;
   max-width: var(--creators-lasy-max) !important;
   gap: clamp(3rem, 6.8vw, 7.8rem) !important;
@@ -39365,32 +39367,66 @@ body:has(.creators-lasy-system-page),
 .app-shell-bg:has(.creators-lasy-system-page),
 .app-shell-frame:has(.creators-lasy-system-page),
 .app-shell-body:has(.creators-lasy-system-page) {
+  background-color: #06224f !important;
   background:
-    radial-gradient(1180px 460px at 50% -6%, rgba(94, 231, 255, 0.095), transparent 72%),
-    radial-gradient(1040px 560px at 18% 14%, rgba(46, 116, 255, 0.055), transparent 78%),
-    radial-gradient(1080px 640px at 82% 32%, rgba(48, 154, 255, 0.046), transparent 78%),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+    radial-gradient(1180px 520px at 50% -5%, rgba(82, 226, 255, 0.145), transparent 74%),
+    radial-gradient(980px 520px at 15% 10%, rgba(75, 232, 255, 0.088), transparent 74%),
+    radial-gradient(980px 560px at 76% 18%, rgba(57, 112, 255, 0.1), transparent 78%),
+    radial-gradient(1120px 640px at 50% 26%, rgba(78, 226, 255, 0.105), transparent 78%),
+    radial-gradient(1320px 760px at 48% 58%, rgba(62, 188, 255, 0.092), transparent 80%),
+    radial-gradient(1160px 760px at 74% 98%, rgba(0, 75, 163, 0.12), transparent 76%),
+    linear-gradient(90deg, rgba(191, 239, 255, 0.018) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(191, 239, 255, 0.015) 1px, transparent 1px),
     url("/brand/editor-ai-circuit-background.png"),
-    linear-gradient(180deg, #061a41 0%, #041431 48%, #030e25 100%) !important;
-  background-size: auto, auto, auto, 64px 64px, 64px 64px, cover, cover !important;
-  background-position: center top, center top, center center, center top, center top, center top, center top !important;
-  background-repeat: no-repeat, no-repeat, no-repeat, repeat, repeat, repeat-y, no-repeat !important;
-  background-blend-mode: normal, normal, normal, soft-light, soft-light, soft-light, normal !important;
+    linear-gradient(180deg, #062553 0%, #0a3470 36%, #06234f 68%, #03122c 100%) !important;
+  background-size: auto, auto, auto, auto, auto, auto, 104px 104px, 104px 104px, cover, cover !important;
+  background-position: center top, center top, center top, center top, center center, center bottom, center top, center top, center top, center top !important;
+  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, repeat, repeat, repeat-y, no-repeat !important;
+  background-blend-mode: normal, normal, normal, normal, normal, normal, soft-light, soft-light, soft-light, normal !important;
 }
 
 .creators-lasy-system-page::before {
-  display: none !important;
-  content: none !important;
-  opacity: 0 !important;
-  background: none !important;
+  content: "";
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  top: clamp(-5.5rem, -6vw, -3rem);
+  left: 50%;
+  width: 100vw;
+  height: min(132rem, 86%);
+  transform: translateX(-50%);
+  display: block !important;
+  background:
+    radial-gradient(980px 430px at 50% 4%, rgba(105, 217, 255, 0.094), transparent 74%),
+    radial-gradient(840px 520px at 24% 27%, rgba(78, 226, 255, 0.052), transparent 76%),
+    radial-gradient(920px 560px at 76% 33%, rgba(74, 137, 255, 0.052), transparent 78%),
+    linear-gradient(90deg, transparent 0 18%, rgba(78, 226, 255, 0.026) 40%, rgba(191, 239, 255, 0.014) 52%, transparent 84%),
+    linear-gradient(180deg, transparent 0 28%, rgba(52, 196, 255, 0.034) 52%, transparent 100%);
+  mask-image:
+    radial-gradient(ellipse at 50% 24%, #000 0%, rgba(0, 0, 0, 0.76) 48%, transparent 82%),
+    linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.84) 54%, transparent 100%);
+  opacity: 0.64 !important;
 }
 
 .creators-lasy-system-page::after {
-  display: none !important;
-  content: none !important;
-  opacity: 0 !important;
-  background: none !important;
+  content: "";
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  top: 32%;
+  left: 50%;
+  width: 100vw;
+  height: 64%;
+  transform: translateX(-50%);
+  display: block !important;
+  background:
+    radial-gradient(900px 520px at 52% 18%, rgba(78, 226, 255, 0.052), transparent 74%),
+    radial-gradient(1040px 640px at 50% 68%, rgba(32, 126, 230, 0.058), transparent 78%),
+    linear-gradient(90deg, transparent, rgba(211, 247, 255, 0.018), transparent);
+  mask-image:
+    radial-gradient(ellipse at 50% 40%, #000 0%, rgba(0, 0, 0, 0.66) 50%, transparent 84%),
+    linear-gradient(180deg, transparent 0%, #000 18%, rgba(0, 0, 0, 0.7) 70%, transparent 100%);
+  opacity: 0.48 !important;
 }
 
 .creators-lasy-system-page .creators-hero-open {
@@ -39428,8 +39464,9 @@ body:has(.creators-lasy-system-page),
   pointer-events: none;
   inset: -8% 5% 26%;
   background:
-    radial-gradient(560px 260px at 50% 10%, rgba(122, 238, 255, 0.085), transparent 74%),
-    linear-gradient(90deg, transparent, rgba(216, 249, 255, 0.032), transparent);
+    radial-gradient(660px 320px at 50% 10%, rgba(122, 238, 255, 0.12), transparent 74%),
+    radial-gradient(720px 360px at 50% 50%, rgba(57, 112, 255, 0.06), transparent 78%),
+    linear-gradient(90deg, transparent, rgba(216, 249, 255, 0.038), transparent);
   mask-image: radial-gradient(ellipse at 50% 18%, #000 0%, transparent 74%);
   opacity: 0.82;
 }
@@ -39513,17 +39550,17 @@ body:has(.creators-lasy-system-page),
   width: min(100%, 46rem);
   margin-top: clamp(0.36rem, 0.74vw, 0.58rem);
   padding: clamp(0.46rem, 0.82vw, 0.66rem);
-  border: 1px solid rgba(235, 249, 255, 0.058);
+  border: 1px solid rgba(235, 249, 255, 0.046);
   border-radius: clamp(1.25rem, 1.9vw, 1.7rem);
   background:
-    radial-gradient(620px 160px at 18% 0%, rgba(119, 235, 255, 0.032), transparent 72%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.024), rgba(255, 255, 255, 0.006)),
-    rgba(5, 12, 27, 0.28);
+    radial-gradient(720px 190px at 18% 0%, rgba(119, 235, 255, 0.042), transparent 72%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.004)),
+    rgba(5, 15, 36, 0.16);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.042),
-    0 16px 48px rgba(0, 0, 0, 0.095);
-  backdrop-filter: blur(18px) saturate(1.02);
-  -webkit-backdrop-filter: blur(18px) saturate(1.02);
+    inset 0 1px 0 rgba(255, 255, 255, 0.032),
+    0 14px 42px rgba(0, 0, 0, 0.052);
+  backdrop-filter: blur(8px) saturate(1.02);
+  -webkit-backdrop-filter: blur(8px) saturate(1.02);
 }
 
 .creators-lasy-system-page .creators-entry-prompt-shell {
@@ -39534,8 +39571,8 @@ body:has(.creators-lasy-system-page),
   border: 0 !important;
   border-radius: clamp(0.92rem, 1.35vw, 1.18rem) !important;
   background:
-    linear-gradient(90deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0.01)),
-    rgba(255, 255, 255, 0.01) !important;
+    linear-gradient(90deg, rgba(255, 255, 255, 0.022), rgba(255, 255, 255, 0.006)),
+    rgba(255, 255, 255, 0.006) !important;
   box-shadow: none !important;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
@@ -39673,6 +39710,8 @@ body:has(.creators-lasy-system-page),
   width: var(--creators-lasy-core) !important;
   max-width: var(--creators-lasy-core) !important;
   margin-inline: auto;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .creators-lasy-system-page .creators-core-canvas::before,
@@ -39680,9 +39719,10 @@ body:has(.creators-lasy-system-page),
 .creators-lasy-system-page .creator-workspace-shell::before,
 .creators-lasy-system-page .creator-workspace-shell::after {
   background:
-    radial-gradient(820px 420px at 50% 0%, rgba(105, 221, 255, 0.032), transparent 74%),
-    linear-gradient(180deg, transparent, rgba(28, 118, 210, 0.012) 48%, transparent) !important;
-  opacity: 0.28 !important;
+    radial-gradient(980px 480px at 50% 0%, rgba(105, 221, 255, 0.052), transparent 74%),
+    radial-gradient(1080px 560px at 58% 62%, rgba(52, 196, 255, 0.032), transparent 78%),
+    linear-gradient(180deg, transparent, rgba(28, 118, 210, 0.016) 48%, transparent) !important;
+  opacity: 0.36 !important;
   box-shadow: none !important;
   filter: none !important;
 }
@@ -39695,6 +39735,37 @@ body:has(.creators-lasy-system-page),
   border-radius: 0 !important;
   box-shadow: none !important;
   overflow: visible !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.creators-lasy-system-page :is(
+  .proof-value-card,
+  .creators-hero-core-card,
+  .creators-secondary-card,
+  .creator-active-panel,
+  .creator-workspace-card,
+  .creator-form-zone,
+  .creator-context-zone,
+  .creator-inline-panel,
+  .creator-output-card,
+  .creator-next-step-panel,
+  .creator-estimate-row,
+  .creator-planner-panel,
+  .creator-loading-panel,
+  .creator-final-flow-panel,
+  .creator-empty-state
+) {
+  border-color: rgba(211, 247, 255, 0.052) !important;
+  border-top-color: rgba(211, 247, 255, 0.068) !important;
+  border-left-color: rgba(211, 247, 255, 0.048) !important;
+  background:
+    radial-gradient(620px 260px at 18% 0%, rgba(105, 221, 255, 0.026), transparent 74%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.012), rgba(255, 255, 255, 0.002)),
+    rgba(5, 18, 43, 0.105) !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 @media (min-width: 1800px) {
