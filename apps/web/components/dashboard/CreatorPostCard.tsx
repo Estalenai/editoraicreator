@@ -235,6 +235,8 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
   const hasCredits = walletCommon >= creditsEstimate.common;
   const hasSavedProject = Boolean(savedProjectId);
   const needsProjectSync = Boolean(savedProjectId && resultDirty);
+  const executionSummaryLabel = execution.modeLabel.replace(" (Recomendado)", "");
+  const suggestionSummaryLabel = promptEnabled ? (autoApply ? "Automática" : "Revisar") : "Direto";
 
   const plannerSteps = useMemo(
     () => [
@@ -690,8 +692,8 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
         </div>
         <div className="creator-briefing-step-pill">
           <span>3</span>
-          <strong>IA e saída</strong>
-          <small>revisar, gerar e continuar</small>
+          <strong>Fechamento</strong>
+          <small>apoio, estimativa e gerar</small>
         </div>
       </div>
 
@@ -776,53 +778,79 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
 
       <section className="creator-briefing-step creator-briefing-step-ai" data-step-index="3" aria-label="Etapa 3: IA, estimativa e saída">
       <div className="creator-context-zone creator-form-zone-ai" data-step-label="IA, estimativa e saída">
-        <p className="creator-zone-title">Fechamento assistido</p>
-        <p className="creator-zone-copy">Confirme apoio da IA, consumo previsto e o que será entregue.</p>
-        <AiExecutionModeFields
-          capabilities={execution.capabilities}
-          mode={execution.mode}
-          onModeChange={execution.handleModeChange}
-          modeDetail={execution.modeDetail}
-          availabilityNote={execution.availabilityNote}
-          qualityOutputsLabel={execution.qualityOutputsLabel}
-          manualProvider={execution.manualProvider}
-          onManualProviderChange={execution.setManualProvider}
-          manualTier={execution.manualTier}
-          onManualTierChange={execution.setManualTier}
-          manualSelectionLabel={execution.manualSelectionLabel}
-          persistingPreference={executionModeSaving}
-          preferenceError={executionModeError}
-        />
-        <div className="creator-section-label">Sugestão automática</div>
-
-        <div className="creator-toggle-stack">
-          <label className="toggle-row" data-active={promptEnabled}>
-            <input
-              type="checkbox"
-              checked={promptEnabled}
-              onChange={async (e) => {
-                const value = e.target.checked;
-                await updatePromptEnabled(value);
-              }}
-            />
-            <span>Usar sugestão automática</span>
-          </label>
-
-          <label className="toggle-row" data-active={promptEnabled && autoApply} data-disabled={!promptEnabled}>
-            <input
-              type="checkbox"
-              checked={autoApply}
-              disabled={!promptEnabled}
-              onChange={async (e) => {
-                const value = e.target.checked;
-                await updateAutoApply(value);
-              }}
-            />
-            <span>Aplicar sugestão automaticamente</span>
-          </label>
+        <div className="creator-ai-close-head">
+          <p className="creator-zone-title">Fechamento assistido</p>
+          <p className="creator-zone-copy">Apoio da IA, consumo e entrega ficam resumidos antes de gerar.</p>
         </div>
 
-        <div className="helper-note-inline">Quando ativo, a IA prepara o prompt antes de gerar.</div>
+        <div className="creator-ai-close-strip" aria-label="Resumo do fechamento">
+          <div>
+            <span>Apoio</span>
+            <strong>{executionSummaryLabel}</strong>
+          </div>
+          <div>
+            <span>Sugestão</span>
+            <strong>{suggestionSummaryLabel}</strong>
+          </div>
+          <div>
+            <span>Consumo</span>
+            <strong>~{creditsEstimate.common} Comum</strong>
+          </div>
+        </div>
+
+        <details className="creator-ai-settings-disclosure">
+          <summary>Configurar apoio da IA</summary>
+          <div className="creator-ai-settings-panel">
+            <AiExecutionModeFields
+              capabilities={execution.capabilities}
+              mode={execution.mode}
+              onModeChange={execution.handleModeChange}
+              modeDetail={execution.modeDetail}
+              availabilityNote={execution.availabilityNote}
+              qualityOutputsLabel={execution.qualityOutputsLabel}
+              manualProvider={execution.manualProvider}
+              onManualProviderChange={execution.setManualProvider}
+              manualTier={execution.manualTier}
+              onManualTierChange={execution.setManualTier}
+              manualSelectionLabel={execution.manualSelectionLabel}
+              persistingPreference={executionModeSaving}
+              preferenceError={executionModeError}
+            />
+
+            <div className="creator-ai-suggestion-panel">
+              <div className="creator-section-label">Sugestão automática</div>
+
+              <div className="creator-toggle-stack">
+                <label className="toggle-row" data-active={promptEnabled}>
+                  <input
+                    type="checkbox"
+                    checked={promptEnabled}
+                    onChange={async (e) => {
+                      const value = e.target.checked;
+                      await updatePromptEnabled(value);
+                    }}
+                  />
+                  <span>Usar sugestão automática</span>
+                </label>
+
+                <label className="toggle-row" data-active={promptEnabled && autoApply} data-disabled={!promptEnabled}>
+                  <input
+                    type="checkbox"
+                    checked={autoApply}
+                    disabled={!promptEnabled}
+                    onChange={async (e) => {
+                      const value = e.target.checked;
+                      await updateAutoApply(value);
+                    }}
+                  />
+                  <span>Aplicar sugestão automaticamente</span>
+                </label>
+              </div>
+
+              <div className="helper-note-inline">Quando ativo, a IA prepara o prompt antes de gerar.</div>
+            </div>
+          </div>
+        </details>
       </div>
 
       <div className="creator-estimate-row creator-estimate-line">
@@ -830,7 +858,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
           Estimativa de consumo: ~{creditsEstimate.common} Comum • {creditsEstimate.pro} Pro • {creditsEstimate.ultra} Ultra
         </div>
         <div className="helper-note-subtle">
-          O consumo final aparece no Histórico de créditos.
+          Histórico registra o consumo final.
         </div>
         {!hasCredits && <div className="inline-alert inline-alert-error">Saldo insuficiente para gerar. Compre Creator Coins avulsas para continuar.</div>}
       </div>
@@ -1051,9 +1079,9 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
         <OperationalState
           kind="empty"
           title="Nenhum post gerado ainda"
-          description="Preencha o briefing, revise o planejamento e gere a primeira versão. Depois, salve no projeto e continue no editor com a base do post já preservada."
+          description="Preencha o briefing, revise o planejamento e gere a primeira versão."
           meta={[
-            { label: "Fluxo", value: "Gerar → salvar → editor" },
+            { label: "Próximo", value: "Gerar → salvar → editor" },
             { label: "Saldo", value: hasCredits ? "Disponível" : "Insuficiente", tone: hasCredits ? "success" : "warning" },
           ]}
           actions={
@@ -1071,6 +1099,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
             </>
           }
           className="creator-empty-state creator-empty-flow"
+          compact
         />
       ) : null}
 

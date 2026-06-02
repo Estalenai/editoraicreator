@@ -482,17 +482,8 @@ function CreatorsPageContent() {
           </div>
 
           <div className="proof-value-grid proof-value-grid-creators creators-proof-stream creators-editorial-stream">
-            {CREATOR_SHOWCASES.map((item, index) => (
-              <article
-                key={item.creator}
-                className={`proof-value-card layout-contract-item creators-open-module creators-editorial-item ${index === 0 ? "creators-proof-card-primary" : "creators-proof-card-support"}`}
-                data-reveal
-                data-reveal-delay={String(70 + index * 55)}
-              >
-                <div className="proof-value-meta-row">
-                  <span className="proof-value-kicker">{item.kicker}</span>
-                  <span className="proof-value-chip">{item.creator}</span>
-                </div>
+            {CREATOR_SHOWCASES.map((item, index) => {
+              const proofBody = (
                 <div className="proof-value-stack">
                   <div className="proof-value-block">
                     <span className="proof-value-label">Briefing</span>
@@ -507,8 +498,43 @@ function CreatorsPageContent() {
                     <strong>{item.nextStep}</strong>
                   </div>
                 </div>
-              </article>
-            ))}
+              );
+
+              if (index === 0) {
+                return (
+                  <article
+                    key={item.creator}
+                    className="proof-value-card layout-contract-item creators-open-module creators-editorial-item creators-proof-card-primary"
+                    data-featured="true"
+                    data-reveal
+                    data-reveal-delay={String(70 + index * 55)}
+                  >
+                    <div className="proof-value-meta-row">
+                      <span className="proof-value-kicker">{item.kicker}</span>
+                      <span className="proof-value-chip">{item.creator}</span>
+                    </div>
+                    {proofBody}
+                  </article>
+                );
+              }
+
+              return (
+                <details
+                  key={item.creator}
+                  className="proof-value-card layout-contract-item creators-open-module creators-editorial-item creators-proof-card-support creators-proof-disclosure"
+                  data-featured="false"
+                  data-reveal
+                  data-reveal-delay={String(70 + index * 55)}
+                >
+                  <summary>
+                    <span className="proof-value-kicker">{item.kicker}</span>
+                    <strong>{item.creator}</strong>
+                    <span>{item.nextStep}</span>
+                  </summary>
+                  {proofBody}
+                </details>
+              );
+            })}
           </div>
         </section>
 
@@ -556,15 +582,19 @@ function CreatorsPageContent() {
         </div>
           <div className="focus-shell-body">
             <div className="creators-hero-core-grid creators-format-stream creators-decision-stream">
-              {heroCoreCards.map((tab, index) => (
-                <article
-                  key={tab.id}
-                  className={`creators-hero-core-card layout-contract-item creators-open-module creators-decision-item ${tab.group !== "hero" ? "creators-hero-core-card-support" : ""}`}
-                  data-active={activeTab === tab.id}
-                  data-group={tab.group}
-                  data-reveal
-                  data-reveal-delay={String(70 + index * 50)}
-                >
+              {heroCoreCards.map((tab, index) => {
+                const isFeaturedFormat = activeTabMeta.group === "hero" ? activeTab === tab.id : index === 0;
+
+                return (
+                  <article
+                    key={tab.id}
+                    className={`creators-hero-core-card layout-contract-item creators-open-module creators-decision-item ${tab.group !== "hero" ? "creators-hero-core-card-support" : ""}`}
+                    data-active={activeTab === tab.id}
+                    data-featured={isFeaturedFormat}
+                    data-group={tab.group}
+                    data-reveal
+                    data-reveal-delay={String(70 + index * 50)}
+                  >
                   <div className="creators-hero-core-card-head">
                     <span className={`premium-badge premium-badge-${creatorStageTone(tab.group)}`}>{tab.stageLabel}</span>
                     <span className="creators-hero-core-card-kicker">{tab.group === "hero" ? "Formato principal" : "Apoio recomendado"}</span>
@@ -596,7 +626,8 @@ function CreatorsPageContent() {
                     </Link>
                   </div>
                 </article>
-              ))}
+                );
+              })}
             </div>
           </div>
         </section>
@@ -814,9 +845,12 @@ function CreatorsPageContent() {
               <span>{activeTabMeta.bestFor}</span>
             </div>
 
-            <div className="creators-side-note creators-wallet-panel">
-              <strong>Saldo disponível</strong>
-              <span>O Creator mostra a estimativa antes. Créditos confirma o consumo real.</span>
+            <details className="creators-side-note creators-side-disclosure creators-wallet-panel">
+              <summary>
+                <span>Saldo</span>
+                <strong>{walletCommon} Comum</strong>
+              </summary>
+              <span>Estimativa antes de gerar; Créditos confirma o consumo real.</span>
               <div className="creators-wallet-stack">
                 {walletByType.map((item) => (
                   <div key={item.coinType} className="creators-wallet-row">
@@ -830,15 +864,18 @@ function CreatorsPageContent() {
               <a href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
                 Ver histórico de consumo
               </a>
-            </div>
+            </details>
 
-            <div className="creators-side-note">
-              <strong>Contexto rápido</strong>
+            <details className="creators-side-note creators-side-disclosure">
+              <summary>
+                <span>Guia</span>
+                <strong>Contexto rápido</strong>
+              </summary>
               <span>Revise fluxo, saldo e próximo passo sem sair daqui.</span>
               <Link href="/how-it-works" className="btn-link-ea btn-ghost btn-sm">
                 Abrir guia rápido
               </Link>
-            </div>
+            </details>
           </div>
         </aside>
         </div>
