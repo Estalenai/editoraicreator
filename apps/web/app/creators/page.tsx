@@ -700,76 +700,7 @@ function CreatorsPageContent() {
           A criação ativa concentra formato, saldo e próximo passo.
         </div>
         <div className="focus-shell-body creator-workspace-grid">
-        <aside className="creator-workspace-side creators-sidebar creators-sidebar-soft layout-contract-rail creators-format-rail creators-context-ribbon" data-reveal data-reveal-delay="140">
-          <div className="creators-side-note creators-side-note-primary">
-            <strong>Comece pelos formatos principais</strong>
-            <span>
-              Publicação: <strong>Creator Post</strong> • Narrativa: <strong>Creator Scripts</strong> • Vídeo: <strong>Creator Clips</strong>
-            </span>
-          </div>
-
-          <div className="creators-sidebar-nav">
-            {tabsByGroup.map((group) => (
-              <div key={group.id} className="creators-sidebar-group">
-                <div className="creator-group-title">{group.title}</div>
-                <div className="creator-group-subtitle">{group.subtitle}</div>
-                <div className="creators-sidebar-group-list">
-                  {group.items.map((tab) => (
-                    <button
-                      key={tab.id}
-                      data-priority={tab.group}
-                      data-active={activeTab === tab.id}
-                      onClick={() => activateTab(tab.id)}
-                      className="creator-tab-btn"
-                    >
-                      <span className="creator-tab-head">
-                        <span className="creator-tab-title">{tab.label}</span>
-                        <span className="creator-tab-chip">{tab.stageLabel}</span>
-                      </span>
-                      <span className="creator-tab-meta">{tab.description}</span>
-                      <span className="creator-tab-support">{tab.expectedOutput}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="creators-sidebar-stack">
-            <div className="creators-side-note">
-              <strong>{activeTabMeta.label}</strong>
-              <span>{activeTabMeta.bestFor}</span>
-            </div>
-
-            <div className="creators-side-note creators-wallet-panel">
-              <strong>Saldo disponível</strong>
-              <span>O Creator mostra a estimativa antes. Créditos confirma o consumo real.</span>
-              <div className="creators-wallet-stack">
-                {walletByType.map((item) => (
-                  <div key={item.coinType} className="creators-wallet-row">
-                    <span>
-                      {coinTypeLabel(item.coinType)} • {item.description}
-                    </span>
-                    <strong>{item.amount == null ? "…" : item.amount}</strong>
-                  </div>
-                ))}
-              </div>
-              <a href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
-                Ver histórico de consumo
-              </a>
-            </div>
-
-            <div className="creators-side-note">
-              <strong>Contexto rápido</strong>
-              <span>Revise fluxo, saldo e próximo passo sem sair daqui.</span>
-              <Link href="/how-it-works" className="btn-link-ea btn-ghost btn-sm">
-                Abrir guia rápido
-              </Link>
-            </div>
-          </div>
-        </aside>
-
-        <div className="creator-workspace-main layout-contract-panel" data-reveal data-reveal-delay="180">
+        <div className="creator-workspace-main layout-contract-panel" data-reveal data-reveal-delay="140">
           {initialLoading ? (
             <CreatorWorkspacePanelSkeleton />
           ) : (
@@ -842,6 +773,74 @@ function CreatorsPageContent() {
             </div>
           )}
         </div>
+        <aside className="creator-workspace-side creators-sidebar creators-sidebar-soft layout-contract-rail creators-format-rail creators-context-ribbon" data-reveal data-reveal-delay="180">
+          <div className="creators-side-note creators-side-note-primary">
+            <strong>Comece pelos formatos principais</strong>
+            <span>
+              Publicação: <strong>Creator Post</strong> • Narrativa: <strong>Creator Scripts</strong> • Vídeo: <strong>Creator Clips</strong>
+            </span>
+          </div>
+
+          <div className="creators-sidebar-nav">
+            {tabsByGroup.map((group) => (
+              <div key={group.id} className="creators-sidebar-group">
+                <div className="creator-group-title">{group.title}</div>
+                <div className="creator-group-subtitle">{group.subtitle}</div>
+                <div className="creators-sidebar-group-list">
+                  {group.items.map((tab) => (
+                    <button
+                      key={tab.id}
+                      data-priority={tab.group}
+                      data-active={activeTab === tab.id}
+                      onClick={() => activateTab(tab.id)}
+                      className="creator-tab-btn"
+                    >
+                      <span className="creator-tab-head">
+                        <span className="creator-tab-title">{tab.label}</span>
+                        <span className="creator-tab-chip">{tab.stageLabel}</span>
+                      </span>
+                      <span className="creator-tab-meta">{tab.description}</span>
+                      <span className="creator-tab-support">{tab.expectedOutput}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="creators-sidebar-stack">
+            <div className="creators-side-note">
+              <strong>{activeTabMeta.label}</strong>
+              <span>{activeTabMeta.bestFor}</span>
+            </div>
+
+            <div className="creators-side-note creators-wallet-panel">
+              <strong>Saldo disponível</strong>
+              <span>O Creator mostra a estimativa antes. Créditos confirma o consumo real.</span>
+              <div className="creators-wallet-stack">
+                {walletByType.map((item) => (
+                  <div key={item.coinType} className="creators-wallet-row">
+                    <span>
+                      {coinTypeLabel(item.coinType)} • {item.description}
+                    </span>
+                    <strong>{item.amount == null ? "…" : item.amount}</strong>
+                  </div>
+                ))}
+              </div>
+              <a href="/credits#credits-history" className="btn-link-ea btn-ghost btn-sm">
+                Ver histórico de consumo
+              </a>
+            </div>
+
+            <div className="creators-side-note">
+              <strong>Contexto rápido</strong>
+              <span>Revise fluxo, saldo e próximo passo sem sair daqui.</span>
+              <Link href="/how-it-works" className="btn-link-ea btn-ghost btn-sm">
+                Abrir guia rápido
+              </Link>
+            </div>
+          </div>
+        </aside>
         </div>
       </section>
     </div>

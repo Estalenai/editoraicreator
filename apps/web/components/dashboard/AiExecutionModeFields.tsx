@@ -57,12 +57,12 @@ export function AiExecutionModeFields({
 
         {showProviderSelect ? (
           <label className="field-label-ea">
-            <span>Provider manual</span>
+            <span>Origem manual</span>
             <PremiumSelect
               value={manualProvider}
               onChange={onManualProviderChange}
               options={capabilities.providerOptions}
-              ariaLabel="Provider manual"
+              ariaLabel="Origem manual da IA"
             />
           </label>
         ) : null}
@@ -83,10 +83,10 @@ export function AiExecutionModeFields({
       <div className="creator-ai-assist-notes">
         <div className="helper-note-inline">{modeDetail}</div>
         {manualSelectionLabel ? (
-          <div className="helper-note-subtle">Rota manual atual: {manualSelectionLabel}.</div>
+          <div className="helper-note-subtle">Seleção desta geração: {manualSelectionLabel}.</div>
         ) : null}
         {qualityOutputsLabel ? (
-          <div className="helper-note-subtle">Qualidade máxima do plano nesta trilha: {qualityOutputsLabel}.</div>
+          <div className="helper-note-subtle">Perfil de qualidade disponível nesta trilha: {qualityOutputsLabel}.</div>
         ) : null}
         <div className="helper-note-subtle">{availabilityNote}</div>
         {mode !== "manual" ? (
@@ -97,7 +97,7 @@ export function AiExecutionModeFields({
           </div>
         ) : (
           <div className="helper-note-subtle">
-            Manual vale só para esta execução e nunca altera a regra do seu plano.
+            A escolha manual vale só para esta geração e não muda o padrão do plano.
           </div>
         )}
         {preferenceError ? (
