@@ -799,10 +799,10 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
       <div className="creator-context-zone creator-form-zone-ai" data-step-label="IA, estimativa e saída">
         <div className="creator-ai-close-head">
           <p className="creator-zone-title">Fechamento assistido</p>
-          <p className="creator-zone-copy">Apoio da IA, consumo e entrega ficam resumidos antes de gerar.</p>
+          <p className="creator-zone-copy">Confirme assistência, custo e entrega antes de revisar o plano.</p>
         </div>
 
-        <div className="creator-ai-close-strip" aria-label="Resumo do fechamento">
+        <div className="creator-ai-close-strip creator-ai-command-strip" aria-label="Resumo do fechamento">
           <div>
             <span>Apoio</span>
             <strong>{executionSummaryLabel}</strong>
@@ -818,7 +818,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
         </div>
 
         <details className="creator-ai-settings-disclosure">
-          <summary>Configurar apoio da IA</summary>
+          <summary>Ajustes avançados do apoio</summary>
           <div className="creator-ai-settings-panel">
             <AiExecutionModeFields
               capabilities={execution.capabilities}
@@ -1095,31 +1095,37 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
       )}
 
       {!displayResult && !isBusy && !plannerOpen ? (
-        <OperationalState
-          kind="empty"
-          title="Nenhum post gerado ainda"
-          description="Preencha o briefing, revise o planejamento e gere a primeira versão."
-          meta={[
-            { label: "Próximo", value: "Gerar → salvar → editor" },
-            { label: "Saldo", value: hasCredits ? "Disponível" : "Insuficiente", tone: hasCredits ? "success" : "warning" },
-          ]}
-          actions={
-            <>
-              <button
-                className="btn-ea btn-primary btn-sm"
-                onClick={openPlanner}
-                disabled={isBusy || !theme.trim() || !hasCredits}
-              >
-                Revisar planejamento e gerar
-              </button>
-              <Link href="/projects" className="btn-link-ea btn-ghost btn-sm">
-                Ver projetos
-              </Link>
-            </>
-          }
-          className="creator-empty-state creator-empty-flow"
-          compact
-        />
+        <div className="state-ea creator-empty-state creator-empty-flow creator-empty-builder" aria-live="polite">
+          <div className="operational-state-head creator-empty-builder-copy">
+            <span className="operational-state-badge">Vazio</span>
+            <div>
+              <p className="state-ea-title">Nenhum post gerado ainda</p>
+              <p className="state-ea-text">Preencha o briefing, revise o planejamento e gere a primeira versão.</p>
+            </div>
+          </div>
+          <div className="operational-state-meta-grid creator-empty-builder-meta">
+            <div className="operational-state-meta-item">
+              <span>Próximo</span>
+              <strong>Gerar → salvar → editor</strong>
+            </div>
+            <div className="operational-state-meta-item" data-tone={hasCredits ? "success" : "warning"}>
+              <span>Saldo</span>
+              <strong>{hasCredits ? "Disponível" : "Insuficiente"}</strong>
+            </div>
+          </div>
+          <div className="state-ea-actions">
+            <button
+              className="btn-ea btn-primary btn-sm"
+              onClick={openPlanner}
+              disabled={isBusy || !theme.trim() || !hasCredits}
+            >
+              Revisar planejamento e gerar
+            </button>
+            <Link href="/projects" className="btn-link-ea btn-ghost btn-sm">
+              Ver projetos
+            </Link>
+          </div>
+        </div>
       ) : null}
 
       {displayResult && (

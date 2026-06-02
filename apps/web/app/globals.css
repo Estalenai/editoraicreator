@@ -41681,3 +41681,423 @@ body:has(.creators-lasy-system-page),
     justify-content: center;
   }
 }
+
+/* Meta-Lasy product composition: keep the Dashboard-like field, but make the
+   Creators workflow read as a builder instead of documentation or cockpit. */
+.creators-lasy-system-page .creators-secondary-section[data-focus-active="false"] .focus-shell-body {
+  display: none !important;
+}
+
+.creators-lasy-system-page .creators-secondary-section[data-focus-active="false"] .focus-shell-preview {
+  display: block !important;
+}
+
+.creators-lasy-system-page .creators-secondary-disclosure {
+  padding-block: clamp(0.72rem, 1.15vw, 0.98rem) !important;
+}
+
+.creators-lasy-system-page .creators-secondary-disclosure summary {
+  display: grid;
+  grid-template-columns: minmax(0, 0.78fr) minmax(12rem, 1fr) auto;
+  gap: clamp(0.62rem, 1.2vw, 1rem);
+  align-items: center;
+  cursor: pointer;
+  list-style: none;
+}
+
+.creators-lasy-system-page .creators-secondary-disclosure summary::-webkit-details-marker {
+  display: none;
+}
+
+.creators-lasy-system-page .creators-secondary-disclosure summary::after {
+  content: "+";
+  display: grid;
+  place-items: center;
+  width: 1.18rem;
+  height: 1.18rem;
+  border: 1px solid rgba(211, 247, 255, 0.08);
+  border-radius: 999px;
+  color: rgba(218, 248, 255, 0.58);
+  font-size: 0.72rem;
+  line-height: 1;
+}
+
+.creators-lasy-system-page .creators-secondary-disclosure[open] summary::after {
+  content: "-";
+}
+
+.creators-lasy-system-page .creators-secondary-disclosure summary .creators-secondary-card-head {
+  display: flex !important;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.46rem;
+  min-width: 0;
+}
+
+.creators-lasy-system-page .creators-secondary-disclosure summary .creators-secondary-card-head strong {
+  color: rgba(247, 253, 255, 0.88) !important;
+  font-size: clamp(0.92rem, 1.1vw, 1.08rem);
+  letter-spacing: -0.02em;
+}
+
+.creators-lasy-system-page .creators-secondary-summary-copy {
+  color: rgba(218, 244, 255, 0.58);
+  font-size: clamp(0.74rem, 0.86vw, 0.82rem);
+  line-height: 1.34;
+}
+
+.creators-lasy-system-page .creators-secondary-disclosure-body {
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 0.62fr) minmax(0, 0.62fr) auto;
+  gap: clamp(0.62rem, 1.15vw, 0.95rem);
+  align-items: end;
+  padding-top: clamp(0.58rem, 1vw, 0.82rem);
+  border-top: 1px solid rgba(211, 247, 255, 0.042);
+}
+
+.creators-lasy-system-page .creators-secondary-disclosure-body > .helper-text-ea {
+  max-width: 31rem;
+}
+
+.creators-lasy-system-page .creators-secondary-disclosure-body > .btn-ea {
+  align-self: center;
+  width: fit-content !important;
+  min-height: 2.15rem !important;
+  padding-inline: 0 !important;
+  border-color: transparent !important;
+  background: transparent !important;
+}
+
+.creators-lasy-system-page .creators-sidebar-group-disclosure summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.16rem 0.42rem;
+  align-items: center;
+  min-height: 2rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+.creators-lasy-system-page .creators-sidebar-group-disclosure summary::-webkit-details-marker {
+  display: none;
+}
+
+.creators-lasy-system-page .creators-sidebar-group-disclosure summary::after {
+  content: "+";
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  display: grid;
+  place-items: center;
+  width: 1rem;
+  height: 1rem;
+  border: 1px solid rgba(211, 247, 255, 0.08);
+  border-radius: 999px;
+  color: rgba(218, 248, 255, 0.58);
+  font-size: 0.66rem;
+}
+
+.creators-lasy-system-page .creators-sidebar-group-disclosure[open] summary::after {
+  content: "-";
+}
+
+.creators-lasy-system-page .creators-sidebar-group-disclosure summary .creator-group-subtitle {
+  grid-column: 1;
+  max-width: 14rem;
+}
+
+.creators-lasy-system-page .creators-sidebar-group-disclosure:not([open]) {
+  padding-bottom: clamp(0.44rem, 0.85vw, 0.62rem) !important;
+}
+
+.creators-lasy-system-page .creator-post-briefing-flow {
+  align-items: start;
+}
+
+@media (min-width: 1041px) {
+  .creators-lasy-system-page .creator-briefing-guided-flow {
+    grid-template-columns: minmax(16rem, 0.48fr) minmax(0, 1.28fr) !important;
+    grid-template-rows: auto auto !important;
+    column-gap: clamp(1.1rem, 2.1vw, 2rem) !important;
+    row-gap: clamp(0.72rem, 1.3vw, 1.05rem) !important;
+  }
+
+  .creators-lasy-system-page .creator-briefing-step-channel {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+  }
+
+  .creators-lasy-system-page .creator-briefing-step-context {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+  }
+
+  .creators-lasy-system-page .creator-briefing-step-ai {
+    grid-column: 1 / -1 !important;
+    grid-row: 2 !important;
+    display: grid !important;
+    grid-template-columns: minmax(16rem, 0.54fr) minmax(0, 1.46fr) !important;
+    gap: clamp(0.72rem, 1.4vw, 1.08rem) clamp(1rem, 2vw, 1.7rem) !important;
+    min-height: 0 !important;
+    padding: clamp(0.78rem, 1.3vw, 1rem) 0 0 !important;
+    border-top-color: rgba(211, 247, 255, 0.055) !important;
+    background: transparent !important;
+  }
+
+  .creators-lasy-system-page .creator-briefing-step-ai::before,
+  .creators-lasy-system-page .creator-briefing-step-ai::after {
+    display: none !important;
+  }
+
+  .creators-lasy-system-page .creator-briefing-step-ai > .creator-form-zone-ai {
+    grid-column: 1 !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .creators-lasy-system-page .creator-briefing-step-ai > .creator-estimate-line {
+    grid-column: 1 !important;
+  }
+
+  .creators-lasy-system-page .creator-briefing-step-ai > .creator-final-flow-panel {
+    grid-column: 2 !important;
+    grid-row: 1 / span 2;
+  }
+
+  .creators-lasy-system-page .creator-briefing-step-ai > .creator-form-zone-ai > * {
+    grid-column: 1 !important;
+  }
+}
+
+.creators-lasy-system-page .creator-form-zone-ai {
+  gap: clamp(0.38rem, 0.78vw, 0.58rem) !important;
+}
+
+.creators-lasy-system-page .creator-ai-command-strip {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0 !important;
+  border: 0 !important;
+}
+
+.creators-lasy-system-page .creator-ai-command-strip > div {
+  display: grid !important;
+  min-height: 0 !important;
+  padding: 0.36rem 0 !important;
+  border: 0 !important;
+  border-top: 1px solid rgba(211, 247, 255, 0.048) !important;
+  border-radius: 0;
+  background: transparent;
+}
+
+.creators-lasy-system-page .creator-ai-command-strip > div + div {
+  padding-left: 0 !important;
+  border-left: 0 !important;
+}
+
+.creators-lasy-system-page .creator-ai-command-strip span {
+  font-size: 0.54rem !important;
+  letter-spacing: 0.08em !important;
+}
+
+.creators-lasy-system-page .creator-ai-command-strip strong {
+  font-size: clamp(0.72rem, 0.82vw, 0.82rem) !important;
+}
+
+.creators-lasy-system-page .creator-ai-settings-disclosure {
+  border-top: 0 !important;
+}
+
+.creators-lasy-system-page .creator-ai-settings-disclosure summary {
+  min-height: 1.78rem !important;
+  padding: 0.08rem 0 !important;
+  color: rgba(198, 238, 255, 0.58) !important;
+  font-size: 0.62rem !important;
+}
+
+.creators-lasy-system-page .creator-estimate-line {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.16rem !important;
+  padding-top: 0.22rem !important;
+  border-top: 0 !important;
+}
+
+.creators-lasy-system-page .creator-estimate-line :is(.helper-note-inline, .helper-note-subtle) {
+  font-size: 0.64rem !important;
+  line-height: 1.24 !important;
+}
+
+.creators-lasy-system-page .creator-final-flow-panel {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: clamp(0.72rem, 1.45vw, 1.12rem) !important;
+  align-items: stretch;
+  padding-top: 0 !important;
+}
+
+.creators-lasy-system-page .creator-final-flow-panel .creator-journey-line {
+  grid-column: 1;
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 0 !important;
+  align-self: stretch;
+  border-top: 0 !important;
+}
+
+.creators-lasy-system-page .creator-final-flow-panel .creator-journey-line > .creator-planner-field,
+.creators-lasy-system-page .creator-final-flow-panel .creator-journey-line > .creator-planner-field + .creator-planner-field {
+  padding: clamp(0.52rem, 0.95vw, 0.72rem) 0 !important;
+  border: 0 !important;
+  border-top: 1px solid rgba(211, 247, 255, 0.045) !important;
+}
+
+.creators-lasy-system-page .creator-final-flow-panel .state-ea.creator-empty-builder {
+  grid-column: 1;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: clamp(0.46rem, 0.9vw, 0.68rem) clamp(0.72rem, 1.4vw, 1rem) !important;
+  align-content: center;
+  align-items: center;
+  min-height: 100%;
+  padding: clamp(0.62rem, 1.1vw, 0.82rem) 0 !important;
+  border: 0 !important;
+  border-top: 1px solid rgba(211, 247, 255, 0.058) !important;
+  background: transparent !important;
+}
+
+.creators-lasy-system-page .creator-empty-builder .creator-empty-builder-copy {
+  grid-column: 1;
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.52rem;
+  align-items: baseline;
+}
+
+.creators-lasy-system-page .creator-empty-builder .operational-state-badge {
+  min-height: 1.62rem !important;
+  padding-inline: 0.58rem !important;
+  border-color: rgba(126, 231, 255, 0.13) !important;
+  background: rgba(91, 223, 255, 0.035) !important;
+  color: rgba(214, 246, 255, 0.66) !important;
+  font-size: 0.56rem !important;
+}
+
+.creators-lasy-system-page .creator-empty-builder .state-ea-title {
+  margin: 0 !important;
+  font-size: clamp(0.86rem, 0.96vw, 0.96rem) !important;
+}
+
+.creators-lasy-system-page .creator-empty-builder .state-ea-text {
+  margin: 0.12rem 0 0 !important;
+  max-width: 30rem !important;
+  font-size: clamp(0.68rem, 0.76vw, 0.76rem) !important;
+  line-height: 1.34 !important;
+}
+
+.creators-lasy-system-page .creator-empty-builder .creator-empty-builder-meta {
+  grid-column: 1;
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 0.34rem !important;
+}
+
+.creators-lasy-system-page .creator-empty-builder .operational-state-meta-item {
+  width: auto !important;
+  padding: 0.26rem 0.48rem !important;
+  border: 1px solid rgba(211, 247, 255, 0.055) !important;
+  border-radius: 999px !important;
+}
+
+.creators-lasy-system-page .creator-empty-builder .operational-state-meta-item span {
+  font-size: 0.54rem !important;
+}
+
+.creators-lasy-system-page .creator-empty-builder .operational-state-meta-item strong {
+  font-size: 0.68rem !important;
+}
+
+.creators-lasy-system-page .creator-empty-builder .state-ea-actions {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  justify-self: end;
+  align-self: center;
+  display: flex !important;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.42rem !important;
+}
+
+.creators-lasy-system-page .creator-empty-builder .state-ea-actions :is(.btn-ea, .btn-link-ea) {
+  min-height: 2.18rem !important;
+  white-space: nowrap;
+}
+
+.creators-lasy-system-page .creator-empty-builder .state-ea-actions .btn-link-ea.btn-ghost {
+  border-color: transparent !important;
+  background: transparent !important;
+  padding-inline: 0.24rem !important;
+}
+
+@media (max-width: 1180px) {
+  .creators-lasy-system-page .creator-workspace-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: clamp(0.95rem, 2vw, 1.35rem) !important;
+  }
+
+  .creators-lasy-system-page .creators-context-ribbon .creators-sidebar-group-disclosure:not([open]) {
+    padding-bottom: 0.28rem !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .creators-lasy-system-page .creators-secondary-disclosure summary,
+  .creators-lasy-system-page .creators-secondary-disclosure-body,
+  .creators-lasy-system-page .creator-final-flow-panel,
+  .creators-lasy-system-page .creator-final-flow-panel .state-ea.creator-empty-builder {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .creators-lasy-system-page .creator-final-flow-panel .creator-journey-line,
+  .creators-lasy-system-page .creator-final-flow-panel .state-ea.creator-empty-builder,
+  .creators-lasy-system-page .creator-empty-builder .creator-empty-builder-copy,
+  .creators-lasy-system-page .creator-empty-builder .creator-empty-builder-meta,
+  .creators-lasy-system-page .creator-empty-builder .state-ea-actions {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+    justify-self: stretch;
+  }
+
+  .creators-lasy-system-page .creator-empty-builder .state-ea-actions {
+    justify-content: flex-start !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .creators-lasy-system-page .creators-secondary-disclosure summary {
+    gap: 0.34rem;
+  }
+
+  .creators-lasy-system-page .creators-secondary-summary-copy {
+    font-size: 0.68rem;
+    line-height: 1.25;
+  }
+
+  .creators-lasy-system-page .creator-ai-command-strip > div {
+    max-width: 100%;
+    padding: 0.28rem 0.44rem !important;
+  }
+
+  .creators-lasy-system-page .creator-empty-builder .creator-empty-builder-copy {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.32rem;
+  }
+
+  .creators-lasy-system-page .creator-empty-builder .state-ea-actions {
+    align-items: stretch;
+  }
+
+  .creators-lasy-system-page .creator-empty-builder .state-ea-actions :is(.btn-ea, .btn-link-ea) {
+    width: 100% !important;
+    justify-content: center;
+  }
+}

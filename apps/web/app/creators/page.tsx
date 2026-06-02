@@ -673,24 +673,36 @@ function CreatorsPageContent() {
           <div className="focus-shell-body">
             <div className="creators-secondary-grid creators-secondary-stream creators-decision-stream creators-decision-stream-secondary">
               {secondaryCatalog.map((tab, index) => (
-                <article key={tab.id} className="creators-secondary-card layout-contract-item creators-open-module creators-decision-item creators-decision-item-secondary" data-priority={tab.group} data-reveal data-reveal-delay={String(70 + index * 45)}>
-                  <div className="creators-secondary-card-head">
-                    <strong>{tab.label}</strong>
-                    <span className={`premium-badge premium-badge-${creatorStageTone(tab.group)}`}>{tab.stageLabel}</span>
+                <details
+                  key={tab.id}
+                  className="creators-secondary-card creators-secondary-disclosure layout-contract-item creators-open-module creators-decision-item creators-decision-item-secondary"
+                  data-priority={tab.group}
+                  data-reveal
+                  data-reveal-delay={String(70 + index * 45)}
+                  open={activeTab === tab.id}
+                >
+                  <summary>
+                    <span className="creators-secondary-card-head">
+                      <strong>{tab.label}</strong>
+                      <span className={`premium-badge premium-badge-${creatorStageTone(tab.group)}`}>{tab.stageLabel}</span>
+                    </span>
+                    <span className="creators-secondary-summary-copy">{tab.expectedOutput}</span>
+                  </summary>
+                  <div className="creators-secondary-disclosure-body">
+                    <p className="helper-text-ea">{tab.description}</p>
+                    <div className="creators-secondary-card-copy">
+                      <span>Saída esperada</span>
+                      <strong>{tab.expectedOutput}</strong>
+                    </div>
+                    <div className="creators-secondary-card-copy">
+                      <span>Papel atual</span>
+                      <strong>{tab.continuity}</strong>
+                    </div>
+                    <button onClick={() => activateTab(tab.id, { scrollToWorkspace: true })} className="btn-ea btn-ghost btn-sm">
+                      Usar este formato
+                    </button>
                   </div>
-                  <p className="helper-text-ea">{tab.description}</p>
-                  <div className="creators-secondary-card-copy">
-                    <span>Saída esperada</span>
-                    <strong>{tab.expectedOutput}</strong>
-                  </div>
-                  <div className="creators-secondary-card-copy">
-                    <span>Papel atual</span>
-                    <strong>{tab.continuity}</strong>
-                  </div>
-                  <button onClick={() => activateTab(tab.id, { scrollToWorkspace: true })} className="btn-ea btn-ghost btn-sm">
-                    Usar este formato
-                  </button>
-                </article>
+                </details>
               ))}
             </div>
           </div>
@@ -814,28 +826,59 @@ function CreatorsPageContent() {
 
           <div className="creators-sidebar-nav">
             {tabsByGroup.map((group) => (
-              <div key={group.id} className="creators-sidebar-group">
-                <div className="creator-group-title">{group.title}</div>
-                <div className="creator-group-subtitle">{group.subtitle}</div>
-                <div className="creators-sidebar-group-list">
-                  {group.items.map((tab) => (
-                    <button
-                      key={tab.id}
-                      data-priority={tab.group}
-                      data-active={activeTab === tab.id}
-                      onClick={() => activateTab(tab.id)}
-                      className="creator-tab-btn"
-                    >
-                      <span className="creator-tab-head">
-                        <span className="creator-tab-title">{tab.label}</span>
-                        <span className="creator-tab-chip">{tab.stageLabel}</span>
-                      </span>
-                      <span className="creator-tab-meta">{tab.description}</span>
-                      <span className="creator-tab-support">{tab.expectedOutput}</span>
-                    </button>
-                  ))}
+              group.id === "hero" ? (
+                <div key={group.id} className="creators-sidebar-group">
+                  <div className="creator-group-title">{group.title}</div>
+                  <div className="creator-group-subtitle">{group.subtitle}</div>
+                  <div className="creators-sidebar-group-list">
+                    {group.items.map((tab) => (
+                      <button
+                        key={tab.id}
+                        data-priority={tab.group}
+                        data-active={activeTab === tab.id}
+                        onClick={() => activateTab(tab.id)}
+                        className="creator-tab-btn"
+                      >
+                        <span className="creator-tab-head">
+                          <span className="creator-tab-title">{tab.label}</span>
+                          <span className="creator-tab-chip">{tab.stageLabel}</span>
+                        </span>
+                        <span className="creator-tab-meta">{tab.description}</span>
+                        <span className="creator-tab-support">{tab.expectedOutput}</span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <details
+                  key={group.id}
+                  className="creators-sidebar-group creators-sidebar-group-disclosure"
+                  open={activeTabMeta.group === group.id}
+                >
+                  <summary>
+                    <span className="creator-group-title">{group.title}</span>
+                    <span className="creator-group-subtitle">{group.subtitle}</span>
+                  </summary>
+                  <div className="creators-sidebar-group-list">
+                    {group.items.map((tab) => (
+                      <button
+                        key={tab.id}
+                        data-priority={tab.group}
+                        data-active={activeTab === tab.id}
+                        onClick={() => activateTab(tab.id)}
+                        className="creator-tab-btn"
+                      >
+                        <span className="creator-tab-head">
+                          <span className="creator-tab-title">{tab.label}</span>
+                          <span className="creator-tab-chip">{tab.stageLabel}</span>
+                        </span>
+                        <span className="creator-tab-meta">{tab.description}</span>
+                        <span className="creator-tab-support">{tab.expectedOutput}</span>
+                      </button>
+                    ))}
+                  </div>
+                </details>
+              )
             ))}
           </div>
 
