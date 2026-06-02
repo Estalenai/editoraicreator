@@ -40692,17 +40692,23 @@ body:has(.creators-lasy-system-page),
   .creators-lasy-system-page .creator-briefing-step-ai {
     grid-column: 1 / -1 !important;
     grid-row: 2 !important;
-    grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr) !important;
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.62fr) !important;
+    grid-template-rows: auto auto;
     column-gap: clamp(1rem, 2vw, 1.75rem);
+    row-gap: clamp(0.52rem, 0.9vw, 0.78rem);
   }
 
-  .creators-lasy-system-page .creator-briefing-step-ai > .creator-form-zone-ai,
-  .creators-lasy-system-page .creator-briefing-step-ai > .creator-estimate-line {
+  .creators-lasy-system-page .creator-briefing-step-ai > .creator-form-zone-ai {
     grid-column: 1 !important;
   }
 
-  .creators-lasy-system-page .creator-briefing-step-ai > .creator-final-flow-panel {
+  .creators-lasy-system-page .creator-briefing-step-ai > .creator-estimate-line {
     grid-column: 2 !important;
+    align-self: end;
+  }
+
+  .creators-lasy-system-page .creator-briefing-step-ai > .creator-final-flow-panel {
+    grid-column: 1 / -1 !important;
   }
 }
 
@@ -40731,6 +40737,91 @@ body:has(.creators-lasy-system-page),
   border-left: 0 !important;
   border-top: 1px solid rgba(211, 247, 255, 0.045);
   padding-top: 0.44rem;
+}
+
+@media (min-width: 1041px) {
+  .creators-lasy-system-page .creator-form-zone-ai {
+    display: grid !important;
+    grid-template-columns: minmax(0, 0.96fr) minmax(13rem, 0.54fr);
+    column-gap: clamp(0.88rem, 1.6vw, 1.3rem);
+    align-items: start;
+  }
+
+  .creators-lasy-system-page .creator-form-zone-ai > .creator-zone-title,
+  .creators-lasy-system-page .creator-form-zone-ai > .creator-zone-copy {
+    grid-column: 1 / -1;
+  }
+
+  .creators-lasy-system-page .creator-form-zone-ai > .creator-ai-assist-fields {
+    grid-column: 1;
+  }
+
+  .creators-lasy-system-page .creator-form-zone-ai > .creator-section-label,
+  .creators-lasy-system-page .creator-form-zone-ai > .creator-toggle-stack,
+  .creators-lasy-system-page .creator-form-zone-ai > .helper-note-inline {
+    grid-column: 2;
+  }
+
+  .creators-lasy-system-page .creator-form-zone-ai > .creator-section-label {
+    margin-top: 0.18rem !important;
+  }
+}
+
+.creators-lasy-system-page .creator-ai-assist-primary-note {
+  max-width: 25rem;
+  color: rgba(223, 248, 255, 0.66) !important;
+}
+
+.creators-lasy-system-page .creator-ai-assist-details {
+  width: fit-content;
+  max-width: 100%;
+  margin-top: 0.1rem;
+  color: rgba(204, 241, 255, 0.54);
+}
+
+.creators-lasy-system-page .creator-ai-assist-details summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.36rem;
+  min-height: 1.9rem;
+  padding: 0.18rem 0;
+  border: 0;
+  background: transparent;
+  color: rgba(187, 236, 255, 0.7);
+  cursor: pointer;
+  font-size: 0.68rem;
+  font-weight: 780;
+  letter-spacing: 0.08em;
+  list-style: none;
+  text-transform: uppercase;
+}
+
+.creators-lasy-system-page .creator-ai-assist-details summary::-webkit-details-marker {
+  display: none;
+}
+
+.creators-lasy-system-page .creator-ai-assist-details summary::after {
+  content: "+";
+  display: grid;
+  place-items: center;
+  width: 1rem;
+  height: 1rem;
+  border: 1px solid rgba(211, 247, 255, 0.09);
+  border-radius: 999px;
+  color: rgba(236, 252, 255, 0.64);
+  font-size: 0.66rem;
+  line-height: 1;
+}
+
+.creators-lasy-system-page .creator-ai-assist-details[open] summary::after {
+  content: "-";
+}
+
+.creators-lasy-system-page .creator-ai-assist-detail-list {
+  display: grid;
+  gap: 0.18rem;
+  max-width: 29rem;
+  padding-top: 0.16rem;
 }
 
 .creators-lasy-system-page .creator-toggle-stack {
@@ -40774,9 +40865,10 @@ body:has(.creators-lasy-system-page),
 
 .creators-lasy-system-page .creator-final-flow-panel .state-ea.creator-empty-flow {
   display: grid !important;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr);
   gap: 0.42rem clamp(0.72rem, 1.2vw, 1rem) !important;
   align-items: center;
+  width: min(100%, 58rem);
   padding: 0.52rem 0 0 !important;
   border: 0 !important;
   border-top: 1px solid rgba(211, 247, 255, 0.045) !important;
@@ -40789,13 +40881,13 @@ body:has(.creators-lasy-system-page),
 }
 
 .creators-lasy-system-page .creator-final-flow-panel .creator-empty-flow .state-ea-actions {
-  grid-column: 2;
-  grid-row: 1 / span 2;
-  justify-self: end;
-  align-self: center;
+  grid-column: 1;
+  grid-row: auto;
+  justify-self: start;
+  align-self: start;
   display: flex !important;
   flex-wrap: wrap;
-  justify-content: flex-end;
+  justify-content: flex-start;
   gap: 0.42rem !important;
 }
 
@@ -40838,8 +40930,102 @@ body:has(.creators-lasy-system-page),
   padding-block: clamp(2rem, 4vw, 4.4rem) !important;
 }
 
+@media (min-width: 901px) {
+  .creators-lasy-system-page :is(.creators-hero-core-section, .creators-secondary-section)[data-focus-active="false"] .focus-shell-body {
+    display: block !important;
+    opacity: 0.74;
+  }
+
+  .creators-lasy-system-page :is(.creators-hero-core-section, .creators-secondary-section)[data-focus-active="false"] .focus-shell-preview {
+    display: none !important;
+  }
+}
+
+.creators-lasy-system-page .creators-proof-section .proof-value-header {
+  align-items: end;
+}
+
+.creators-lasy-system-page .creators-proof-section .creators-proof-stream {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: clamp(0.88rem, 1.65vw, 1.36rem) !important;
+}
+
+.creators-lasy-system-page .creators-proof-section .proof-value-card {
+  display: grid !important;
+  grid-template-columns: minmax(10rem, 0.32fr) minmax(0, 1fr);
+  gap: clamp(0.9rem, 2vw, 1.65rem) !important;
+  align-items: start;
+  min-height: auto !important;
+  padding: clamp(0.82rem, 1.4vw, 1.08rem) 0 !important;
+}
+
+.creators-lasy-system-page .creators-proof-section .proof-value-card:nth-child(2) {
+  margin-left: clamp(0rem, 3vw, 2rem);
+}
+
+.creators-lasy-system-page .creators-proof-section .proof-value-card:nth-child(3) {
+  margin-left: clamp(0rem, 6vw, 4rem);
+}
+
+.creators-lasy-system-page .creators-proof-section .proof-value-meta-row {
+  display: grid;
+  gap: 0.42rem;
+  align-content: start;
+}
+
+.creators-lasy-system-page .creators-proof-section .proof-value-stack {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(0.34rem, 0.8vw, 0.56rem) !important;
+}
+
+.creators-lasy-system-page .creators-proof-section .proof-value-block {
+  display: grid;
+  grid-template-columns: minmax(7rem, 0.24fr) minmax(0, 1fr);
+  gap: clamp(0.58rem, 1.2vw, 0.92rem);
+  align-items: baseline;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.creators-lasy-system-page .creators-proof-section .proof-value-block + .proof-value-block {
+  padding-top: 0.28rem !important;
+}
+
+.creators-lasy-system-page .creators-proof-section .proof-value-label {
+  color: rgba(159, 235, 255, 0.6) !important;
+  font-size: 0.62rem !important;
+}
+
+.creators-lasy-system-page .creators-proof-section .proof-value-block p,
+.creators-lasy-system-page .creators-proof-section .proof-value-block strong {
+  max-width: 54rem;
+  color: rgba(246, 253, 255, 0.82) !important;
+  font-size: clamp(0.86rem, 1vw, 1rem) !important;
+  line-height: 1.42;
+}
+
+.creators-lasy-system-page .creators-proof-section .proof-value-block-inline strong {
+  color: rgba(246, 253, 255, 0.9) !important;
+}
+
 .creators-lasy-system-page :is(.creators-proof-stream, .creators-format-stream, .creators-secondary-stream) {
   gap: clamp(0.64rem, 1.2vw, 0.98rem) !important;
+}
+
+.creators-lasy-system-page :is(.creators-format-stream, .creators-secondary-stream) {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+.creators-lasy-system-page :is(.creators-format-stream, .creators-secondary-stream) > * {
+  width: min(100%, 78rem) !important;
+}
+
+.creators-lasy-system-page :is(.creators-format-stream, .creators-secondary-stream) > *:nth-child(2n) {
+  margin-left: clamp(0rem, 3vw, 2.25rem);
 }
 
 .creators-lasy-system-page :is(.proof-value-card, .creators-hero-core-card, .creators-secondary-card) {
@@ -40850,6 +41036,20 @@ body:has(.creators-lasy-system-page),
     linear-gradient(90deg, rgba(91, 223, 255, 0.024), transparent 56%),
     transparent !important;
   box-shadow: none !important;
+}
+
+.creators-lasy-system-page .creators-hero-core-stack {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(0.42rem, 1vw, 0.72rem) !important;
+}
+
+.creators-lasy-system-page .creators-hero-core-point,
+.creators-lasy-system-page .creators-secondary-card-copy {
+  padding: clamp(0.42rem, 0.8vw, 0.58rem) 0 !important;
+  border: 0 !important;
+  border-top: 1px solid rgba(211, 247, 255, 0.042) !important;
+  background: transparent !important;
 }
 
 .creators-lasy-system-page :is(.proof-value-card, .creators-hero-core-card, .creators-secondary-card)::before,
@@ -40992,6 +41192,26 @@ body:has(.creators-lasy-system-page),
 
   .creators-lasy-system-page .creator-briefing-step-channel .creator-field-grid {
     grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .creators-lasy-system-page .creator-ai-assist-details summary {
+    min-height: 1.66rem;
+    font-size: 0.6rem;
+  }
+
+  .creators-lasy-system-page .creators-proof-section .proof-value-card,
+  .creators-lasy-system-page .creators-proof-section .proof-value-block {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .creators-lasy-system-page .creators-proof-section .proof-value-card:nth-child(2),
+  .creators-lasy-system-page .creators-proof-section .proof-value-card:nth-child(3),
+  .creators-lasy-system-page :is(.creators-format-stream, .creators-secondary-stream) > *:nth-child(2n) {
+    margin-left: 0;
+  }
+
+  .creators-lasy-system-page .creators-hero-core-stack {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .creators-lasy-system-page .creators-context-ribbon {

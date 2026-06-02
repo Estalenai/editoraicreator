@@ -471,9 +471,9 @@ function CreatorsPageContent() {
           <div className="proof-value-header">
             <div className="section-stack-tight">
               <p className="section-kicker">Exemplos de resultado</p>
-              <h2 className="heading-reset">Como cada formato ajuda a criar</h2>
+              <h2 className="heading-reset">Três saídas que já nascem com próximo passo</h2>
               <p className="helper-text-ea">
-                Exemplos de briefing e continuidade antes de salvar como projeto.
+                Briefing, entrega e continuidade aparecem como prova de fluxo, antes de virar projeto.
               </p>
             </div>
             <Link href="/projects" className="btn-link-ea btn-secondary btn-sm">
@@ -533,14 +533,14 @@ function CreatorsPageContent() {
         >
           <div className="section-stack-tight">
             <p className="section-kicker">Formatos principais</p>
-            <h2 className="heading-reset">Os formatos principais para começar</h2>
+            <h2 className="heading-reset">Escolha o ponto de partida da criação</h2>
             <p className="helper-text-ea">
-              <strong>Creator Post</strong>, <strong>Creator Scripts</strong> e <strong>Creator Clips</strong> ficam no centro da criação. O quarto formato entra como apoio.
+              <strong>Creator Post</strong>, <strong>Creator Scripts</strong> e <strong>Creator Clips</strong> formam a linha principal. <strong>Creator Ads</strong> entra como apoio de conversão.
             </p>
           </div>
           <div className="creators-hero-core-header-note">
             <span className="premium-badge premium-badge-phase">Prioridade de criação</span>
-            <span className="helper-text-ea">O resto do catálogo continua disponível, mas fora do centro.</span>
+            <span className="helper-text-ea">Os demais formatos continuam disponíveis sem competir com o briefing.</span>
           </div>
           <button
             type="button"
@@ -552,7 +552,7 @@ function CreatorsPageContent() {
           </button>
         </div>
         <div className="focus-shell-preview">
-          Os formatos principais ficam visíveis sem disputar o briefing ativo.
+          A seleção orienta o builder sem virar catálogo técnico.
         </div>
           <div className="focus-shell-body">
             <div className="creators-hero-core-grid creators-format-stream creators-decision-stream">
@@ -622,9 +622,9 @@ function CreatorsPageContent() {
         >
           <div className="section-stack-tight">
             <p className="section-kicker">Apoio e exploração</p>
-            <h2 className="heading-reset">O restante do catálogo continua útil, mas com papel mais claro</h2>
+            <h2 className="heading-reset">Apoios que ampliam a criação sem virar configuração</h2>
             <p className="helper-text-ea">
-              <strong>Formatos de apoio</strong> complementam campanhas e produção. <strong>Experimentos</strong> seguem disponíveis para testes.
+              <strong>Formatos de apoio</strong> complementam campanhas e produção. <strong>Experimentos</strong> seguem como trilhas leves de validação.
             </p>
           </div>
           <button
@@ -637,7 +637,7 @@ function CreatorsPageContent() {
           </button>
         </div>
         <div className="focus-shell-preview">
-          Apoio e experimentos continuam acessíveis, com menos peso quando o briefing ativo está aberto.
+          Apoio e experimentos ficam acessíveis como extensão do fluxo, não como documentação.
         </div>
           <div className="focus-shell-body">
             <div className="creators-secondary-grid creators-secondary-stream creators-decision-stream creators-decision-stream-secondary">

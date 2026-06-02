@@ -40,13 +40,25 @@ export function AiExecutionModeFields({
 }: Props) {
   const showProviderSelect = mode === "manual" && hasMultipleOptions(capabilities.providerOptions);
   const showTierSelect = mode === "manual" && capabilities.manualModeLevel === "full" && hasMultipleOptions(capabilities.tierOptions);
+  const preferenceNote = mode !== "manual"
+    ? persistingPreference
+      ? "Salvando sua preferência automática para a conta..."
+      : "O perfil automático vira padrão desta experiência."
+    : "A escolha manual vale só para esta geração e não muda o padrão do plano.";
+  const planNotes = [
+    manualSelectionLabel ? `Seleção desta geração: ${manualSelectionLabel}.` : null,
+    qualityOutputsLabel ? `Perfil de qualidade disponível nesta trilha: ${qualityOutputsLabel}.` : null,
+    availabilityNote,
+    preferenceNote,
+    preferenceError ? "Não foi possível salvar a preferência automática agora. A execução atual continua válida nesta tela." : null,
+  ].filter((note): note is string => Boolean(note));
 
   return (
     <div className="creator-ai-assist-fields">
       <div className="creator-section-label">Como a IA deve ajudar</div>
       <div className="form-grid-2 creator-field-grid">
         <label className="field-label-ea">
-          <span>Modo</span>
+          <span>Apoio</span>
           <PremiumSelect
             value={mode}
             onChange={(next) => void onModeChange(next)}
@@ -81,30 +93,15 @@ export function AiExecutionModeFields({
       </div>
 
       <div className="creator-ai-assist-notes">
-        <div className="helper-note-inline">{modeDetail}</div>
-        {manualSelectionLabel ? (
-          <div className="helper-note-subtle">Seleção desta geração: {manualSelectionLabel}.</div>
-        ) : null}
-        {qualityOutputsLabel ? (
-          <div className="helper-note-subtle">Perfil de qualidade disponível nesta trilha: {qualityOutputsLabel}.</div>
-        ) : null}
-        <div className="helper-note-subtle">{availabilityNote}</div>
-        {mode !== "manual" ? (
-          <div className="helper-note-subtle">
-            {persistingPreference
-              ? "Salvando sua preferência automática para a conta..."
-              : "Quando você escolhe um perfil automático, ele vira o padrão da sua conta nesta experiência."}
+        <div className="helper-note-inline creator-ai-assist-primary-note">{modeDetail}</div>
+        <details className="creator-ai-assist-details">
+          <summary>Regras do plano e preferência</summary>
+          <div className="creator-ai-assist-detail-list">
+            {planNotes.map((note) => (
+              <div key={note} className="helper-note-subtle">{note}</div>
+            ))}
           </div>
-        ) : (
-          <div className="helper-note-subtle">
-            A escolha manual vale só para esta geração e não muda o padrão do plano.
-          </div>
-        )}
-        {preferenceError ? (
-          <div className="helper-note-subtle">
-            Não foi possível salvar a preferência automática agora. A execução atual continua válida nesta tela.
-          </div>
-        ) : null}
+        </details>
       </div>
     </div>
   );

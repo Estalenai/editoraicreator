@@ -776,8 +776,8 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
 
       <section className="creator-briefing-step creator-briefing-step-ai" data-step-index="3" aria-label="Etapa 3: IA, estimativa e saída">
       <div className="creator-context-zone creator-form-zone-ai" data-step-label="IA, estimativa e saída">
-        <p className="creator-zone-title">IA, estimativa e saída</p>
-        <p className="creator-zone-copy">Escolha como a IA apoia a geração, confirme o consumo previsto e siga para a revisão.</p>
+        <p className="creator-zone-title">Fechamento assistido</p>
+        <p className="creator-zone-copy">Confirme apoio da IA, consumo previsto e o que será entregue.</p>
         <AiExecutionModeFields
           capabilities={execution.capabilities}
           mode={execution.mode}
@@ -822,7 +822,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
           </label>
         </div>
 
-        <div className="helper-note-inline">Quando ativo, a IA cria um prompt otimizado antes de gerar.</div>
+        <div className="helper-note-inline">Quando ativo, a IA prepara o prompt antes de gerar.</div>
       </div>
 
       <div className="creator-estimate-row creator-estimate-line">
@@ -830,7 +830,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
           Estimativa de consumo: ~{creditsEstimate.common} Comum • {creditsEstimate.pro} Pro • {creditsEstimate.ultra} Ultra
         </div>
         <div className="helper-note-subtle">
-          Estimativa prévia. O consumo real aparece no Histórico de créditos.
+          O consumo final aparece no Histórico de créditos.
         </div>
         {!hasCredits && <div className="inline-alert inline-alert-error">Saldo insuficiente para gerar. Compre Creator Coins avulsas para continuar.</div>}
       </div>
