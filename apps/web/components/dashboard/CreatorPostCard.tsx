@@ -237,6 +237,8 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
   const needsProjectSync = Boolean(savedProjectId && resultDirty);
   const executionSummaryLabel = execution.modeLabel.replace(" (Recomendado)", "");
   const suggestionSummaryLabel = promptEnabled ? (autoApply ? "Automática" : "Revisar") : "Direto";
+  const setupSummaryLabel = `${platform} • ${contentType}`;
+  const setupIntentLabel = `${tone} • ${objective} • ${language}`;
 
   const plannerSteps = useMemo(
     () => [
@@ -682,13 +684,13 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
       <div className="creator-briefing-stepper" aria-label="Fluxo do briefing">
         <div className="creator-briefing-step-pill" data-step-state="active">
           <span>1</span>
-          <strong>Formato e canal</strong>
-          <small>onde a peça vai sair</small>
+          <strong>Formato</strong>
+          <small>ajustes em apoio</small>
         </div>
         <div className="creator-briefing-step-pill">
           <span>2</span>
-          <strong>Contexto</strong>
-          <small>o que a IA precisa entender</small>
+          <strong>Briefing</strong>
+          <small>ideia central</small>
         </div>
         <div className="creator-briefing-step-pill">
           <span>3</span>
@@ -700,65 +702,82 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
       <div className="creator-workspace-zones creator-post-briefing-flow creator-briefing-guided-flow">
       <section className="creator-briefing-step creator-briefing-step-channel" data-step-index="1" aria-label="Etapa 1: formato e canal">
       <div id="creator-post-config" className="creator-form-zone creator-form-zone-setup" data-step-label="Formato e canal">
-        <p className="creator-zone-title">Como deseja gerar</p>
-        <p className="creator-zone-copy">Defina plataforma, formato, objetivo e idioma antes de detalhar o tema.</p>
-        <div className="form-grid-2 creator-field-grid">
-        <label className="field-label-ea">
-          <span>Plataforma</span>
-          <PremiumSelect
-            value={platform}
-            onChange={setPlatform}
-            options={platformSelectOptions}
-            ariaLabel="Plataforma do post"
-          />
-        </label>
-
-        <label className="field-label-ea">
-          <span>Tipo</span>
-          <PremiumSelect
-            value={contentType}
-            onChange={setContentType}
-            options={contentTypeSelectOptions}
-            ariaLabel="Tipo de conteúdo"
-          />
-        </label>
-
-        <label className="field-label-ea">
-          <span>Tom</span>
-          <PremiumSelect
-            value={tone}
-            onChange={setTone}
-            options={toneSelectOptions}
-            ariaLabel="Tom do conteúdo"
-          />
-        </label>
-
-        <label className="field-label-ea">
-          <span>Objetivo</span>
-          <PremiumSelect
-            value={objective}
-            onChange={setObjective}
-            options={objectiveSelectOptions}
-            ariaLabel="Objetivo do post"
-          />
-        </label>
-
-        <label className="field-label-ea">
-          <span>Idioma</span>
-          <input
-            value={language}
-            onChange={(e) => setLanguage(e.target.value)}
-            className="field-ea"
-          />
-        </label>
+        <div className="creator-setup-head">
+          <p className="creator-zone-title">Base da peça</p>
+          <p className="creator-zone-copy">Ajustes ficam resumidos para o briefing ser o foco.</p>
         </div>
+
+        <div className="creator-setup-summary-strip" aria-label="Resumo de formato e canal">
+          <div>
+            <span>Saída</span>
+            <strong>{setupSummaryLabel}</strong>
+          </div>
+          <div>
+            <span>Direção</span>
+            <strong>{setupIntentLabel}</strong>
+          </div>
+        </div>
+
+        <details className="creator-setup-disclosure">
+          <summary>Ajustar formato e canal</summary>
+          <div className="form-grid-2 creator-field-grid">
+          <label className="field-label-ea">
+            <span>Plataforma</span>
+            <PremiumSelect
+              value={platform}
+              onChange={setPlatform}
+              options={platformSelectOptions}
+              ariaLabel="Plataforma do post"
+            />
+          </label>
+
+          <label className="field-label-ea">
+            <span>Tipo</span>
+            <PremiumSelect
+              value={contentType}
+              onChange={setContentType}
+              options={contentTypeSelectOptions}
+              ariaLabel="Tipo de conteúdo"
+            />
+          </label>
+
+          <label className="field-label-ea">
+            <span>Tom</span>
+            <PremiumSelect
+              value={tone}
+              onChange={setTone}
+              options={toneSelectOptions}
+              ariaLabel="Tom do conteúdo"
+            />
+          </label>
+
+          <label className="field-label-ea">
+            <span>Objetivo</span>
+            <PremiumSelect
+              value={objective}
+              onChange={setObjective}
+              options={objectiveSelectOptions}
+              ariaLabel="Objetivo do post"
+            />
+          </label>
+
+          <label className="field-label-ea">
+            <span>Idioma</span>
+            <input
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+              className="field-ea"
+            />
+          </label>
+          </div>
+        </details>
       </div>
       </section>
 
       <section className="creator-briefing-step creator-briefing-step-context" data-step-index="2" aria-label="Etapa 2: contexto e briefing">
       <div className="creator-form-zone creator-form-zone-brief" data-step-label="Contexto e objetivo">
-        <p className="creator-zone-title">Contexto e briefing</p>
-        <p className="creator-zone-copy">Descreva o assunto central. A qualidade do briefing melhora legenda, CTA e variações.</p>
+        <p className="creator-zone-title">Briefing principal</p>
+        <p className="creator-zone-copy">Escreva a ideia central; o builder organiza legenda, CTA e variações.</p>
         <label className="field-label-ea">
           <span>Tema do post</span>
           <textarea
@@ -871,7 +890,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
         </div>
         <div className="creator-planner-field">
           <span>Encerramento do fluxo</span>
-          <strong>Salvar no projeto, abrir o editor e registrar exported quando a peça sair.</strong>
+          <strong>Salvar no projeto e abrir o editor com a peça pronta.</strong>
         </div>
       </div>
 

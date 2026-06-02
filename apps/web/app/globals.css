@@ -40739,6 +40739,91 @@ body:has(.creators-lasy-system-page),
   padding-top: 0.44rem;
 }
 
+.creators-lasy-system-page .creator-form-zone-setup {
+  gap: clamp(0.5rem, 0.9vw, 0.72rem) !important;
+}
+
+.creators-lasy-system-page .creator-setup-head {
+  display: grid;
+  gap: 0.28rem;
+}
+
+.creators-lasy-system-page .creator-setup-summary-strip {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: 0;
+  border-top: 1px solid rgba(211, 247, 255, 0.055);
+  border-bottom: 1px solid rgba(211, 247, 255, 0.04);
+}
+
+.creators-lasy-system-page .creator-setup-summary-strip > div {
+  display: grid;
+  gap: 0.22rem;
+  align-content: center;
+  min-height: clamp(3.05rem, 4vw, 3.55rem);
+  padding: 0.48rem 0.62rem 0.48rem 0;
+}
+
+.creators-lasy-system-page .creator-setup-summary-strip > div + div {
+  padding-left: 0.62rem;
+  border-left: 1px solid rgba(211, 247, 255, 0.045);
+}
+
+.creators-lasy-system-page .creator-setup-summary-strip span,
+.creators-lasy-system-page .creator-setup-disclosure summary {
+  color: rgba(159, 235, 255, 0.62);
+  font-size: 0.62rem;
+  font-weight: 790;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.creators-lasy-system-page .creator-setup-summary-strip strong {
+  color: rgba(248, 253, 255, 0.9);
+  font-size: clamp(0.78rem, 0.9vw, 0.92rem);
+  line-height: 1.22;
+}
+
+.creators-lasy-system-page .creator-setup-disclosure {
+  width: 100%;
+}
+
+.creators-lasy-system-page .creator-setup-disclosure summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
+  min-height: 2rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+.creators-lasy-system-page .creator-setup-disclosure summary::-webkit-details-marker {
+  display: none;
+}
+
+.creators-lasy-system-page .creator-setup-disclosure summary::after {
+  content: "+";
+  display: grid;
+  place-items: center;
+  width: 1rem;
+  height: 1rem;
+  border: 1px solid rgba(211, 247, 255, 0.09);
+  border-radius: 999px;
+  color: rgba(236, 252, 255, 0.64);
+  font-size: 0.68rem;
+  line-height: 1;
+}
+
+.creators-lasy-system-page .creator-setup-disclosure[open] summary::after {
+  content: "-";
+}
+
+.creators-lasy-system-page .creator-setup-disclosure .creator-field-grid {
+  margin-top: 0.24rem;
+  padding-top: 0.44rem;
+  border-top: 1px solid rgba(211, 247, 255, 0.045);
+}
+
 @media (min-width: 1041px) {
   .creators-lasy-system-page .creator-form-zone-ai {
     display: grid !important;
@@ -41256,6 +41341,50 @@ body:has(.creators-lasy-system-page),
 .creators-lasy-system-page :is(.proof-value-card, .creators-hero-core-card, .creators-secondary-card)::before,
 .creators-lasy-system-page :is(.proof-value-card, .creators-hero-core-card, .creators-secondary-card)::after {
   display: none !important;
+}
+
+.creators-lasy-system-page .creator-active-panel {
+  padding-block: clamp(0.72rem, 1.2vw, 1.05rem) !important;
+}
+
+.creators-lasy-system-page .creator-active-panel-head {
+  align-items: end;
+  gap: clamp(0.8rem, 1.7vw, 1.4rem);
+}
+
+.creators-lasy-system-page .creator-active-panel-copy,
+.creators-lasy-system-page .creator-active-stage-note {
+  display: none !important;
+}
+
+.creators-lasy-system-page .creator-active-panel-meta {
+  align-self: end;
+}
+
+.creators-lasy-system-page .creator-active-summary-grid {
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: clamp(0.42rem, 0.9vw, 0.7rem) clamp(0.82rem, 1.7vw, 1.4rem) !important;
+  padding-top: clamp(0.42rem, 0.9vw, 0.72rem);
+  border-top: 1px solid rgba(211, 247, 255, 0.05);
+}
+
+.creators-lasy-system-page .creator-active-summary-card {
+  flex: 1 1 12rem;
+  min-width: min(100%, 12rem);
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.creators-lasy-system-page .creator-active-summary-card span {
+  color: rgba(159, 235, 255, 0.55) !important;
+  font-size: 0.58rem !important;
+}
+
+.creators-lasy-system-page .creator-active-summary-card strong {
+  font-size: clamp(0.74rem, 0.9vw, 0.88rem) !important;
+  line-height: 1.24;
 }
 
 @media (min-width: 1500px) {
