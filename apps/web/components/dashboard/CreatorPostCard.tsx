@@ -801,20 +801,29 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
             }}
           />
         </label>
-        <div className="creator-command-submit-row">
-          <button
-            className="btn-ea btn-primary btn-sm"
-            onClick={openPlanner}
-            disabled={isBusy || !theme.trim() || !hasCredits}
-          >
-            Revisar planejamento e gerar
-          </button>
-          <Link href="/projects" className="btn-link-ea btn-ghost btn-sm">
-            Ver projetos
-          </Link>
-          <span className="creator-command-submit-note">
-            {hasCredits ? "Saldo disponível" : "Saldo insuficiente"} · histórico registra o consumo final
-          </span>
+        <div className="creator-command-submit-row creator-command-finale" aria-label="Conclusão do briefing">
+          <div className="creator-command-final-copy">
+            <span>Conclusão</span>
+            <strong>Briefing pronto para revisar</strong>
+            <p>A IA usa a ideia, os ajustes e o saldo disponível para preparar a primeira versão.</p>
+          </div>
+          <div className="creator-command-final-actions">
+            <button
+              className="btn-ea btn-primary btn-sm"
+              onClick={openPlanner}
+              disabled={isBusy || !theme.trim() || !hasCredits}
+            >
+              Revisar planejamento e gerar
+            </button>
+            <Link href="/projects" className="btn-link-ea btn-ghost btn-sm">
+              Ver projetos
+            </Link>
+          </div>
+          <div className="creator-command-final-signal" data-tone={hasCredits ? "success" : "warning"}>
+            <span>{hasCredits ? "Saldo disponível" : "Saldo insuficiente"}</span>
+            <strong>~{creditsEstimate.common} Comum</strong>
+            <small>Histórico registra o consumo final.</small>
+          </div>
         </div>
       </div>
       </section>
@@ -823,7 +832,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
       <div className="creator-context-zone creator-form-zone-ai" data-step-label="IA, estimativa e saída">
         <div className="creator-ai-close-head">
           <p className="creator-zone-title">Apoio de criação</p>
-          <p className="creator-zone-copy">IA, sugestão e custo ficam como fechamento leve do comando.</p>
+          <p className="creator-zone-copy">Ajustes ficam guardados como apoio. O foco continua na ideia e na geração.</p>
         </div>
 
         <div className="creator-ai-close-strip creator-ai-command-strip" aria-label="Resumo do fechamento">
@@ -906,15 +915,15 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
         {!hasCredits && <div className="inline-alert inline-alert-error">Saldo insuficiente para gerar. Compre Creator Coins avulsas para continuar.</div>}
       </div>
 
-      <div className="creator-final-flow-panel">
+      <div className="creator-final-flow-panel creator-command-output-preview">
       <div className="creator-planner-field-grid creator-post-journey-grid creator-journey-line">
         <div className="creator-planner-field">
-          <span>Saída esperada</span>
-          <strong>Legenda principal, CTA, hashtags, mídia sugerida e variações.</strong>
+          <span>Preview da entrega</span>
+          <strong>Legenda, CTA, hashtags, mídia sugerida e variações.</strong>
         </div>
         <div className="creator-planner-field">
-          <span>Encerramento do fluxo</span>
-          <strong>Salvar no projeto e abrir o editor com a peça pronta.</strong>
+          <span>Depois de gerar</span>
+          <strong>Salvar no projeto e abrir no editor com o contexto preservado.</strong>
         </div>
       </div>
 
@@ -1121,15 +1130,15 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
       {!displayResult && !isBusy && !plannerOpen ? (
         <div className="state-ea creator-empty-state creator-empty-flow creator-empty-builder" aria-live="polite">
           <div className="operational-state-head creator-empty-builder-copy">
-            <span className="operational-state-badge">Vazio</span>
+            <span className="operational-state-badge">Preparado</span>
             <div>
-              <p className="state-ea-title">Nenhum post gerado ainda</p>
-              <p className="state-ea-text">Preencha o briefing, revise o planejamento e gere a primeira versão.</p>
+              <p className="state-ea-title">A geração aparece aqui</p>
+              <p className="state-ea-text">Revise o planejamento para criar a primeira versão e seguir com salvamento no projeto.</p>
             </div>
           </div>
           <div className="operational-state-meta-grid creator-empty-builder-meta">
             <div className="operational-state-meta-item">
-              <span>Próximo</span>
+              <span>Fluxo</span>
               <strong>Gerar → salvar → editor</strong>
             </div>
             <div className="operational-state-meta-item" data-tone={hasCredits ? "success" : "warning"}>
@@ -1141,12 +1150,12 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
       ) : null}
 
       {displayResult && (
-        <div className="creator-result-stack">
+        <div className="creator-result-stack creator-generated-output">
           <div className="creator-result-header">
             <p className="section-kicker">Resultado</p>
-            <div className="creator-result-title">Post pronto para revisar e salvar</div>
+            <div className="creator-result-title">Peça pronta para revisar</div>
             <p className="creator-result-copy">
-              Revise legenda, variações e próximos passos antes de salvar no projeto e levar a peça para o editor.
+              Legenda, variações e próximos passos ficam prontos para salvar no projeto e continuar no editor.
             </p>
             {resultSourceNote ? (
               <div className={resultSourceNote.tone === "warning" ? "inline-alert inline-alert-warning" : "helper-note-inline"}>
