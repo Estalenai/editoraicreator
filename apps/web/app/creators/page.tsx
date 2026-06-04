@@ -313,9 +313,13 @@ function CreatorsPageContent() {
     () => secondaryCreators.find((tab) => tab.id === "ads") ?? secondaryCreators[0] ?? null,
     [secondaryCreators]
   );
-  const heroCoreCards = useMemo(
-    () => (supportHeroCreator ? [...heroCreators, supportHeroCreator] : heroCreators),
-    [heroCreators, supportHeroCreator]
+  const featuredCreatorFormat = useMemo(
+    () => heroCreators.find((tab) => tab.id === "post") ?? heroCreators[0] ?? null,
+    [heroCreators]
+  );
+  const compactHeroFormats = useMemo(
+    () => heroCreators.filter((tab) => tab.id !== featuredCreatorFormat?.id),
+    [heroCreators, featuredCreatorFormat?.id]
   );
   const secondaryCatalog = useMemo(
     () => [...secondaryCreators, ...labCreators].filter((tab) => tab.id !== supportHeroCreator?.id),
@@ -547,53 +551,96 @@ function CreatorsPageContent() {
           A seleção orienta o builder sem virar catálogo técnico.
         </div>
           <div className="focus-shell-body">
-            <div className="creators-hero-core-grid creators-format-stream creators-decision-stream">
-              {heroCoreCards.map((tab, index) => {
-                const isFeaturedFormat = activeTabMeta.group === "hero" ? activeTab === tab.id : index === 0;
-
-                return (
-                  <article
-                    key={tab.id}
-                    className={`creators-hero-core-card layout-contract-item creators-open-module creators-decision-item ${tab.group !== "hero" ? "creators-hero-core-card-support" : ""}`}
-                    data-active={activeTab === tab.id}
-                    data-featured={isFeaturedFormat}
-                    data-group={tab.group}
-                    data-reveal
-                    data-reveal-delay={String(70 + index * 50)}
-                  >
-                  <div className="creators-hero-core-card-head">
-                    <span className={`premium-badge premium-badge-${creatorStageTone(tab.group)}`}>{tab.stageLabel}</span>
-                    <span className="creators-hero-core-card-kicker">{tab.group === "hero" ? "Formato principal" : "Apoio recomendado"}</span>
+            <div className="creators-format-vitrine" aria-label="Vitrine de formatos principais">
+              {featuredCreatorFormat ? (
+                <article
+                  className="creators-format-vitrine-feature layout-contract-item creators-open-module"
+                  data-active={activeTab === featuredCreatorFormat.id}
+                  data-reveal
+                  data-reveal-delay="70"
+                >
+                  <div className="creators-format-vitrine-eyebrow">
+                    <span className={`premium-badge premium-badge-${creatorStageTone(featuredCreatorFormat.group)}`}>{featuredCreatorFormat.stageLabel}</span>
+                    <span>Escolha principal para começar</span>
                   </div>
-                  <div className="section-stack-tight">
-                    <h3 className="heading-reset">{tab.label}</h3>
-                    <p className="helper-text-ea">{tab.description}</p>
+                  <div className="creators-format-vitrine-feature-copy">
+                    <h3 className="heading-reset">{featuredCreatorFormat.label}</h3>
+                    <p className="helper-text-ea">{featuredCreatorFormat.description}</p>
                   </div>
-                  <div className="creators-hero-core-stack">
-                    <div className="creators-hero-core-point">
-                      <span>Melhor para</span>
-                      <strong>{tab.bestFor}</strong>
+                  <div className="creators-format-vitrine-proof" aria-label={`${featuredCreatorFormat.label}: resumo do formato`}>
+                    <div>
+                      <span>Para</span>
+                      <strong>{featuredCreatorFormat.bestFor}</strong>
                     </div>
-                    <div className="creators-hero-core-point">
-                      <span>Saída esperada</span>
-                      <strong>{tab.expectedOutput}</strong>
+                    <div>
+                      <span>Entrega</span>
+                      <strong>{featuredCreatorFormat.expectedOutput}</strong>
                     </div>
-                    <div className="creators-hero-core-point">
-                      <span>Continuidade</span>
-                      <strong>{tab.continuity}</strong>
+                    <div>
+                      <span>Continua em</span>
+                      <strong>{featuredCreatorFormat.continuity}</strong>
                     </div>
                   </div>
-                  <div className="creators-hero-card-actions">
-                    <button onClick={() => activateTab(tab.id, { scrollToWorkspace: true })} className="btn-ea btn-primary btn-sm">
-                      {tab.group === "hero" ? "Usar este formato" : "Usar como apoio"}
+                  <div className="creators-format-vitrine-actions">
+                    <button onClick={() => activateTab(featuredCreatorFormat.id, { scrollToWorkspace: true })} className="btn-ea btn-primary btn-sm">
+                      Usar este formato
                     </button>
                     <Link href="/projects" className="btn-link-ea btn-ghost btn-sm">
                       Ver continuidade em Projetos
                     </Link>
                   </div>
                 </article>
-                );
-              })}
+              ) : null}
+
+              <div className="creators-format-vitrine-side" aria-label="Alternativas principais">
+                <div className="creators-format-vitrine-alternatives">
+                  {compactHeroFormats.map((tab, index) => (
+                    <article
+                      key={tab.id}
+                      className="creators-format-vitrine-option layout-contract-item creators-open-module"
+                      data-active={activeTab === tab.id}
+                      data-reveal
+                      data-reveal-delay={String(95 + index * 45)}
+                    >
+                      <div className="creators-format-vitrine-option-head">
+                        <span className={`premium-badge premium-badge-${creatorStageTone(tab.group)}`}>{tab.stageLabel}</span>
+                        <h3 className="heading-reset">{tab.label}</h3>
+                      </div>
+                      <p className="helper-text-ea">{tab.description}</p>
+                      <div className="creators-format-vitrine-option-meta">
+                        <span>{tab.bestFor}</span>
+                        <strong>{tab.expectedOutput}</strong>
+                      </div>
+                      <div className="creators-format-vitrine-actions creators-format-vitrine-actions-compact">
+                        <button onClick={() => activateTab(tab.id, { scrollToWorkspace: true })} className="btn-ea btn-ghost btn-sm">
+                          Usar formato
+                        </button>
+                        <Link href="/projects" className="btn-link-ea btn-ghost btn-sm">
+                          Projetos
+                        </Link>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+
+                {supportHeroCreator ? (
+                  <article
+                    className="creators-format-vitrine-support layout-contract-item creators-open-module"
+                    data-active={activeTab === supportHeroCreator.id}
+                    data-reveal
+                    data-reveal-delay="190"
+                  >
+                    <div>
+                      <span className={`premium-badge premium-badge-${creatorStageTone(supportHeroCreator.group)}`}>{supportHeroCreator.stageLabel}</span>
+                      <strong>{supportHeroCreator.label}</strong>
+                    </div>
+                    <p className="helper-text-ea">{supportHeroCreator.description}</p>
+                    <button onClick={() => activateTab(supportHeroCreator.id, { scrollToWorkspace: true })} className="btn-ea btn-ghost btn-sm">
+                      Usar como apoio
+                    </button>
+                  </article>
+                ) : null}
+              </div>
             </div>
           </div>
         </section>

@@ -42183,9 +42183,327 @@ body:has(.creators-lasy-system-page),
     align-items: stretch;
   }
 
-  .creators-lasy-system-page .creator-empty-builder .state-ea-actions :is(.btn-ea, .btn-link-ea) {
-    width: 100% !important;
-    justify-content: center;
+.creators-lasy-system-page .creator-empty-builder .state-ea-actions :is(.btn-ea, .btn-link-ea) {
+  width: 100% !important;
+  justify-content: center;
+  }
+}
+
+/* Meta-Lasy Sprint 2: format showcase as a product vitrine, not a catalog grid. */
+.creators-lasy-system-page .creators-format-vitrine {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(18rem, 0.92fr);
+  gap: clamp(1rem, 2vw, 1.7rem);
+  align-items: stretch;
+  width: min(100%, 74rem);
+}
+
+.creators-lasy-system-page :is(.creators-format-vitrine-feature, .creators-format-vitrine-option, .creators-format-vitrine-support) {
+  position: relative;
+  min-width: 0;
+  border: 0;
+  border-top: 1px solid rgba(211, 247, 255, 0.055);
+  background: transparent;
+  box-shadow: none;
+}
+
+.creators-lasy-system-page :is(.creators-format-vitrine-feature, .creators-format-vitrine-option, .creators-format-vitrine-support)::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 1px;
+  opacity: 0;
+  background: linear-gradient(180deg, rgba(126, 231, 255, 0.42), transparent);
+}
+
+.creators-lasy-system-page :is(.creators-format-vitrine-feature, .creators-format-vitrine-option, .creators-format-vitrine-support)[data-active="true"]::before {
+  opacity: 1;
+}
+
+.creators-lasy-system-page .creators-format-vitrine-feature {
+  display: grid;
+  align-content: space-between;
+  gap: clamp(1rem, 1.8vw, 1.5rem);
+  min-height: clamp(18rem, 26vw, 24rem);
+  padding: clamp(1.05rem, 1.8vw, 1.5rem) clamp(0.85rem, 1.3vw, 1.1rem) clamp(0.9rem, 1.4vw, 1.12rem) 0;
+}
+
+.creators-lasy-system-page .creators-format-vitrine-feature[data-active="true"] {
+  background:
+    radial-gradient(520px 260px at 18% 4%, rgba(110, 232, 255, 0.07), transparent 68%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent 54%);
+}
+
+.creators-lasy-system-page .creators-format-vitrine-eyebrow,
+.creators-lasy-system-page .creators-format-vitrine-option-head {
+  display: flex;
+  align-items: center;
+  gap: 0.48rem;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.creators-lasy-system-page .creators-format-vitrine-eyebrow > span:last-child {
+  color: rgba(184, 237, 255, 0.58);
+  font-size: 0.62rem;
+  font-weight: 760;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.creators-lasy-system-page .creators-format-vitrine-feature-copy {
+  display: grid;
+  gap: clamp(0.45rem, 0.8vw, 0.68rem);
+  max-width: 30rem;
+}
+
+.creators-lasy-system-page .creators-format-vitrine-feature-copy h3 {
+  color: rgba(248, 253, 255, 0.96);
+  font-size: clamp(2.15rem, 4vw, 3.65rem);
+  line-height: 0.94;
+  letter-spacing: -0.065em;
+}
+
+.creators-lasy-system-page .creators-format-vitrine-feature-copy .helper-text-ea {
+  max-width: 25rem;
+  color: rgba(218, 244, 255, 0.7);
+  font-size: clamp(0.88rem, 1vw, 1rem);
+}
+
+.creators-lasy-system-page .creators-format-vitrine-proof {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(0.55rem, 1.1vw, 0.9rem);
+  padding-top: clamp(0.65rem, 1.1vw, 0.95rem);
+  border-top: 1px solid rgba(211, 247, 255, 0.05);
+}
+
+.creators-lasy-system-page .creators-format-vitrine-proof div {
+  display: grid;
+  gap: 0.24rem;
+  min-width: 0;
+}
+
+.creators-lasy-system-page .creators-format-vitrine-proof span,
+.creators-lasy-system-page .creators-format-vitrine-option-meta span {
+  color: rgba(160, 232, 255, 0.48);
+  font-size: 0.58rem;
+  font-weight: 820;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.creators-lasy-system-page .creators-format-vitrine-proof strong {
+  color: rgba(247, 253, 255, 0.84);
+  font-size: clamp(0.78rem, 0.92vw, 0.9rem);
+  line-height: 1.24;
+}
+
+.creators-lasy-system-page .creators-format-vitrine-side {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: clamp(0.78rem, 1.5vw, 1.15rem);
+  min-width: 0;
+}
+
+.creators-lasy-system-page .creators-format-vitrine-alternatives {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(0.58rem, 1vw, 0.82rem);
+  min-width: 0;
+}
+
+.creators-lasy-system-page .creators-format-vitrine-option {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-content: start;
+  gap: 0.38rem clamp(0.72rem, 1.3vw, 1rem);
+  min-height: 0;
+  padding: clamp(0.76rem, 1.25vw, 0.98rem) 0;
+}
+
+.creators-lasy-system-page .creators-format-vitrine-option[data-active="true"] {
+  background: linear-gradient(180deg, rgba(96, 223, 255, 0.032), transparent 58%);
+}
+
+.creators-lasy-system-page .creators-format-vitrine-option-head h3 {
+  color: rgba(247, 253, 255, 0.92);
+  font-size: clamp(1.25rem, 1.6vw, 1.62rem);
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+}
+
+.creators-lasy-system-page .creators-format-vitrine-option-head,
+.creators-lasy-system-page .creators-format-vitrine-option > .helper-text-ea,
+.creators-lasy-system-page .creators-format-vitrine-option-meta {
+  grid-column: 1;
+}
+
+.creators-lasy-system-page .creators-format-vitrine-option > .helper-text-ea {
+  max-width: 19rem;
+  color: rgba(218, 244, 255, 0.62);
+  font-size: clamp(0.76rem, 0.88vw, 0.84rem);
+  line-height: 1.34;
+}
+
+.creators-lasy-system-page .creators-format-vitrine-option-meta {
+  display: grid;
+  grid-template-columns: minmax(7rem, 0.54fr) minmax(0, 1fr);
+  gap: 0.28rem;
+  align-items: baseline;
+  margin-top: 0.12rem;
+  padding-top: 0.42rem;
+  border-top: 1px solid rgba(211, 247, 255, 0.04);
+}
+
+.creators-lasy-system-page .creators-format-vitrine-option-meta strong {
+  color: rgba(246, 253, 255, 0.78);
+  font-size: clamp(0.76rem, 0.86vw, 0.84rem);
+  line-height: 1.25;
+}
+
+.creators-lasy-system-page .creators-format-vitrine-support {
+  display: grid;
+  grid-template-columns: minmax(9rem, 0.42fr) minmax(0, 1fr) auto;
+  gap: clamp(0.6rem, 1.1vw, 0.9rem);
+  align-items: center;
+  padding: clamp(0.62rem, 1.1vw, 0.82rem) 0;
+  opacity: 0.82;
+}
+
+.creators-lasy-system-page .creators-format-vitrine-support > div {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.creators-lasy-system-page .creators-format-vitrine-support strong {
+  color: rgba(246, 253, 255, 0.82);
+  font-size: clamp(0.92rem, 1.05vw, 1.05rem);
+  line-height: 1.12;
+}
+
+.creators-lasy-system-page .creators-format-vitrine-support .helper-text-ea {
+  max-width: 28rem;
+  color: rgba(218, 244, 255, 0.52);
+  font-size: clamp(0.72rem, 0.82vw, 0.8rem);
+}
+
+.creators-lasy-system-page .creators-format-vitrine-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.42rem 0.72rem;
+}
+
+.creators-lasy-system-page .creators-format-vitrine-actions .btn-link-ea.btn-ghost {
+  border-color: transparent !important;
+  background: transparent !important;
+  padding-inline: 0 !important;
+  color: rgba(221, 246, 255, 0.62) !important;
+}
+
+.creators-lasy-system-page .creators-format-vitrine-actions-compact {
+  grid-column: 2;
+  grid-row: 1 / span 3;
+  align-self: center;
+  justify-content: flex-end;
+  margin-top: 0;
+}
+
+.creators-lasy-system-page .creators-format-vitrine-actions-compact .btn-ea.btn-ghost,
+.creators-lasy-system-page .creators-format-vitrine-support .btn-ea.btn-ghost {
+  min-height: 2rem !important;
+  padding-inline: 0 !important;
+  border-color: transparent !important;
+  background: transparent !important;
+  color: rgba(238, 251, 255, 0.8) !important;
+  box-shadow: none !important;
+}
+
+.creators-lasy-system-page .creators-format-vitrine-feature .btn-ea.btn-primary {
+  border-color: rgba(126, 231, 255, 0.26) !important;
+  background: linear-gradient(135deg, rgba(139, 234, 255, 0.96), rgba(61, 178, 255, 0.86)) !important;
+  color: rgba(1, 24, 47, 0.96) !important;
+  box-shadow: 0 16px 34px rgba(24, 136, 210, 0.22) !important;
+}
+
+@media (max-width: 1180px) {
+  .creators-lasy-system-page .creators-format-vitrine {
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+    gap: clamp(0.82rem, 1.8vw, 1.2rem);
+  }
+
+  .creators-lasy-system-page .creators-format-vitrine-feature {
+    min-height: 0;
+  }
+
+  .creators-lasy-system-page .creators-format-vitrine-side {
+    grid-template-rows: auto auto;
+  }
+}
+
+@media (max-width: 760px) {
+  .creators-lasy-system-page .creators-format-vitrine-feature {
+    gap: 0.82rem;
+    padding-block: 0.9rem;
+  }
+
+  .creators-lasy-system-page .creators-format-vitrine-feature-copy h3 {
+    font-size: clamp(1.72rem, 11vw, 2.32rem);
+    letter-spacing: -0.055em;
+  }
+
+  .creators-lasy-system-page .creators-format-vitrine-proof,
+  .creators-lasy-system-page .creators-format-vitrine-alternatives,
+  .creators-lasy-system-page .creators-format-vitrine-support {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .creators-lasy-system-page .creators-format-vitrine-proof {
+    gap: 0;
+  }
+
+  .creators-lasy-system-page .creators-format-vitrine-proof div,
+  .creators-lasy-system-page .creators-format-vitrine-option {
+    padding-block: 0.62rem;
+    border-top: 1px solid rgba(211, 247, 255, 0.04);
+  }
+
+  .creators-lasy-system-page .creators-format-vitrine-proof div:first-child {
+    border-top: 0;
+  }
+
+  .creators-lasy-system-page .creators-format-vitrine-option {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+  }
+
+  .creators-lasy-system-page .creators-format-vitrine-option-meta {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .creators-lasy-system-page .creators-format-vitrine-actions-compact {
+    grid-column: 1;
+    grid-row: auto;
+    justify-content: flex-start;
+  }
+
+  .creators-lasy-system-page .creators-format-vitrine-option > .helper-text-ea,
+  .creators-lasy-system-page .creators-format-vitrine-support .helper-text-ea {
+    max-width: none;
+  }
+
+  .creators-lasy-system-page .creators-format-vitrine-support {
+    gap: 0.42rem;
+    padding-block: 0.68rem;
+  }
+
+  .creators-lasy-system-page .creators-format-vitrine-actions :is(.btn-ea, .btn-link-ea) {
+    min-height: 2rem !important;
   }
 }
 
