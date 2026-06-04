@@ -669,7 +669,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
 
   return (
     <div
-      className="premium-card creator-workspace-card creator-workspace-card-modular"
+      className="premium-card creator-workspace-card creator-workspace-card-modular creator-command-workspace"
     >
       <div className="creator-workspace-header">
         <div className="hero-title-stack section-stack-tight">
@@ -681,30 +681,30 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
         </p>
       </div>
 
-      <div className="creator-briefing-stepper" aria-label="Fluxo do briefing">
+      <div className="creator-briefing-stepper creator-command-stepper" aria-label="Fluxo do briefing">
         <div className="creator-briefing-step-pill" data-step-state="active">
           <span>1</span>
-          <strong>Formato</strong>
-          <small>ajustes em apoio</small>
+          <strong>Ideia</strong>
+          <small>pedido central</small>
         </div>
         <div className="creator-briefing-step-pill">
           <span>2</span>
-          <strong>Briefing</strong>
-          <small>ideia central</small>
+          <strong>Ajustes</strong>
+          <small>formato e IA</small>
         </div>
         <div className="creator-briefing-step-pill">
           <span>3</span>
-          <strong>Fechamento</strong>
-          <small>apoio, estimativa e gerar</small>
+          <strong>Gerar</strong>
+          <small>revisar e criar</small>
         </div>
       </div>
 
-      <div className="creator-workspace-zones creator-post-briefing-flow creator-briefing-guided-flow">
-      <section className="creator-briefing-step creator-briefing-step-channel" data-step-index="1" aria-label="Etapa 1: formato e canal">
+      <div className="creator-workspace-zones creator-post-briefing-flow creator-briefing-guided-flow creator-briefing-command-flow">
+      <section className="creator-briefing-step creator-briefing-step-channel creator-command-stage-support" data-step-index="2" aria-label="Ajustes de formato e canal">
       <div id="creator-post-config" className="creator-form-zone creator-form-zone-setup" data-step-label="Formato e canal">
         <div className="creator-setup-head">
-          <p className="creator-zone-title">Base da peça</p>
-          <p className="creator-zone-copy">Ajustes ficam resumidos para o briefing ser o foco.</p>
+          <p className="creator-zone-title">Formato e canal</p>
+          <p className="creator-zone-copy">Ajustes opcionais ficam fora do caminho principal.</p>
         </div>
 
         <div className="creator-setup-summary-strip" aria-label="Resumo de formato e canal">
@@ -774,17 +774,26 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
       </div>
       </section>
 
-      <section className="creator-briefing-step creator-briefing-step-context" data-step-index="2" aria-label="Etapa 2: contexto e briefing">
-      <div className="creator-form-zone creator-form-zone-brief" data-step-label="Contexto e objetivo">
-        <p className="creator-zone-title">Briefing principal</p>
-        <p className="creator-zone-copy">Escreva a ideia central; o builder organiza legenda, CTA e variações.</p>
+      <section className="creator-briefing-step creator-briefing-step-context creator-command-stage-main" data-step-index="1" aria-label="Etapa principal: ideia e briefing">
+      <div className="creator-form-zone creator-form-zone-brief creator-command-input-panel" data-step-label="Contexto e objetivo">
+        <div className="creator-command-input-head">
+          <div>
+            <p className="creator-zone-title">Escreva a ideia</p>
+            <p className="creator-zone-copy">O builder transforma o pedido em legenda, CTA, variações e próximo passo.</p>
+          </div>
+          <div className="creator-command-chip-row" aria-label="Resumo do briefing">
+            <span>{setupSummaryLabel}</span>
+            <span>{suggestionSummaryLabel}</span>
+            <span>~{creditsEstimate.common} Comum</span>
+          </div>
+        </div>
         <label className="field-label-ea">
-          <span>Tema do post</span>
+          <span>Ideia do post</span>
           <textarea
-            className="field-ea"
+            className="field-ea creator-command-textarea"
             value={theme}
             onChange={(e) => setTheme(e.target.value)}
-            placeholder="Descreva a ideia do post..."
+            placeholder="Ex: quero um post para lançar uma consultoria de marca pessoal com CTA para lista VIP..."
             rows={4}
             style={{
               minHeight: 120,
@@ -792,14 +801,29 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
             }}
           />
         </label>
+        <div className="creator-command-submit-row">
+          <button
+            className="btn-ea btn-primary btn-sm"
+            onClick={openPlanner}
+            disabled={isBusy || !theme.trim() || !hasCredits}
+          >
+            Revisar planejamento e gerar
+          </button>
+          <Link href="/projects" className="btn-link-ea btn-ghost btn-sm">
+            Ver projetos
+          </Link>
+          <span className="creator-command-submit-note">
+            {hasCredits ? "Saldo disponível" : "Saldo insuficiente"} · histórico registra o consumo final
+          </span>
+        </div>
       </div>
       </section>
 
-      <section className="creator-briefing-step creator-briefing-step-ai" data-step-index="3" aria-label="Etapa 3: IA, estimativa e saída">
+      <section className="creator-briefing-step creator-briefing-step-ai creator-command-stage-close" data-step-index="3" aria-label="Fechamento assistido, estimativa e saída">
       <div className="creator-context-zone creator-form-zone-ai" data-step-label="IA, estimativa e saída">
         <div className="creator-ai-close-head">
-          <p className="creator-zone-title">Fechamento assistido</p>
-          <p className="creator-zone-copy">Confirme assistência, custo e entrega antes de revisar o plano.</p>
+          <p className="creator-zone-title">Apoio de criação</p>
+          <p className="creator-zone-copy">IA, sugestão e custo ficam como fechamento leve do comando.</p>
         </div>
 
         <div className="creator-ai-close-strip creator-ai-command-strip" aria-label="Resumo do fechamento">
@@ -1112,18 +1136,6 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
               <span>Saldo</span>
               <strong>{hasCredits ? "Disponível" : "Insuficiente"}</strong>
             </div>
-          </div>
-          <div className="state-ea-actions">
-            <button
-              className="btn-ea btn-primary btn-sm"
-              onClick={openPlanner}
-              disabled={isBusy || !theme.trim() || !hasCredits}
-            >
-              Revisar planejamento e gerar
-            </button>
-            <Link href="/projects" className="btn-link-ea btn-ghost btn-sm">
-              Ver projetos
-            </Link>
           </div>
         </div>
       ) : null}
