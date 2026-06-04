@@ -470,39 +470,20 @@ function CreatorsPageContent() {
                 </div>
               );
 
-              if (index === 0) {
-                return (
-                  <article
-                    key={item.creator}
-                    className="proof-value-card layout-contract-item creators-open-module creators-editorial-item creators-proof-card-primary"
-                    data-featured="true"
-                    data-reveal
-                    data-reveal-delay={String(70 + index * 55)}
-                  >
-                    <div className="proof-value-meta-row">
-                      <span className="proof-value-kicker">{item.kicker}</span>
-                      <span className="proof-value-chip">{item.creator}</span>
-                    </div>
-                    {proofBody}
-                  </article>
-                );
-              }
-
               return (
-                <details
+                <article
                   key={item.creator}
-                  className="proof-value-card layout-contract-item creators-open-module creators-editorial-item creators-proof-card-support creators-proof-disclosure"
-                  data-featured="false"
+                  className={`proof-value-card layout-contract-item creators-open-module creators-editorial-item ${index === 0 ? "creators-proof-card-primary" : "creators-proof-card-support"}`}
+                  data-featured={index === 0 ? "true" : "false"}
                   data-reveal
                   data-reveal-delay={String(70 + index * 55)}
                 >
-                  <summary>
+                  <div className="proof-value-meta-row">
                     <span className="proof-value-kicker">{item.kicker}</span>
-                    <strong>{item.creator}</strong>
-                    <span>{item.nextStep}</span>
-                  </summary>
+                    <span className="proof-value-chip">{item.creator}</span>
+                  </div>
                   {proofBody}
-                </details>
+                </article>
               );
             })}
           </div>
