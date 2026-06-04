@@ -418,40 +418,6 @@ function CreatorsPageContent() {
 
           </div>
 
-          <div className="hero-kpi-grid creators-hero-metrics creators-hero-metrics-compact creators-hero-thread creators-lasy-signal-strip" aria-label="Resumo do fluxo de criação">
-            <div className="creators-hero-metric-card creators-hero-signal">
-              <span className="hero-kpi-label">Formato selecionado</span>
-              <strong className="hero-kpi-value">{activeTabMeta.label}</strong>
-              <span className="hero-kpi-text">{activeTabMeta.bestFor}</span>
-            </div>
-            <div className="creators-hero-metric-card creators-hero-signal">
-              <span className="hero-kpi-label">Saldo disponível</span>
-              <strong className="hero-kpi-value">{walletSummaryDisplay}</strong>
-              <span className="hero-kpi-text">{loading ? "Saldo e plano em sincronização." : `Estimativa antes da geração. Consumo real em ${CREATOR_COINS_PUBLIC_NAME}.`}</span>
-            </div>
-            <div className="creators-hero-metric-card creators-hero-signal">
-              <span className="hero-kpi-label">Próximo passo</span>
-              <strong className="hero-kpi-value">Criar → revisar → salvar</strong>
-              <span className="hero-kpi-text">Projeto e editor continuam com o mesmo contexto.</span>
-            </div>
-          </div>
-
-          <div className="creators-entry-account-actions creators-hero-utility-actions">
-            <span>Conta e assinatura</span>
-            <button
-              onClick={async () => {
-                await onSyncSubscription();
-                await refresh();
-              }}
-              disabled={syncingSubscription || loading}
-              className="btn-ea btn-ghost btn-sm"
-            >
-              {syncingSubscription ? "Sincronizando..." : "Sincronizar"}
-            </button>
-            <button onClick={onLogout} className="btn-ea btn-ghost btn-sm">
-              Sair
-            </button>
-          </div>
         </div>
       </section>
 
@@ -754,6 +720,39 @@ function CreatorsPageContent() {
                   <span>Saldo, plano e disponibilidade seguem em atualização.</span>
                 </div>
               ) : null}
+              <div className="creator-workspace-operational-strip" aria-label="Contexto operacional da criação">
+                <div className="creator-workspace-operational-item">
+                  <span>Formato atual</span>
+                  <strong>{activeTabMeta.label}</strong>
+                  <small>{activeTabMeta.bestFor}</small>
+                </div>
+                <div className="creator-workspace-operational-item">
+                  <span>Plano e saldo</span>
+                  <strong>{planLabelDisplay} · {walletSummaryDisplay}</strong>
+                  <small>{loading ? "Sincronizando disponibilidade." : `Consumo final em ${CREATOR_COINS_PUBLIC_NAME}.`}</small>
+                </div>
+                <div className="creator-workspace-operational-item">
+                  <span>Próximo passo</span>
+                  <strong>Criar → revisar → salvar</strong>
+                  <small>Projeto e editor seguem com o mesmo contexto.</small>
+                </div>
+                <div className="creator-workspace-account-actions">
+                  <span>Conta e assinatura</span>
+                  <button
+                    onClick={async () => {
+                      await onSyncSubscription();
+                      await refresh();
+                    }}
+                    disabled={syncingSubscription || loading}
+                    className="btn-ea btn-ghost btn-sm"
+                  >
+                    {syncingSubscription ? "Sincronizando..." : "Sincronizar"}
+                  </button>
+                  <button onClick={onLogout} className="btn-ea btn-ghost btn-sm">
+                    Sair
+                  </button>
+                </div>
+              </div>
               <div className="creator-active-panel layout-contract-region">
                 <div className="creator-active-panel-head">
                   <div className="section-stack">
