@@ -44926,3 +44926,291 @@ body:has(.creators-lasy-system-page),
     max-width: 18rem !important;
   }
 }
+
+/* Meta-Lasy Sprint 6.2: final visual finish for cuts, dark plates and hard section lines. */
+.creators-lasy-system-page .creators-lasy-command-field {
+  padding: clamp(0.28rem, 0.58vw, 0.46rem) 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background:
+    radial-gradient(560px 120px at 28% 12%, rgba(124, 235, 255, 0.032), transparent 76%),
+    transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.creators-lasy-system-page .creators-lasy-command-field::before,
+.creators-lasy-system-page .creators-lasy-command-field::after,
+.creators-lasy-system-page .creators-entry-prompt-shell::before,
+.creators-lasy-system-page .creators-entry-prompt-shell::after {
+  display: none !important;
+}
+
+.creators-lasy-system-page .creators-entry-prompt-shell {
+  min-height: clamp(3.85rem, 4.8vw, 4.7rem) !important;
+  padding: clamp(0.46rem, 0.82vw, 0.68rem) clamp(0.34rem, 0.75vw, 0.66rem) !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.creators-lasy-system-page .creators-entry-prompt-meta span {
+  border-color: rgba(235, 249, 255, 0.042) !important;
+  background: rgba(255, 255, 255, 0.006) !important;
+}
+
+.creators-lasy-system-page .creators-hero-panel-actions {
+  align-content: center;
+}
+
+.creators-lasy-system-page .creators-entry-type-strip {
+  margin-top: clamp(0.28rem, 0.62vw, 0.48rem) !important;
+}
+
+.creators-lasy-system-page :is(
+  .creators-flow-section,
+  .surface-flow-region,
+  .focus-shell-section,
+  .creators-open-track,
+  .creators-proof-section,
+  .creators-hero-core-section,
+  .creator-workspace-shell,
+  .creator-workspace-card,
+  .creator-active-panel,
+  .creator-form-zone,
+  .creator-context-zone,
+  .creator-output-card,
+  .creator-empty-state
+) {
+  box-shadow: none !important;
+}
+
+.creators-lasy-system-page :is(
+  .creators-flow-section,
+  .surface-flow-region,
+  .focus-shell-section,
+  .creators-open-track,
+  .creators-proof-section,
+  .creators-hero-core-section,
+  .creator-workspace-shell
+) {
+  border-top-color: rgba(211, 247, 255, 0.018) !important;
+  border-bottom-color: transparent !important;
+}
+
+.creators-lasy-system-page :is(
+  .proof-value-card,
+  .creators-format-vitrine-feature,
+  .creators-format-vitrine-option,
+  .creators-format-vitrine-support,
+  .creators-secondary-card,
+  .creator-active-summary-card,
+  .creator-planner-field,
+  .creator-workspace-operational-item,
+  .creator-output-card,
+  .creator-empty-state,
+  .creator-inline-panel
+) {
+  border-color: rgba(211, 247, 255, 0.03) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.creators-lasy-system-page :is(
+  .proof-value-card,
+  .creators-format-vitrine-feature,
+  .creators-format-vitrine-option,
+  .creators-format-vitrine-support,
+  .creator-active-summary-card,
+  .creator-planner-field
+) {
+  position: relative;
+  border-top: 0 !important;
+}
+
+.creators-lasy-system-page :is(
+  .proof-value-card,
+  .creators-format-vitrine-feature,
+  .creators-format-vitrine-option,
+  .creators-format-vitrine-support,
+  .creator-active-summary-card,
+  .creator-planner-field
+)::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: min(18rem, 58%);
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(211, 247, 255, 0.07), rgba(211, 247, 255, 0.018), transparent);
+}
+
+.creators-lasy-system-page .creators-proof-section .proof-value-card::before {
+  width: min(16rem, 48%);
+}
+
+.creators-lasy-system-page .creators-format-vitrine-side::before,
+.creators-lasy-system-page .creators-format-vitrine-side::after,
+.creators-lasy-system-page .creator-command-workspace::before,
+.creators-lasy-system-page .creator-command-workspace::after,
+.creators-lasy-system-page .creator-workspace-shell::before,
+.creators-lasy-system-page .creator-workspace-shell::after {
+  opacity: 0.28 !important;
+  box-shadow: none !important;
+}
+
+.creators-lasy-system-page .creator-command-workspace .creator-workspace-header,
+.creators-lasy-system-page .creator-command-stepper,
+.creators-lasy-system-page .creator-briefing-command-flow,
+.creators-lasy-system-page .creator-command-input-panel,
+.creators-lasy-system-page .creator-command-submit-row,
+.creators-lasy-system-page .creator-command-stage-support,
+.creators-lasy-system-page .creator-command-stage-close,
+.creators-lasy-system-page .creator-command-output-preview,
+.creators-lasy-system-page .creator-command-output-preview .state-ea.creator-empty-flow {
+  border-color: rgba(211, 247, 255, 0.032) !important;
+}
+
+.creators-lasy-system-page .creator-command-submit-row,
+.creators-lasy-system-page .creator-command-output-preview .state-ea.creator-empty-flow {
+  border-top-color: rgba(211, 247, 255, 0.035) !important;
+}
+
+.creators-lasy-system-page .creator-command-stage-close .creator-ai-command-strip {
+  border-top-color: rgba(211, 247, 255, 0.026) !important;
+  border-bottom-color: rgba(211, 247, 255, 0.018) !important;
+}
+
+.creators-lasy-system-page .creator-workspace-shell textarea.creator-command-textarea {
+  border-color: rgba(165, 238, 255, 0.105) !important;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(122, 226, 255, 0.052), transparent 44%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0.008)) !important;
+}
+
+.creators-lasy-system-page .creator-command-final-actions .btn-ghost,
+.creators-lasy-system-page .creator-command-output-preview .creator-empty-builder-copy .operational-state-badge,
+.creators-lasy-system-page .creator-command-chip-row span,
+.creators-lasy-system-page .creators-entry-type-strip button {
+  border-color: rgba(211, 247, 255, 0.055) !important;
+  background: rgba(255, 255, 255, 0.006) !important;
+  box-shadow: none !important;
+}
+
+@media (min-width: 761px) {
+  .creators-lasy-system-page .creators-lasy-command-field {
+    grid-template-columns: minmax(0, 1fr) minmax(9.2rem, 13rem) !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .creators-lasy-system-page .creators-lasy-entry {
+    padding-top: 0.28rem !important;
+  }
+
+  .creators-lasy-system-page .creators-lasy-command-field {
+    gap: 0.4rem !important;
+    padding-block: 0.12rem !important;
+  }
+
+  .creators-lasy-system-page .creators-entry-prompt-shell {
+    min-height: 0 !important;
+    padding: 0 !important;
+  }
+
+  .creators-lasy-system-page .creators-entry-prompt-meta {
+    gap: 0.24rem;
+  }
+
+  .creators-lasy-system-page .creators-entry-prompt-meta span:nth-child(n + 2) {
+    display: none !important;
+  }
+
+  .creators-lasy-system-page :is(
+    .creators-flow-section,
+    .surface-flow-region,
+    .focus-shell-section,
+    .creators-open-track,
+    .creators-proof-section,
+    .creators-hero-core-section,
+    .creator-workspace-shell
+  ) {
+    border-top-color: rgba(211, 247, 255, 0.012) !important;
+  }
+
+  .creators-lasy-system-page :is(
+    .proof-value-card,
+    .creators-format-vitrine-feature,
+    .creators-format-vitrine-option,
+    .creators-format-vitrine-support,
+    .creator-active-summary-card,
+    .creator-planner-field
+  )::before {
+    width: min(10rem, 42%);
+    opacity: 0.58;
+  }
+
+  .creators-lasy-system-page .creator-command-workspace :is(.creator-briefing-step, .creator-form-zone, .creator-context-zone, .creator-final-flow-panel) {
+    border-color: rgba(211, 247, 255, 0.026) !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .creators-lasy-system-page .creators-proof-section .creators-proof-stream,
+  .creators-lasy-system-page .creators-format-vitrine {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .creators-lasy-system-page .creators-proof-section .proof-value-card,
+  .creators-lasy-system-page .creators-proof-section .creators-proof-card-primary {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .creators-lasy-system-page .creators-proof-section .creators-proof-card-support .proof-value-stack {
+    display: grid !important;
+  }
+
+  .creators-lasy-system-page .creators-format-vitrine-side {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: clamp(0.58rem, 1.45vw, 0.92rem) !important;
+  }
+
+  .creators-lasy-system-page .creators-format-vitrine-feature,
+  .creators-lasy-system-page .creators-format-vitrine-option,
+  .creators-lasy-system-page .creators-format-vitrine-support {
+    min-width: 0 !important;
+    overflow: visible !important;
+  }
+
+  .creators-lasy-system-page .creators-format-vitrine-option-head,
+  .creators-lasy-system-page .creators-format-vitrine-support {
+    grid-template-columns: minmax(0, 1fr) auto !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .creators-lasy-system-page .creators-proof-section .creators-proof-card-support .proof-value-stack {
+    display: none !important;
+  }
+
+  .creators-lasy-system-page .creators-format-vitrine-alternatives {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .creators-lasy-system-page .creators-format-vitrine-option-head,
+  .creators-lasy-system-page .creators-format-vitrine-option-meta,
+  .creators-lasy-system-page .creators-format-vitrine-actions-compact,
+  .creators-lasy-system-page .creators-format-vitrine-support {
+    grid-template-columns: minmax(0, 1fr) !important;
+    justify-items: start !important;
+  }
+
+  .creators-lasy-system-page .creators-format-vitrine-option-head > span,
+  .creators-lasy-system-page .creators-format-vitrine-option-meta span {
+    max-width: 100%;
+    white-space: normal !important;
+  }
+}
