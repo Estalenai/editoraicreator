@@ -722,7 +722,7 @@ function CreatorsPageContent() {
         >
           <div className="section-header-ea">
             <h2 className="heading-reset">Criação ativa</h2>
-            <p className="helper-text-ea">Um formato por vez, com briefing, estimativa e continuidade no mesmo eixo.</p>
+            <p className="helper-text-ea">Um formato por vez, com ideia, revisão e continuidade no mesmo eixo.</p>
           </div>
           <button
             type="button"
@@ -734,7 +734,7 @@ function CreatorsPageContent() {
           </button>
         </div>
         <div className="focus-shell-preview">
-          A criação ativa concentra formato, saldo e próximo passo.
+          A criação começa pela ideia. Formato, saldo e conta ficam como apoio.
         </div>
         <div className="focus-shell-body creator-workspace-grid">
         <div className="creator-workspace-main layout-contract-panel" data-reveal data-reveal-delay="140">
@@ -755,9 +755,9 @@ function CreatorsPageContent() {
                   <small>{activeTabMeta.bestFor}</small>
                 </div>
                 <div className="creator-workspace-operational-item">
-                  <span>Plano e saldo</span>
+                  <span>Disponibilidade</span>
                   <strong>{planLabelDisplay} · {walletSummaryDisplay}</strong>
-                  <small>{loading ? "Sincronizando disponibilidade." : `Consumo final em ${CREATOR_COINS_PUBLIC_NAME}.`}</small>
+                  <small>{loading ? "Sincronizando disponibilidade." : `Custo final em ${CREATOR_COINS_PUBLIC_NAME}.`}</small>
                 </div>
                 <div className="creator-workspace-operational-item">
                   <span>Próximo passo</span>
@@ -765,7 +765,7 @@ function CreatorsPageContent() {
                   <small>Projeto e editor seguem com o mesmo contexto.</small>
                 </div>
                 <div className="creator-workspace-account-actions">
-                  <span>Conta e assinatura</span>
+                  <span>Conta</span>
                   <button
                     onClick={async () => {
                       await onSyncSubscription();
@@ -796,7 +796,7 @@ function CreatorsPageContent() {
                 </div>
                 <div className="creator-active-summary-grid">
                   <div className="creator-active-summary-card">
-                    <span>Saída esperada</span>
+                    <span>O que sai</span>
                     <strong>{activeTabMeta.expectedOutput}</strong>
                   </div>
                   <div className="creator-active-summary-card">

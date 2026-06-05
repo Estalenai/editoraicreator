@@ -139,15 +139,15 @@ export function useAiExecutionMode({
 
   const modeDetail = useMemo(() => {
     if (mode === "automatic_economy") {
-      return "Usa a opção mais econômica do plano para manter custo e previsibilidade sob controle.";
+      return "Prioriza uma criação mais econômica dentro do plano.";
     }
     if (mode === "manual") {
       if (capabilities.manualModeLevel === "full") {
-        return "Você escolhe origem e perfil da IA dentro dos limites do plano.";
+        return "Você escolhe como o assistente trabalha dentro do plano.";
       }
-      return "Você define a origem principal e a experiência valida o que o plano permite.";
+      return "Você escolhe a fonte principal dentro do que o plano permite.";
     }
-    return "A IA seleciona automaticamente a melhor opção disponível no seu plano.";
+    return "O assistente escolhe automaticamente a melhor opção disponível no seu plano.";
   }, [capabilities.manualModeLevel, mode]);
 
   const availabilityNote = useMemo(() => {
@@ -158,12 +158,12 @@ export function useAiExecutionMode({
       return "Este formato ainda não está liberado para o plano atual.";
     }
     if (!capabilities.manualAvailable) {
-      return "Seu plano usa seleção assistida. Escolha manual aparece quando estiver liberada.";
+      return "Seu plano usa assistência automática. Escolha manual aparece quando estiver liberada.";
     }
     if (capabilities.manualModeLevel === "limited") {
-      return "Escolha manual limitada: você define a origem principal e mantém o plano protegido.";
+      return "Escolha manual limitada: você define a fonte principal e mantém o plano protegido.";
     }
-    return "Se alguma opção ficar fora do plano, avisamos antes de consumir créditos.";
+    return "Se alguma opção ficar fora do plano, avisamos antes de usar créditos.";
   }, [capabilities.featureAvailable, capabilities.manualAvailable, capabilities.manualModeLevel, capabilities.mockOnly]);
 
   const qualityOutputsLabel = useMemo(() => {

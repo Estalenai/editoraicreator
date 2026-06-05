@@ -42,9 +42,9 @@ export function AiExecutionModeFields({
   const showTierSelect = mode === "manual" && capabilities.manualModeLevel === "full" && hasMultipleOptions(capabilities.tierOptions);
   const preferenceNote = mode !== "manual"
     ? persistingPreference
-      ? "Salvando sua preferência automática para a conta..."
-      : "O perfil automático vira padrão desta experiência."
-    : "A escolha manual vale só para esta geração e não muda o padrão do plano.";
+      ? "Salvando a preferência para a conta..."
+      : "O modo automático fica como padrão desta experiência."
+    : "A escolha manual vale apenas para esta geração.";
   const planNotes = [
     manualSelectionLabel ? `Seleção desta geração: ${manualSelectionLabel}.` : null,
     qualityOutputsLabel ? `Perfil de qualidade disponível nesta trilha: ${qualityOutputsLabel}.` : null,
@@ -55,10 +55,10 @@ export function AiExecutionModeFields({
 
   return (
     <div className="creator-ai-assist-fields">
-      <div className="creator-section-label">Como a IA deve ajudar</div>
+      <div className="creator-section-label">Preferência de assistência</div>
       <div className="form-grid-2 creator-field-grid">
         <label className="field-label-ea">
-          <span>Apoio</span>
+          <span>Modo</span>
           <PremiumSelect
             value={mode}
             onChange={(next) => void onModeChange(next)}
@@ -69,24 +69,24 @@ export function AiExecutionModeFields({
 
         {showProviderSelect ? (
           <label className="field-label-ea">
-            <span>Origem manual</span>
+            <span>Fonte</span>
             <PremiumSelect
               value={manualProvider}
               onChange={onManualProviderChange}
               options={capabilities.providerOptions}
-              ariaLabel="Origem manual da IA"
+              ariaLabel="Fonte da assistência"
             />
           </label>
         ) : null}
 
         {showTierSelect ? (
           <label className="field-label-ea">
-            <span>Perfil do modelo</span>
+            <span>Perfil</span>
             <PremiumSelect
               value={manualTier}
               onChange={onManualTierChange}
               options={capabilities.tierOptions}
-              ariaLabel="Perfil do modelo manual"
+              ariaLabel="Perfil da assistência"
             />
           </label>
         ) : null}
@@ -95,7 +95,7 @@ export function AiExecutionModeFields({
       <div className="creator-ai-assist-notes">
         <div className="helper-note-inline creator-ai-assist-primary-note">{modeDetail}</div>
         <details className="creator-ai-assist-details">
-          <summary>Regras do plano e preferência</summary>
+          <summary>Detalhes do plano</summary>
           <div className="creator-ai-assist-detail-list">
             {planNotes.map((note) => (
               <div key={note} className="helper-note-subtle">{note}</div>

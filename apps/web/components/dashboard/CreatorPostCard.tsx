@@ -677,7 +677,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
           <h3 className="heading-reset">Creator Post</h3>
         </div>
         <p className="creator-workspace-subtitle">
-          Estruture o briefing, gere a saída e siga para o editor com o contexto salvo.
+          Escreva a ideia, revise o caminho e gere a primeira versão pronta para continuar.
         </p>
       </div>
 
@@ -689,27 +689,27 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
         </div>
         <div className="creator-briefing-step-pill">
           <span>2</span>
-          <strong>Ajustes</strong>
-          <small>formato e IA</small>
+          <strong>Detalhes</strong>
+          <small>se precisar</small>
         </div>
         <div className="creator-briefing-step-pill">
           <span>3</span>
-          <strong>Gerar</strong>
-          <small>revisar e criar</small>
+          <strong>Criar</strong>
+          <small>revisar e gerar</small>
         </div>
       </div>
 
       <div className="creator-workspace-zones creator-post-briefing-flow creator-briefing-guided-flow creator-briefing-command-flow">
       <section className="creator-briefing-step creator-briefing-step-channel creator-command-stage-support" data-step-index="2" aria-label="Ajustes de formato e canal">
-      <div id="creator-post-config" className="creator-form-zone creator-form-zone-setup" data-step-label="Formato e canal">
+      <div id="creator-post-config" className="creator-form-zone creator-form-zone-setup" data-step-label="Detalhes">
         <div className="creator-setup-head">
-          <p className="creator-zone-title">Formato e canal</p>
-          <p className="creator-zone-copy">Ajustes opcionais ficam fora do caminho principal.</p>
+          <p className="creator-zone-title">Detalhes do post</p>
+          <p className="creator-zone-copy">Formato, tom e idioma ficam como apoio da ideia principal.</p>
         </div>
 
         <div className="creator-setup-summary-strip" aria-label="Resumo de formato e canal">
           <div>
-            <span>Saída</span>
+            <span>Formato</span>
             <strong>{setupSummaryLabel}</strong>
           </div>
           <div>
@@ -775,11 +775,11 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
       </section>
 
       <section className="creator-briefing-step creator-briefing-step-context creator-command-stage-main" data-step-index="1" aria-label="Etapa principal: ideia e briefing">
-      <div className="creator-form-zone creator-form-zone-brief creator-command-input-panel" data-step-label="Contexto e objetivo">
+      <div className="creator-form-zone creator-form-zone-brief creator-command-input-panel" data-step-label="Ideia">
         <div className="creator-command-input-head">
           <div>
             <p className="creator-zone-title">Escreva a ideia</p>
-            <p className="creator-zone-copy">O builder transforma o pedido em legenda, CTA, variações e próximo passo.</p>
+            <p className="creator-zone-copy">Descreva o post em linguagem natural. A criação começa daqui.</p>
           </div>
           <div className="creator-command-chip-row" aria-label="Resumo do briefing">
             <span>{setupSummaryLabel}</span>
@@ -803,9 +803,9 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
         </label>
         <div className="creator-command-submit-row creator-command-finale" aria-label="Conclusão do briefing">
           <div className="creator-command-final-copy">
-            <span>Conclusão</span>
-            <strong>Briefing pronto para revisar</strong>
-            <p>A IA usa a ideia, os ajustes e o saldo disponível para preparar a primeira versão.</p>
+            <span>Próximo movimento</span>
+            <strong>Revisar e gerar a primeira versão</strong>
+            <p>Confirme o caminho antes de criar a peça.</p>
           </div>
           <div className="creator-command-final-actions">
             <button
@@ -820,38 +820,38 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
             </Link>
           </div>
           <div className="creator-command-final-signal" data-tone={hasCredits ? "success" : "warning"}>
-            <span>{hasCredits ? "Saldo disponível" : "Saldo insuficiente"}</span>
+            <span>{hasCredits ? "Custo previsto" : "Saldo insuficiente"}</span>
             <strong>~{creditsEstimate.common} Comum</strong>
-            <small>Histórico registra o consumo final.</small>
+            <small>O valor final fica registrado no histórico.</small>
           </div>
         </div>
       </div>
       </section>
 
-      <section className="creator-briefing-step creator-briefing-step-ai creator-command-stage-close" data-step-index="3" aria-label="Fechamento assistido, estimativa e saída">
-      <div className="creator-context-zone creator-form-zone-ai" data-step-label="IA, estimativa e saída">
+      <section className="creator-briefing-step creator-briefing-step-ai creator-command-stage-close" data-step-index="3" aria-label="Fechamento da criação">
+      <div className="creator-context-zone creator-form-zone-ai" data-step-label="Assistência e entrega">
         <div className="creator-ai-close-head">
-          <p className="creator-zone-title">Apoio de criação</p>
-          <p className="creator-zone-copy">Ajustes ficam guardados como apoio. O foco continua na ideia e na geração.</p>
+          <p className="creator-zone-title">Assistência</p>
+          <p className="creator-zone-copy">Preferências ficam recolhidas para manter o foco na ideia.</p>
         </div>
 
         <div className="creator-ai-close-strip creator-ai-command-strip" aria-label="Resumo do fechamento">
           <div>
-            <span>Apoio</span>
+            <span>Modo</span>
             <strong>{executionSummaryLabel}</strong>
           </div>
           <div>
-            <span>Sugestão</span>
+            <span>Briefing</span>
             <strong>{suggestionSummaryLabel}</strong>
           </div>
           <div>
-            <span>Consumo</span>
+            <span>Custo previsto</span>
             <strong>~{creditsEstimate.common} Comum</strong>
           </div>
         </div>
 
         <details className="creator-ai-settings-disclosure">
-          <summary>Ajustes avançados do apoio</summary>
+          <summary>Preferências de assistência</summary>
           <div className="creator-ai-settings-panel">
             <AiExecutionModeFields
               capabilities={execution.capabilities}
@@ -870,7 +870,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
             />
 
             <div className="creator-ai-suggestion-panel">
-              <div className="creator-section-label">Sugestão automática</div>
+              <div className="creator-section-label">Briefing assistido</div>
 
               <div className="creator-toggle-stack">
                 <label className="toggle-row" data-active={promptEnabled}>
@@ -882,7 +882,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
                       await updatePromptEnabled(value);
                     }}
                   />
-                  <span>Usar sugestão automática</span>
+                  <span>Preparar briefing automaticamente</span>
                 </label>
 
                 <label className="toggle-row" data-active={promptEnabled && autoApply} data-disabled={!promptEnabled}>
@@ -895,11 +895,11 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
                       await updateAutoApply(value);
                     }}
                   />
-                  <span>Aplicar sugestão automaticamente</span>
+                  <span>Aplicar briefing automaticamente</span>
                 </label>
               </div>
 
-              <div className="helper-note-inline">Quando ativo, a IA prepara o prompt antes de gerar.</div>
+              <div className="helper-note-inline">Quando ativo, o briefing é refinado antes da primeira versão.</div>
             </div>
           </div>
         </details>
@@ -907,10 +907,10 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
 
       <div className="creator-estimate-row creator-estimate-line">
         <div className="helper-note-inline">
-          Estimativa de consumo: ~{creditsEstimate.common} Comum • {creditsEstimate.pro} Pro • {creditsEstimate.ultra} Ultra
+          Custo previsto: ~{creditsEstimate.common} Comum • {creditsEstimate.pro} Pro • {creditsEstimate.ultra} Ultra
         </div>
         <div className="helper-note-subtle">
-          Histórico registra o consumo final.
+          O histórico registra o valor final.
         </div>
         {!hasCredits && <div className="inline-alert inline-alert-error">Saldo insuficiente para gerar. Compre Creator Coins avulsas para continuar.</div>}
       </div>
@@ -918,7 +918,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
       <div className="creator-final-flow-panel creator-command-output-preview">
       <div className="creator-planner-field-grid creator-post-journey-grid creator-journey-line">
         <div className="creator-planner-field">
-          <span>Preview da entrega</span>
+          <span>O que será gerado</span>
           <strong>Legenda, CTA, hashtags, mídia sugerida e variações.</strong>
         </div>
         <div className="creator-planner-field">
@@ -1132,8 +1132,8 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
           <div className="operational-state-head creator-empty-builder-copy">
             <span className="operational-state-badge">Preparado</span>
             <div>
-              <p className="state-ea-title">A geração aparece aqui</p>
-              <p className="state-ea-text">Revise o planejamento para criar a primeira versão e seguir com salvamento no projeto.</p>
+              <p className="state-ea-title">A primeira versão aparece aqui</p>
+              <p className="state-ea-text">Revise e gere quando a ideia estiver pronta.</p>
             </div>
           </div>
           <div className="operational-state-meta-grid creator-empty-builder-meta">
