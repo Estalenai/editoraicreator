@@ -456,19 +456,10 @@ function CreatorsPageContent() {
           <div className="proof-value-grid proof-value-grid-creators creators-proof-stream creators-editorial-stream">
             {CREATOR_SHOWCASES.map((item, index) => {
               const proofBody = (
-                <div className="proof-value-stack">
-                  <div className="proof-value-block">
-                    <span className="proof-value-label">Briefing</span>
-                    <p>{item.briefing}</p>
-                  </div>
-                  <div className="proof-value-block">
-                    <span className="proof-value-label">Entrega</span>
-                    <p>{item.delivery}</p>
-                  </div>
-                  <div className="proof-value-block proof-value-block-inline">
-                    <span className="proof-value-label">Próximo passo</span>
-                    <strong>{item.nextStep}</strong>
-                  </div>
+                <div className="proof-value-stack creators-proof-showcase-flow">
+                  <p className="creators-proof-brief">{item.briefing}</p>
+                  <p className="creators-proof-delivery">{item.delivery}</p>
+                  <strong className="creators-proof-next">{item.nextStep}</strong>
                 </div>
               );
 
@@ -484,6 +475,7 @@ function CreatorsPageContent() {
                     <span className="proof-value-kicker">{item.kicker}</span>
                     <span className="proof-value-chip">{item.creator}</span>
                   </div>
+                  <h3 className="heading-reset creators-proof-showcase-title">{item.creator.replace("Creator ", "")}</h3>
                   {proofBody}
                 </article>
               );
@@ -551,18 +543,11 @@ function CreatorsPageContent() {
                     <p className="helper-text-ea">{featuredCreatorFormat.description}</p>
                   </div>
                   <div className="creators-format-vitrine-proof" aria-label={`${featuredCreatorFormat.label}: resumo do formato`}>
-                    <div>
-                      <span>Para</span>
+                    <p>
                       <strong>{featuredCreatorFormat.bestFor}</strong>
-                    </div>
-                    <div>
-                      <span>Entrega</span>
-                      <strong>{featuredCreatorFormat.expectedOutput}</strong>
-                    </div>
-                    <div>
-                      <span>Continua em</span>
-                      <strong>{featuredCreatorFormat.continuity}</strong>
-                    </div>
+                      <span>{featuredCreatorFormat.expectedOutput}</span>
+                      <span>{featuredCreatorFormat.continuity}</span>
+                    </p>
                   </div>
                   <div className="creators-format-vitrine-actions">
                     <button onClick={() => activateTab(featuredCreatorFormat.id, { scrollToWorkspace: true })} className="btn-ea btn-primary btn-sm">
@@ -591,8 +576,8 @@ function CreatorsPageContent() {
                       </div>
                       <p className="helper-text-ea">{tab.description}</p>
                       <div className="creators-format-vitrine-option-meta">
-                        <span>{tab.bestFor}</span>
-                        <strong>{tab.expectedOutput}</strong>
+                        <strong>{tab.bestFor}</strong>
+                        <span>{tab.expectedOutput}</span>
                       </div>
                       <div className="creators-format-vitrine-actions creators-format-vitrine-actions-compact">
                         <button onClick={() => activateTab(tab.id, { scrollToWorkspace: true })} className="btn-ea btn-ghost btn-sm">
@@ -617,7 +602,7 @@ function CreatorsPageContent() {
                       <span className={`premium-badge premium-badge-${creatorStageTone(supportHeroCreator.group)}`}>{supportHeroCreator.stageLabel}</span>
                       <strong>{supportHeroCreator.label}</strong>
                     </div>
-                    <p className="helper-text-ea">{supportHeroCreator.description}</p>
+                    <p className="helper-text-ea">{supportHeroCreator.expectedOutput}</p>
                     <button onClick={() => activateTab(supportHeroCreator.id, { scrollToWorkspace: true })} className="btn-ea btn-ghost btn-sm">
                       Usar como apoio
                     </button>
@@ -651,7 +636,7 @@ function CreatorsPageContent() {
             <p className="section-kicker">Apoio e exploração</p>
             <h2 className="heading-reset">Apoios que ampliam a criação sem virar configuração</h2>
             <p className="helper-text-ea">
-              <strong>Formatos de apoio</strong> complementam campanhas e produção. <strong>Experimentos</strong> seguem como trilhas leves de validação.
+              Formatos complementares continuam disponíveis sem ocupar o centro do briefing.
             </p>
           </div>
           <button
@@ -687,12 +672,8 @@ function CreatorsPageContent() {
                   <div className="creators-secondary-disclosure-body">
                     <p className="helper-text-ea">{tab.description}</p>
                     <div className="creators-secondary-card-copy">
-                      <span>Saída esperada</span>
                       <strong>{tab.expectedOutput}</strong>
-                    </div>
-                    <div className="creators-secondary-card-copy">
-                      <span>Papel atual</span>
-                      <strong>{tab.continuity}</strong>
+                      <span>{tab.continuity}</span>
                     </div>
                     <button onClick={() => activateTab(tab.id, { scrollToWorkspace: true })} className="btn-ea btn-ghost btn-sm">
                       Usar este formato
