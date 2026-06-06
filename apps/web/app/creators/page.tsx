@@ -371,7 +371,7 @@ function CreatorsPageContent() {
           </div>
 
           <div className="creators-hero-panel creators-entry-command creators-entry-surface creators-entry-field creators-lasy-entry">
-            <div className="section-stack-tight">
+            <div className="section-stack-tight creators-entry-heading">
               <p className="section-kicker">Pedido de criação</p>
               <h2 className="creators-hero-panel-title">Briefing guiado</h2>
               <p className="meta-text-ea creators-hero-panel-copy">
@@ -379,17 +379,13 @@ function CreatorsPageContent() {
               </p>
             </div>
 
-            <div className="creators-lasy-command-field">
+            <div className="creators-lasy-command-field creators-entry-command-field" data-creators-command="primary">
               <div className="creators-entry-prompt-shell creators-entry-prompt-field" aria-label={`Exemplo de pedido para ${activeTabMeta.label}`}>
                 <span className="creators-entry-prompt-label">Pedido para {activeTabMeta.label}</span>
                 <p>{activeShowcase.briefing}</p>
-                <div className="creators-entry-prompt-meta">
-                  <span>{activeTabMeta.expectedOutput}</span>
-                  <span>{walletSummaryDisplay}</span>
-                </div>
               </div>
 
-              <div className="hero-actions-row creators-hero-panel-actions creators-entry-actions">
+              <div className="hero-actions-row creators-hero-panel-actions creators-entry-actions creators-entry-cta-stack">
                 <button
                   type="button"
                   onClick={() => focusSection("workspace", { scroll: "always" })}
@@ -407,17 +403,23 @@ function CreatorsPageContent() {
               </div>
             </div>
 
-            <div className="creators-entry-type-strip" aria-label="Tipos principais de entrega">
-              {heroCreators.map((tab) => (
-                <button
-                  key={tab.id}
-                  type="button"
-                  data-active={activeTab === tab.id}
-                  onClick={() => activateTab(tab.id, { scrollToWorkspace: false })}
-                >
-                  {tab.label.replace("Creator ", "")}
-                </button>
-              ))}
+            <div className="creators-entry-context-strip" aria-label="Contexto do briefing inicial">
+              <div className="creators-entry-prompt-meta">
+                <span>{activeTabMeta.expectedOutput}</span>
+                <span>{walletSummaryDisplay}</span>
+              </div>
+              <div className="creators-entry-type-strip" aria-label="Tipos principais de entrega">
+                {heroCreators.map((tab) => (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    data-active={activeTab === tab.id}
+                    onClick={() => activateTab(tab.id, { scrollToWorkspace: false })}
+                  >
+                    {tab.label.replace("Creator ", "")}
+                  </button>
+                ))}
+              </div>
             </div>
 
           </div>
