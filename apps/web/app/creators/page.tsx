@@ -733,17 +733,17 @@ function CreatorsPageContent() {
               ) : null}
               <div className="creator-workspace-operational-strip" aria-label="Contexto operacional da criação">
                 <div className="creator-workspace-operational-item">
-                  <span>Formato atual</span>
+                  <span>Formato</span>
                   <strong>{activeTabMeta.label}</strong>
                   <small>{activeTabMeta.bestFor}</small>
                 </div>
                 <div className="creator-workspace-operational-item">
-                  <span>Disponibilidade</span>
+                  <span>Créditos</span>
                   <strong>{planLabelDisplay} · {walletSummaryDisplay}</strong>
                   <small>{loading ? "Sincronizando disponibilidade." : `Custo final em ${CREATOR_COINS_PUBLIC_NAME}.`}</small>
                 </div>
                 <div className="creator-workspace-operational-item">
-                  <span>Próximo passo</span>
+                  <span>Fluxo</span>
                   <strong>Criar → revisar → salvar</strong>
                   <small>Projeto e editor seguem com o mesmo contexto.</small>
                 </div>
@@ -768,8 +768,8 @@ function CreatorsPageContent() {
                 <div className="creator-active-panel-head">
                   <div className="section-stack">
                     <p className="section-kicker">Criação ativa</p>
-                    <h2 className="creator-active-panel-title">{activeTabMeta.label}</h2>
-                    <p className="creator-active-panel-copy">{activeTabMeta.bestFor}</p>
+                    <h2 className="creator-active-panel-title">Criar primeira versão</h2>
+                    <p className="creator-active-panel-copy">{activeTabMeta.label} · {activeTabMeta.bestFor}</p>
                   </div>
                   <div className="creator-active-panel-meta">
                     <span className={`premium-badge premium-badge-${activeStageTone}`}>{activeTabMeta.stageLabel}</span>

@@ -55,10 +55,10 @@ export function AiExecutionModeFields({
 
   return (
     <div className="creator-ai-assist-fields">
-      <div className="creator-section-label">Preferência de assistência</div>
+      <div className="creator-section-label">Como a IA ajuda</div>
       <div className="form-grid-2 creator-field-grid">
         <label className="field-label-ea">
-          <span>Modo</span>
+          <span>Modo de ajuda</span>
           <PremiumSelect
             value={mode}
             onChange={(next) => void onModeChange(next)}
@@ -69,7 +69,7 @@ export function AiExecutionModeFields({
 
         {showProviderSelect ? (
           <label className="field-label-ea">
-            <span>Fonte</span>
+            <span>Fonte da ajuda</span>
             <PremiumSelect
               value={manualProvider}
               onChange={onManualProviderChange}
@@ -81,7 +81,7 @@ export function AiExecutionModeFields({
 
         {showTierSelect ? (
           <label className="field-label-ea">
-            <span>Perfil</span>
+            <span>Perfil da ajuda</span>
             <PremiumSelect
               value={manualTier}
               onChange={onManualTierChange}
