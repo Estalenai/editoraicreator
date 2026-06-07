@@ -158,12 +158,12 @@ export function useAiExecutionMode({
       return "Este formato ainda não está liberado para o plano atual.";
     }
     if (!capabilities.manualAvailable) {
-      return "Seu plano usa assistência automática. Escolha manual aparece quando estiver liberada.";
+      return "Seu plano usa apoio padrão. A escolha manual aparece quando estiver liberada.";
     }
     if (capabilities.manualModeLevel === "limited") {
       return "Escolha manual limitada: você define a fonte principal e mantém o plano protegido.";
     }
-    return "Se alguma opção ficar fora do plano, avisamos antes de usar créditos.";
+    return "Se alguma opção ficar fora do plano, avisamos antes de consumir o uso disponível.";
   }, [capabilities.featureAvailable, capabilities.manualAvailable, capabilities.manualModeLevel, capabilities.mockOnly]);
 
   const qualityOutputsLabel = useMemo(() => {

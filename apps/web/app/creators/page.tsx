@@ -277,7 +277,7 @@ function CreatorsPageContent() {
     [wallet, loading]
   );
   const planLabelDisplay = loading ? "Plano em sincronização" : planLabel ?? "—";
-  const walletSummaryDisplay = loading && !wallet ? "Saldo em sincronização" : walletSummary;
+  const walletSummaryDisplay = loading && !wallet ? "Disponibilidade em sincronização" : walletSummary;
 
   const activeTabMeta = useMemo(
     () => CREATOR_TABS.find((tab) => tab.id === activeTab) || CREATOR_TABS[0],
@@ -636,7 +636,7 @@ function CreatorsPageContent() {
             <p className="section-kicker">Apoio e exploração</p>
             <h2 className="heading-reset">Apoios que ampliam a criação sem virar configuração</h2>
             <p className="helper-text-ea">
-              Formatos complementares continuam disponíveis sem ocupar o centro do briefing.
+              Formatos complementares continuam disponíveis como apoio, sem ocupar o centro da criação.
             </p>
           </div>
           <button
@@ -717,7 +717,7 @@ function CreatorsPageContent() {
           </button>
         </div>
         <div className="focus-shell-preview">
-          A criação começa pela ideia. Formato, saldo e conta ficam como apoio.
+          A criação começa pela ideia. Formato, uso e conta ficam como apoio.
         </div>
         <div className="focus-shell-body creator-workspace-grid">
         <div className="creator-workspace-main layout-contract-panel" data-reveal data-reveal-delay="140">
@@ -728,22 +728,22 @@ function CreatorsPageContent() {
               {loading ? (
                 <div className="creators-inline-note layout-contract-note">
                   <strong>Sincronização em segundo plano</strong>
-                  <span>Saldo, plano e disponibilidade seguem em atualização.</span>
+                  <span>Plano e disponibilidade sincronizam em segundo plano.</span>
                 </div>
               ) : null}
               <div className="creator-workspace-operational-strip" aria-label="Contexto operacional da criação">
                 <div className="creator-workspace-operational-item">
-                  <span>Formato</span>
+                  <span>Base</span>
                   <strong>{activeTabMeta.label}</strong>
                   <small>{activeTabMeta.bestFor}</small>
                 </div>
                 <div className="creator-workspace-operational-item">
-                  <span>Créditos</span>
+                  <span>Uso</span>
                   <strong>{planLabelDisplay} · {walletSummaryDisplay}</strong>
-                  <small>{loading ? "Sincronizando disponibilidade." : `Custo final em ${CREATOR_COINS_PUBLIC_NAME}.`}</small>
+                  <small>{loading ? "Sincronizando disponibilidade." : `${CREATOR_COINS_PUBLIC_NAME} registra o consumo final.`}</small>
                 </div>
                 <div className="creator-workspace-operational-item">
-                  <span>Fluxo</span>
+                  <span>Continuidade</span>
                   <strong>Criar → revisar → salvar</strong>
                   <small>Projeto e editor seguem com o mesmo contexto.</small>
                 </div>
@@ -774,7 +774,7 @@ function CreatorsPageContent() {
                   <div className="creator-active-panel-meta">
                     <span className={`premium-badge premium-badge-${activeStageTone}`}>{activeTabMeta.stageLabel}</span>
                     <span className="premium-badge premium-badge-phase">Plano {planLabelDisplay}</span>
-                    <span className="premium-badge premium-badge-warning">Saldo {walletSummaryDisplay}</span>
+                    <span className="premium-badge premium-badge-warning">Uso {walletSummaryDisplay}</span>
                   </div>
                 </div>
                 <div className="creator-active-summary-grid">
@@ -900,10 +900,10 @@ function CreatorsPageContent() {
 
             <details className="creators-side-note creators-side-disclosure creators-wallet-panel">
               <summary>
-                <span>Saldo</span>
+                <span>Uso</span>
                 <strong>{walletCommon} Comum</strong>
               </summary>
-              <span>Estimativa antes de gerar; Créditos confirma o consumo real.</span>
+              <span>Estimativa antes de gerar; o histórico confirma o consumo real.</span>
               <div className="creators-wallet-stack">
                 {walletByType.map((item) => (
                   <div key={item.coinType} className="creators-wallet-row">
@@ -924,7 +924,7 @@ function CreatorsPageContent() {
                 <span>Guia</span>
                 <strong>Contexto rápido</strong>
               </summary>
-              <span>Revise fluxo, saldo e próximo passo sem sair daqui.</span>
+              <span>Revise caminho, uso e próximo passo sem sair daqui.</span>
               <Link href="/how-it-works" className="btn-link-ea btn-ghost btn-sm">
                 Abrir guia rápido
               </Link>

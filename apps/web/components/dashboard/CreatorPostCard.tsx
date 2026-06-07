@@ -235,8 +235,11 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
   const hasCredits = walletCommon >= creditsEstimate.common;
   const hasSavedProject = Boolean(savedProjectId);
   const needsProjectSync = Boolean(savedProjectId && resultDirty);
-  const executionSummaryLabel = execution.modeLabel.replace(" (Recomendado)", "");
-  const suggestionSummaryLabel = promptEnabled ? (autoApply ? "Automática" : "Revisar") : "Direto";
+  const rawExecutionSummaryLabel = execution.modeLabel.replace(" (Recomendado)", "");
+  const executionSummaryLabel = rawExecutionSummaryLabel.toLowerCase().includes("autom")
+    ? "Apoio padrão"
+    : rawExecutionSummaryLabel;
+  const suggestionSummaryLabel = promptEnabled ? (autoApply ? "Base guiada" : "Revisar base") : "Direto";
   const setupSummaryLabel = `${platform} • ${contentType}`;
   const setupIntentLabel = `${tone} • ${objective} • ${language}`;
 
@@ -244,11 +247,11 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
     () => [
       promptEnabled
         ? autoApply
-          ? "Montar prompt otimizado e aplicar automaticamente ao briefing atual."
-          : "Montar prompt otimizado e abrir revisão manual antes da execução."
-        : "Usar o briefing atual como base direta para a geração.",
+          ? "Preparar uma base guiada e aplicar ao pedido atual."
+          : "Preparar uma base guiada e abrir revisão antes de gerar."
+        : "Usar o pedido atual como base direta para a geração.",
       "Gerar legenda principal, CTA e hashtags alinhadas à plataforma.",
-      "Entregar variações e checklist técnico para revisão final.",
+      "Entregar variações e pontos de revisão para fechar a peça.",
       "Salvar no projeto e seguir para o editor com a base pronta para checkpoint e exportação.",
     ],
     [promptEnabled, autoApply]
@@ -268,12 +271,12 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
     () => [
       { label: "Tema", value: theme.trim() || "A definir" },
       { label: "Objetivo", value: objective },
-      { label: "Execução IA", value: execution.modeLabel },
-      { label: "Prompt automático", value: promptEnabled ? "Ligado" : "Direto" },
-      { label: "Aplicação", value: promptEnabled ? (autoApply ? "Automática" : "Manual") : "Briefing direto" },
-      { label: "Estimativa", value: `${creditsEstimate.common} Comum • ${creditsEstimate.pro} Pro • ${creditsEstimate.ultra} Ultra` },
+      { label: "Apoio", value: executionSummaryLabel },
+      { label: "Base guiada", value: promptEnabled ? "Ativa" : "Direta" },
+      { label: "Revisão", value: promptEnabled ? (autoApply ? "Aplicada ao pedido" : "Manual") : "Pedido direto" },
+      { label: "Uso previsto", value: `${creditsEstimate.common} Comum • ${creditsEstimate.pro} Pro • ${creditsEstimate.ultra} Ultra` },
     ],
-    [theme, objective, execution.modeLabel, promptEnabled, autoApply, creditsEstimate]
+    [theme, objective, executionSummaryLabel, promptEnabled, autoApply, creditsEstimate]
   );
   const executionTechnicalPayload = useMemo(
     () =>
@@ -673,7 +676,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
     >
       <div className="creator-workspace-header">
         <div className="hero-title-stack section-stack-tight">
-          <p className="section-kicker">Briefing da geração</p>
+          <p className="section-kicker">Criação guiada</p>
           <h3 className="heading-reset">Escreva, revise e gere</h3>
         </div>
         <p className="creator-workspace-subtitle">
@@ -694,8 +697,8 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
         </div>
         <div className="creator-briefing-step-pill">
           <span>3</span>
-          <strong>Criar</strong>
-          <small>primeira versão</small>
+          <strong>Gerar</strong>
+          <small>versão inicial</small>
         </div>
       </div>
 
@@ -709,11 +712,11 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
 
         <div className="creator-setup-summary-strip" aria-label="Resumo de formato e canal">
           <div>
-            <span>Formato</span>
+            <span>Canal</span>
             <strong>{setupSummaryLabel}</strong>
           </div>
           <div>
-            <span>Direção</span>
+            <span>Intenção</span>
             <strong>{setupIntentLabel}</strong>
           </div>
         </div>
@@ -784,7 +787,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
           <div className="creator-command-chip-row" aria-label="Resumo do briefing">
             <span>{setupSummaryLabel}</span>
             <span>{suggestionSummaryLabel}</span>
-            <span>~{creditsEstimate.common} Comum</span>
+            <span>Uso ~{creditsEstimate.common} Comum</span>
           </div>
         </div>
         <label className="field-label-ea">
@@ -803,8 +806,8 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
         </label>
         <div className="creator-command-submit-row creator-command-finale" aria-label="Conclusão do briefing">
           <div className="creator-command-final-copy">
-            <span>Gerar</span>
-            <strong>Criar primeira versão</strong>
+            <span>Pronto para gerar</span>
+            <strong>Primeira versão</strong>
             <p>Revisão rápida antes de executar.</p>
           </div>
           <div className="creator-command-final-actions">
@@ -813,16 +816,16 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
               onClick={openPlanner}
               disabled={isBusy || !theme.trim() || !hasCredits}
             >
-              Revisar planejamento e gerar
+              Revisar e gerar
             </button>
             <Link href="/projects" className="btn-link-ea btn-ghost btn-sm">
               Ver projetos
             </Link>
           </div>
           <div className="creator-command-final-signal" data-tone={hasCredits ? "success" : "warning"}>
-            <span>{hasCredits ? "Créditos estimados" : "Saldo insuficiente"}</span>
+            <span>{hasCredits ? "Uso previsto" : "Saldo precisa de recarga"}</span>
             <strong>~{creditsEstimate.common} Comum</strong>
-            <small>Registro final no histórico.</small>
+            <small>O valor final fica no histórico.</small>
           </div>
         </div>
       </div>
@@ -831,27 +834,27 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
       <section className="creator-briefing-step creator-briefing-step-ai creator-command-stage-close" data-step-index="3" aria-label="Fechamento da criação">
       <div className="creator-context-zone creator-form-zone-ai" data-step-label="Assistência e entrega">
         <div className="creator-ai-close-head">
-          <p className="creator-zone-title">Apoio da IA</p>
-          <p className="creator-zone-copy">Preferências ficam recolhidas para manter o foco no pedido.</p>
+          <p className="creator-zone-title">Apoio de criação</p>
+          <p className="creator-zone-copy">Ajustes ficam recolhidos para manter o foco no pedido.</p>
         </div>
 
         <div className="creator-ai-close-strip creator-ai-command-strip" aria-label="Resumo do fechamento">
           <div>
-            <span>IA</span>
+            <span>Apoio</span>
             <strong>{executionSummaryLabel}</strong>
           </div>
           <div>
-            <span>Briefing</span>
+            <span>Base</span>
             <strong>{suggestionSummaryLabel}</strong>
           </div>
           <div>
-            <span>Créditos</span>
+            <span>Uso</span>
             <strong>~{creditsEstimate.common} Comum</strong>
           </div>
         </div>
 
         <details className="creator-ai-settings-disclosure">
-          <summary>Preferências de assistência</summary>
+          <summary>Personalizar apoio</summary>
           <div className="creator-ai-settings-panel">
             <AiExecutionModeFields
               capabilities={execution.capabilities}
@@ -870,7 +873,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
             />
 
             <div className="creator-ai-suggestion-panel">
-              <div className="creator-section-label">Briefing assistido</div>
+              <div className="creator-section-label">Base guiada</div>
 
               <div className="creator-toggle-stack">
                 <label className="toggle-row" data-active={promptEnabled}>
@@ -882,7 +885,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
                       await updatePromptEnabled(value);
                     }}
                   />
-                  <span>Preparar briefing automaticamente</span>
+                  <span>Preparar base guiada</span>
                 </label>
 
                 <label className="toggle-row" data-active={promptEnabled && autoApply} data-disabled={!promptEnabled}>
@@ -895,11 +898,11 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
                       await updateAutoApply(value);
                     }}
                   />
-                  <span>Aplicar briefing automaticamente</span>
+                  <span>Aplicar base ao pedido</span>
                 </label>
               </div>
 
-              <div className="helper-note-inline">Quando ativo, o briefing é refinado antes da primeira versão.</div>
+              <div className="helper-note-inline">Quando ativo, o pedido é refinado antes da primeira versão.</div>
             </div>
           </div>
         </details>
@@ -907,18 +910,18 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
 
       <div className="creator-estimate-row creator-estimate-line">
         <div className="helper-note-inline">
-          Custo previsto: ~{creditsEstimate.common} Comum • {creditsEstimate.pro} Pro • {creditsEstimate.ultra} Ultra
+          Uso previsto: ~{creditsEstimate.common} Comum • {creditsEstimate.pro} Pro • {creditsEstimate.ultra} Ultra
         </div>
         <div className="helper-note-subtle">
           O histórico registra o valor final.
         </div>
-        {!hasCredits && <div className="inline-alert inline-alert-error">Saldo insuficiente para gerar. Compre Creator Coins avulsas para continuar.</div>}
+        {!hasCredits && <div className="inline-alert inline-alert-error">Saldo precisa de recarga para gerar. Creator Coins avulsas continuam disponíveis.</div>}
       </div>
 
       <div className="creator-final-flow-panel creator-command-output-preview">
       <div className="creator-planner-field-grid creator-post-journey-grid creator-journey-line">
         <div className="creator-planner-field">
-          <span>Entrega</span>
+          <span>Você recebe</span>
           <strong>Legenda, CTA, hashtags, mídia sugerida e variações.</strong>
         </div>
         <div className="creator-planner-field">
@@ -1005,12 +1008,12 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
           <CreatorPlannerPanel
             title="Planejamento pronto para o Creator Post"
             objective={`Gerar ${contentType.toLowerCase()} para ${platform} com foco em ${objective.toLowerCase()}.`}
-            summary="Antes da execução, você revisa o que a IA vai montar com base no briefing atual."
+            summary="Antes de gerar, você revisa o caminho que será usado para montar a primeira versão."
             steps={plannerSteps}
             settings={plannerSettings}
             parameters={plannerParameters}
-            note="Se o prompt automático estiver em modo manual, você ainda revisa o texto antes da geração final."
-            continueLabel="Continuar com o post"
+            note="Se a base guiada estiver em revisão manual, você confirma o texto antes da geração final."
+            continueLabel="Continuar e gerar"
             busy={isBusy}
             onContinue={() => {
               setPlannerOpen(false);
@@ -1035,7 +1038,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
       {inlinePromptOpen && promptEnabled && !autoApply && (
         <div className="creator-inline-panel">
           <div className="creator-inline-panel-header">
-            <strong>Prompt gerado</strong>
+            <strong>Base de apoio pronta</strong>
             <p>Revise o texto antes de aplicar. Esse passo deixa a geração mais previsível sem sair da criação.</p>
           </div>
 
@@ -1048,10 +1051,10 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
 
           <div className="creator-inline-actions">
             <button
-              onClick={() => copyText(generatedPrompt, "Prompt")}
+              onClick={() => copyText(generatedPrompt, "Base de apoio")}
               className="btn-ea btn-ghost btn-sm creator-inline-action-soft"
             >
-              Copiar prompt
+              Copiar base
             </button>
 
             <button
@@ -1064,7 +1067,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
               }}
               disabled={loadingApply || !generatedPrompt.trim()}
             >
-              {loadingApply ? "Aplicando..." : "Aplicar prompt"}
+              {loadingApply ? "Aplicando..." : "Aplicar base"}
             </button>
 
             <button
@@ -1087,7 +1090,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
             onClick={() => setShowPromptUsed((v) => !v)}
             className="btn-ea btn-ghost btn-sm creator-inline-action-soft"
           >
-            {showPromptUsed ? "Ocultar prompt usado (avançado)" : "Mostrar prompt usado (avançado)"}
+            {showPromptUsed ? "Ocultar base usada (avançado)" : "Mostrar base usada (avançado)"}
           </button>
 
           {showPromptUsed && (
@@ -1102,9 +1105,9 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
               <div className="creator-inline-actions">
                 <button
                   className="btn-ea btn-ghost btn-sm"
-                  onClick={() => copyText(lastPromptUsed, "Prompt usado")}
+                  onClick={() => copyText(lastPromptUsed, "Base usada")}
                 >
-                  Copiar prompt usado
+                  Copiar base usada
                 </button>
 
                 <button
@@ -1120,7 +1123,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
               </div>
 
               <div className="creator-zone-copy">
-                Ajustes de prompt continuam disponíveis para refinar tom, tamanho, emojis e gerar uma nova versão.
+                Ajustes avançados continuam disponíveis para refinar tom, tamanho, emojis e gerar uma nova versão.
               </div>
             </div>
           )}
@@ -1132,17 +1135,17 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
           <div className="operational-state-head creator-empty-builder-copy">
             <span className="operational-state-badge">Preparado</span>
             <div>
-              <p className="state-ea-title">A primeira versão aparece aqui</p>
+              <p className="state-ea-title">Sua primeira versão fica pronta aqui</p>
               <p className="state-ea-text">Gere quando o pedido estiver pronto.</p>
             </div>
           </div>
           <div className="operational-state-meta-grid creator-empty-builder-meta">
             <div className="operational-state-meta-item">
-              <span>Fluxo</span>
+              <span>Continuidade</span>
               <strong>Gerar → salvar → editor</strong>
             </div>
             <div className="operational-state-meta-item" data-tone={hasCredits ? "success" : "warning"}>
-              <span>Saldo</span>
+              <span>Uso</span>
               <strong>{hasCredits ? "Disponível" : "Insuficiente"}</strong>
             </div>
           </div>

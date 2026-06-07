@@ -42,51 +42,51 @@ export function AiExecutionModeFields({
   const showTierSelect = mode === "manual" && capabilities.manualModeLevel === "full" && hasMultipleOptions(capabilities.tierOptions);
   const preferenceNote = mode !== "manual"
     ? persistingPreference
-      ? "Salvando a preferência para a conta..."
-      : "O modo automático fica como padrão desta experiência."
-    : "A escolha manual vale apenas para esta geração.";
+      ? "Salvando o ajuste para a conta..."
+      : "O apoio padrão fica ativo nesta experiência."
+    : "A escolha manual vale apenas para esta criação.";
   const planNotes = [
-    manualSelectionLabel ? `Seleção desta geração: ${manualSelectionLabel}.` : null,
-    qualityOutputsLabel ? `Perfil de qualidade disponível nesta trilha: ${qualityOutputsLabel}.` : null,
+    manualSelectionLabel ? `Escolha desta criação: ${manualSelectionLabel}.` : null,
+    qualityOutputsLabel ? `Perfil disponível nesta trilha: ${qualityOutputsLabel}.` : null,
     availabilityNote,
     preferenceNote,
-    preferenceError ? "Não foi possível salvar a preferência automática agora. A execução atual continua válida nesta tela." : null,
+    preferenceError ? "Não foi possível salvar o ajuste agora. A criação atual continua válida nesta tela." : null,
   ].filter((note): note is string => Boolean(note));
 
   return (
     <div className="creator-ai-assist-fields">
-      <div className="creator-section-label">Como a IA ajuda</div>
+      <div className="creator-section-label">Como o apoio trabalha</div>
       <div className="form-grid-2 creator-field-grid">
         <label className="field-label-ea">
-          <span>Modo de ajuda</span>
+          <span>Ritmo do apoio</span>
           <PremiumSelect
             value={mode}
             onChange={(next) => void onModeChange(next)}
             options={capabilities.modeOptions}
-            ariaLabel="Modo de execução da IA"
+            ariaLabel="Ritmo do apoio"
           />
         </label>
 
         {showProviderSelect ? (
           <label className="field-label-ea">
-            <span>Fonte da ajuda</span>
+            <span>Fonte do apoio</span>
             <PremiumSelect
               value={manualProvider}
               onChange={onManualProviderChange}
               options={capabilities.providerOptions}
-              ariaLabel="Fonte da assistência"
+              ariaLabel="Fonte do apoio"
             />
           </label>
         ) : null}
 
         {showTierSelect ? (
           <label className="field-label-ea">
-            <span>Perfil da ajuda</span>
+            <span>Perfil do apoio</span>
             <PremiumSelect
               value={manualTier}
               onChange={onManualTierChange}
               options={capabilities.tierOptions}
-              ariaLabel="Perfil da assistência"
+              ariaLabel="Perfil do apoio"
             />
           </label>
         ) : null}
@@ -95,7 +95,7 @@ export function AiExecutionModeFields({
       <div className="creator-ai-assist-notes">
         <div className="helper-note-inline creator-ai-assist-primary-note">{modeDetail}</div>
         <details className="creator-ai-assist-details">
-          <summary>Detalhes do plano</summary>
+          <summary>Ver detalhes do apoio</summary>
           <div className="creator-ai-assist-detail-list">
             {planNotes.map((note) => (
               <div key={note} className="helper-note-subtle">{note}</div>

@@ -47785,3 +47785,139 @@ body:has(.creators-lasy-system-page),
     gap: 0.06rem !important;
   }
 }
+
+/* Meta-Lasy Gate Etapa 6: credibility polish.
+   Reframe technical signals as secondary product guidance without removing data. */
+.creators-lasy-system-page .creator-command-final-signal,
+.creators-lasy-system-page .creator-estimate-line,
+.creators-lasy-system-page .creator-ai-command-strip,
+.creators-lasy-system-page .creator-setup-summary-strip,
+.creators-lasy-system-page .creator-empty-builder-meta {
+  border-color: rgba(202, 242, 255, 0.045) !important;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.012), transparent 74%) !important;
+  box-shadow: none !important;
+}
+
+.creators-lasy-system-page .creator-command-final-signal {
+  opacity: 0.68 !important;
+  align-self: center !important;
+}
+
+.creators-lasy-system-page .creator-command-final-signal span,
+.creators-lasy-system-page .creator-ai-command-strip span,
+.creators-lasy-system-page .creator-setup-summary-strip span,
+.creators-lasy-system-page .creator-empty-builder-meta span,
+.creators-lasy-system-page .creator-workspace-operational-item span {
+  text-transform: none !important;
+  letter-spacing: 0.012em !important;
+  color: rgba(203, 238, 248, 0.52) !important;
+  font-weight: 680 !important;
+}
+
+.creators-lasy-system-page .creator-command-final-signal strong,
+.creators-lasy-system-page .creator-ai-command-strip strong,
+.creators-lasy-system-page .creator-setup-summary-strip strong,
+.creators-lasy-system-page .creator-empty-builder-meta strong,
+.creators-lasy-system-page .creator-workspace-operational-item strong {
+  color: rgba(234, 250, 255, 0.7) !important;
+  font-weight: 760 !important;
+}
+
+.creators-lasy-system-page .creator-command-final-signal small,
+.creators-lasy-system-page .creator-estimate-line .helper-note-subtle {
+  color: rgba(198, 233, 244, 0.42) !important;
+}
+
+.creators-lasy-system-page .creator-setup-disclosure summary,
+.creators-lasy-system-page .creator-ai-settings-disclosure summary,
+.creators-lasy-system-page .creator-ai-assist-details summary {
+  min-height: 1.9rem !important;
+  border-color: rgba(202, 242, 255, 0.045) !important;
+  background: rgba(255, 255, 255, 0.008) !important;
+  color: rgba(220, 247, 255, 0.66) !important;
+  text-transform: none !important;
+  letter-spacing: 0.01em !important;
+  box-shadow: none !important;
+}
+
+.creators-lasy-system-page .creator-setup-disclosure[open] summary,
+.creators-lasy-system-page .creator-ai-settings-disclosure[open] summary,
+.creators-lasy-system-page .creator-ai-assist-details[open] summary {
+  color: rgba(238, 252, 255, 0.78) !important;
+  background: rgba(122, 231, 255, 0.035) !important;
+}
+
+.creators-lasy-system-page .creator-estimate-line {
+  opacity: 0.62 !important;
+  padding-block: clamp(0.32rem, 0.8vw, 0.48rem) !important;
+}
+
+.creators-lasy-system-page .creator-estimate-line .helper-note-inline {
+  color: rgba(219, 245, 255, 0.58) !important;
+}
+
+.creators-lasy-system-page .inline-alert-error {
+  border-color: rgba(255, 176, 132, 0.14) !important;
+  background: rgba(255, 143, 96, 0.045) !important;
+  color: rgba(255, 222, 202, 0.76) !important;
+}
+
+.creators-lasy-system-page .creator-command-output-preview .creator-empty-builder {
+  border-color: rgba(202, 242, 255, 0.038) !important;
+  background: radial-gradient(520px 180px at 8% 0%, rgba(111, 230, 255, 0.026), transparent 72%) !important;
+  box-shadow: none !important;
+}
+
+.creators-lasy-system-page .creator-empty-builder .operational-state-badge {
+  opacity: 0.72 !important;
+  background: rgba(122, 231, 255, 0.035) !important;
+  border-color: rgba(122, 231, 255, 0.09) !important;
+}
+
+.creators-lasy-system-page .creator-empty-builder .state-ea-title {
+  color: rgba(242, 252, 255, 0.84) !important;
+  font-size: clamp(0.98rem, 1.2vw, 1.1rem) !important;
+}
+
+.creators-lasy-system-page .creator-empty-builder .state-ea-text {
+  color: rgba(206, 239, 249, 0.54) !important;
+}
+
+.creators-lasy-system-page .creators-secondary-section {
+  opacity: 0.88 !important;
+}
+
+.creators-lasy-system-page .creators-secondary-disclosure summary {
+  color: rgba(222, 247, 255, 0.62) !important;
+  text-transform: none !important;
+  letter-spacing: 0.01em !important;
+}
+
+@media (max-width: 900px) {
+  .creators-lasy-system-page .creator-command-final-signal,
+  .creators-lasy-system-page .creator-estimate-line,
+  .creators-lasy-system-page .creator-ai-command-strip,
+  .creators-lasy-system-page .creator-setup-summary-strip {
+    opacity: 0.58 !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .creators-lasy-system-page .creator-command-stage-support,
+  .creators-lasy-system-page .creator-command-stage-close {
+    opacity: 0.52 !important;
+  }
+
+  .creators-lasy-system-page .creator-command-final-signal {
+    gap: 0.3rem !important;
+    font-size: 0.74rem !important;
+  }
+
+  .creators-lasy-system-page .creator-command-final-signal strong {
+    font-size: 0.74rem !important;
+  }
+
+  .creators-lasy-system-page .creator-command-output-preview .creator-empty-builder {
+    margin-top: 0.22rem !important;
+  }
+}
