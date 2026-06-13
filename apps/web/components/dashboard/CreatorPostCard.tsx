@@ -704,6 +704,11 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
 
       <div className="creator-workspace-zones creator-post-briefing-flow creator-briefing-guided-flow creator-briefing-command-flow">
       <section className="creator-briefing-step creator-briefing-step-channel creator-command-stage-support" data-step-index="2" aria-label="Ajustes de formato e canal">
+      <details className="creator-command-disclosure-shell creator-command-disclosure-shell-setup">
+        <summary>
+          <span>Ajustes opcionais</span>
+          <strong>{setupSummaryLabel}</strong>
+        </summary>
       <div id="creator-post-config" className="creator-form-zone creator-form-zone-setup" data-step-label="Detalhes">
         <div className="creator-setup-head">
           <p className="creator-zone-title">Ajustes leves</p>
@@ -775,6 +780,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
           </div>
         </details>
       </div>
+      </details>
       </section>
 
       <section className="creator-briefing-step creator-briefing-step-context creator-command-stage-main" data-step-index="1" aria-label="Etapa principal: ideia e briefing">
@@ -790,20 +796,36 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
             <span>Uso ~{creditsEstimate.common} Comum</span>
           </div>
         </div>
-        <label className="field-label-ea">
-          <span>Pedido</span>
-          <textarea
-            className="field-ea creator-command-textarea"
-            value={theme}
-            onChange={(e) => setTheme(e.target.value)}
-            placeholder="Ex: quero um post para lançar uma consultoria de marca pessoal com CTA para lista VIP..."
-            rows={4}
-            style={{
-              minHeight: 120,
-              resize: "vertical",
-            }}
-          />
-        </label>
+        <div className="creator-command-composer-grid">
+          <label className="field-label-ea creator-command-prompt-field">
+            <span>Pedido</span>
+            <textarea
+              className="field-ea creator-command-textarea"
+              value={theme}
+              onChange={(e) => setTheme(e.target.value)}
+              placeholder="Ex: quero um post para lançar uma consultoria de marca pessoal com CTA para lista VIP..."
+              rows={4}
+              style={{
+                minHeight: 120,
+                resize: "vertical",
+              }}
+            />
+          </label>
+          <aside className="creator-command-live-preview" aria-label="Preview do fluxo de geração">
+            <span>Preview do fluxo</span>
+            <strong>{theme.trim() ? "Briefing em preparo" : "A primeira versão nasce do pedido"}</strong>
+            <p>
+              {theme.trim()
+                ? "O builder vai organizar legenda, CTA, variações e próximo passo antes de salvar no projeto."
+                : "Descreva a ideia uma vez. O resultado volta como peça pronta para revisar e continuar no editor."}
+            </p>
+            <div className="creator-command-preview-route" aria-label="Fluxo da criação">
+              <span>Ideia</span>
+              <span>Revisão</span>
+              <span>Primeira versão</span>
+            </div>
+          </aside>
+        </div>
         <div className="creator-command-submit-row creator-command-finale" aria-label="Conclusão do briefing">
           <div className="creator-command-final-copy">
             <span>Pronto para gerar</span>
@@ -823,15 +845,20 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
             </Link>
           </div>
           <div className="creator-command-final-signal" data-tone={hasCredits ? "success" : "warning"}>
-            <span>{hasCredits ? "Uso previsto" : "Saldo precisa de recarga"}</span>
+            <span>{hasCredits ? "Uso discreto" : "Saldo precisa de recarga"}</span>
             <strong>~{creditsEstimate.common} Comum</strong>
-            <small>O valor final fica no histórico.</small>
+            <small>Detalhe no histórico após gerar.</small>
           </div>
         </div>
       </div>
       </section>
 
       <section className="creator-briefing-step creator-briefing-step-ai creator-command-stage-close" data-step-index="3" aria-label="Fechamento da criação">
+      <details className="creator-command-disclosure-shell creator-command-disclosure-shell-ai">
+        <summary>
+          <span>Apoio e uso</span>
+          <strong>{executionSummaryLabel} · ~{creditsEstimate.common} Comum</strong>
+        </summary>
       <div className="creator-context-zone creator-form-zone-ai" data-step-label="Assistência e entrega">
         <div className="creator-ai-close-head">
           <p className="creator-zone-title">Apoio de criação</p>
@@ -917,6 +944,7 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
         </div>
         {!hasCredits && <div className="inline-alert inline-alert-error">Saldo precisa de recarga para gerar. Creator Coins avulsas continuam disponíveis.</div>}
       </div>
+      </details>
 
       <div className="creator-final-flow-panel creator-command-output-preview">
       <div className="creator-planner-field-grid creator-post-journey-grid creator-journey-line">
@@ -1135,8 +1163,8 @@ export function CreatorPostCard({ planCode, walletCommon, onRefetch }: Props) {
           <div className="operational-state-head creator-empty-builder-copy">
             <span className="operational-state-badge">Preparado</span>
             <div>
-              <p className="state-ea-title">Sua primeira versão fica pronta aqui</p>
-              <p className="state-ea-text">Gere quando o pedido estiver pronto.</p>
+              <p className="state-ea-title">A primeira versão aparece aqui</p>
+              <p className="state-ea-text">O pedido acima vira legenda, CTA e variações para revisar.</p>
             </div>
           </div>
           <div className="operational-state-meta-grid creator-empty-builder-meta">

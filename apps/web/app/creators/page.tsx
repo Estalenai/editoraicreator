@@ -238,6 +238,7 @@ function CreatorsPageContent() {
   const router = useRouter();
   const pathname = usePathname() || "";
   const [activeTab, setActiveTab] = useState<CreatorTab>("post");
+  const [catalogOpen, setCatalogOpen] = useState(false);
   const { activeSection, registerSection, focusSection } =
     useSectionFocus<CreatorsFocusSection>("workspace");
 
@@ -309,10 +310,6 @@ function CreatorsPageContent() {
     () => CREATOR_SHOWCASES.find((item) => item.creator === activeTabMeta.label) ?? CREATOR_SHOWCASES[0],
     [activeTabMeta.label]
   );
-  const supportHeroCreator = useMemo(
-    () => secondaryCreators.find((tab) => tab.id === "ads") ?? secondaryCreators[0] ?? null,
-    [secondaryCreators]
-  );
   const featuredCreatorFormat = useMemo(
     () => heroCreators.find((tab) => tab.id === "post") ?? heroCreators[0] ?? null,
     [heroCreators]
@@ -322,12 +319,15 @@ function CreatorsPageContent() {
     [heroCreators, featuredCreatorFormat?.id]
   );
   const secondaryCatalog = useMemo(
-    () => [...secondaryCreators, ...labCreators].filter((tab) => tab.id !== supportHeroCreator?.id),
-    [secondaryCreators, labCreators, supportHeroCreator]
+    () => [...secondaryCreators, ...labCreators],
+    [secondaryCreators, labCreators]
   );
 
   function activateTab(nextTab: CreatorTab, options?: { scrollToWorkspace?: boolean }) {
     setActiveTab(nextTab);
+    if (nextTab !== "post" && CREATOR_TABS.find((tab) => tab.id === nextTab)?.group !== "hero") {
+      setCatalogOpen(true);
+    }
     focusSection("workspace", {
       scroll: options?.scrollToWorkspace ? "always" : "auto",
     });
@@ -438,14 +438,14 @@ function CreatorsPageContent() {
         </div>
       ) : null}
 
-      <div className="creators-core-canvas layout-contract-region" data-reveal data-reveal-delay="60">
+      <div className="creators-core-canvas layout-contract-region" data-reveal data-reveal-delay="60" suppressHydrationWarning>
         <section className="proof-value-section creators-proof-section creators-flow-section surface-flow-region creators-flow-section-start layout-contract-region creators-open-track">
           <div className="proof-value-header">
             <div className="section-stack-tight">
               <p className="section-kicker">Exemplos de resultado</p>
-              <h2 className="heading-reset">Três saídas que já nascem com próximo passo</h2>
+              <h2 className="heading-reset">Do pedido à primeira versão</h2>
               <p className="helper-text-ea">
-                Briefing, entrega e continuidade aparecem como prova de fluxo, antes de virar projeto.
+                Uma ideia vira peça, roteiro ou clipe com continuidade clara para o editor.
               </p>
             </div>
             <Link href="/projects" className="btn-link-ea btn-secondary btn-sm">
@@ -470,12 +470,28 @@ function CreatorsPageContent() {
                   data-featured={index === 0 ? "true" : "false"}
                   data-reveal
                   data-reveal-delay={String(70 + index * 55)}
+                  suppressHydrationWarning
                 >
-                  <div className="proof-value-meta-row">
-                    <span className="proof-value-kicker">{item.kicker}</span>
-                    <span className="proof-value-chip">{item.creator}</span>
+                  <div className="creators-proof-stage">
+                    <span>{String(index + 1).padStart(2, "0")}</span>
+                    <strong>{item.creator.replace("Creator ", "")}</strong>
                   </div>
-                  <h3 className="heading-reset creators-proof-showcase-title">{item.creator.replace("Creator ", "")}</h3>
+                  <div className="creators-proof-product-preview" aria-label={`${item.creator}: prévia da entrega`}>
+                    <div className="creators-proof-preview-head">
+                      <span>{item.creator.replace("Creator ", "")}</span>
+                      <small>{index === 0 ? "Peça pronta" : "Rota rápida"}</small>
+                    </div>
+                    <p>{item.briefing}</p>
+                    <div className="creators-proof-storyline" aria-hidden>
+                      <span>Pedido</span>
+                      <span>Entrega</span>
+                      <span>Editor</span>
+                    </div>
+                    <div className="creators-proof-preview-output">
+                      <span>{item.delivery}</span>
+                      <strong>{item.nextStep}</strong>
+                    </div>
+                  </div>
                   {proofBody}
                 </article>
               );
@@ -489,6 +505,7 @@ function CreatorsPageContent() {
         data-focus-active={activeSection === "showcase"}
         data-reveal
         data-reveal-delay="90"
+        suppressHydrationWarning
       >
         <div
           className="proof-value-header creators-hero-core-header focus-shell-head"
@@ -506,7 +523,7 @@ function CreatorsPageContent() {
             <p className="section-kicker">Formatos principais</p>
             <h2 className="heading-reset">Escolha o ponto de partida da criação</h2>
             <p className="helper-text-ea">
-              <strong>Creator Post</strong>, <strong>Creator Scripts</strong> e <strong>Creator Clips</strong> formam a linha principal. <strong>Creator Ads</strong> entra como apoio de conversão.
+              Comece pelo Post ou mude rapidamente para roteiro e clipe quando o pedido pedir outro ritmo.
             </p>
           </div>
           <div className="creators-hero-core-header-note">
@@ -533,6 +550,7 @@ function CreatorsPageContent() {
                   data-active={activeTab === featuredCreatorFormat.id}
                   data-reveal
                   data-reveal-delay="70"
+                  suppressHydrationWarning
                 >
                   <div className="creators-format-vitrine-eyebrow">
                     <span className={`premium-badge premium-badge-${creatorStageTone(featuredCreatorFormat.group)}`}>{featuredCreatorFormat.stageLabel}</span>
@@ -542,12 +560,21 @@ function CreatorsPageContent() {
                     <h3 className="heading-reset">{featuredCreatorFormat.label}</h3>
                     <p className="helper-text-ea">{featuredCreatorFormat.description}</p>
                   </div>
+                  <div className="creators-format-hero-route" aria-label={`${featuredCreatorFormat.label}: caminho de criação`}>
+                    <span>Ideia</span>
+                    <strong>{featuredCreatorFormat.expectedOutput}</strong>
+                    <span>{featuredCreatorFormat.continuity}</span>
+                  </div>
                   <div className="creators-format-vitrine-proof" aria-label={`${featuredCreatorFormat.label}: resumo do formato`}>
                     <p>
                       <strong>{featuredCreatorFormat.bestFor}</strong>
                       <span>{featuredCreatorFormat.expectedOutput}</span>
                       <span>{featuredCreatorFormat.continuity}</span>
                     </p>
+                  </div>
+                  <div className="creators-format-product-preview" aria-label={`${featuredCreatorFormat.label}: prévia da criação`}>
+                    <span>{featuredCreatorFormat.expectedOutput}</span>
+                    <strong>{featuredCreatorFormat.continuity}</strong>
                   </div>
                   <div className="creators-format-vitrine-actions">
                     <button onClick={() => activateTab(featuredCreatorFormat.id, { scrollToWorkspace: true })} className="btn-ea btn-primary btn-sm">
@@ -569,16 +596,22 @@ function CreatorsPageContent() {
                       data-active={activeTab === tab.id}
                       data-reveal
                       data-reveal-delay={String(95 + index * 45)}
+                      suppressHydrationWarning
                     >
                       <div className="creators-format-vitrine-option-head">
                         <span className={`premium-badge premium-badge-${creatorStageTone(tab.group)}`}>{tab.stageLabel}</span>
                         <h3 className="heading-reset">{tab.label}</h3>
                       </div>
-                      <p className="helper-text-ea">{tab.description}</p>
+                      <p className="creators-format-option-line">{tab.description}</p>
                       <div className="creators-format-vitrine-option-meta">
                         <strong>{tab.bestFor}</strong>
-                        <span>{tab.expectedOutput}</span>
+                        <span>{tab.continuity}</span>
                       </div>
+                      <details className="creators-format-option-details">
+                        <summary>Ver detalhes</summary>
+                        <p>{tab.description}</p>
+                        <span>{tab.expectedOutput}</span>
+                      </details>
                       <div className="creators-format-vitrine-actions creators-format-vitrine-actions-compact">
                         <button onClick={() => activateTab(tab.id, { scrollToWorkspace: true })} className="btn-ea btn-ghost btn-sm">
                           Usar formato
@@ -591,23 +624,6 @@ function CreatorsPageContent() {
                   ))}
                 </div>
 
-                {supportHeroCreator ? (
-                  <article
-                    className="creators-format-vitrine-support layout-contract-item creators-open-module"
-                    data-active={activeTab === supportHeroCreator.id}
-                    data-reveal
-                    data-reveal-delay="190"
-                  >
-                    <div>
-                      <span className={`premium-badge premium-badge-${creatorStageTone(supportHeroCreator.group)}`}>{supportHeroCreator.stageLabel}</span>
-                      <strong>{supportHeroCreator.label}</strong>
-                    </div>
-                    <p className="helper-text-ea">{supportHeroCreator.expectedOutput}</p>
-                    <button onClick={() => activateTab(supportHeroCreator.id, { scrollToWorkspace: true })} className="btn-ea btn-ghost btn-sm">
-                      Usar como apoio
-                    </button>
-                  </article>
-                ) : null}
               </div>
             </div>
           </div>
@@ -619,6 +635,7 @@ function CreatorsPageContent() {
         data-focus-active={activeSection === "catalog"}
         data-reveal
         data-reveal-delay="120"
+        suppressHydrationWarning
       >
         <div
           className="proof-value-header creators-secondary-header focus-shell-head"
@@ -634,14 +651,17 @@ function CreatorsPageContent() {
         >
           <div className="section-stack-tight">
             <p className="section-kicker">Apoio e exploração</p>
-            <h2 className="heading-reset">Apoios que ampliam a criação sem virar configuração</h2>
+            <h2 className="heading-reset">Apoios disponíveis quando o fluxo pedir</h2>
             <p className="helper-text-ea">
               Formatos complementares continuam disponíveis como apoio, sem ocupar o centro da criação.
             </p>
           </div>
           <button
             type="button"
-            onClick={() => focusSection("catalog", { scroll: "auto" })}
+            onClick={() => {
+              setCatalogOpen(true);
+              focusSection("catalog", { scroll: "auto" });
+            }}
             className={`btn-ea ${activeSection === "catalog" ? "btn-secondary" : "btn-ghost"} btn-sm focus-shell-toggle`}
             aria-pressed={activeSection === "catalog"}
           >
@@ -652,36 +672,47 @@ function CreatorsPageContent() {
           Apoio e experimentos ficam acessíveis como extensão do fluxo, não como documentação.
         </div>
           <div className="focus-shell-body">
-            <div className="creators-secondary-grid creators-secondary-stream creators-decision-stream creators-decision-stream-secondary">
-              {secondaryCatalog.map((tab, index) => (
-                <details
-                  key={tab.id}
-                  className="creators-secondary-card creators-secondary-disclosure layout-contract-item creators-open-module creators-decision-item creators-decision-item-secondary"
-                  data-priority={tab.group}
-                  data-reveal
-                  data-reveal-delay={String(70 + index * 45)}
-                  open={activeTab === tab.id}
-                >
-                  <summary>
-                    <span className="creators-secondary-card-head">
-                      <strong>{tab.label}</strong>
-                      <span className={`premium-badge premium-badge-${creatorStageTone(tab.group)}`}>{tab.stageLabel}</span>
-                    </span>
-                    <span className="creators-secondary-summary-copy">{tab.expectedOutput}</span>
-                  </summary>
-                  <div className="creators-secondary-disclosure-body">
-                    <p className="helper-text-ea">{tab.description}</p>
-                    <div className="creators-secondary-card-copy">
-                      <strong>{tab.expectedOutput}</strong>
-                      <span>{tab.continuity}</span>
+            <details
+              className="creators-secondary-catalog-shell"
+              open={catalogOpen}
+              onToggle={(event) => setCatalogOpen(event.currentTarget.open)}
+            >
+              <summary>
+                <span>{secondaryCatalog.length} formatos de apoio</span>
+                <strong>{catalogOpen ? "Ocultar catálogo" : "Ver catálogo leve"}</strong>
+              </summary>
+              <div className="creators-secondary-grid creators-secondary-stream creators-decision-stream creators-decision-stream-secondary">
+                {secondaryCatalog.map((tab, index) => (
+                  <details
+                    key={tab.id}
+                    className="creators-secondary-card creators-secondary-disclosure layout-contract-item creators-open-module creators-decision-item creators-decision-item-secondary"
+                    data-priority={tab.group}
+                    data-reveal
+                    data-reveal-delay={String(70 + index * 45)}
+                    suppressHydrationWarning
+                    open={activeTab === tab.id}
+                  >
+                    <summary>
+                      <span className="creators-secondary-card-head">
+                        <strong>{tab.label}</strong>
+                        <span className={`premium-badge premium-badge-${creatorStageTone(tab.group)}`}>{tab.stageLabel}</span>
+                      </span>
+                      <span className="creators-secondary-summary-copy">{tab.expectedOutput}</span>
+                    </summary>
+                    <div className="creators-secondary-disclosure-body">
+                      <p className="helper-text-ea">{tab.description}</p>
+                      <div className="creators-secondary-card-copy">
+                        <strong>{tab.expectedOutput}</strong>
+                        <span>{tab.continuity}</span>
+                      </div>
+                      <button onClick={() => activateTab(tab.id, { scrollToWorkspace: true })} className="btn-ea btn-ghost btn-sm">
+                        Usar este formato
+                      </button>
                     </div>
-                    <button onClick={() => activateTab(tab.id, { scrollToWorkspace: true })} className="btn-ea btn-ghost btn-sm">
-                      Usar este formato
-                    </button>
-                  </div>
-                </details>
-              ))}
-            </div>
+                  </details>
+                ))}
+              </div>
+            </details>
           </div>
         </section>
       </div>
@@ -720,7 +751,7 @@ function CreatorsPageContent() {
           A criação começa pela ideia. Formato, uso e conta ficam como apoio.
         </div>
         <div className="focus-shell-body creator-workspace-grid">
-        <div className="creator-workspace-main layout-contract-panel" data-reveal data-reveal-delay="140">
+        <div className="creator-workspace-main layout-contract-panel" data-reveal data-reveal-delay="140" suppressHydrationWarning>
           {initialLoading ? (
             <CreatorWorkspacePanelSkeleton />
           ) : (
@@ -731,79 +762,88 @@ function CreatorsPageContent() {
                   <span>Plano e disponibilidade sincronizam em segundo plano.</span>
                 </div>
               ) : null}
-              <div className="creator-workspace-operational-strip" aria-label="Contexto operacional da criação">
-                <div className="creator-workspace-operational-item">
-                  <span>Base</span>
+              <details className="creator-workspace-context-drawer">
+                <summary>
+                  <span>Contexto da criação</span>
                   <strong>{activeTabMeta.label}</strong>
-                  <small>{activeTabMeta.bestFor}</small>
-                </div>
-                <div className="creator-workspace-operational-item">
-                  <span>Uso</span>
-                  <strong>{planLabelDisplay} · {walletSummaryDisplay}</strong>
-                  <small>{loading ? "Sincronizando disponibilidade." : `${CREATOR_COINS_PUBLIC_NAME} registra o consumo final.`}</small>
-                </div>
-                <div className="creator-workspace-operational-item">
-                  <span>Continuidade</span>
-                  <strong>Criar → revisar → salvar</strong>
-                  <small>Projeto e editor seguem com o mesmo contexto.</small>
-                </div>
-                <div className="creator-workspace-account-actions">
-                  <span>Conta</span>
-                  <button
-                    onClick={async () => {
-                      await onSyncSubscription();
-                      await refresh();
-                    }}
-                    disabled={syncingSubscription || loading}
-                    className="btn-ea btn-ghost btn-sm"
-                  >
-                    {syncingSubscription ? "Sincronizando..." : "Sincronizar"}
-                  </button>
-                  <button onClick={onLogout} className="btn-ea btn-ghost btn-sm">
-                    Sair
-                  </button>
-                </div>
-              </div>
-              <div className="creator-active-panel layout-contract-region">
-                <div className="creator-active-panel-head">
-                  <div className="section-stack">
-                    <p className="section-kicker">Criação ativa</p>
-                    <h2 className="creator-active-panel-title">Criar primeira versão</h2>
-                    <p className="creator-active-panel-copy">{activeTabMeta.label} · {activeTabMeta.bestFor}</p>
+                  <small>{planLabelDisplay} · {walletSummaryDisplay}</small>
+                </summary>
+                <div className="creator-workspace-context-body">
+                  <div className="creator-workspace-operational-strip" aria-label="Contexto operacional da criação">
+                    <div className="creator-workspace-operational-item">
+                      <span>Base</span>
+                      <strong>{activeTabMeta.label}</strong>
+                      <small>{activeTabMeta.bestFor}</small>
+                    </div>
+                    <div className="creator-workspace-operational-item">
+                      <span>Uso</span>
+                      <strong>{planLabelDisplay} · {walletSummaryDisplay}</strong>
+                      <small>{loading ? "Sincronizando disponibilidade." : `${CREATOR_COINS_PUBLIC_NAME} registra o consumo final.`}</small>
+                    </div>
+                    <div className="creator-workspace-operational-item">
+                      <span>Continuidade</span>
+                      <strong>Criar → revisar → salvar</strong>
+                      <small>Projeto e editor seguem com o mesmo contexto.</small>
+                    </div>
+                    <div className="creator-workspace-account-actions">
+                      <span>Conta</span>
+                      <button
+                        onClick={async () => {
+                          await onSyncSubscription();
+                          await refresh();
+                        }}
+                        disabled={syncingSubscription || loading}
+                        className="btn-ea btn-ghost btn-sm"
+                      >
+                        {syncingSubscription ? "Sincronizando..." : "Sincronizar"}
+                      </button>
+                      <button onClick={onLogout} className="btn-ea btn-ghost btn-sm">
+                        Sair
+                      </button>
+                    </div>
                   </div>
-                  <div className="creator-active-panel-meta">
-                    <span className={`premium-badge premium-badge-${activeStageTone}`}>{activeTabMeta.stageLabel}</span>
-                    <span className="premium-badge premium-badge-phase">Plano {planLabelDisplay}</span>
-                    <span className="premium-badge premium-badge-warning">Uso {walletSummaryDisplay}</span>
+                  <div className="creator-active-panel layout-contract-region">
+                    <div className="creator-active-panel-head">
+                      <div className="section-stack">
+                        <p className="section-kicker">Criação ativa</p>
+                        <h2 className="creator-active-panel-title">Criar primeira versão</h2>
+                        <p className="creator-active-panel-copy">{activeTabMeta.label} · {activeTabMeta.bestFor}</p>
+                      </div>
+                      <div className="creator-active-panel-meta">
+                        <span className={`premium-badge premium-badge-${activeStageTone}`}>{activeTabMeta.stageLabel}</span>
+                        <span className="premium-badge premium-badge-phase">Plano {planLabelDisplay}</span>
+                        <span className="premium-badge premium-badge-warning">Uso {walletSummaryDisplay}</span>
+                      </div>
+                    </div>
+                    <div className="creator-active-summary-grid">
+                      <div className="creator-active-summary-card">
+                        <span>O que sai</span>
+                        <strong>{activeTabMeta.expectedOutput}</strong>
+                      </div>
+                      <div className="creator-active-summary-card">
+                        <span>Continuidade</span>
+                        <strong>{activeTabMeta.continuity}</strong>
+                      </div>
+                      <div className="creator-active-summary-card">
+                        <span>Papel no produto</span>
+                        <strong>{activeStageGuidance.title}</strong>
+                      </div>
+                    </div>
+                    <div className={`creator-active-stage-note creator-active-stage-note-${activeTabMeta.group}`}>
+                      <strong>{activeStageGuidance.title}</strong>
+                      <span>{activeStageGuidance.description}</span>
+                    </div>
+                    <div className="hero-actions-row creator-active-panel-actions">
+                      <Link href="/projects" className="btn-link-ea btn-ghost btn-sm">
+                        Ver projetos
+                      </Link>
+                      <EditorRouteLink href="/editor/new" className="btn-link-ea btn-secondary btn-sm">
+                        Abrir editor novo
+                      </EditorRouteLink>
+                    </div>
                   </div>
                 </div>
-                <div className="creator-active-summary-grid">
-                  <div className="creator-active-summary-card">
-                    <span>O que sai</span>
-                    <strong>{activeTabMeta.expectedOutput}</strong>
-                  </div>
-                  <div className="creator-active-summary-card">
-                    <span>Continuidade</span>
-                    <strong>{activeTabMeta.continuity}</strong>
-                  </div>
-                  <div className="creator-active-summary-card">
-                    <span>Papel no produto</span>
-                    <strong>{activeStageGuidance.title}</strong>
-                  </div>
-                </div>
-                <div className={`creator-active-stage-note creator-active-stage-note-${activeTabMeta.group}`}>
-                  <strong>{activeStageGuidance.title}</strong>
-                  <span>{activeStageGuidance.description}</span>
-                </div>
-                <div className="hero-actions-row creator-active-panel-actions">
-                  <Link href="/projects" className="btn-link-ea btn-ghost btn-sm">
-                    Ver projetos
-                  </Link>
-                  <EditorRouteLink href="/editor/new" className="btn-link-ea btn-secondary btn-sm">
-                    Abrir editor novo
-                  </EditorRouteLink>
-                </div>
-              </div>
+              </details>
               {activeTab === "post" ? <CreatorPostCard planCode={planCodeRaw} walletCommon={walletCommon} onRefetch={refresh} /> : null}
               {activeTab === "music" ? <CreatorMusicCard planCode={planCodeRaw} walletCommon={walletCommon} onRefetch={refresh} /> : null}
               {activeTab === "scripts" ? <CreatorScriptCard planCode={planCodeRaw} walletCommon={walletCommon} onRefetch={refresh} /> : null}
@@ -826,7 +866,7 @@ function CreatorsPageContent() {
             </div>
           )}
         </div>
-        <aside className="creator-workspace-side creators-sidebar creators-sidebar-soft layout-contract-rail creators-format-rail creators-context-ribbon" data-reveal data-reveal-delay="180">
+        <aside className="creator-workspace-side creators-sidebar creators-sidebar-soft layout-contract-rail creators-format-rail creators-context-ribbon" data-reveal data-reveal-delay="180" suppressHydrationWarning>
           <div className="creators-side-note creators-side-note-primary">
             <strong>Comece pelos formatos principais</strong>
             <span>
