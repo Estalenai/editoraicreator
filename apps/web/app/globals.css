@@ -47922,6 +47922,392 @@ body:has(.creators-lasy-system-page),
   }
 }
 
+/* Meta-Lasy Delta Sprint 2: builder as a creative composer.
+   Keep every real control available, but make idea + CTA + preview the product center. */
+.creators-lasy-system-page .creator-command-workspace-composer {
+  width: min(100%, 69rem) !important;
+  padding: clamp(0.95rem, 1.8vw, 1.38rem) 0 clamp(0.76rem, 1.35vw, 1.05rem) !important;
+  background:
+    radial-gradient(760px 280px at 48% 0%, rgba(127, 231, 255, 0.046), transparent 72%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.012), transparent 38%) !important;
+}
+
+.creators-lasy-system-page .creator-command-workspace-composer .creator-workspace-header {
+  grid-template-columns: minmax(0, 0.72fr) minmax(15rem, 0.44fr) !important;
+  align-items: end !important;
+  padding-bottom: clamp(0.34rem, 0.75vw, 0.54rem) !important;
+}
+
+.creators-lasy-system-page .creator-command-workspace-composer .creator-workspace-header .heading-reset {
+  max-width: 13ch !important;
+  font-size: clamp(1.92rem, 3.3vw, 2.8rem) !important;
+  letter-spacing: -0.07em !important;
+}
+
+.creators-lasy-system-page .creator-command-workspace-composer .creator-workspace-subtitle {
+  max-width: 24rem !important;
+  color: rgba(220, 248, 255, 0.58) !important;
+}
+
+.creators-lasy-system-page .creator-command-pathline {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.42rem !important;
+  width: fit-content !important;
+  margin: 0 0 clamp(0.38rem, 0.85vw, 0.62rem) !important;
+  color: rgba(222, 247, 255, 0.54) !important;
+  font-size: 0.72rem !important;
+  font-weight: 760 !important;
+  letter-spacing: 0.01em !important;
+}
+
+.creators-lasy-system-page .creator-command-pathline i {
+  display: block !important;
+  width: clamp(1.2rem, 3vw, 2.6rem) !important;
+  height: 1px !important;
+  border-radius: 999px !important;
+  background: linear-gradient(90deg, rgba(125, 229, 255, 0.32), rgba(230, 240, 120, 0.12), transparent) !important;
+}
+
+.creators-lasy-system-page .creator-command-workspace-composer .creator-briefing-command-flow {
+  gap: clamp(0.48rem, 0.92vw, 0.72rem) !important;
+}
+
+.creators-lasy-system-page .creator-command-workspace-composer .creator-command-input-panel {
+  padding: 0 !important;
+  gap: clamp(0.58rem, 1.1vw, 0.88rem) !important;
+}
+
+.creators-lasy-system-page .creator-command-workspace-composer .creator-command-input-head {
+  grid-template-columns: minmax(0, 1fr) minmax(13rem, auto) !important;
+  align-items: center !important;
+}
+
+.creators-lasy-system-page .creator-command-workspace-composer .creator-command-input-head .creator-zone-title {
+  font-size: clamp(1rem, 1.25vw, 1.18rem) !important;
+  letter-spacing: -0.025em !important;
+}
+
+.creators-lasy-system-page .creator-command-workspace-composer .creator-command-input-head .creator-zone-copy {
+  max-width: 33rem !important;
+  color: rgba(218, 246, 255, 0.46) !important;
+}
+
+.creators-lasy-system-page .creator-command-workspace-composer .creator-command-chip-row {
+  opacity: 0.44 !important;
+}
+
+.creators-lasy-system-page .creator-command-workspace-composer .creator-command-chip-row span {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.creators-lasy-system-page .creator-command-workspace-composer .creator-command-composer-grid {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.36fr) !important;
+  gap: clamp(0.72rem, 1.5vw, 1.1rem) !important;
+  align-items: stretch !important;
+}
+
+.creators-lasy-system-page .creator-command-workspace-composer .creator-command-prompt-field {
+  position: relative !important;
+  display: grid !important;
+  gap: 0.34rem !important;
+  min-width: 0 !important;
+}
+
+.creators-lasy-system-page .creator-command-workspace-composer .creator-command-prompt-field > span {
+  display: block !important;
+  padding-left: 0.24rem !important;
+  color: rgba(222, 247, 255, 0.62) !important;
+  font-size: 0.78rem !important;
+  font-weight: 760 !important;
+  letter-spacing: 0.01em !important;
+  text-transform: none !important;
+}
+
+.creators-lasy-system-page .creator-workspace-shell .creator-command-workspace-composer textarea.creator-command-textarea {
+  min-height: clamp(13.5rem, 18vw, 17.5rem) !important;
+  padding: clamp(1.12rem, 1.85vw, 1.48rem) !important;
+  border: 1px solid rgba(173, 237, 255, 0.065) !important;
+  border-radius: clamp(1.45rem, 2.5vw, 2rem) !important;
+  background:
+    radial-gradient(600px 250px at 12% 0%, rgba(134, 234, 255, 0.064), transparent 70%),
+    radial-gradient(480px 180px at 90% 12%, rgba(232, 241, 116, 0.028), transparent 76%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.038), rgba(255, 255, 255, 0.006)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 24px 80px rgba(3, 20, 35, 0.16) !important;
+}
+
+.creators-lasy-system-page .creator-workspace-shell .creator-command-workspace-composer textarea.creator-command-textarea:focus {
+  border-color: rgba(142, 232, 255, 0.22) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 0 0 1px rgba(142, 232, 255, 0.055),
+    0 28px 90px rgba(3, 20, 35, 0.18) !important;
+}
+
+.creators-lasy-system-page .creator-command-workspace-composer .creator-command-live-preview {
+  min-height: auto !important;
+  padding: clamp(0.9rem, 1.45vw, 1.15rem) !important;
+  border: 0 !important;
+  border-left: 1px solid rgba(188, 240, 255, 0.07) !important;
+  border-radius: 0 clamp(1.1rem, 1.8vw, 1.45rem) clamp(1.1rem, 1.8vw, 1.45rem) 0 !important;
+  background:
+    radial-gradient(300px 160px at 0% 0%, rgba(124, 231, 255, 0.046), transparent 72%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.016), rgba(255, 255, 255, 0.002)) !important;
+  box-shadow: none !important;
+}
+
+.creators-lasy-system-page .creator-command-workspace-composer .creator-command-live-preview::before {
+  opacity: 0.28 !important;
+}
+
+.creators-lasy-system-page .creator-command-workspace-composer .creator-command-live-preview > span {
+  color: rgba(144, 225, 255, 0.56) !important;
+}
+
+.creators-lasy-system-page .creator-command-workspace-composer .creator-command-live-preview > strong {
+  color: rgba(244, 253, 255, 0.82) !important;
+}
+
+.creators-lasy-system-page .creator-command-workspace-composer .creator-command-live-preview > p {
+  color: rgba(214, 243, 252, 0.52) !important;
+}
+
+.creators-lasy-system-page .creator-command-workspace-composer .creator-command-finale {
+  grid-template-columns: minmax(12rem, 0.62fr) auto minmax(7.5rem, 0.22fr) !important;
+  margin-top: -0.08rem !important;
+  padding: clamp(0.22rem, 0.55vw, 0.42rem) 0 0 !important;
+}
+
+.creators-lasy-system-page .creator-command-workspace-composer .creator-command-final-copy span {
+  color: rgba(144, 225, 255, 0.58) !important;
+}
+
+.creators-lasy-system-page .creator-command-workspace-composer .creator-command-final-copy p {
+  color: rgba(214, 243, 252, 0.44) !important;
+}
+
+.creators-lasy-system-page .creator-command-workspace-composer .creator-command-final-actions .btn-primary {
+  min-height: 2.95rem !important;
+  padding-inline: clamp(1.3rem, 2.4vw, 2rem) !important;
+  font-weight: 820 !important;
+}
+
+.creators-lasy-system-page .creator-command-workspace-composer .creator-command-final-actions .btn-ghost,
+.creators-lasy-system-page .creator-command-workspace-composer .creator-command-final-actions .btn-link-ea.btn-ghost {
+  opacity: 0.62 !important;
+}
+
+.creators-lasy-system-page .creator-command-workspace-composer .creator-command-final-signal {
+  display: inline-grid !important;
+  gap: 0.04rem !important;
+  opacity: 0.42 !important;
+}
+
+.creators-lasy-system-page .creator-command-workspace-composer .creator-command-stage-support,
+.creators-lasy-system-page .creator-command-workspace-composer .creator-command-stage-close {
+  opacity: 0.4 !important;
+  padding-block: clamp(0.24rem, 0.65vw, 0.46rem) !important;
+}
+
+.creators-lasy-system-page .creator-command-workspace-composer .creator-command-stage-support:hover,
+.creators-lasy-system-page .creator-command-workspace-composer .creator-command-stage-support:focus-within,
+.creators-lasy-system-page .creator-command-workspace-composer .creator-command-stage-close:hover,
+.creators-lasy-system-page .creator-command-workspace-composer .creator-command-stage-close:focus-within {
+  opacity: 0.82 !important;
+}
+
+.creators-lasy-system-page .creator-command-workspace-composer .creator-command-disclosure-shell > summary {
+  min-height: 1.55rem !important;
+  color: rgba(220, 247, 255, 0.48) !important;
+}
+
+.creators-lasy-system-page .creator-command-workspace-composer .creator-command-disclosure-shell > summary span {
+  color: rgba(144, 225, 255, 0.45) !important;
+  letter-spacing: 0.05em !important;
+  text-transform: none !important;
+}
+
+.creators-lasy-system-page .creator-command-workspace-composer .creator-command-disclosure-shell > summary strong {
+  color: rgba(234, 250, 255, 0.56) !important;
+}
+
+.creators-lasy-system-page .creator-command-workspace-composer .creator-setup-disclosure summary,
+.creators-lasy-system-page .creator-command-workspace-composer .creator-ai-settings-disclosure summary {
+  border: 0 !important;
+  background: transparent !important;
+  color: rgba(220, 247, 255, 0.54) !important;
+}
+
+.creators-lasy-system-page .creator-command-workspace-composer .creator-command-output-preview {
+  margin-top: clamp(0.08rem, 0.35vw, 0.18rem) !important;
+}
+
+.creators-lasy-system-page .creator-command-workspace-composer .creator-command-output-preview .creator-journey-line {
+  opacity: 0.5 !important;
+}
+
+.creators-lasy-system-page .creator-command-workspace-composer .creator-command-output-preview .state-ea.creator-empty-flow {
+  justify-content: flex-start !important;
+  padding-block: clamp(0.2rem, 0.45vw, 0.34rem) !important;
+  opacity: 0.62 !important;
+}
+
+.creators-lasy-system-page .creator-command-workspace-composer .creator-empty-builder .operational-state-badge {
+  display: inline-flex !important;
+  background: transparent !important;
+  border: 0 !important;
+  color: rgba(144, 225, 255, 0.52) !important;
+}
+
+.creators-lasy-system-page .creator-command-workspace-composer .creator-empty-builder .state-ea-title {
+  font-size: clamp(0.9rem, 1vw, 1.02rem) !important;
+  color: rgba(244, 253, 255, 0.72) !important;
+}
+
+.creators-lasy-system-page .creator-command-workspace-composer .creator-empty-builder .state-ea-text {
+  display: block !important;
+  max-width: 34rem !important;
+  color: rgba(212, 242, 252, 0.46) !important;
+}
+
+.creators-lasy-system-page .creator-workspace-main-stack {
+  display: grid !important;
+}
+
+.creators-lasy-system-page .creator-workspace-main-stack > .creator-command-workspace-composer {
+  order: 1 !important;
+}
+
+.creators-lasy-system-page .creator-workspace-main-stack > .creator-workspace-context-drawer {
+  order: 9 !important;
+  margin-top: clamp(0.38rem, 0.9vw, 0.72rem) !important;
+}
+
+.creators-lasy-system-page .creator-workspace-shell[data-focus-active="true"] .focus-shell-body,
+.creators-lasy-system-page .creator-workspace-shell[data-focus-active="true"] .creator-workspace-grid {
+  display: grid !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.creators-lasy-system-page .creator-workspace-shell :is(.creator-workspace-main, .creator-workspace-side)[data-reveal],
+.creators-lasy-system-page .creator-workspace-shell :is(.creator-workspace-main, .creator-workspace-side)[data-reveal].is-visible {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+  visibility: visible !important;
+}
+
+@media (max-width: 1024px) {
+  .creators-lasy-system-page .creator-command-workspace-composer .creator-command-composer-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .creators-lasy-system-page .creator-command-workspace-composer .creator-command-live-preview {
+    border-left: 0 !important;
+    border-top: 1px solid rgba(188, 240, 255, 0.055) !important;
+    border-radius: clamp(0.9rem, 2vw, 1.18rem) !important;
+    padding-block: clamp(0.55rem, 1.4vw, 0.78rem) !important;
+  }
+
+  .creators-lasy-system-page .creator-workspace-shell .creator-command-workspace-composer textarea.creator-command-textarea {
+    min-height: clamp(9rem, 24vw, 12rem) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .creators-lasy-system-page .creator-command-workspace-composer {
+    padding-top: 0.28rem !important;
+  }
+
+  .creators-lasy-system-page .creator-command-workspace-composer .creator-workspace-header {
+    gap: 0.22rem !important;
+  }
+
+  .creators-lasy-system-page .creator-command-workspace-composer .creator-workspace-header .heading-reset {
+    max-width: 12ch !important;
+    font-size: clamp(1.48rem, 8vw, 1.98rem) !important;
+  }
+
+  .creators-lasy-system-page .creator-command-pathline {
+    max-width: 100% !important;
+    gap: 0.32rem !important;
+    font-size: 0.66rem !important;
+  }
+
+  .creators-lasy-system-page .creator-command-pathline i {
+    width: 1.1rem !important;
+  }
+
+  .creators-lasy-system-page .creator-command-workspace-composer .creator-command-input-head {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .creators-lasy-system-page .creator-command-workspace-composer .creator-command-chip-row span:nth-child(n + 2) {
+    display: none !important;
+  }
+
+  .creators-lasy-system-page .creator-workspace-shell .creator-command-workspace-composer textarea.creator-command-textarea {
+    min-height: 7.4rem !important;
+    max-height: 9.2rem !important;
+    padding: 0.86rem !important;
+    border-radius: 1.08rem !important;
+  }
+
+  .creators-lasy-system-page .creator-command-workspace-composer .creator-command-live-preview {
+    display: grid !important;
+    gap: 0.16rem !important;
+    padding: 0.52rem 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+  }
+
+  .creators-lasy-system-page .creator-command-workspace-composer .creator-command-live-preview > p,
+  .creators-lasy-system-page .creator-command-workspace-composer .creator-command-preview-route,
+  .creators-lasy-system-page .creator-command-workspace-composer .creator-command-live-preview::before {
+    display: none !important;
+  }
+
+  .creators-lasy-system-page .creator-command-workspace-composer .creator-command-finale {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 0.34rem !important;
+  }
+
+  .creators-lasy-system-page .creator-command-workspace-composer .creator-command-final-copy p,
+  .creators-lasy-system-page .creator-command-workspace-composer .creator-command-final-signal {
+    display: none !important;
+  }
+
+  .creators-lasy-system-page .creator-command-workspace-composer .creator-command-final-actions {
+    display: grid !important;
+    width: 100% !important;
+  }
+
+  .creators-lasy-system-page .creator-command-workspace-composer .creator-command-final-actions .btn-primary {
+    width: 100% !important;
+    min-height: 2.68rem !important;
+  }
+
+  .creators-lasy-system-page .creator-command-workspace-composer .creator-command-stage-support,
+  .creators-lasy-system-page .creator-command-workspace-composer .creator-command-stage-close {
+    opacity: 0.38 !important;
+  }
+
+  .creators-lasy-system-page .creator-command-workspace-composer .creator-command-output-preview .state-ea.creator-empty-flow {
+    padding-top: 0 !important;
+  }
+
+  .creators-lasy-system-page .creator-command-workspace-composer .creator-empty-builder .state-ea-text,
+  .creators-lasy-system-page .creator-command-workspace-composer .creator-empty-builder .operational-state-badge {
+    display: none !important;
+  }
+}
+
 /* Meta-Lasy Final P0: make the active creation area read as a composer.
    Operational context remains available, but the idea + preview + CTA becomes
    the primary product surface instead of another status panel. */
@@ -48948,6 +49334,83 @@ body:has(.creators-lasy-system-page),
   }
 }
 
+/* Meta-Lasy Delta Sprint 2 final layout guard: the workspace must open on the
+   creative composer, not reserve a dashboard-like empty field before it. */
+.creators-lasy-system-page .creator-workspace-shell {
+  min-height: 0 !important;
+  height: auto !important;
+}
+
+.creators-lasy-system-page .creator-workspace-shell[data-focus-active="true"] .focus-shell-preview {
+  display: none !important;
+}
+
+.creators-lasy-system-page .creator-workspace-shell[data-focus-active="true"] .focus-shell-body {
+  display: grid !important;
+  min-height: 0 !important;
+  height: auto !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.creators-lasy-system-page .creator-workspace-grid {
+  grid-template-columns: minmax(0, 1fr) minmax(12rem, 0.24fr) !important;
+  align-items: start !important;
+  gap: clamp(0.88rem, 1.6vw, 1.22rem) !important;
+  min-height: 0 !important;
+  height: auto !important;
+}
+
+.creators-lasy-system-page .creator-workspace-grid::before,
+.creators-lasy-system-page .creator-workspace-grid::after {
+  display: none !important;
+  content: none !important;
+}
+
+.creators-lasy-system-page .creator-workspace-main,
+.creators-lasy-system-page .creator-workspace-main-stack {
+  min-height: 0 !important;
+  height: auto !important;
+  align-self: start !important;
+}
+
+.creators-lasy-system-page .creator-workspace-main {
+  order: 1 !important;
+}
+
+.creators-lasy-system-page .creator-workspace-side {
+  order: 2 !important;
+  align-self: start !important;
+  min-height: 0 !important;
+  height: auto !important;
+}
+
+.creators-lasy-system-page .creator-workspace-main-stack {
+  display: grid !important;
+  gap: clamp(0.5rem, 0.9vw, 0.76rem) !important;
+}
+
+.creators-lasy-system-page .creator-workspace-main-stack > .creator-command-workspace-composer {
+  order: 1 !important;
+  margin-block: 0 !important;
+}
+
+.creators-lasy-system-page .creator-workspace-main-stack > .creator-workspace-context-drawer {
+  order: 9 !important;
+  margin-block: clamp(0.26rem, 0.7vw, 0.5rem) 0 !important;
+}
+
+@media (max-width: 1024px) {
+  .creators-lasy-system-page .creator-workspace-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: clamp(0.62rem, 2vw, 0.94rem) !important;
+  }
+
+  .creators-lasy-system-page .creator-workspace-side {
+    order: 3 !important;
+  }
+}
+
 /* Meta-Lasy Delta 1: turn examples and formats into a product showcase,
    reducing documentation labels without removing real choices/actions. */
 .creators-lasy-system-page .creators-proof-section,
@@ -49288,5 +49751,113 @@ body:has(.creators-lasy-system-page),
   .creators-lasy-system-page .creators-secondary-catalog-shell {
     max-width: none;
     margin-left: 0;
+  }
+}
+
+/* Meta-Lasy Delta Sprint 2 final composer guard. Keep the prompt and preview
+   connected, but never visually overlapping like a technical form panel. */
+.creators-lasy-system-page .creator-command-workspace-composer .creator-command-composer-grid {
+  grid-template-columns: minmax(0, 0.68fr) minmax(17rem, 0.32fr) !important;
+  align-items: stretch !important;
+  gap: clamp(1rem, 2vw, 1.5rem) !important;
+}
+
+.creators-lasy-system-page .creator-command-workspace-composer .creator-command-prompt-field,
+.creators-lasy-system-page .creator-command-workspace-composer .creator-command-live-preview {
+  grid-column: auto !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+}
+
+.creators-lasy-system-page .creator-workspace-shell .creator-command-workspace-composer textarea.creator-command-textarea {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.creators-lasy-system-page .creator-command-workspace-composer .creator-command-live-preview {
+  isolation: isolate !important;
+  align-self: stretch !important;
+}
+
+@media (max-width: 1024px) {
+  .creators-lasy-system-page .creator-command-workspace-composer .creator-command-composer-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: clamp(0.58rem, 1.8vw, 0.88rem) !important;
+  }
+
+  .creators-lasy-system-page .creator-command-workspace-composer .creator-command-live-preview {
+    min-height: auto !important;
+  }
+}
+
+.creators-lasy-system-page .creator-workspace-side {
+  max-width: 14rem !important;
+  opacity: 0.38 !important;
+}
+
+.creators-lasy-system-page .creator-workspace-side:hover,
+.creators-lasy-system-page .creator-workspace-side:focus-within {
+  opacity: 0.72 !important;
+}
+
+.creators-lasy-system-page .creator-workspace-side :is(
+  .creators-side-note,
+  .creator-group-title,
+  .creator-group-subtitle,
+  .creator-tab-meta,
+  .creator-tab-support,
+  .creator-tab-chip,
+  .creators-wallet-panel
+) {
+  display: none !important;
+}
+
+.creators-lasy-system-page .creator-workspace-side .creators-sidebar-nav {
+  display: grid !important;
+  gap: 0.52rem !important;
+}
+
+.creators-lasy-system-page .creator-workspace-side .creators-sidebar-group-list {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 0.34rem !important;
+}
+
+.creators-lasy-system-page .creator-workspace-side .creators-sidebar-group + .creators-sidebar-group {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  border-top: 0 !important;
+}
+
+.creators-lasy-system-page .creator-workspace-side .creator-tab-btn {
+  width: auto !important;
+  min-height: 1.85rem !important;
+  padding: 0.36rem 0.58rem !important;
+  border: 1px solid rgba(209, 246, 255, 0.045) !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.creators-lasy-system-page .creator-workspace-side .creator-tab-btn[data-active="true"] {
+  background: rgba(255, 255, 255, 0.026) !important;
+  border-color: rgba(179, 235, 255, 0.08) !important;
+}
+
+.creators-lasy-system-page .creator-workspace-side .creator-tab-head {
+  display: block !important;
+}
+
+.creators-lasy-system-page .creator-workspace-side .creator-tab-title {
+  font-size: 0.68rem !important;
+  white-space: nowrap !important;
+}
+
+@media (max-width: 1024px) {
+  .creators-lasy-system-page .creator-workspace-side {
+    max-width: none !important;
+    opacity: 0.52 !important;
   }
 }
