@@ -49781,17 +49781,6 @@ body:has(.creators-lasy-system-page),
   align-self: stretch !important;
 }
 
-@media (max-width: 1024px) {
-  .creators-lasy-system-page .creator-command-workspace-composer .creator-command-composer-grid {
-    grid-template-columns: minmax(0, 1fr) !important;
-    gap: clamp(0.58rem, 1.8vw, 0.88rem) !important;
-  }
-
-  .creators-lasy-system-page .creator-command-workspace-composer .creator-command-live-preview {
-    min-height: auto !important;
-  }
-}
-
 .creators-lasy-system-page .creator-workspace-side {
   max-width: 14rem !important;
   opacity: 0.38 !important;
@@ -49853,13 +49842,6 @@ body:has(.creators-lasy-system-page),
 .creators-lasy-system-page .creator-workspace-side .creator-tab-title {
   font-size: 0.68rem !important;
   white-space: nowrap !important;
-}
-
-@media (max-width: 1024px) {
-  .creators-lasy-system-page .creator-workspace-side {
-    max-width: none !important;
-    opacity: 0.52 !important;
-  }
 }
 
 /* Meta-Lasy Delta Sprint 3: mobile/tablet must feel intentionally composed,
@@ -49985,6 +49967,11 @@ body:has(.creators-lasy-system-page),
     gap: clamp(0.5rem, 1.8vw, 0.82rem) !important;
   }
 
+  .creators-lasy-system-page .creator-command-workspace-composer .creator-command-composer-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: clamp(0.58rem, 1.8vw, 0.88rem) !important;
+  }
+
   .creators-lasy-system-page .creator-command-workspace-composer {
     padding: clamp(0.72rem, 2vw, 1rem) !important;
   }
@@ -50003,6 +49990,7 @@ body:has(.creators-lasy-system-page),
   }
 
   .creators-lasy-system-page .creator-command-workspace-composer .creator-command-live-preview {
+    min-height: auto !important;
     padding: clamp(0.5rem, 1.5vw, 0.7rem) 0 !important;
     border: 0 !important;
     background: transparent !important;
@@ -50030,6 +50018,7 @@ body:has(.creators-lasy-system-page),
   }
 
   .creators-lasy-system-page .creator-workspace-side {
+    max-width: none !important;
     order: 3 !important;
     opacity: 0.34 !important;
   }
