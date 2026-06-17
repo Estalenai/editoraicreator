@@ -14,6 +14,7 @@ const REVEAL_IMMEDIATE_VIEWPORT_RATIO = 1.38;
 const REVEAL_IMMEDIATE_VIEWPORT_RATIO_COMPACT = 1.56;
 const COMPACT_VIEWPORT_QUERY = "(max-width: 900px)";
 const REVEAL_TIMING_STYLE_ID = "ea-reveal-runtime-timing";
+const HYDRATION_SAFE_DELAY_MS = 350;
 
 export function MotionRuntime() {
   const pathname = usePathname() || "";
@@ -39,8 +40,6 @@ export function MotionRuntime() {
       timingStyle.id = REVEAL_TIMING_STYLE_ID;
       document.head.appendChild(timingStyle);
     }
-
-    root.classList.add("motion-runtime");
 
     const revealNow = (element: HTMLElement) => {
       element.classList.add("is-visible");
@@ -116,14 +115,23 @@ export function MotionRuntime() {
       });
     };
 
-    const frame = requestAnimationFrame(bind);
-    const mutationObserver = new MutationObserver(() => bind());
-    mutationObserver.observe(document.body, { childList: true, subtree: true });
+    let frame = 0;
+    let mutationObserver: MutationObserver | null = null;
+    const hydrationTimer = window.setTimeout(() => {
+      frame = requestAnimationFrame(() => {
+        root.classList.add("motion-runtime");
+        bind();
+        mutationObserver = new MutationObserver(() => bind());
+        mutationObserver.observe(document.body, { childList: true, subtree: true });
+      });
+    }, HYDRATION_SAFE_DELAY_MS);
 
     return () => {
-      cancelAnimationFrame(frame);
-      mutationObserver.disconnect();
+      window.clearTimeout(hydrationTimer);
+      if (frame) cancelAnimationFrame(frame);
+      mutationObserver?.disconnect();
       observer.disconnect();
+      root.classList.remove("motion-runtime");
       timingStyle?.remove();
     };
   }, [pathname]);
