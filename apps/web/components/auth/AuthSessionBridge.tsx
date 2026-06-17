@@ -60,8 +60,21 @@ export function AuthSessionBridge() {
       }
     }
 
+    void supabase.auth.getSession().then(({ data }) => {
+      if (!active) return;
+      void syncFromSession(data.session);
+    });
+
     const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
-      void syncFromSession(session);
+      if (session) {
+        void syncFromSession(session);
+        return;
+      }
+
+      void supabase.auth.getSession().then(({ data }) => {
+        if (!active) return;
+        void syncFromSession(data.session);
+      });
     });
 
     return () => {
