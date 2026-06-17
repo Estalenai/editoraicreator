@@ -39,6 +39,11 @@ function buildAuthenticatedRedirect(request: NextRequest) {
   return NextResponse.redirect(nextUrl);
 }
 
+function hasExplicitBetaBlock(betaStatus?: string | null) {
+  const normalized = String(betaStatus || "").trim().toLowerCase();
+  return normalized === "pending" || normalized === "rejected";
+}
+
 async function resolveAuthState(request: NextRequest) {
   const hostname = request.nextUrl.hostname;
   const e2eAllowed = isE2EServerAuthAllowed(hostname);
@@ -109,8 +114,7 @@ export async function middleware(request: NextRequest) {
   }
 
   if (!isAdminRoute && !isDashboardRoute) {
-    const betaApproved = authState.betaStatus === "approved";
-    if (!betaApproved) {
+    if (hasExplicitBetaBlock(authState.betaStatus)) {
       return buildDashboardRedirect(request);
     }
   }
